@@ -1,0 +1,103 @@
+BASE <http://example.org/sssom/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX metatype: <https://w3id.org/biolink/biolinkml/type/>
+
+
+metatype:String xsd:string
+
+metatype:Integer xsd:integer
+
+metatype:Boolean xsd:boolean
+
+metatype:Float xsd:float
+
+metatype:Double xsd:double
+
+metatype:Time xsd:dateTime
+
+metatype:Date xsd:date
+
+metatype:Datetime xsd:dateTime
+
+metatype:Uriorcurie IRI
+
+metatype:Uri IRI
+
+metatype:Ncname xsd:string
+
+metatype:Objectidentifier IRI
+
+metatype:Nodeidentifier NONLITERAL
+
+<Entity> CLOSED {
+    (  $<Entity_tes> rdf:type . * ;
+       rdf:type [ <Entity> ] ?
+    )
+}
+
+<Mapping> CLOSED {
+    (  $<Mapping_tes> (  owl:annotatedSource @<Entity> ? ;
+          <subject_label> @metatype:String ? ;
+          owl:annotatedProperty @<Entity> ? ;
+          <predicate_label> @metatype:String ? ;
+          owl:annotatedTarget @<Entity> ? ;
+          <object_label> @metatype:String ? ;
+          <match_type> @metatype:String ? ;
+          <creator_id> @<Entity> ? ;
+          <creator_label> @metatype:String ? ;
+          <license> @metatype:String ? ;
+          <subject_source> @metatype:String ? ;
+          <subject_source_version> @metatype:String ? ;
+          <object_source> @metatype:String ? ;
+          <object_source_version> @metatype:String ? ;
+          <mapping_provider> @metatype:String ? ;
+          <mapping_tool> @metatype:String ? ;
+          <mapping_date> @metatype:String ? ;
+          <confidence> @metatype:Double ? ;
+          <subject_match_field> @<Entity> ? ;
+          <object_match_field> @<Entity> ? ;
+          <match_string> @metatype:String ? ;
+          <subject_preprocessing> @metatype:String ? ;
+          <object_preprocessing> @metatype:String ? ;
+          <match_term_type> @metatype:String ? ;
+          <semantic_similarity_score> @metatype:Double ? ;
+          <information_content_mica_score> @metatype:Double ? ;
+          <see_also> @metatype:String ? ;
+          <other> @metatype:String ? ;
+          <comment> @metatype:String ?
+       ) ;
+       rdf:type [ owl:Axiom ] ?
+    )
+}
+
+<MappingSet> CLOSED {
+    (  $<MappingSet_tes> (  <mappings> @<Mapping> * ;
+          <mapping_set_id> @<Entity> ? ;
+          <mapping_set_version> @metatype:String ? ;
+          <creator_id> @<Entity> ? ;
+          <creator_label> @metatype:String ? ;
+          <license> @metatype:String ? ;
+          <subject_source> @metatype:String ? ;
+          <subject_source_version> @metatype:String ? ;
+          <object_source> @metatype:String ? ;
+          <object_source_version> @metatype:String ? ;
+          <mapping_provider> @metatype:String ? ;
+          <mapping_tool> @metatype:String ? ;
+          <mapping_date> @metatype:String ? ;
+          <subject_match_field> @<Entity> ? ;
+          <object_match_field> @<Entity> ? ;
+          <subject_preprocessing> @metatype:String ? ;
+          <object_preprocessing> @metatype:String ? ;
+          <match_term_type> @metatype:String ? ;
+          <see_also> @metatype:String ? ;
+          <other> @metatype:String ? ;
+          <comment> @metatype:String ?
+       ) ;
+       rdf:type [ <MappingSet> ] ?
+    )
+}
+
+
+

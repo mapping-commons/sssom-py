@@ -1,0 +1,5 @@
+rdflib>=0.0
+pandas>=0.0
+pyyaml>=0.0
+biolinkml>=1.5.2
+jsonasobj~=1.2.1

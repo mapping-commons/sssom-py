@@ -1,0 +1,63 @@
+type Entity
+  {
+  }
+
+type Mapping
+  {
+    subjectId: Entity
+    subjectLabel: String
+    predicateId: Entity
+    predicateLabel: String
+    objectId: Entity
+    objectLabel: String
+    matchType: String
+    creatorId: Entity
+    creatorLabel: String
+    license: String
+    subjectSource: String
+    subjectSourceVersion: String
+    objectSource: String
+    objectSourceVersion: String
+    mappingProvider: String
+    mappingTool: String
+    mappingDate: String
+    confidence: Double
+    subjectMatchField: Entity
+    objectMatchField: Entity
+    matchString: String
+    subjectPreprocessing: String
+    objectPreprocessing: String
+    matchTermType: String
+    semanticSimilarityScore: Double
+    informationContentMicaScore: Double
+    seeAlso: String
+    other: String
+    comment: String
+  }
+
+type MappingSet
+  {
+    mappings: [Mapping]
+    mappingSetId: Entity
+    mappingSetVersion: String
+    creatorId: Entity
+    creatorLabel: String
+    license: String
+    subjectSource: String
+    subjectSourceVersion: String
+    objectSource: String
+    objectSourceVersion: String
+    mappingProvider: String
+    mappingTool: String
+    mappingDate: String
+    subjectMatchField: Entity
+    objectMatchField: Entity
+    subjectPreprocessing: String
+    objectPreprocessing: String
+    matchTermType: String
+    seeAlso: String
+    other: String
+    comment: String
+  }
+
+
