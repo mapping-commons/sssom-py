@@ -3,3 +3,6 @@ pandas>=0.0
 pyyaml>=0.0
 biolinkml>=1.5.2
 jsonasobj~=1.2.1
+Sphinx>=2.3.1
+sphinx-rtd-theme==0.4.3
+sphinx-click==2.3.1
