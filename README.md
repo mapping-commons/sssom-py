@@ -20,6 +20,11 @@ sssom convert -i tests/data/basic.tsv -o basic.ttl
 
 ## Python Classes
 
+We define a schema (biolinkml) defined using the SSSOM source TSV: [schema/](schema/)
+
+This is used to autogenerate the python datamodel: [sssom/](sssom/)
+
+
 TODO docs
 
 
