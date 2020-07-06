@@ -1,15 +1,18 @@
 type Entity
   {
+    id: String!
   }
 
 type Mapping
   {
     subjectId: Entity
     subjectLabel: String
+    subjectCategory: String
     predicateId: Entity
     predicateLabel: String
     objectId: Entity
     objectLabel: String
+    objectCategory: String
     matchType: String
     creatorId: Entity
     creatorLabel: String

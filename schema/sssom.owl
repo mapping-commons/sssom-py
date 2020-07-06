@@ -8,12 +8,13 @@
 <http://example.org/sssom> a owl:Ontology ;
     rdfs:label "sssom" ;
     dcterms:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
-    skos:definition "SSSOM" ;
-    meta:generation_date "2020-07-04 16:04" ;
+    rdfs:seeAlso "https://github.com/OBOFoundry/SSSOM" ;
+    skos:definition "Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)" ;
+    meta:generation_date "2020-07-06 09:51" ;
     meta:metamodel_version "1.4.3" ;
     meta:source_file "sssom.yaml" ;
-    meta:source_file_date "Sat Jul  4 16:04:20 2020" ;
-    meta:source_file_size 7507 .
+    meta:source_file_date "Mon Jul  6 09:51:41 2020" ;
+    meta:source_file_size 8550 .
 
 meta:MappingSet a owl:Class,
         meta:ClassDefinition ;
@@ -21,7 +22,47 @@ meta:MappingSet a owl:Class,
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:mapping_date ],
+            owl:onProperty meta:match_term_type ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:subject_match_field ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:object_preprocessing ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:subject_preprocessing ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:comment ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:subject_source_version ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:creator_id ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:other ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:creator_label ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:license ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:mapping_provider ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
@@ -29,11 +70,23 @@ meta:MappingSet a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:mapping_set_version ],
+            owl:onProperty meta:subject_source ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:subject_source_version ],
+            owl:onProperty meta:object_source ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:see_also ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:mapping_set_version ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:object_match_field ],
         [ a owl:Restriction ;
             owl:allValuesFrom meta:Mapping ;
             owl:onProperty meta:mappings ],
@@ -44,63 +97,12 @@ meta:MappingSet a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:subject_preprocessing ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:license ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:subject_match_field ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:see_also ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:object_match_field ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:other ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:comment ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:creator_id ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:match_term_type ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
             owl:onProperty meta:mapping_tool ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:mapping_provider ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:creator_label ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:object_source ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:subject_source ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:object_preprocessing ] .
+            owl:onProperty meta:mapping_date ] ;
+    skos:definition "Represents a set of mappings" .
 
 meta:SubsetDefinition a owl:Class ;
     rdfs:label "subset_definition" ;
@@ -250,6 +252,12 @@ meta:confidence a owl:ObjectProperty,
     rdfs:range meta:double ;
     skos:definition "A score between 0 and 1 to denote the confidence or probability that the match is correct, where 1 denotes total confidence." .
 
+meta:id a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "id" ;
+    rdfs:range meta:string ;
+    skos:definition "CURIE or IRI identifier" .
+
 meta:information_content_mica_score a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "information_content_mica_score" ;
@@ -271,7 +279,8 @@ meta:mapping_set_version a owl:ObjectProperty,
 meta:mappings a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "mappings" ;
-    rdfs:range meta:Mapping .
+    rdfs:range meta:Mapping ;
+    skos:definition "Contains a list of mapping objects" .
 
 meta:match_string a owl:ObjectProperty,
         meta:SlotDefinition ;
@@ -284,6 +293,12 @@ meta:match_type a owl:ObjectProperty,
     rdfs:label "match_type" ;
     rdfs:range meta:string ;
     skos:definition "ID from Match type (SSSOM:MatchType) branch of the SSSSOM Vocabulary. In the case of multiple match types for a single subject, predicate, object triplet, two seperate mappings must be specified." .
+
+meta:object_category a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "object_category" ;
+    rdfs:range meta:string ;
+    skos:definition "The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary." .
 
 meta:object_id a owl:ObjectProperty,
         meta:SlotDefinition ;
@@ -315,6 +330,12 @@ meta:semantic_similarity_score a owl:ObjectProperty,
     rdfs:range meta:double ;
     skos:definition "A score between 0 and 1 to denote the semantic similarity, where 1 denotes equivalence." .
 
+meta:subject_category a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "subject_category" ;
+    rdfs:range meta:string ;
+    skos:definition "The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary." .
+
 meta:subject_id a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_id" ;
@@ -333,47 +354,7 @@ meta:Mapping a owl:Class,
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:object_label ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:mapping_provider ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:predicate_label ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:subject_source ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:comment ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:other ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:double ;
-            owl:onProperty meta:information_content_mica_score ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:mapping_tool ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:predicate_id ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:match_string ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:double ;
-            owl:onProperty meta:confidence ],
+            owl:onProperty meta:object_category ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:Entity ;
@@ -381,55 +362,39 @@ meta:Mapping a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:match_type ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:match_term_type ],
+            owl:onProperty meta:subject_preprocessing ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
             owl:onProperty meta:license ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:double ;
-            owl:onProperty meta:semantic_similarity_score ],
+            owl:onClass meta:string ;
+            owl:onProperty meta:match_string ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:subject_source ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:match_type ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:Entity ;
-            owl:onProperty meta:subject_match_field ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:subject_id ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:subject_preprocessing ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:subject_source_version ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:see_also ],
+            owl:onProperty meta:predicate_id ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
             owl:onProperty meta:object_source_version ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:object_id ],
+            owl:onClass meta:string ;
+            owl:onProperty meta:comment ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
-            owl:onProperty meta:object_preprocessing ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:Entity ;
-            owl:onProperty meta:creator_id ],
+            owl:onProperty meta:predicate_label ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
@@ -437,15 +402,80 @@ meta:Mapping a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
+            owl:onProperty meta:subject_category ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:mapping_provider ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:double ;
+            owl:onProperty meta:confidence ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:see_also ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:mapping_tool ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:other ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:object_label ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:subject_source_version ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:match_term_type ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:subject_id ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:double ;
+            owl:onProperty meta:information_content_mica_score ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:object_id ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:double ;
+            owl:onProperty meta:semantic_similarity_score ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
             owl:onProperty meta:mapping_date ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:object_preprocessing ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:object_source ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:creator_id ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass meta:string ;
             owl:onProperty meta:subject_label ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass meta:string ;
-            owl:onProperty meta:object_source ] .
+            owl:onClass meta:Entity ;
+            owl:onProperty meta:subject_match_field ] ;
+    skos:definition "Represents an individual mapping between a pair of entities" .
 
 meta:comment a owl:ObjectProperty,
         meta:SlotDefinition ;
@@ -577,7 +607,12 @@ meta:topValue a owl:DatatypeProperty ;
 
 meta:Entity a owl:Class,
         meta:ClassDefinition ;
-    rdfs:label "entity" .
+    rdfs:label "entity" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onClass meta:string ;
+            owl:onProperty meta:id ;
+            owl:qualifiedCardinality 1 ] ;
+    skos:definition "Represents any entity that can be mapped, such as an OWL class or SKOS concept" .
 
 meta:SlotDefinition a owl:Class ;
     rdfs:label "slot_definition" ;

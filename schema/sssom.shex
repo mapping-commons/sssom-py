@@ -33,17 +33,19 @@ metatype:Nodeidentifier NONLITERAL
 
 <Entity> CLOSED {
     (  $<Entity_tes> rdf:type . * ;
-       rdf:type [ <Entity> ] ?
+       rdf:type [ <Entity> ]
     )
 }
 
 <Mapping> CLOSED {
     (  $<Mapping_tes> (  owl:annotatedSource @<Entity> ? ;
           <subject_label> @metatype:String ? ;
+          <subject_category> @metatype:String ? ;
           owl:annotatedProperty @<Entity> ? ;
           <predicate_label> @metatype:String ? ;
           owl:annotatedTarget @<Entity> ? ;
           <object_label> @metatype:String ? ;
+          <object_category> @metatype:String ? ;
           <match_type> @metatype:String ? ;
           <creator_id> @<Entity> ? ;
           <creator_label> @metatype:String ? ;

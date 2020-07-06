@@ -1,7 +1,7 @@
 import pandas as pd
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF, RDFS
-from .sssom_document import MappingSet, Mapping, MappingSetDocument
+from .sssom_document import MappingSet, Mapping, MappingSetDocument, Entity
 from .context import get_jsonld_context
 
 from jsonasobj import as_json_obj, as_json
@@ -67,9 +67,9 @@ def from_tsv(filename: str) -> MappingSetDocument:
         meta = yaml.safe_load(yamlstr)
         logging.info(f'Meta={meta}')
         curie_map = meta['curie_map']
-    return from_dataframe(df, curie_map=curie_map)
+    return from_dataframe(df, curie_map=curie_map, meta=meta)
 
-def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str]) -> MappingSetDocument:
+def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str], meta: Dict[str,str]) -> MappingSetDocument:
     """
     Converts a dataframe to a MappingSetDocument
     :param df:
@@ -83,10 +83,12 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str]) -> MappingSetDocu
         mdict = {}
         for k,v in row.items():
             ok = False
+            #if k.endswith('_id'): # TODO: introspect
+            #    v = Entity(id=v)
             if hasattr(Mapping, k):
                 mdict[k] = v
                 ok = True
-            if hasattr(Mapping, k):
+            if hasattr(MappingSet, k):
                 ms[k] = v
                 ok = True
             if not ok:
@@ -94,12 +96,15 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str]) -> MappingSetDocu
                     bad_attrs[k] = 1
                 else:
                     bad_attrs[k] += 1
-        logging.info(f'Row={dict}')
+        #logging.info(f'Row={mdict}')
         m = Mapping(**mdict)
         mlist.append(m)
     for k,v in bad_attrs.items():
         logging.warning(f'No attr for {k} [{v} instances]')
     ms.mappings = mlist
+    for k,v in meta.items():
+        if k != 'curie_map':
+            ms[k] = v
     return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
 
 def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -> Graph:

@@ -1,4 +1,4 @@
-from .sssom_datamodel import MappingSet, Mapping
+from .sssom_datamodel import MappingSet, Mapping, Entity
 
 from dataclasses import dataclass
 from typing import Dict

@@ -1,9 +1,6 @@
 PYTHON=python
 
-all: download transform load
-
-download transform load:
-	$(PYTHON) run.py $@
+all: test
 
 EXTS = _datamodel.py .graphql .schema.json .owl -docs .shex .context.jsonld
 
@@ -39,6 +36,8 @@ deploy-dm:
 deploy-schema:
 	cp tests/data/sssom.yaml schema/
 
+copy-spec:
+	cp ../SSSOM/sssom_metadata.tsv tests/data
 
 install:
 	$(PYTHON) setup.py install

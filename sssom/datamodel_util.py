@@ -30,6 +30,10 @@ class MetaTSVConverter:
                 'description': 'Contains a list of mapping objects',
                 'range': 'mapping',
                 'multivalued': True
+            },
+            'id': {
+                'description': 'CURIE or IRI identifier',
+                'identifier': True
             }
         }
         classes = {
@@ -46,7 +50,8 @@ class MetaTSVConverter:
                 'description': 'Represents any entity that can be mapped, such as an OWL class or SKOS concept',
                 'mappings': [
                     'rdf:Resource'
-                ]
+                ],
+                'slots': ['id']
             }
         }
         obj = {

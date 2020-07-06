@@ -1,13 +1,16 @@
 from sssom import parse, collapse, export_ptable
 
 import unittest
+import os
 
 import logging
+cwd = os.path.abspath(os.path.dirname(__file__))
+data_dir = os.path.join(cwd, 'data')
 
 class TestCollapse(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.df = parse('data/basic.tsv')
+        self.df = parse(f'{data_dir}/basic.tsv')
 
     def test_df(self):
         df = self.df
