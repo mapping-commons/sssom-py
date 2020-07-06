@@ -6,7 +6,16 @@
 SSSOM Mapping Format Python Utilities
 =====================================
 
+SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV format
+for representing ontology mappings, or mappings between pairs of
+entities in general:
+
 https://github.com/OBOFoundry/SSSOM
+
+sssom-py is a Python library and command line toolkit for working with
+SSSOM:
+
+https://github.com/cmungall/sssom-py
 
 
 Contents

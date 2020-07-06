@@ -27,19 +27,23 @@ class MetaTSVConverter:
         # note that 'mapping' is both a metaproperty and a property of this model...
         slots = {
             'mappings': {
+                'description': 'Contains a list of mapping objects',
                 'range': 'mapping',
                 'multivalued': True
             }
         }
         classes = {
             'mapping set': {
+                'description': 'Represents a set of mappings',
                 'slots': ['mappings']
             },
             'mapping': {
+                'description': 'Represents an individual mapping between a pair of entities',
                 'slots': [],
                 'class_uri': 'owl:Axiom'
             },
             'entity': {
+                'description': 'Represents any entity that can be mapped, such as an OWL class or SKOS concept',
                 'mappings': [
                     'rdf:Resource'
                 ]
@@ -47,7 +51,7 @@ class MetaTSVConverter:
         }
         obj = {
             'id': 'http://example.org/sssom',
-            'description': 'SSSOM',
+            'description': 'Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)',
             'imports': [
                 'biolinkml:types'
             ],
@@ -56,6 +60,7 @@ class MetaTSVConverter:
                 'sssom': 'http://example.org/sssom/',
 
             },
+            'see_also': ['https://github.com/OBOFoundry/SSSOM'],
             'default_curi_maps': ['semweb_context'],
             'default_prefix': 'sssom',
             'slots': slots,

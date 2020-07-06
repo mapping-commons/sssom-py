@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.4.0
-# Generation date: 2020-07-03 21:28
+# Generation date: 2020-07-04 16:04
 # Schema: sssom
 #
 # id: http://example.org/sssom
@@ -29,10 +29,11 @@ dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 
 # Namespaces
 BIOLINKML = CurieNamespace('biolinkml', 'https://w3id.org/biolink/biolinkml/')
-DC = CurieNamespace('dc', 'http://example.org/UNKNOWN/dc/')
-DCTERMS = CurieNamespace('dcterms', 'http://example.org/UNKNOWN/dcterms/')
-OWL = CurieNamespace('owl', 'http://example.org/UNKNOWN/owl/')
-RDFS = CurieNamespace('rdfs', 'http://example.org/UNKNOWN/rdfs/')
+DC = CurieNamespace('dc', 'http://purl.org/dc/terms/')
+DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
+OWL = CurieNamespace('owl', 'http://www.w3.org/2002/07/owl#')
+RDF = CurieNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+RDFS = CurieNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
 SSSOM = CurieNamespace('sssom', 'http://example.org/sssom/')
 DEFAULT_ = SSSOM
 
@@ -53,12 +54,14 @@ class MappingSet(YAMLRoot):
     class_model_uri: ClassVar[URIRef] = SSSOM.MappingSet
 
     mappings: List[Union[dict, "Mapping"]] = empty_list()
-    mapping_set_id: Optional[str] = None
+    mapping_set_id: Optional[Union[dict, "Entity"]] = None
     mapping_set_version: Optional[str] = None
 
     def __post_init__(self, **kwargs: Dict[str, Any]):
         self.mappings = [v if isinstance(v, Mapping)
                          else Mapping(**v) for v in self.mappings]
+        if self.mapping_set_id is not None and not isinstance(self.mapping_set_id, Entity):
+            self.mapping_set_id = Entity()
         super().__post_init__(**kwargs)
 
 
@@ -66,19 +69,19 @@ class MappingSet(YAMLRoot):
 class Mapping(YAMLRoot):
     _inherited_slots: ClassVar[List[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = SSSOM.Mapping
-    class_class_curie: ClassVar[str] = "sssom:Mapping"
+    class_class_uri: ClassVar[URIRef] = OWL.Axiom
+    class_class_curie: ClassVar[str] = "owl:Axiom"
     class_name: ClassVar[str] = "mapping"
     class_model_uri: ClassVar[URIRef] = SSSOM.Mapping
 
-    subject_id: Optional[str] = None
+    subject_id: Optional[Union[dict, "Entity"]] = None
     subject_label: Optional[str] = None
-    predicate_id: Optional[str] = None
+    predicate_id: Optional[Union[dict, "Entity"]] = None
     predicate_label: Optional[str] = None
-    object_id: Optional[str] = None
+    object_id: Optional[Union[dict, "Entity"]] = None
     object_label: Optional[str] = None
     match_type: Optional[str] = None
-    creator_id: Optional[str] = None
+    creator_id: Optional[Union[dict, "Entity"]] = None
     creator_label: Optional[str] = None
     license: Optional[str] = None
     subject_source: Optional[str] = None
@@ -89,8 +92,8 @@ class Mapping(YAMLRoot):
     mapping_tool: Optional[str] = None
     mapping_date: Optional[str] = None
     confidence: Optional[float] = None
-    subject_match_field: Optional[str] = None
-    object_match_field: Optional[str] = None
+    subject_match_field: Optional[Union[dict, "Entity"]] = None
+    object_match_field: Optional[Union[dict, "Entity"]] = None
     match_string: Optional[str] = None
     subject_preprocessing: Optional[str] = None
     object_preprocessing: Optional[str] = None
@@ -101,6 +104,31 @@ class Mapping(YAMLRoot):
     other: Optional[str] = None
     comment: Optional[str] = None
 
+    def __post_init__(self, **kwargs: Dict[str, Any]):
+        if self.subject_id is not None and not isinstance(self.subject_id, Entity):
+            self.subject_id = Entity()
+        if self.predicate_id is not None and not isinstance(self.predicate_id, Entity):
+            self.predicate_id = Entity()
+        if self.object_id is not None and not isinstance(self.object_id, Entity):
+            self.object_id = Entity()
+        if self.creator_id is not None and not isinstance(self.creator_id, Entity):
+            self.creator_id = Entity()
+        if self.subject_match_field is not None and not isinstance(self.subject_match_field, Entity):
+            self.subject_match_field = Entity()
+        if self.object_match_field is not None and not isinstance(self.object_match_field, Entity):
+            self.object_match_field = Entity()
+        super().__post_init__(**kwargs)
+
+
+class Entity(YAMLRoot):
+    _inherited_slots: ClassVar[List[str]] = []
+
+    class_class_uri: ClassVar[URIRef] = SSSOM.Entity
+    class_class_curie: ClassVar[str] = "sssom:Entity"
+    class_name: ClassVar[str] = "entity"
+    class_model_uri: ClassVar[URIRef] = SSSOM.Entity
+
+
 
 # Slots
 class slots:
@@ -109,20 +137,20 @@ class slots:
 slots.mappings = Slot(uri=SSSOM.mappings, name="mappings", curie=SSSOM.curie('mappings'),
                       model_uri=SSSOM.mappings, domain=None, range=List[Union[dict, Mapping]])
 
-slots.subject_id = Slot(uri=SSSOM.subject_id, name="subject_id", curie=SSSOM.curie('subject_id'),
-                      model_uri=SSSOM.subject_id, domain=None, range=Optional[str])
+slots.subject_id = Slot(uri=OWL.annotatedSource, name="subject_id", curie=OWL.curie('annotatedSource'),
+                      model_uri=SSSOM.subject_id, domain=None, range=Optional[Union[dict, Entity]])
 
 slots.subject_label = Slot(uri=SSSOM.subject_label, name="subject_label", curie=SSSOM.curie('subject_label'),
                       model_uri=SSSOM.subject_label, domain=None, range=Optional[str])
 
-slots.predicate_id = Slot(uri=SSSOM.predicate_id, name="predicate_id", curie=SSSOM.curie('predicate_id'),
-                      model_uri=SSSOM.predicate_id, domain=None, range=Optional[str])
+slots.predicate_id = Slot(uri=OWL.annotatedProperty, name="predicate_id", curie=OWL.curie('annotatedProperty'),
+                      model_uri=SSSOM.predicate_id, domain=None, range=Optional[Union[dict, Entity]])
 
 slots.predicate_label = Slot(uri=SSSOM.predicate_label, name="predicate_label", curie=SSSOM.curie('predicate_label'),
                       model_uri=SSSOM.predicate_label, domain=None, range=Optional[str])
 
-slots.object_id = Slot(uri=SSSOM.object_id, name="object_id", curie=SSSOM.curie('object_id'),
-                      model_uri=SSSOM.object_id, domain=None, range=Optional[str])
+slots.object_id = Slot(uri=OWL.annotatedTarget, name="object_id", curie=OWL.curie('annotatedTarget'),
+                      model_uri=SSSOM.object_id, domain=None, range=Optional[Union[dict, Entity]])
 
 slots.object_label = Slot(uri=SSSOM.object_label, name="object_label", curie=SSSOM.curie('object_label'),
                       model_uri=SSSOM.object_label, domain=None, range=Optional[str])
@@ -131,16 +159,16 @@ slots.match_type = Slot(uri=SSSOM.match_type, name="match_type", curie=SSSOM.cur
                       model_uri=SSSOM.match_type, domain=None, range=Optional[str])
 
 slots.mapping_set_id = Slot(uri=SSSOM.mapping_set_id, name="mapping_set_id", curie=SSSOM.curie('mapping_set_id'),
-                      model_uri=SSSOM.mapping_set_id, domain=None, range=Optional[str])
+                      model_uri=SSSOM.mapping_set_id, domain=None, range=Optional[Union[dict, Entity]])
 
 slots.mapping_set_version = Slot(uri=SSSOM.mapping_set_version, name="mapping_set_version", curie=SSSOM.curie('mapping_set_version'),
                       model_uri=SSSOM.mapping_set_version, domain=None, range=Optional[str], mappings = [OWL.versionInfo])
 
 slots.creator_id = Slot(uri=SSSOM.creator_id, name="creator_id", curie=SSSOM.curie('creator_id'),
-                      model_uri=SSSOM.creator_id, domain=None, range=Optional[str], mappings = [DC.creator])
+                      model_uri=SSSOM.creator_id, domain=None, range=Optional[Union[dict, Entity]], mappings = [DC.creator])
 
 slots.creator_label = Slot(uri=SSSOM.creator_label, name="creator_label", curie=SSSOM.curie('creator_label'),
-                      model_uri=SSSOM.creator_label, domain=None, range=Optional[str], mappings = [DCTERMS.license])
+                      model_uri=SSSOM.creator_label, domain=None, range=Optional[str], mappings = [DC.license])
 
 slots.license = Slot(uri=SSSOM.license, name="license", curie=SSSOM.curie('license'),
                       model_uri=SSSOM.license, domain=None, range=Optional[str])
@@ -170,10 +198,10 @@ slots.confidence = Slot(uri=SSSOM.confidence, name="confidence", curie=SSSOM.cur
                       model_uri=SSSOM.confidence, domain=None, range=Optional[float])
 
 slots.subject_match_field = Slot(uri=SSSOM.subject_match_field, name="subject_match_field", curie=SSSOM.curie('subject_match_field'),
-                      model_uri=SSSOM.subject_match_field, domain=None, range=Optional[str])
+                      model_uri=SSSOM.subject_match_field, domain=None, range=Optional[Union[dict, Entity]])
 
 slots.object_match_field = Slot(uri=SSSOM.object_match_field, name="object_match_field", curie=SSSOM.curie('object_match_field'),
-                      model_uri=SSSOM.object_match_field, domain=None, range=Optional[str])
+                      model_uri=SSSOM.object_match_field, domain=None, range=Optional[Union[dict, Entity]])
 
 slots.match_string = Slot(uri=SSSOM.match_string, name="match_string", curie=SSSOM.curie('match_string'),
                       model_uri=SSSOM.match_string, domain=None, range=Optional[str])

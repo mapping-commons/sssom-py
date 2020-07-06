@@ -1,30 +1,17 @@
 # Python Utilities for SSSOM
 
+SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings
+
 See https://github.com/OBOFoundry/SSSOM
 
-## Install
+This is a python library and command line toolkit for working with SSSOM. It also defines a schema for SSSOM
 
-```bash
-pip install .
-```
+## Documentation
 
-## Command Line
+See https://sssom-py.readthedocs.io/
 
-The `sssom` script is a wrapper for multiple sub-commands
+## Schema
 
-The main one is `convert`
-
-```bash
-sssom convert -i tests/data/basic.tsv -o basic.ttl
-```
-
-## Python Classes
-
-We define a schema (biolinkml) defined using the SSSOM source TSV: [schema/](schema/)
-
-This is used to autogenerate the python datamodel: [sssom/](sssom/)
-
-
-TODO docs
-
+See the [schema/](schema) folder for source schema in YAML, plus
+derivations to JSON-Schema, ShEx, etc. 
 

@@ -10,8 +10,8 @@ First clone the GitHub repository and then install,
 
 .. code-block:: bash
 
-    git clone https://github.com/NCATS-Tangerine/kgx
-    cd kgx
+    git clone https://github.com/cmungall/sssom-py
+    cd sssom-py
     python setup.py install
 
 
@@ -23,8 +23,8 @@ To build directly from source, first clone the GitHub repository,
 
 .. code-block:: bash
 
-    git clone https://github.com/NCATS-Tangerine/kgx
-    cd kgx
+    git clone https://github.com/cmungall/sssom-py
+    cd sssom-py
 
 
 Then install the necessary dependencies listed in ``requirements.txt``.
@@ -39,7 +39,6 @@ For convenience, make use of the ``venv`` module in Python 3 to create a lightwe
 
 .. code-block:: bash
 
-   python3 -m venv env
-   source env/bin/activate
+   . environment.sh
 
    pip install -r requirements.txt
