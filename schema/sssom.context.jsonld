@@ -1,5 +1,5 @@
 {
-   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\nGeneration date: 2020-07-06 09:51\nSchema: sssom\n\nid: http://example.org/sssom\ndescription: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\nlicense: https://creativecommons.org/publicdomain/zero/1.0/\n",
+   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\nGeneration date: 2020-08-19 09:13\nSchema: sssom\n\nid: http://purl.org/sssom/schema/\ndescription: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\nlicense: https://creativecommons.org/publicdomain/zero/1.0/\n",
    "@context": {
       "type": "@type",
       "biolinkml": "https://w3id.org/biolink/biolinkml/",

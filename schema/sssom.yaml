@@ -1,4 +1,5 @@
-id: http://example.org/sssom
+id: http://purl.org/sssom/schema/
+name: sssom
 description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
 imports:
 - biolinkml:types

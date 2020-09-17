@@ -1,5 +1,5 @@
 {
-   "$id": "http://example.org/sssom",
+   "$id": "http://purl.org/sssom/schema/",
    "$schema": "http://json-schema.org/draft-07/schema#",
    "definitions": {
       "Entity": {
