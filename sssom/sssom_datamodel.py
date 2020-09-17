@@ -1,8 +1,8 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.4.0
-# Generation date: 2020-07-06 09:51
+# Generation date: 2020-08-19 09:13
 # Schema: sssom
 #
-# id: http://example.org/sssom
+# id: http://purl.org/sssom/schema/
 # description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
 # license: https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -22,7 +22,7 @@ from rdflib import Namespace, URIRef
 from biolinkml.utils.curienamespace import CurieNamespace
 from includes.types import Double, String
 
-metamodel_version = "1.4.3"
+metamodel_version = "1.5.3"
 
 # Overwrite dataclasses _init_fn to add **kwargs in __init__
 dataclasses._init_fn = dataclasses_init_fn_with_kwargs
@@ -60,12 +60,37 @@ class MappingSet(YAMLRoot):
     mappings: List[Union[dict, "Mapping"]] = empty_list()
     mapping_set_id: Optional[Union[str, EntityId]] = None
     mapping_set_version: Optional[str] = None
+    creator_id: Optional[Union[str, EntityId]] = None
+    creator_label: Optional[str] = None
+    license: Optional[str] = None
+    subject_source: Optional[str] = None
+    subject_source_version: Optional[str] = None
+    object_source: Optional[str] = None
+    object_source_version: Optional[str] = None
+    mapping_provider: Optional[str] = None
+    mapping_tool: Optional[str] = None
+    mapping_date: Optional[str] = None
+    subject_match_field: Optional[Union[str, EntityId]] = None
+    object_match_field: Optional[Union[str, EntityId]] = None
+    subject_preprocessing: Optional[str] = None
+    object_preprocessing: Optional[str] = None
+    match_term_type: Optional[str] = None
+    see_also: Optional[str] = None
+    other: Optional[str] = None
+    comment: Optional[str] = None
 
     def __post_init__(self, **kwargs: Dict[str, Any]):
-        self.mappings = [v if isinstance(v, Mapping)
-                         else Mapping(**v) for v in self.mappings]
+        self.mappings = [Mapping(*e) for e in self.mappings.items()] if isinstance(self.mappings, dict) \
+                         else [v if isinstance(v, Mapping) else Mapping(**v)
+                               for v in ([self.mappings] if isinstance(self.mappings, str) else self.mappings)]
         if self.mapping_set_id is not None and not isinstance(self.mapping_set_id, EntityId):
             self.mapping_set_id = EntityId(self.mapping_set_id)
+        if self.creator_id is not None and not isinstance(self.creator_id, EntityId):
+            self.creator_id = EntityId(self.creator_id)
+        if self.subject_match_field is not None and not isinstance(self.subject_match_field, EntityId):
+            self.subject_match_field = EntityId(self.subject_match_field)
+        if self.object_match_field is not None and not isinstance(self.object_match_field, EntityId):
+            self.object_match_field = EntityId(self.object_match_field)
         super().__post_init__(**kwargs)
 
 
