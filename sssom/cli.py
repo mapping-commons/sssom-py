@@ -1,8 +1,10 @@
 import click
-from .util import parse, collapse, export_ptable
-from .io import convert_file
+from sssom import slots
+from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
+from .io import convert_file, to_tsv
 import pandas as pd
 from scipy.stats import chi2_contingency
+import logging
 
 @click.group()
 def main():
@@ -16,7 +18,7 @@ def main():
 @click.option('-c', '--context')
 def convert(input: str, output: str, format: str, to_format: str, context: str):
     """
-    convert file
+    convert file (currently only supports conversion to RDF)
     """
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
 
@@ -32,16 +34,33 @@ def ptable(input, priors):
     export_ptable(df, priors=list(priors))
 
 @main.command()
+@click.option('-i', '--input')
+@click.option('-o', '--output')
+def dedupe(input: str, output: str):
+    """
+    remove lower confidence duplicate lines
+    """
+    df = parse(input)
+    df = filter_redundant_rows(df)
+    to_tsv(df, output)
+
+
+
+@main.command()
 @click.option('-s', '--summary_file')
 @click.option('-o', '--output')
 @click.option('-t', '--transpose/--no-transpose', default=False)
+@click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
+@click.option('-o', '--output')
 @click.argument('input')
-def crosstab(input, summary_file, output, transpose):
+def crosstab(input, summary_file, output, transpose, fields):
     """
-    write ptable (kboom/boomer input)
+    write sssom summary cross-tabulated by categories
     """
-    df = parse(input)
-    ct = pd.crosstab(df.subject_category, df.object_category)
+    df = remove_unmatched(parse(input))
+    logging.info(f'#CROSSTAB ON {fields}')
+    (f1, f2) = fields
+    ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
     if summary_file is not None:

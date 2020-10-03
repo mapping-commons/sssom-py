@@ -17,6 +17,11 @@ DEFAULT_CONTEXT_PATH = f'{cwd}/../schema/sssom.context.jsonld'
 
 RDF_FORMATS=['ttl', 'turtle', 'nt']
 
+def to_tsv(df : pd.DataFrame, filename: str) -> None:
+    """
+    Saves a dataframe. TODO: header
+    """
+    return df.to_csv(filename, sep="\t", index=False)
 
 def convert_file(input: str, output:str = None, input_format:str = None, output_format:str = None, context_path=None):
     """
