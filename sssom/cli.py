@@ -47,24 +47,45 @@ def dedupe(input: str, output: str):
 
 
 @main.command()
-@click.option('-s', '--summary_file')
 @click.option('-o', '--output')
 @click.option('-t', '--transpose/--no-transpose', default=False)
 @click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
 @click.option('-o', '--output')
 @click.argument('input')
-def crosstab(input, summary_file, output, transpose, fields):
+def crosstab(input, output, transpose, fields):
+    """
+    write sssom summary cross-tabulated by categories
+    """
+    df = remove_unmatched(parse(input))
+    #df = parse(input)
+    logging.info(f'#CROSSTAB ON {fields}')
+    (f1, f2) = fields
+    ct = pd.crosstab(df[f1], df[f2])
+    if transpose:
+        ct = ct.transpose()
+    if output is not None:
+        ct.to_csv(output, sep="\t")
+    else:
+        print(ct)
+
+@main.command()
+@click.option('-o', '--output')
+@click.option('-t', '--transpose/--no-transpose', default=False)
+@click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
+@click.option('-o', '--output')
+@click.argument('input')
+def correlations(input, output, transpose, fields):
     """
     write sssom summary cross-tabulated by categories
     """
     df = remove_unmatched(parse(input))
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
+    print(f'F1 {f1} UNIQUE: {df[f1].unique()}')
+    print(f'F2 {f2} UNIQUE: {df[f2].unique()}')
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
-    if summary_file is not None:
-        ct.to_csv(summary_file, sep="\t")
     chi2 = chi2_contingency(ct)
     print(chi2)
     _,_,_,ndarray = chi2

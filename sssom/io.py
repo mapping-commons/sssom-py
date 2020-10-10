@@ -11,6 +11,7 @@ import json
 import yaml
 import logging
 import os
+import re
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 DEFAULT_CONTEXT_PATH = f'{cwd}/../schema/sssom.context.jsonld'
@@ -55,18 +56,34 @@ def guess_format(filename: str) -> str:
     else:
         raise Exception(f'Cannot guess format from {filename}')
 
+def tsv_to_dataframe(filename: str) -> pd.DataFrame:
+    """
+    wrapper to pd.read_csv that handles comment lines correctly
+    :param filename:
+    :return:
+    """
+    # TODO: this is awkward... check if there is a more elegant way to filter
+    from tempfile import NamedTemporaryFile
+    with NamedTemporaryFile("r+") as tmp:
+        with open(filename, "r") as f:
+            for line in f:
+                if not line.startswith('#'):
+                    tmp.write(line + "\n")
+        tmp.seek(0)
+        return pd.read_csv(tmp, sep="\t").fillna("")
+
 def from_tsv(filename: str) -> MappingSetDocument:
     """
     parses a TSV to a MappingSetDocument
     """
-    df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
+    df = tsv_to_dataframe(filename)
     curie_map = {}
     with open(filename, 'r') as s:
         in_curie_map = False
         yamlstr = ""
         for line in s:
             if line.startswith("#"):
-                yamlstr += line.replace("#", "")
+                yamlstr += re.sub('^#', '', line)
             else:
                 break
         meta = yaml.safe_load(yamlstr)

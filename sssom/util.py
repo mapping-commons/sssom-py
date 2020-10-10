@@ -1,5 +1,6 @@
 import pandas as pd
 import random
+from .io import tsv_to_dataframe
 
 # TODO: use sssom_datamodel
 SUBJECT_ID = 'subject_id'
@@ -16,7 +17,8 @@ def parse(filename) -> pd.DataFrame:
     """
     parses a TSV to a pandas frame
     """
-    return pd.read_csv(filename, sep="\t", comment="#")
+    return tsv_to_dataframe(filename)
+    #return pd.read_csv(filename, sep="\t", comment="#")
 
 def collapse(df):
     """
