@@ -20,6 +20,9 @@ RDF_FORMATS=['ttl', 'turtle', 'nt']
 
 def to_tsv(df : pd.DataFrame, filename: str) -> None:
     """
+    dataframe 2 tsv
+    big hacky, does not export anything in the header.
+    should take something more general, like dict, mappinhset class object
     Saves a dataframe. TODO: header
     """
     return df.to_csv(filename, sep="\t", index=False)
@@ -166,7 +169,10 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
             for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
                 for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
                     for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-                        graph.add((s,p,o))
+                        if p.toPython() == "http://example.org/sssom/superClassOf":
+                            graph.add((o, URIRef("http://www.w3.org/2000/01/rdf-schema#subClassOf"), s))
+                        else:
+                            graph.add((s, p, o))
 
         #for m in doc.mapping_set.mappings:
         #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))

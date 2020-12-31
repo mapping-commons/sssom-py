@@ -1,1 +1,6 @@
 venv/
+sssom/__pycache__/
+.idea
+sssom.egg-info
+build/
+dist/
