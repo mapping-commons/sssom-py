@@ -2,6 +2,7 @@ import pandas as pd
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF, RDFS
 from .sssom_document import MappingSet, Mapping, MappingSetDocument, Entity
+from .sssom_datamodel import slots
 from .context import get_jsonld_context
 
 from jsonasobj import as_json_obj, as_json
@@ -17,6 +18,12 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 DEFAULT_CONTEXT_PATH = f'{cwd}/../schema/sssom.context.jsonld'
 
 RDF_FORMATS=['ttl', 'turtle', 'nt']
+RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+OWL_OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
+OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
+OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
+OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
+OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 
 def to_tsv(df : pd.DataFrame, filename: str) -> None:
     """
@@ -94,6 +101,25 @@ def from_tsv(filename: str) -> MappingSetDocument:
         curie_map = meta['curie_map']
     return from_dataframe(df, curie_map=curie_map, meta=meta)
 
+
+def swap_object_subject(mapping):
+    members = [attr.replace("subject_", "") for attr in dir(mapping) if not callable(getattr(mapping, attr)) and not attr.startswith("__") and attr.startswith("subject_")]
+    for var in members:
+        subject_val = getattr(mapping,"subject_"+var)
+        object_val = getattr(mapping, "object_" + var)
+        setattr(mapping,"subject_"+var,object_val)
+        setattr(mapping, "object_" + var, subject_val)
+    return mapping
+
+
+def prepare_mapping(mapping: Mapping):
+    p = mapping.predicate_id
+    if p == "sssom:superClassOf":
+        mapping.predicate_id = "rdfs:subClassOf"
+        return swap_object_subject(mapping)
+    return mapping
+
+
 def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str], meta: Dict[str,str]) -> MappingSetDocument:
     """
     Converts a dataframe to a MappingSetDocument
@@ -122,7 +148,7 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str], meta: Dict[str,st
                 else:
                     bad_attrs[k] += 1
         #logging.info(f'Row={mdict}')
-        m = Mapping(**mdict)
+        m = prepare_mapping(Mapping(**mdict))
         mlist.append(m)
     for k,v in bad_attrs.items():
         logging.warning(f'No attr for {k} [{v} instances]')
@@ -132,12 +158,19 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str], meta: Dict[str,st
             ms[k] = v
     return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
 
+
+def inject_annotation_properties(graph: Graph):
+    for var in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
+        slot = getattr(slots, var)
+        graph.add((URIRef(slot.uri), URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
+
 def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -> Graph:
     """
     Converts to RDF
     :param df:
     :return:
     """
+
     for k,v in doc.curie_map.items():
         graph.namespace_manager.bind(k, URIRef(v))
 
@@ -164,15 +197,20 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
         jsonld = json.dumps(as_json_obj(jsonobj))
         graph.parse(data=jsonld, format="json-ld")
         # assert reified triple
+        inject_annotation_properties(graph)
+
         for axiom in graph.subjects(RDF.type, OWL.Axiom):
             logging.info(f'Axiom: {axiom}')
             for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
                 for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
                     for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-                        if p.toPython() == "http://example.org/sssom/superClassOf":
-                            graph.add((o, URIRef("http://www.w3.org/2000/01/rdf-schema#subClassOf"), s))
-                        else:
-                            graph.add((s, p, o))
+                        if p.toPython() == OWL_EQUIV_CLASS:
+                            graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_CLASS)))
+                            graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_CLASS)))
+                        elif p.toPython() == OWL_EQUIV_OBJECTPROPERTY:
+                            graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
+                            graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
+                        graph.add((s, p, o))
 
         #for m in doc.mapping_set.mappings:
         #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
