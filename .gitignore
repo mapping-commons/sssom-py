@@ -4,3 +4,7 @@ sssom/__pycache__/
 sssom.egg-info
 build/
 dist/
+*.pyc
+tests/data/cob-to-external.tsv
+tests/cob-to-external.ttl
+tests/cob-to-external.owl
