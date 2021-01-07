@@ -182,6 +182,8 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
             cntxt = json.load(f)
     else:
         cntxt = json.loads(get_jsonld_context())
+        # see whether I can do this proper;y
+        # can we bundle a json ld context in a pypi disro
 
     if True:
         for k, v in doc.curie_map.items():
@@ -221,8 +223,9 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
                             graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                             graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                         graph.add((s, p, o))
-                        if p.toPython().startswith(SSSOM_NS):
+                        if p.toPython().startswith("http://example.org/sssom/"):
                             print("YESYES")
+                            # prefix commons has that working
                             graph.add((p, URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
 
         #for m in doc.mapping_set.mappings:
