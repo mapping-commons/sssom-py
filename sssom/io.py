@@ -159,10 +159,11 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str,str], meta: Dict[str,st
     return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
 
 
-def inject_annotation_properties(graph: Graph):
+def inject_annotation_properties(graph: Graph, elements):
     for var in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
         slot = getattr(slots, var)
-        graph.add((URIRef(slot.uri), URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
+        if slot.name in elements:
+            graph.add((URIRef(slot.uri), URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
 
 def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -> Graph:
     """
@@ -174,6 +175,8 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
     for k,v in doc.curie_map.items():
         graph.namespace_manager.bind(k, URIRef(v))
 
+
+
     if context_path is not None:
         with open(context_path, 'r') as f:
             cntxt = json.load(f)
@@ -184,6 +187,7 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
         for k, v in doc.curie_map.items():
             cntxt['@context'][k] = v
         jsonobj = yaml_to_json(doc.mapping_set, cntxt)
+
         #for m in doc.mapping_set.mappings:
         #    if m.subject_id not in jsonobj:
         #        jsonobj[m.subject_id] = {}
@@ -192,12 +196,18 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
         #    jsonobj[m.subject_id][m.predicate_id].append(m.object_id)
         #    print(f'T {m.subject_id} = {jsonobj[m.subject_id]}')
         # TODO: should be covered by context?
+        elements = []
         for m in jsonobj['mappings']:
             m['@type'] = 'owl:Axiom'
+            for field in m:
+                if m[field]:
+                    if not field.startswith("@"):
+                        elements.append(field)
         jsonld = json.dumps(as_json_obj(jsonobj))
         graph.parse(data=jsonld, format="json-ld")
+        elements = list(set(elements))
         # assert reified triple
-        #inject_annotation_properties(graph)
+        inject_annotation_properties(graph, elements)
 
         for axiom in graph.subjects(RDF.type, OWL.Axiom):
             logging.info(f'Axiom: {axiom}')
@@ -212,6 +222,7 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
                             graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                         graph.add((s, p, o))
                         if p.toPython().startswith(SSSOM_NS):
+                            print("YESYES")
                             graph.add((p, URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
 
         #for m in doc.mapping_set.mappings:
