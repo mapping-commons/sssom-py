@@ -2,7 +2,7 @@ import pandas as pd
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF, RDFS
 from .sssom_document import MappingSet, Mapping, MappingSetDocument, Entity
-from .sssom_datamodel import slots
+from .sssom_datamodel import slots, SSSOM_NS
 from .context import get_jsonld_context
 
 from jsonasobj import as_json_obj, as_json
@@ -197,7 +197,7 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
         jsonld = json.dumps(as_json_obj(jsonobj))
         graph.parse(data=jsonld, format="json-ld")
         # assert reified triple
-        inject_annotation_properties(graph)
+        #inject_annotation_properties(graph)
 
         for axiom in graph.subjects(RDF.type, OWL.Axiom):
             logging.info(f'Axiom: {axiom}')
@@ -211,6 +211,8 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
                             graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                             graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                         graph.add((s, p, o))
+                        if p.toPython().startswith(SSSOM_NS):
+                            graph.add((p, URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
 
         #for m in doc.mapping_set.mappings:
         #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
