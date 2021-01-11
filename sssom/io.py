@@ -2,7 +2,7 @@ import pandas as pd
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF, RDFS
 from .sssom_document import MappingSet, Mapping, MappingSetDocument, Entity
-from .sssom_datamodel import slots, SSSOM_NS
+from .sssom_datamodel import slots
 from .context import get_jsonld_context
 
 from jsonasobj import as_json_obj, as_json
@@ -24,6 +24,7 @@ OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
 OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
+SSSOM_NS = "http://example.org/sssom/"
 
 def to_tsv(df : pd.DataFrame, filename: str) -> None:
     """
@@ -163,7 +164,8 @@ def inject_annotation_properties(graph: Graph, elements):
     for var in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
         slot = getattr(slots, var)
         if slot.name in elements:
-            graph.add((URIRef(slot.uri), URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
+            if slot.uri.startswith(SSSOM_NS):
+                graph.add((URIRef(slot.uri), URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
 
 def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -> Graph:
     """
@@ -223,8 +225,7 @@ def to_rdf(doc: MappingSetDocument, graph: Graph = Graph(), context_path=None) -
                             graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                             graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                         graph.add((s, p, o))
-                        if p.toPython().startswith("http://example.org/sssom/"):
-                            print("YESYES")
+                        if p.toPython().startswith(SSSOM_NS):
                             # prefix commons has that working
                             graph.add((p, URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY)))
 
