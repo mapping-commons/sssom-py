@@ -1,1 +1,10 @@
 venv/
+sssom/__pycache__/
+.idea
+sssom.egg-info
+build/
+dist/
+*.pyc
+tests/data/cob-to-external.tsv
+tests/cob-to-external.ttl
+tests/cob-to-external.owl

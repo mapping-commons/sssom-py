@@ -8,10 +8,13 @@ from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
 import logging
 
+
+
 @dataclass
 class MetaTSVConverter:
     """
     converts SSSOM/sssom_metadata.tsv
+    DO NOT USE, NOW DEPRECATED!
     """
 
     df: Optional[pd.DataFrame] = None
@@ -22,6 +25,7 @@ class MetaTSVConverter:
         :return:
         """
         self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
+
 
     def convert(self) -> Dict[str, Any]:
         # note that 'mapping' is both a metaproperty and a property of this model...

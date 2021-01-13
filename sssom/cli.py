@@ -28,6 +28,7 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 def ptable(input, priors):
     """
     write ptable (kboom/boomer input)
+    should maybe move to boomer (but for now it can live here, so cjm can tweak
     """
     df = parse(input)
     df = collapse(df)
