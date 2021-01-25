@@ -1,6 +1,6 @@
 import pandas as pd
 import random
-from .io import tsv_to_dataframe
+import hashlib
 
 # TODO: use sssom_datamodel
 SUBJECT_ID = 'subject_id'
@@ -17,8 +17,8 @@ def parse(filename) -> pd.DataFrame:
     """
     parses a TSV to a pandas frame
     """
-    return tsv_to_dataframe(filename)
-    #return pd.read_csv(filename, sep="\t", comment="#")
+    #return from_tsv(filename)
+    return pd.read_csv(filename, sep="\t", comment="#")
 
 def collapse(df):
     """
@@ -85,4 +85,26 @@ def export_ptable(df, priors=[0.02, 0.02, 0.02, 0.02]):
         row = f'{pair[0]}\t{pair[1]}\t{pvalsj}'
         print(row)
         
-            
+RDF_FORMATS=['ttl', 'turtle', 'nt']
+
+def guess_format(filename: str) -> str:
+    parts = filename.split(".")
+    if len(parts) > 0:
+        f_format = parts[-1]
+        if f_format == "rdf":
+            return "xml"
+        elif f_format == "owl":
+            return "xml"
+        else:
+            return f_format
+    else:
+        raise Exception(f'Cannot guess format from {filename}')
+
+def sha256sum(filename):
+    h  = hashlib.sha256()
+    b  = bytearray(128*1024)
+    mv = memoryview(b)
+    with open(filename, 'rb', buffering=0) as f:
+        for n in iter(lambda : f.readinto(mv), 0):
+            h.update(mv[:n])
+    return h.hexdigest()

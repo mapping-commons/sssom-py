@@ -1,7 +1,7 @@
 import click
 from sssom import slots
 from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
-from .io import convert_file, to_tsv
+from .io import convert_file
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
@@ -43,7 +43,7 @@ def dedupe(input: str, output: str):
     """
     df = parse(input)
     df = filter_redundant_rows(df)
-    to_tsv(df, output)
+    df.to_csv(output, sep="\t", index=False)
 
 
 
