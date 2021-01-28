@@ -1,4 +1,4 @@
-id: http://purl.org/sssom/schema/
+id: http://w3id.org/sssom/schema/
 name: sssom
 description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
 imports:
