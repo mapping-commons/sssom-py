@@ -51,38 +51,55 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
     return df[df[PREDICATE_ID] != 'noMatch']
     
-def export_ptable(df, priors=[0.02, 0.02, 0.02, 0.02]):
+def export_ptable(df, priors=[0.02, 0.02, 0.02, 0.02], ofactor=0.5):
     """
-    ptable
+    exports kboom ptable
     """
     df = collapse(df)
     pmap = {}
     for _, row in df.iterrows():
+        s = row[SUBJECT_ID]
+        o = row[OBJECT_ID]
+        c = row[CONFIDENCE]
+        ic = (1.0 - c) / ofactor
+        rc = (1-(c+ic))/2.0
+
         p = row[PREDICATE_ID]
         if p == 'owl:equivalentClass':
             pi = 2
+        elif p == 'skos:exactMatch':
+            pi = 2
+        elif p == 'skos:closeMatch':
+            # TODO: consider distributing
+            pi = 2
         elif p == 'owl:subClassOf':
+            pi = 0
+        elif p == 'skos:broadMatch':
             pi = 0
         elif p == 'inverseOf(owl:subClassOf)':
             pi = 1
+        elif p == 'skos:narrowMatch':
+            pi = 1
+        elif p == 'owl:differentFrom':
+            pi = 3
+        elif p == 'dbpedia-owl:different':
+            pi = 3
         else:
-            continue
-        s = row[SUBJECT_ID]
-        o = row[OBJECT_ID]
-        pair = (s,o)
-        if id not in pmap:
+            raise Error(f'Unknown predictae {p}')
+         if id not in pmap:
             pmap[pair] = priors
-        pmap[pair][pi] = row[CONFIDENCE]
-    rows = []
-    for pair, pvals in pmap.items():
-        sump = sum(pvals)
-        if sump >= 1 :
-            pvals = [p/sump for p in pvals]
+        if pi == 0:
+            ps = (c, ic, rc, rc)
+        elif pi == 1:
+            ps = (ic, c, rc, rc)
+        elif pi == 2:
+            ps = (rc, rc, c, ic)
+        elif pi == 3:
+            ps = (rc, rc, ic, c)
         else:
-            extra = (1-sump)/4
-            pvals = [p+extra for p in pvals]
-        pvalsj = '\t'.join(str(p) for p in pvals)
-        row = f'{pair[0]}\t{pair[1]}\t{pvalsj}'
+            raise Error(f'pi: {pi}')
+        pvalsj = '\t'.join(str(p) for p in ps)
+        row = f'{s}\t{o}\t{pvalsj}'
         print(row)
         
             
