@@ -51,9 +51,12 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
     return df[df[PREDICATE_ID] != 'noMatch']
     
-def export_ptable(df, priors=[0.02, 0.02, 0.02, 0.02], ofactor=0.5):
+def export_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5):
     """
     exports kboom ptable
+    :param df: SSSOM dataframe
+    :param inverse_factor: relative weighting of probability of inverse of predicate
+    :return:
     """
     df = collapse(df)
     pmap = {}
@@ -61,7 +64,7 @@ def export_ptable(df, priors=[0.02, 0.02, 0.02, 0.02], ofactor=0.5):
         s = row[SUBJECT_ID]
         o = row[OBJECT_ID]
         c = row[CONFIDENCE]
-        ic = (1.0 - c) / ofactor
+        ic = (1.0 - c) * inverse_factor
         rc = (1-(c+ic))/2.0
 
         p = row[PREDICATE_ID]
@@ -85,9 +88,8 @@ def export_ptable(df, priors=[0.02, 0.02, 0.02, 0.02], ofactor=0.5):
         elif p == 'dbpedia-owl:different':
             pi = 3
         else:
-            raise Error(f'Unknown predictae {p}')
-         if id not in pmap:
-            pmap[pair] = priors
+            raise Error(f'Unknown predicate {p}')
+
         if pi == 0:
             ps = (c, ic, rc, rc)
         elif pi == 1:
