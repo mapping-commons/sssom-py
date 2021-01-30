@@ -23,9 +23,9 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
 
 @main.command()
-@click.option('-p', '--priors', nargs=4, default=(0.02, 0.02, 0.02, 0.02))
+@click.option('-W', '--inverse-factor')
 @click.argument('input')
-def ptable(input, priors):
+def ptable(input, inverse_factor):
     """
     write ptable (kboom/boomer input)
     should maybe move to boomer (but for now it can live here, so cjm can tweak
