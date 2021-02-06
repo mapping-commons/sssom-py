@@ -4,7 +4,7 @@
 
 
 
-URI: [sssom:MappingSet](http://example.org/sssom/MappingSet)
+URI: [sssom:MappingSet](http://w3id.org/sssom/MappingSet)
 
 
 ![img](http://yuml.me/diagram/nofunky;dir:TB/class/[Entity]<object_match_field%200..1-++[MappingSet&#124;mapping_set_version:string%20%3F;creator_label:string%20%3F;license:string%20%3F;subject_source:string%20%3F;subject_source_version:string%20%3F;object_source:string%20%3F;object_source_version:string%20%3F;mapping_provider:string%20%3F;mapping_tool:string%20%3F;mapping_date:string%20%3F;subject_preprocessing:string%20%3F;object_preprocessing:string%20%3F;match_term_type:string%20%3F;see_also:string%20%3F;other:string%20%3F;comment:string%20%3F],%20[Entity]<subject_match_field%200..1-++[MappingSet],%20[Entity]<creator_id%200..1-++[MappingSet],%20[Entity]<mapping_set_id%200..1-++[MappingSet],%20[Mapping]<mappings%200..*-++[MappingSet])

@@ -1,14 +1,16 @@
 import logging
-import re
 import os
-from typing import Dict, List
+import re
+from typing import Dict
 from xml.dom import minidom, Node
 from xml.dom.minidom import Document
+
 import pandas as pd
 import yaml
 from rdflib import Graph
+
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
-from .util import guess_format
+from .util import get_file_extension, RDF_FORMATS
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -20,12 +22,14 @@ def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     """
     parses a TSV to a MappingSetDocument
     """
-    df = _read_pandas(filename)
+
+    df = read_pandas(filename)
     if meta is None:
         meta = _read_metadata_from_table(filename)
-    if curie_map is None:
-        if 'curie_map' in meta:
-            curie_map = meta['curie_map']
+    if 'curie_map' in meta:
+        logging.info("Context provided, but SSSOM file provides its own CURIE map. "
+                     "CURIE map from context is disregarded.")
+        curie_map = meta['curie_map']
     return from_dataframe(df, curie_map=curie_map, meta=meta)
 
 
@@ -34,7 +38,7 @@ def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
         parses a TSV to a MappingSetDocument
         """
     g = Graph()
-    file_format = guess_format(filename)
+    file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
     return from_rdf_graph(g, curie_map, meta)
 
@@ -44,9 +48,19 @@ def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
         parses a TSV to a MappingSetDocument
         """
     g = Graph()
-    file_format = guess_format(filename)
+    file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
     return from_owl_graph(g, curie_map, meta)
+
+
+def guess_file_format(filename):
+    extension = get_file_extension(filename)
+    if extension in ["owl", "rdf"]:
+        return "xml"
+    elif extension in RDF_FORMATS:
+        return extension
+    else:
+        raise Exception(f"File extension {extension} does not correspond to a legal file format")
 
 
 def from_alignment_xml(filename: str, curie_map: Dict[str, str] = None,
@@ -79,22 +93,23 @@ def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
     for n in alignments:
         for e in n.childNodes:
             if e.nodeType == Node.ELEMENT_NODE:
-                nodeName = e.nodeName
-                if nodeName == "map":
+                node_name = e.nodeName
+                if node_name == "map":
                     cell = e.getElementsByTagName('Cell')
                     for c_node in cell:
                         m = _prepare_mapping(_cell_element_values(c_node, curie_map))
                         mlist.append(m)
-                elif nodeName == "xml":
+                elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
-                        raise Exception(f"Alignment format: xml element said, but not set to yes. Only XML is supported!")
-                elif nodeName == "onto1":
+                        raise Exception(
+                            f"Alignment format: xml element said, but not set to yes. Only XML is supported!")
+                elif node_name == "onto1":
                     ms["subject_source_id"] = e.firstChild.nodeValue
-                elif nodeName == "onto2":
+                elif node_name == "onto2":
                     ms["object_source_id"] = e.firstChild.nodeValue
-                elif nodeName == "uri1":
+                elif node_name == "uri1":
                     ms["subject_source"] = e.firstChild.nodeValue
-                elif nodeName == "uri2":
+                elif node_name == "uri2":
                     ms["object_source"] = e.firstChild.nodeValue
 
     ms.mappings = mlist
@@ -187,7 +202,7 @@ def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) ->
 
 def get_parsing_function(input_format, filename):
     if input_format is None:
-        input_format = guess_format(filename)
+        input_format = get_file_extension(filename)
     if input_format == 'tsv':
         return from_tsv
     elif input_format == 'rdf':
@@ -198,12 +213,23 @@ def get_parsing_function(input_format, filename):
         raise Exception(f'Unknown input format: {input_format}')
 
 
-def _read_pandas(filename: str, sep="\t") -> pd.DataFrame:
+def read_pandas(filename: str, sep=None) -> pd.DataFrame:
     """
     wrapper to pd.read_csv that handles comment lines correctly
     :param filename:
+    :param sep: File separator in pandas (\t or ,)
     :return:
     """
+    if not sep:
+        extension = get_file_extension(filename)
+        sep = "\t"
+        if extension == "tsv":
+            sep = "\t"
+        elif extension == "csv":
+            sep = ","
+        else:
+            logging.warning(f"Cannot automatically determine table format, trying tsv.")
+
     # from tempfile import NamedTemporaryFile
     # with NamedTemporaryFile("r+") as tmp:
     #    with open(filename, "r") as f:
@@ -255,8 +281,8 @@ def is_valid_mapping(m):
 def curie(uri: str, curie_map):
     for prefix in curie_map:
         uri_prefix = curie_map[prefix]
-        if(uri.startswith(uri_prefix)):
-            remainder = uri.replace(uri_prefix,"")
+        if uri.startswith(uri_prefix):
+            remainder = uri.replace(uri_prefix, "")
             return f"{prefix}:{remainder}"
     return uri
 

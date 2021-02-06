@@ -1,7 +1,7 @@
 Type: mapping set
 =================
 
-URI: `sssom:MappingSet <http://example.org/sssom/MappingSet>`__
+URI: `sssom:MappingSet <http://w3id.org/sssom/MappingSet>`__
 
 .. figure:: http://yuml.me/diagram/nofunky;dir:TB/class/%5BEntity%5D%3Cobject_match_field%200..1-++%5BMappingSet%7Cmapping_set_version:string%20%3F;creator_label:string%20%3F;license:string%20%3F;subject_source:string%20%3F;subject_source_version:string%20%3F;object_source:string%20%3F;object_source_version:string%20%3F;mapping_provider:string%20%3F;mapping_tool:string%20%3F;mapping_date:string%20%3F;subject_preprocessing:string%20%3F;object_preprocessing:string%20%3F;match_term_type:string%20%3F;see_also:string%20%3F;other:string%20%3F;comment:string%20%3F%5D,%20%5BEntity%5D%3Csubject_match_field%200..1-++%5BMappingSet%5D,%20%5BEntity%5D%3Ccreator_id%200..1-++%5BMappingSet%5D,%20%5BEntity%5D%3Cmapping_set_id%200..1-++%5BMappingSet%5D,%20%5BMapping%5D%3Cmappings%200..*-++%5BMappingSet%5D
    :alt: img

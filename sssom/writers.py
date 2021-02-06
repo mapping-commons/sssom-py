@@ -9,10 +9,10 @@ from jsonasobj import as_json_obj
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
-from .context import get_jsonld_context
-from .sssom_datamodel import slots, MappingSet
+from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
-from .util import guess_format
+from .util import get_file_extension, RDF_FORMATS
+from .context import get_jsonld_context
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 OWL_OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
@@ -20,15 +20,26 @@ OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
 OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
-SSSOM_NS = "http://example.org/sssom/"
+SSSOM_NS = "http://w3id.org/sssom/"
 
 cwd = os.path.abspath(os.path.dirname(__file__))
+
+
 # Writers
 
-def write_tsv(msdoc: MappingSetDocument, filename: str, context_path=None) -> None:
+
+def write_tsv(msdoc: MappingSetDocument, filename: str, fileformat="tsv", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
+
+    if fileformat == "csv":
+        sep = ","
+    elif fileformat == "tsv":
+        sep = "\t"
+    else:
+        raise Exception(f'Unknown table format: {fileformat}, should be one of tsv or csv')
+
     df = to_dataframe(msdoc, context_path)
     meta = extract_global_metadata(msdoc)
     if os.path.isfile(filename):
@@ -38,32 +49,36 @@ def write_tsv(msdoc: MappingSetDocument, filename: str, context_path=None) -> No
         mapping_data_string = yaml.dump(meta)
         for line in mapping_data_string.splitlines():
             f.write("#" + line + "\n")
-    df.to_csv(f, sep="\t", index=False)
+    df.to_csv(f, sep=sep, index=False)
     f.close()
 
-def write_rdf(msdoc: MappingSetDocument, filename: str, context_path=None) -> None:
+
+def write_rdf(msdoc: MappingSetDocument, filename: str, fileformat="xml", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
     graph = to_rdf_graph(msdoc, context_path)
-    file_format = guess_format(filename)
-    graph.serialize(destination=filename, format=file_format)
+    graph.serialize(destination=filename, format=fileformat)
 
-def write_owl(msdoc: MappingSetDocument, filename: str, context_path=None) -> None:
+
+def write_owl(msdoc: MappingSetDocument, filename: str, fileformat="xml", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
     graph = to_owl_graph(msdoc, context_path)
-    file_format = guess_format(filename)
-    graph.serialize(destination=filename, format=file_format)
+    graph.serialize(destination=filename, format=fileformat)
 
-def write_jsonld(msdoc: MappingSetDocument, filename: str, context_path=None) -> None:
+
+def write_json(msdoc: MappingSetDocument, filename: str, fileformat="jsonld", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
-    data = to_jsonld_dict(msdoc, context_path)
-    with open(filename, 'w') as outfile:
-        json.dump(data, outfile)
+    if fileformat == "jsonld":
+        data = to_jsonld_dict(msdoc, context_path)
+        with open(filename, 'w') as outfile:
+            json.dump(data, outfile)
+    else:
+        raise Exception(f"Unknown json format: {fileformat}, currently only jsonld supported")
 
 
 # Converters
@@ -96,7 +111,7 @@ def to_owl_graph(doc: MappingSetDocument, context_path=None) -> Graph:
         with open(context_path, 'r') as f:
             cntxt = json.load(f)
     else:
-        cntxt = json.loads(get_jsonld_context())
+        cntxt = get_jsonld_context()
         # see whether I can do this proper;y
         # can we bundle a json ld context in a pypi disro
 
@@ -146,6 +161,7 @@ def to_owl_graph(doc: MappingSetDocument, context_path=None) -> Graph:
         #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
         return graph
 
+
 def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
     """
     Converts to RDF
@@ -161,7 +177,7 @@ def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
         with open(context_path, 'r') as f:
             cntxt = json.load(f)
     else:
-        cntxt = json.loads(get_jsonld_context())
+        cntxt = get_jsonld_context()
         # see whether I can do this proper;y
         # can we bundle a json ld context in a pypi disro
 
@@ -187,9 +203,9 @@ def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
                         elements.append(field)
         jsonld = json.dumps(as_json_obj(jsonobj))
         graph.parse(data=jsonld, format="json-ld")
-        #elements = list(set(elements))
+        # elements = list(set(elements))
         # assert reified triple
-        #_inject_annotation_properties(graph, elements)
+        # _inject_annotation_properties(graph, elements)
 
         for axiom in graph.subjects(RDF.type, OWL.Axiom):
             logging.info(f'Axiom: {axiom}')
@@ -201,6 +217,7 @@ def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
         # for m in doc.mapping_set.mappings:
         #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
         return graph
+
 
 def to_jsonld_dict(doc: MappingSetDocument, context_path=None) -> Graph:
     """
@@ -214,21 +231,26 @@ def to_jsonld_dict(doc: MappingSetDocument, context_path=None) -> Graph:
     return json.loads(s)
 
 
-
 def get_writer_function(output_format, output):
     if output_format is None:
-        output_format = guess_format(output)
+        output_format = get_file_extension(output)
+
     if output_format == 'tsv':
-        return write_tsv
+        return write_tsv, output_format
+    elif output_format in RDF_FORMATS:
+        return write_rdf, output_format
     elif output_format == 'rdf':
-        return write_rdf
+        return write_rdf, 'xml'
+    elif output_format == 'json':
+        return write_json, 'jsonld'
+    elif output_format == 'owl':
+        return write_owl, 'xml'
     else:
-        raise Exception(f'Unknown input format: {output_format}')
+        raise Exception(f'Unknown output format: {output_format}')
 
 
 def extract_global_metadata(msdoc: MappingSetDocument):
-    meta = {}
-    meta['curie_map']=msdoc.curie_map
+    meta = {'curie_map': msdoc.curie_map}
     ms_meta = msdoc.mapping_set
     for key in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
         slot = getattr(slots, key).name
