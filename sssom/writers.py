@@ -213,6 +213,8 @@ def to_jsonld_dict(doc: MappingSetDocument, context_path=None) -> Graph:
     s = g.serialize(format='json-ld', indent=4)
     return json.loads(s)
 
+
+
 def get_writer_function(output_format, output):
     if output_format is None:
         output_format = guess_format(output)
