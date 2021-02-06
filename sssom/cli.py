@@ -1,16 +1,23 @@
 import click
 from sssom import slots
 from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
-from .writers import split_into_cliques
+from .cliques import split_into_cliques
 from .io import convert_file
 from .parsers import from_tsv
+from .writers import write_tsv
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
 
 @click.group()
-def main():
-    pass
+@click.option('-v', '--verbose', count=True)
+def main(verbose):
+    if verbose >= 2:
+        logging.basicConfig(level=logging.DEBUG)
+    elif verbose == 1:
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.WARNING)
 
 @main.command()
 @click.option('-i', '--input')
@@ -49,15 +56,21 @@ def dedupe(input: str, output: str):
 
 @main.command()
 @click.option('-i', '--input')
-@click.option('-o', '--output')
-def partition(input: str, output: str):
+@click.option('-d', '--outdir')
+def partition(input: str, outdir: str):
     """
-    remove lower confidence duplicate lines
+    partitions an SSSOM file into multiple files, where each
+    file is a strongly connected component
     """
     doc = from_tsv(input)
-    cliquedocs =
-    df = filter_redundant_rows(df)
-    df.to_csv(output, sep="\t", index=False)
+    cliquedocs = split_into_cliques(doc)
+    n = 0
+    for cdoc in cliquedocs:
+        n += 1
+        ofn = f'{outdir}/clique_{n}.sssom.tsv'
+        logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
+        logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
+        write_tsv(cdoc, ofn)
 
 
 
