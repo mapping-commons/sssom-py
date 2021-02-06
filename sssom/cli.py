@@ -1,7 +1,9 @@
 import click
 from sssom import slots
 from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
+from .writers import split_into_cliques
 from .io import convert_file
+from .parsers import from_tsv
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
@@ -42,6 +44,18 @@ def dedupe(input: str, output: str):
     remove lower confidence duplicate lines
     """
     df = parse(input)
+    df = filter_redundant_rows(df)
+    df.to_csv(output, sep="\t", index=False)
+
+@main.command()
+@click.option('-i', '--input')
+@click.option('-o', '--output')
+def partition(input: str, output: str):
+    """
+    remove lower confidence duplicate lines
+    """
+    doc = from_tsv(input)
+    cliquedocs =
     df = filter_redundant_rows(df)
     df.to_csv(output, sep="\t", index=False)
 

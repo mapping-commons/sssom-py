@@ -50,7 +50,9 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     :return:
     """
     return df[df[PREDICATE_ID] != 'noMatch']
-    
+
+
+
 def export_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5):
     """
     exports kboom ptable
