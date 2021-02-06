@@ -108,16 +108,11 @@ def export_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_fac
         
 RDF_FORMATS=['ttl', 'turtle', 'nt']
 
-def guess_format(filename: str) -> str:
+def get_file_extension(filename: str) -> str:
     parts = filename.split(".")
     if len(parts) > 0:
         f_format = parts[-1]
-        if f_format == "rdf":
-            return "xml"
-        elif f_format == "owl":
-            return "xml"
-        else:
-            return f_format
+        return f_format
     else:
         raise Exception(f'Cannot guess format from {filename}')
 

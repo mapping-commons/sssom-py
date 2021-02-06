@@ -59,14 +59,14 @@ class MetaTSVConverter:
             }
         }
         obj = {
-            'id': 'http://example.org/sssom',
+            'id': 'http://w3id.org/sssom',
             'description': 'Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)',
             'imports': [
                 'biolinkml:types'
             ],
             'prefixes': {
                 'biolinkml': 'https://w3id.org/biolink/biolinkml/',
-                'sssom': 'http://example.org/sssom/',
+                'sssom': 'http://w3id.org/sssom/',
 
             },
             'see_also': ['https://github.com/OBOFoundry/SSSOM'],

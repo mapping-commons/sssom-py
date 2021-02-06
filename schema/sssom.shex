@@ -1,4 +1,4 @@
-BASE <http://example.org/sssom/>
+BASE <http://w3id.org/sssom/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -14,6 +14,8 @@ metatype:Boolean xsd:boolean
 metatype:Float xsd:float
 
 metatype:Double xsd:double
+
+metatype:Decimal xsd:decimal
 
 metatype:Time xsd:dateTime
 

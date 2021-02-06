@@ -5,7 +5,7 @@ imports:
 - biolinkml:types
 prefixes:
   biolinkml: https://w3id.org/biolink/biolinkml/
-  sssom: http://example.org/sssom/
+  sssom: http://w3id.org/sssom/
 see_also:
 - https://github.com/OBOFoundry/SSSOM
 default_curi_maps:

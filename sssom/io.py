@@ -6,7 +6,7 @@ from .context import get_jsonld_context
 import json
 
 cwd = os.path.abspath(os.path.dirname(__file__))
-DEFAULT_CONTEXT_PATH = f'{cwd}/../schema/sssom.context.jsonld'
+
 
 
 def convert_file(input: str, output: str = None, input_format: str = None, output_format: str = None, context_path=None,
@@ -23,11 +23,15 @@ def convert_file(input: str, output: str = None, input_format: str = None, outpu
     :return:
     """
     curie_map={}
-    if os.path.isfile(context_path):
-        with open(context_path) as json_file:
-            contxt = json.load(json_file)
-    else:
-        contxt = get_jsonld_context()
+    contxt = get_jsonld_context()
+
+    if context_path:
+        if os.path.isfile(context_path):
+            with open(context_path) as json_file:
+                contxt = json.load(json_file)
+
+
+
     for key in contxt["@context"]:
         v = contxt["@context"][key]
         if isinstance(v,str):
@@ -37,5 +41,5 @@ def convert_file(input: str, output: str = None, input_format: str = None, outpu
     doc = read_func(input,curie_map=curie_map)
 
     if write_func is None:
-        write_func = get_writer_function(output_format, output)
-    write_func(doc, output, context_path=context_path)
+        write_func, fileformat = get_writer_function(output_format, output)
+    write_func(doc, output, fileformat=fileformat, context_path=context_path)
