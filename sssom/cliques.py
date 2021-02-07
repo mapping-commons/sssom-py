@@ -1,4 +1,7 @@
 import networkx as nx
+import pandas as pd
+import hashlib
+import statistics
 
 from .sssom_datamodel import slots, MappingSet
 from .sssom_document import MappingSetDocument
@@ -64,3 +67,83 @@ def split_into_cliques(doc: MappingSetDocument):
         subdoc = newdocs[comp_id]
         subdoc.mapping_set.mappings.append(m)
     return newdocs
+
+def invert_dict(d : dict) -> dict:
+    invdict = {}
+    for k,v in d.items():
+        if v not in invdict:
+            invdict[v] = []
+        invdict[v].append(k)
+    return invdict
+
+def cliquesummary(doc: MappingSetDocument):
+    """
+    summary stats on a clique doc
+    """
+    cliquedocs = split_into_cliques(doc)
+    df = pd.DataFrame()
+    items = []
+    for cdoc in cliquedocs:
+        ms = cdoc.mapping_set.mappings
+        members = set()
+        members_names = set()
+        confs = []
+        id2src = {}
+        for m in ms:
+            sub = m.subject_id
+            obj = m.object_id
+            subsrc = m.subject_source
+            objsrc = m.object_source
+            id2src[sub] = subsrc
+            id2src[obj] = objsrc
+            members.add(sub)
+            members.add(obj)
+            members_names.add(m.subject_label)
+            members_names.add(m.object_label)
+            confs.append(m.confidence)
+        src2ids = invert_dict(id2src)
+        mstr = "|".join(members)
+        md5 = hashlib.md5(mstr.encode('utf-8')).hexdigest()
+        item = {
+            'id': md5,
+            'num_mappings': len(ms),
+            'num_members': len(members),
+            'members': mstr,
+            'members_labels': "|".join(members_names),
+            'max_confidence': max(confs),
+            'min_confidence': min(confs),
+            'avg_confidence': statistics.mean(confs),
+            'sources': '|'.join(src2ids.keys()),
+            'num_sources': len(src2ids.keys())
+        }
+        for s,ids in src2ids.items():
+            item[s] = '|'.join(ids)
+        conflated = False
+        total_conflated = 0
+        all_conflated = True
+        src_counts = []
+        for s,ids in src2ids.items():
+            n = len(ids)
+            item[f'{s}_count'] = n
+            item[f'{s}_conflated'] = n > 1
+            if n > 1:
+                conflated = True
+                total_conflated += 1
+            else:
+                all_conflated = False
+            src_counts.append(n)
+
+        item['is_conflated'] = conflated
+        item['is_all_conflated'] = all_conflated
+        item['total_conflated'] = total_conflated
+        item['proportion_conflated'] = total_conflated / len(src2ids.items())
+        item['conflation_score'] = (min(src_counts)-1) * len(src2ids.items()) + statistics.harmonic_mean(src_counts)
+        item['members_count'] = sum(src_counts)
+        item['min_count_by_source'] = min(src_counts)
+        item['max_count_by_source'] = max(src_counts)
+        item['avg_count_by_source'] = statistics.mean(src_counts)
+        item['harmonic_mean_count_by_source'] = statistics.harmonic_mean(src_counts)
+        ## item['geometric_mean_conflated'] = statistics.geometric_mean(conflateds) py3.8
+        items.append(item)
+    df = pd.DataFrame(items)
+    return df

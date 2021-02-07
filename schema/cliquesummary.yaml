@@ -1,0 +1,109 @@
+id: http://w3id.org/sssom/schema/cliquesummary/
+name: sssom-cliquesummary
+description: Data dictionary for clique summaries
+imports:
+- biolinkml:types
+prefixes:
+  biolinkml: https://w3id.org/biolink/biolinkml/
+  sssom: http://w3id.org/sssom/
+  sssom.cs: http://w3id.org/sssom/cliquesummary
+see_also:
+- https://github.com/OBOFoundry/SSSOM
+default_curi_maps:
+- semweb_context
+- obo_context
+default_prefix: sssom.cs
+classes:
+  clique:
+    description: >-
+      A clique
+    slots:
+      - id
+      - members
+      - members_labels
+      - num_members
+      - max_confidence
+      - min_confidence
+      - avg_confidence
+      - is_conflated
+      - is_all_conflated
+      - total_conflated
+      - proportion_conflated
+      - conflation_score
+      - members_count
+      - min_count_by_source
+      - max_count_by_source
+      - avg_count_by_source
+      - harmonic_mean_count_by_source
+      
+slots:
+  id:
+    description: >-
+      Unique identifier for a clique. This should be an MD5 hash of the member CURIEs
+    identifier: true
+  members:
+    description: >-
+      List of IDs in clique. May be serialized as pipe-separated
+    multivalued: true
+  members_labels:
+    description: >-
+      List of labels of memers of clique. May be serialized as pipe-separated
+    multivalued: true
+  num_members:
+    description: >-
+      count of members in clique
+    range: count
+  sources:
+    description: >-
+      List of distinct term sources in clique
+    multivalued: true
+  num_sources:
+    description: >-
+      count of distinct sources in clique
+    range: count
+  max_confidence:
+    description: >-
+      max(confidence) of all confidence values of mappings in clique
+    range: float
+  min_confidence:
+    description: >-
+      min(confidence) of all confidence values of mappings in clique
+    range: float
+  avg_confidence:
+    description: >-
+      avg(confidence) of all confidence values of mappings in clique
+    range: float
+  is_conflated:
+    description: >-
+      true if the clique is conflated - i.e. if there exists two members in the same source
+    range: boolean
+  is_all_conflated:
+    description: >-
+      true if all sources in the clique are conflated
+    range: boolean
+  total_conflated:
+    description: >-
+      total number of sources who have conflated members
+    range: count
+  proportion_conflated:
+    description: >-
+      total_conflated divided by total number of sources
+    range: float
+  conflation_score:
+    range: float
+  members_count:
+    range: count
+  min_count_by_source:
+    range: integer
+  max_count_by_source:
+    range: integer
+  avg_count_by_source:
+    range: float
+  harmonic_mean_count_by_source:
+    range: float
+
+types:
+  count:
+    uri: xsd:integer
+    base: integer
+    
