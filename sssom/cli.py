@@ -41,7 +41,8 @@ def ptable(input, inverse_factor):
     """
     df = parse(input)
     df = collapse(df)
-    export_ptable(df, priors=list(priors))
+    #, priors=list(priors)
+    export_ptable(df)
 
 @main.command()
 @click.option('-i', '--input')
