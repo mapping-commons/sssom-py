@@ -1,10 +1,11 @@
 import click
 from sssom import slots
 from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
-from .cliques import split_into_cliques
+from .cliques import split_into_cliques, cliquesummary
 from .io import convert_file
 from .parsers import from_tsv
 from .writers import write_tsv
+import statistics
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
@@ -72,6 +73,19 @@ def partition(input: str, outdir: str):
         logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
         logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         write_tsv(cdoc, ofn)
+
+@main.command()
+@click.option('-i', '--input')
+@click.option('-o', '--output')
+def cliquesummary(input: str, output: str):
+    """
+    partitions an SSSOM file into multiple files, where each
+    file is a strongly connected component
+    """
+    doc = from_tsv(input)
+    df = cliquesummary(doc)
+    df.to_csv(output, sep="\t")
+    print(df.describe)
 
 
 
