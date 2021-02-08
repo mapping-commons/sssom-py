@@ -76,7 +76,13 @@ def invert_dict(d : dict) -> dict:
         invdict[v].append(k)
     return invdict
 
-def cliquesummary(doc: MappingSetDocument):
+def get_src(src, id):
+    if src is None:
+        return id.split(':')[0]
+    else:
+        return src
+
+def summarize_cliques(doc: MappingSetDocument):
     """
     summary stats on a clique doc
     """
@@ -92,14 +98,14 @@ def cliquesummary(doc: MappingSetDocument):
         for m in ms:
             sub = m.subject_id
             obj = m.object_id
-            subsrc = m.subject_source
-            objsrc = m.object_source
+            subsrc = get_src(m.subject_source, sub)
+            objsrc = get_src(m.object_source, obj)
             id2src[sub] = subsrc
             id2src[obj] = objsrc
             members.add(sub)
             members.add(obj)
-            members_names.add(m.subject_label)
-            members_names.add(m.object_label)
+            members_names.add(str(m.subject_label))
+            members_names.add(str(m.object_label))
             confs.append(m.confidence)
         src2ids = invert_dict(id2src)
         mstr = "|".join(members)
@@ -137,7 +143,7 @@ def cliquesummary(doc: MappingSetDocument):
         item['is_all_conflated'] = all_conflated
         item['total_conflated'] = total_conflated
         item['proportion_conflated'] = total_conflated / len(src2ids.items())
-        item['conflation_score'] = (min(src_counts)-1) * len(src2ids.items()) + statistics.harmonic_mean(src_counts)
+        item['conflation_score'] = (min(src_counts)-1) * len(src2ids.items()) + (statistics.harmonic_mean(src_counts)  -1)
         item['members_count'] = sum(src_counts)
         item['min_count_by_source'] = min(src_counts)
         item['max_count_by_source'] = max(src_counts)

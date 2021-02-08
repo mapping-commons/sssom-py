@@ -1,7 +1,7 @@
 import click
 from sssom import slots
 from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
-from .cliques import split_into_cliques, cliquesummary
+from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file
 from .parsers import from_tsv
 from .writers import write_tsv
@@ -77,13 +77,19 @@ def partition(input: str, outdir: str):
 @main.command()
 @click.option('-i', '--input')
 @click.option('-o', '--output')
-def cliquesummary(input: str, output: str):
+@click.option('-m', '--metadata')
+def cliquesummary(input: str, output: str, metadata: str):
     """
     partitions an SSSOM file into multiple files, where each
     file is a strongly connected component
     """
-    doc = from_tsv(input)
-    df = cliquesummary(doc)
+    import yaml
+    if metadata is  None:
+        doc = from_tsv(input)
+    else:
+        meta_obj = yaml.safe_load(open(metadata))
+        doc = from_tsv(input, meta=meta_obj)
+    df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
     print(df.describe)
 
