@@ -10,6 +10,7 @@ import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
 
+
 @click.group()
 @click.option('-v', '--verbose', count=True)
 def main(verbose):
@@ -19,6 +20,7 @@ def main(verbose):
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.WARNING)
+
 
 @main.command()
 @click.option('-i', '--input')
@@ -32,6 +34,7 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
     """
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
 
+
 @main.command()
 @click.option('-W', '--inverse-factor')
 @click.argument('input')
@@ -42,8 +45,9 @@ def ptable(input, inverse_factor):
     """
     df = parse(input)
     df = collapse(df)
-    #, priors=list(priors)
+    # , priors=list(priors)
     export_ptable(df)
+
 
 @main.command()
 @click.option('-i', '--input')
@@ -55,6 +59,7 @@ def dedupe(input: str, output: str):
     df = parse(input)
     df = filter_redundant_rows(df)
     df.to_csv(output, sep="\t", index=False)
+
 
 @main.command()
 @click.option('-i', '--input')
@@ -74,6 +79,7 @@ def partition(input: str, outdir: str):
         logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         write_tsv(cdoc, ofn)
 
+
 @main.command()
 @click.option('-i', '--input')
 @click.option('-o', '--output')
@@ -84,7 +90,7 @@ def cliquesummary(input: str, output: str, metadata: str):
     file is a strongly connected component
     """
     import yaml
-    if metadata is  None:
+    if metadata is None:
         doc = from_tsv(input)
     else:
         meta_obj = yaml.safe_load(open(metadata))
@@ -92,7 +98,6 @@ def cliquesummary(input: str, output: str, metadata: str):
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
     print(df.describe)
-
 
 
 @main.command()
@@ -105,7 +110,7 @@ def crosstab(input, output, transpose, fields):
     write sssom summary cross-tabulated by categories
     """
     df = remove_unmatched(parse(input))
-    #df = parse(input)
+    # df = parse(input)
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
     ct = pd.crosstab(df[f1], df[f2])
@@ -115,6 +120,7 @@ def crosstab(input, output, transpose, fields):
         ct.to_csv(output, sep="\t")
     else:
         print(ct)
+
 
 @main.command()
 @click.option('-o', '--output')
@@ -126,19 +132,27 @@ def correlations(input, output, transpose, verbose, fields):
     """
     write sssom summary cross-tabulated by categories
     """
+
     df = remove_unmatched(parse(input))
+    if len(df) == 0:
+        msg = f"No matched entities in this dataset!"
+        logging.error(msg)
+        exit(1)
+
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
     if verbose:
         print(f'F1 {f1} UNIQUE: {df[f1].unique()}')
         print(f'F2 {f2} UNIQUE: {df[f2].unique()}')
+
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
+
     chi2 = chi2_contingency(ct)
     if verbose:
         print(chi2)
-    _,_,_,ndarray = chi2
+    _, _, _, ndarray = chi2
     corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
     if output:
         corr.to_csv(output, sep="\t")
@@ -150,7 +164,7 @@ def correlations(input, output, transpose, verbose, fields):
         for i, row in corr.iterrows():
             for j, v in row.iteritems():
                 print(f'{i} x {j} = {v}')
-                tups.append( (v, i, j) )
+                tups.append((v, i, j))
         tups = sorted(tups, key=lambda t: t[0])
         for t in tups:
             print(f'{t[0]}\t{t[1]}\t{t[2]}')
