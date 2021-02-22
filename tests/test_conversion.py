@@ -87,6 +87,8 @@ class TestParse(unittest.TestCase):
     def test_from_tsv(self):
         ms = from_tsv(_data("cob-to-external"))
         self.assertEqual(len(ms.mapping_set.mappings), 104)
+        fn = f'{test_out_dir}/cob-to-external.owl'
+        write_owl(ms, fn)
 
     #
     # def test_from_rdf(self):
