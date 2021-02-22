@@ -7,10 +7,10 @@ except ImportError:
     import importlib_resources as pkg_resources
 
 
-cwd = os.path.abspath(os.path.dirname(__file__))
+#cwd = os.path.abspath(os.path.dirname(__file__))
 DEFAULT_CONTEXT_PATH = 'sssom.context.jsonld'
 
 def get_jsonld_context():
-    with open(os.path.join(cwd, DEFAULT_CONTEXT_PATH)) as json_file:
+    with pkg_resources.open_text('sssom', DEFAULT_CONTEXT_PATH) as json_file:
         contxt = json.load(json_file)
     return contxt
