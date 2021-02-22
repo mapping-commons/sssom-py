@@ -44,7 +44,7 @@ install:
 	pip install -r requirements.txt
 	pip install .[test]
 
-pypi:
+pypi: test
 	echo "Uploading to pypi. Make sure you have twine installed.."
 	python setup.py sdist
 	twine upload dist/*
