@@ -1,6 +1,5 @@
 import os
 import json
-from . import schema
 
 try:
     import importlib.resources as pkg_resources
@@ -13,6 +12,6 @@ except ImportError:
 DEFAULT_CONTEXT_PATH = 'sssom.context.jsonld'
 
 def get_jsonld_context():
-    with pkg_resources.open_text(schema, DEFAULT_CONTEXT_PATH) as json_file:
+    with pkg_resources.open_text(__package__, DEFAULT_CONTEXT_PATH) as json_file:
         contxt = json.load(json_file)
     return contxt
