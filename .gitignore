@@ -8,3 +8,6 @@ dist/
 tests/cob-to-external.ttl
 tests/cob-to-external.owl
 tests/tmp/
+tests/data/basic-cliquesummary-stats.tsv
+tests/data/basic-cliquesummary.tsv
+tests/data/sssom.yaml
