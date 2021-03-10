@@ -31,6 +31,7 @@ test:
 
 deploy-dm:
 	cp schema/sssom_datamodel.py sssom/
+	cp schema/sssom.context.jsonld sssom/
 
 # run after tests
 deploy-schema:

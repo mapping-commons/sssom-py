@@ -1,11 +1,17 @@
 import os
 import json
 
-cwd = os.path.abspath(os.path.dirname(__file__))
-DEFAULT_CONTEXT_PATH = f'{cwd}/../schema/sssom.context.jsonld'
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    # Try backported to PY<37 `importlib_resources`.
+    import importlib_resources as pkg_resources
 
+
+#cwd = os.path.abspath(os.path.dirname(__file__))
+DEFAULT_CONTEXT_PATH = 'sssom.context.jsonld'
 
 def get_jsonld_context():
-    with open(DEFAULT_CONTEXT_PATH) as json_file:
+    with pkg_resources.open_text(__package__, DEFAULT_CONTEXT_PATH) as json_file:
         contxt = json.load(json_file)
     return contxt
