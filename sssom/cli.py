@@ -78,10 +78,13 @@ def partition(input: str, outdir: str):
 @click.option('-i', '--input')
 @click.option('-o', '--output')
 @click.option('-m', '--metadata')
-def cliquesummary(input: str, output: str, metadata: str):
+@click.option('-s', '--statsfile')
+def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     """
     partitions an SSSOM file into multiple files, where each
-    file is a strongly connected component
+    file is a strongly connected component.
+
+    The data dictionary for the output is in cliquesummary.yaml
     """
     import yaml
     if metadata is  None:
@@ -91,7 +94,10 @@ def cliquesummary(input: str, output: str, metadata: str):
         doc = from_tsv(input, meta=meta_obj)
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
-    print(df.describe)
+    if statsfile is None:
+        print(df.describe)
+    else:
+        df.describe().transpose().to_csv(statsfile, sep="\t")
 
 
 
