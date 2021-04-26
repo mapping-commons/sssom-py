@@ -2,6 +2,7 @@ import click
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
+from .io import convert_file
 from .parsers import from_tsv
 from .writers import write_tsv
 import statistics
