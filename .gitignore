@@ -13,3 +13,4 @@ tests/data/basic-cliquesummary.tsv
 tests/data/sssom.yaml
 tmp/
 schema/sssom-docs/
+.DS_Store
