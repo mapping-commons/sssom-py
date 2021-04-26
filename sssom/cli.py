@@ -2,7 +2,6 @@ import click
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file
 from .parsers import from_tsv
 from .writers import write_tsv
 import statistics
@@ -15,13 +14,16 @@ from pandasql import sqldf
 
 @click.group()
 @click.option('-v', '--verbose', count=True)
-def main(verbose):
+@click.option('-q', '--quiet')
+def main(verbose, quiet):
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
     elif verbose == 1:
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.WARNING)
+    if quiet:
+        logging.basicConfig(level=logging.ERROR)
 
 
 @main.command()
@@ -50,7 +52,7 @@ def ptable(input, inverse_factor):
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
     for row in rows:
-        print("\t".join(row))
+        logging.info("\t".join(row))
 
 
 @main.command()
@@ -92,7 +94,7 @@ def diff(inputs: Tuple[str,str], output):
     df1 = parse(input1)
     df2 = parse(input2)
     d = compare_dataframes(df1, df2)
-    print(f'COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}')
+    logging.info(f'COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}')
     d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
 @main.command()
@@ -135,7 +137,7 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
     if statsfile is None:
-        print(df.describe)
+        logging.info(df.describe)
     else:
         df.describe().transpose().to_csv(statsfile, sep="\t")
 
@@ -159,7 +161,7 @@ def crosstab(input, output, transpose, fields):
     if output is not None:
         ct.to_csv(output, sep="\t")
     else:
-        print(ct)
+        logging.info(ct)
 
 
 @main.command()
@@ -182,8 +184,8 @@ def correlations(input, output, transpose, verbose, fields):
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
     if verbose:
-        print(f'F1 {f1} UNIQUE: {df[f1].unique()}')
-        print(f'F2 {f2} UNIQUE: {df[f2].unique()}')
+        logging.info(f'F1 {f1} UNIQUE: {df[f1].unique()}')
+        logging.info(f'F2 {f2} UNIQUE: {df[f2].unique()}')
 
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
@@ -191,23 +193,23 @@ def correlations(input, output, transpose, verbose, fields):
 
     chi2 = chi2_contingency(ct)
     if verbose:
-        print(chi2)
+        logging.info(chi2)
     _, _, _, ndarray = chi2
     corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
     if output:
         corr.to_csv(output, sep="\t")
     else:
-        print(corr)
+        logging.info(corr)
 
     if verbose:
         tups = []
         for i, row in corr.iterrows():
             for j, v in row.iteritems():
-                print(f'{i} x {j} = {v}')
+                logging.info(f'{i} x {j} = {v}')
                 tups.append((v, i, j))
         tups = sorted(tups, key=lambda t: t[0])
         for t in tups:
-            print(f'{t[0]}\t{t[1]}\t{t[2]}')
+            logging.info(f'{t[0]}\t{t[1]}\t{t[2]}')
 
 
 if __name__ == "__main__":

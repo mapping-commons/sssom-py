@@ -1,0 +1,50 @@
+tests:
+  - filename: "basic.tsv"
+    ct_json_elements: 176
+    ct_data_frame_rows: 136
+    ct_graph_queries_owl:
+      query_count_equivalent_classes: 86
+    ct_graph_queries_rdf:
+      query_count_equivalent_classes: 86
+  - filename: "cob-to-external.tsv"
+    ct_json_elements: 203
+    ct_data_frame_rows: 104
+    ct_graph_queries_owl:
+      query_count_equivalent_classes: 60
+    ct_graph_queries_rdf:
+      query_count_equivalent_classes: 60
+#  - filename: "hp-base.json"
+#    ct_json_elements: 32150
+#    ct_data_frame_rows: 20485
+#    ct_graph_queries_owl:
+#      query_count_equivalent_classes: 0
+#    ct_graph_queries_rdf:
+#      query_count_equivalent_classes: 87
+#      query_count_xrefs: 89
+#    curie_map:
+#      HP: "http://purl.obolibrary.org/obo/HP_"
+#      ORDO: "http://www.orpha.net/ORDO/Orphanet_"
+#      oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
+  - filename: "oaei-ordo-hp.rdf"
+    inputformat: "alignment-api-xml"
+    ct_json_elements: 1293
+    ct_data_frame_rows: 646
+    ct_graph_queries_owl:
+      query_count_equivalent_classes: 646
+    ct_graph_queries_rdf:
+      query_count_equivalent_classes: 646
+    curie_map:
+      HP: "http://purl.obolibrary.org/obo/HP_"
+      ORDO: "http://www.orpha.net/ORDO/Orphanet_"
+      oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
+queries:
+  query_count_equivalent_classes: >
+    SELECT DISTINCT ?e1 ?e2
+    WHERE {
+      ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
+    }
+  query_count_xrefs: >
+    SELECT DISTINCT ?e1 ?e2
+    WHERE {
+      ?e1 <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?e2 .
+    }

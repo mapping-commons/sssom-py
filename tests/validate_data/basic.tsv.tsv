@@ -33,7 +33,7 @@ x:bone_tissue	bone tissue	biolink:AnatomicalEntity	owl:equivalentClass	z:bone_ti
 x:bone_tissue	bone tissue	biolink:AnatomicalEntity	owl:equivalentClass	z:bone_tissue		biolink:AnatomicalEntity	Lexical	x	z	rdf_matcher	0.2612038749637414	oio:hasBroadSynonym	oio:hasBroadSynonym	bone	.	owl:Axiom
 x:bone_tissue	bone tissue	biolink:AnatomicalEntity	owl:equivalentClass	z:bone_tissue		biolink:AnatomicalEntity	Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	bone	.	owl:Axiom
 x:eye	eye	biolink:AnatomicalEntity	owl:equivalentClass	y:eye	eyes	biolink:AnatomicalEntity	Lexical	x	y	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0000970	.	owl:Axiom
-x:eye	eye	biolink:AnatomicalEntity	owl:equivalentClass	y:eye	eyes	biolink:AnatomicalEntity	Lexical|Stemming	x	y	rdf_matcher	0.568874072230784	rdfs:label	rdfs:label	ey	.	owl:Axiom
+x:eye	eye	biolink:AnatomicalEntity	owl:equivalentClass	y:eye	eyes	biolink:AnatomicalEntity	Lexical|Stemming	x	y	rdf_matcher	0.5688740722307839	rdfs:label	rdfs:label	ey	.	owl:Axiom
 x:eye	eye	biolink:AnatomicalEntity	owl:equivalentClass	z:eye		biolink:AnatomicalEntity	Lexical	x	z	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0000970	.	owl:Axiom
 x:eyeball	eyeball	biolink:AnatomicalEntity	owl:equivalentClass	z:eyeball		biolink:AnatomicalEntity	Lexical	x	z	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0010230	.	owl:Axiom
 x:foot	pes	biolink:AnatomicalEntity	owl:equivalentClass	y:foot	feet	biolink:AnatomicalEntity	Lexical	x	y	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0002387	.	owl:Axiom
@@ -79,7 +79,7 @@ y:bone	bones	biolink:AnatomicalEntity	owl:equivalentClass	z:bone_element		biolin
 y:bone	bones	biolink:AnatomicalEntity	owl:equivalentClass	z:bone_element		biolink:AnatomicalEntity	Lexical|Stemming	y	z	rdf_matcher	0.5346019613807635	rdfs:label	oio:hasBroadSynonym	bone	.	owl:Axiom
 y:bone	bones	biolink:AnatomicalEntity	owl:equivalentClass	z:bone_tissue		biolink:AnatomicalEntity	Lexical|Stemming	y	z	rdf_matcher	0.5346019613807635	rdfs:label	oio:hasBroadSynonym	bone	.	owl:Axiom
 y:eye	eyes	biolink:AnatomicalEntity	owl:equivalentClass	x:eye	eye	biolink:AnatomicalEntity	Lexical	y	x	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0000970	.	owl:Axiom
-y:eye	eyes	biolink:AnatomicalEntity	owl:equivalentClass	x:eye	eye	biolink:AnatomicalEntity	Lexical|Stemming	y	x	rdf_matcher	0.568874072230784	rdfs:label	rdfs:label	ey	.	owl:Axiom
+y:eye	eyes	biolink:AnatomicalEntity	owl:equivalentClass	x:eye	eye	biolink:AnatomicalEntity	Lexical|Stemming	y	x	rdf_matcher	0.5688740722307839	rdfs:label	rdfs:label	ey	.	owl:Axiom
 y:eye	eyes	biolink:AnatomicalEntity	owl:equivalentClass	z:eye		biolink:AnatomicalEntity	Lexical	y	z	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0000970	.	owl:Axiom
 y:foot	feet	biolink:AnatomicalEntity	owl:equivalentClass	x:foot	pes	biolink:AnatomicalEntity	Lexical	y	x	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0002387	.	owl:Axiom
 y:foot	feet	biolink:AnatomicalEntity	owl:equivalentClass	z:foot		biolink:AnatomicalEntity	Lexical	y	z	rdf_matcher	0.7387961250362586	oio:hasDbXref	oio:hasDbXref	UBERON:0002387	.	owl:Axiom

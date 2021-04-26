@@ -4,6 +4,7 @@ import re
 from typing import Dict
 from xml.dom import minidom, Node
 from xml.dom.minidom import Document
+import json
 
 import pandas as pd
 import yaml
@@ -52,6 +53,17 @@ def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     g.parse(filename, format=file_format)
     return from_owl_graph(g, curie_map, meta)
 
+def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, properties: list = []) -> MappingSetDocument:
+    """
+        parses a TSV to a MappingSetDocument
+        """
+
+
+    with open(filename) as json_file:
+        jsondoc = json.load(json_file)
+
+    return from_obographs(jsondoc, curie_map, meta)
+
 
 def guess_file_format(filename):
     extension = get_file_extension(filename)
@@ -68,7 +80,7 @@ def from_alignment_xml(filename: str, curie_map: Dict[str, str] = None,
     """
            parses a TSV to a MappingSetDocument
            """
-
+    logging.info("Loading from alignment API")
     xmldoc = minidom.parse(filename)
     return from_alignment_minidom(xmldoc, curie_map, meta)
 
@@ -167,6 +179,66 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, 
     return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
 
 
+def is_extract_property(p, properties):
+    if not properties or p in properties:
+        return True
+    else:
+        return False
+
+
+def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
+    """
+    Converts a dataframe to a MappingSetDocument
+    :param g: A Graph object (rdflib)
+    :param curie_map:
+    :param meta: an optional set of metadata elements
+    :return: MappingSetDocument
+    """
+    if not curie_map:
+        raise Exception(f'No valid curie_map provided')
+
+    ms = MappingSet()
+    mlist = []
+    bad_attrs = {}
+
+    allowed_properties = ["http://www.geneontology.org/formats/oboInOwl#hasDbXref"]
+
+    if 'graphs' in jsondoc:
+        for g in jsondoc['graphs']:
+            if 'nodes' in g:
+                for n in g['nodes']:
+                    nid = n['id']
+                    if 'meta' in n:
+                        if 'xrefs' in n['meta']:
+                            for xref in n['meta']['xrefs']:
+                                xref_id = xref['val']
+                                mdict = {}
+                                mdict['subject_id'] = curie(nid, curie_map)
+                                mdict['object_id'] = curie(xref_id, curie_map)
+                                mdict['predicate_id'] = "oboInOwl:hasDbXref"
+                                mlist.append(Mapping(**mdict))
+                        if 'basicPropertyValues' in n['meta']:
+                            for basicPropertyBalue in n['meta']['basicPropertyValues']:
+                                pred = basicPropertyBalue['pred']
+                                if pred in allowed_properties:
+                                    xref_id = basicPropertyBalue['val']
+                                    mdict = {}
+                                    mdict['subject_id'] = curie(nid, curie_map)
+                                    mdict['object_id'] = curie(xref_id, curie_map)
+                                    mdict['predicate_id'] = curie(pred, curie_map)
+                                    mlist.append(Mapping(**mdict))
+    else:
+        raise Exception(f'No graphs element in obographs file, wrong format?')
+
+
+    ms.mappings = mlist
+    if meta:
+        for k, v in meta.items():
+            if k != 'curie_map':
+                ms[k] = v
+    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+
+
 def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
     """
     Converts a dataframe to a MappingSetDocument
@@ -207,8 +279,12 @@ def get_parsing_function(input_format, filename):
         return from_tsv
     elif input_format == 'rdf':
         return from_rdf
+    elif input_format == 'owl':
+        return from_owl
     elif input_format == 'alignment-api-xml':
         return from_alignment_xml
+    elif input_format == 'json':
+        return from_obographs_json
     else:
         raise Exception(f'Unknown input format: {input_format}')
 
