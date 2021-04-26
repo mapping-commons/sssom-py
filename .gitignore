@@ -11,3 +11,5 @@ tests/tmp/
 tests/data/basic-cliquesummary-stats.tsv
 tests/data/basic-cliquesummary.tsv
 tests/data/sssom.yaml
+tmp/
+schema/sssom-docs/

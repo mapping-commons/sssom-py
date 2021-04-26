@@ -1,5 +1,5 @@
-# Auto generated from sssom_schema.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-01-28 15:18
+# Auto generated from sssom.yaml by pythongen.py version: 0.9.0
+# Generation date: 2021-04-24 12:39
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -11,20 +11,17 @@ import sys
 import re
 from typing import Optional, List, Union, Dict, ClassVar, Any
 from dataclasses import dataclass
-from biolinkml.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
+from linkml_model.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
 
-from biolinkml.utils.slot import Slot
-from biolinkml.utils.metamodelcore import empty_list, empty_dict, bnode
-from biolinkml.utils.yamlutils import YAMLRoot, extended_str, extended_float, extended_int
-if sys.version_info < (3, 7, 6):
-    from biolinkml.utils.dataclass_extensions_375 import dataclasses_init_fn_with_kwargs
-else:
-    from biolinkml.utils.dataclass_extensions_376 import dataclasses_init_fn_with_kwargs
-from biolinkml.utils.formatutils import camelcase, underscore, sfx
-from biolinkml.utils.enumerations import EnumDefinitionImpl
+from linkml.utils.slot import Slot
+from linkml.utils.metamodelcore import empty_list, empty_dict, bnode
+from linkml.utils.yamlutils import YAMLRoot, extended_str, extended_float, extended_int
+from linkml.utils.dataclass_extensions_376 import dataclasses_init_fn_with_kwargs
+from linkml.utils.formatutils import camelcase, underscore, sfx
+from linkml.utils.enumerations import EnumDefinitionImpl
 from rdflib import Namespace, URIRef
-from biolinkml.utils.curienamespace import CurieNamespace
-from includes.types import Double, String
+from linkml.utils.curienamespace import CurieNamespace
+from linkml_model.types import Double, String
 
 metamodel_version = "1.7.0"
 
@@ -32,9 +29,9 @@ metamodel_version = "1.7.0"
 dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 
 # Namespaces
-BIOLINKML = CurieNamespace('biolinkml', 'https://w3id.org/biolink/biolinkml/')
 DC = CurieNamespace('dc', 'http://purl.org/dc/terms/')
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
+LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
 OWL = CurieNamespace('owl', 'http://www.w3.org/2002/07/owl#')
 RDF = CurieNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 RDFS = CurieNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
@@ -182,6 +179,7 @@ class Mapping(YAMLRoot):
     object_source: Optional[str] = None
     object_source_version: Optional[str] = None
     mapping_provider: Optional[str] = None
+    mapping_cardinality: Optional[str] = None
     mapping_tool: Optional[str] = None
     mapping_date: Optional[str] = None
     confidence: Optional[float] = None
@@ -249,6 +247,9 @@ class Mapping(YAMLRoot):
         if self.mapping_provider is not None and not isinstance(self.mapping_provider, str):
             self.mapping_provider = str(self.mapping_provider)
 
+        if self.mapping_cardinality is not None and not isinstance(self.mapping_cardinality, str):
+            self.mapping_cardinality = str(self.mapping_cardinality)
+
         if self.mapping_tool is not None and not isinstance(self.mapping_tool, str):
             self.mapping_tool = str(self.mapping_tool)
 
@@ -307,12 +308,24 @@ class Entity(YAMLRoot):
     class_model_uri: ClassVar[URIRef] = SSSOM.Entity
 
     id: Union[str, EntityId] = None
+    label: Optional[str] = None
+    category: Optional[str] = None
+    source: Optional[str] = None
 
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
         if self.id is None:
             raise ValueError("id must be supplied")
         if not isinstance(self.id, EntityId):
             self.id = EntityId(self.id)
+
+        if self.label is not None and not isinstance(self.label, str):
+            self.label = str(self.label)
+
+        if self.category is not None and not isinstance(self.category, str):
+            self.category = str(self.category)
+
+        if self.source is not None and not isinstance(self.source, str):
+            self.source = str(self.source)
 
         super().__post_init__(**kwargs)
 
@@ -323,6 +336,24 @@ class Entity(YAMLRoot):
 # Slots
 class slots:
     pass
+
+slots.entity_field = Slot(uri=SSSOM.entity_field, name="entity_field", curie=SSSOM.curie('entity_field'),
+                   model_uri=SSSOM.entity_field, domain=None, range=Optional[str])
+
+slots.subject_field = Slot(uri=SSSOM.subject_field, name="subject_field", curie=SSSOM.curie('subject_field'),
+                   model_uri=SSSOM.subject_field, domain=None, range=Optional[str])
+
+slots.object_field = Slot(uri=SSSOM.object_field, name="object_field", curie=SSSOM.curie('object_field'),
+                   model_uri=SSSOM.object_field, domain=None, range=Optional[str])
+
+slots.label = Slot(uri=SSSOM.label, name="label", curie=SSSOM.curie('label'),
+                   model_uri=SSSOM.label, domain=None, range=Optional[str])
+
+slots.source = Slot(uri=SSSOM.source, name="source", curie=SSSOM.curie('source'),
+                   model_uri=SSSOM.source, domain=None, range=Optional[str])
+
+slots.category = Slot(uri=SSSOM.category, name="category", curie=SSSOM.curie('category'),
+                   model_uri=SSSOM.category, domain=None, range=Optional[str])
 
 slots.mappings = Slot(uri=SSSOM.mappings, name="mappings", curie=SSSOM.curie('mappings'),
                    model_uri=SSSOM.mappings, domain=None, range=Optional[Union[Union[dict, Mapping], List[Union[dict, Mapping]]]])
@@ -386,6 +417,9 @@ slots.object_source_version = Slot(uri=SSSOM.object_source_version, name="object
 
 slots.mapping_provider = Slot(uri=SSSOM.mapping_provider, name="mapping_provider", curie=SSSOM.curie('mapping_provider'),
                    model_uri=SSSOM.mapping_provider, domain=None, range=Optional[str])
+
+slots.mapping_cardinality = Slot(uri=SSSOM.mapping_cardinality, name="mapping_cardinality", curie=SSSOM.curie('mapping_cardinality'),
+                   model_uri=SSSOM.mapping_cardinality, domain=None, range=Optional[str])
 
 slots.mapping_tool = Slot(uri=SSSOM.mapping_tool, name="mapping_tool", curie=SSSOM.curie('mapping_tool'),
                    model_uri=SSSOM.mapping_tool, domain=None, range=Optional[str])

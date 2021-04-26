@@ -1,4 +1,4 @@
-from sssom import parse, collapse, export_ptable
+from sssom import parse, collapse, dataframe_to_ptable
 from sssom.parsers import from_tsv
 from sssom.cliques import split_into_cliques, summarize_cliques
 

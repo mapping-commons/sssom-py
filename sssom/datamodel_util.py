@@ -6,7 +6,45 @@ import yaml
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
+from sssom.sssom_datamodel import Entity
 import logging
+
+@dataclass
+class EntityPair:
+    """
+    A tuple of entities.
+
+    Note that (e1,e2) == (e2,e1)
+    """
+    subject_entity: Entity
+    object_entity: Entity
+
+    def __hash__(self):
+        if self.subject_entity.id <= self.object_entity.id:
+            t = self.subject_entity.id, self.object_entity.id
+        else:
+            t = self.object_entity.id, self.subject_entity.id
+        return hash(t)
+
+@dataclass
+class MappingSetDiff:
+    """
+    represents a difference between two mapping sets
+
+    Currently this is limited to diffs at the level of entity-pairs.
+    For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMatch B,
+    this is considered a mapping in common.
+    """
+    unique_tuples1: Optional[Set[str]] = None
+    unique_tuples2: Optional[Set[str]] = None
+    common_tuples: Optional[Set[str]] = None
+
+    combined_dataframe: Optional[pd.DataFrame] = None
+    """
+    Dataframe that combines with left and right dataframes with information injected into
+    the comment column
+    """
+
 
 
 
