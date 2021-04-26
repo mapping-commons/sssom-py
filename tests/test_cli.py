@@ -12,7 +12,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         for test in TEST_CASES:
             result = run_convert(runner, test.filepath, test.get_out_file("tsv"), test.inputformat, "owl",
                                  DEFAULT_CONTEXT_PATH)
-            self.assertTrue(result.exit_code == 0)
+            self.assertTrue(result.exit_code == 0, f"The run of sssom convert failed with message {result.exception}")
         self.assertTrue(len(TEST_CASES) > 2)
 
 
