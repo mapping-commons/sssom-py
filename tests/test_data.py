@@ -1,7 +1,6 @@
 import os
 import yaml
 
-
 cwd = os.path.abspath(os.path.dirname(__file__))
 test_data_dir = os.path.join(cwd, 'data')
 test_out_dir = os.path.join(cwd, 'tmp')
@@ -14,9 +13,25 @@ DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, 'sssom.context.jsonld')
 def get_test_file(filename):
     return os.path.join(test_data_dir, filename)
 
+
 def ensure_test_dir_exists():
     if not os.path.exists(test_out_dir):
         os.makedirs(test_out_dir)
+
+
+def load_config():
+    with open(TEST_CONFIG) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    return config
+
+
+def get_all_test_cases():
+    test_cases = []
+    config = load_config()
+    for test in config['tests']:
+        test_cases.append(SSSOMTestCase(test, config['queries']))
+    return test_cases
+
 
 class SSSOMTestCase:
     def __init__(self, config, queries):
@@ -48,11 +63,3 @@ class SSSOMTestCase:
 
     def get_validate_file(self, extension):
         return os.path.join(test_validate_dir, f"{self.filename}.{extension}")
-
-
-with open(TEST_CONFIG) as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-
-TEST_CASES = []
-for test in config['tests']:
-    TEST_CASES.append(SSSOMTestCase(test, config['queries']))
