@@ -1,5 +1,5 @@
 """
-Converts sssom meta tsv to biolinkml
+Converts sssom meta tsv to linkml
 """
 
 import yaml
@@ -100,10 +100,10 @@ class MetaTSVConverter:
             'id': 'http://w3id.org/sssom',
             'description': 'Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)',
             'imports': [
-                'biolinkml:types'
+                'linkml:types'
             ],
             'prefixes': {
-                'biolinkml': 'https://w3id.org/biolink/biolinkml/',
+                'linkml': 'https://w3id.org/linkml/',
                 'sssom': 'http://w3id.org/sssom/',
 
             },

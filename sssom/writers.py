@@ -4,7 +4,7 @@ import yaml
 import os
 
 import pandas as pd
-from biolinkml.utils.yamlutils import as_json_object as yaml_to_json
+from linkml.utils.yamlutils import as_json_object as yaml_to_json
 from jsonasobj import as_json_obj
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
