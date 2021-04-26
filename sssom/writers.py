@@ -5,9 +5,10 @@ import os
 
 import pandas as pd
 from linkml.utils.yamlutils import as_json_object as yaml_to_json
-from jsonasobj import as_json_obj
+from jsonasobj import as_json_obj, JsonObj
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
+import json
 
 from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
@@ -118,7 +119,7 @@ def to_owl_graph(doc: MappingSetDocument, context_path=None) -> Graph:
     if True:
         for k, v in doc.curie_map.items():
             cntxt['@context'][k] = v
-        jsonobj = yaml_to_json(doc.mapping_set, cntxt)
+        jsonobj = yaml_to_json(doc.mapping_set, json.dumps(cntxt))
 
         # for m in doc.mapping_set.mappings:
         #    if m.subject_id not in jsonobj:
@@ -184,7 +185,7 @@ def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
     if True:
         for k, v in doc.curie_map.items():
             cntxt['@context'][k] = v
-        jsonobj = yaml_to_json(doc.mapping_set, cntxt)
+        jsonobj = yaml_to_json(doc.mapping_set, json.dumps(cntxt))
 
         # for m in doc.mapping_set.mappings:
         #    if m.subject_id not in jsonobj:
