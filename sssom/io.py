@@ -4,6 +4,7 @@ from .parsers import get_parsing_function
 from .writers import get_writer_function
 from .context import get_jsonld_context
 import json
+import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
