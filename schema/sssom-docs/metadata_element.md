@@ -1,5 +1,5 @@
 
-# Type: metadata_element
+# Slot: metadata_element
 
 
 All legal SSSOM metadata elements are subproperties of this.

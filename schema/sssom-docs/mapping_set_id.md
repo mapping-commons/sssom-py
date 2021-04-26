@@ -1,5 +1,5 @@
 
-# Type: mapping_set_id
+# Slot: mapping_set_id
 
 
 A globally unique identifier for the mapping set (not each individual mapping). Should be IRI, ideally resolvable.

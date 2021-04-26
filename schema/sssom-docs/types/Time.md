@@ -1,10 +1,10 @@
 
-# Type: time
+# Type: Time
 
 
 A time object represents a (local) time of day, independent of any particular day
 
-URI: [metatype:Time](https://w3id.org/biolink/biolinkml/meta/types/Time)
+URI: [linkml:Time](https://w3id.org/linkml/Time)
 
 |  |  |  |
 | --- | --- | --- |

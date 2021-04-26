@@ -1,5 +1,5 @@
 
-# Type: subject_match_field
+# Slot: subject_match_field
 
 
 A tuple of fields (term annotations on the subject) that was used for the match. Should be used in conjunction with lexical and complexes matches, see SSSOM match types below.

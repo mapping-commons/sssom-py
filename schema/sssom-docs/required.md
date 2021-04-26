@@ -1,5 +1,5 @@
 
-# Type: required
+# Slot: required
 
 
 Indicates wether the SSSOM metadata element is required

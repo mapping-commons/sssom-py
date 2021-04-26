@@ -1,5 +1,5 @@
 
-# Type: confidence
+# Slot: confidence
 
 
 A score between 0 and 1 to denote the confidence or probability that the match is correct, where 1 denotes total confidence.

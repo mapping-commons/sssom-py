@@ -1,5 +1,5 @@
 
-# Type: mapping_set_version
+# Slot: mapping_set_version
 
 
 A version string for the mapping.

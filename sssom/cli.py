@@ -1,14 +1,16 @@
 import click
 from sssom import slots
-from .util import parse, collapse, export_ptable, filter_redundant_rows, remove_unmatched
+from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file
 from .parsers import from_tsv
 from .writers import write_tsv
 import statistics
+from typing import Tuple
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
+from pandasql import sqldf
 
 
 @click.group()
@@ -46,7 +48,9 @@ def ptable(input, inverse_factor):
     df = parse(input)
     df = collapse(df)
     # , priors=list(priors)
-    export_ptable(df)
+    rows = dataframe_to_ptable(df)
+    for row in rows:
+        print("\t".join(row))
 
 
 @main.command()
@@ -60,6 +64,36 @@ def dedupe(input: str, output: str):
     df = filter_redundant_rows(df)
     df.to_csv(output, sep="\t", index=False)
 
+@main.command()
+@click.option('-q', '--query', help='SQL query. Use "df" as table name')
+@click.option('-o', '--output')
+@click.argument('input')
+def dosql(query:str, input: str, output: str):
+    """
+    Run a SQL query.
+
+    Example:
+        sssom dosql -q "SELECT * FROM df WHERE confidence>0.5 ORDER BY confience" my.sssom.tsv
+    """
+    df = parse(input)
+    df = sqldf(query)
+    df.to_csv(output, sep="\t", index=False)
+
+@main.command()
+@click.option('-o', '--output')
+@click.argument('inputs', nargs=2)
+def diff(inputs: Tuple[str,str], output):
+    """
+    compare two SSSOM files.
+    The output is a new SSSOM file with the union of all mappings, and
+    injected comments indicating uniqueness to set1 or set2
+    """
+    (input1, input2) = inputs
+    df1 = parse(input1)
+    df2 = parse(input2)
+    d = compare_dataframes(df1, df2)
+    print(f'COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}')
+    d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
 @main.command()
 @click.option('-i', '--input')
@@ -84,10 +118,13 @@ def partition(input: str, outdir: str):
 @click.option('-i', '--input')
 @click.option('-o', '--output')
 @click.option('-m', '--metadata')
-def cliquesummary(input: str, output: str, metadata: str):
+@click.option('-s', '--statsfile')
+def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     """
     partitions an SSSOM file into multiple files, where each
-    file is a strongly connected component
+    file is a strongly connected component.
+
+    The data dictionary for the output is in cliquesummary.yaml
     """
     import yaml
     if metadata is None:
@@ -97,7 +134,10 @@ def cliquesummary(input: str, output: str, metadata: str):
         doc = from_tsv(input, meta=meta_obj)
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
-    print(df.describe)
+    if statsfile is None:
+        print(df.describe)
+    else:
+        df.describe().transpose().to_csv(statsfile, sep="\t")
 
 
 @main.command()

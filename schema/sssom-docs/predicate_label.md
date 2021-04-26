@@ -1,5 +1,5 @@
 
-# Type: predicate_label
+# Slot: predicate_label
 
 
 The label of the predicate/relation of the mapping

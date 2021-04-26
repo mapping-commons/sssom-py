@@ -1,6 +1,9 @@
 type Entity
   {
     id: String!
+    label: String
+    category: String
+    source: String
   }
 
 type Mapping
@@ -22,6 +25,7 @@ type Mapping
     objectSource: String
     objectSourceVersion: String
     mappingProvider: String
+    mappingCardinality: String
     mappingTool: String
     mappingDate: String
     confidence: Double

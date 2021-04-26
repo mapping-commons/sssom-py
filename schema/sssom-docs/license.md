@@ -1,5 +1,5 @@
 
-# Type: license
+# Slot: license
 
 
 A url to the license of the mapping. In absence of a license we assume no license.

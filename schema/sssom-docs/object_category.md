@@ -1,5 +1,5 @@
 
-# Type: object_category
+# Slot: object_category
 
 
 The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary.

@@ -1,5 +1,5 @@
 
-# Type: object_id
+# Slot: object_id
 
 
 The ID of the object of the mapping.

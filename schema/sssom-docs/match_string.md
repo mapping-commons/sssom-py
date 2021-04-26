@@ -1,5 +1,5 @@
 
-# Type: match_string
+# Slot: match_string
 
 
 String that is shared by subj/obj

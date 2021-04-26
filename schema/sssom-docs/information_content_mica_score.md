@@ -1,5 +1,5 @@
 
-# Type: information_content_mica_score
+# Slot: information_content_mica_score
 
 
 A score between 0 and 1 to denote the information content of the most informative common ancestor, where 1 denotes the maximum level of informativeness.

@@ -1,5 +1,5 @@
 
-# Type: creator_id
+# Slot: creator_id
 
 
 Identifies the persons or groups responsible for the creation of the mapping. Recommended to be a (pipe-separated) list of ORCIDs or otherwise identifying URLs, but any identifying string (such as name and affiliation) is permissible.

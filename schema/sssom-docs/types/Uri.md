@@ -1,10 +1,10 @@
 
-# Type: uri
+# Type: Uri
 
 
 a complete URI
 
-URI: [metatype:Uri](https://w3id.org/biolink/biolinkml/meta/types/Uri)
+URI: [linkml:Uri](https://w3id.org/linkml/Uri)
 
 |  |  |  |
 | --- | --- | --- |

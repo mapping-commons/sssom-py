@@ -1,5 +1,5 @@
 
-# Type: subject_source
+# Slot: subject_source
 
 
 IRI of ontology source for the subject. Version IRI preferred.

@@ -1,5 +1,5 @@
 
-# Type: mapping_tool
+# Slot: mapping_tool
 
 
 A reference to the tool or algorithm that was used to generate the mapping. Should be a URL pointing to more info about it, but can be free text.

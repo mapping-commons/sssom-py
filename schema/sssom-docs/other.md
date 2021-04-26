@@ -1,5 +1,5 @@
 
-# Type: other
+# Slot: other
 
 
 Pipe separated list of key value pairs for properties not part of the SSSOM spec. Can be used to encode additional provenance data.

@@ -1,10 +1,10 @@
 
-# Type: boolean
+# Type: Boolean
 
 
 A binary (true or false) value
 
-URI: [metatype:Boolean](https://w3id.org/biolink/biolinkml/meta/types/Boolean)
+URI: [linkml:Boolean](https://w3id.org/linkml/Boolean)
 
 |  |  |  |
 | --- | --- | --- |

@@ -1,10 +1,10 @@
 
-# Type: string
+# Type: String
 
 
 A character string
 
-URI: [metatype:String](https://w3id.org/biolink/biolinkml/meta/types/String)
+URI: [linkml:String](https://w3id.org/linkml/String)
 
 |  |  |  |
 | --- | --- | --- |

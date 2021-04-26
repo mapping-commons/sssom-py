@@ -1,5 +1,5 @@
 
-# Type: semantic_similarity_score
+# Slot: semantic_similarity_score
 
 
 A score between 0 and 1 to denote the semantic similarity, where 1 denotes equivalence.

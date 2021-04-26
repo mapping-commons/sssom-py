@@ -1,5 +1,5 @@
 
-# Type: match_term_type
+# Slot: match_term_type
 
 
 Specifies what type of terms are being matched (class, property, or individual). Value should be ID from Term Match (SSSOM:TermMatch) branch of the SSSSOM Vocabulary.

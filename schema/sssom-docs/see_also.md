@@ -1,5 +1,5 @@
 
-# Type: see_also
+# Slot: see_also
 
 
 A URL specific for the mapping instance. E.g. for kboom we have a per-mapping image that shows surrounding axioms that drive probability. Could also be a github issue URL that discussed a complicated alignment

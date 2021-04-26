@@ -1,5 +1,5 @@
 
-# Type: subject_source_version
+# Slot: subject_source_version
 
 
 Version IRI of the source of the subject term.

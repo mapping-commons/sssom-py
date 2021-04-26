@@ -1,5 +1,5 @@
 
-# Type: predicate_id
+# Slot: predicate_id
 
 
 The ID of the predicate or relation that relates the subject and object of this match.

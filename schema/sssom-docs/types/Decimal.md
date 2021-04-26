@@ -1,10 +1,10 @@
 
-# Type: decimal
+# Type: Decimal
 
 
 A real number with arbitrary precision that conforms to the xsd:decimal specification
 
-URI: [metatype:Decimal](https://w3id.org/biolink/biolinkml/meta/types/Decimal)
+URI: [linkml:Decimal](https://w3id.org/linkml/Decimal)
 
 |  |  |  |
 | --- | --- | --- |

@@ -1,10 +1,10 @@
 
-# Type: uriorcurie
+# Type: Uriorcurie
 
 
 a URI or a CURIE
 
-URI: [metatype:Uriorcurie](https://w3id.org/biolink/biolinkml/meta/types/Uriorcurie)
+URI: [linkml:Uriorcurie](https://w3id.org/linkml/Uriorcurie)
 
 |  |  |  |
 | --- | --- | --- |

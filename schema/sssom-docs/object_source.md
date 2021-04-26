@@ -1,5 +1,5 @@
 
-# Type: object_source
+# Slot: object_source
 
 
 IRI of ontology source for the object. Version IRI preferred.

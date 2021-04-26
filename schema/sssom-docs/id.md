@@ -1,5 +1,5 @@
 
-# Type: id
+# Slot: id
 
 
 CURIE or IRI identifier

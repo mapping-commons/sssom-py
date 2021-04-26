@@ -1,10 +1,10 @@
 
-# Type: integer
+# Type: Integer
 
 
 An integer
 
-URI: [metatype:Integer](https://w3id.org/biolink/biolinkml/meta/types/Integer)
+URI: [linkml:Integer](https://w3id.org/linkml/Integer)
 
 |  |  |  |
 | --- | --- | --- |

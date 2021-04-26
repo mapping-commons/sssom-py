@@ -1,5 +1,5 @@
 
-# Type: rdf_example
+# Slot: rdf_example
 
 
 An example value of the a SSSOM element in the TSV file.

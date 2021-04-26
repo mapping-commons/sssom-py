@@ -1,10 +1,10 @@
 
-# Type: objectidentifier
+# Type: Objectidentifier
 
 
 A URI or CURIE that represents an object in the model.
 
-URI: [metatype:Objectidentifier](https://w3id.org/biolink/biolinkml/meta/types/Objectidentifier)
+URI: [linkml:Objectidentifier](https://w3id.org/linkml/Objectidentifier)
 
 |  |  |  |
 | --- | --- | --- |

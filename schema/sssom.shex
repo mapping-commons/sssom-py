@@ -1,76 +1,80 @@
 BASE <http://w3id.org/sssom/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX linkml: <https://w3id.org/linkml/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX metatype: <https://w3id.org/biolink/biolinkml/meta/types/>
 
 
-metatype:String xsd:string
+linkml:String xsd:string
 
-metatype:Integer xsd:integer
+linkml:Integer xsd:integer
 
-metatype:Boolean xsd:boolean
+linkml:Boolean xsd:boolean
 
-metatype:Float xsd:float
+linkml:Float xsd:float
 
-metatype:Double xsd:double
+linkml:Double xsd:double
 
-metatype:Decimal xsd:decimal
+linkml:Decimal xsd:decimal
 
-metatype:Time xsd:dateTime
+linkml:Time xsd:dateTime
 
-metatype:Date xsd:date
+linkml:Date xsd:date
 
-metatype:Datetime xsd:dateTime
+linkml:Datetime xsd:dateTime
 
-metatype:Uriorcurie IRI
+linkml:Uriorcurie IRI
 
-metatype:Uri IRI
+linkml:Uri IRI
 
-metatype:Ncname xsd:string
+linkml:Ncname xsd:string
 
-metatype:Objectidentifier IRI
+linkml:Objectidentifier IRI
 
-metatype:Nodeidentifier NONLITERAL
+linkml:Nodeidentifier NONLITERAL
 
 <Entity> CLOSED {
-    (  $<Entity_tes> rdf:type . * ;
+    (  $<Entity_tes> (  <label> @linkml:String ? ;
+          <category> @linkml:String ? ;
+          <source> @linkml:String ?
+       ) ;
        rdf:type [ <Entity> ]
     )
 }
 
 <Mapping> CLOSED {
     (  $<Mapping_tes> (  owl:annotatedSource @<Entity> ? ;
-          <subject_label> @metatype:String ? ;
-          <subject_category> @metatype:String ? ;
+          <subject_label> @linkml:String ? ;
+          <subject_category> @linkml:String ? ;
           owl:annotatedProperty @<Entity> ? ;
-          <predicate_label> @metatype:String ? ;
+          <predicate_label> @linkml:String ? ;
           owl:annotatedTarget @<Entity> ? ;
-          <object_label> @metatype:String ? ;
-          <object_category> @metatype:String ? ;
-          <match_type> @metatype:String ? ;
+          <object_label> @linkml:String ? ;
+          <object_category> @linkml:String ? ;
+          <match_type> @linkml:String ? ;
           <creator_id> @<Entity> ? ;
-          <creator_label> @metatype:String ? ;
-          <license> @metatype:String ? ;
-          <subject_source> @metatype:String ? ;
-          <subject_source_version> @metatype:String ? ;
-          <object_source> @metatype:String ? ;
-          <object_source_version> @metatype:String ? ;
-          <mapping_provider> @metatype:String ? ;
-          <mapping_tool> @metatype:String ? ;
-          <mapping_date> @metatype:String ? ;
-          <confidence> @metatype:Double ? ;
+          <creator_label> @linkml:String ? ;
+          <license> @linkml:String ? ;
+          <subject_source> @linkml:String ? ;
+          <subject_source_version> @linkml:String ? ;
+          <object_source> @linkml:String ? ;
+          <object_source_version> @linkml:String ? ;
+          <mapping_provider> @linkml:String ? ;
+          <mapping_cardinality> @linkml:String ? ;
+          <mapping_tool> @linkml:String ? ;
+          <mapping_date> @linkml:String ? ;
+          <confidence> @linkml:Double ? ;
           <subject_match_field> @<Entity> ? ;
           <object_match_field> @<Entity> ? ;
-          <match_string> @metatype:String ? ;
-          <subject_preprocessing> @metatype:String ? ;
-          <object_preprocessing> @metatype:String ? ;
-          <match_term_type> @metatype:String ? ;
-          <semantic_similarity_score> @metatype:Double ? ;
-          <information_content_mica_score> @metatype:Double ? ;
-          <see_also> @metatype:String ? ;
-          <other> @metatype:String ? ;
-          <comment> @metatype:String ?
+          <match_string> @linkml:String ? ;
+          <subject_preprocessing> @linkml:String ? ;
+          <object_preprocessing> @linkml:String ? ;
+          <match_term_type> @linkml:String ? ;
+          <semantic_similarity_score> @linkml:Double ? ;
+          <information_content_mica_score> @linkml:Double ? ;
+          <see_also> @linkml:String ? ;
+          <other> @linkml:String ? ;
+          <comment> @linkml:String ?
        ) ;
        rdf:type [ owl:Axiom ] ?
     )
@@ -79,25 +83,25 @@ metatype:Nodeidentifier NONLITERAL
 <MappingSet> CLOSED {
     (  $<MappingSet_tes> (  <mappings> @<Mapping> * ;
           <mapping_set_id> @<Entity> ? ;
-          <mapping_set_version> @metatype:String ? ;
+          <mapping_set_version> @linkml:String ? ;
           <creator_id> @<Entity> ? ;
-          <creator_label> @metatype:String ? ;
-          <license> @metatype:String ? ;
-          <subject_source> @metatype:String ? ;
-          <subject_source_version> @metatype:String ? ;
-          <object_source> @metatype:String ? ;
-          <object_source_version> @metatype:String ? ;
-          <mapping_provider> @metatype:String ? ;
-          <mapping_tool> @metatype:String ? ;
-          <mapping_date> @metatype:String ? ;
+          <creator_label> @linkml:String ? ;
+          <license> @linkml:String ? ;
+          <subject_source> @linkml:String ? ;
+          <subject_source_version> @linkml:String ? ;
+          <object_source> @linkml:String ? ;
+          <object_source_version> @linkml:String ? ;
+          <mapping_provider> @linkml:String ? ;
+          <mapping_tool> @linkml:String ? ;
+          <mapping_date> @linkml:String ? ;
           <subject_match_field> @<Entity> ? ;
           <object_match_field> @<Entity> ? ;
-          <subject_preprocessing> @metatype:String ? ;
-          <object_preprocessing> @metatype:String ? ;
-          <match_term_type> @metatype:String ? ;
-          <see_also> @metatype:String ? ;
-          <other> @metatype:String ? ;
-          <comment> @metatype:String ?
+          <subject_preprocessing> @linkml:String ? ;
+          <object_preprocessing> @linkml:String ? ;
+          <match_term_type> @linkml:String ? ;
+          <see_also> @linkml:String ? ;
+          <other> @linkml:String ? ;
+          <comment> @linkml:String ?
        ) ;
        rdf:type [ <MappingSet> ] ?
     )
