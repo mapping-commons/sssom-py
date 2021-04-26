@@ -1,5 +1,5 @@
 
-# Type: subject_label
+# Slot: subject_label
 
 
 The label of subject of the mapping

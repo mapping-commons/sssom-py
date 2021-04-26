@@ -1,5 +1,5 @@
 
-# Type: scope
+# Slot: scope
 
 
 Indicates whether the metadata element has local, global or local-global scope.

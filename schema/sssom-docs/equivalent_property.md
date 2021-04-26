@@ -1,5 +1,5 @@
 
-# Type: equivalent_property
+# Slot: equivalent_property
 
 
 SSSOM property should be mapped to:

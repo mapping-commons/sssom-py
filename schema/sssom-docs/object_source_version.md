@@ -1,5 +1,5 @@
 
-# Type: object_source_version
+# Slot: object_source_version
 
 
 Version IRI of the source of the object term.

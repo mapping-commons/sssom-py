@@ -1,5 +1,5 @@
 
-# Type: mapping_date
+# Slot: mapping_date
 
 
 The date the mapping was computed

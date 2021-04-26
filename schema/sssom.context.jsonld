@@ -1,10 +1,10 @@
 {
-   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\nGeneration date: 2021-02-06 18:33\nSchema: sssom\n\nid: http://w3id.org/sssom/schema/\ndescription: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\nlicense: https://creativecommons.org/publicdomain/zero/1.0/\n",
+   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\nGeneration date: 2021-04-24 12:36\nSchema: sssom\n\nid: http://w3id.org/sssom/schema/\ndescription: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\nlicense: https://creativecommons.org/publicdomain/zero/1.0/\n",
    "@context": {
       "type": "@type",
-      "biolinkml": "https://w3id.org/biolink/biolinkml/",
       "dc": "http://purl.org/dc/terms/",
       "dcterms": "http://purl.org/dc/terms/",
+      "linkml": "https://w3id.org/linkml/",
       "owl": "http://www.w3.org/2002/07/owl#",
       "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
       "rdfs": "http://www.w3.org/2000/01/rdf-schema#",

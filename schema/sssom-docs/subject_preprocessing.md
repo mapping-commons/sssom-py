@@ -1,5 +1,5 @@
 
-# Type: subject_preprocessing
+# Slot: subject_preprocessing
 
 
 Method of preprocessing applied to the fields of the subject. Tuple of IDs from "Pre-processing method" (SSSOM:PreprocessingMethod) branch of the SSSSOM Vocabulary.

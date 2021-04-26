@@ -1,10 +1,10 @@
 
-# Type: ncname
+# Type: Ncname
 
 
 Prefix part of CURIE
 
-URI: [metatype:Ncname](https://w3id.org/biolink/biolinkml/meta/types/Ncname)
+URI: [linkml:Ncname](https://w3id.org/linkml/Ncname)
 
 |  |  |  |
 | --- | --- | --- |

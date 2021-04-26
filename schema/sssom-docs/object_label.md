@@ -1,5 +1,5 @@
 
-# Type: object_label
+# Slot: object_label
 
 
 The label of object of the mapping

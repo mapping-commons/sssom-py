@@ -1,5 +1,5 @@
 
-# Type: mapping_provider
+# Slot: mapping_provider
 
 
 URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings.

@@ -1,5 +1,5 @@
 
-# Type: mappings
+# Slot: mappings
 
 
 Contains a list of mapping objects

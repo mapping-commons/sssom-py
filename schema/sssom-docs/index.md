@@ -20,10 +20,15 @@ Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
  * [confidence](confidence.md) - A score between 0 and 1 to denote the confidence or probability that the match is correct, where 1 denotes total confidence.
  * [creator_id](creator_id.md) - Identifies the persons or groups responsible for the creation of the mapping. Recommended to be a (pipe-separated) list of ORCIDs or otherwise identifying URLs, but any identifying string (such as name and affiliation) is permissible.
  * [creator_label](creator_label.md) - A string identifying the creator of this mapping. In the spirit of provenance, consider to use creator_id instead.
+ * [entity_field](entity_field.md) - grouping for normalized fields for entities
+     * [category](category.md) - category of the entity. Could be biolink, COB, etc
+     * [label](label.md) - label of an entity
+     * [source](source.md) - the database or ontology prefix of the entity
  * [equivalent_property](equivalent_property.md) - SSSOM property should be mapped to:
  * [id](id.md) - CURIE or IRI identifier
  * [information_content_mica_score](information_content_mica_score.md) - A score between 0 and 1 to denote the information content of the most informative common ancestor, where 1 denotes the maximum level of informativeness.
  * [license](license.md) - A url to the license of the mapping. In absence of a license we assume no license.
+ * [mapping_cardinality](mapping_cardinality.md) - A string indicating whether this mapping is from a 1:1 (the subject_id maps to a single object_id), 1:n (the subject maps to more than one object_id), n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable from the mapping set.
  * [mapping_date](mapping_date.md) - The date the mapping was computed
  * [mapping_provider](mapping_provider.md) - URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings.
  * [mapping_set_id](mapping_set_id.md) - A globally unique identifier for the mapping set (not each individual mapping). Should be IRI, ideally resolvable.
@@ -35,6 +40,7 @@ Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
  * [match_type](match_type.md) - ID from Match type (SSSOM:MatchType) branch of the SSSSOM Vocabulary. In the case of multiple match types for a single subject, predicate, object triplet, two seperate mappings must be specified.
  * [metadata_element](metadata_element.md) - All legal SSSOM metadata elements are subproperties of this.
  * [object_category](object_category.md) - The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary.
+ * [object_field](object_field.md) - denormalized field representing aspect of a object
  * [object_id](object_id.md) - The ID of the object of the mapping.
  * [object_label](object_label.md) - The label of object of the mapping
  * [object_match_field](object_match_field.md) - A tuple of fields (term annotations on the object) that was used for the match. Should be used in conjunction with lexical and complexes matches, see SSSOM match types below.
@@ -50,6 +56,7 @@ Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
  * [see_also](see_also.md) - A URL specific for the mapping instance. E.g. for kboom we have a per-mapping image that shows surrounding axioms that drive probability. Could also be a github issue URL that discussed a complicated alignment
  * [semantic_similarity_score](semantic_similarity_score.md) - A score between 0 and 1 to denote the semantic similarity, where 1 denotes equivalence.
  * [subject_category](subject_category.md) - The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary.
+ * [subject_field](subject_field.md) - denormalized field representing aspect of a subject
  * [subject_id](subject_id.md) - The ID of the subject of the mapping.
  * [subject_label](subject_label.md) - The label of subject of the mapping
  * [subject_match_field](subject_match_field.md) - A tuple of fields (term annotations on the subject) that was used for the match. Should be used in conjunction with lexical and complexes matches, see SSSOM match types below.

@@ -1,5 +1,5 @@
 
-# Type: subject_id
+# Slot: subject_id
 
 
 The ID of the subject of the mapping.

@@ -1,5 +1,5 @@
 
-# Type: match_type
+# Slot: match_type
 
 
 ID from Match type (SSSOM:MatchType) branch of the SSSSOM Vocabulary. In the case of multiple match types for a single subject, predicate, object triplet, two seperate mappings must be specified.

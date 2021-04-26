@@ -1,5 +1,5 @@
 
-# Type: object_preprocessing
+# Slot: object_preprocessing
 
 
 Method of preprocessing applied to the fields of the object. Tuple of IDs from “Pre-processing method” (SSSOM:PreprocessingMethod) branch of the SSSSOM Vocabulary.

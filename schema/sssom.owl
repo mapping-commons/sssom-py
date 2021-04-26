@@ -11,47 +11,11 @@
     rdfs:label "mapping set" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/creator_label> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_tool> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/license> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/other> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/subject_preprocessing> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_set_version> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_provider> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/creator_id> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/subject_source> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
@@ -59,35 +23,71 @@
             owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/other> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/match_term_type> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/comment> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/see_also> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_date> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_set_version> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://w3id.org/sssom/Entity> ;
             owl:onProperty <http://w3id.org/sssom/mapping_set_id> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/creator_label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/creator_id> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/license> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/subject_source_version> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_source> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_tool> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/see_also> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/match_term_type> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/comment> ],
         [ a owl:Restriction ;
             owl:allValuesFrom <http://w3id.org/sssom/Mapping> ;
             owl:onProperty <http://w3id.org/sssom/mappings> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_provider> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/subject_preprocessing> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_date> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://w3id.org/sssom/Entity> ;
@@ -97,25 +97,25 @@
 <http://w3id.org/sssom/equivalent_property> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "equivalent_property" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "SSSOM property should be mapped to:" .
 
 <http://w3id.org/sssom/metadata_element> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "metadata_element" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "All legal SSSOM metadata elements are subproperties of this." .
 
 <http://w3id.org/sssom/rdf_example> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "rdf_example" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "An example value of the a SSSOM element in the TSV file." .
 
 <http://w3id.org/sssom/required> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "required" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Indicates wether the SSSOM metadata element is required" .
 
 <http://w3id.org/sssom/schema/> a owl:Ontology ;
@@ -123,29 +123,29 @@
     dcterms:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
     rdfs:seeAlso "https://github.com/OBOFoundry/SSSOM" ;
     skos:definition "Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)" ;
-    meta:generation_date "2021-02-06 18:33" ;
+    meta:generation_date "2021-04-24 12:36" ;
     meta:metamodel_version "1.7.0" ;
     meta:source_file "sssom.yaml" ;
-    meta:source_file_date "Sat Feb  6 18:32:09 2021" ;
-    meta:source_file_size 8564 .
+    meta:source_file_date "Sat Apr 24 12:36:19 2021" ;
+    meta:source_file_size 9773 .
 
 <http://w3id.org/sssom/scope> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "scope" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Indicates whether the metadata element has local, global or local-global scope." .
 
 <http://w3id.org/sssom/tsv_example> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "tsv_example" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "An example value of the a SSSOM element in RDF." .
 
 meta:SubsetDefinition a owl:Class ;
     rdfs:label "subset_definition" ;
     skos:definition "the name and description of a subset" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Boolean> a owl:Class,
+<https://w3id.org/linkml/Boolean> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "boolean" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -154,7 +154,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "A binary (true or false) value" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Date> a owl:Class,
+<https://w3id.org/linkml/Date> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "date" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -164,7 +164,7 @@ meta:SubsetDefinition a owl:Class ;
     skos:definition "a date (year, month and day) in an idealized calendar" ;
     skos:editorialNote "URI is dateTime because OWL reasoners don't work with straight date or time" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Datetime> a owl:Class,
+<https://w3id.org/linkml/Datetime> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "datetime" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -173,7 +173,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "The combination of a date and time" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Decimal> a owl:Class,
+<https://w3id.org/linkml/Decimal> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "decimal" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -182,7 +182,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "A real number with arbitrary precision that conforms to the xsd:decimal specification" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Float> a owl:Class,
+<https://w3id.org/linkml/Float> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "float" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -191,7 +191,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "A real number that conforms to the xsd:float specification" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Integer> a owl:Class,
+<https://w3id.org/linkml/Integer> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "integer" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -200,7 +200,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "An integer" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Ncname> a owl:Class,
+<https://w3id.org/linkml/Ncname> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "ncname" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -209,7 +209,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "Prefix part of CURIE" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Nodeidentifier> a owl:Class,
+<https://w3id.org/linkml/Nodeidentifier> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "nodeidentifier" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -218,7 +218,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "A URI, CURIE or BNODE that represents a node in a model." .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Objectidentifier> a owl:Class,
+<https://w3id.org/linkml/Objectidentifier> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "objectidentifier" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -228,7 +228,7 @@ meta:SubsetDefinition a owl:Class ;
     skos:definition "A URI or CURIE that represents an object in the model." ;
     skos:note "Used for inheritence and type checking" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Time> a owl:Class,
+<https://w3id.org/linkml/Time> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "time" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -238,7 +238,7 @@ meta:SubsetDefinition a owl:Class ;
     skos:definition "A time object represents a (local) time of day, independent of any particular day" ;
     skos:editorialNote "URI is dateTime because OWL reasoners don't work with straight date or time" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Uri> a owl:Class,
+<https://w3id.org/linkml/Uri> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "uri" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -247,7 +247,7 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "a complete URI" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Uriorcurie> a owl:Class,
+<https://w3id.org/linkml/Uriorcurie> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "uriorcurie" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -256,23 +256,43 @@ meta:SubsetDefinition a owl:Class ;
             owl:qualifiedCardinality 1 ] ;
     skos:definition "a URI or a CURIE" .
 
+<http://w3id.org/sssom/category> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "category" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/entity_field> ;
+    skos:definition "category of the entity. Could be biolink, COB, etc" .
+
 <http://w3id.org/sssom/confidence> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "confidence" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/Double> ;
+    rdfs:range <https://w3id.org/linkml/Double> ;
     skos:definition "A score between 0 and 1 to denote the confidence or probability that the match is correct, where 1 denotes total confidence." .
 
 <http://w3id.org/sssom/id> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "id" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "CURIE or IRI identifier" .
 
 <http://w3id.org/sssom/information_content_mica_score> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "information_content_mica_score" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/Double> ;
+    rdfs:range <https://w3id.org/linkml/Double> ;
     skos:definition "A score between 0 and 1 to denote the information content of the most informative common ancestor, where 1 denotes the maximum level of informativeness." .
+
+<http://w3id.org/sssom/label> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "label" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/entity_field> ;
+    skos:definition "label of an entity" .
+
+<http://w3id.org/sssom/mapping_cardinality> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "mapping_cardinality" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    skos:definition "A string indicating whether this mapping is from a 1:1 (the subject_id maps to a single object_id), 1:n (the subject maps to more than one object_id), n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable from the mapping set." .
 
 <http://w3id.org/sssom/mapping_set_id> a owl:ObjectProperty,
         meta:SlotDefinition ;
@@ -283,7 +303,7 @@ meta:SubsetDefinition a owl:Class ;
 <http://w3id.org/sssom/mapping_set_version> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "mapping_set_version" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "A version string for the mapping." .
 
 <http://w3id.org/sssom/mappings> a owl:ObjectProperty,
@@ -295,31 +315,34 @@ meta:SubsetDefinition a owl:Class ;
 <http://w3id.org/sssom/match_string> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "match_string" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "String that is shared by subj/obj" .
 
 <http://w3id.org/sssom/match_type> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "match_type" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "ID from Match type (SSSOM:MatchType) branch of the SSSSOM Vocabulary. In the case of multiple match types for a single subject, predicate, object triplet, two seperate mappings must be specified." .
 
 <http://w3id.org/sssom/object_category> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "object_category" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/object_field> ;
     skos:definition "The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary." .
 
 <http://w3id.org/sssom/object_id> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "object_id" ;
     rdfs:range <http://w3id.org/sssom/Entity> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/object_field> ;
     skos:definition "The ID of the object of the mapping." .
 
 <http://w3id.org/sssom/object_label> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "object_label" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/object_field> ;
     skos:definition "The label of object of the mapping" .
 
 <http://w3id.org/sssom/predicate_id> a owl:ObjectProperty,
@@ -331,31 +354,41 @@ meta:SubsetDefinition a owl:Class ;
 <http://w3id.org/sssom/predicate_label> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "predicate_label" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "The label of the predicate/relation of the mapping" .
 
 <http://w3id.org/sssom/semantic_similarity_score> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "semantic_similarity_score" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/Double> ;
+    rdfs:range <https://w3id.org/linkml/Double> ;
     skos:definition "A score between 0 and 1 to denote the semantic similarity, where 1 denotes equivalence." .
+
+<http://w3id.org/sssom/source> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "source" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/entity_field> ;
+    skos:definition "the database or ontology prefix of the entity" .
 
 <http://w3id.org/sssom/subject_category> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_category" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/subject_field> ;
     skos:definition "The conceptual category to which the subject belongs to. This can be a string denoting the category or a term from a controlled vocabulary." .
 
 <http://w3id.org/sssom/subject_id> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_id" ;
     rdfs:range <http://w3id.org/sssom/Entity> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/subject_field> ;
     skos:definition "The ID of the subject of the mapping." .
 
 <http://w3id.org/sssom/subject_label> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_label" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    rdfs:subPropertyOf <http://w3id.org/sssom/subject_field> ;
     skos:definition "The label of subject of the mapping" .
 
 <http://w3id.org/sssom/Mapping> a owl:Class,
@@ -363,91 +396,47 @@ meta:SubsetDefinition a owl:Class ;
     rdfs:label "mapping" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/object_match_field> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/subject_preprocessing> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/license> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/creator_label> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/match_type> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/subject_label> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/subject_source_version> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/comment> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_category> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_source> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/object_id> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://w3id.org/sssom/Entity> ;
             owl:onProperty <http://w3id.org/sssom/predicate_id> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/subject_category> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/predicate_label> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/match_string> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_date> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_tool> ],
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/subject_preprocessing> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/subject_id> ],
+            owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/object_label> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/comment> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/other> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/match_type> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/see_also> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
@@ -455,43 +444,91 @@ meta:SubsetDefinition a owl:Class ;
             owl:onProperty <http://w3id.org/sssom/creator_id> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/Double> ;
-            owl:onProperty <http://w3id.org/sssom/semantic_similarity_score> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/Double> ;
-            owl:onProperty <http://w3id.org/sssom/confidence> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
-            owl:onProperty <http://w3id.org/sssom/subject_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/object_id> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/mapping_provider> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:onClass <https://w3id.org/linkml/Double> ;
+            owl:onProperty <http://w3id.org/sssom/semantic_similarity_score> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/object_match_field> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/Double> ;
+            owl:onProperty <http://w3id.org/sssom/confidence> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_category> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/subject_source_version> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/match_string> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/match_term_type> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/Double> ;
-            owl:onProperty <http://w3id.org/sssom/information_content_mica_score> ] ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/subject_category> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/creator_label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_cardinality> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/license> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/Double> ;
+            owl:onProperty <http://w3id.org/sssom/information_content_mica_score> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_date> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/object_label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/subject_source> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_tool> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/predicate_label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/subject_id> ] ;
     skos:definition "Represents an individual mapping between a pair of entities" ;
     skos:exactMatch owl:Axiom .
 
 <http://w3id.org/sssom/comment> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "comment" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Free text field containing either curator notes or text generated by tool providing additional informative information." .
 
 <http://w3id.org/sssom/creator_id> a owl:ObjectProperty,
@@ -503,37 +540,37 @@ meta:SubsetDefinition a owl:Class ;
 <http://w3id.org/sssom/creator_label> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "creator_label" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "A string identifying the creator of this mapping. In the spirit of provenance, consider to use creator_id instead." .
 
 <http://w3id.org/sssom/license> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "license" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "A url to the license of the mapping. In absence of a license we assume no license." .
 
 <http://w3id.org/sssom/mapping_date> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "mapping_date" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "The date the mapping was computed" .
 
 <http://w3id.org/sssom/mapping_provider> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "mapping_provider" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings." .
 
 <http://w3id.org/sssom/mapping_tool> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "mapping_tool" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "A reference to the tool or algorithm that was used to generate the mapping. Should be a URL pointing to more info about it, but can be free text." .
 
 <http://w3id.org/sssom/match_term_type> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "match_term_type" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Specifies what type of terms are being matched (class, property, or individual). Value should be ID from Term Match (SSSOM:TermMatch) branch of the SSSSOM Vocabulary." .
 
 <http://w3id.org/sssom/object_match_field> a owl:ObjectProperty,
@@ -545,31 +582,31 @@ meta:SubsetDefinition a owl:Class ;
 <http://w3id.org/sssom/object_preprocessing> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "object_preprocessing" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Method of preprocessing applied to the fields of the object. Tuple of IDs from “Pre-processing method” (SSSOM:PreprocessingMethod) branch of the SSSSOM Vocabulary." .
 
 <http://w3id.org/sssom/object_source> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "object_source" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "IRI of ontology source for the object. Version IRI preferred." .
 
 <http://w3id.org/sssom/object_source_version> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "object_source_version" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Version IRI of the source of the object term." .
 
 <http://w3id.org/sssom/other> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "other" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Pipe separated list of key value pairs for properties not part of the SSSOM spec. Can be used to encode additional provenance data." .
 
 <http://w3id.org/sssom/see_also> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "see_also" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "A URL specific for the mapping instance. E.g. for kboom we have a per-mapping image that shows surrounding axioms that drive probability. Could also be a github issue URL that discussed a complicated alignment" .
 
 <http://w3id.org/sssom/subject_match_field> a owl:ObjectProperty,
@@ -581,26 +618,44 @@ meta:SubsetDefinition a owl:Class ;
 <http://w3id.org/sssom/subject_preprocessing> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_preprocessing" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Method of preprocessing applied to the fields of the subject. Tuple of IDs from \"Pre-processing method\" (SSSOM:PreprocessingMethod) branch of the SSSSOM Vocabulary." .
 
 <http://w3id.org/sssom/subject_source> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_source" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "IRI of ontology source for the subject. Version IRI preferred." .
 
 <http://w3id.org/sssom/subject_source_version> a owl:ObjectProperty,
         meta:SlotDefinition ;
     rdfs:label "subject_source_version" ;
-    rdfs:range <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+    rdfs:range <https://w3id.org/linkml/String> ;
     skos:definition "Version IRI of the source of the subject term." .
+
+<http://w3id.org/sssom/entity_field> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "entity_field" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    skos:definition "grouping for normalized fields for entities" .
+
+<http://w3id.org/sssom/object_field> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "object_field" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    skos:definition "denormalized field representing aspect of a object" .
+
+<http://w3id.org/sssom/subject_field> a owl:ObjectProperty,
+        meta:SlotDefinition ;
+    rdfs:label "subject_field" ;
+    rdfs:range <https://w3id.org/linkml/String> ;
+    skos:definition "denormalized field representing aspect of a subject" .
 
 meta:ClassDefinition a owl:Class ;
     rdfs:label "class_definition" ;
     skos:definition "the definition of a class or interface" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/Double> a owl:Class,
+<https://w3id.org/linkml/Double> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "double" ;
     rdfs:subClassOf [ a owl:Restriction ;
@@ -620,9 +675,21 @@ meta:topValue a owl:DatatypeProperty ;
         meta:ClassDefinition ;
     rdfs:label "entity" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:onClass <https://w3id.org/biolink/biolinkml/meta/types/String> ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/category> ],
+        [ a owl:Restriction ;
+            owl:onClass <https://w3id.org/linkml/String> ;
             owl:onProperty <http://w3id.org/sssom/id> ;
-            owl:qualifiedCardinality 1 ] ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/linkml/String> ;
+            owl:onProperty <http://w3id.org/sssom/source> ] ;
     skos:definition "Represents any entity that can be mapped, such as an OWL class or SKOS concept" ;
     skos:exactMatch rdf:Resource .
 
@@ -630,7 +697,7 @@ meta:SlotDefinition a owl:Class ;
     rdfs:label "slot_definition" ;
     skos:definition "the definition of a property or a slot" .
 
-<https://w3id.org/biolink/biolinkml/meta/types/String> a owl:Class,
+<https://w3id.org/linkml/String> a owl:Class,
         meta:TypeDefinition ;
     rdfs:label "string" ;
     rdfs:subClassOf [ a owl:Restriction ;

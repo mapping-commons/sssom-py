@@ -1,10 +1,10 @@
 
-# Type: datetime
+# Type: Datetime
 
 
 The combination of a date and time
 
-URI: [metatype:Datetime](https://w3id.org/biolink/biolinkml/meta/types/Datetime)
+URI: [linkml:Datetime](https://w3id.org/linkml/Datetime)
 
 |  |  |  |
 | --- | --- | --- |
