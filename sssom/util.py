@@ -3,6 +3,7 @@ import random
 import hashlib
 from sssom.sssom_datamodel import Entity, Mapping
 from sssom.datamodel_util import MappingSetDiff, EntityPair
+from sssom.parsers import read_pandas
 from typing import Dict, Tuple, List
 
 # TODO: use sssom_datamodel
@@ -24,7 +25,8 @@ def parse(filename) -> pd.DataFrame:
     parses a TSV to a pandas frame
     """
     #return from_tsv(filename)
-    return pd.read_csv(filename, sep="\t", comment="#")
+    #return pd.read_csv(filename, sep="\t", comment="#")
+    return read_pandas(filename, sep="\t", comment="#")
 
 def collapse(df):
     """
