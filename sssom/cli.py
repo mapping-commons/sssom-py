@@ -2,10 +2,9 @@ import click
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file
+from .io import convert_file, filter_predicate_file
 from .parsers import from_tsv
 from .writers import write_tsv
-import statistics
 from typing import Tuple
 import pandas as pd
 from scipy.stats import chi2_contingency
@@ -141,6 +140,19 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
         logging.info(df.describe)
     else:
         df.describe().transpose().to_csv(statsfile, sep="\t")
+
+@main.command()
+@click.option('-i', '--input')
+@click.option('-o', '--output')
+@click.option('-p', '--predicate', multiple=True)
+def filter_predicate(input: str, output: str, predicate: str):
+    """
+    partitions an SSSOM file into multiple files, where each
+    file is a strongly connected component
+    """
+
+    return filter_predicate_file(input, output, predicate)
+
 
 
 @main.command()
