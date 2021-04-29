@@ -31,15 +31,49 @@ The following are inspired from https://clig.dev/.
 - Have full-length versions of all flags, but one length flags only for the most important ones
 - standard flags: `-d/--debug`, `-f/--force`, `-h/--help`, `-v/--verbose`, `--version`, `-q/--quiet`
 - If input or output is a file, support - to read from stdin or write to stdout.
+- sssom extract -i test.owl | sssom convert -of owl -s turtle > OUTFILE
 
 
+### Methods
 
-### Core methods
-
-- convert
+- convert: Convert a sssom embedded table to a target format
+  - args:  
+    - i/input: sssom.tsv (no default)
+    - t/to-format:  RDF, OWL, SKOS, JSONLD (no default)
+    - s/serialisation: turtle, rdfxml, etc (default: rdfxml)
+    - o/output: file in the specified format (infer type from extension? - probably not for now)
+      - owl: OWL
+      - rdf, ttl: RDF
+      - jsonld: JSONLD
+- extract: Given an input, extract SSSOM mappings using a fixed recipe
+  - args:
+    - i/input: some file in a supported format like obographs, sssom.rdf
+    - f/format: input format (too ambiguous to be inferrable) - try inference
+    - o/output: sssom file
 - merge
+  - description: take 2 or more sssom files as input and produce 1 merged file
+  - args:
+    - [i/input]: multiple ssom files, eg -i ssom1.tsv -i sssom2.tsv
+      - "-i list vs -i a1 -i a2" discuss
+    - o/output: sssom file
 - validate
+  - description: Take 1 sssom file as input and produce an error report
+  - args:
+    - i/input: sssom.tsv (no default)
+    - o/output: report file
 - diff
+  - description: Take 2 sssom files as input and produce a diff analysis
+  - args:
+    - l/left: sssom.tsv (no default)
+    - r/right: sssom.tsv (no default)
+    - o/output: diff report
+- deduplicate
+  - description: Take 1 sssom file as input and remove redundant mappings. The output sssom file
+    does not contain the same s,p,o mapping twice
+  - args:
+    - i/input: sssom.tsv (no default)
+    - o/output: sssom.tsv
+ 
 
 #### merge
 
