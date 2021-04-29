@@ -12,6 +12,7 @@ from rdflib import Graph
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 from .util import get_file_extension, RDF_FORMATS
+from io import StringIO
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -288,6 +289,10 @@ def get_parsing_function(input_format, filename):
     else:
         raise Exception(f'Unknown input format: {input_format}')
 
+def read_csv(filename, comment='#', sep=','):
+    lines = "".join([line for line in open(filename) 
+                     if not line.startswith(comment)])
+    return pd.read_csv(StringIO(lines), sep=sep)
 
 def read_pandas(filename: str, sep=None) -> pd.DataFrame:
     """
@@ -313,7 +318,7 @@ def read_pandas(filename: str, sep=None) -> pd.DataFrame:
     #            if not line.startswith('#'):
     #                tmp.write(line + "\n")
     #    tmp.seek(0)
-    return pd.read_csv(filename, comment='#', sep=sep).fillna("")
+    return read_csv(filename, comment='#', sep=sep).fillna("")
 
 
 def _prepare_mapping(mapping: Mapping):
