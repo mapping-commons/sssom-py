@@ -10,12 +10,14 @@ This document is for internal use only. The goal is to sketch the design of the 
 
 - IO: Flexible vs fixed formats
   1. We build `sssom` entirely around the table format and consider all other formats one-way exports. This means, concretely, that for all commands other than `convert`, `-i` and `-o` parameters are fixed to be sssom tsv - the advantage here is simplicity for handling of errors, but also that we don't need to overload the main CLI parameters with `--output-format` or `--input-format` parameters.
+  load / dump names all operations on tsvs
   2. We keep `-i` and `-o` variables flexible such as ROBOT and allow a (potentially faulty) inference step from file extension to format. The disadvantage is that we need to extend all main methods to deal with formats. You could allow external mode (table and metadata separately) only in convert function, and require embedded mode everywhere else. This also means we don't need the context parameter anywhere but in convert.
 - IO: Allow both embedded and non-embedded mode. The complexity here is to handle conflicts: what if an external metadata block is supplied, but the SSSOM file already has its own? This needs to be documented carefully.
 - Context - is it purely for the sake of the curie map?
 - IO: Make `-o` entirely optional and print result to stdout? This could allow | style chaining of commands!
 - IO: remove `-i` in favour of nothing? `sssom convert a | sssom deduplicate |`
 - IO: more disciplined seperation of data model and serialisation in convert
+- Have a wrapper for mappingsetdocument that also gives access to dataframe
 
 ### General CLI stuff
 The following are inspired from https://clig.dev/.
@@ -37,6 +39,7 @@ The following are inspired from https://clig.dev/.
 - convert
 - merge
 - validate
+- diff
 
 #### merge
 

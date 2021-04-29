@@ -8,7 +8,21 @@ import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
-
+def filter_predicate_file(input: str, predicates: list, output: str = None):
+    """
+    converts from one format to another
+    :param input:
+    :param output:
+    :param input_format:
+    :param output_format:
+    :param context_path:
+    :param read_func
+    :param write_func
+    :return:
+    """
+    curie_map={}
+    contxt = get_jsonld_context()
+    logging.error("Not implemented")
 
 def convert_file(input: str, output: str = None, input_format: str = None, output_format: str = None, context_path=None,
                  read_func=None, write_func=None):
