@@ -2,13 +2,13 @@
 Converts sssom meta tsv to linkml
 """
 
-#from sssom.parsers import read_pandas
 import yaml
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
 from sssom.sssom_datamodel import Entity
 import logging
+import sssom.parsers
 
 @dataclass
 class EntityPair:
@@ -63,8 +63,8 @@ class MetaTSVConverter:
         loads from folder
         :return:
         """
-        self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
-        #self.df = read_pandas(filename,sep='\t')
+        #self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
+        self.df = sssom.parsers.read_pandas(filename,sep='\t')
 
 
     def convert(self) -> Dict[str, Any]:
