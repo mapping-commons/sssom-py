@@ -8,7 +8,7 @@ from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
 from sssom.sssom_datamodel import Entity
 import logging
-import sssom.parsers
+from sssom.parsers import read_pandas
 
 @dataclass
 class EntityPair:
@@ -64,7 +64,7 @@ class MetaTSVConverter:
         :return:
         """
         #self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
-        self.df = sssom.parsers.read_pandas(filename,sep='\t')
+        self.df = read_pandas(filename,sep='\t')
 
 
     def convert(self) -> Dict[str, Any]:
