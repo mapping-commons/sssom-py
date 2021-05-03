@@ -2,13 +2,14 @@
 Converts sssom meta tsv to linkml
 """
 
+from sssom.sssom_document import MappingSetDocument
 import yaml
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
 from sssom.sssom_datamodel import Entity
 import logging
-from sssom.parsers import read_pandas
+from io import StringIO
 
 @dataclass
 class EntityPair:
@@ -159,3 +160,53 @@ class MetaTSVConverter:
         obj = self.convert()
         with open(fn, 'w') as stream:
             yaml.safe_dump(obj, stream, sort_keys=False)
+
+@dataclass
+class MappingSetDataFrame:
+    """
+    A collection of mappings represented as a DataFrame, together with additional metadata
+    """
+    df: pd.DataFrame = None ## Mappings
+    prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
+    metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
+    mapping_set_document: MappingSetDocument=None ## This is the fll mapping set document
+
+    
+def get_file_extension(filename: str) -> str:
+    parts = filename.split(".")
+    if len(parts) > 0:
+        f_format = parts[-1]
+        return f_format
+    else:
+        raise Exception(f'Cannot guess format from {filename}')
+
+def read_csv(filename, comment='#', sep=','):
+    lines = "".join([line for line in open(filename) 
+                    if not line.startswith(comment)])
+    return pd.read_csv(StringIO(lines), sep=sep)
+
+def read_pandas(filename: str, sep=None) -> pd.DataFrame:
+    """
+    wrapper to pd.read_csv that handles comment lines correctly
+    :param filename:
+    :param sep: File separator in pandas (\t or ,)
+    :return:
+    """
+    if not sep:
+        extension = get_file_extension(filename)
+        sep = "\t"
+        if extension == "tsv":
+            sep = "\t"
+        elif extension == "csv":
+            sep = ","
+        else:
+            logging.warning(f"Cannot automatically determine table format, trying tsv.")
+
+    # from tempfile import NamedTemporaryFile
+    # with NamedTemporaryFile("r+") as tmp:
+    #    with open(filename, "r") as f:
+    #        for line in f:
+    #            if not line.startswith('#'):
+    #                tmp.write(line + "\n")
+    #    tmp.seek(0)
+    return read_csv(filename, comment='#', sep=sep).fillna("")
