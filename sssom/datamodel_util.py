@@ -6,8 +6,18 @@ import yaml
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
-from sssom.sssom_datamodel import Entity
+from sssom.sssom_datamodel import Entity, MappingSet
 import logging
+
+@dataclass
+class MappingSetDataFrame:
+    """
+    A collection of mappings represented as a DataFrame, together with additional metadata
+    """
+
+    df: pd.DataFrame = None ## Mappings
+    prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
+    metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
 
 @dataclass
 class EntityPair:
