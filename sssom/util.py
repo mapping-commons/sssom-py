@@ -1,6 +1,8 @@
 import pandas as pd
 import random
 import hashlib
+import logging
+from rdflib import Graph, URIRef, BNode, Literal
 from sssom.sssom_datamodel import Entity, Mapping
 from sssom.datamodel_util import MappingSetDiff, EntityPair
 from typing import Dict, Tuple, List
@@ -24,6 +26,7 @@ def parse(filename) -> pd.DataFrame:
     parses a TSV to a pandas frame
     """
     #return from_tsv(filename)
+    logging.info(f'Parsing {filename}')
     return pd.read_csv(filename, sep="\t", comment="#")
 
 def collapse(df):
@@ -111,6 +114,10 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     d.unique_tuples1 = tuples1.difference(tuples2)
     d.unique_tuples2 = tuples2.difference(tuples1)
     d.common_tuples = tuples1.intersection(tuples2)
+    all_tuples = tuples1.union(tuples2)
+    all_ids = set()
+    for t in all_tuples:
+        all_ids.update({t[0], t[1]})
     rows = []
     for t in d.unique_tuples1:
         for r in mappings1[t]:
@@ -129,6 +136,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     #    r['other'] = 'synthesized sssom file'
     d.combined_dataframe = pd.DataFrame(rows)
     return d
+
 
 
 def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5):

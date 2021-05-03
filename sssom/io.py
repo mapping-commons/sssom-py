@@ -4,11 +4,30 @@ from .parsers import get_parsing_function
 from .writers import get_writer_function
 from .context import get_jsonld_context
 import json
+import yaml
+from .datamodel_util import MappingSetDataFrame
 import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
-
+def write_sssom(mset: MappingSetDataFrame, output: str = None) -> None:
+    if mset.metadata is not None:
+        obj = {k:v for k,v in mset.metadata.items()}
+    else:
+        obj = {}
+    if mset.prefixmap is not None:
+        obj['curie_map'] = mset.prefixmap
+    lines = yaml.safe_dump(obj).split("\n")
+    lines = [f'# {line}' for line in lines if line != '']
+    s = mset.df.to_csv(sep="\t", index=False)
+    lines = lines + [s]
+    if output is None:
+        for line in lines:
+            print(line)
+    else:
+        with open(output, 'w') as stream:
+            for line in lines:
+                stream.write(line)
 
 def convert_file(input: str, output: str = None, input_format: str = None, output_format: str = None, context_path=None,
                  read_func=None, write_func=None):
