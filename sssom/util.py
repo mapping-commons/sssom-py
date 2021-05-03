@@ -26,7 +26,7 @@ def parse(filename) -> pd.DataFrame:
     """
     #return from_tsv(filename)
     #return pd.read_csv(filename, sep="\t", comment="#")
-    return read_pandas(filename, sep="\t", comment="#")
+    return read_pandas(filename, sep="\t")
 
 def collapse(df):
     """
