@@ -1,12 +1,16 @@
 import click
+import yaml
+import re
+from pathlib import Path
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file
+from .io import convert_file, write_sssom
 from .parsers import from_tsv
 from .writers import write_tsv
+from .datamodel_util import MappingSetDataFrame
 import statistics
-from typing import Tuple
+from typing import Tuple, List, Dict
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
@@ -68,19 +72,76 @@ def dedupe(input: str, output: str):
     df.to_csv(output, sep="\t", index=False)
 
 @main.command()
-@click.option('-q', '--query', help='SQL query. Use "df" as table name')
-@click.option('-o', '--output')
-@click.argument('input')
-def dosql(query:str, input: str, output: str):
+@click.option('-q', '--query',
+              help='SQL query. Use "df" as table name')
+@click.option('-o', '--output',
+              help='output TSV/SSSOM file')
+@click.argument('inputs', nargs=-1)
+def dosql(query:str, inputs: List[str], output: str):
     """
-    Run a SQL query.
+    Run a SQL query over one or more sssom files.
+
+    Each of the N inputs is assigned a table name df1, df2, ..., dfN
+
+    Alternatively, the filenames can be used as table names - these are first stemmed
+    E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
 
     Example:
-        sssom dosql -q "SELECT * FROM df WHERE confidence>0.5 ORDER BY confience" my.sssom.tsv
+        sssom dosql -q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+
+    Example:
+        `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
+        FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
     """
-    df = parse(input)
+    n = 1
+    while len(inputs) >= n:
+        fn = inputs[n-1]
+        df = parse(fn)
+        globals()[f'df{n}'] = df
+        tn = re.sub('\..*','',Path(fn).stem).lower()
+        globals()[tn] = df
+        n += 1
     df = sqldf(query)
-    df.to_csv(output, sep="\t", index=False)
+    if output is None:
+        print(df.to_csv(sep="\t", index=False))
+    else:
+        df.to_csv(output, sep="\t", index=False)
+
+from sssom.sparql_util import EndpointConfig, query_mappings
+@main.command()
+@click.option('-c', '--config', type=click.File('rb'))
+@click.option('-e', '--url')
+@click.option('-g', '--graph')
+@click.option('--object-labels/--no-object-labels', default=None, help='if set, includes object labels')
+@click.option('-l', '--limit', type=int)
+@click.option('-P', '--prefix', type=click.Tuple([str, str]), multiple=True)
+@click.option('-o', '--output')
+def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
+           object_labels: bool = None,
+           prefix:List[Dict[str,str]] = None,
+           output: str = None):
+    """
+    Run a SPARQL query.
+    """
+    endpoint = EndpointConfig()
+    if config is not None:
+        for k,v in yaml.safe_load(config).items():
+            setattr(endpoint, k, v)
+    if url is not None:
+        endpoint.url = url
+    if graph is not None:
+        endpoint.graph = graph
+    if limit is not None:
+        endpoint.limit = limit
+    if object_labels is not None:
+        endpoint.include_object_labels = object_labels
+    if prefix is not None:
+        if endpoint.curie_map is None:
+            endpoint.curie_map = {}
+        for k,v in prefix:
+            endpoint.curie_map[k] = v
+    msdf = query_mappings(endpoint)
+    write_sssom(msdf, output)
 
 @main.command()
 @click.option('-o', '--output')
@@ -99,14 +160,17 @@ def diff(inputs: Tuple[str,str], output):
     d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
 @main.command()
-@click.option('-i', '--input')
 @click.option('-d', '--outdir')
-def partition(input: str, outdir: str):
+@click.argument('inputs', nargs=-1)
+def partition(inputs: List[str], outdir: str):
     """
     partitions an SSSOM file into multiple files, where each
     file is a strongly connected component
     """
-    doc = from_tsv(input)
+    docs = [from_tsv(input) for input in inputs]
+    doc = docs.pop()
+    for d2 in docs:
+        doc.mapping_set.mappings += d2.mapping_set.mappings
     cliquedocs = split_into_cliques(doc)
     n = 0
     for cdoc in cliquedocs:
