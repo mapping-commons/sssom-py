@@ -12,7 +12,8 @@ import json
 
 from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
-from .util import get_file_extension, RDF_FORMATS
+from .datamodel_util import get_file_extension
+from .util import RDF_FORMATS
 from .context import get_jsonld_context
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
