@@ -14,6 +14,7 @@ from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .util import get_file_extension, RDF_FORMATS
 from .context import get_jsonld_context
+from .datamodel_util import extract_global_metadata
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 OWL_OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
@@ -250,15 +251,7 @@ def get_writer_function(output_format, output):
         raise Exception(f'Unknown output format: {output_format}')
 
 
-def extract_global_metadata(msdoc: MappingSetDocument):
-    meta = {'curie_map': msdoc.curie_map}
-    ms_meta = msdoc.mapping_set
-    for key in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
-        slot = getattr(slots, key).name
-        if slot not in ["mappings"] and slot in ms_meta:
-            if ms_meta[slot]:
-                meta[key] = ms_meta[slot]
-    return meta
+
 
 
 def _inject_annotation_properties(graph: Graph, elements):

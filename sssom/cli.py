@@ -5,11 +5,9 @@ from pathlib import Path
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, write_sssom
+from .io import convert_file, write_sssom, parse_file
 from .parsers import from_tsv
 from .writers import write_tsv
-from .datamodel_util import MappingSetDataFrame
-import statistics
 from typing import Tuple, List, Dict
 import pandas as pd
 from scipy.stats import chi2_contingency
@@ -42,6 +40,18 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
     convert file (currently only supports conversion to RDF)
     """
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
+
+## Input and metadata would be files (file paths). Check if exists.
+@main.command()
+@click.option('-i', '--input')
+@click.option('-f', '--format')
+@click.option('-m', '--metadata')
+@click.option('-o', '--output')
+def parse(input: str, format: str, metadata:str , output: str):
+    """
+    parse file (currently only supports conversion to RDF)
+    """
+    parse_file(input_path=input, output_path=output, input_format=format, metadata_path=metadata)
 
 
 @main.command()
