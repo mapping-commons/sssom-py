@@ -1,7 +1,9 @@
 import os
+from sssom.datamodel_util import MappingSetDataFrame
+from sssom.sssom_datamodel import MappingSet
 
 from .parsers import get_parsing_function
-from .writers import get_writer_function
+from .writers import get_writer_function, write_tsv
 from .context import get_jsonld_context
 import json
 import yaml
@@ -63,3 +65,33 @@ def convert_file(input: str, output: str = None, input_format: str = None, outpu
     if write_func is None:
         write_func, fileformat = get_writer_function(output_format, output)
     write_func(doc, output, fileformat=fileformat, context_path=context_path)
+
+
+def parse_file(input_path: str, output_path: str = None, input_format: str = None, metadata_path=None):
+    """
+    converts from one format to another
+    :param input_path:
+    :param output_path:
+    :param input_format:
+    :param metadata_path:
+    :return:
+    """
+    curie_map={}
+    contxt = get_jsonld_context()
+
+    '''if context_path:
+        if os.path.isfile(context_path):
+            with open(context_path) as json_file:
+                contxt = json.load(json_file)'''
+
+     
+
+    for key in contxt["@context"]:
+        v = contxt["@context"][key]
+        if isinstance(v,str):
+            curie_map[key]=v
+    
+    read_func = get_parsing_function(input_format, input)
+    doc = read_func(input,curie_map=curie_map)
+    write_tsv(doc, output_path)
+    

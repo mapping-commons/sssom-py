@@ -11,7 +11,9 @@ import yaml
 from rdflib import Graph
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
-from .util import get_file_extension, RDF_FORMATS
+from .util import RDF_FORMATS
+from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
+from sssom.datamodel_util import read_pandas
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -19,9 +21,9 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Readers (from file)
 
 
-def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDocument:
+def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
-    parses a TSV to a MappingSetDocument
+    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
 
     df = read_pandas(filename)
@@ -31,38 +33,47 @@ def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
         logging.info("Context provided, but SSSOM file provides its own CURIE map. "
                      "CURIE map from context is disregarded.")
         curie_map = meta['curie_map']
-    return from_dataframe(df, curie_map=curie_map, meta=meta)
+    doc = from_dataframe(df, curie_map=curie_map, meta=meta)
+    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    return msdf
+    
 
 
-def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDocument:
+def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
-        parses a TSV to a MappingSetDocument
-        """
+    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
+    """
     g = Graph()
     file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
-    return from_rdf_graph(g, curie_map, meta)
+    doc = from_rdf_graph(g, curie_map, meta)
+    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    return msdf
 
 
-def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDocument:
+def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
-        parses a TSV to a MappingSetDocument
-        """
+    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
+    """
     g = Graph()
     file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
-    return from_owl_graph(g, curie_map, meta)
+    doc = from_owl_graph(g, curie_map, meta)
+    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    return msdf
 
-def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, properties: list = []) -> MappingSetDocument:
+def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, properties: list = []) -> MappingSetDataFrame:
     """
-        parses a TSV to a MappingSetDocument
-        """
+    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
+    """
 
 
     with open(filename) as json_file:
         jsondoc = json.load(json_file)
 
-    return from_obographs(jsondoc, curie_map, meta)
+    doc = from_obographs(jsondoc, curie_map, meta)
+    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    return msdf
 
 
 def guess_file_format(filename):
@@ -76,13 +87,15 @@ def guess_file_format(filename):
 
 
 def from_alignment_xml(filename: str, curie_map: Dict[str, str] = None,
-                       meta: Dict[str, str] = None) -> MappingSetDocument:
+                       meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
-           parses a TSV to a MappingSetDocument
-           """
+    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
+    """
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(filename)
-    return from_alignment_minidom(xmldoc, curie_map, meta)
+    doc = from_alignment_minidom(xmldoc, curie_map, meta)
+    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    return msdf
 
 
 def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
@@ -270,6 +283,7 @@ def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) ->
 
 
 # Utilities (reading)
+# All from_* should return MappingSetDataFrame
 
 
 def get_parsing_function(input_format, filename):
@@ -384,3 +398,10 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
     m = Mapping(**mdict)
     if is_valid_mapping(m):
         return m
+
+def to_mapping_set_document(msdf:MappingSetDataFrame) -> MappingSetDocument:
+    ###
+    # convert MappingSetDataFrame into MappingSetDocument
+    ###
+    doc = from_dataframe(df=msdf.df, curie_map=msdf.metadata['curie_map'], meta=msdf.metadata)
+    return doc

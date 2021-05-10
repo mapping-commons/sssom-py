@@ -246,47 +246,4 @@ def to_mapping_set_dataframe(doc:MappingSetDocument) -> MappingSetDataFrame:
     msdf = MappingSetDataFrame(df=df, prefixmap=doc.curie_map, metadata=meta)
     return msdf
 
-def to_mapping_set_document(doc:MappingSetDataFrame) -> MappingSetDocument:
-    # Use standard method to do this.
-    ###
-    # convert MappingSetDataFrame into MappingSetDocument  
-    '''df: pd.DataFrame = None ## Mappings
-    prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes'''
-    # TO
-    '''mapping_set: MappingSet
-    curie_map: Dict[str, str]'''
-    # MappingSet =
-    '''
-    _inherited_slots: ClassVar[List[str]] = []
-
-    class_class_uri: ClassVar[URIRef] = SSSOM.MappingSet
-    class_class_curie: ClassVar[str] = "sssom:MappingSet"
-    class_name: ClassVar[str] = "mapping set"
-    class_model_uri: ClassVar[URIRef] = SSSOM.MappingSet
-
-    mappings: Optional[Union[Union[dict, "Mapping"], List[Union[dict, "Mapping"]]]] = empty_list()
-    mapping_set_id: Optional[Union[str, EntityId]] = None
-    mapping_set_version: Optional[str] = None
-    creator_id: Optional[Union[str, EntityId]] = None
-    creator_label: Optional[str] = None
-    license: Optional[str] = None
-    subject_source: Optional[str] = None
-    subject_source_version: Optional[str] = None
-    object_source: Optional[str] = None
-    object_source_version: Optional[str] = None
-    mapping_provider: Optional[str] = None
-    mapping_tool: Optional[str] = None
-    mapping_date: Optional[str] = None
-    subject_match_field: Optional[Union[str, EntityId]] = None
-    object_match_field: Optional[Union[str, EntityId]] = None
-    subject_preprocessing: Optional[str] = None
-    object_preprocessing: Optional[str] = None
-    match_term_type: Optional[str] = None
-    see_also: Optional[str] = None
-    other: Optional[str] = None
-    comment: Optional[str] = None
-    '''
-    ###
-    df = MappingSetDocument(mapping_set=doc.df.to_dict(), curie_map=doc.metadata['curie_map'])
-    return df
+# to_mapping_set_document is in parser.py in order to avoid circular import errors

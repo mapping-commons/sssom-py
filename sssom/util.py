@@ -117,7 +117,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     all_tuples = tuples1.union(tuples2)
     all_ids = set()
     for t in all_tuples:
-        all_ids.update({t[0], t[1]})
+        all_ids.update({t.subject_entity.id, t.object_entity.id})
     rows = []
     for t in d.unique_tuples1:
         for r in mappings1[t]:
