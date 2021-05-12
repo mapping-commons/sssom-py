@@ -10,3 +10,5 @@ scikit_learn>=0.0
 networkx>=0.0
 pandasql>=0.0
 sparqlwrapper>=0.0
+pytest
+

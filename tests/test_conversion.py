@@ -3,7 +3,6 @@ import logging
 import filecmp
 import unittest
 import pandas as pd
-
 from rdflib import Graph
 from sssom.sssom_document import MappingSetDocument
 from sssom.parsers import read_pandas, get_parsing_function, to_mapping_set_document
@@ -11,6 +10,7 @@ from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld_di
 from sssom.writers import write_json, write_rdf, write_owl, write_tsv
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
 from sssom.datamodel_util import read_pandas, to_mapping_set_dataframe
+
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
@@ -82,12 +82,13 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(len(df), test.ct_data_frame_rows,
                          f"The pandas data frame has less elements than the orginal one for {test.filename}")
         df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
+        #data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
+        data = read_pandas(test.get_out_file("roundtrip.tsv"), sep="\t")
         self.assertEqual(len(data), test.ct_data_frame_rows,
                          f"The re-serialised pandas data frame has less elements than the orginal one for {test.filename}")
         write_tsv(mdoc, test.get_out_file("tsv"))
         # self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
-        df = read_pandas(test.get_out_file("tsv"))
+        df = read_pandas(test.get_out_file("tsv"), sep="\t")
         self.assertEqual(len(df), test.ct_data_frame_rows,
                          f"The exported pandas data frame has less elements than the orginal one for {test.filename}")
 

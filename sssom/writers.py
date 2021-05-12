@@ -12,7 +12,8 @@ import json
 
 from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
-from .util import get_file_extension, RDF_FORMATS
+from .datamodel_util import get_file_extension
+from .util import RDF_FORMATS
 from .context import get_jsonld_context
 from .datamodel_util import MappingSetDataFrame, extract_global_metadata, to_mapping_set_dataframe
 from .parsers import to_mapping_set_document

@@ -11,8 +11,10 @@ import yaml
 from rdflib import Graph, BNode, Literal
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
+
 from .util import RDF_FORMATS
 from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
+
 from sssom.datamodel_util import read_pandas
 
 cwd = os.path.abspath(os.path.dirname(__file__))
@@ -328,31 +330,6 @@ def get_parsing_function(input_format, filename):
         raise Exception(f'Unknown input format: {input_format}')
 
 
-def read_pandas(filename: str, sep=None) -> pd.DataFrame:
-    """
-    wrapper to pd.read_csv that handles comment lines correctly
-    :param filename:
-    :param sep: File separator in pandas (\t or ,)
-    :return:
-    """
-    if not sep:
-        extension = get_file_extension(filename)
-        sep = "\t"
-        if extension == "tsv":
-            sep = "\t"
-        elif extension == "csv":
-            sep = ","
-        else:
-            logging.warning(f"Cannot automatically determine table format, trying tsv.")
-
-    # from tempfile import NamedTemporaryFile
-    # with NamedTemporaryFile("r+") as tmp:
-    #    with open(filename, "r") as f:
-    #        for line in f:
-    #            if not line.startswith('#'):
-    #                tmp.write(line + "\n")
-    #    tmp.seek(0)
-    return pd.read_csv(filename, comment='#', sep=sep).fillna("")
 
 def _prepare_mapping(mapping: Mapping):
     p = mapping.predicate_id

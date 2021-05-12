@@ -4,7 +4,7 @@ import hashlib
 import logging
 from rdflib import Graph, URIRef, BNode, Literal
 from sssom.sssom_datamodel import Entity, Mapping
-from sssom.datamodel_util import MappingSetDiff, EntityPair
+from sssom.datamodel_util import read_pandas, MappingSetDiff, EntityPair
 from typing import Dict, Tuple, List
 
 # TODO: use sssom_datamodel
@@ -28,6 +28,7 @@ def parse(filename) -> pd.DataFrame:
     #return from_tsv(filename)
     logging.info(f'Parsing {filename}')
     return pd.read_csv(filename, sep="\t", comment="#")
+    #return read_pandas(filename, sep="\t")
 
 def collapse(df):
     """
@@ -200,14 +201,6 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
     return rows
 
 RDF_FORMATS=['ttl', 'turtle', 'nt']
-
-def get_file_extension(filename: str) -> str:
-    parts = filename.split(".")
-    if len(parts) > 0:
-        f_format = parts[-1]
-        return f_format
-    else:
-        raise Exception(f'Cannot guess format from {filename}')
 
 def sha256sum(filename):
     h  = hashlib.sha256()

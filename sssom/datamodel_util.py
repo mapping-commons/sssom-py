@@ -2,6 +2,7 @@
 Converts sssom meta tsv to linkml
 """
 
+from sssom.sssom_document import MappingSetDocument
 import yaml
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
@@ -20,6 +21,7 @@ class MappingSetDataFrame:
     df: pd.DataFrame = None ## Mappings
     prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
+
 
 @dataclass
 class EntityPair:
@@ -74,7 +76,8 @@ class MetaTSVConverter:
         loads from folder
         :return:
         """
-        self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
+        #self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
+        self.df = read_pandas(filename,sep='\t')
 
 
     def convert(self) -> Dict[str, Any]:
@@ -247,3 +250,4 @@ def to_mapping_set_dataframe(doc:MappingSetDocument) -> MappingSetDataFrame:
     return msdf
 
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
+
