@@ -1,14 +1,14 @@
 import logging
 import os
 import re
-from typing import Dict
+from typing import Dict, Set
 from xml.dom import minidom, Node
 from xml.dom.minidom import Document
 import json
 
 import pandas as pd
 import yaml
-from rdflib import Graph
+from rdflib import Graph, BNode, Literal
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 from .util import RDF_FORMATS
@@ -16,6 +16,7 @@ from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_
 from sssom.datamodel_util import read_pandas
 
 cwd = os.path.abspath(os.path.dirname(__file__))
+
 
 
 # Readers (from file)
@@ -267,7 +268,7 @@ def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) ->
     return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
 
 
-def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
+def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], mapping_predicates: Set[str] = None) -> MappingSetDocument:
     """
     Converts a dataframe to a MappingSetDocument
     :param g: A Graph object (rdflib)
@@ -277,14 +278,38 @@ def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) ->
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
-
+    if mapping_predicates is None:
+        mapping_predicates = get_default_mapping_predicates()
     ms = MappingSet()
+    for s,p,o in g.triples((None, None, None)):
+        if isinstance(s, URIRef):
+            p_id = curie(p, curie_map)
+            if p_id in mapping_predicates:
+                s_id = curie(s, curie_map)
+                if isinstance(o, URIRef):
+                    o_id = curie(o, curie_map)
+                    m = Mapping(subject_id=s_id,
+                                object_id=o_id,
+                                predicate_id=p_id)
+                    ms.mappings.append(m)
     return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
 
 
 # Utilities (reading)
 # All from_* should return MappingSetDataFrame
 
+def get_default_mapping_predicates():
+    return {
+        'oio:hasDbXref',
+        'skos:exactMatch',
+        'skos:narrowMatch',
+        'skos:broadMatch',
+        'skos:exactMatch',
+        'skos:closeMatch',
+        'owl:sameAs',
+        'owl:equivalentClass',
+        'owl:equivalentProperty'
+    }
 
 def get_parsing_function(input_format, filename):
     if input_format is None:
@@ -328,7 +353,6 @@ def read_pandas(filename: str, sep=None) -> pd.DataFrame:
     #                tmp.write(line + "\n")
     #    tmp.seek(0)
     return pd.read_csv(filename, comment='#', sep=sep).fillna("")
-
 
 def _prepare_mapping(mapping: Mapping):
     p = mapping.predicate_id
