@@ -1,3 +1,5 @@
+from sssom.datamodel_util import MappingSetDataFrame, to_mapping_set_dataframe
+from sssom.parsers import to_mapping_set_document
 import networkx as nx
 import pandas as pd
 import hashlib
@@ -6,10 +8,12 @@ import statistics
 from .sssom_datamodel import slots, MappingSet
 from .sssom_document import MappingSetDocument
 
-def to_networkx(doc: MappingSetDocument) -> nx.DiGraph:
+def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
     """
     converts a MappingSetDocument to a networkx DiGraph
     """
+
+    doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
     M = {
         'owl:subClassOf',
@@ -47,8 +51,10 @@ def to_networkx(doc: MappingSetDocument) -> nx.DiGraph:
             g.add_edge(o, s)
     return g
 
-def split_into_cliques(doc: MappingSetDocument):
-    g = to_networkx(doc)
+def split_into_cliques(msdf: MappingSetDataFrame):
+
+    doc = to_mapping_set_document(msdf)
+    g = to_networkx(msdf)
     gen = nx.algorithms.components.strongly_connected_components(g)
 
     node_to_comp = {}

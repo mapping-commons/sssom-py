@@ -15,6 +15,8 @@ from .sssom_document import MappingSetDocument
 from .datamodel_util import get_file_extension
 from .util import RDF_FORMATS
 from .context import get_jsonld_context
+from .datamodel_util import MappingSetDataFrame, extract_global_metadata, to_mapping_set_dataframe
+from .parsers import to_mapping_set_document
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 OWL_OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
@@ -42,7 +44,8 @@ def write_tsv(msdoc: MappingSetDocument, filename: str, fileformat="tsv", contex
     else:
         raise Exception(f'Unknown table format: {fileformat}, should be one of tsv or csv')
 
-    df = to_dataframe(msdoc, context_path)
+    msdf = to_mapping_set_dataframe(msdoc)
+    df = to_dataframe(msdf, context_path)
     meta = extract_global_metadata(msdoc)
     if os.path.isfile(filename):
         os.remove(filename)
@@ -55,28 +58,28 @@ def write_tsv(msdoc: MappingSetDocument, filename: str, fileformat="tsv", contex
     f.close()
 
 
-def write_rdf(msdoc: MappingSetDocument, filename: str, fileformat="xml", context_path=None) -> None:
+def write_rdf(msdf: MappingSetDataFrame, filename: str, fileformat="xml", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
-    graph = to_rdf_graph(msdoc, context_path)
+    graph = to_rdf_graph(msdf, context_path)
     graph.serialize(destination=filename, format=fileformat)
 
 
-def write_owl(msdoc: MappingSetDocument, filename: str, fileformat="xml", context_path=None) -> None:
+def write_owl(msdf: MappingSetDataFrame, filename: str, fileformat="xml", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
-    graph = to_owl_graph(msdoc, context_path)
+    graph = to_owl_graph(msdf, context_path)
     graph.serialize(destination=filename, format=fileformat)
 
 
-def write_json(msdoc: MappingSetDocument, filename: str, fileformat="jsonld", context_path=None) -> None:
+def write_json(msdf: MappingSetDataFrame, filename: str, fileformat="jsonld", context_path=None) -> None:
     """
     dataframe 2 tsv
     """
     if fileformat == "jsonld":
-        data = to_jsonld_dict(msdoc, context_path)
+        data = to_jsonld_dict(msdf, context_path)
         with open(filename, 'w') as outfile:
             json.dump(data, outfile)
     else:
@@ -85,8 +88,11 @@ def write_json(msdoc: MappingSetDocument, filename: str, fileformat="jsonld", co
 
 # Converters
 
-def to_dataframe(doc: MappingSetDocument, context_path=None) -> pd.DataFrame:
+def to_dataframe(msdf: MappingSetDataFrame, context_path=None) -> pd.DataFrame:
     data = []
+
+    doc = to_mapping_set_document(msdf)
+
     for mapping in doc.mapping_set.mappings:
         mdict = mapping.__dict__
         m = {}
@@ -98,13 +104,16 @@ def to_dataframe(doc: MappingSetDocument, context_path=None) -> pd.DataFrame:
     return df
 
 
-def to_owl_graph(doc: MappingSetDocument, context_path=None) -> Graph:
+def to_owl_graph(msdf: MappingSetDataFrame, context_path=None) -> Graph:
     """
     Converts to RDF - OWL flavour
-    :param doc: A MappingSetDocument object
+    :param doc: A MappingSetDataFrame object
     :param context_path: An optional context path for the MappingSet
     :return:
     """
+    
+    doc = to_mapping_set_document(msdf)
+
     graph = Graph()
     for k, v in doc.curie_map.items():
         graph.namespace_manager.bind(k, URIRef(v))
@@ -164,13 +173,15 @@ def to_owl_graph(doc: MappingSetDocument, context_path=None) -> Graph:
         return graph
 
 
-def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
+def to_rdf_graph(msdf: MappingSetDataFrame, context_path=None) -> Graph:
     """
     Converts to RDF
     :param doc: A MappingSetDocument object
     :param context_path: An optional context path for the MappingSet
     :return:
     """
+    doc = to_mapping_set_document(msdf)
+
     graph = Graph()
     for k, v in doc.curie_map.items():
         graph.namespace_manager.bind(k, URIRef(v))
@@ -221,14 +232,15 @@ def to_rdf_graph(doc: MappingSetDocument, context_path=None) -> Graph:
         return graph
 
 
-def to_jsonld_dict(doc: MappingSetDocument, context_path=None) -> Graph:
+def to_jsonld_dict(msdf: MappingSetDataFrame, context_path=None) -> Graph:
     """
     Converts to RDF
     :param doc: A MappingSetDocument object
     :param context_path: An optional context path for the MappingSet
     :return:
     """
-    g = to_rdf_graph(doc, context_path)
+    
+    g = to_rdf_graph(msdf, context_path)
     s = g.serialize(format='json-ld', indent=4)
     return json.loads(s)
 
@@ -251,15 +263,7 @@ def get_writer_function(output_format, output):
         raise Exception(f'Unknown output format: {output_format}')
 
 
-def extract_global_metadata(msdoc: MappingSetDocument):
-    meta = {'curie_map': msdoc.curie_map}
-    ms_meta = msdoc.mapping_set
-    for key in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
-        slot = getattr(slots, key).name
-        if slot not in ["mappings"] and slot in ms_meta:
-            if ms_meta[slot]:
-                meta[key] = ms_meta[slot]
-    return meta
+
 
 
 def _inject_annotation_properties(graph: Graph, elements):

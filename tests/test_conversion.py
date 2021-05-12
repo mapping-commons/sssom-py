@@ -3,14 +3,14 @@ import logging
 import filecmp
 import unittest
 import pandas as pd
-
 from rdflib import Graph
 from sssom.sssom_document import MappingSetDocument
-from sssom.parsers import get_parsing_function
+from sssom.parsers import read_pandas, get_parsing_function, to_mapping_set_document
 from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld_dict
 from sssom.writers import write_json, write_rdf, write_owl, write_tsv
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
-from sssom.datamodel_util import read_pandas
+from sssom.datamodel_util import read_pandas, to_mapping_set_dataframe
+
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
@@ -21,7 +21,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         for test in test_cases:
             with self.subTest():
                 read_func = get_parsing_function(test.inputformat, test.filepath)
-                mdoc = read_func(test.filepath, curie_map=test.curie_map)
+                #mdoc = read_func(test.filepath, curie_map=test.curie_map)
+                msdf = read_func(test.filepath, curie_map=test.curie_map)
+                mdoc = to_mapping_set_document(msdf)
                 logging.info(f"Testing {test.filepath}")
                 self.assertEqual(len(mdoc.mapping_set.mappings), test.ct_data_frame_rows,
                                  f"Wrong number of mappings in MappingSet of {test.filename}")
@@ -35,19 +37,21 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 self._test_to_json_dict(mdoc, test)
 
     def _test_to_owl_graph(self, mdoc, test):
-        g = to_owl_graph(mdoc)
+        msdf = to_mapping_set_dataframe(mdoc)
+        g = to_owl_graph(msdf)
         file_format = "owl"
         self._test_graph_roundtrip(g, test, file_format)
-        write_owl(mdoc, test.get_out_file(file_format), test.graph_serialisation)
+        write_owl(msdf, test.get_out_file(file_format), test.graph_serialisation)
         self._test_load_graph_size(test.get_out_file(file_format), test.graph_serialisation,
                                    getattr(test, f"ct_graph_queries_owl"))
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
     def _test_to_rdf_graph(self, mdoc, test):
-        g = to_rdf_graph(mdoc)
+        msdf = to_mapping_set_dataframe(mdoc)
+        g = to_rdf_graph(msdf)
         file_format = "rdf"
         self._test_graph_roundtrip(g, test, file_format)
-        write_rdf(mdoc, test.get_out_file(file_format), test.graph_serialisation)
+        write_rdf(msdf, test.get_out_file(file_format), test.graph_serialisation)
         self._test_load_graph_size(test.get_out_file(file_format), test.graph_serialisation,
                                    getattr(test, f"ct_graph_queries_rdf"))
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
@@ -73,7 +77,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                              f"Graph query {query} does not return the expected number of triples for {file}")
 
     def _test_to_dataframe(self, mdoc, test):
-        df = to_dataframe(mdoc)
+        msdf = to_mapping_set_dataframe(mdoc)
+        df = to_dataframe(msdf)
         self.assertEqual(len(df), test.ct_data_frame_rows,
                          f"The pandas data frame has less elements than the orginal one for {test.filename}")
         df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
@@ -88,7 +93,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                          f"The exported pandas data frame has less elements than the orginal one for {test.filename}")
 
     def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase):
-        json_dict = to_jsonld_dict(mdoc)
+        msdf = to_mapping_set_dataframe(mdoc)
+        json_dict = to_jsonld_dict(msdf)
         self.assertEqual(len(json_dict), test.ct_json_elements,
                          f"JSON document has less elements than the orginal one for {test.filename}")
 
@@ -100,7 +106,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
 
         self.assertEqual(len(data), test.ct_json_elements,
                          f"The re-serialised JSON file has less elements than the orginal one for {test.filename}")
-        write_json(mdoc, test.get_out_file("json"))
+        write_json(msdf, test.get_out_file("json"))
         with open(test.get_out_file("json")) as json_file:
             data = json.load(json_file)
         # self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))

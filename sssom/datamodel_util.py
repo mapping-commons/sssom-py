@@ -7,9 +7,21 @@ import yaml
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
-from sssom.sssom_datamodel import Entity
+from sssom.sssom_datamodel import Entity, slots
 import logging
 from io import StringIO
+from .sssom_document import MappingSetDocument
+
+@dataclass
+class MappingSetDataFrame:
+    """
+    A collection of mappings represented as a DataFrame, together with additional metadata
+    """
+
+    df: pd.DataFrame = None ## Mappings
+    prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
+    metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
+
 
 @dataclass
 class EntityPair:
@@ -169,7 +181,6 @@ class MappingSetDataFrame:
     df: pd.DataFrame = None ## Mappings
     prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
-    mapping_set_document: MappingSetDocument=None ## This is the fll mapping set document
 
     
 def get_file_extension(filename: str) -> str:
@@ -210,3 +221,33 @@ def read_pandas(filename: str, sep=None) -> pd.DataFrame:
     #                tmp.write(line + "\n")
     #    tmp.seek(0)
     return read_csv(filename, comment='#', sep=sep).fillna("")
+
+def extract_global_metadata(msdoc: MappingSetDocument):
+    meta = {'curie_map': msdoc.curie_map}
+    ms_meta = msdoc.mapping_set
+    for key in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
+        slot = getattr(slots, key).name
+        if slot not in ["mappings"] and slot in ms_meta:
+            if ms_meta[slot]:
+                meta[key] = ms_meta[slot]
+    return meta
+
+def to_mapping_set_dataframe(doc:MappingSetDocument) -> MappingSetDataFrame:
+    ###
+    # convert MappingSetDocument into MappingSetDataFrame
+    ###
+    data = []
+    for mapping in doc.mapping_set.mappings:
+        mdict = mapping.__dict__
+        m = {}
+        for key in mdict:
+            if mdict[key]:
+                m[key] = mdict[key]
+        data.append(m)
+    df = pd.DataFrame(data=data)
+    meta = extract_global_metadata(doc)
+    msdf = MappingSetDataFrame(df=df, prefixmap=doc.curie_map, metadata=meta)
+    return msdf
+
+# to_mapping_set_document is in parser.py in order to avoid circular import errors
+
