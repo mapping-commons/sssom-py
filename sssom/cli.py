@@ -1,3 +1,4 @@
+from sssom.datamodel_util import to_mapping_set_dataframe
 import click
 import yaml
 import re
@@ -188,7 +189,8 @@ def partition(inputs: List[str], outdir: str):
         ofn = f'{outdir}/clique_{n}.sssom.tsv'
         logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
         logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
-        write_tsv(cdoc, ofn)
+        msdf = to_mapping_set_dataframe(cdoc)
+        write_tsv(msdf, ofn)
 
 
 @main.command()
