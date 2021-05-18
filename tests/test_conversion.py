@@ -83,12 +83,12 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                          f"The pandas data frame has less elements than the orginal one for {test.filename}")
         df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
         #data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        data = read_pandas(test.get_out_file("roundtrip.tsv"), sep="\t")
+        data = read_pandas(test.get_out_file("roundtrip.tsv"))
         self.assertEqual(len(data), test.ct_data_frame_rows,
                          f"The re-serialised pandas data frame has less elements than the orginal one for {test.filename}")
         write_tsv(msdf, test.get_out_file("tsv"))
         # self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
-        df = read_pandas(test.get_out_file("tsv"), sep="\t")
+        df = read_pandas(test.get_out_file("tsv"))
         self.assertEqual(len(df), test.ct_data_frame_rows,
                          f"The exported pandas data frame has less elements than the orginal one for {test.filename}")
 
