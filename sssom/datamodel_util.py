@@ -77,7 +77,7 @@ class MetaTSVConverter:
         :return:
         """
         #self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
-        self.df = read_pandas(filename,sep='\t')
+        self.df = read_pandas(filename)
 
 
     def convert(self) -> Dict[str, Any]:
@@ -196,7 +196,7 @@ def read_csv(filename, comment='#', sep=','):
                     if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
-def read_pandas(filename: str, sep=None) -> pd.DataFrame:
+def read_pandas(filename: str, sep='\t') -> pd.DataFrame:
     """
     wrapper to pd.read_csv that handles comment lines correctly
     :param filename:
