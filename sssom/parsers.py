@@ -36,8 +36,8 @@ def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
         logging.info("Context provided, but SSSOM file provides its own CURIE map. "
                      "CURIE map from context is disregarded.")
         curie_map = meta['curie_map']
-    doc = from_dataframe(df, curie_map=curie_map, meta=meta)
-    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
+    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
     
 
@@ -49,8 +49,8 @@ def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     g = Graph()
     file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
-    doc = from_rdf_graph(g, curie_map, meta)
-    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    msdf = from_rdf_graph(g, curie_map, meta)
+    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
 
 
@@ -61,8 +61,8 @@ def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     g = Graph()
     file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
-    doc = from_owl_graph(g, curie_map, meta)
-    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    msdf = from_owl_graph(g, curie_map, meta)
+    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
 
 def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, properties: list = []) -> MappingSetDataFrame:
@@ -74,8 +74,8 @@ def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: D
     with open(filename) as json_file:
         jsondoc = json.load(json_file)
 
-    doc = from_obographs(jsondoc, curie_map, meta)
-    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    msdf = from_obographs(jsondoc, curie_map, meta)
+    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
 
 
@@ -96,13 +96,12 @@ def from_alignment_xml(filename: str, curie_map: Dict[str, str] = None,
     """
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(filename)
-    doc = from_alignment_minidom(xmldoc, curie_map, meta)
-    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    msdf = from_alignment_minidom(xmldoc, curie_map, meta)
     return msdf
 
 
 def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
-                           meta: Dict[str, str] = None) -> MappingSetDocument:
+                           meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     Reads a minidom Document object
     :param dom: XML (minidom) object
@@ -145,18 +144,19 @@ def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
         for k, v in meta.items():
             if k != 'curie_map':
                 ms[k] = v
-    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    mdoc =  MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(mdoc)
 
 
 # Readers (from object)
 
-def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
+def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param df:
     :param curie_map:
     :param meta:
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -192,7 +192,8 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, 
     for k, v in meta.items():
         if k != 'curie_map':
             ms[k] = v
-    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    doc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(doc)
 
 
 def is_extract_property(p, properties):
@@ -202,13 +203,13 @@ def is_extract_property(p, properties):
         return False
 
 
-def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
+def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
     :param curie_map:
     :param meta: an optional set of metadata elements
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -252,31 +253,33 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
         for k, v in meta.items():
             if k != 'curie_map':
                 ms[k] = v
-    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(mdoc)
 
 
-def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
+def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
     :param curie_map:
     :param meta: an optional set of metadata elements
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
 
     ms = MappingSet()
-    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(mdoc)
 
 
-def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], mapping_predicates: Set[str] = None) -> MappingSetDocument:
+def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], mapping_predicates: Set[str] = None) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
     :param curie_map:
     :param meta: an optional set of metadata elements
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -294,7 +297,8 @@ def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], ma
                                 object_id=o_id,
                                 predicate_id=p_id)
                     ms.mappings.append(m)
-    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(mdoc)
 
 
 # Utilities (reading)
@@ -401,8 +405,40 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
         return m
 
 def to_mapping_set_document(msdf:MappingSetDataFrame) -> MappingSetDocument:
-    ###
-    # convert MappingSetDataFrame into MappingSetDocument
-    ###
-    doc = from_dataframe(df=msdf.df, curie_map=msdf.metadata['curie_map'], meta=msdf.metadata)
-    return doc
+    """
+    Converts a MappingSetDataFrame to a MappingSetDocument
+    :param msdf:
+    :return: MappingSetDocument
+    """
+    if not msdf.metadata['curie_map']:
+        raise Exception(f'No valid curie_map provided')
+
+    mlist = []
+    ms = MappingSet()
+    bad_attrs = {}
+    for _, row in msdf.df.iterrows():
+        mdict = {}
+        for k, v in row.items():
+            ok = False
+            if k:
+                k = str(k)
+            if hasattr(Mapping, k):
+                mdict[k] = v
+                ok = True
+            if hasattr(MappingSet, k):
+                ms[k] = v
+                ok = True
+            if not ok:
+                if k not in bad_attrs:
+                    bad_attrs[k] = 1
+                else:
+                    bad_attrs[k] += 1
+        m = _prepare_mapping(Mapping(**mdict))
+        mlist.append(m)
+    for k, v in bad_attrs.items():
+        logging.warning(f'No attr for {k} [{v} instances]')
+    ms.mappings = mlist
+    for k, v in msdf.metadata.items():
+        if k != 'curie_map':
+            ms[k] = v
+    return MappingSetDocument(mapping_set=ms, curie_map=msdf.metadata['curie_map'])
