@@ -152,11 +152,11 @@ def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
 
 def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param df:
     :param curie_map:
     :param meta:
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
