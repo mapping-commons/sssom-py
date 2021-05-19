@@ -36,8 +36,8 @@ def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
         logging.info("Context provided, but SSSOM file provides its own CURIE map. "
                      "CURIE map from context is disregarded.")
         curie_map = meta['curie_map']
-    doc = from_dataframe(df, curie_map=curie_map, meta=meta)
-    msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
+    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
     
 
@@ -150,7 +150,7 @@ def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
 
 # Readers (from object)
 
-def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDocument:
+def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDocument
     :param df:
@@ -192,7 +192,8 @@ def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, 
     for k, v in meta.items():
         if k != 'curie_map':
             ms[k] = v
-    return MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    doc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(doc)
 
 
 def is_extract_property(p, properties):
@@ -404,8 +405,40 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
         return m
 
 def to_mapping_set_document(msdf:MappingSetDataFrame) -> MappingSetDocument:
-    ###
-    # convert MappingSetDataFrame into MappingSetDocument
-    ###
-    doc = from_dataframe(df=msdf.df, curie_map=msdf.metadata['curie_map'], meta=msdf.metadata)
-    return doc
+    """
+    Converts a MappingSetDataFrame to a MappingSetDocument
+    :param msdf:
+    :return: MappingSetDocument
+    """
+    if not msdf.metadata['curie_map']:
+        raise Exception(f'No valid curie_map provided')
+
+    mlist = []
+    ms = MappingSet()
+    bad_attrs = {}
+    for _, row in msdf.df.iterrows():
+        mdict = {}
+        for k, v in row.items():
+            ok = False
+            if k:
+                k = str(k)
+            if hasattr(Mapping, k):
+                mdict[k] = v
+                ok = True
+            if hasattr(MappingSet, k):
+                ms[k] = v
+                ok = True
+            if not ok:
+                if k not in bad_attrs:
+                    bad_attrs[k] = 1
+                else:
+                    bad_attrs[k] += 1
+        m = _prepare_mapping(Mapping(**mdict))
+        mlist.append(m)
+    for k, v in bad_attrs.items():
+        logging.warning(f'No attr for {k} [{v} instances]')
+    ms.mappings = mlist
+    for k, v in msdf.metadata.items():
+        if k != 'curie_map':
+            ms[k] = v
+    return MappingSetDocument(mapping_set=ms, curie_map=msdf.metadata['curie_map'])
