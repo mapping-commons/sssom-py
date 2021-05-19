@@ -205,11 +205,11 @@ def is_extract_property(p, properties):
 
 def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
     :param curie_map:
     :param meta: an optional set of metadata elements
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -259,11 +259,11 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
 
 def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
     :param curie_map:
     :param meta: an optional set of metadata elements
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -275,11 +275,11 @@ def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) ->
 
 def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], mapping_predicates: Set[str] = None) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDocument
+    Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
     :param curie_map:
     :param meta: an optional set of metadata elements
-    :return: MappingSetDocument
+    :return: MappingSetDataFrame
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
