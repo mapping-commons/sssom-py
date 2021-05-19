@@ -8,7 +8,7 @@ import json
 
 import pandas as pd
 import yaml
-from rdflib import Graph, BNode, Literal
+from rdflib import Graph, BNode, Literal, URIRef
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
@@ -218,7 +218,14 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
     mlist = []
     bad_attrs = {}
 
-    allowed_properties = ["http://www.geneontology.org/formats/oboInOwl#hasDbXref"]
+    allowed_properties = [
+        "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
+        "http://www.w3.org/2004/02/skos/core#exactMatch",
+        "http://www.w3.org/2004/02/skos/core#broadMatch",
+        "http://www.w3.org/2004/02/skos/core#closeMatch",
+        "http://www.w3.org/2004/02/skos/core#narrowMatch",
+        "http://www.w3.org/2004/02/skos/core#relatedMatch"
+    ]
 
     if 'graphs' in jsondoc:
         for g in jsondoc['graphs']:

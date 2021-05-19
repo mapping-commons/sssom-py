@@ -45,10 +45,11 @@ The following are inspired from https://clig.dev/.
       - owl: OWL
       - rdf, ttl: RDF
       - jsonld: JSONLD
-- extract: Given an input, extract SSSOM mappings using a fixed recipe
+- parse: Given an input, extract SSSOM mappings using a fixed recipe
   - args:
     - i/input: some file in a supported format like obographs, sssom.rdf
     - f/format: input format (too ambiguous to be inferrable) - try inference
+    - m/metadata: metadata as yaml block (optional)
     - o/output: sssom file
 - merge
   - description: take 2 or more sssom files as input and produce 1 merged file

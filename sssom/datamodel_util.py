@@ -12,15 +12,16 @@ import logging
 from io import StringIO
 from .sssom_document import MappingSetDocument
 
+
 @dataclass
 class MappingSetDataFrame:
     """
     A collection of mappings represented as a DataFrame, together with additional metadata
     """
 
-    df: pd.DataFrame = None ## Mappings
-    prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
+    df: pd.DataFrame = None  ## Mappings
+    prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
+    metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
 
 
 @dataclass
@@ -40,6 +41,7 @@ class EntityPair:
             t = self.object_entity.id, self.subject_entity.id
         return hash(t)
 
+
 @dataclass
 class MappingSetDiff:
     """
@@ -58,8 +60,6 @@ class MappingSetDiff:
     Dataframe that combines with left and right dataframes with information injected into
     the comment column
     """
-
-
 
 
 @dataclass
@@ -173,16 +173,17 @@ class MetaTSVConverter:
         with open(fn, 'w') as stream:
             yaml.safe_dump(obj, stream, sort_keys=False)
 
+
 @dataclass
 class MappingSetDataFrame:
     """
     A collection of mappings represented as a DataFrame, together with additional metadata
     """
-    df: pd.DataFrame = None ## Mappings
-    prefixmap: Dict[str,str] = None ## maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str,str]] = None ## header metadata excluding prefixes
+    df: pd.DataFrame = None  ## Mappings
+    prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
+    metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
 
-    
+
 def get_file_extension(filename: str) -> str:
     parts = filename.split(".")
     if len(parts) > 0:
@@ -191,10 +192,32 @@ def get_file_extension(filename: str) -> str:
     else:
         raise Exception(f'Cannot guess format from {filename}')
 
+
 def read_csv(filename, comment='#', sep=','):
-    lines = "".join([line for line in open(filename) 
-                    if not line.startswith(comment)])
+    lines = "".join([line for line in open(filename)
+                     if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
+
+
+def read_metadata(filename):
+    """
+    Reading metadata file (yaml) that is supplied separately from a tsv
+    :param filename: location of file
+    :return: two objects, a metadata and a curie_map object
+    """
+    meta = {}
+    curie_map = {}
+    with open(filename, 'r') as stream:
+        try:
+            m = yaml.safe_load(stream)
+            if "curie_map" in m:
+                curie_map = m['curie_map']
+            m.pop('curie_map', None)
+            meta = m
+        except yaml.YAMLError as exc:
+            print(exc)
+    return meta, curie_map
+
 
 def read_pandas(filename: str, sep='\t') -> pd.DataFrame:
     """
@@ -222,6 +245,7 @@ def read_pandas(filename: str, sep='\t') -> pd.DataFrame:
     #    tmp.seek(0)
     return read_csv(filename, comment='#', sep=sep).fillna("")
 
+
 def extract_global_metadata(msdoc: MappingSetDocument):
     meta = {'curie_map': msdoc.curie_map}
     ms_meta = msdoc.mapping_set
@@ -232,7 +256,8 @@ def extract_global_metadata(msdoc: MappingSetDocument):
                 meta[key] = ms_meta[slot]
     return meta
 
-def to_mapping_set_dataframe(doc:MappingSetDocument) -> MappingSetDataFrame:
+
+def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     ###
     # convert MappingSetDocument into MappingSetDataFrame
     ###
@@ -250,4 +275,3 @@ def to_mapping_set_dataframe(doc:MappingSetDocument) -> MappingSetDataFrame:
     return msdf
 
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
-
