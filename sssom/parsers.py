@@ -65,6 +65,15 @@ def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
 
+def from_jsonld(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+    """
+    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
+    """
+    g = Graph()
+    g.parse(filename, format="json-ld")
+    msdf = from_rdf_graph(g, curie_map, meta)
+    return msdf
+
 def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, properties: list = []) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -335,8 +344,10 @@ def get_parsing_function(input_format, filename):
         return from_owl
     elif input_format == 'alignment-api-xml':
         return from_alignment_xml
-    elif input_format == 'json':
+    elif input_format == 'obographs-json':
         return from_obographs_json
+    elif input_format == 'json':
+        return from_jsonld
     else:
         raise Exception(f'Unknown input format: {input_format}')
 
