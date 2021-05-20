@@ -11,8 +11,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         runner = CliRunner()
         test_cases = get_all_test_cases()
         for test in test_cases:
-            result = run_convert(runner, test.filepath, test.get_out_file("tsv"), test.inputformat, "owl",
-                                 DEFAULT_CONTEXT_PATH)
+            result = run_convert(runner, test.filepath, test.get_out_file("tsv"), test.inputformat, "owl", None)
             self.assertTrue(result.exit_code == 0, f"The run of sssom convert failed with message {result.exception}")
         self.assertTrue(len(test_cases) > 2)
 

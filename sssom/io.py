@@ -44,20 +44,8 @@ def convert_file(input: str, output: str = None, input_format: str = None, outpu
     :param write_func
     :return:
     """
-    curie_map={}
-    contxt = get_jsonld_context()
+    curie_map, meta = get_metadata_and_curie_map(metadata_path=context_path, curie_map_mode="metadata_only")
 
-    if context_path:
-        if os.path.isfile(context_path):
-            with open(context_path) as json_file:
-                contxt = json.load(json_file)
-
-
-
-    for key in contxt["@context"]:
-        v = contxt["@context"][key]
-        if isinstance(v,str):
-            curie_map[key]=v
     if read_func is None:
         read_func = get_parsing_function(input_format, input)
     doc = read_func(input,curie_map=curie_map)
