@@ -1,4 +1,4 @@
-from sssom.datamodel_util import to_mapping_set_dataframe
+from sssom.datamodel_util import to_mapping_set_dataframe, SSSOM_READ_FORMATS
 import click
 import yaml
 import re
@@ -44,15 +44,18 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command()
-@click.option('-i', '--input')
-@click.option('-f', '--format')
-@click.option('-m', '--metadata')
-@click.option('-o', '--output')
-def parse(input: str, format: str, metadata:str , output: str):
+@click.option('-i', '--input', required=True, type=click.Path())
+@click.option('-I', '--input-format', required=False,
+              type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False))
+@click.option('-m', '--metadata', required=False, type=click.Path())
+@click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
+              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False))
+@click.option('-o', '--output', type=click.Path())
+def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
     """
     parse file (currently only supports conversion to RDF)
     """
-    parse_file(input_path=input, output_path=output, input_format=format, metadata_path=metadata)
+    parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
 
 @main.command()

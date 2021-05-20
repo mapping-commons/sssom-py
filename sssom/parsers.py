@@ -20,7 +20,6 @@ from sssom.datamodel_util import read_pandas
 cwd = os.path.abspath(os.path.dirname(__file__))
 
 
-
 # Readers (from file)
 
 
@@ -37,9 +36,8 @@ def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
                      "CURIE map from context is disregarded.")
         curie_map = meta['curie_map']
     msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
-    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
-    
 
 
 def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
@@ -50,7 +48,7 @@ def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
     msdf = from_rdf_graph(g, curie_map, meta)
-    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
 
 
@@ -62,21 +60,34 @@ def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, st
     file_format = guess_file_format(filename)
     g.parse(filename, format=file_format)
     msdf = from_owl_graph(g, curie_map, meta)
-    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
     return msdf
 
-def from_obographs_json(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, properties: list = []) -> MappingSetDataFrame:
+
+def from_jsonld(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
+    g = Graph()
+    g.parse(filename, format="json-ld")
+    msdf = from_rdf_graph(g, curie_map, meta)
+    return msdf
 
+
+def from_obographs_json(filename: str, curie_map: Dict[str, str] = None,
+                        meta: Dict[str, str] = None) -> MappingSetDataFrame:
+    """
+    parses an obographs file as a JSON object and translates it into a MappingSetDataFrame
+    :param filename: The path to the obographs file
+    :param curie_map: an optional curie map
+    :param meta: an optional dictionary of metadata elements
+    :return: A SSSOM MappingSetDataFrame
+    """
 
     with open(filename) as json_file:
         jsondoc = json.load(json_file)
 
-    msdf = from_obographs(jsondoc, curie_map, meta)
-    #msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
+    return from_obographs(jsondoc, curie_map, meta)
 
 
 def guess_file_format(filename):
@@ -144,7 +155,7 @@ def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
         for k, v in meta.items():
             if k != 'curie_map':
                 ms[k] = v
-    mdoc =  MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
@@ -237,23 +248,30 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
                             for xref in n['meta']['xrefs']:
                                 xref_id = xref['val']
                                 mdict = {}
-                                mdict['subject_id'] = curie(nid, curie_map)
-                                mdict['object_id'] = curie(xref_id, curie_map)
-                                mdict['predicate_id'] = "oboInOwl:hasDbXref"
-                                mlist.append(Mapping(**mdict))
+                                try:
+                                    mdict['subject_id'] = curie(nid, curie_map)
+                                    mdict['object_id'] = curie(xref_id, curie_map)
+                                    mdict['predicate_id'] = "oboInOwl:hasDbXref"
+                                    mdict['match_type'] = "Unspecified"
+                                    mlist.append(Mapping(**mdict))
+                                except NoCURIEException as e:
+                                    logging.warning(e)
                         if 'basicPropertyValues' in n['meta']:
                             for basicPropertyBalue in n['meta']['basicPropertyValues']:
                                 pred = basicPropertyBalue['pred']
                                 if pred in allowed_properties:
                                     xref_id = basicPropertyBalue['val']
                                     mdict = {}
-                                    mdict['subject_id'] = curie(nid, curie_map)
-                                    mdict['object_id'] = curie(xref_id, curie_map)
-                                    mdict['predicate_id'] = curie(pred, curie_map)
-                                    mlist.append(Mapping(**mdict))
+                                    try:
+                                        mdict['subject_id'] = curie(nid, curie_map)
+                                        mdict['object_id'] = curie(xref_id, curie_map)
+                                        mdict['predicate_id'] = curie(pred, curie_map)
+                                        mdict['match_type'] = "Unspecified"
+                                        mlist.append(Mapping(**mdict))
+                                    except NoCURIEException as e:
+                                        logging.warning(e)
     else:
         raise Exception(f'No graphs element in obographs file, wrong format?')
-
 
     ms.mappings = mlist
     if meta:
@@ -280,7 +298,8 @@ def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) ->
     return to_mapping_set_dataframe(mdoc)
 
 
-def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], mapping_predicates: Set[str] = None) -> MappingSetDataFrame:
+def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str],
+                   mapping_predicates: Set[str] = None) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
@@ -293,17 +312,20 @@ def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str], ma
     if mapping_predicates is None:
         mapping_predicates = get_default_mapping_predicates()
     ms = MappingSet()
-    for s,p,o in g.triples((None, None, None)):
+    for s, p, o in g.triples((None, None, None)):
         if isinstance(s, URIRef):
-            p_id = curie(p, curie_map)
-            if p_id in mapping_predicates:
-                s_id = curie(s, curie_map)
-                if isinstance(o, URIRef):
-                    o_id = curie(o, curie_map)
-                    m = Mapping(subject_id=s_id,
-                                object_id=o_id,
-                                predicate_id=p_id)
-                    ms.mappings.append(m)
+            try:
+                p_id = curie(p, curie_map)
+                if p_id in mapping_predicates:
+                    s_id = curie(s, curie_map)
+                    if isinstance(o, URIRef):
+                        o_id = curie(o, curie_map)
+                        m = Mapping(subject_id=s_id,
+                                    object_id=o_id,
+                                    predicate_id=p_id)
+                        ms.mappings.append(m)
+            except NoCURIEException as e:
+                logging.warning(e)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
@@ -324,6 +346,7 @@ def get_default_mapping_predicates():
         'owl:equivalentProperty'
     }
 
+
 def get_parsing_function(input_format, filename):
     if input_format is None:
         input_format = get_file_extension(filename)
@@ -335,11 +358,14 @@ def get_parsing_function(input_format, filename):
         return from_owl
     elif input_format == 'alignment-api-xml':
         return from_alignment_xml
-    elif input_format == 'json':
+    elif input_format == 'obographs-json':
         return from_obographs_json
+    elif input_format == 'json-ld':
+        return from_jsonld
+    elif input_format == 'json':
+        raise Exception(f'LinkML JSON not yet implemented, did you mean json-ld or obographs-json.')
     else:
         raise Exception(f'Unknown input format: {input_format}')
-
 
 
 def _prepare_mapping(mapping: Mapping):
@@ -380,38 +406,53 @@ def is_valid_mapping(m):
     return True
 
 
+class NoCURIEException(Exception):
+    pass
+
+
+def is_curie(string: str):
+    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
+
+
 def curie(uri: str, curie_map):
+    if is_curie(uri):
+        return uri
     for prefix in curie_map:
         uri_prefix = curie_map[prefix]
         if uri.startswith(uri_prefix):
             remainder = uri.replace(uri_prefix, "")
             return f"{prefix}:{remainder}"
-    return uri
+    raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
 def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
     mdict = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
-            if child.nodeName == "entity1":
-                mdict["subject_id"] = curie(child.getAttribute('rdf:resource'), curie_map)
-            elif child.nodeName == "entity2":
-                mdict["object_id"] = curie(child.getAttribute('rdf:resource'), curie_map)
-            elif child.nodeName == "measure":
-                mdict["confidence"] = child.firstChild.nodeValue
-            elif child.nodeName == "relation":
-                relation = child.firstChild.nodeValue
-                if relation == "=":
-                    mdict["predicate_id"] = "owl:equivalentClass"
+            try:
+                if child.nodeName == "entity1":
+                    mdict["subject_id"] = curie(child.getAttribute('rdf:resource'), curie_map)
+                elif child.nodeName == "entity2":
+                    mdict["object_id"] = curie(child.getAttribute('rdf:resource'), curie_map)
+                elif child.nodeName == "measure":
+                    mdict["confidence"] = child.firstChild.nodeValue
+                elif child.nodeName == "relation":
+                    relation = child.firstChild.nodeValue
+                    if relation == "=":
+                        mdict["predicate_id"] = "owl:equivalentClass"
+                    else:
+                        logging.warning(f"{relation} not a recognised relation type.")
                 else:
-                    logging.warning(f"{relation} not a recognised relation type.")
-            else:
-                logging.warning(f"Unsupported alignment api element: {child.nodeName}")
+                    logging.warning(f"Unsupported alignment api element: {child.nodeName}")
+            except NoCURIEException as e:
+                logging.warning(e)
+
     m = Mapping(**mdict)
     if is_valid_mapping(m):
         return m
 
-def to_mapping_set_document(msdf:MappingSetDataFrame) -> MappingSetDocument:
+
+def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     """
     Converts a MappingSetDataFrame to a MappingSetDocument
     :param msdf:
