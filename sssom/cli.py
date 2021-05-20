@@ -44,10 +44,10 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command()
-@click.option('-i', '--input', required=True, type=click.File())
-@click.option('-I', '--input-format', required=True,
+@click.option('-i', '--input', required=True, type=click.Path())
+@click.option('-I', '--input-format', required=False,
               type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False))
-@click.option('-m', '--metadata', required=False, type=click.File())
+@click.option('-m', '--metadata', required=False, type=click.Path())
 @click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
               type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False))
 @click.option('-o', '--output', type=click.Path())

@@ -346,8 +346,10 @@ def get_parsing_function(input_format, filename):
         return from_alignment_xml
     elif input_format == 'obographs-json':
         return from_obographs_json
-    elif input_format == 'json':
+    elif input_format == 'json-ld':
         return from_jsonld
+    elif input_format == 'json':
+        raise Exception(f'LinkML JSON not yet implemented, did you mean json-ld or obographs-json.')
     else:
         raise Exception(f'Unknown input format: {input_format}')
 
