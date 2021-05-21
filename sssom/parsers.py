@@ -490,3 +490,45 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         if k != 'curie_map':
             ms[k] = v
     return MappingSetDocument(mapping_set=ms, curie_map=msdf.metadata['curie_map'])
+
+
+def split_dataframe(msdf: MappingSetDataFrame):
+    df = msdf.df
+    subject_prefixes = set(df['subject_id'].str.split(':', 1, expand=True)[0])
+    object_prefixes = set(df['object_id'].str.split(':', 1, expand=True)[0])
+    relations = set(df['predicate_id'])
+    return split_dataframe_by_prefix(msdf=msdf, subject_prefixes=subject_prefixes, object_prefixes=object_prefixes,
+                                     relations=relations)
+
+
+def split_dataframe_by_prefix(msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations):
+    """
+
+    :param msdf: An SSSOM MappingSetDataFrame
+    :param subject_prefixes: a list of prefixes pertaining to the subject
+    :param object_prefixes: a list of prefixes pertaining to the object
+    :param relations: a list of relations of interest
+    :return: a dict of SSSOM data frame names to MappingSetDataFrame
+    """
+    df = msdf.df
+    curie_map = msdf.prefixmap
+    meta = msdf.metadata
+    splitted = {}
+    for pre_subj in subject_prefixes:
+        for pre_obj in object_prefixes:
+            for rel in relations:
+                relpre = rel.split(":")[0]
+                relppost = rel.split(":")[1]
+                split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
+
+                dfs = df[(df['subject_id'].str.startswith(pre_subj + ":"))
+                         & (df['predicate_id'] == rel)
+                         & (df['object_id'].str.startswith(pre_obj + ":"))]
+                if pre_subj in curie_map and pre_obj in curie_map and len(dfs) > 0:
+                    cm = {pre_subj: curie_map[pre_subj], pre_obj: curie_map[pre_obj], relpre: curie_map[relpre]}
+                    msdf = from_dataframe(dfs, curie_map=cm, meta=meta)
+                    splitted[split_name] = msdf
+                else:
+                    print(
+                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), or no matches ({len(dfs)} matches found)")
+    return splitted

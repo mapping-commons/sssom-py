@@ -2,8 +2,8 @@ import os
 from sssom.datamodel_util import MappingSetDataFrame, read_metadata
 from sssom.sssom_datamodel import MappingSet
 
-from .parsers import get_parsing_function
-from .writers import get_writer_function, write_tsv
+from .parsers import get_parsing_function, from_tsv, split_dataframe
+from .writers import get_writer_function, write_tsv, write_tsvs
 from .context import get_default_metadata
 import json
 import yaml
@@ -69,6 +69,18 @@ def parse_file(input_path: str, output_path: str = None, input_format: str = Non
     parse_func = get_parsing_function(input_format, input_path)
     doc = parse_func(input_path, curie_map=curie_map, meta=meta)
     write_tsv(doc, output_path)
+
+def split_file(input_path: str, output_directory: str):
+    """
+    Splits an SSSOM TSV by prefixes and relations.
+    :param input_path: the SSSOM file
+    :param output_directory: the directory in which to export the split files
+    :return:
+    """
+    msdf = from_tsv(input_path)
+    splitted = split_dataframe(msdf)
+    write_tsvs(splitted, output_directory)
+
 
 def get_metadata_and_curie_map(metadata_path, curie_map_mode: str = "metadata_only"):
     """

@@ -6,7 +6,7 @@ from pathlib import Path
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, write_sssom, parse_file
+from .io import convert_file, write_sssom, parse_file, split_file
 from .parsers import from_tsv
 from .writers import write_tsv
 from typing import Tuple, List, Dict
@@ -56,6 +56,16 @@ def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, outp
     parse file (currently only supports conversion to RDF)
     """
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
+
+
+@main.command()
+@click.option('-i', '--input', required=True, type=click.Path())
+@click.option('-d', '--output-directory', type=click.Path())
+def split(input: str, output_directory: str):
+    """
+    parse file (currently only supports conversion to RDF)
+    """
+    split_file(input_path=input, output_directory=output_directory)
 
 
 @main.command()
