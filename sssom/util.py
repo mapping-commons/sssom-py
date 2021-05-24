@@ -1,11 +1,12 @@
-import pandas as pd
-import random
 import hashlib
 import logging
-from rdflib import Graph, URIRef, BNode, Literal
-from sssom.sssom_datamodel import Entity, Mapping
-from sssom.datamodel_util import read_pandas, MappingSetDiff, EntityPair
-from typing import Dict, Tuple, List
+import random
+from typing import Dict, List
+
+import pandas as pd
+
+from sssom.datamodel_util import MappingSetDiff, EntityPair
+from sssom.sssom_datamodel import Entity
 
 # TODO: use sssom_datamodel
 SUBJECT_ID = 'subject_id'
@@ -21,23 +22,26 @@ OBJECT_SOURCE = 'object_source'
 COMMENT = 'comment'
 MAPPING_PROVIDER = 'mapping_provider'
 
+
 def parse(filename) -> pd.DataFrame:
     """
     parses a TSV to a pandas frame
     """
-    #return from_tsv(filename)
+    # return from_tsv(filename)
     logging.info(f'Parsing {filename}')
     return pd.read_csv(filename, sep="\t", comment="#")
-    #return read_pandas(filename)
+    # return read_pandas(filename)
+
 
 def collapse(df):
     """
     collapses rows with same S/P/O and combines confidence
     """
-    df2 = df.groupby([SUBJECT_ID,PREDICATE_ID,OBJECT_ID])[CONFIDENCE].apply(max).reset_index()
+    df2 = df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE].apply(max).reset_index()
     return df2
 
-def filter_redundant_rows(df : pd.DataFrame, ignore_predicate = False) -> pd.DataFrame:
+
+def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFrame:
     """
     removes rows if there is another row with same S/O and higher confidence
 
@@ -62,6 +66,7 @@ def filter_redundant_rows(df : pd.DataFrame, ignore_predicate = False) -> pd.Dat
     else:
         return df[df.apply(lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])], axis=1)]
 
+
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
     Removes rows where no match is found. TODO: https://github.com/OBOFoundry/SSSOM/issues/28
@@ -70,12 +75,14 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
     return df[df[PREDICATE_ID] != 'noMatch']
 
+
 def create_entity(row, id: str, mappings: Dict) -> Entity:
-    e  = Entity(id=id)
-    for k,v in mappings.items():
+    e = Entity(id=id)
+    for k, v in mappings.items():
         if k in e:
             e[k] = v
     return e
+
 
 def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List]:
     """
@@ -95,11 +102,12 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List]:
             'category': OBJECT_CATEGORY,
             'source': OBJECT_SOURCE
         })
-        pair = EntityPair(s,o)
+        pair = EntityPair(s, o)
         if pair not in mappings:
             mappings[pair] = []
         mappings[pair].append(row)
     return mappings
+
 
 def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     """
@@ -133,11 +141,10 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
         for r in new_rows:
             r[COMMENT] = 'COMMON_TO_BOTH'
         rows += new_rows
-    #for r in rows:
+    # for r in rows:
     #    r['other'] = 'synthesized sssom file'
     d.combined_dataframe = pd.DataFrame(rows)
     return d
-
 
 
 def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5):
@@ -157,7 +164,7 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
         # e.g. if Pr(super) = 0.2, then Pr(sub) = (1-0.2) * IF
         ic = (1.0 - c) * inverse_factor
         # residual confidence
-        rc = (1-(c+ic))/2.0
+        rc = (1 - (c + ic)) / 2.0
 
         p = row[PREDICATE_ID]
         if p == 'owl:equivalentClass':
@@ -180,7 +187,7 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
         elif p == 'dbpedia-owl:different':
             pi = 3
         else:
-            raise Error(f'Unknown predicate {p}')
+            raise Exception(f'Unknown predicate {p}')
 
         if pi == 0:
             # subClassOf
@@ -195,18 +202,20 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
             # sibling
             ps = (rc, rc, ic, c)
         else:
-            raise Error(f'pi: {pi}')
-        row = [s,o] + [str(p) for p in ps]
+            raise Exception(f'pi: {pi}')
+        row = [s, o] + [str(p) for p in ps]
         rows.append(row)
     return rows
 
-RDF_FORMATS=['ttl', 'turtle', 'nt']
+
+RDF_FORMATS = ['ttl', 'turtle', 'nt']
+
 
 def sha256sum(filename):
-    h  = hashlib.sha256()
-    b  = bytearray(128*1024)
+    h = hashlib.sha256()
+    b = bytearray(128 * 1024)
     mv = memoryview(b)
     with open(filename, 'rb', buffering=0) as f:
-        for n in iter(lambda : f.readinto(mv), 0):
+        for n in iter(lambda: f.readinto(mv), 0):
             h.update(mv[:n])
     return h.hexdigest()

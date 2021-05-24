@@ -11,7 +11,6 @@ from rdflib.namespace import OWL, RDF
 import json
 
 from .sssom_datamodel import slots
-from .sssom_document import MappingSetDocument
 from .datamodel_util import get_file_extension
 from .util import RDF_FORMATS
 from .context import get_jsonld_context
@@ -263,7 +262,16 @@ def get_writer_function(output_format, output):
         raise Exception(f'Unknown output format: {output_format}')
 
 
-
+def write_tsvs(sssom_dict, output_dir):
+    """
+    Writing a list of MappingSetDataFrame objects
+    :param sssom_dict: A dictionary of names to MappingSetDataFrame objects
+    """
+    for split_id in sssom_dict:
+        sssom_file = os.path.join(output_dir,f"{split_id}.sssom.tsv")
+        msdf = sssom_dict[split_id]
+        write_tsv(msdf=msdf, filename=sssom_file)
+        print(f"Writing {sssom_file} complete!")
 
 
 def _inject_annotation_properties(graph: Graph, elements):

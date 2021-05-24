@@ -1,4 +1,4 @@
-from sssom.datamodel_util import to_mapping_set_dataframe
+from sssom.datamodel_util import to_mapping_set_dataframe, SSSOM_READ_FORMATS
 import click
 import yaml
 import re
@@ -6,7 +6,7 @@ from pathlib import Path
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, write_sssom, parse_file
+from .io import convert_file, write_sssom, parse_file, split_file
 from .parsers import from_tsv
 from .writers import write_tsv
 from typing import Tuple, List, Dict
@@ -44,15 +44,28 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command()
-@click.option('-i', '--input')
-@click.option('-I', '--input-format')
-@click.option('-m', '--metadata')
-@click.option('-o', '--output')
-def parse(input: str, format: str, metadata:str , output: str):
+@click.option('-i', '--input', required=True, type=click.Path())
+@click.option('-I', '--input-format', required=False,
+              type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False))
+@click.option('-m', '--metadata', required=False, type=click.Path())
+@click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
+              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False))
+@click.option('-o', '--output', type=click.Path())
+def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
     """
     parse file (currently only supports conversion to RDF)
     """
-    parse_file(input_path=input, output_path=output, input_format=format, metadata_path=metadata)
+    parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
+
+
+@main.command()
+@click.option('-i', '--input', required=True, type=click.Path())
+@click.option('-d', '--output-directory', type=click.Path())
+def split(input: str, output_directory: str):
+    """
+    parse file (currently only supports conversion to RDF)
+    """
+    split_file(input_path=input, output_directory=output_directory)
 
 
 @main.command()

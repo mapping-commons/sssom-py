@@ -1,7 +1,6 @@
 {
-   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\nGeneration date: 2021-04-24 12:36\nSchema: sssom\n\nid: http://w3id.org/sssom/schema/\ndescription: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\nlicense: https://creativecommons.org/publicdomain/zero/1.0/\n",
+   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\n    Generation date: 2021-05-20 10:51\n    Schema: sssom\n    \n    id: http://w3id.org/sssom/schema/\n    description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\n    license: https://creativecommons.org/publicdomain/zero/1.0/\n    ",
    "@context": {
-      "type": "@type",
       "dc": "http://purl.org/dc/terms/",
       "dcterms": "http://purl.org/dc/terms/",
       "linkml": "https://w3id.org/linkml/",
