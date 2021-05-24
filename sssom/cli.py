@@ -32,14 +32,14 @@ help_query = 'SQL query. Use "df" as table name'
 @click.group()
 @click.option('-v', '--verbose', count=True)
 @click.option('-q', '--quiet')
-def main(verbose, quiet):
+def main(verbose:int, quiet:bool):
     """Main
 
     Args:
 
-        verbose ([type]): Verbose.
+        verbose (int): Verbose.
 
-        quiet ([type]): Quiet.
+        quiet (bool): Quiet.
     """    
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
@@ -255,7 +255,7 @@ def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
 @main.command()
 @click.option('-o', '--output')
 @click.argument('inputs', nargs=2)
-def diff(inputs: Tuple[str,str], output):
+def diff(inputs: Tuple[str,str], output:str):
     """Compare two SSSOM files.
     The output is a new SSSOM file with the union of all mappings, and
     injected comments indicating uniqueness to set1 or set2
@@ -264,7 +264,7 @@ def diff(inputs: Tuple[str,str], output):
 
         inputs (Tuple[str,str]): List of input filenames.
 
-        output ([type]): Output filename.
+        output (str): Output filename.
     """    
 
     (input1, input2) = inputs
@@ -342,15 +342,16 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 @click.option('-t', '--transpose/--no-transpose', default=False)
 @click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
 @click.argument('input')
-def crosstab(input, output, transpose, fields):
-    """write sssom summary cross-tabulated by categories.
+def crosstab(input:str, output:str, transpose:bool, fields):
+    """Write sssom summary cross-tabulated by categories.
 
     Args:
-        input ([type]): input filename.
 
-        output ([type]): output filename.
+        input (str): Input filename.
 
-        transpose ([type]): Transpose (Yes/No).
+        output (str): Output filename.
+
+        transpose (bool): Transpose (Yes/No).
 
         fields ([type]): Fields.
     """    
@@ -374,17 +375,17 @@ def crosstab(input, output, transpose, fields):
 @click.option('-v', '--verbose/--no-verbose', default=False)
 @click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
 @click.argument('input')
-def correlations(input, output, transpose, verbose, fields):
-    """write sssom summary cross-tabulated by categories.
+def correlations(input:str, output:str, transpose:bool, verbose:bool, fields):
+    """
 
     Args:
-        input ([type]): input filename.
+        input (str): input filename.
 
-        output ([type]): output filename.
+        output (str): output filename.
 
-        transpose ([type]): Transpose.
+        transpose (bool): Transpose.
 
-        verbose ([type]): Verbose.
+        verbose (bool): Verbose.
 
         fields ([type]): Fields.
     """    
