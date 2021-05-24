@@ -194,8 +194,9 @@ def get_file_extension(filename: str) -> str:
 
 
 def read_csv(filename, comment='#', sep=','):
-    lines = "".join([line for line in open(filename)
-                     if not line.startswith(comment)])
+    with open(filename, 'rb') as f:
+        lines = "".join([line for line in f
+                        if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
