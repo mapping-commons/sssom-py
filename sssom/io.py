@@ -7,7 +7,7 @@ from .writers import get_writer_function, write_tsv
 from .context import get_jsonld_context
 import json
 import yaml
-from .datamodel_util import MappingSetDataFrame
+from .datamodel_util import MappingSetDataFrame, read_metadata
 import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
@@ -67,6 +67,19 @@ def convert_file(input: str, output: str = None, input_format: str = None, outpu
     write_func(doc, output, fileformat=fileformat, context_path=context_path)
 
 
+def get_default_metadata():
+    curie_map={}
+    meta={}
+    contxt = get_jsonld_context()
+
+    for key in contxt["@context"]:
+        v = contxt["@context"][key]
+        if isinstance(v,str):
+            curie_map[key]=v
+            
+            
+    return meta, curie_map
+
 def parse_file(input_path: str, output_path: str = None, input_format: str = None, metadata_path=None):
     """
     converts from one format to another
@@ -76,22 +89,16 @@ def parse_file(input_path: str, output_path: str = None, input_format: str = Non
     :param metadata_path:
     :return:
     """
-    curie_map={}
-    contxt = get_jsonld_context()
-
-    '''if context_path:
-        if os.path.isfile(context_path):
-            with open(context_path) as json_file:
-                contxt = json.load(json_file)'''
-
-     
-
-    for key in contxt["@context"]:
-        v = contxt["@context"][key]
-        if isinstance(v,str):
-            curie_map[key]=v
+    # If metadata_path does not point to YAML, get default_metadata
     
+    if metadata_path:
+        meta, curie_map = read_metadata(metadata_path)
+    else:
+        meta, curie_map = get_default_metadata()
+
     read_func = get_parsing_function(input_format, input)
-    doc = read_func(input,curie_map=curie_map)
-    write_tsv(doc, output_path)
+    msdf = read_func(input,curie_map=curie_map)
+    write_tsv(msdf, output_path)
+    
+
     

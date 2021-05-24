@@ -45,7 +45,7 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command()
 @click.option('-i', '--input')
-@click.option('-f', '--format')
+@click.option('-I', '--input-format')
 @click.option('-m', '--metadata')
 @click.option('-o', '--output')
 def parse(input: str, format: str, metadata:str , output: str):
