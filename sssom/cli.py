@@ -15,11 +15,32 @@ from scipy.stats import chi2_contingency
 import logging
 from pandasql import sqldf
 
+# Click 'help' variabes
+help_input = 'Input file. For e.g.: SSSOM tsv file'
+help_input_list = 'List of input files.'
+help_input_format = 'Input file format.'
+help_output = 'Output TSV/SSSOM file'
+help_output_format = 'Output file format.'
+help_output_directory = 'Output directory path.'
+help_format = 'Desired output format.'
+help_context = 'Context.'
+help_metadata = 'Metadata.'
+help_curie_map_mode = 'Curie map mode.'
+help_inverse_factor = 'Inverse factor.'
+help_query = 'SQL query. Use "df" as table name'
 
 @click.group()
 @click.option('-v', '--verbose', count=True)
 @click.option('-q', '--quiet')
 def main(verbose, quiet):
+    """Main
+
+    Args:
+
+        verbose ([type]): Verbose.
+
+        quiet ([type]): Quiet.
+    """    
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
     elif verbose == 1:
@@ -31,51 +52,86 @@ def main(verbose, quiet):
 
 
 @main.command()
-@click.option('-i', '--input')
-@click.option('-f', '--format')
-@click.option('-o', '--output')
-@click.option('-t', '--to-format')
-@click.option('-c', '--context')
+@click.option('-i', '--input', help=help_input)
+@click.option('-f', '--format', help=help_input_format)
+@click.option('-o', '--output', help= help_output)
+@click.option('-t', '--to-format', help=help_format)
+@click.option('-c', '--context', help=help_context)
 def convert(input: str, output: str, format: str, to_format: str, context: str):
-    """
-    convert file (currently only supports conversion to RDF)
-    """
+    """Convert file (currently only supports conversion to RDF)
+
+    Args:
+
+        input (str): Input filename.
+
+        output (str): Output filename.
+
+        format (str): Input format.
+
+        to_format (str): Output Format.
+
+        context (str): Context.
+    """   
+
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
 
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command()
-@click.option('-i', '--input', required=True, type=click.Path())
+@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
 @click.option('-I', '--input-format', required=False,
-              type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False))
-@click.option('-m', '--metadata', required=False, type=click.Path())
+              type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False), help=help_input_format)
+@click.option('-m', '--metadata', required=False, type=click.Path(), help= help_metadata)
 @click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
-              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False))
-@click.option('-o', '--output', type=click.Path())
+              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False), help=help_curie_map_mode)
+@click.option('-o', '--output', type=click.Path(), help= help_output)
 def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
-    """
-    parse file (currently only supports conversion to RDF)
-    """
+    """parse file (currently only supports conversion to RDF)
+
+    Args:
+
+        input (str): Input filename.
+
+        input_format (str): Input format.
+        
+        metadata (str): Metadata.
+
+        curie_map_mode (str): Curie Map Mode.
+
+        output (str): Output filename.
+    """    
+
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
 
 @main.command()
-@click.option('-i', '--input', required=True, type=click.Path())
-@click.option('-d', '--output-directory', type=click.Path())
+@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@click.option('-d', '--output-directory', type=click.Path(), help=help_output_directory)
 def split(input: str, output_directory: str):
-    """
-    parse file (currently only supports conversion to RDF)
-    """
+    """Parse file (currently only supports conversion to RDF)
+
+    Args:
+
+        input (str): Input filename.
+
+        output_directory (str): Output directory.
+    """    
+
     split_file(input_path=input, output_directory=output_directory)
 
 
 @main.command()
-@click.option('-W', '--inverse-factor')
+@click.option('-W', '--inverse-factor', help=help_inverse_factor)
 @click.argument('input')
-def ptable(input, inverse_factor):
-    """
-    write ptable (kboom/boomer input)
+def ptable(input:str, inverse_factor):
+    """Write ptable (kboom/boomer input)
     should maybe move to boomer (but for now it can live here, so cjm can tweak
-    """
+
+    Args:
+
+        input (str): Input filename.
+
+        inverse_factor ([type]): Inverse factor.
+    """    
     df = parse(input)
     df = collapse(df)
     # , priors=list(priors)
@@ -85,21 +141,25 @@ def ptable(input, inverse_factor):
 
 
 @main.command()
-@click.option('-i', '--input')
-@click.option('-o', '--output')
+@click.option('-i', '--input', help=help_input)
+@click.option('-o', '--output', help=help_output)
 def dedupe(input: str, output: str):
-    """
-    remove lower confidence duplicate lines
-    """
+    """Remove lower confidence duplicate lines.
+
+    Args:
+        input (str): Input filename.
+
+        output (str): Output filename.
+    """    
     df = parse(input)
     df = filter_redundant_rows(df)
     df.to_csv(output, sep="\t", index=False)
 
 @main.command()
 @click.option('-q', '--query',
-              help='SQL query. Use "df" as table name')
+            help= help_query)
 @click.option('-o', '--output',
-              help='output TSV/SSSOM file')
+              help= help_output)
 @click.argument('inputs', nargs=-1)
 def dosql(query:str, inputs: List[str], output: str):
     """
@@ -116,7 +176,16 @@ def dosql(query:str, inputs: List[str], output: str):
     Example:
         `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
-    """
+
+    Args:
+
+        query (str): SQL query. Use "df" as table name'.
+
+        inputs (List[str]): List of input files.
+
+        output (str): Output filename.
+    """   
+    
     n = 1
     while len(inputs) >= n:
         fn = inputs[n-1]
@@ -144,9 +213,25 @@ def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
            object_labels: bool = None,
            prefix:List[Dict[str,str]] = None,
            output: str = None):
-    """
-    Run a SPARQL query.
-    """
+    """Run a SPARQL query.
+
+    Args:
+
+        url (str, optional): URL. Defaults to None.
+
+        config ([type], optional): Config. Defaults to None.
+
+        graph (str, optional): Graph. Defaults to None.
+
+        limit (int, optional): Limit. Defaults to None.
+
+        object_labels (bool, optional): Object labels. Defaults to None.
+
+        prefix (List[Dict[str,str]], optional): Prefix. Defaults to None.
+
+        output (str, optional): Output filename. Defaults to None.
+    """           
+
     endpoint = EndpointConfig()
     if config is not None:
         for k,v in yaml.safe_load(config).items():
@@ -171,11 +256,17 @@ def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
 @click.option('-o', '--output')
 @click.argument('inputs', nargs=2)
 def diff(inputs: Tuple[str,str], output):
-    """
-    compare two SSSOM files.
+    """Compare two SSSOM files.
     The output is a new SSSOM file with the union of all mappings, and
     injected comments indicating uniqueness to set1 or set2
-    """
+
+    Args:
+
+        inputs (Tuple[str,str]): List of input filenames.
+
+        output ([type]): Output filename.
+    """    
+
     (input1, input2) = inputs
     df1 = parse(input1)
     df2 = parse(input2)
@@ -187,10 +278,16 @@ def diff(inputs: Tuple[str,str], output):
 @click.option('-d', '--outdir')
 @click.argument('inputs', nargs=-1)
 def partition(inputs: List[str], outdir: str):
-    """
-    partitions an SSSOM file into multiple files, where each
+    """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component
-    """
+
+    Args:
+    
+        inputs (List[str]): List of input filenames.
+
+        outdir (str): Output directory.
+    """    
+
     docs = [from_tsv(input) for input in inputs]
     doc = docs.pop()
     for d2 in docs:
@@ -212,12 +309,20 @@ def partition(inputs: List[str], outdir: str):
 @click.option('-m', '--metadata')
 @click.option('-s', '--statsfile')
 def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
-    """
-    partitions an SSSOM file into multiple files, where each
+    """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
 
     The data dictionary for the output is in cliquesummary.yaml
-    """
+
+    Args:
+        input (str): Input filename.
+
+        output (str): Output filename.
+
+        metadata (str): Metadata.
+
+        statsfile (str): Stats filename.
+    """    
     import yaml
     if metadata is None:
         doc = from_tsv(input)
@@ -238,9 +343,18 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 @click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
 @click.argument('input')
 def crosstab(input, output, transpose, fields):
-    """
-    write sssom summary cross-tabulated by categories
-    """
+    """write sssom summary cross-tabulated by categories.
+
+    Args:
+        input ([type]): input filename.
+
+        output ([type]): output filename.
+
+        transpose ([type]): Transpose (Yes/No).
+
+        fields ([type]): Fields.
+    """    
+
     df = remove_unmatched(parse(input))
     # df = parse(input)
     logging.info(f'#CROSSTAB ON {fields}')
@@ -261,9 +375,19 @@ def crosstab(input, output, transpose, fields):
 @click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
 @click.argument('input')
 def correlations(input, output, transpose, verbose, fields):
-    """
-    write sssom summary cross-tabulated by categories
-    """
+    """write sssom summary cross-tabulated by categories.
+
+    Args:
+        input ([type]): input filename.
+
+        output ([type]): output filename.
+
+        transpose ([type]): Transpose.
+
+        verbose ([type]): Verbose.
+
+        fields ([type]): Fields.
+    """    
 
     df = remove_unmatched(parse(input))
     if len(df) == 0:
