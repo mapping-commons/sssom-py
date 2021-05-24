@@ -7,7 +7,7 @@ from .writers import get_writer_function, write_tsv, write_tsvs
 from .context import get_default_metadata
 import json
 import yaml
-from .datamodel_util import MappingSetDataFrame
+from .datamodel_util import MappingSetDataFrame, read_metadata
 import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
@@ -102,4 +102,3 @@ def get_metadata_and_curie_map(metadata_path, curie_map_mode: str = "metadata_on
     else:
         meta, curie_map = get_default_metadata()
     return curie_map, meta
-

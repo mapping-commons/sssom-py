@@ -31,7 +31,7 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Writers
 
 
-def write_tsv(msdf:MappingSetDataFrame, filename: str, fileformat="tsv", context_path=None) -> None:
+def write_tsv(msdf:MappingSetDataFrame, filename: str, fileformat="tsv") -> None: #, context_path=None) -> None:
     """
     dataframe 2 tsv
     """
@@ -44,7 +44,7 @@ def write_tsv(msdf:MappingSetDataFrame, filename: str, fileformat="tsv", context
         raise Exception(f'Unknown table format: {fileformat}, should be one of tsv or csv')
 
     msdoc = to_mapping_set_document(msdf)
-    df = to_dataframe(msdf, context_path)
+    df = to_dataframe(msdf)
     meta = extract_global_metadata(msdoc)
     if os.path.isfile(filename):
         os.remove(filename)
