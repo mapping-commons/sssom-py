@@ -60,17 +60,13 @@ def main(verbose:int, quiet:bool):
 def convert(input: str, output: str, format: str, to_format: str, context: str):
     """Convert file (currently only supports conversion to RDF)
 
-    Args:
+    Example:
 
-        input (str): Input filename.
+    A B C
 
-        output (str): Output filename.
+    D E F
 
-        format (str): Input format.
-
-        to_format (str): Output Format.
-
-        context (str): Context.
+    G H I
     """   
 
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
@@ -87,17 +83,13 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
     """parse file (currently only supports conversion to RDF)
 
-    Args:
+    Example:
 
-        input (str): Input filename.
+    A B C
 
-        input_format (str): Input format.
-        
-        metadata (str): Metadata.
-
-        curie_map_mode (str): Curie Map Mode.
-
-        output (str): Output filename.
+    D E F
+    
+    G H I
     """    
 
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
@@ -109,11 +101,14 @@ def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, outp
 def split(input: str, output_directory: str):
     """Parse file (currently only supports conversion to RDF)
 
-    Args:
+    Example:
 
-        input (str): Input filename.
+    A B C
 
-        output_directory (str): Output directory.
+    D E F
+    
+    G H I
+
     """    
 
     split_file(input_path=input, output_directory=output_directory)
@@ -126,11 +121,14 @@ def ptable(input:str, inverse_factor):
     """Write ptable (kboom/boomer input)
     should maybe move to boomer (but for now it can live here, so cjm can tweak
 
-    Args:
+    Example:
 
-        input (str): Input filename.
+    A B C
 
-        inverse_factor ([type]): Inverse factor.
+    D E F
+    
+    G H I
+
     """    
     df = parse(input)
     df = collapse(df)
@@ -146,10 +144,14 @@ def ptable(input:str, inverse_factor):
 def dedupe(input: str, output: str):
     """Remove lower confidence duplicate lines.
 
-    Args:
-        input (str): Input filename.
+    Example:
 
-        output (str): Output filename.
+    A B C
+
+    D E F
+    
+    G H I
+
     """    
     df = parse(input)
     df = filter_redundant_rows(df)
@@ -177,13 +179,6 @@ def dosql(query:str, inputs: List[str], output: str):
         `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
 
-    Args:
-
-        query (str): SQL query. Use "df" as table name'.
-
-        inputs (List[str]): List of input files.
-
-        output (str): Output filename.
     """   
     
     n = 1
@@ -215,21 +210,14 @@ def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
            output: str = None):
     """Run a SPARQL query.
 
-    Args:
+    Example:
 
-        url (str, optional): URL. Defaults to None.
+    A B C
 
-        config ([type], optional): Config. Defaults to None.
+    D E F
+    
+    G H I
 
-        graph (str, optional): Graph. Defaults to None.
-
-        limit (int, optional): Limit. Defaults to None.
-
-        object_labels (bool, optional): Object labels. Defaults to None.
-
-        prefix (List[Dict[str,str]], optional): Prefix. Defaults to None.
-
-        output (str, optional): Output filename. Defaults to None.
     """           
 
     endpoint = EndpointConfig()
@@ -260,11 +248,14 @@ def diff(inputs: Tuple[str,str], output:str):
     The output is a new SSSOM file with the union of all mappings, and
     injected comments indicating uniqueness to set1 or set2
 
-    Args:
+    Example:
 
-        inputs (Tuple[str,str]): List of input filenames.
+    A B C
 
-        output (str): Output filename.
+    D E F
+    
+    G H I
+
     """    
 
     (input1, input2) = inputs
@@ -281,11 +272,14 @@ def partition(inputs: List[str], outdir: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component
 
-    Args:
-    
-        inputs (List[str]): List of input filenames.
+    Example:
 
-        outdir (str): Output directory.
+    A B C
+
+    D E F
+    
+    G H I
+
     """    
 
     docs = [from_tsv(input) for input in inputs]
@@ -314,14 +308,14 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 
     The data dictionary for the output is in cliquesummary.yaml
 
-    Args:
-        input (str): Input filename.
+    Example:
 
-        output (str): Output filename.
+    A B C
 
-        metadata (str): Metadata.
+    D E F
+    
+    G H I
 
-        statsfile (str): Stats filename.
     """    
     import yaml
     if metadata is None:
@@ -345,15 +339,14 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 def crosstab(input:str, output:str, transpose:bool, fields):
     """Write sssom summary cross-tabulated by categories.
 
-    Args:
+    Example:
 
-        input (str): Input filename.
+    A B C
 
-        output (str): Output filename.
+    D E F
+    
+    G H I
 
-        transpose (bool): Transpose (Yes/No).
-
-        fields ([type]): Fields.
     """    
 
     df = remove_unmatched(parse(input))
@@ -378,16 +371,14 @@ def crosstab(input:str, output:str, transpose:bool, fields):
 def correlations(input:str, output:str, transpose:bool, verbose:bool, fields):
     """
 
-    Args:
-        input (str): input filename.
+    Example:
 
-        output (str): output filename.
+    A B C
 
-        transpose (bool): Transpose.
-
-        verbose (bool): Verbose.
-
-        fields ([type]): Fields.
+    D E F
+    
+    G H I
+    
     """    
 
     df = remove_unmatched(parse(input))
