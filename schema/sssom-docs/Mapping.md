@@ -7,7 +7,7 @@ Represents an individual mapping between a pair of entities
 URI: [sssom:Mapping](http://w3id.org/sssom/Mapping)
 
 
-![img](http://yuml.me/diagram/nofunky;dir:TB/class/[Entity]<object_match_field%200..1-%20[Mapping&#124;subject_label:string%20%3F;subject_category:string%20%3F;predicate_label:string%20%3F;object_label:string%20%3F;object_category:string%20%3F;match_type:string%20%3F;creator_label:string%20%3F;license:string%20%3F;subject_source:string%20%3F;subject_source_version:string%20%3F;object_source:string%20%3F;object_source_version:string%20%3F;mapping_provider:string%20%3F;mapping_cardinality:string%20%3F;mapping_tool:string%20%3F;mapping_date:string%20%3F;confidence:double%20%3F;match_string:string%20%3F;subject_preprocessing:string%20%3F;object_preprocessing:string%20%3F;match_term_type:string%20%3F;semantic_similarity_score:double%20%3F;information_content_mica_score:double%20%3F;see_also:string%20%3F;other:string%20%3F;comment:string%20%3F],[Entity]<subject_match_field%200..1-%20[Mapping],[Entity]<creator_id%200..1-%20[Mapping],[Entity]<object_id%200..1-%20[Mapping],[Entity]<predicate_id%200..1-%20[Mapping],[Entity]<subject_id%200..1-%20[Mapping],[MappingSet]++-%20mappings%200..*>[Mapping],[MappingSet],[Entity])
+![img](http://yuml.me/diagram/nofunky;dir:TB/class/[Entity]<object_match_field%200..1-%20[Mapping&#124;subject_label:string%20%3F;subject_category:string%20%3F;predicate_label:string%20%3F;object_label:string%20%3F;object_category:string%20%3F;match_type:string%20%3F;creator_label:string%20%3F;license:string%20%3F;subject_source:string%20%3F;subject_source_version:string%20%3F;object_source:string%20%3F;object_source_version:string%20%3F;mapping_provider:string%20%3F;mapping_cardinality:mapping_cardinality_enum%20%3F;mapping_tool:string%20%3F;mapping_date:string%20%3F;confidence:double%20%3F;match_string:string%20%3F;subject_preprocessing:string%20%3F;object_preprocessing:string%20%3F;match_term_type:string%20%3F;semantic_similarity_score:double%20%3F;information_content_mica_score:double%20%3F;see_also:string%20%3F;other:string%20%3F;comment:string%20%3F],[Entity]<subject_match_field%200..1-%20[Mapping],[Entity]<creator_id%200..1-%20[Mapping],[Entity]<object_id%200..1-%20[Mapping],[Entity]<predicate_id%200..1-%20[Mapping],[Entity]<subject_id%200..1-%20[Mapping],[MappingSet]++-%20mappings%200..*>[Mapping],[MappingSet],[Entity])
 
 ## Referenced by class
 
@@ -38,7 +38,7 @@ URI: [sssom:Mapping](http://w3id.org/sssom/Mapping)
      * range: [String](types/String.md)
  * [mapping_cardinality](mapping_cardinality.md)  <sub>OPT</sub>
      * Description: A string indicating whether this mapping is from a 1:1 (the subject_id maps to a single object_id), 1:n (the subject maps to more than one object_id), n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable from the mapping set.
-     * range: [String](types/String.md)
+     * range: 
  * [mapping_date](mapping_date.md)  <sub>OPT</sub>
      * Description: The date the mapping was computed
      * range: [String](types/String.md)

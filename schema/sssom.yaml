@@ -12,6 +12,17 @@ default_curi_maps:
 - semweb_context
 - obo_context
 default_prefix: sssom
+
+enums:
+  mapping_cardinality_enum:
+    permissible_values:
+      1:1:
+      1:n:
+      n:1:
+      1:0:
+      0:1:
+      n:n:
+
 slots:
   entity_field:
     abstract: true
@@ -141,7 +152,7 @@ slots:
       maps to a single object_id), 1:n (the subject maps to more than one object_id), 
       n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable 
       from the mapping set.
-    range: string
+    range: mapping_cardinality_enum
   mapping_tool:
     description: A reference to the tool or algorithm that was used to generate the
       mapping. Should be a URL pointing to more info about it, but can be free text.
