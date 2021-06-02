@@ -6,7 +6,7 @@ from pathlib import Path
 from sssom import slots
 from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, write_sssom, parse_file, split_file
+from .io import convert_file, write_sssom, parse_file, split_file, validate_file
 from .parsers import from_tsv
 from .writers import write_tsv
 from typing import Tuple, List, Dict
@@ -94,6 +94,27 @@ def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, outp
 
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
+@main.command('validate_file')
+@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@click.option('-I', '--input-format', required=False,
+              type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False), help=help_input_format)
+@click.option('-m', '--metadata', required=False, type=click.Path(), help= help_metadata)
+@click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
+              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False), help=help_curie_map_mode)
+@click.option('-o', '--output', type=click.Path(), help= help_output)
+def validate(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
+    """parse file (currently only supports conversion to RDF)
+
+    Example:
+
+    A B C
+
+    D E F
+    
+    G H I
+    """    
+
+    validate_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
 @main.command('split_file')
 @click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
