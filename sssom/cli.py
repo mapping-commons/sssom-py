@@ -51,7 +51,7 @@ def main(verbose:int, quiet:bool):
         logging.basicConfig(level=logging.ERROR)
 
 
-@main.command()
+@main.command('convert_file')
 @click.option('-i', '--input', help=help_input)
 @click.option('-f', '--format', help=help_input_format)
 @click.option('-o', '--output', help= help_output)
@@ -72,7 +72,7 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
     convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
 
 ## Input and metadata would be files (file paths). Check if exists.
-@main.command()
+@main.command('parse_file')
 @click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
 @click.option('-I', '--input-format', required=False,
               type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False), help=help_input_format)
@@ -95,7 +95,7 @@ def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, outp
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
 
-@main.command()
+@main.command('split_file')
 @click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
 @click.option('-d', '--output-directory', type=click.Path(), help=help_output_directory)
 def split(input: str, output_directory: str):
@@ -196,7 +196,7 @@ def dosql(query:str, inputs: List[str], output: str):
         df.to_csv(output, sep="\t", index=False)
 
 from sssom.sparql_util import EndpointConfig, query_mappings
-@main.command()
+@main.command('write_sssom')
 @click.option('-c', '--config', type=click.File('rb'))
 @click.option('-e', '--url')
 @click.option('-g', '--graph')
