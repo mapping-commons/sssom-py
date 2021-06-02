@@ -69,14 +69,11 @@ def parse_file(input_path: str, output_path: str = None, input_format: str = Non
     doc = parse_func(input_path, curie_map=curie_map, meta=meta)
     write_tsv(doc, output_path)
 
-def validate_file(input_path: str, output_path: str = None, input_format: str = None, metadata_path: str = None, curie_map_mode: str = None):
+def validate_file(input_path: str, output_path: str = None):
     """
     converts from one format to another
-    :param input_path:
-    :param output_path:
-    :param input_format:
-    :param metadata_path:
-    :param curie_map_mode:
+    :param input_path: SSSOM file
+    :param output_path: Validation Report
     :return:
     """
     return True
