@@ -97,8 +97,7 @@ def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, outp
 
 @main.command('validate_file')
 @click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
-@click.option('-o', '--output', type=click.Path(), help= help_report)
-def validate(input: str, output: str):
+def validate(input: str):
     """Takes 1 sssom file as input and produce an error report
 
     Example:
@@ -110,7 +109,7 @@ def validate(input: str, output: str):
     G H I
     """    
 
-    validate_file(input_path=input, output_path=output)
+    validate_file(input_path=input)
 
 @main.command('split_file')
 @click.option('-i', '--input', required=True, type=click.Path(), help=help_input)

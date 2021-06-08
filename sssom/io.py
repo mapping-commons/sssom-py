@@ -69,18 +69,19 @@ def parse_file(input_path: str, output_path: str = None, input_format: str = Non
     doc = parse_func(input_path, curie_map=curie_map, meta=meta)
     write_tsv(doc, output_path)
 
-def validate_file(input_path: str, output_path: str = None):
+def validate_file(input_path: str):
     """
     converts from one format to another
     :param input_path: SSSOM file
     :param output_path: Validation Report
     :return:
     """
-    return True
-    '''curie_map, meta = get_metadata_and_curie_map(metadata_path=metadata_path, curie_map_mode=curie_map_mode)
-    parse_func = get_parsing_function(input_format, input_path)
-    doc = parse_func(input_path, curie_map=curie_map, meta=meta)
-    write_tsv(doc, output_path)'''
+    try:
+        from_tsv(filename=input_path)
+        return True
+    except:
+        logging.exception("The file is invalid")
+        return False
 
 
 def split_file(input_path: str, output_directory: str):
