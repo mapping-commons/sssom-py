@@ -16,6 +16,7 @@ from .util import RDF_FORMATS
 from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
 
 from sssom.datamodel_util import read_pandas
+import validators
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,7 +28,7 @@ def from_tsv(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, s
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    try:
+    if validators.url(file_path) or os.path.exists(file_path):
         df = read_pandas(file_path)
         if meta is None:
             meta = _read_metadata_from_table(file_path)
@@ -38,51 +39,51 @@ def from_tsv(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, s
         msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
         # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
         return msdf
-    except FileNotFoundError:
-        print(f'{file_path} does not exist')
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def from_rdf(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    try:
+    if validators.url(file_path) or os.path.exists(file_path):
         g = Graph()
         file_format = guess_file_format(file_path)
         g.parse(file_path, format=file_format)
         msdf = from_rdf_graph(g, curie_map, meta)
         # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
         return msdf
-    except FileNotFoundError:
-        print(f'{file_path} does not exist')
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def from_owl(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    try:
+    if validators.url(file_path) or os.path.exists(file_path):
         g = Graph()
         file_format = guess_file_format(file_path)
         g.parse(file_path, format=file_format)
         msdf = from_owl_graph(g, curie_map, meta)
         # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
         return msdf
-    except FileNotFoundError:
-        print(f'{file_path} does not exist')
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def from_jsonld(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    try:
+    if validators.url(file_path) or os.path.exists(file_path):
         g = Graph()
         g.parse(file_path, format="json-ld")
         msdf = from_rdf_graph(g, curie_map, meta)
         return msdf
-    except FileNotFoundError:
-        print(f'{file_path} does not exist')
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def from_obographs_json(file_path: str, curie_map: Dict[str, str] = None,
@@ -94,13 +95,13 @@ def from_obographs_json(file_path: str, curie_map: Dict[str, str] = None,
     :param meta: an optional dictionary of metadata elements
     :return: A SSSOM MappingSetDataFrame
     """
-    try:
+    if validators.url(file_path) or os.path.exists(file_path):
         with open(file_path) as json_file:
             jsondoc = json.load(json_file)
 
         return from_obographs(jsondoc, curie_map, meta)
-    except FileNotFoundError:
-        print(f'{file_path} does not exist')
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 def guess_file_format(filename):
     extension = get_file_extension(filename)
@@ -117,13 +118,13 @@ def from_alignment_xml(file_path: str, curie_map: Dict[str, str] = None,
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    try:
+    if validators.url(file_path) or os.path.exists(file_path):
         logging.info("Loading from alignment API")
         xmldoc = minidom.parse(file_path)
         msdf = from_alignment_minidom(xmldoc, curie_map, meta)
         return msdf
-    except FileNotFoundError:
-        print(f'{file_path} does not exist')
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
