@@ -301,15 +301,16 @@ def partition(inputs: List[str], outdir: str):
 
     docs = [from_tsv(input) for input in inputs]
     doc = docs.pop()
-    for d2 in docs:
-        doc.mapping_set.mappings += d2.mapping_set.mappings
+    '''for d2 in docs:
+        doc.mapping_set.mappings += d2.mapping_set.mappings'''
     cliquedocs = split_into_cliques(doc)
     n = 0
     for cdoc in cliquedocs:
         n += 1
         ofn = f'{outdir}/clique_{n}.sssom.tsv'
-        logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
-        logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
+        #logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
+        #logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
+        logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
         write_tsv(msdf, ofn)
 
