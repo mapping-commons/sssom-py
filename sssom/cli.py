@@ -53,7 +53,7 @@ def main(verbose:int, quiet:bool):
 
 
 @main.command('convert_file')
-@click.option('-i', '--input', help=help_input)
+@click.option('-i', '--input',type=click.Path(exists=True), help=help_input)
 @click.option('-f', '--format', help=help_input_format)
 @click.option('-o', '--output', help= help_output)
 @click.option('-t', '--to-format', help=help_format)
@@ -74,7 +74,7 @@ def convert(input: str, output: str, format: str, to_format: str, context: str):
 
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command('parse_file')
-@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@click.option('-i', '--input', required=True, type=click.Path(exists=True), help=help_input)
 @click.option('-I', '--input-format', required=False,
               type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False), help=help_input_format)
 @click.option('-m', '--metadata', required=False, type=click.Path(), help= help_metadata)
@@ -96,7 +96,7 @@ def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, outp
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
 @main.command('validate_file')
-@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@click.option('-i', '--input', required=True, type=click.Path(exists=True), help=help_input)
 def validate(input: str):
     """Takes 1 sssom file as input and produce an error report
 
@@ -112,7 +112,7 @@ def validate(input: str):
     validate_file(input_path=input)
 
 @main.command('split_file')
-@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@click.option('-i', '--input', required=True, type=click.Path(exists=True), help=help_input)
 @click.option('-d', '--output-directory', type=click.Path(), help=help_output_directory)
 def split(input: str, output_directory: str):
     """Parse file (currently only supports conversion to RDF)
@@ -155,7 +155,7 @@ def ptable(input:str, inverse_factor):
 
 
 @main.command()
-@click.option('-i', '--input', help=help_input)
+@click.option('-i', '--input',type=click.Path(exists=True), help=help_input)
 @click.option('-o', '--output', help=help_output)
 def dedupe(input: str, output: str):
     """Remove lower confidence duplicate lines.
@@ -315,7 +315,7 @@ def partition(inputs: List[str], outdir: str):
 
 
 @main.command()
-@click.option('-i', '--input')
+@click.option('-i', '--input',type=click.Path(exists=True))
 @click.option('-o', '--output')
 @click.option('-m', '--metadata')
 @click.option('-s', '--statsfile')

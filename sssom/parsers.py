@@ -23,72 +23,84 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Readers (from file)
 
 
-def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_tsv(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
+    try:
+        df = read_pandas(file_path)
+        if meta is None:
+            meta = _read_metadata_from_table(file_path)
+        if 'curie_map' in meta:
+            logging.info("Context provided, but SSSOM file provides its own CURIE map. "
+                        "CURIE map from context is disregarded.")
+            curie_map = meta['curie_map']
+        msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
+        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+        return msdf
+    except FileNotFoundError:
+        print(f'{file_path} does not exist')
 
-    df = read_pandas(filename)
-    if meta is None:
-        meta = _read_metadata_from_table(filename)
-    if 'curie_map' in meta:
-        logging.info("Context provided, but SSSOM file provides its own CURIE map. "
-                     "CURIE map from context is disregarded.")
-        curie_map = meta['curie_map']
-    msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
-    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
 
-
-def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_rdf(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    g = Graph()
-    file_format = guess_file_format(filename)
-    g.parse(filename, format=file_format)
-    msdf = from_rdf_graph(g, curie_map, meta)
-    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
+    try:
+        g = Graph()
+        file_format = guess_file_format(file_path)
+        g.parse(file_path, format=file_format)
+        msdf = from_rdf_graph(g, curie_map, meta)
+        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+        return msdf
+    except FileNotFoundError:
+        print(f'{file_path} does not exist')
 
 
-def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_owl(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    g = Graph()
-    file_format = guess_file_format(filename)
-    g.parse(filename, format=file_format)
-    msdf = from_owl_graph(g, curie_map, meta)
-    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
+    try:
+        g = Graph()
+        file_format = guess_file_format(file_path)
+        g.parse(file_path, format=file_format)
+        msdf = from_owl_graph(g, curie_map, meta)
+        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+        return msdf
+    except FileNotFoundError:
+        print(f'{file_path} does not exist')
 
 
-def from_jsonld(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_jsonld(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    g = Graph()
-    g.parse(filename, format="json-ld")
-    msdf = from_rdf_graph(g, curie_map, meta)
-    return msdf
+    try:
+        g = Graph()
+        g.parse(file_path, format="json-ld")
+        msdf = from_rdf_graph(g, curie_map, meta)
+        return msdf
+    except FileNotFoundError:
+        print(f'{file_path} does not exist')
 
 
-def from_obographs_json(filename: str, curie_map: Dict[str, str] = None,
+def from_obographs_json(file_path: str, curie_map: Dict[str, str] = None,
                         meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses an obographs file as a JSON object and translates it into a MappingSetDataFrame
-    :param filename: The path to the obographs file
+    :param file_path: The path to the obographs file
     :param curie_map: an optional curie map
     :param meta: an optional dictionary of metadata elements
     :return: A SSSOM MappingSetDataFrame
     """
+    try:
+        with open(file_path) as json_file:
+            jsondoc = json.load(json_file)
 
-    with open(filename) as json_file:
-        jsondoc = json.load(json_file)
-
-    return from_obographs(jsondoc, curie_map, meta)
-
+        return from_obographs(jsondoc, curie_map, meta)
+    except FileNotFoundError:
+        print(f'{file_path} does not exist')
 
 def guess_file_format(filename):
     extension = get_file_extension(filename)
@@ -100,15 +112,18 @@ def guess_file_format(filename):
         raise Exception(f"File extension {extension} does not correspond to a legal file format")
 
 
-def from_alignment_xml(filename: str, curie_map: Dict[str, str] = None,
+def from_alignment_xml(file_path: str, curie_map: Dict[str, str] = None,
                        meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    logging.info("Loading from alignment API")
-    xmldoc = minidom.parse(filename)
-    msdf = from_alignment_minidom(xmldoc, curie_map, meta)
-    return msdf
+    try:
+        logging.info("Loading from alignment API")
+        xmldoc = minidom.parse(file_path)
+        msdf = from_alignment_minidom(xmldoc, curie_map, meta)
+        return msdf
+    except FileNotFoundError:
+        print(f'{file_path} does not exist')
 
 
 def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,

@@ -77,7 +77,7 @@ def validate_file(input_path: str):
     :return:
     """
     try:
-        from_tsv(filename=input_path)
+        from_tsv(file_path=input_path)
         return True
     except:
         logging.exception("The file is invalid")
