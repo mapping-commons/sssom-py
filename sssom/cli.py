@@ -1,4 +1,4 @@
-from sssom.datamodel_util import to_mapping_set_dataframe, SSSOM_READ_FORMATS
+from sssom.datamodel_util import MappingSetDataFrame, to_mapping_set_dataframe, SSSOM_READ_FORMATS
 import click
 import yaml
 import re
@@ -8,7 +8,7 @@ from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, r
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, write_sssom, parse_file, split_file, validate_file
 from .parsers import from_tsv
-from .writers import write_tsv
+#from .writers import write_tsv
 from typing import Tuple, List, Dict
 import pandas as pd
 from scipy.stats import chi2_contingency
@@ -33,7 +33,7 @@ help_report = 'Report file'
 input_option = click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
 input_format_option = click.option('-f', '--format', help=help_input_format)
 output_option = click.option('-o', '--output', help= help_output)
-format_option = click.option('-t', '--to-format', help=help_format)
+output_format_option = click.option('-t', '--to-format', help=help_format)
 context_option = click.option('-c', '--context', help=help_context)
 output_directory_option = click.option('-d', '--output-directory', type=click.Path(), help=help_output_directory)
 metadata_option = click.option('-m', '--metadata', required=False, type=click.Path(), help= help_metadata)
@@ -66,7 +66,7 @@ def main(verbose:int, quiet:bool):
 @input_option
 @input_format_option
 @output_option
-@format_option
+@output_format_option
 @context_option
 def convert(input: str, output: str, format: str, to_format: str, context: str):
     """
@@ -118,8 +118,9 @@ def ptable(input:str, inverse_factor):
     """
     Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
     """    
-    df = parse(input)
-    df = collapse(df)
+    msdf = from_tsv(input)
+    #df = parse(input)
+    df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
     for row in rows:
@@ -133,9 +134,12 @@ def dedupe(input: str, output: str):
     """
     Remove lower confidence duplicate lines.
     """    
-    df = parse(input)
-    df = filter_redundant_rows(df)
-    df.to_csv(output, sep="\t", index=False)
+    #df = parse(input)
+    msdf = from_tsv(input)
+    df = filter_redundant_rows(msdf.df)
+    msdf_out = MappingSetDataFrame(df=df,prefixmap=msdf.prefixmap,metadata=msdf.metadata)
+    #df.to_csv(output, sep="\t", index=False)
+    write_sssom(msdf_out,output)
 
 @main.command()
 @click.option('-q', '--query',help= help_query)
@@ -158,11 +162,12 @@ def dosql(query:str, inputs: List[str], output: str):
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
 
     """   
-    
+    # should start with from_tsv and MOST should erturn write_sssom
     n = 1
     while len(inputs) >= n:
         fn = inputs[n-1]
-        df = parse(fn)
+        df = from_tsv(fn).df
+        #df = parse(fn)
         globals()[f'df{n}'] = df
         tn = re.sub('\..*','',Path(fn).stem).lower()
         globals()[tn] = df
@@ -174,7 +179,7 @@ def dosql(query:str, inputs: List[str], output: str):
         df.to_csv(output, sep="\t", index=False)
 
 from sssom.sparql_util import EndpointConfig, query_mappings
-@main.command('write_sssom')
+@main.command()
 @click.option('-c', '--config', type=click.File('rb'))
 @click.option('-e', '--url')
 @click.option('-g', '--graph')
@@ -221,9 +226,11 @@ def diff(inputs: Tuple[str,str], output:str):
     """    
 
     (input1, input2) = inputs
-    df1 = parse(input1)
-    df2 = parse(input2)
-    d = compare_dataframes(df1, df2)
+    #df1 = parse(input1)
+    #df2 = parse(input2)
+    msdf1 = from_tsv(input1)
+    msdf2 = from_tsv(input2)
+    d = compare_dataframes(msdf1.df, msdf2.df)
     logging.info(f'COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}')
     d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
@@ -248,7 +255,8 @@ def partition(inputs: List[str], outdir: str):
         #logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
-        write_tsv(msdf, ofn)
+        write_sssom(msdf, ofn)
+        #write_tsv(msdf, ofn)
 
 
 @main.command()
@@ -309,8 +317,9 @@ def correlations(input:str, output:str, transpose:bool, verbose:bool, fields):
     """
     Correlations
     """    
-
-    df = remove_unmatched(parse(input))
+    msdf = from_tsv(input)
+    df = remove_unmatched(msdf.df)
+    #df = remove_unmatched(parse(input))
     if len(df) == 0:
         msg = f"No matched entities in this dataset!"
         logging.error(msg)
