@@ -15,7 +15,7 @@ from scipy.stats import chi2_contingency
 import logging
 from pandasql import sqldf
 
-# Click 'help' variabes
+# Click 'help' variables
 help_input = 'Input file. For e.g.: SSSOM tsv file'
 help_input_list = 'List of input files.'
 help_input_format = 'Input file format.'
