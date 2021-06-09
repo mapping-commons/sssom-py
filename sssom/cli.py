@@ -30,6 +30,16 @@ help_inverse_factor = 'Inverse factor.'
 help_query = 'SQL query. Use "df" as table name'
 help_report = 'Report file'
 
+input_option = click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+input_format_option = click.option('-f', '--format', help=help_input_format)
+output_option = click.option('-o', '--output', help= help_output)
+format_option = click.option('-t', '--to-format', help=help_format)
+context_option = click.option('-c', '--context', help=help_context)
+output_directory_option = click.option('-d', '--output-directory', type=click.Path(), help=help_output_directory)
+metadata_option = click.option('-m', '--metadata', required=False, type=click.Path(), help= help_metadata)
+transpose_option = click.option('-t', '--transpose/--no-transpose', default=False)
+fields_option = click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
+
 @click.group()
 @click.option('-v', '--verbose', count=True)
 @click.option('-q', '--quiet')
@@ -53,78 +63,49 @@ def main(verbose:int, quiet:bool):
 
 
 @main.command('convert_file')
-@click.option('-i', '--input', help=help_input)
-@click.option('-f', '--format', help=help_input_format)
-@click.option('-o', '--output', help= help_output)
-@click.option('-t', '--to-format', help=help_format)
-@click.option('-c', '--context', help=help_context)
+@input_option
+@input_format_option
+@output_option
+@format_option
+@context_option
 def convert(input: str, output: str, format: str, to_format: str, context: str):
-    """Convert file (currently only supports conversion to RDF)
-
-    Example:
-
-    A B C
-
-    D E F
-
-    G H I
+    """
+    Convert file (currently only supports conversion to RDF)
     """   
     
     convert_file(input_path=input, output=output, input_format=format, output_format=to_format, context_path=context)
 
 ## Input and metadata would be files (file paths). Check if exists.
 @main.command('parse_file')
-@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@input_option
 @click.option('-I', '--input-format', required=False,
               type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False), help=help_input_format)
-@click.option('-m', '--metadata', required=False, type=click.Path(), help= help_metadata)
+@metadata_option
 @click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
               type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False), help=help_curie_map_mode)
-@click.option('-o', '--output', type=click.Path(), help= help_output)
+@output_option
 def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
-    """parse file (currently only supports conversion to RDF)
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
+    """
+    Parse file (currently only supports conversion to RDF)
     """    
 
     parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
 
 @main.command('validate_file')
-@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
+@input_option
 def validate(input: str):
-    """Takes 1 sssom file as input and produce an error report
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
+    """
+    Takes 1 sssom file as input and produce an error report
     """    
 
     validate_file(input_path=input)
 
 @main.command('split_file')
-@click.option('-i', '--input', required=True, type=click.Path(), help=help_input)
-@click.option('-d', '--output-directory', type=click.Path(), help=help_output_directory)
+@input_option
+@output_directory_option
 def split(input: str, output_directory: str):
-    """Parse file (currently only supports conversion to RDF)
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    """
+    Parse file (currently only supports conversion to RDF)
     """    
 
     split_file(input_path=input, output_directory=output_directory)
@@ -134,17 +115,8 @@ def split(input: str, output_directory: str):
 @click.option('-W', '--inverse-factor', help=help_inverse_factor)
 @click.argument('input')
 def ptable(input:str, inverse_factor):
-    """Write ptable (kboom/boomer input)
-    should maybe move to boomer (but for now it can live here, so cjm can tweak
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    """
+    Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
     """    
     df = parse(input)
     df = collapse(df)
@@ -155,29 +127,19 @@ def ptable(input:str, inverse_factor):
 
 
 @main.command()
-@click.option('-i', '--input', help=help_input)
-@click.option('-o', '--output', help=help_output)
+@input_option
+@output_option
 def dedupe(input: str, output: str):
-    """Remove lower confidence duplicate lines.
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    """
+    Remove lower confidence duplicate lines.
     """    
     df = parse(input)
     df = filter_redundant_rows(df)
     df.to_csv(output, sep="\t", index=False)
 
 @main.command()
-@click.option('-q', '--query',
-            help= help_query)
-@click.option('-o', '--output',
-              help= help_output)
+@click.option('-q', '--query',help= help_query)
+@output_option
 @click.argument('inputs', nargs=-1)
 def dosql(query:str, inputs: List[str], output: str):
     """
@@ -219,21 +181,13 @@ from sssom.sparql_util import EndpointConfig, query_mappings
 @click.option('--object-labels/--no-object-labels', default=None, help='if set, includes object labels')
 @click.option('-l', '--limit', type=int)
 @click.option('-P', '--prefix', type=click.Tuple([str, str]), multiple=True)
-@click.option('-o', '--output')
+@output_option
 def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
            object_labels: bool = None,
            prefix:List[Dict[str,str]] = None,
            output: str = None):
-    """Run a SPARQL query.
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    """
+    Run a SPARQL query.
     """           
 
     endpoint = EndpointConfig()
@@ -257,21 +211,13 @@ def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
     write_sssom(msdf, output)
 
 @main.command()
-@click.option('-o', '--output')
+@output_option
 @click.argument('inputs', nargs=2)
 def diff(inputs: Tuple[str,str], output:str):
-    """Compare two SSSOM files.
+    """
+    Compare two SSSOM files.
     The output is a new SSSOM file with the union of all mappings, and
-    injected comments indicating uniqueness to set1 or set2
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    injected comments indicating uniqueness to set1 or set2.
     """    
 
     (input1, input2) = inputs
@@ -286,16 +232,7 @@ def diff(inputs: Tuple[str,str], output:str):
 @click.argument('inputs', nargs=-1)
 def partition(inputs: List[str], outdir: str):
     """Partitions an SSSOM file into multiple files, where each
-    file is a strongly connected component
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    file is a strongly connected component.
     """    
 
     docs = [from_tsv(input) for input in inputs]
@@ -315,24 +252,15 @@ def partition(inputs: List[str], outdir: str):
 
 
 @main.command()
-@click.option('-i', '--input')
-@click.option('-o', '--output')
-@click.option('-m', '--metadata')
+@input_option
+@output_option
+@metadata_option
 @click.option('-s', '--statsfile')
 def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
 
     The data dictionary for the output is in cliquesummary.yaml
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
     """    
     import yaml
     if metadata is None:
@@ -349,21 +277,13 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 
 
 @main.command()
-@click.option('-o', '--output')
-@click.option('-t', '--transpose/--no-transpose', default=False)
-@click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
+@output_option
+@transpose_option
+@fields_option
 @click.argument('input')
 def crosstab(input:str, output:str, transpose:bool, fields):
-    """Write sssom summary cross-tabulated by categories.
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-
+    """
+    Write sssom summary cross-tabulated by categories.
     """    
 
     df = remove_unmatched(parse(input))
@@ -380,22 +300,14 @@ def crosstab(input:str, output:str, transpose:bool, fields):
 
 
 @main.command()
-@click.option('-o', '--output')
-@click.option('-t', '--transpose/--no-transpose', default=False)
+@output_option
+@transpose_option
 @click.option('-v', '--verbose/--no-verbose', default=False)
-@click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
-@click.argument('input')
+@fields_option
+@input_option
 def correlations(input:str, output:str, transpose:bool, verbose:bool, fields):
     """
-
-    Example:
-
-    A B C
-
-    D E F
-    
-    G H I
-    
+    Correlations
     """    
 
     df = remove_unmatched(parse(input))
