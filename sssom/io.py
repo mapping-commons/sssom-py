@@ -11,16 +11,16 @@ import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
-def write_sssom(mset: MappingSetDataFrame, output: str = None) -> None:
-    if mset.metadata is not None:
-        obj = {k:v for k,v in mset.metadata.items()}
+def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
+    if msdf.metadata is not None:
+        obj = {k:v for k,v in msdf.metadata.items()}
     else:
         obj = {}
-    if mset.prefixmap is not None:
-        obj['curie_map'] = mset.prefixmap
+    if msdf.prefixmap is not None:
+        obj['curie_map'] = msdf.prefixmap
     lines = yaml.safe_dump(obj).split("\n")
     lines = [f'# {line}' for line in lines if line != '']
-    s = mset.df.to_csv(sep="\t", index=False)
+    s = msdf.df.to_csv(sep="\t", index=False)
     lines = lines + [s]
     if output is None:
         for line in lines:
