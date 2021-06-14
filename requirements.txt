@@ -12,4 +12,3 @@ pandasql>=0.0
 sparqlwrapper>=0.0
 pytest
 validators
-linkml-model
