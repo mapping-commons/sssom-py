@@ -325,7 +325,7 @@ def diff(inputs: Tuple[str, str], output: str):
 @main.command()
 @output_directory_option
 @click.argument('inputs', nargs=-1)
-def partition(inputs: List[str], outdir: str):
+def partition(inputs: List[str], output_directory: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
 
@@ -347,10 +347,10 @@ def partition(inputs: List[str], outdir: str):
     n = 0
     for cdoc in cliquedocs:
         n += 1
-        ofn = f'{outdir}/clique_{n}.sssom.tsv'
+        ofn = f'{output_directory}/clique_{n}.sssom.tsv'
         # logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
-        logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
+        # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
         write_sssom(msdf, ofn)
         # write_tsv(msdf, ofn)
@@ -412,8 +412,8 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
 
         None.
     """
-
-    df = remove_unmatched(parse(input))
+    
+    df = remove_unmatched(from_tsv(input).df)
     # df = parse(input)
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
