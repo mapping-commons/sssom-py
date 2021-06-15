@@ -84,6 +84,7 @@ linkml:Nodeidentifier NONLITERAL
     (  $<MappingSet_tes> (  <mappings> @<Mapping> * ;
           <mapping_set_id> @<Entity> ? ;
           <mapping_set_version> @linkml:String ? ;
+          <mapping_set_description> @linkml:String ? ;
           <creator_id> @<Entity> ? ;
           <creator_label> @linkml:String ? ;
           <license> @linkml:String ? ;
