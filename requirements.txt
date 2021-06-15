@@ -12,5 +12,5 @@ pandasql>=0.0
 sparqlwrapper>=0.0
 pytest>=0.0
 validators>=0.0
-click>=8.0
+click>=0.0
 scipy>=0.0
