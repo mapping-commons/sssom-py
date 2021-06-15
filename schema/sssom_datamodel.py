@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-05-31 20:53
+# Generation date: 2021-05-31 21:44
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -61,6 +61,7 @@ class MappingSet(YAMLRoot):
     mappings: Optional[Union[Union[dict, "Mapping"], List[Union[dict, "Mapping"]]]] = empty_list()
     mapping_set_id: Optional[Union[str, EntityId]] = None
     mapping_set_version: Optional[str] = None
+    mapping_set_description: Optional[str] = None
     creator_id: Optional[Union[str, EntityId]] = None
     creator_label: Optional[str] = None
     license: Optional[str] = None
@@ -92,6 +93,9 @@ class MappingSet(YAMLRoot):
 
         if self.mapping_set_version is not None and not isinstance(self.mapping_set_version, str):
             self.mapping_set_version = str(self.mapping_set_version)
+
+        if self.mapping_set_description is not None and not isinstance(self.mapping_set_description, str):
+            self.mapping_set_description = str(self.mapping_set_description)
 
         if self.creator_id is not None and not isinstance(self.creator_id, EntityId):
             self.creator_id = EntityId(self.creator_id)
@@ -179,7 +183,7 @@ class Mapping(YAMLRoot):
     object_source: Optional[str] = None
     object_source_version: Optional[str] = None
     mapping_provider: Optional[str] = None
-    mapping_cardinality: Optional[Union[str, "MappingCardinalityEnum"]] = None
+    mapping_cardinality: Optional[str] = None
     mapping_tool: Optional[str] = None
     mapping_date: Optional[str] = None
     confidence: Optional[float] = None
@@ -247,8 +251,8 @@ class Mapping(YAMLRoot):
         if self.mapping_provider is not None and not isinstance(self.mapping_provider, str):
             self.mapping_provider = str(self.mapping_provider)
 
-        if self.mapping_cardinality is not None and not isinstance(self.mapping_cardinality, MappingCardinalityEnum):
-            self.mapping_cardinality = MappingCardinalityEnum(self.mapping_cardinality)
+        if self.mapping_cardinality is not None and not isinstance(self.mapping_cardinality, str):
+            self.mapping_cardinality = str(self.mapping_cardinality)
 
         if self.mapping_tool is not None and not isinstance(self.mapping_tool, str):
             self.mapping_tool = str(self.mapping_tool)
@@ -331,26 +335,7 @@ class Entity(YAMLRoot):
 
 
 # Enumerations
-class MappingCardinalityEnum(EnumDefinitionImpl):
 
-    _defn = EnumDefinition(
-        name="MappingCardinalityEnum",
-    )
-
-    @classmethod
-    def _addvals(cls):
-        setattr(cls, "61",
-                PermissibleValue(text="61") )
-        setattr(cls, "1:n",
-                PermissibleValue(text="1:n") )
-        setattr(cls, "n:1",
-                PermissibleValue(text="n:1") )
-        setattr(cls, "60",
-                PermissibleValue(text="60") )
-        setattr(cls, "0:1",
-                PermissibleValue(text="0:1") )
-        setattr(cls, "n:n",
-                PermissibleValue(text="n:n") )
 
 # Slots
 class slots:
@@ -413,6 +398,9 @@ slots.mapping_set_id = Slot(uri=SSSOM.mapping_set_id, name="mapping_set_id", cur
 slots.mapping_set_version = Slot(uri=SSSOM.mapping_set_version, name="mapping_set_version", curie=SSSOM.curie('mapping_set_version'),
                    model_uri=SSSOM.mapping_set_version, domain=None, range=Optional[str], mappings = [OWL.versionInfo])
 
+slots.mapping_set_description = Slot(uri=SSSOM.mapping_set_description, name="mapping_set_description", curie=SSSOM.curie('mapping_set_description'),
+                   model_uri=SSSOM.mapping_set_description, domain=None, range=Optional[str])
+
 slots.creator_id = Slot(uri=SSSOM.creator_id, name="creator_id", curie=SSSOM.curie('creator_id'),
                    model_uri=SSSOM.creator_id, domain=None, range=Optional[Union[str, EntityId]], mappings = [DC.creator])
 
@@ -438,7 +426,7 @@ slots.mapping_provider = Slot(uri=SSSOM.mapping_provider, name="mapping_provider
                    model_uri=SSSOM.mapping_provider, domain=None, range=Optional[str])
 
 slots.mapping_cardinality = Slot(uri=SSSOM.mapping_cardinality, name="mapping_cardinality", curie=SSSOM.curie('mapping_cardinality'),
-                   model_uri=SSSOM.mapping_cardinality, domain=None, range=Optional[Union[str, "MappingCardinalityEnum"]])
+                   model_uri=SSSOM.mapping_cardinality, domain=None, range=Optional[str])
 
 slots.mapping_tool = Slot(uri=SSSOM.mapping_tool, name="mapping_tool", curie=SSSOM.curie('mapping_tool'),
                    model_uri=SSSOM.mapping_tool, domain=None, range=Optional[str])

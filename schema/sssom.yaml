@@ -113,6 +113,9 @@ slots:
     mappings:
     - owl:versionInfo
     range: string
+  mapping_set_description:
+    description: A description of the mapping set.
+    range: string
   creator_id:
     description: Identifies the persons or groups responsible for the creation of
       the mapping. Recommended to be a (pipe-separated) list of ORCIDs or otherwise
@@ -243,6 +246,7 @@ classes:
     - mappings
     - mapping_set_id
     - mapping_set_version
+    - mapping_set_description
     - creator_id
     - creator_label
     - license

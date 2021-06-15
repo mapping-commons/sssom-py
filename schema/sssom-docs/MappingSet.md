@@ -7,7 +7,7 @@ Represents a set of mappings
 URI: [sssom:MappingSet](http://w3id.org/sssom/MappingSet)
 
 
-![img](http://yuml.me/diagram/nofunky;dir:TB/class/[Entity]<object_match_field%200..1-%20[MappingSet&#124;mapping_set_version:string%20%3F;creator_label:string%20%3F;license:string%20%3F;subject_source:string%20%3F;subject_source_version:string%20%3F;object_source:string%20%3F;object_source_version:string%20%3F;mapping_provider:string%20%3F;mapping_tool:string%20%3F;mapping_date:string%20%3F;subject_preprocessing:string%20%3F;object_preprocessing:string%20%3F;match_term_type:string%20%3F;see_also:string%20%3F;other:string%20%3F;comment:string%20%3F],[Entity]<subject_match_field%200..1-%20[MappingSet],[Entity]<creator_id%200..1-%20[MappingSet],[Entity]<mapping_set_id%200..1-%20[MappingSet],[Mapping]<mappings%200..*-++[MappingSet],[Mapping],[Entity])
+![img](http://yuml.me/diagram/nofunky;dir:TB/class/[Entity]<object_match_field%200..1-%20[MappingSet&#124;mapping_set_version:string%20%3F;mapping_set_description:string%20%3F;creator_label:string%20%3F;license:string%20%3F;subject_source:string%20%3F;subject_source_version:string%20%3F;object_source:string%20%3F;object_source_version:string%20%3F;mapping_provider:string%20%3F;mapping_tool:string%20%3F;mapping_date:string%20%3F;subject_preprocessing:string%20%3F;object_preprocessing:string%20%3F;match_term_type:string%20%3F;see_also:string%20%3F;other:string%20%3F;comment:string%20%3F],[Entity]<subject_match_field%200..1-%20[MappingSet],[Entity]<creator_id%200..1-%20[MappingSet],[Entity]<mapping_set_id%200..1-%20[MappingSet],[Mapping]<mappings%200..*-++[MappingSet],[Mapping],[Entity])
 
 ## Attributes
 
@@ -31,6 +31,9 @@ URI: [sssom:MappingSet](http://w3id.org/sssom/MappingSet)
      * range: [String](types/String.md)
  * [mapping_provider](mapping_provider.md)  <sub>OPT</sub>
      * Description: URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings.
+     * range: [String](types/String.md)
+ * [mapping_set_description](mapping_set_description.md)  <sub>OPT</sub>
+     * Description: A description of the mapping set.
      * range: [String](types/String.md)
  * [mapping_set_id](mapping_set_id.md)  <sub>OPT</sub>
      * Description: A globally unique identifier for the mapping set (not each individual mapping). Should be IRI, ideally resolvable.
