@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-05-31 21:44
+# Generation date: 2021-06-15 11:27
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -9,19 +9,20 @@
 import dataclasses
 import sys
 import re
+from jsonasobj2 import JsonObj
 from typing import Optional, List, Union, Dict, ClassVar, Any
 from dataclasses import dataclass
-from linkml_model.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
+from linkml_runtime.linkml_model.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
 
-from linkml.utils.slot import Slot
-from linkml.utils.metamodelcore import empty_list, empty_dict, bnode
-from linkml.utils.yamlutils import YAMLRoot, extended_str, extended_float, extended_int
-from linkml.utils.dataclass_extensions_376 import dataclasses_init_fn_with_kwargs
-from linkml.utils.formatutils import camelcase, underscore, sfx
-from linkml.utils.enumerations import EnumDefinitionImpl
+from linkml_runtime.utils.slot import Slot
+from linkml_runtime.utils.metamodelcore import empty_list, empty_dict, bnode
+from linkml_runtime.utils.yamlutils import YAMLRoot, extended_str, extended_float, extended_int
+from linkml_runtime.utils.dataclass_extensions_376 import dataclasses_init_fn_with_kwargs
+from linkml_runtime.utils.formatutils import camelcase, underscore, sfx
+from linkml_runtime.utils.enumerations import EnumDefinitionImpl
 from rdflib import Namespace, URIRef
-from linkml.utils.curienamespace import CurieNamespace
-from linkml_model.types import Double, String
+from linkml_runtime.utils.curienamespace import CurieNamespace
+from linkml_runtime.linkml_model.types import Double, String
 
 metamodel_version = "1.7.0"
 
@@ -82,10 +83,8 @@ class MappingSet(YAMLRoot):
     comment: Optional[str] = None
 
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
-        if self.mappings is None:
-            self.mappings = []
         if not isinstance(self.mappings, list):
-            self.mappings = [self.mappings]
+            self.mappings = [self.mappings] if self.mappings is not None else []
         self.mappings = [v if isinstance(v, Mapping) else Mapping(**v) for v in self.mappings]
 
         if self.mapping_set_id is not None and not isinstance(self.mapping_set_id, EntityId):
@@ -317,8 +316,8 @@ class Entity(YAMLRoot):
     source: Optional[str] = None
 
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
-        if self.id is None:
-            raise ValueError("id must be supplied")
+        if self._is_empty(self.id):
+            self.MissingRequiredField("id")
         if not isinstance(self.id, EntityId):
             self.id = EntityId(self.id)
 
