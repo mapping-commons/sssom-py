@@ -225,7 +225,7 @@ def dosql(query: str, inputs: List[str], output: str):
         None.
 
     """
-    # should start with from_tsv and MOST should erturn write_sssom
+    # should start with from_tsv and MOST should return write_sssom
     n = 1
     while len(inputs) >= n:
         fn = inputs[n - 1]
