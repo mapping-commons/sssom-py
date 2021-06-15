@@ -31,6 +31,7 @@ Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
  * [mapping_cardinality](mapping_cardinality.md) - A string indicating whether this mapping is from a 1:1 (the subject_id maps to a single object_id), 1:n (the subject maps to more than one object_id), n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable from the mapping set.
  * [mapping_date](mapping_date.md) - The date the mapping was computed
  * [mapping_provider](mapping_provider.md) - URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings.
+ * [mapping_set_description](mapping_set_description.md) - A description of the mapping set.
  * [mapping_set_id](mapping_set_id.md) - A globally unique identifier for the mapping set (not each individual mapping). Should be IRI, ideally resolvable.
  * [mapping_set_version](mapping_set_version.md) - A version string for the mapping.
  * [mapping_tool](mapping_tool.md) - A reference to the tool or algorithm that was used to generate the mapping. Should be a URL pointing to more info about it, but can be free text.

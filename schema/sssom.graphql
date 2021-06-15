@@ -47,6 +47,7 @@ type MappingSet
     mappings: [Mapping]
     mappingSetId: Entity
     mappingSetVersion: String
+    mappingSetDescription: String
     creatorId: Entity
     creatorLabel: String
     license: String
