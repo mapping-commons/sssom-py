@@ -5,7 +5,7 @@ from typing import Dict, List
 
 import pandas as pd
 
-from sssom.datamodel_util import MappingSetDiff, EntityPair
+from sssom.datamodel_util import MappingSetDataFrame, MappingSetDiff, EntityPair
 from sssom.sssom_datamodel import Entity
 
 # TODO: use sssom_datamodel
@@ -219,3 +219,100 @@ def sha256sum(filename):
         for n in iter(lambda: f.readinto(mv), 0):
             h.update(mv[:n])
     return h.hexdigest()
+
+def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:bool=True, inplace:bool=False) -> MappingSetDataFrame:
+        """ 
+        Merging msdf2 into msdf1, 
+        if reconcile=True, then dedupe(remove redundant lower confidence mappings) and 
+            reconcile (if msdf contains a higher confidence _negative_ mapping, 
+            then remove lower confidence positive one. If confidence is the same, 
+            prefer HumanCurated. If both HumanCurated, prefer negative mapping). 
+
+        Args:
+            msdf1 (MappingSetDataFrame): The primary MappingSetDataFrame
+            msdf2 (MappingSetDataFrame): The secondary MappingSetDataFrame
+            reconcile (bool, optional): [description]. Defaults to True.
+
+        Returns:
+            MappingSetDataFrame: Merged MappingSetDataFrame.
+        """
+        _defining_features = ['subject_id', 'predicate_id', 'object_id' ]
+
+        merged_msdf = MappingSetDataFrame()
+        # If msdf2 has a DataFrame
+        if msdf2.df is not None:
+            # 'outer' join in pandas == FULL JOIN in SQL
+            merged_msdf.df = msdf1.df.merge(msdf2.df, how='outer', on=_defining_features)
+        else:
+            merged_msdf.df = msdf1.df
+        #merge the non DataFrame elements
+        merged_msdf.prefixmap = dict_merge(msdf2.prefixmap, msdf1.prefixmap, 'prefixmap')
+        merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'prefixmap')
+
+
+        '''if inplace:
+            msdf1.prefixmap = merged_msdf.prefixmap
+            msdf1.metadata = merged_msdf.metadata
+            msdf1.df = merged_msdf.df'''
+
+        if reconcile:
+            merged_msdf.df = filter_redundant_rows(merged_msdf.df)
+            
+            merged_msdf = deal_with_negation(merged_msdf) #deals with negation
+                        
+        return merged_msdf
+
+def deal_with_negation(msdf:MappingSetDataFrame)-> MappingSetDataFrame:
+        """[summary]
+
+        Args:
+            msdf (MappingSetDataFrame): Merged MappingSetDataFrame
+
+        Returns:
+            MappingSetDataFrame: MappingSetDataFrame with negations addressed
+        """
+        
+        '''
+            1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1, 
+               the one in mapping1 is preserved).
+            2. Reconciling means two things 
+                [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times, 
+                    only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
+                [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other. 
+                     If same confidence prefer "HumanCurated" .If same again prefer negative.
+            3. Prefixes:
+                [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different, throw an error and fail hard
+                    else just merge the two prefix maps
+            4. Metadata: same as rule 1.
+
+            #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
+        '''
+
+        
+
+
+
+
+        #return reconciled_msdf
+
+def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:
+    """
+    Takes 2 MappingSetDataFrame elements (prefixmap OR metadata) and merges source => target
+
+    Args:
+        source (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+        target (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+        dict_name (str): prefixmap or metadata
+
+    Returns:
+        Dict: merged MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+    """
+    if source is not None:
+        k:str
+        for k, v in source:
+                if k not in target:
+                    target[k] = v
+                else:
+                    if target[k] != v:
+                        raise ValueError(f'.{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.')
+    return target
