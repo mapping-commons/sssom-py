@@ -5,6 +5,7 @@
 #curie_map:
 #  a: "http://example.org/a/"
 #  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+#  owl: "http://www.w3.org/2002/07/owl#"
 #  x: "http://example.org/x/"
 #  y: "http://example.org/y/"
 #  z: "http://example.org/z/"

@@ -37,6 +37,10 @@ class SSSOMTestCase:
     def __init__(self, config, queries):
         self.filepath = get_test_file(config['filename'])
         self.filename = config['filename']
+        if 'metadata_file' in config:
+            self.metadata_file = config['metadata_file']
+        else:
+            self.metadata_file = None
         self.graph_serialisation = "turtle"
         self.ct_json_elements = config['ct_json_elements']
         self.ct_data_frame_rows = config['ct_data_frame_rows']

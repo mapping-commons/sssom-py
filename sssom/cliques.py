@@ -88,7 +88,7 @@ def get_src(src, id):
     else:
         return src
 
-def summarize_cliques(doc: MappingSetDocument):
+def summarize_cliques(doc: MappingSetDataFrame):
     """
     summary stats on a clique doc
     """
