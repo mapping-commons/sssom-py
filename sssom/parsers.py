@@ -8,7 +8,7 @@ import json
 
 import pandas as pd
 import yaml
-from rdflib import Graph, BNode, Literal, URIRef
+from rdflib import Graph, URIRef
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
@@ -34,7 +34,7 @@ def from_tsv(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, s
             meta = _read_metadata_from_table(file_path)
         if 'curie_map' in meta:
             logging.info("Context provided, but SSSOM file provides its own CURIE map. "
-                        "CURIE map from context is disregarded.")
+                         "CURIE map from context is disregarded.")
             curie_map = meta['curie_map']
         msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
         # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
@@ -102,6 +102,7 @@ def from_obographs_json(file_path: str, curie_map: Dict[str, str] = None,
         return from_obographs(jsondoc, curie_map, meta)
     else:
         raise Exception(f"{file_path} is not a valid file path or url.")
+
 
 def guess_file_format(filename):
     extension = get_file_extension(filename)
@@ -232,11 +233,16 @@ def is_extract_property(p, properties):
 
 def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDataFrame
-    :param g: A Graph object (rdflib)
-    :param curie_map:
-    :param meta: an optional set of metadata elements
-    :return: MappingSetDataFrame
+    Converts a obographs json object to an SSSOM data frame
+
+    Args:
+        jsondoc: The JSON object representing the ontology in obographs format
+        curie_map: The curie map to be used
+        meta: Any additional metadata that needs to be added to the resulting SSSOM data frame
+
+    Returns:
+        An SSSOM data frame (MappingSetDataFrame)
+
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -474,7 +480,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     :param msdf:
     :return: MappingSetDocument
     """
-    if not msdf.metadata['curie_map']:
+    if not msdf.prefixmap:
         raise Exception(f'No valid curie_map provided')
 
     mlist = []
@@ -505,7 +511,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     for k, v in msdf.metadata.items():
         if k != 'curie_map':
             ms[k] = v
-    return MappingSetDocument(mapping_set=ms, curie_map=msdf.metadata['curie_map'])
+    return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
 def split_dataframe(msdf: MappingSetDataFrame):
@@ -546,5 +552,6 @@ def split_dataframe_by_prefix(msdf: MappingSetDataFrame, subject_prefixes, objec
                     splitted[split_name] = msdf
                 else:
                     print(
-                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), or no matches ({len(dfs)} matches found)")
+                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), "
+                        f"or no matches ({len(dfs)} matches found)")
     return splitted
