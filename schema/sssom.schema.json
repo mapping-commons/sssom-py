@@ -194,6 +194,10 @@
                "description": "URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings.",
                "type": "string"
             },
+            "mapping_set_description": {
+               "description": "A description of the mapping set.",
+               "type": "string"
+            },
             "mapping_set_id": {
                "description": "A globally unique identifier for the mapping set (not each individual mapping). Should be IRI, ideally resolvable.",
                "type": "string"
@@ -286,6 +290,10 @@
       },
       "mapping_provider": {
          "description": "URL pointing to the source that provided the mapping, for example an ontology that already contains the mappings.",
+         "type": "string"
+      },
+      "mapping_set_description": {
+         "description": "A description of the mapping set.",
          "type": "string"
       },
       "mapping_set_id": {
