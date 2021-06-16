@@ -16,12 +16,12 @@ default_prefix: sssom
 enums:
   mapping_cardinality_enum:
     permissible_values:
-      1:1:
-      1:n:
-      n:1:
-      1:0:
-      0:1:
-      n:n:
+      "1:1":
+      "1:n":
+      "n:1":
+      "1:0":
+      "0:1":
+      "n:n":
 
 slots:
   entity_field:

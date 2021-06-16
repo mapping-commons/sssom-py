@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-06-15 10:43
+# Generation date: 2021-06-16 10:52
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -343,14 +343,14 @@ class MappingCardinalityEnum(EnumDefinitionImpl):
 
     @classmethod
     def _addvals(cls):
-        setattr(cls, "61",
-                PermissibleValue(text="61") )
+        setattr(cls, "1:1",
+                PermissibleValue(text="1:1") )
         setattr(cls, "1:n",
                 PermissibleValue(text="1:n") )
         setattr(cls, "n:1",
                 PermissibleValue(text="n:1") )
-        setattr(cls, "60",
-                PermissibleValue(text="60") )
+        setattr(cls, "1:0",
+                PermissibleValue(text="1:0") )
         setattr(cls, "0:1",
                 PermissibleValue(text="0:1") )
         setattr(cls, "n:n",
