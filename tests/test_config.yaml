@@ -1,14 +1,25 @@
 tests:
   - filename: "basic.tsv"
     inputformat: "tsv"
+    multiple_input: True
     ct_json_elements: 176
     ct_data_frame_rows: 136
     ct_graph_queries_owl:
       query_count_equivalent_classes: 86
     ct_graph_queries_rdf:
       query_count_equivalent_classes: 86
+  - filename: "basic2.tsv"
+    inputformat: "tsv"
+    multiple_input: True
+    ct_json_elements: 999 #need to confirm how to get this
+    ct_data_frame_rows: 999 #need to confirm how to get this
+    ct_graph_queries_owl:
+      query_count_equivalent_classes: 99 #need to confirm how to get this
+    ct_graph_queries_rdf:
+      query_count_equivalent_classes: 99 #need to confirm how to get this
   - filename: "cob-to-external.tsv"
     inputformat: "tsv"
+    multiple_input: False
     ct_json_elements: 203
     ct_data_frame_rows: 104
     ct_graph_queries_owl:
@@ -27,18 +38,18 @@ tests:
 #      HP: "http://purl.obolibrary.org/obo/HP_"
 #      ORDO: "http://www.orpha.net/ORDO/Orphanet_"
 #      oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
-  - filename: "oaei-ordo-hp.rdf"
-    inputformat: "alignment-api-xml"
-    ct_json_elements: 1293
-    ct_data_frame_rows: 646
-    ct_graph_queries_owl:
-      query_count_equivalent_classes: 646
-    ct_graph_queries_rdf:
-      query_count_equivalent_classes: 646
-    curie_map:
-      HP: "http://purl.obolibrary.org/obo/HP_"
-      ORDO: "http://www.orpha.net/ORDO/Orphanet_"
-      oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
+  # - filename: "oaei-ordo-hp.rdf"
+  #   inputformat: "alignment-api-xml"
+  #   ct_json_elements: 1293
+  #   ct_data_frame_rows: 646
+  #   ct_graph_queries_owl:
+  #     query_count_equivalent_classes: 646
+  #   ct_graph_queries_rdf:
+  #     query_count_equivalent_classes: 646
+  #   curie_map:
+  #     HP: "http://purl.obolibrary.org/obo/HP_"
+  #     ORDO: "http://www.orpha.net/ORDO/Orphanet_"
+  #     oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
 queries:
   query_count_equivalent_classes: >
     SELECT DISTINCT ?e1 ?e2
