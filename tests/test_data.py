@@ -13,7 +13,6 @@ DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, 'sssom.context.jsonld')
 def get_test_file(filename):
     return os.path.join(test_data_dir, filename)
 
-
 def ensure_test_dir_exists():
     if not os.path.exists(test_out_dir):
         os.makedirs(test_out_dir)
@@ -32,6 +31,13 @@ def get_all_test_cases():
         test_cases.append(SSSOMTestCase(test, config['queries']))
     return test_cases
 
+def get_multiple_input_test_cases():
+    test_cases = []
+    config = load_config()
+    for test in config['tests']:
+        if test['multiple_input']:
+            test_cases.append(SSSOMTestCase(test, config['queries']))
+    return test_cases
 
 class SSSOMTestCase:
     def __init__(self, config, queries):
