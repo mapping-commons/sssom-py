@@ -13,6 +13,7 @@ from io import StringIO
 from .sssom_document import MappingSetDocument
 
 SSSOM_READ_FORMATS = ['tsv', 'rdf', 'owl', 'alignment-api-xml', 'obographs-json', 'json']
+SSSOM_EXPORT_FORMATS = ['tsv', 'rdf', 'owl', 'json']
 
 @dataclass
 class MappingSetDataFrame:
