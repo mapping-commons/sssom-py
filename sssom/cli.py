@@ -3,7 +3,7 @@ import click
 import yaml
 import re
 from pathlib import Path
-from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
+from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes, smart_open
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, write_sssom, parse_file, split_file, validate_file
 from .parsers import from_tsv
@@ -148,8 +148,9 @@ def split(input: str, output_directory: str):
 
 @main.command()
 @input_option
+@output_option
 @click.option('-W', '--inverse-factor', help='Inverse factor.')
-def ptable(input: str, inverse_factor: str):
+def ptable(input=None, output=None, inverse_factor=None):
     """Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
 
     Args:
@@ -167,8 +168,11 @@ def ptable(input: str, inverse_factor: str):
     df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
-    for row in rows:
-        logging.info("\t".join(row))
+
+    with smart_open(output) as fh:
+        for row in rows:
+            print("\t".join(row), file=fh)
+
 
 
 @main.command()
@@ -480,7 +484,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
             tups.append((v, i, j))
     tups = sorted(tups, key=lambda t: t[0])
     for t in tups:
-        logging.info(f'{t[0]}\t{t[1]}\t{t[2]}')
+        print(f'{t[0]}\t{t[1]}\t{t[2]}')
 
 
 if __name__ == "__main__":

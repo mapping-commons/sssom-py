@@ -13,7 +13,7 @@ from rdflib import Graph, URIRef
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
 from .util import RDF_FORMATS
-from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
+from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe, is_curie
 
 from sssom.datamodel_util import read_pandas
 import validators
@@ -430,11 +430,6 @@ def is_valid_mapping(m):
 
 class NoCURIEException(Exception):
     pass
-
-
-def is_curie(string: str):
-    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
-
 
 def curie(uri: str, curie_map):
     if is_curie(uri):
