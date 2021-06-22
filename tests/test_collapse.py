@@ -56,9 +56,9 @@ class TestCollapse(unittest.TestCase):
         print(len(diff.unique_tuples1))
         print(len(diff.unique_tuples2))
         print(len(diff.common_tuples))
-        assert len(diff.unique_tuples1) == 18
-        assert len(diff.unique_tuples2) == 1
-        assert len(diff.common_tuples) == 73
+        assert len(diff.unique_tuples1) == 15
+        assert len(diff.unique_tuples2) == 3
+        assert len(diff.common_tuples) == 76
         #totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)
         #assert totlen == len(self.df.index) + len(df2.index)
         diff_df = diff.combined_dataframe
