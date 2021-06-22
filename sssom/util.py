@@ -287,6 +287,10 @@ def deal_with_negation(msdf:MappingSetDataFrame)-> MappingSetDataFrame:
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         '''
+        # Input: DF row
+        # returns 2 things
+        #   1. Normalized Row 
+        #   2. negation flag: True/False
 
         
 
