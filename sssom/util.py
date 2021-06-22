@@ -187,7 +187,9 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
         elif p == 'dbpedia-owl:different':
             pi = 3
         else:
-            raise Exception(f'Unknown predicate {p}')
+            #raise Exception(f'Unknown predicate {p}')
+            raise Warning(f'Unknown predicate {p}')
+
 
         if pi == 0:
             # subClassOf
