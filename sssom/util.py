@@ -188,7 +188,7 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
             pi = 3
         else:
             #raise Exception(f'Unknown predicate {p}')
-            raise Warning(f'Unknown predicate {p}')
+            print(f'Unknown predicate {p}')
 
 
         if pi == 0:
