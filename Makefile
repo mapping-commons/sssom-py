@@ -55,3 +55,6 @@ pypi: test
 	python setup.py sdist
 	twine upload dist/*
 
+lint:
+	pip install tox
+	tox -e lint
