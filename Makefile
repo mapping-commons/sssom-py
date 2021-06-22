@@ -1,8 +1,9 @@
 PYTHON=python
+DEFAULT_PREFIX_MAP="https://raw.githubusercontent.com/bioregistry/bioregistry/main/docs/_data/contexts/obo_synonyms.context.jsonld"
 
 all: test
 
-EXTS = _datamodel.py .graphql .schema.json .owl -docs .shex .context.jsonld
+EXTS = _datamodel.py .graphql .schema.json .owl -docs .shex .context.jsonld .external.context.jsonld
 
 all_schema: $(patsubst %,schema/sssom%, $(EXTS))
 
@@ -15,6 +16,8 @@ schema/%.schema.json: schema/%.yaml
 	gen-json-schema -t 'mapping set' $< > $@
 schema/%.shex: schema/%.yaml
 	gen-shex $< > $@
+schema/sssom.external.context.jsonld:
+	wget $(DEFAULT_PREFIX_MAP) -O $@
 schema/%.context.jsonld: schema/%.yaml
 	gen-jsonld-context $< > $@
 schema/%.csv: schema/%.yaml
@@ -29,9 +32,11 @@ schema/%-docs: schema/%.yaml
 test:
 	pytest
 
+
 deploy-dm:
 	cp schema/sssom_datamodel.py sssom/
 	cp schema/sssom.context.jsonld sssom/
+	cp schema/sssom.external.context.jsonld sssom/
 
 # run after tests
 deploy-schema:

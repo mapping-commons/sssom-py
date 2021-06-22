@@ -8,14 +8,15 @@ import json
 
 import pandas as pd
 import yaml
-from rdflib import Graph, BNode, Literal, URIRef
+from rdflib import Graph, URIRef
 
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
 from .util import RDF_FORMATS
-from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
+from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe, is_curie
 
 from sssom.datamodel_util import read_pandas
+import validators
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,71 +24,84 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Readers (from file)
 
 
-def from_tsv(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_tsv(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
+    if validators.url(file_path) or os.path.exists(file_path):
+        df = read_pandas(file_path)
+        if meta is None:
+            meta = _read_metadata_from_table(file_path)
+        if 'curie_map' in meta:
+            logging.info("Context provided, but SSSOM file provides its own CURIE map. "
+                         "CURIE map from context is disregarded.")
+            curie_map = meta['curie_map']
+        msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
+        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+        return msdf
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
-    df = read_pandas(filename)
-    if meta is None:
-        meta = _read_metadata_from_table(filename)
-    if 'curie_map' in meta:
-        logging.info("Context provided, but SSSOM file provides its own CURIE map. "
-                     "CURIE map from context is disregarded.")
-        curie_map = meta['curie_map']
-    msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
-    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
 
-
-def from_rdf(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_rdf(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    g = Graph()
-    file_format = guess_file_format(filename)
-    g.parse(filename, format=file_format)
-    msdf = from_rdf_graph(g, curie_map, meta)
-    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
+    if validators.url(file_path) or os.path.exists(file_path):
+        g = Graph()
+        file_format = guess_file_format(file_path)
+        g.parse(file_path, format=file_format)
+        msdf = from_rdf_graph(g, curie_map, meta)
+        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+        return msdf
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_owl(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_owl(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    g = Graph()
-    file_format = guess_file_format(filename)
-    g.parse(filename, format=file_format)
-    msdf = from_owl_graph(g, curie_map, meta)
-    # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-    return msdf
+    if validators.url(file_path) or os.path.exists(file_path):
+        g = Graph()
+        file_format = guess_file_format(file_path)
+        g.parse(file_path, format=file_format)
+        msdf = from_owl_graph(g, curie_map, meta)
+        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
+        return msdf
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_jsonld(filename: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
+def from_jsonld(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    g = Graph()
-    g.parse(filename, format="json-ld")
-    msdf = from_rdf_graph(g, curie_map, meta)
-    return msdf
+    if validators.url(file_path) or os.path.exists(file_path):
+        g = Graph()
+        g.parse(file_path, format="json-ld")
+        msdf = from_rdf_graph(g, curie_map, meta)
+        return msdf
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_obographs_json(filename: str, curie_map: Dict[str, str] = None,
+def from_obographs_json(file_path: str, curie_map: Dict[str, str] = None,
                         meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses an obographs file as a JSON object and translates it into a MappingSetDataFrame
-    :param filename: The path to the obographs file
+    :param file_path: The path to the obographs file
     :param curie_map: an optional curie map
     :param meta: an optional dictionary of metadata elements
     :return: A SSSOM MappingSetDataFrame
     """
+    if validators.url(file_path) or os.path.exists(file_path):
+        with open(file_path) as json_file:
+            jsondoc = json.load(json_file)
 
-    with open(filename) as json_file:
-        jsondoc = json.load(json_file)
-
-    return from_obographs(jsondoc, curie_map, meta)
+        return from_obographs(jsondoc, curie_map, meta)
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def guess_file_format(filename):
@@ -100,15 +114,18 @@ def guess_file_format(filename):
         raise Exception(f"File extension {extension} does not correspond to a legal file format")
 
 
-def from_alignment_xml(filename: str, curie_map: Dict[str, str] = None,
+def from_alignment_xml(file_path: str, curie_map: Dict[str, str] = None,
                        meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    logging.info("Loading from alignment API")
-    xmldoc = minidom.parse(filename)
-    msdf = from_alignment_minidom(xmldoc, curie_map, meta)
-    return msdf
+    if validators.url(file_path) or os.path.exists(file_path):
+        logging.info("Loading from alignment API")
+        xmldoc = minidom.parse(file_path)
+        msdf = from_alignment_minidom(xmldoc, curie_map, meta)
+        return msdf
+    else:
+        raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
@@ -216,11 +233,16 @@ def is_extract_property(p, properties):
 
 def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
-    Converts a dataframe to a MappingSetDataFrame
-    :param g: A Graph object (rdflib)
-    :param curie_map:
-    :param meta: an optional set of metadata elements
-    :return: MappingSetDataFrame
+    Converts a obographs json object to an SSSOM data frame
+
+    Args:
+        jsondoc: The JSON object representing the ontology in obographs format
+        curie_map: The curie map to be used
+        meta: Any additional metadata that needs to be added to the resulting SSSOM data frame
+
+    Returns:
+        An SSSOM data frame (MappingSetDataFrame)
+
     """
     if not curie_map:
         raise Exception(f'No valid curie_map provided')
@@ -243,6 +265,10 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
             if 'nodes' in g:
                 for n in g['nodes']:
                     nid = n['id']
+                    if 'lbl' in n:
+                        label = n['lbl']
+                    else:
+                        label = ""
                     if 'meta' in n:
                         if 'xrefs' in n['meta']:
                             for xref in n['meta']['xrefs']:
@@ -251,6 +277,7 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
                                 try:
                                     mdict['subject_id'] = curie(nid, curie_map)
                                     mdict['object_id'] = curie(xref_id, curie_map)
+                                    mdict['subject_label'] = label
                                     mdict['predicate_id'] = "oboInOwl:hasDbXref"
                                     mdict['match_type'] = "Unspecified"
                                     mlist.append(Mapping(**mdict))
@@ -265,6 +292,7 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
                                     try:
                                         mdict['subject_id'] = curie(nid, curie_map)
                                         mdict['object_id'] = curie(xref_id, curie_map)
+                                        mdict['subject_label'] = label
                                         mdict['predicate_id'] = curie(pred, curie_map)
                                         mdict['match_type'] = "Unspecified"
                                         mlist.append(Mapping(**mdict))
@@ -409,11 +437,6 @@ def is_valid_mapping(m):
 class NoCURIEException(Exception):
     pass
 
-
-def is_curie(string: str):
-    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
-
-
 def curie(uri: str, curie_map):
     if is_curie(uri):
         return uri
@@ -458,7 +481,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     :param msdf:
     :return: MappingSetDocument
     """
-    if not msdf.metadata['curie_map']:
+    if not msdf.prefixmap:
         raise Exception(f'No valid curie_map provided')
 
     mlist = []
@@ -489,7 +512,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     for k, v in msdf.metadata.items():
         if k != 'curie_map':
             ms[k] = v
-    return MappingSetDocument(mapping_set=ms, curie_map=msdf.metadata['curie_map'])
+    return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
 def split_dataframe(msdf: MappingSetDataFrame):
@@ -530,5 +553,6 @@ def split_dataframe_by_prefix(msdf: MappingSetDataFrame, subject_prefixes, objec
                     splitted[split_name] = msdf
                 else:
                     print(
-                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), or no matches ({len(dfs)} matches found)")
+                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), "
+                        f"or no matches ({len(dfs)} matches found)")
     return splitted

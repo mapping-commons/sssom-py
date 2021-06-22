@@ -6,6 +6,7 @@ imports:
 prefixes:
   linkml: https://w3id.org/linkml/
   sssom: http://w3id.org/sssom/
+  oboInOwl: http://www.geneontology.org/formats/oboInOwl#
 see_also:
 - https://github.com/OBOFoundry/SSSOM
 default_curi_maps:
