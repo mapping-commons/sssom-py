@@ -25,7 +25,7 @@ type Mapping
     objectSource: String
     objectSourceVersion: String
     mappingProvider: String
-    mappingCardinality: String
+    mappingCardinality: MappingCardinalityEnum
     mappingTool: String
     mappingDate: String
     confidence: Double
