@@ -1,25 +1,50 @@
-from sssom.datamodel_util import to_mapping_set_dataframe, SSSOM_READ_FORMATS
+from sssom.datamodel_util import MappingSetDataFrame, to_mapping_set_dataframe, SSSOM_READ_FORMATS, SSSOM_EXPORT_FORMATS
 import click
 import yaml
 import re
 from pathlib import Path
-from sssom import slots
-from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes
+from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes, smart_open
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, write_sssom, parse_file, split_file
+from .io import convert_file, write_sssom, parse_file, split_file, validate_file
 from .parsers import from_tsv
-from .writers import write_tsv
 from typing import Tuple, List, Dict
 import pandas as pd
 from scipy.stats import chi2_contingency
 import logging
 from pandasql import sqldf
+from sssom.sparql_util import EndpointConfig, query_mappings
+
+# Click input options common across commands
+input_option = click.option('-i', '--input', required=True, type=click.Path(),
+                            help='Input file, e.g. a SSSOM tsv file.')
+input_format_option = click.option('-I', '--input-format',
+                                   help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}')
+output_option = click.option('-o', '--output', help='Output file, e.g. a SSSOM tsv file.')
+output_format_option = click.option('-O', '--output-format',
+                                    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}')
+output_directory_option = click.option('-d', '--output-directory', type=click.Path(), help='Output directory path.')
+metadata_option = click.option('-m', '--metadata', required=False, type=click.Path(), help='The path to a file containing the sssom metadata (including curie_map) to be used.')
+transpose_option = click.option('-t', '--transpose/--no-transpose', default=False)
+fields_option = click.option('-F', '--fields', nargs=2,
+                             default=('subject_category', 'object_category'), help='Fields.')
 
 
 @click.group()
 @click.option('-v', '--verbose', count=True)
 @click.option('-q', '--quiet')
-def main(verbose, quiet):
+def main(verbose: int, quiet: bool):
+    """Main
+
+    Args:
+
+        verbose (int): Verbose.
+        quiet (bool): Quiet.
+
+    Returns:
+
+        None.
+        
+    """
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
     elif verbose == 1:
@@ -31,77 +56,153 @@ def main(verbose, quiet):
 
 
 @main.command()
-@click.option('-i', '--input')
-@click.option('-f', '--format')
-@click.option('-o', '--output')
-@click.option('-t', '--to-format')
-@click.option('-c', '--context')
-def convert(input: str, output: str, format: str, to_format: str, context: str):
-    """
-    convert file (currently only supports conversion to RDF)
-    """
-    convert_file(input=input, output=output, input_format=format, output_format=to_format, context_path=context)
+@input_option
+@output_option
+@output_format_option
+def convert(input: str, output: str, output_format: str):
+    """Convert file (currently only supports conversion to RDF)
 
-## Input and metadata would be files (file paths). Check if exists.
+    Example:
+        sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
+
+    Args:
+
+        input (str): The path to the input SSSOM tsv file
+        output (str): The path to the output file.
+        output_format (str): The format to which the the SSSOM TSV should be converted.
+
+    Returns:
+
+        None.
+
+    """
+
+    convert_file(input_path=input, output_path=output, output_format=output_format)
+
+
+# Input and metadata would be files (file paths). Check if exists.
 @main.command()
-@click.option('-i', '--input', required=True, type=click.Path())
-@click.option('-I', '--input-format', required=False,
-              type=click.Choice(SSSOM_READ_FORMATS, case_sensitive=False))
-@click.option('-m', '--metadata', required=False, type=click.Path())
-@click.option('-c', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
-              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False))
-@click.option('-o', '--output', type=click.Path())
-def parse(input: str, input_format: str, metadata:str, curie_map_mode: str, output: str):
+@input_option
+@input_format_option
+@metadata_option
+@click.option('-C', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
+              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False),
+              help='Defines wether the curie map in the metadata should be extended or replaced with '
+                   'the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged')
+@output_option
+def parse(input: str, input_format: str, metadata: str, curie_map_mode: str, output: str):
+    """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
+
+    Args:
+
+        input (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+        input_format (str): The string denoting the input format.
+        metadata (str): The path to a file containing the sssom metadata (including curie_map) to be used during parse.
+        curie_map_mode (str): Curie map mode.
+        output (str): The path to the SSSOM TSV output file.
+
+    Returns:
+    
+        None.
     """
-    parse file (currently only supports conversion to RDF)
-    """
-    parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata, curie_map_mode=curie_map_mode)
+
+    parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata,
+               curie_map_mode=curie_map_mode)
 
 
 @main.command()
-@click.option('-i', '--input', required=True, type=click.Path())
-@click.option('-d', '--output-directory', type=click.Path())
+@input_option
+def validate(input: str):
+    """Takes 1 sssom file as input and produce an error report
+
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file
+
+    Returns:
+
+        None.
+    """
+
+    validate_file(input_path=input)
+
+
+@main.command()
+@input_option
+@output_directory_option
 def split(input: str, output_directory: str):
+    """Parse file (currently only supports conversion to RDF)
+
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file.
+        output_directory (str): Output directory path.
+
+    Returns:
+
+        None.
     """
-    parse file (currently only supports conversion to RDF)
-    """
+
     split_file(input_path=input, output_directory=output_directory)
 
 
 @main.command()
-@click.option('-W', '--inverse-factor')
-@click.argument('input')
-def ptable(input, inverse_factor):
+@input_option
+@output_option
+@click.option('-W', '--inverse-factor', help='Inverse factor.')
+def ptable(input=None, output=None, inverse_factor=None):
+    """Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
+
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file.
+        inverse_factor (str): Inverse factor.
+
+    Returns:
+
+        None
+
     """
-    write ptable (kboom/boomer input)
-    should maybe move to boomer (but for now it can live here, so cjm can tweak
-    """
-    df = parse(input)
-    df = collapse(df)
+    msdf = from_tsv(input)
+    # df = parse(input)
+    df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
-    for row in rows:
-        logging.info("\t".join(row))
+
+    with smart_open(output) as fh:
+        for row in rows:
+            print("\t".join(row), file=fh)
+
 
 
 @main.command()
-@click.option('-i', '--input')
-@click.option('-o', '--output')
+@input_option
+@output_option
 def dedupe(input: str, output: str):
+    """Remove lower confidence duplicate lines.
+
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file.
+        output (str): Output TSV/SSSOM file.
+
+    Returns:
+
+        None.
     """
-    remove lower confidence duplicate lines
-    """
-    df = parse(input)
-    df = filter_redundant_rows(df)
-    df.to_csv(output, sep="\t", index=False)
+    # df = parse(input)
+    msdf = from_tsv(input)
+    df = filter_redundant_rows(msdf.df)
+    msdf_out = MappingSetDataFrame(df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata)
+    # df.to_csv(output, sep="\t", index=False)
+    write_sssom(msdf_out, output)
+
 
 @main.command()
-@click.option('-q', '--query',
-              help='SQL query. Use "df" as table name')
-@click.option('-o', '--output',
-              help='output TSV/SSSOM file')
+@click.option('-q', '--query', help='SQL query. Use "df" as table name.')
 @click.argument('inputs', nargs=-1)
-def dosql(query:str, inputs: List[str], output: str):
+@output_option
+def dosql(query: str, inputs: List[str], output: str):
     """
     Run a SQL query over one or more sssom files.
 
@@ -116,13 +217,26 @@ def dosql(query:str, inputs: List[str], output: str):
     Example:
         `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
+
+    Args:
+
+        query (str): SQL query. Use "df" as table name.
+        inputs (List): List of input files.
+        output (str): Output TSV/SSSOM file.
+
+    Returns:
+    
+        None.
+
     """
+    # should start with from_tsv and MOST should return write_sssom
     n = 1
     while len(inputs) >= n:
-        fn = inputs[n-1]
-        df = parse(fn)
+        fn = inputs[n - 1]
+        df = from_tsv(fn).df
+        # df = parse(fn)
         globals()[f'df{n}'] = df
-        tn = re.sub('\..*','',Path(fn).stem).lower()
+        tn = re.sub('[.].*', '', Path(fn).stem).lower()
         globals()[tn] = df
         n += 1
     df = sqldf(query)
@@ -131,7 +245,7 @@ def dosql(query:str, inputs: List[str], output: str):
     else:
         df.to_csv(output, sep="\t", index=False)
 
-from sssom.sparql_util import EndpointConfig, query_mappings
+
 @main.command()
 @click.option('-c', '--config', type=click.File('rb'))
 @click.option('-e', '--url')
@@ -139,17 +253,32 @@ from sssom.sparql_util import EndpointConfig, query_mappings
 @click.option('--object-labels/--no-object-labels', default=None, help='if set, includes object labels')
 @click.option('-l', '--limit', type=int)
 @click.option('-P', '--prefix', type=click.Tuple([str, str]), multiple=True)
-@click.option('-o', '--output')
-def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
+@output_option
+def sparql(url: str = None, config=None, graph: str = None, limit: int = None,
            object_labels: bool = None,
-           prefix:List[Dict[str,str]] = None,
+           prefix: List[Dict[str, str]] = None,
            output: str = None):
+    """Run a SPARQL query.
+
+    Args:
+
+        url (str):
+        config (str): 
+        graph (str):
+        limit (int):
+        object_labels (bool):
+        prefix (List):
+        output (str): Output TSV/SSSOM file.
+
+
+    Returns:
+
+        None.
     """
-    Run a SPARQL query.
-    """
+
     endpoint = EndpointConfig()
     if config is not None:
-        for k,v in yaml.safe_load(config).items():
+        for k, v in yaml.safe_load(config).items():
             setattr(endpoint, k, v)
     if url is not None:
         endpoint.url = url
@@ -162,61 +291,96 @@ def sparql(url: str = None, config = None, graph: str = None, limit: int = None,
     if prefix is not None:
         if endpoint.curie_map is None:
             endpoint.curie_map = {}
-        for k,v in prefix:
+        for k, v in prefix:
             endpoint.curie_map[k] = v
     msdf = query_mappings(endpoint)
     write_sssom(msdf, output)
 
+
 @main.command()
-@click.option('-o', '--output')
+@output_option
 @click.argument('inputs', nargs=2)
-def diff(inputs: Tuple[str,str], output):
+def diff(inputs: Tuple[str, str], output: str):
     """
-    compare two SSSOM files.
+    Compare two SSSOM files.
     The output is a new SSSOM file with the union of all mappings, and
-    injected comments indicating uniqueness to set1 or set2
+    injected comments indicating uniqueness to set1 or set2.
+
+    Args:
+
+        inputs (tuple): A tuple of input filenames
+        output (str): Output TSV/SSSOM file.
+
+    Returns:
+
+        None.
     """
+
     (input1, input2) = inputs
-    df1 = parse(input1)
-    df2 = parse(input2)
-    d = compare_dataframes(df1, df2)
+    # df1 = parse(input1)
+    # df2 = parse(input2)
+    msdf1 = from_tsv(input1)
+    msdf2 = from_tsv(input2)
+    d = compare_dataframes(msdf1.df, msdf2.df)
     logging.info(f'COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}')
     d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
+
 @main.command()
-@click.option('-d', '--outdir')
+@output_directory_option
 @click.argument('inputs', nargs=-1)
-def partition(inputs: List[str], outdir: str):
+def partition(inputs: List[str], output_directory: str):
+    """Partitions an SSSOM file into multiple files, where each
+    file is a strongly connected component.
+
+    Args:
+
+        inputs (List): List of input files.
+        outdir (str): Output directory path.
+
+    Returns:
+
+        None.
     """
-    partitions an SSSOM file into multiple files, where each
-    file is a strongly connected component
-    """
+
     docs = [from_tsv(input) for input in inputs]
     doc = docs.pop()
-    for d2 in docs:
-        doc.mapping_set.mappings += d2.mapping_set.mappings
+    '''for d2 in docs:
+        doc.mapping_set.mappings += d2.mapping_set.mappings'''
     cliquedocs = split_into_cliques(doc)
     n = 0
     for cdoc in cliquedocs:
         n += 1
-        ofn = f'{outdir}/clique_{n}.sssom.tsv'
-        logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
-        logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
+        ofn = f'{output_directory}/clique_{n}.sssom.tsv'
+        # logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
+        # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
+        # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
-        write_tsv(msdf, ofn)
+        write_sssom(msdf, ofn)
+        # write_tsv(msdf, ofn)
 
 
 @main.command()
-@click.option('-i', '--input')
-@click.option('-o', '--output')
-@click.option('-m', '--metadata')
+@input_option
+@output_option
+@metadata_option
 @click.option('-s', '--statsfile')
 def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
-    """
-    partitions an SSSOM file into multiple files, where each
+    """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
 
     The data dictionary for the output is in cliquesummary.yaml
+
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file
+        output (str): Output TSV/SSSOM file
+        metadata (str): Metadata.
+        statsfile (str): Stats File.
+
+    Returns:
+
+        None.
     """
     import yaml
     if metadata is None:
@@ -233,15 +397,27 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 
 
 @main.command()
-@click.option('-o', '--output')
-@click.option('-t', '--transpose/--no-transpose', default=False)
-@click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
-@click.argument('input')
-def crosstab(input, output, transpose, fields):
+@input_option
+@output_option
+@transpose_option
+@fields_option
+def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
     """
-    write sssom summary cross-tabulated by categories
+    Write sssom summary cross-tabulated by categories.
+
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file
+        output (str): Output TSV/SSSOM file
+        transpose (bool): Yes/No
+        fields (Type):
+
+    Returns:
+
+        None.
     """
-    df = remove_unmatched(parse(input))
+    
+    df = remove_unmatched(from_tsv(input).df)
     # df = parse(input)
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
@@ -255,17 +431,27 @@ def crosstab(input, output, transpose, fields):
 
 
 @main.command()
-@click.option('-o', '--output')
-@click.option('-t', '--transpose/--no-transpose', default=False)
-@click.option('-v', '--verbose/--no-verbose', default=False)
-@click.option('-F', '--fields', nargs=2, default=(slots.subject_category.name, slots.object_category.name))
-@click.argument('input')
-def correlations(input, output, transpose, verbose, fields):
-    """
-    write sssom summary cross-tabulated by categories
-    """
+@output_option
+@transpose_option
+@fields_option
+@input_option
+def correlations(input: str, output: str, transpose: bool, fields: Tuple):
+    """Correlations
 
-    df = remove_unmatched(parse(input))
+    Args:
+
+        input (str): Input file. For e.g.: SSSOM tsv file
+        output (str): Output TSV/SSSOM file
+        transpose (bool): Yes/No
+        fields (Type): Fields.
+
+    Returns:
+
+        None.
+    """
+    msdf = from_tsv(input)
+    df = remove_unmatched(msdf.df)
+    # df = remove_unmatched(parse(input))
     if len(df) == 0:
         msg = f"No matched entities in this dataset!"
         logging.error(msg)
@@ -273,17 +459,17 @@ def correlations(input, output, transpose, verbose, fields):
 
     logging.info(f'#CROSSTAB ON {fields}')
     (f1, f2) = fields
-    if verbose:
-        logging.info(f'F1 {f1} UNIQUE: {df[f1].unique()}')
-        logging.info(f'F2 {f2} UNIQUE: {df[f2].unique()}')
+
+    logging.info(f'F1 {f1} UNIQUE: {df[f1].unique()}')
+    logging.info(f'F2 {f2} UNIQUE: {df[f2].unique()}')
 
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
 
     chi2 = chi2_contingency(ct)
-    if verbose:
-        logging.info(chi2)
+
+    logging.info(chi2)
     _, _, _, ndarray = chi2
     corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
     if output:
@@ -291,15 +477,14 @@ def correlations(input, output, transpose, verbose, fields):
     else:
         logging.info(corr)
 
-    if verbose:
-        tups = []
-        for i, row in corr.iterrows():
-            for j, v in row.iteritems():
-                logging.info(f'{i} x {j} = {v}')
-                tups.append((v, i, j))
-        tups = sorted(tups, key=lambda t: t[0])
-        for t in tups:
-            logging.info(f'{t[0]}\t{t[1]}\t{t[2]}')
+    tups = []
+    for i, row in corr.iterrows():
+        for j, v in row.iteritems():
+            logging.info(f'{i} x {j} = {v}')
+            tups.append((v, i, j))
+    tups = sorted(tups, key=lambda t: t[0])
+    for t in tups:
+        print(f'{t[0]}\t{t[1]}\t{t[2]}')
 
 
 if __name__ == "__main__":

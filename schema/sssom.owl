@@ -12,34 +12,7 @@
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/mapping_date> ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom <http://w3id.org/sssom/Mapping> ;
-            owl:onProperty <http://w3id.org/sssom/mappings> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/creator_label> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/object_match_field> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/comment> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/see_also> ],
+            owl:onProperty <http://w3id.org/sssom/mapping_provider> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
@@ -47,19 +20,11 @@
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/subject_preprocessing> ],
+            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/subject_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/mapping_set_description> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/mapping_set_id> ],
+            owl:onProperty <http://w3id.org/sssom/mapping_date> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
@@ -71,19 +36,19 @@
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/creator_id> ],
+            owl:onProperty <http://w3id.org/sssom/object_match_field> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/match_term_type> ],
+            owl:onProperty <http://w3id.org/sssom/see_also> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/mapping_provider> ],
+            owl:onProperty <http://w3id.org/sssom/mapping_set_description> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
@@ -91,11 +56,46 @@
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/mapping_set_version> ],
+            owl:onProperty <http://w3id.org/sssom/match_term_type> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_source_version> ] ;
+            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom <http://w3id.org/sssom/Mapping> ;
+            owl:onProperty <http://w3id.org/sssom/mappings> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/creator_label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/subject_preprocessing> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/comment> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/object_source> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/subject_source> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/mapping_set_id> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/mapping_set_version> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/creator_id> ] ;
     skos:definition "Represents a set of mappings" .
 
 <http://w3id.org/sssom/equivalent_property> a owl:ObjectProperty,
@@ -127,11 +127,11 @@
     dcterms:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
     rdfs:seeAlso "https://github.com/OBOFoundry/SSSOM" ;
     skos:definition "Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)" ;
-    linkml:generation_date "2021-05-31 21:45" ;
+    linkml:generation_date "2021-06-17 16:27" ;
     linkml:metamodel_version "1.7.0" ;
     linkml:source_file "sssom.yaml" ;
-    linkml:source_file_date "Mon May 31 21:44:45 2021" ;
-    linkml:source_file_size 9899 .
+    linkml:source_file_date "Thu Jun 17 16:25:04 2021" ;
+    linkml:source_file_size 9957 .
 
 <http://w3id.org/sssom/scope> a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -406,16 +406,24 @@ linkml:Uriorcurie a owl:Class,
     rdfs:label "mapping" ;
     rdfs:subClassOf [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/object_match_field> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
             owl:onProperty <http://w3id.org/sssom/predicate_label> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/license> ],
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/subject_id> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:Double ;
+            owl:onProperty <http://w3id.org/sssom/semantic_similarity_score> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/subject_category> ],
+            owl:onProperty <http://w3id.org/sssom/mapping_tool> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
@@ -423,7 +431,11 @@ linkml:Uriorcurie a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/subject_label> ],
+            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/subject_category> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
@@ -431,31 +443,11 @@ linkml:Uriorcurie a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_preprocessing> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
+            owl:onProperty <http://w3id.org/sssom/match_string> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/subject_source_version> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/creator_id> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:Double ;
-            owl:onProperty <http://w3id.org/sssom/information_content_mica_score> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/comment> ],
+            owl:onProperty <http://w3id.org/sssom/object_category> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
@@ -463,7 +455,47 @@ linkml:Uriorcurie a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/license> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/object_source> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/subject_source> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/object_id> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/creator_id> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/match_type> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/other> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
             owl:onProperty <http://w3id.org/sssom/mapping_provider> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/comment> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/subject_label> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <http://w3id.org/sssom/Entity> ;
+            owl:onProperty <http://w3id.org/sssom/subject_match_field> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://w3id.org/sssom/Entity> ;
@@ -475,43 +507,19 @@ linkml:Uriorcurie a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/object_source_version> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
             owl:onProperty <http://w3id.org/sssom/match_term_type> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/creator_label> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/object_id> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:Double ;
-            owl:onProperty <http://w3id.org/sssom/semantic_similarity_score> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/match_type> ],
+            owl:onProperty <http://w3id.org/sssom/information_content_mica_score> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
             owl:onProperty <http://w3id.org/sssom/mapping_date> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/object_match_field> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/mapping_tool> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/object_category> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:Double ;
@@ -519,19 +527,11 @@ linkml:Uriorcurie a owl:Class,
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/match_string> ],
+            owl:onProperty <http://w3id.org/sssom/subject_source_version> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/other> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/subject_source> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <http://w3id.org/sssom/Entity> ;
-            owl:onProperty <http://w3id.org/sssom/subject_id> ] ;
+            owl:onProperty <http://w3id.org/sssom/creator_label> ] ;
     skos:definition "Represents an individual mapping between a pair of entities" ;
     skos:exactMatch owl:Axiom .
 
@@ -685,21 +685,21 @@ linkml:topValue a owl:DatatypeProperty ;
         linkml:ClassDefinition ;
     rdfs:label "entity" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/id> ;
-            owl:qualifiedCardinality 1 ],
-        [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
             owl:onProperty <http://w3id.org/sssom/source> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/label> ],
+            owl:onProperty <http://w3id.org/sssom/category> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
-            owl:onProperty <http://w3id.org/sssom/category> ] ;
+            owl:onProperty <http://w3id.org/sssom/label> ],
+        [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty <http://w3id.org/sssom/id> ;
+            owl:qualifiedCardinality 1 ] ;
     skos:definition "Represents any entity that can be mapped, such as an OWL class or SKOS concept" ;
     skos:exactMatch rdf:Resource .
 

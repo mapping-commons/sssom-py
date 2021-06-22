@@ -1,6 +1,9 @@
 import hashlib
 import logging
 import random
+import sys
+import contextlib
+
 from typing import Dict, List
 
 import pandas as pd
@@ -145,6 +148,21 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     #    r['other'] = 'synthesized sssom file'
     d.combined_dataframe = pd.DataFrame(rows)
     return d
+
+
+@contextlib.contextmanager
+def smart_open(filename=None):
+    # https://stackoverflow.com/questions/17602878/how-to-handle-both-with-open-and-sys-stdout-nicely
+    if filename and filename != '-':
+        fh = open(filename, 'w')
+    else:
+        fh = sys.stdout
+
+    try:
+        yield fh
+    finally:
+        if fh is not sys.stdout:
+            fh.close()
 
 
 def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5):

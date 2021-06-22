@@ -4,6 +4,7 @@ Converts sssom meta tsv to linkml
 
 from sssom.sssom_document import MappingSetDocument
 import yaml
+import re
 from dataclasses import dataclass, field
 from typing import Optional, Set, List, Union, Dict, Any
 import pandas as pd
@@ -13,6 +14,8 @@ from io import StringIO
 from .sssom_document import MappingSetDocument
 
 SSSOM_READ_FORMATS = ['tsv', 'rdf', 'owl', 'alignment-api-xml', 'obographs-json', 'json']
+SSSOM_EXPORT_FORMATS = ['tsv', 'rdf', 'owl', 'json']
+SSSOM_COLUMNS_WITH_PREFIXED_ENTITIES = ['subject_id', 'predicate_id', 'object_id']
 
 @dataclass
 class MappingSetDataFrame:
@@ -184,6 +187,19 @@ class MappingSetDataFrame:
     prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
 
+    def clean_prefix_map(self):
+        prefixes_in_map = get_prefixes_used_in_table(self.df)
+        new_prefixes = dict()
+        missing_prefix = False
+        for prefix in prefixes_in_map:
+            if prefix in self.prefixmap:
+                new_prefixes[prefix]=self.prefixmap[prefix]
+            else:
+                logging.warning(f"{prefix} is used in the data frame but does not exist in prefix map")
+                missing_prefix = True
+        if not missing_prefix:
+            self.prefixmap = new_prefixes
+
 
 def get_file_extension(filename: str) -> str:
     parts = filename.split(".")
@@ -277,3 +293,22 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return msdf
 
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
+
+
+def is_curie(string: str):
+    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
+
+
+def get_prefix_from_curie(curie: str):
+    if is_curie(curie):
+        return curie.split(":")[0]
+    else:
+        return ''
+
+
+def get_prefixes_used_in_table(df: pd.DataFrame):
+    prefixes = []
+    for col in SSSOM_COLUMNS_WITH_PREFIXED_ENTITIES:
+        for v in df[col].values:
+            prefixes.append(get_prefix_from_curie(v))
+    return list(set(prefixes))
