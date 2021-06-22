@@ -3,8 +3,9 @@ from .sssom_datamodel import MappingSet, Mapping, Entity
 from dataclasses import dataclass
 from typing import Dict
 
+
 @dataclass()
-class MappingSetDocument():
+class MappingSetDocument:
     """
     Represents a single SSSOM document.
 

@@ -13,9 +13,17 @@ import logging
 from io import StringIO
 from .sssom_document import MappingSetDocument
 
-SSSOM_READ_FORMATS = ['tsv', 'rdf', 'owl', 'alignment-api-xml', 'obographs-json', 'json']
-SSSOM_EXPORT_FORMATS = ['tsv', 'rdf', 'owl', 'json']
-SSSOM_COLUMNS_WITH_PREFIXED_ENTITIES = ['subject_id', 'predicate_id', 'object_id']
+SSSOM_READ_FORMATS = [
+    "tsv",
+    "rdf",
+    "owl",
+    "alignment-api-xml",
+    "obographs-json",
+    "json",
+]
+SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
+SSSOM_COLUMNS_WITH_PREFIXED_ENTITIES = ["subject_id", "predicate_id", "object_id"]
+
 
 @dataclass
 class MappingSetDataFrame:
@@ -35,6 +43,7 @@ class EntityPair:
 
     Note that (e1,e2) == (e2,e1)
     """
+
     subject_entity: Entity
     object_entity: Entity
 
@@ -55,6 +64,7 @@ class MappingSetDiff:
     For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMatch B,
     this is considered a mapping in common.
     """
+
     unique_tuples1: Optional[Set[str]] = None
     unique_tuples2: Optional[Set[str]] = None
     common_tuples: Optional[Set[str]] = None
@@ -80,101 +90,90 @@ class MetaTSVConverter:
         loads from folder
         :return:
         """
-        #self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
+        # self.df = pd.read_csv(filename, sep="\t", comment="#").fillna("")
         self.df = read_pandas(filename)
-
 
     def convert(self) -> Dict[str, Any]:
         # note that 'mapping' is both a metaproperty and a property of this model...
         slots = {
-            'mappings': {
-                'description': 'Contains a list of mapping objects',
-                'range': 'mapping',
-                'multivalued': True
+            "mappings": {
+                "description": "Contains a list of mapping objects",
+                "range": "mapping",
+                "multivalued": True,
             },
-            'id': {
-                'description': 'CURIE or IRI identifier',
-                'identifier': True
-            }
+            "id": {"description": "CURIE or IRI identifier", "identifier": True},
         }
         classes = {
-            'mapping set': {
-                'description': 'Represents a set of mappings',
-                'slots': ['mappings']
+            "mapping set": {
+                "description": "Represents a set of mappings",
+                "slots": ["mappings"],
             },
-            'mapping': {
-                'description': 'Represents an individual mapping between a pair of entities',
-                'slots': [],
-                'class_uri': 'owl:Axiom'
+            "mapping": {
+                "description": "Represents an individual mapping between a pair of entities",
+                "slots": [],
+                "class_uri": "owl:Axiom",
             },
-            'entity': {
-                'description': 'Represents any entity that can be mapped, such as an OWL class or SKOS concept',
-                'mappings': [
-                    'rdf:Resource'
-                ],
-                'slots': ['id']
-            }
+            "entity": {
+                "description": "Represents any entity that can be mapped, such as an OWL class or SKOS concept",
+                "mappings": ["rdf:Resource"],
+                "slots": ["id"],
+            },
         }
         obj = {
-            'id': 'http://w3id.org/sssom',
-            'description': 'Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)',
-            'imports': [
-                'linkml:types'
-            ],
-            'prefixes': {
-                'linkml': 'https://w3id.org/linkml/',
-                'sssom': 'http://w3id.org/sssom/',
-
+            "id": "http://w3id.org/sssom",
+            "description": "Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)",
+            "imports": ["linkml:types"],
+            "prefixes": {
+                "linkml": "https://w3id.org/linkml/",
+                "sssom": "http://w3id.org/sssom/",
             },
-            'see_also': ['https://github.com/OBOFoundry/SSSOM'],
-            'default_curi_maps': ['semweb_context'],
-            'default_prefix': 'sssom',
-            'slots': slots,
-            'classes': classes
+            "see_also": ["https://github.com/OBOFoundry/SSSOM"],
+            "default_curi_maps": ["semweb_context"],
+            "default_prefix": "sssom",
+            "slots": slots,
+            "classes": classes,
         }
         for _, row in self.df.iterrows():
-            id = row['Element ID']
-            if id == 'ID':
+            id = row["Element ID"]
+            if id == "ID":
                 continue
             id = id.replace("sssom:", "")
-            dt = row['Datatype']
-            if dt == 'xsd:double':
-                dt = 'double'
-            elif id.endswith('_id') or id.endswith('match_field'):
-                dt = 'entity'
+            dt = row["Datatype"]
+            if dt == "xsd:double":
+                dt = "double"
+            elif id.endswith("_id") or id.endswith("match_field"):
+                dt = "entity"
             else:
-                dt = 'string'
+                dt = "string"
 
-            slot = {
-                'description': row['Description']
-            }
-            ep = row['Equivalent property']
+            slot = {"description": row["Description"]}
+            ep = row["Equivalent property"]
             if ep != "":
-                slot['mappings'] = [ep]
-            if row['Required'] == 1:
-                slot['required'] = True
+                slot["mappings"] = [ep]
+            if row["Required"] == 1:
+                slot["required"] = True
 
-            slot['range'] = dt
+            slot["range"] = dt
             slots[id] = slot
             slot_uri = None
-            if id == 'subject_id':
-                slot_uri = 'owl:annotatedSource'
-            elif id == 'object_id':
-                slot_uri = 'owl:annotatedTarget'
-            elif id == 'predicate_id':
-                slot_uri = 'owl:annotatedProperty'
+            if id == "subject_id":
+                slot_uri = "owl:annotatedSource"
+            elif id == "object_id":
+                slot_uri = "owl:annotatedTarget"
+            elif id == "predicate_id":
+                slot_uri = "owl:annotatedProperty"
             if slot_uri is not None:
-                slot['slot_uri'] = slot_uri
-            scope = row['Scope']
-            if 'G' in scope:
-                classes['mapping set']['slots'].append(id)
-            if 'L' in scope:
-                classes['mapping']['slots'].append(id)
+                slot["slot_uri"] = slot_uri
+            scope = row["Scope"]
+            if "G" in scope:
+                classes["mapping set"]["slots"].append(id)
+            if "L" in scope:
+                classes["mapping"]["slots"].append(id)
         return obj
 
     def convert_and_save(self, fn: str) -> None:
         obj = self.convert()
-        with open(fn, 'w') as stream:
+        with open(fn, "w") as stream:
             yaml.safe_dump(obj, stream, sort_keys=False)
 
 
@@ -183,6 +182,7 @@ class MappingSetDataFrame:
     """
     A collection of mappings represented as a DataFrame, together with additional metadata
     """
+
     df: pd.DataFrame = None  ## Mappings
     prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
@@ -193,9 +193,11 @@ class MappingSetDataFrame:
         missing_prefix = False
         for prefix in prefixes_in_map:
             if prefix in self.prefixmap:
-                new_prefixes[prefix]=self.prefixmap[prefix]
+                new_prefixes[prefix] = self.prefixmap[prefix]
             else:
-                logging.warning(f"{prefix} is used in the data frame but does not exist in prefix map")
+                logging.warning(
+                    f"{prefix} is used in the data frame but does not exist in prefix map"
+                )
                 missing_prefix = True
         if not missing_prefix:
             self.prefixmap = new_prefixes
@@ -207,13 +209,12 @@ def get_file_extension(filename: str) -> str:
         f_format = parts[-1]
         return f_format
     else:
-        raise Exception(f'Cannot guess format from {filename}')
+        raise Exception(f"Cannot guess format from {filename}")
 
 
-def read_csv(filename, comment='#', sep=','):
-    with open(filename, 'r') as f:
-        lines = "".join([line for line in f
-                        if not line.startswith(comment)])
+def read_csv(filename, comment="#", sep=","):
+    with open(filename, "r") as f:
+        lines = "".join([line for line in f if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
@@ -225,19 +226,19 @@ def read_metadata(filename):
     """
     meta = {}
     curie_map = {}
-    with open(filename, 'r') as stream:
+    with open(filename, "r") as stream:
         try:
             m = yaml.safe_load(stream)
             if "curie_map" in m:
-                curie_map = m['curie_map']
-            m.pop('curie_map', None)
+                curie_map = m["curie_map"]
+            m.pop("curie_map", None)
             meta = m
         except yaml.YAMLError as exc:
             print(exc)
     return meta, curie_map
 
 
-def read_pandas(filename: str, sep='\t') -> pd.DataFrame:
+def read_pandas(filename: str, sep="\t") -> pd.DataFrame:
     """
     wrapper to pd.read_csv that handles comment lines correctly
     :param filename:
@@ -261,13 +262,17 @@ def read_pandas(filename: str, sep='\t') -> pd.DataFrame:
     #            if not line.startswith('#'):
     #                tmp.write(line + "\n")
     #    tmp.seek(0)
-    return read_csv(filename, comment='#', sep=sep).fillna("")
+    return read_csv(filename, comment="#", sep=sep).fillna("")
 
 
 def extract_global_metadata(msdoc: MappingSetDocument):
-    meta = {'curie_map': msdoc.curie_map}
+    meta = {"curie_map": msdoc.curie_map}
     ms_meta = msdoc.mapping_set
-    for key in [slot for slot in dir(slots) if not callable(getattr(slots, slot)) and not slot.startswith("__")]:
+    for key in [
+        slot
+        for slot in dir(slots)
+        if not callable(getattr(slots, slot)) and not slot.startswith("__")
+    ]:
         slot = getattr(slots, key).name
         if slot not in ["mappings"] and slot in ms_meta:
             if ms_meta[slot]:
@@ -292,6 +297,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     msdf = MappingSetDataFrame(df=df, prefixmap=doc.curie_map, metadata=meta)
     return msdf
 
+
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
 
 
@@ -303,7 +309,7 @@ def get_prefix_from_curie(curie: str):
     if is_curie(curie):
         return curie.split(":")[0]
     else:
-        return ''
+        return ""
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame):
