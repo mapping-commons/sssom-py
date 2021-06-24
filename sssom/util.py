@@ -4,6 +4,7 @@ import random
 from typing import Dict, List
 
 import pandas as pd
+from scipy.stats.stats import normaltest
 
 from sssom.datamodel_util import MappingSetDataFrame, MappingSetDiff, EntityPair
 from sssom.sssom_datamodel import Entity
@@ -21,6 +22,10 @@ SUBJECT_SOURCE = 'subject_source'
 OBJECT_SOURCE = 'object_source'
 COMMENT = 'comment'
 MAPPING_PROVIDER = 'mapping_provider'
+MATCH_TYPE = 'match_type'
+HUMAN_CURATED_MATCH_TYPE = 'HumanCurated'
+
+_defining_features = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 def parse(filename) -> pd.DataFrame:
@@ -37,7 +42,7 @@ def collapse(df):
     """
     collapses rows with same S/P/O and combines confidence
     """
-    df2 = df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE].apply(max).reset_index()
+    df2 = df.groupby(_defining_features)[CONFIDENCE].apply(max).reset_index()
     return df2
 
 
@@ -238,7 +243,7 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame.
         """
-        _defining_features = ['subject_id', 'predicate_id', 'object_id' ]
+        
 
         merged_msdf = MappingSetDataFrame()
         # If msdf2 has a DataFrame
@@ -260,18 +265,18 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         if reconcile:
             merged_msdf.df = filter_redundant_rows(merged_msdf.df)
             
-            merged_msdf = deal_with_negation(merged_msdf) #deals with negation
+            merged_msdf.df = deal_with_negation(merged_msdf.df) #deals with negation
                         
         return merged_msdf
 
-def deal_with_negation(msdf:MappingSetDataFrame)-> MappingSetDataFrame:
+def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
         """[summary]
 
         Args:
-            msdf (MappingSetDataFrame): Merged MappingSetDataFrame
+            df (pd.DataFrame): Merged Pandas DataFrame
 
         Returns:
-            MappingSetDataFrame: MappingSetDataFrame with negations addressed
+            pd.DataFrame: Pandas DataFrame with negations addressed
         """
         
         '''
@@ -289,17 +294,66 @@ def deal_with_negation(msdf:MappingSetDataFrame)-> MappingSetDataFrame:
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         '''
-        # Input: DF row
-        # returns 2 things
-        #   1. Normalized Row 
-        #   2. negation flag: True/False
-
         
+        ######  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
+        negation_df:pd.DataFrame
+        negation_df = df.loc[df[PREDICATE_ID].str.startswith('!')]# or df.loc[df['predicate_modifier'] == 'NOT']
 
+        # #####This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
+        normalized_negation_df = negation_df.reset_index()
+        normalized_negation_df[PREDICATE_ID] = normalized_negation_df[PREDICATE_ID].str.replace('!','')
+        ########################################################
+        normalized_negation_df = normalized_negation_df.drop(['index'], axis = 1)
 
+        # remove the NOT rows from the main DataFrame
+        condition = negation_df.isin(df)
+        positive_df = df.drop(condition.index)
+        positive_df = positive_df.reset_index().drop(['index'], axis=1)
 
+        columns_of_interest = [SUBJECT_ID,PREDICATE_ID, OBJECT_ID, CONFIDENCE, MATCH_TYPE]
+        negation_subset = normalized_negation_df[columns_of_interest]
+        positive_subset = positive_df[columns_of_interest]
 
-        #return reconciled_msdf
+        combined_normalized_subset = pd.concat([positive_subset, negation_subset]).drop_duplicates()
+
+        #GroupBy and SELECT ONLY maximum confidence
+        max_confidence_df:pd.DataFrame
+        max_confidence_df = combined_normalized_subset.groupby(_defining_features, as_index=False)[CONFIDENCE].max()
+
+        ####### If same confidence prefer "HumanCurated". ################
+        reconciled_df_subset:pd.DataFrame
+        reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
+        for idx_1, row_1 in max_confidence_df.iterrows():
+            match_condition_1 = (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID]) & \
+                              (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & \
+                              (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
+            if len(match_condition_1[match_condition_1].index) > 1:
+                match_condition_1 = (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID]) & \
+                                  (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & \
+                                  (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE]) & \
+                                  (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+
+            reconciled_df_subset = reconciled_df_subset.append(combined_normalized_subset.loc[match_condition_1[match_condition_1].index, :])
+
+                    
+                
+        # Add negations (NOT symbol) back to the PREDICATE_ID
+        for idx_2, row_2 in negation_df.iterrows():
+            match_condition_2 = (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID]) & \
+                                (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID]) & \
+                                (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
+            reconciled_df_subset.loc[match_condition_2[match_condition_2].index, PREDICATE_ID] = row_2[PREDICATE_ID]
+
+        reconciled_df:pd.DataFrame
+        reconciled_df = pd.DataFrame(columns=df.columns)
+        for idx_3, row_3 in reconciled_df_subset.iterrows():
+            match_condition_3 = (df[SUBJECT_ID] == row_3[SUBJECT_ID]) & \
+                                (df[OBJECT_ID] == row_3[OBJECT_ID]) & \
+                                (df[CONFIDENCE] == row_3[CONFIDENCE]) & \
+                                (df[PREDICATE_ID] == row_3[PREDICATE_ID])
+            reconciled_df = reconciled_df.append(df.loc[match_condition_3[match_condition_3].index, :])
+        
+        return reconciled_df
 
 def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:
     """
