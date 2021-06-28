@@ -438,7 +438,7 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         # If msdf2 has a DataFrame
         if msdf2.df is not None:
             # 'outer' join in pandas == FULL JOIN in SQL
-            merged_msdf.df = msdf1.df.merge(msdf2.df, how='outer', on=_defining_features)
+            merged_msdf.df = msdf1.df.merge(msdf2.df, how='outer')
         else:
             merged_msdf.df = msdf1.df
         #merge the non DataFrame elements
