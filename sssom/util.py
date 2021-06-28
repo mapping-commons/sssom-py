@@ -44,6 +44,18 @@ class MappingSetDataFrame:
     prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
 
+    def merge(self, msdf2, reconcile = True):
+        """Merging tw MappingSetDataFrames
+
+        Args:
+            msdf2 ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        msdf = merge_msdf(msdf1=self, msdf2=msdf2,reconcile=reconcile)
+        self.df = msdf.df
+
 
 @dataclass
 class EntityPair:
@@ -204,6 +216,17 @@ class MappingSetDataFrame:
     prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
 
+    def merge(self, msdf2:MappingSetDataFrame)-> MappingSetDataFrame:
+        """Merges two MappingSetDataframes
+
+        Args:
+            msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame
+
+        Returns:
+            MappingSetDataFrame: [description]
+        """
+        merge_msdf(msdf1=self, msdf2=msdf2)
+
 
 def parse(filename) -> pd.DataFrame:
     """
@@ -219,7 +242,7 @@ def collapse(df):
     """
     collapses rows with same S/P/O and combines confidence
     """
-    df2 = df.groupby(_defining_features)[CONFIDENCE].apply(max).reset_index()
+    df2 = df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE].apply(max).reset_index()
     return df2
 
 def sort_sssom_columns(columns: list)-> list:
