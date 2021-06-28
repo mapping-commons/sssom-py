@@ -1,4 +1,4 @@
-from sssom.datamodel_util import MappingSetDataFrame, to_mapping_set_dataframe, SSSOM_READ_FORMATS, SSSOM_EXPORT_FORMATS
+from sssom.util import MappingSetDataFrame, to_mapping_set_dataframe, SSSOM_READ_FORMATS, SSSOM_EXPORT_FORMATS
 import click
 import yaml
 import re

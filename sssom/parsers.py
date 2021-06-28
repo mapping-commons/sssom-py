@@ -13,9 +13,9 @@ from rdflib import Graph, URIRef
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
 from .util import RDF_FORMATS
-from .datamodel_util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
+from .util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
 
-from sssom.datamodel_util import read_pandas
+from sssom.util import read_pandas
 import validators
 
 cwd = os.path.abspath(os.path.dirname(__file__))

@@ -1,5 +1,5 @@
 import os
-from sssom.datamodel_util import MappingSetDataFrame, read_metadata
+from sssom.util import MappingSetDataFrame, read_metadata
 
 from .parsers import get_parsing_function, from_tsv, split_dataframe
 from .writers import get_writer_function, write_tsv, write_tsvs

@@ -1,6 +1,6 @@
 import os
 import unittest
-from sssom.datamodel_util import MetaTSVConverter
+from sssom.util import MetaTSVConverter
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, 'data')
