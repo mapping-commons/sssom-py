@@ -382,7 +382,7 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inver
             pi = 3
         else:
             #raise Exception(f'Unknown predicate {p}')
-            print(f'Unknown predicate {p}')
+            logging.warning(f'Unknown predicate {p}')
 
 
         if pi == 0:
@@ -565,11 +565,6 @@ def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:
                     if target[k] != v:
                         raise ValueError(f'.{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.')
     return target
-
-
-
-
-
 
 def get_file_extension(filename: str) -> str:
     parts = filename.split(".")
