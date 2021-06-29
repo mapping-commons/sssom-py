@@ -590,7 +590,11 @@ def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:
         k:str
         for k, v in source.items():
                 if k not in target:
-                    target[k] = v
+                    if v not in list(target.values()):
+                        target[k] = v
+                    else:
+                        common_values = [i for i,val in target.items() if val == v]
+                        raise ValueError(f'Value [{v}] is present in {dict_name} for multiple keys [{common_values}].')
                 else:
                     if target[k] != v:
                         raise ValueError(f'{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.')
