@@ -684,6 +684,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
         data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
+    meta.pop("curie_map", None)
     msdf = MappingSetDataFrame(df=df, prefixmap=doc.curie_map, metadata=meta)
     return msdf
 
