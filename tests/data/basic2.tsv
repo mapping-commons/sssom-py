@@ -5,9 +5,13 @@
 #curie_map:
 #  a: "http://example.org/a/"
 #  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+#  owl: "http://www.w3.org/2002/07/owl#"
 #  x: "http://example.org/x/"
 #  y: "http://example.org/y/"
 #  z: "http://example.org/z/"
+#  b: "http://example.org/b/"
+#  c: "http://example.org/c/"
+#  d: "http://example.org/d/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	match_type	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
 x:FOO	FOO	owl:equivalentClass		y:FOO	FOO	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foo	.
 x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
