@@ -457,7 +457,6 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
             MappingSetDataFrame: Merged MappingSetDataFrame.
         """
         
-
         merged_msdf = MappingSetDataFrame()
         # If msdf2 has a DataFrame
         if msdf2.df is not None:
@@ -467,8 +466,9 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
             merged_msdf.df = msdf1.df
         #merge the non DataFrame elements
         merged_msdf.prefixmap = dict_merge(msdf2.prefixmap, msdf1.prefixmap, 'prefixmap')
-        merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'prefixmap')
-
+        # After a Slack convo with @matentz, commented out below.
+        #merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
+        
 
         '''if inplace:
             msdf1.prefixmap = merged_msdf.prefixmap
@@ -588,12 +588,12 @@ def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:
     """
     if source is not None:
         k:str
-        for k, v in source:
+        for k, v in source.items():
                 if k not in target:
                     target[k] = v
                 else:
                     if target[k] != v:
-                        raise ValueError(f'.{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.')
+                        raise ValueError(f'{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.')
     return target
 
 def get_file_extension(filename: str) -> str:
