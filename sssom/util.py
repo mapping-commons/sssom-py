@@ -220,10 +220,10 @@ class MappingSetDataFrame:
         """Merges two MappingSetDataframes
 
         Args:
-            msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame
+            msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame (self => primary)
 
         Returns:
-            MappingSetDataFrame: [description]
+            MappingSetDataFrame: Merged MappingSetDataFrame
         """
         merge_msdf(msdf1=self, msdf2=msdf2)
 
@@ -271,7 +271,8 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
         key = [SUBJECT_ID, OBJECT_ID]
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
-    dfmax = df.groupby(key)[CONFIDENCE].apply(max).reset_index()
+    dfmax:pd.DataFrame
+    dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
     max_conf = {}
     for index, row in dfmax.iterrows():
         if ignore_predicate:
@@ -482,7 +483,8 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         return merged_msdf
 
 def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
-        """[summary]
+        """Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination
+        taking into account the rule that negative trumps positive given equal confidence values.
 
         Args:
             df (pd.DataFrame): Merged Pandas DataFrame
@@ -553,6 +555,8 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
                     
                 
         # Add negations (NOT symbol) back to the PREDICATE_ID
+        # NOTE: negative TRUMPS positive if negative and positive with same 
+        # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
         for idx_2, row_2 in negation_df.iterrows():
             match_condition_2 = (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID]) & \
                                 (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID]) & \
