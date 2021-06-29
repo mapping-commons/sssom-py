@@ -37,15 +37,3 @@ class TestReconcile(unittest.TestCase):
         merged_msdf = merge_msdf(msdf1=msdf1, msdf2=msdf2)
 
         assert len(merged_msdf.df) == 94
-        # diff = compare_dataframes(self.df, df2)
-        # print(len(diff.unique_tuples1))
-        # print(len(diff.unique_tuples2))
-        # print(len(diff.common_tuples))
-        # assert len(diff.unique_tuples1) == 15
-        # assert len(diff.unique_tuples2) == 3
-        # assert len(diff.common_tuples) == 76
-        # #totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)
-        # #assert totlen == len(self.df.index) + len(df2.index)
-        # diff_df = diff.combined_dataframe
-        # print(len(diff_df.index))
-        # print(diff_df[0:10])
