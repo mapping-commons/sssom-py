@@ -539,6 +539,9 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
             match_condition_1 = (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID]) & \
                               (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & \
                               (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
+            # match_condition_1[match_condition_1] gives the list of 'True's.
+            # In other words, the rows that match the condition (rules declared).
+            # Ideally, there should be 1 row. If not apply an extra rule to look for 'HumanCurated'.
             if len(match_condition_1[match_condition_1].index) > 1:
                 match_condition_1 = (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID]) & \
                                   (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & \
