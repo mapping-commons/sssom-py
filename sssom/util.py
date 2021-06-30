@@ -195,7 +195,7 @@ class MappingSetDataFrame:
     prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
 
-    def merge(self, msdf2:MappingSetDataFrame)-> MappingSetDataFrame:
+    def merge(self, msdf2):
         """Merges two MappingSetDataframes
 
         Args:
