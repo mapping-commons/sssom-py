@@ -28,7 +28,7 @@ def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
     else:
         with open(output, 'w') as stream:
             for line in lines:
-                stream.write(line)
+                stream.write(line + '\n')
 
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):
@@ -66,11 +66,13 @@ def parse_file(input_path: str, output_path: str = None, input_format: str = Non
     Returns:
 
     """
-
     if validators.url(input_path) or os.path.exists(input_path):
         curie_map, meta = get_metadata_and_curie_map(metadata_path=metadata_path, curie_map_mode=curie_map_mode)
         parse_func = get_parsing_function(input_format, input_path)
         doc = parse_func(input_path, curie_map=curie_map, meta=meta)
+        if not metadata_path:
+            # We do this because we got a lot of prefixes from the default SSSOM prefixes!
+            doc.clean_prefix_map()
         write_tsv(doc, output_path)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")

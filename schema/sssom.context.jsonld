@@ -1,12 +1,14 @@
 {
-   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\n    Generation date: 2021-05-31 21:45\n    Schema: sssom\n    \n    id: http://w3id.org/sssom/schema/\n    description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\n    license: https://creativecommons.org/publicdomain/zero/1.0/\n    ",
+   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\n    Generation date: 2021-06-22 10:25\n    Schema: sssom\n    \n    id: http://w3id.org/sssom/schema/\n    description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\n    license: https://creativecommons.org/publicdomain/zero/1.0/\n    ",
    "@context": {
       "dc": "http://purl.org/dc/terms/",
       "dcterms": "http://purl.org/dc/terms/",
       "linkml": "https://w3id.org/linkml/",
+      "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
       "owl": "http://www.w3.org/2002/07/owl#",
       "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
       "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
       "sssom": "http://w3id.org/sssom/",
       "@vocab": "http://w3id.org/sssom/",
       "confidence": {
@@ -18,6 +20,14 @@
       "id": "@id",
       "information_content_mica_score": {
          "@type": "xsd:double"
+      },
+      "mapping_cardinality": {
+         "@context": {
+            "@vocab": "@null",
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         }
       },
       "mapping_set_id": {
          "@type": "@id"

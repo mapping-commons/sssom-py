@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-04-24 12:39
+# Generation date: 2021-06-17 16:27
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -32,6 +32,7 @@ dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 DC = CurieNamespace('dc', 'http://purl.org/dc/terms/')
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
+OBOINOWL = CurieNamespace('oboInOwl', 'http://www.geneontology.org/formats/oboInOwl#')
 OWL = CurieNamespace('owl', 'http://www.w3.org/2002/07/owl#')
 RDF = CurieNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 RDFS = CurieNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
@@ -61,6 +62,7 @@ class MappingSet(YAMLRoot):
     mappings: Optional[Union[Union[dict, "Mapping"], List[Union[dict, "Mapping"]]]] = empty_list()
     mapping_set_id: Optional[Union[str, EntityId]] = None
     mapping_set_version: Optional[str] = None
+    mapping_set_description: Optional[str] = None
     creator_id: Optional[Union[str, EntityId]] = None
     creator_label: Optional[str] = None
     license: Optional[str] = None
@@ -92,6 +94,9 @@ class MappingSet(YAMLRoot):
 
         if self.mapping_set_version is not None and not isinstance(self.mapping_set_version, str):
             self.mapping_set_version = str(self.mapping_set_version)
+
+        if self.mapping_set_description is not None and not isinstance(self.mapping_set_description, str):
+            self.mapping_set_description = str(self.mapping_set_description)
 
         if self.creator_id is not None and not isinstance(self.creator_id, EntityId):
             self.creator_id = EntityId(self.creator_id)
@@ -393,6 +398,9 @@ slots.mapping_set_id = Slot(uri=SSSOM.mapping_set_id, name="mapping_set_id", cur
 
 slots.mapping_set_version = Slot(uri=SSSOM.mapping_set_version, name="mapping_set_version", curie=SSSOM.curie('mapping_set_version'),
                    model_uri=SSSOM.mapping_set_version, domain=None, range=Optional[str], mappings = [OWL.versionInfo])
+
+slots.mapping_set_description = Slot(uri=SSSOM.mapping_set_description, name="mapping_set_description", curie=SSSOM.curie('mapping_set_description'),
+                   model_uri=SSSOM.mapping_set_description, domain=None, range=Optional[str])
 
 slots.creator_id = Slot(uri=SSSOM.creator_id, name="creator_id", curie=SSSOM.curie('creator_id'),
                    model_uri=SSSOM.creator_id, domain=None, range=Optional[Union[str, EntityId]], mappings = [DC.creator])

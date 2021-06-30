@@ -365,6 +365,21 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
+@contextlib.contextmanager
+def smart_open(filename=None):
+    # https://stackoverflow.com/questions/17602878/how-to-handle-both-with-open-and-sys-stdout-nicely
+    if filename and filename != '-':
+        fh = open(filename, 'w')
+    else:
+        fh = sys.stdout
+
+    try:
+        yield fh
+    finally:
+        if fh is not sys.stdout:
+            fh.close()
+
+
 def dataframe_to_ptable(df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5):
     """
     exports kboom ptable
@@ -441,12 +456,12 @@ def sha256sum(filename):
     return h.hexdigest()
 
 def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:bool=True, inplace:bool=False) -> MappingSetDataFrame:
-        """ 
-        Merging msdf2 into msdf1, 
-        if reconcile=True, then dedupe(remove redundant lower confidence mappings) and 
-            reconcile (if msdf contains a higher confidence _negative_ mapping, 
-            then remove lower confidence positive one. If confidence is the same, 
-            prefer HumanCurated. If both HumanCurated, prefer negative mapping). 
+        """
+        Merging msdf2 into msdf1,
+        if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
+            reconcile (if msdf contains a higher confidence _negative_ mapping,
+            then remove lower confidence positive one. If confidence is the same,
+            prefer HumanCurated. If both HumanCurated, prefer negative mapping).
 
         Args:
             msdf1 (MappingSetDataFrame): The primary MappingSetDataFrame
@@ -456,7 +471,7 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame.
         """
-        
+
         merged_msdf = MappingSetDataFrame()
         # If msdf2 has a DataFrame
         if msdf2.df is not None:
@@ -468,7 +483,7 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         merged_msdf.prefixmap = dict_merge(msdf2.prefixmap, msdf1.prefixmap, 'prefixmap')
         # After a Slack convo with @matentz, commented out below.
         #merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
-        
+
 
         '''if inplace:
             msdf1.prefixmap = merged_msdf.prefixmap
@@ -477,9 +492,9 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
 
         if reconcile:
             merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-            
+
             merged_msdf.df = deal_with_negation(merged_msdf.df) #deals with negation
-                        
+
         return merged_msdf
 
 def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
@@ -492,14 +507,14 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
         Returns:
             pd.DataFrame: Pandas DataFrame with negations addressed
         """
-        
+
         '''
-            1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1, 
+            1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
                the one in mapping1 is preserved).
-            2. Reconciling means two things 
-                [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times, 
+            2. Reconciling means two things
+                [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
                     only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
-                [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other. 
+                [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
                      If same confidence prefer "HumanCurated" .If same again prefer negative.
             3. Prefixes:
                 [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different, throw an error and fail hard
@@ -508,7 +523,7 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         '''
-        
+
         ######  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
         negation_df:pd.DataFrame
         negation_df = df.loc[df[PREDICATE_ID].str.startswith('!')]# or df.loc[df['predicate_modifier'] == 'NOT']
@@ -552,10 +567,10 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
 
             reconciled_df_subset = reconciled_df_subset.append(combined_normalized_subset.loc[match_condition_1[match_condition_1].index, :])
 
-                    
-                
+
+
         # Add negations (NOT symbol) back to the PREDICATE_ID
-        # NOTE: negative TRUMPS positive if negative and positive with same 
+        # NOTE: negative TRUMPS positive if negative and positive with same
         # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
         for idx_2, row_2 in negation_df.iterrows():
             match_condition_2 = (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID]) & \
@@ -571,7 +586,7 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
                                 (df[CONFIDENCE] == row_3[CONFIDENCE]) & \
                                 (df[PREDICATE_ID] == row_3[PREDICATE_ID])
             reconciled_df = reconciled_df.append(df.loc[match_condition_3[match_condition_3].index, :])
-        
+
         return reconciled_df
 
 def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:

@@ -265,6 +265,10 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
             if 'nodes' in g:
                 for n in g['nodes']:
                     nid = n['id']
+                    if 'lbl' in n:
+                        label = n['lbl']
+                    else:
+                        label = ""
                     if 'meta' in n:
                         if 'xrefs' in n['meta']:
                             for xref in n['meta']['xrefs']:
@@ -273,6 +277,7 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
                                 try:
                                     mdict['subject_id'] = curie(nid, curie_map)
                                     mdict['object_id'] = curie(xref_id, curie_map)
+                                    mdict['subject_label'] = label
                                     mdict['predicate_id'] = "oboInOwl:hasDbXref"
                                     mdict['match_type'] = "Unspecified"
                                     mlist.append(Mapping(**mdict))
@@ -287,6 +292,7 @@ def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str
                                     try:
                                         mdict['subject_id'] = curie(nid, curie_map)
                                         mdict['object_id'] = curie(xref_id, curie_map)
+                                        mdict['subject_label'] = label
                                         mdict['predicate_id'] = curie(pred, curie_map)
                                         mdict['match_type'] = "Unspecified"
                                         mlist.append(Mapping(**mdict))
@@ -430,11 +436,6 @@ def is_valid_mapping(m):
 
 class NoCURIEException(Exception):
     pass
-
-
-def is_curie(string: str):
-    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
-
 
 def curie(uri: str, curie_map):
     if is_curie(uri):
