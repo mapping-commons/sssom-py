@@ -1,9 +1,11 @@
 import hashlib
 import logging
-import random
 from dataclasses import dataclass, field
 from io import StringIO
+import re
+import sys
 from typing import Any, Dict, List, Optional, Set, Union
+import contextlib
 
 import pandas as pd
 import yaml
@@ -33,29 +35,6 @@ MATCH_TYPE = 'match_type'
 HUMAN_CURATED_MATCH_TYPE = 'HumanCurated'
 
 _defining_features = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
-
-@dataclass
-class MappingSetDataFrame:
-    """
-    A collection of mappings represented as a DataFrame, together with additional metadata
-    """
-
-    df: pd.DataFrame = None  ## Mappings
-    prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
-
-    def merge(self, msdf2, reconcile = True):
-        """Merging tw MappingSetDataFrames
-
-        Args:
-            msdf2 ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        msdf = merge_msdf(msdf1=self, msdf2=msdf2,reconcile=reconcile)
-        self.df = msdf.df
-
 
 @dataclass
 class EntityPair:
@@ -226,6 +205,19 @@ class MappingSetDataFrame:
             MappingSetDataFrame: Merged MappingSetDataFrame
         """
         merge_msdf(msdf1=self, msdf2=msdf2)
+
+    def clean_prefix_map(self):
+        prefixes_in_map = get_prefixes_used_in_table(self.df)
+        new_prefixes = dict()
+        missing_prefix = False
+        for prefix in prefixes_in_map:
+            if prefix in self.prefixmap:
+                new_prefixes[prefix]=self.prefixmap[prefix]
+            else:
+                logging.warning(f"{prefix} is used in the data frame but does not exist in prefix map")
+                missing_prefix = True
+        if not missing_prefix:
+            self.prefixmap = new_prefixes
 
 
 def parse(filename) -> pd.DataFrame:
@@ -708,3 +700,21 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return msdf
 
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
+
+def is_curie(string: str):
+    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
+
+
+def get_prefix_from_curie(curie: str):
+    if is_curie(curie):
+        return curie.split(":")[0]
+    else:
+        return ''
+
+
+def get_prefixes_used_in_table(df: pd.DataFrame):
+    prefixes = []
+    for col in _defining_features:
+        for v in df[col].values:
+            prefixes.append(get_prefix_from_curie(v))
+    return list(set(prefixes))
