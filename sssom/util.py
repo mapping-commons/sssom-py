@@ -465,6 +465,9 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame.
         """
+        # Inject metadata of msdf into df
+        msdf1 = inject_metadata_into_df(msdf=msdf1)
+        msdf2 = inject_metadata_into_df(msdf=msdf2)
 
         merged_msdf = MappingSetDataFrame()
         # If msdf2 has a DataFrame
@@ -608,6 +611,21 @@ def dict_merge(source:Dict, target:Dict, dict_name:str) -> Dict:
                     if target[k] != v:
                         raise ValueError(f'{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.')
     return target
+
+def inject_metadata_into_df(msdf:MappingSetDataFrame)->MappingSetDataFrame:
+    """Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.
+
+    Args:
+        msdf (MappingSetDataFrame): MappingSetDataFrame with metadata separate.
+
+    Returns:
+        MappingSetDataFrame: MappingSetDataFrame with metadata as columns
+    """
+
+    for k,v in msdf.metadata.items():
+        if k not in msdf.df.columns:
+            msdf.df[k] = v
+    return msdf
 
 def get_file_extension(filename: str) -> str:
     parts = filename.split(".")
