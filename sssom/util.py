@@ -54,7 +54,10 @@ class MappingSetDataFrame:
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame
         """
-        merge_msdf(msdf1=self, msdf2=msdf2)
+        msdf = merge_msdf(msdf1=self, msdf2=msdf2)
+        self.df = msdf.df
+        self.prefixmap = msdf.prefixmap
+        self.metadata - msdf.metadata
 
     def clean_prefix_map(self):
         prefixes_in_map = get_prefixes_used_in_table(self.df)
@@ -472,7 +475,7 @@ def merge_msdf(msdf1:MappingSetDataFrame, msdf2:MappingSetDataFrame, reconcile:b
             merged_msdf.df = msdf1.df
         #merge the non DataFrame elements
         merged_msdf.prefixmap = dict_merge(msdf2.prefixmap, msdf1.prefixmap, 'prefixmap')
-        # After a Slack convo with @matentz, commented out below.
+        # After a Slack convo with @matentzn, commented out below.
         #merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
 
 
