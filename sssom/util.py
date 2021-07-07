@@ -18,7 +18,8 @@ from .sssom_document import MappingSetDocument
 SSSOM_READ_FORMATS = ['tsv', 'rdf', 'owl', 'alignment-api-xml', 'obographs-json', 'json']
 SSSOM_EXPORT_FORMATS = ['tsv', 'rdf', 'owl', 'json']
 
-# TODO: use sssom_datamodel
+
+# TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = 'subject_id'
 SUBJECT_LABEL = 'subject_label'
 OBJECT_ID = 'object_id'
@@ -561,6 +562,8 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
                                   (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & \
                                   (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE]) & \
                                   (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+            # TODO: In spite of this returning multiple rows, pick the 1st row.
+
 
             reconciled_df_subset = reconciled_df_subset.append(combined_normalized_subset.loc[match_condition_1[match_condition_1].index, :])
 
