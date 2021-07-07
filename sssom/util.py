@@ -562,8 +562,9 @@ def deal_with_negation(df:pd.DataFrame)-> pd.DataFrame:
                                   (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & \
                                   (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE]) & \
                                   (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
-            # TODO: In spite of this returning multiple rows, pick the 1st row.
-
+            # In spite of this, if match_condition_1 is returning multiple rows, pick any random row from above.
+                if len(match_condition_1[match_condition_1].index) > 1:
+                    match_condition_1 = match_condition_1[match_condition_1].sample()
 
             reconciled_df_subset = reconciled_df_subset.append(combined_normalized_subset.loc[match_condition_1[match_condition_1].index, :])
 
@@ -624,10 +625,10 @@ def inject_metadata_into_df(msdf:MappingSetDataFrame)->MappingSetDataFrame:
     Returns:
         MappingSetDataFrame: MappingSetDataFrame with metadata as columns
     """
-
-    for k,v in msdf.metadata.items():
-        if k not in msdf.df.columns:
-            msdf.df[k] = v
+    if bool(msdf.metadata):
+        for k,v in msdf.metadata.items():
+            if k not in msdf.df.columns:
+                msdf.df[k] = v
     return msdf
 
 def get_file_extension(filename: str) -> str:
