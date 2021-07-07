@@ -509,7 +509,7 @@ def merge(inputs: Tuple[str, str], output: str,  reconcile:bool=True)->MappingSe
             prefer HumanCurated. If both HumanCurated, prefer negative mapping).
 
         Args:
-           inputs Tuple(MappingSetDataFrame): All MappingSetDataFrames that need to be merged
+            inputs Tuple(MappingSetDataFrame): All MappingSetDataFrames that need to be merged
             
             reconcile (bool, optional): [description]. Defaults to True.
 
