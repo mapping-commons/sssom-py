@@ -509,8 +509,8 @@ def merge(inputs: Tuple[str, str], output: str,  reconcile:bool=True)->MappingSe
             prefer HumanCurated. If both HumanCurated, prefer negative mapping).
 
         Args:
-            msdf1 (MappingSetDataFrame): The primary MappingSetDataFrame
-            msdf2 (MappingSetDataFrame): The secondary MappingSetDataFrame
+           inputs Tuple(MappingSetDataFrame): All MappingSetDataFrames that need to be merged
+            
             reconcile (bool, optional): [description]. Defaults to True.
 
         Returns:
