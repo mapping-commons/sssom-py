@@ -58,7 +58,7 @@ class MappingSetDataFrame:
         msdf = merge_msdf(msdf1=self, msdf2=msdf2)
         self.df = msdf.df
         self.prefixmap = msdf.prefixmap
-        self.metadata - msdf.metadata
+        self.metadata = msdf.metadata
 
     def clean_prefix_map(self):
         prefixes_in_map = get_prefixes_used_in_table(self.df)
