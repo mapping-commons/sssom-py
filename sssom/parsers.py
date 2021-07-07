@@ -13,7 +13,7 @@ from rdflib import Graph, URIRef
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
 from .util import RDF_FORMATS
-from .util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
+from .util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe, is_curie
 
 from sssom.util import read_pandas
 import validators
