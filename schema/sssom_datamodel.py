@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-06-17 16:27
+# Generation date: 2021-06-22 10:24
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -184,7 +184,7 @@ class Mapping(YAMLRoot):
     object_source: Optional[str] = None
     object_source_version: Optional[str] = None
     mapping_provider: Optional[str] = None
-    mapping_cardinality: Optional[str] = None
+    mapping_cardinality: Optional[Union[str, "MappingCardinalityEnum"]] = None
     mapping_tool: Optional[str] = None
     mapping_date: Optional[str] = None
     confidence: Optional[float] = None
@@ -252,8 +252,8 @@ class Mapping(YAMLRoot):
         if self.mapping_provider is not None and not isinstance(self.mapping_provider, str):
             self.mapping_provider = str(self.mapping_provider)
 
-        if self.mapping_cardinality is not None and not isinstance(self.mapping_cardinality, str):
-            self.mapping_cardinality = str(self.mapping_cardinality)
+        if self.mapping_cardinality is not None and not isinstance(self.mapping_cardinality, MappingCardinalityEnum):
+            self.mapping_cardinality = MappingCardinalityEnum(self.mapping_cardinality)
 
         if self.mapping_tool is not None and not isinstance(self.mapping_tool, str):
             self.mapping_tool = str(self.mapping_tool)
@@ -336,7 +336,26 @@ class Entity(YAMLRoot):
 
 
 # Enumerations
+class MappingCardinalityEnum(EnumDefinitionImpl):
 
+    _defn = EnumDefinition(
+        name="MappingCardinalityEnum",
+    )
+
+    @classmethod
+    def _addvals(cls):
+        setattr(cls, "1:1",
+                PermissibleValue(text="1:1") )
+        setattr(cls, "1:n",
+                PermissibleValue(text="1:n") )
+        setattr(cls, "n:1",
+                PermissibleValue(text="n:1") )
+        setattr(cls, "1:0",
+                PermissibleValue(text="1:0") )
+        setattr(cls, "0:1",
+                PermissibleValue(text="0:1") )
+        setattr(cls, "n:n",
+                PermissibleValue(text="n:n") )
 
 # Slots
 class slots:
@@ -427,7 +446,7 @@ slots.mapping_provider = Slot(uri=SSSOM.mapping_provider, name="mapping_provider
                    model_uri=SSSOM.mapping_provider, domain=None, range=Optional[str])
 
 slots.mapping_cardinality = Slot(uri=SSSOM.mapping_cardinality, name="mapping_cardinality", curie=SSSOM.curie('mapping_cardinality'),
-                   model_uri=SSSOM.mapping_cardinality, domain=None, range=Optional[str])
+                   model_uri=SSSOM.mapping_cardinality, domain=None, range=Optional[Union[str, "MappingCardinalityEnum"]])
 
 slots.mapping_tool = Slot(uri=SSSOM.mapping_tool, name="mapping_tool", curie=SSSOM.curie('mapping_tool'),
                    model_uri=SSSOM.mapping_tool, domain=None, range=Optional[str])

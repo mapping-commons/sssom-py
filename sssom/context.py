@@ -1,4 +1,3 @@
-import os
 import json
 import logging
 
@@ -9,8 +8,8 @@ except ImportError:
     import importlib_resources as pkg_resources
 
 # cwd = os.path.abspath(os.path.dirname(__file__))
-DEFAULT_CONTEXT_PATH = 'sssom.context.jsonld'
-EXTERNAL_CONTEXT_PATH = 'sssom.external.context.jsonld'
+DEFAULT_CONTEXT_PATH = "sssom.context.jsonld"
+EXTERNAL_CONTEXT_PATH = "sssom.external.context.jsonld"
 
 
 def get_jsonld_context():
@@ -42,5 +41,6 @@ def get_default_metadata():
             else:
                 if curie_map[key] != v:
                     logging.warning(
-                        f"{key} is already in curie map ({curie_map[key]}, but with a different value than {v}")
+                        f"{key} is already in curie map ({curie_map[key]}, but with a different value than {v}"
+                    )
     return meta, curie_map

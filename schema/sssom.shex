@@ -60,7 +60,7 @@ linkml:Nodeidentifier NONLITERAL
           <object_source> @linkml:String ? ;
           <object_source_version> @linkml:String ? ;
           <mapping_provider> @linkml:String ? ;
-          <mapping_cardinality> @linkml:String ? ;
+          <mapping_cardinality> @<MappingCardinalityEnum> ? ;
           <mapping_tool> @linkml:String ? ;
           <mapping_date> @linkml:String ? ;
           <confidence> @linkml:Double ? ;

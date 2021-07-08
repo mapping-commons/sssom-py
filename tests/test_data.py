@@ -2,16 +2,17 @@ import os
 import yaml
 
 cwd = os.path.abspath(os.path.dirname(__file__))
-test_data_dir = os.path.join(cwd, 'data')
-test_out_dir = os.path.join(cwd, 'tmp')
-test_validate_dir = os.path.join(cwd, 'validate_data')
-schema_dir = os.path.join(cwd, '../schema')
-TEST_CONFIG = os.path.join(cwd, 'test_config.yaml')
-DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, 'sssom.context.jsonld')
+test_data_dir = os.path.join(cwd, "data")
+test_out_dir = os.path.join(cwd, "tmp")
+test_validate_dir = os.path.join(cwd, "validate_data")
+schema_dir = os.path.join(cwd, "../schema")
+TEST_CONFIG = os.path.join(cwd, "test_config.yaml")
+DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
 
 
 def get_test_file(filename):
     return os.path.join(test_data_dir, filename)
+
 
 def ensure_test_dir_exists():
     if not os.path.exists(test_out_dir):
@@ -27,37 +28,43 @@ def load_config():
 def get_all_test_cases():
     test_cases = []
     config = load_config()
-    for test in config['tests']:
-        test_cases.append(SSSOMTestCase(test, config['queries']))
+    for test in config["tests"]:
+        test_cases.append(SSSOMTestCase(test, config["queries"]))
     return test_cases
+
 
 def get_multiple_input_test_cases():
     test_cases = []
     config = load_config()
-    for test in config['tests']:
-        if test['multiple_input']:
-            test_cases.append(SSSOMTestCase(test, config['queries']))
+    for test in config["tests"]:
+        if test["multiple_input"]:
+            test_cases.append(SSSOMTestCase(test, config["queries"]))
     return test_cases
+
 
 class SSSOMTestCase:
     def __init__(self, config, queries):
-        self.filepath = get_test_file(config['filename'])
-        self.filename = config['filename']
-        if 'metadata_file' in config:
-            self.metadata_file = config['metadata_file']
+        self.filepath = get_test_file(config["filename"])
+        self.filename = config["filename"]
+        if "metadata_file" in config:
+            self.metadata_file = config["metadata_file"]
         else:
             self.metadata_file = None
         self.graph_serialisation = "turtle"
-        self.ct_json_elements = config['ct_json_elements']
-        self.ct_data_frame_rows = config['ct_data_frame_rows']
+        self.ct_json_elements = config["ct_json_elements"]
+        self.ct_data_frame_rows = config["ct_data_frame_rows"]
         if "inputformat" in config:
-            self.inputformat = config['inputformat']
+            self.inputformat = config["inputformat"]
         else:
             self.inputformat = None
-        self.ct_graph_queries_owl = self._query_tuple(config, "ct_graph_queries_owl", queries)
-        self.ct_graph_queries_rdf = self._query_tuple(config, "ct_graph_queries_rdf", queries)
+        self.ct_graph_queries_owl = self._query_tuple(
+            config, "ct_graph_queries_owl", queries
+        )
+        self.ct_graph_queries_rdf = self._query_tuple(
+            config, "ct_graph_queries_rdf", queries
+        )
         if "curie_map" in config:
-            self.curie_map = config['curie_map']
+            self.curie_map = config["curie_map"]
         else:
             self.curie_map = None
 

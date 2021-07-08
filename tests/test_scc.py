@@ -1,13 +1,12 @@
-from sssom import parse, collapse, dataframe_to_ptable
-from sssom.parsers import from_tsv
-from sssom.cliques import split_into_cliques, summarize_cliques
-
-import unittest
 import os
+import unittest
 
-import logging
+from sssom.cliques import split_into_cliques, summarize_cliques
+from sssom.parsers import from_tsv
+
 cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, 'data')
+data_dir = os.path.join(cwd, "data")
+
 
 class TestSCC(unittest.TestCase):
     """
@@ -15,14 +14,16 @@ class TestSCC(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.mset = from_tsv(f'{data_dir}/basic.tsv')
+        self.mset = from_tsv(f"{data_dir}/basic.tsv")
 
     def test_scc(self):
         cliquedocs = split_into_cliques(self.mset)
         for d in cliquedocs:
-            print(f'D: {len(d.mapping_set.mappings)}')
+            print(f"D: {len(d.mapping_set.mappings)}")
 
     def test_cliquesummary(self):
         df = summarize_cliques(self.mset)
-        df.to_csv(f'{data_dir}/basic-cliquesummary.tsv', sep="\t")
-        df.describe().transpose().to_csv(f'{data_dir}/basic-cliquesummary-stats.tsv', sep="\t")
+        df.to_csv(f"{data_dir}/basic-cliquesummary.tsv", sep="\t")
+        df.describe().transpose().to_csv(
+            f"{data_dir}/basic-cliquesummary-stats.tsv", sep="\t"
+        )

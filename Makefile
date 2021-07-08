@@ -31,6 +31,7 @@ schema/%-docs: schema/%.yaml
 
 test:
 	pytest
+	sh tests/tests.sh
 
 
 deploy-dm:
@@ -55,3 +56,6 @@ pypi: test
 	python setup.py sdist
 	twine upload dist/*
 
+lint:
+	pip install tox
+	tox -e lint
