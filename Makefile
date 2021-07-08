@@ -31,6 +31,7 @@ schema/%-docs: schema/%.yaml
 
 test:
 	pytest
+	sh tests/tests.sh
 
 
 deploy-dm:
