@@ -53,7 +53,7 @@ class MappingSetDataFrame:
     prefixmap: Dict[str, str] = None  # maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
 
-    def merge(self, msdf2):
+    def merge(self, msdf2, inplace=True):
         """Merges two MappingSetDataframes
 
         Args:
@@ -63,9 +63,11 @@ class MappingSetDataFrame:
             MappingSetDataFrame: Merged MappingSetDataFrame
         """
         msdf = merge_msdf(msdf1=self, msdf2=msdf2)
-        self.df = msdf.df
-        self.prefixmap = msdf.prefixmap
-        self.metadata = msdf.metadata
+        if inplace:
+            self.df = msdf.df
+            self.prefixmap = msdf.prefixmap
+            self.metadata = msdf.metadata
+        return msdf
 
     def clean_prefix_map(self):
         prefixes_in_map = get_prefixes_used_in_table(self.df)
@@ -601,7 +603,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
     for idx_1, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
-            (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID]) & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
+            (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
+            & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
+            & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
         # match_condition_1[match_condition_1] gives the list of 'True's.
         # In other words, the rows that match the condition (rules declared).

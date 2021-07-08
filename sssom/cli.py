@@ -565,9 +565,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(
-    inputs: Tuple[str, str], output: str, reconcile: bool = True
-):
+def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
     """
     Merging msdf2 into msdf1,
         if reconcile=True, then dedupe(remove redundant lower confidence mappings) and

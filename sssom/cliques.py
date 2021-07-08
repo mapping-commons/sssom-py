@@ -160,7 +160,7 @@ def summarize_cliques(doc: MappingSetDataFrame):
         item["total_conflated"] = total_conflated
         item["proportion_conflated"] = total_conflated / len(src2ids.items())
         item["conflation_score"] = (min(src_counts) - 1) * len(src2ids.items()) + (
-                statistics.harmonic_mean(src_counts) - 1
+            statistics.harmonic_mean(src_counts) - 1
         )
         item["members_count"] = sum(src_counts)
         item["min_count_by_source"] = min(src_counts)
