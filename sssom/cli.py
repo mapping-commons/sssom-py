@@ -139,9 +139,22 @@ def convert(input: str, output: str, output_format: str):
     help="Defines wether the curie map in the metadata should be extended or replaced with "
     "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
 )
+@click.option(
+    "-p",
+    "--clean-prefixes",
+    default=True,
+    is_flag=True,
+    required=True,
+    help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
+)
 @output_option
 def parse(
-    input: str, input_format: str, metadata: str, curie_map_mode: str, output: str
+    input: str,
+    input_format: str,
+    metadata: str,
+    curie_map_mode: str,
+    clean_prefixes: bool,
+    output: str,
 ):
     """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
@@ -151,6 +164,7 @@ def parse(
         input_format (str): The string denoting the input format.
         metadata (str): The path to a file containing the sssom metadata (including curie_map) to be used during parse.
         curie_map_mode (str): Curie map mode.
+        clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
         output (str): The path to the SSSOM TSV output file.
 
     Returns:
@@ -164,6 +178,7 @@ def parse(
         input_format=input_format,
         metadata_path=metadata,
         curie_map_mode=curie_map_mode,
+        clean_prefixes=clean_prefixes,
     )
 
 
