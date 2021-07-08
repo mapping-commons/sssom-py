@@ -1,3 +1,8 @@
+import os
+import unittest
+
+from pandasql import sqldf
+
 from sssom import (
     parse,
     collapse,
@@ -6,11 +11,6 @@ from sssom import (
     group_mappings,
     compare_dataframes,
 )
-
-import unittest
-import os
-from pandasql import sqldf
-import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")

@@ -1,15 +1,16 @@
+import filecmp
 import json
 import logging
-import filecmp
 import unittest
-import pandas as pd
+
 from rdflib import Graph
+
+from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
-from sssom.parsers import read_pandas, get_parsing_function, to_mapping_set_document
+from sssom.util import read_pandas, to_mapping_set_dataframe
 from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld_dict
 from sssom.writers import write_json, write_rdf, write_owl, write_tsv
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
-from sssom.util import read_pandas, to_mapping_set_dataframe
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
@@ -47,7 +48,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self._test_load_graph_size(
             test.get_out_file(file_format),
             test.graph_serialisation,
-            getattr(test, f"ct_graph_queries_owl"),
+            getattr(test, "ct_graph_queries_owl"),
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
@@ -60,7 +61,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self._test_load_graph_size(
             test.get_out_file(file_format),
             test.graph_serialisation,
-            getattr(test, f"ct_graph_queries_rdf"),
+            getattr(test, "ct_graph_queries_rdf"),
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 

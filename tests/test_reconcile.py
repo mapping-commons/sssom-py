@@ -1,19 +1,13 @@
-from sssom.parsers import from_tsv
+import os
+import unittest
+
 from sssom import (
-    parse,
-    collapse,
-    dataframe_to_ptable,
     filter_redundant_rows,
-    group_mappings,
-    compare_dataframes,
 )
+from sssom.parsers import from_tsv
 from sssom.util import merge_msdf, deal_with_negation
 
-import unittest
-import os
-
 # from pandasql import sqldf
-import logging
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")

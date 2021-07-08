@@ -1,11 +1,13 @@
+import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+
+import pandas as pd
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import URIRef
-from rdflib.namespace import RDF, RDFS, OWL, SKOS
-from typing import Dict, Set, List, Optional
-from dataclasses import dataclass
+from rdflib.namespace import RDFS, SKOS
+
 from sssom.util import MappingSetDataFrame
-import pandas as pd
-import logging
 
 
 @dataclass
@@ -103,4 +105,4 @@ def expand_curie(curie: str, config: EndpointConfig) -> URIRef:
         prefix = f"{k}:"
         if curie.startswith(prefix):
             return URIRef(curie.replace(prefix, v))
-    return URIRef(uristr)
+    return URIRef(curie)

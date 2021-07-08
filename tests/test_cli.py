@@ -1,4 +1,7 @@
-from click.testing import CliRunner, Result
+import unittest
+
+from click.testing import CliRunner
+
 from sssom.cli import (
     cliquesummary,
     convert,
@@ -12,7 +15,6 @@ from sssom.cli import (
     split,
     parse,
 )
-import unittest
 from tests.test_data import (
     ensure_test_dir_exists,
     get_all_test_cases,
