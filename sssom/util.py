@@ -825,14 +825,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame):
 def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
     for index, row in df.iterrows():
-        ok = True
-        for col in _defining_features:
-            v = row[col]
-            prefix = get_prefix_from_curie(v)
-            if prefix in filter_prefixes:
-                ok = False
-                break
-        if ok:
+        if all(list(row[_defining_features])) not in filter_prefixes:
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
