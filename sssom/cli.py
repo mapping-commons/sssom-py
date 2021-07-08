@@ -1,18 +1,27 @@
-from sssom.datamodel_util import MappingSetDataFrame, to_mapping_set_dataframe, SSSOM_READ_FORMATS, SSSOM_EXPORT_FORMATS
-import click
-import yaml
+import logging
+import os
 import re
 from pathlib import Path
-from .util import parse, collapse, dataframe_to_ptable, filter_redundant_rows, remove_unmatched, compare_dataframes, smart_open
-from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, write_sssom, parse_file, split_file, validate_file
-from .parsers import from_tsv
-from typing import Tuple, List, Dict
+from typing import Dict, List, Tuple
+
+import click
 import pandas as pd
-from scipy.stats import chi2_contingency
-import logging
+import yaml
+from linkml.utils.metamodelcore import Bool
 from pandasql import sqldf
+from scipy.stats import chi2_contingency
+
 from sssom.sparql_util import EndpointConfig, query_mappings
+from sssom.util import (SSSOM_EXPORT_FORMATS, SSSOM_READ_FORMATS,
+                        MappingSetDataFrame, to_mapping_set_dataframe)
+
+from .cliques import split_into_cliques, summarize_cliques
+from .io import (convert_file, parse_file, split_file, validate_file,
+                 write_sssom)
+from .parsers import from_tsv
+from .util import (collapse, compare_dataframes, dataframe_to_ptable,
+                   filter_redundant_rows, merge_msdf, parse, remove_unmatched,
+                   smart_open)
 
 # Click input options common across commands
 input_option = click.option('-i', '--input', required=True, type=click.Path(),
@@ -486,6 +495,52 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     for t in tups:
         print(f'{t[0]}\t{t[1]}\t{t[2]}')
 
+@main.command()
+@click.argument('inputs', nargs=-1)
+@click.option('-r', '--reconcile', default=True, help='Boolean indicating the need for reconciliation of the SSSOM tsv file.')
+@output_option
+
+def merge(inputs: Tuple[str, str], output: str,  reconcile:bool=True)->MappingSetDataFrame:
+    """
+    Merging msdf2 into msdf1,
+        if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
+            reconcile (if msdf contains a higher confidence _negative_ mapping,
+            then remove lower confidence positive one. If confidence is the same,
+            prefer HumanCurated. If both HumanCurated, prefer negative mapping).
+
+        Args:
+            inputs Tuple(MappingSetDataFrame): All MappingSetDataFrames that need to be merged
+            
+            reconcile (bool, optional): [description]. Defaults to True.
+
+        Returns:
+            MappingSetDataFrame: Merged MappingSetDataFrame.
+    """
+    (input1, input2) = inputs[:2]
+    msdf1 = from_tsv(input1)
+    msdf2 = from_tsv(input2)
+    merged_msdf = merge_msdf(msdf1, msdf2)
+
+    # If > 2 input files, iterate through each one 
+    # and merge them into the merged file above
+    if len(inputs) > 2:
+        for input_file in inputs[2:]:
+            msdf1 = merged_msdf
+            msdf2 = from_tsv(input_file)
+            merged_msdf = merge_msdf(msdf1, msdf2)
+    
+    if  os.path.exists(output):
+        os.remove(output)
+    # Export MappingSetDataFrame into a TSV
+    with open(output, 'a') as f:
+        # Prefixmap is injected into the dataframe of msdf
+        f.write(f'# curie_map:\n')
+        for p in merged_msdf.prefixmap.items():
+            f.write(f'# \t{p[0]}: {p[1]}\n')
+    
+    merged_msdf.df.to_csv(output,sep='\t',index=None, mode='a')
+
+    #return merge_msdf
 
 if __name__ == "__main__":
     main()

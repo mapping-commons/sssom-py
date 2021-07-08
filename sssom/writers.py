@@ -11,10 +11,10 @@ from rdflib.namespace import OWL, RDF
 import json
 
 from .sssom_datamodel import slots
-from .datamodel_util import get_file_extension
+from .util import get_file_extension
 from .util import RDF_FORMATS
 from .context import get_jsonld_context
-from .datamodel_util import MappingSetDataFrame, extract_global_metadata, to_mapping_set_dataframe
+from .util import MappingSetDataFrame, extract_global_metadata, to_mapping_set_dataframe
 from .parsers import to_mapping_set_document
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"

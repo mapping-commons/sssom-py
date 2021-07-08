@@ -1,4 +1,4 @@
-from sssom.datamodel_util import MappingSetDataFrame, to_mapping_set_dataframe
+from sssom.util import MappingSetDataFrame, to_mapping_set_dataframe
 from sssom.parsers import to_mapping_set_document
 import networkx as nx
 import pandas as pd

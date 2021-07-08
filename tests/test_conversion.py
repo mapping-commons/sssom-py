@@ -9,7 +9,7 @@ from sssom.parsers import read_pandas, get_parsing_function, to_mapping_set_docu
 from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld_dict
 from sssom.writers import write_json, write_rdf, write_owl, write_tsv
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
-from sssom.datamodel_util import read_pandas, to_mapping_set_dataframe
+from sssom.util import read_pandas, to_mapping_set_dataframe
 
 
 

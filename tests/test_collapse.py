@@ -25,13 +25,13 @@ class TestCollapse(unittest.TestCase):
     def test_filter(self):
         df = filter_redundant_rows(self.df)
         print(df[0:20])
-        assert len(df.index) == 86
+        assert len(df.index) == 91
 
     def test_ptable(self):
         rows = dataframe_to_ptable(self.df)
         for row in rows[0:10]:
             print("\t".join(row))
-        assert len(rows) == 86
+        assert len(rows) == 91
 
     def test_groupings(self):
         mappings = group_mappings(self.df)
@@ -40,7 +40,7 @@ class TestCollapse(unittest.TestCase):
         diff = compare_dataframes(self.df, self.df)
         assert len(diff.unique_tuples1) == 0
         assert len(diff.unique_tuples2) == 0
-        assert len(diff.common_tuples) == 86
+        assert len(diff.common_tuples) == 91
         diff_df = diff.combined_dataframe
         print(len(diff_df.index))
         print(diff_df[0:20])
@@ -56,9 +56,9 @@ class TestCollapse(unittest.TestCase):
         print(len(diff.unique_tuples1))
         print(len(diff.unique_tuples2))
         print(len(diff.common_tuples))
-        assert len(diff.unique_tuples1) == 13
-        assert len(diff.unique_tuples2) == 1
-        assert len(diff.common_tuples) == 73
+        assert len(diff.unique_tuples1) == 15
+        assert len(diff.unique_tuples2) == 3
+        assert len(diff.common_tuples) == 76
         #totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)
         #assert totlen == len(self.df.index) + len(df2.index)
         diff_df = diff.combined_dataframe
