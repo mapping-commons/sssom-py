@@ -7,7 +7,6 @@ from typing import Dict, List, Tuple
 import click
 import pandas as pd
 import yaml
-from linkml.utils.metamodelcore import Bool
 from pandasql import sqldf
 from scipy.stats import chi2_contingency
 
@@ -18,7 +17,6 @@ from sssom.util import (
     MappingSetDataFrame,
     to_mapping_set_dataframe,
 )
-
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file, write_sssom
 from .parsers import from_tsv
@@ -28,7 +26,6 @@ from .util import (
     dataframe_to_ptable,
     filter_redundant_rows,
     merge_msdf,
-    parse,
     remove_unmatched,
     smart_open,
 )
@@ -231,6 +228,7 @@ def ptable(input=None, output=None, inverse_factor=None):
     Args:
 
         input (str): Input file. For e.g.: SSSOM tsv file.
+        output (str): the Output file
         inverse_factor (str): Inverse factor.
 
     Returns:
@@ -295,13 +293,11 @@ def dosql(query: str, inputs: List[str], output: str):
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
 
     Args:
-
         query (str): SQL query. Use "df" as table name.
         inputs (List): List of input files.
         output (str): Output TSV/SSSOM file.
 
     Returns:
-    
         None.
 
     """
@@ -423,7 +419,7 @@ def partition(inputs: List[str], output_directory: str):
     Args:
 
         inputs (List): List of input files.
-        outdir (str): Output directory path.
+        output_directory (str): Output directory path.
 
     Returns:
 
@@ -541,7 +537,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     df = remove_unmatched(msdf.df)
     # df = remove_unmatched(parse(input))
     if len(df) == 0:
-        msg = f"No matched entities in this dataset!"
+        msg = "No matched entities in this dataset!"
         logging.error(msg)
         exit(1)
 
@@ -586,7 +582,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
 @output_option
 def merge(
     inputs: Tuple[str, str], output: str, reconcile: bool = True
-) -> MappingSetDataFrame:
+):
     """
     Merging msdf2 into msdf1,
         if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -595,17 +591,17 @@ def merge(
             prefer HumanCurated. If both HumanCurated, prefer negative mapping).
 
         Args:
-            inputs Tuple(MappingSetDataFrame): All MappingSetDataFrames that need to be merged
-
+            inputs: All MappingSetDataFrames that need to be merged
+            output: SSSOM file containing the merged output
             reconcile (bool, optional): [description]. Defaults to True.
 
         Returns:
-            MappingSetDataFrame: Merged MappingSetDataFrame.
+
     """
     (input1, input2) = inputs[:2]
     msdf1 = from_tsv(input1)
     msdf2 = from_tsv(input2)
-    merged_msdf = merge_msdf(msdf1, msdf2)
+    merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     # If > 2 input files, iterate through each one
     # and merge them into the merged file above
@@ -613,20 +609,12 @@ def merge(
         for input_file in inputs[2:]:
             msdf1 = merged_msdf
             msdf2 = from_tsv(input_file)
-            merged_msdf = merge_msdf(msdf1, msdf2)
+            merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     if os.path.exists(output):
         os.remove(output)
     # Export MappingSetDataFrame into a TSV
-    with open(output, "a") as f:
-        # Prefixmap is injected into the dataframe of msdf
-        f.write(f"# curie_map:\n")
-        for p in merged_msdf.prefixmap.items():
-            f.write(f"# \t{p[0]}: {p[1]}\n")
-
-    merged_msdf.df.to_csv(output, sep="\t", index=None, mode="a")
-
-    # return merge_msdf
+    write_sssom(merged_msdf, output)
 
 
 if __name__ == "__main__":

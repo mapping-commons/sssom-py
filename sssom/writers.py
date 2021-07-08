@@ -1,21 +1,20 @@
 import json
 import logging
-import yaml
 import os
 
 import pandas as pd
+import yaml
+from jsonasobj import as_json_obj
 from linkml.utils.yamlutils import as_json_object as yaml_to_json
-from jsonasobj import as_json_obj, JsonObj
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
-import json
 
-from .sssom_datamodel import slots
-from .util import get_file_extension
-from .util import RDF_FORMATS
 from .context import get_jsonld_context
-from .util import MappingSetDataFrame, extract_global_metadata, to_mapping_set_dataframe
 from .parsers import to_mapping_set_document
+from .sssom_datamodel import slots
+from .util import MappingSetDataFrame, extract_global_metadata
+from .util import RDF_FORMATS
+from .util import get_file_extension
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 OWL_OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
@@ -100,7 +99,7 @@ def write_json(
 # Converters
 
 
-def to_dataframe(msdf: MappingSetDataFrame, context_path=None) -> pd.DataFrame:
+def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
     data = []
 
     doc = to_mapping_set_document(msdf)
@@ -118,10 +117,13 @@ def to_dataframe(msdf: MappingSetDataFrame, context_path=None) -> pd.DataFrame:
 
 def to_owl_graph(msdf: MappingSetDataFrame, context_path=None) -> Graph:
     """
-    Converts to RDF - OWL flavour
-    :param doc: A MappingSetDataFrame object
-    :param context_path: An optional context path for the MappingSet
-    :return:
+
+    Args:
+        msdf:
+        context_path:
+
+    Returns:
+
     """
 
     doc = to_mapping_set_document(msdf)
@@ -195,10 +197,13 @@ def to_owl_graph(msdf: MappingSetDataFrame, context_path=None) -> Graph:
 
 def to_rdf_graph(msdf: MappingSetDataFrame, context_path=None) -> Graph:
     """
-    Converts to RDF
-    :param doc: A MappingSetDocument object
-    :param context_path: An optional context path for the MappingSet
-    :return:
+
+    Args:
+        msdf:
+        context_path:
+
+    Returns:
+
     """
     doc = to_mapping_set_document(msdf)
 
@@ -256,10 +261,13 @@ def to_rdf_graph(msdf: MappingSetDataFrame, context_path=None) -> Graph:
 
 def to_jsonld_dict(msdf: MappingSetDataFrame, context_path=None) -> Graph:
     """
-    Converts to RDF
-    :param doc: A MappingSetDocument object
-    :param context_path: An optional context path for the MappingSet
-    :return:
+
+    Args:
+        msdf:
+        context_path:
+
+    Returns:
+
     """
 
     g = to_rdf_graph(msdf, context_path)
@@ -287,8 +295,13 @@ def get_writer_function(output_format, output):
 
 def write_tsvs(sssom_dict, output_dir):
     """
-    Writing a list of MappingSetDataFrame objects
-    :param sssom_dict: A dictionary of names to MappingSetDataFrame objects
+
+    Args:
+        sssom_dict:
+        output_dir:
+
+    Returns:
+
     """
     for split_id in sssom_dict:
         sssom_file = os.path.join(output_dir, f"{split_id}.sssom.tsv")

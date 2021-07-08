@@ -1,11 +1,11 @@
+import contextlib
 import hashlib
 import logging
-from dataclasses import dataclass, field
-from io import StringIO
 import re
 import sys
-from typing import Any, Dict, List, Optional, Set, Union
-import contextlib
+from dataclasses import dataclass
+from io import StringIO
+from typing import Any, Dict, List, Optional, Set
 
 import pandas as pd
 import yaml
@@ -14,6 +14,7 @@ from scipy.stats.stats import normaltest
 from sssom.sssom_datamodel import Entity, slots
 from sssom.sssom_document import MappingSetDocument
 
+from sssom.sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
 
 SSSOM_READ_FORMATS = [
@@ -52,9 +53,9 @@ class MappingSetDataFrame:
     A collection of mappings represented as a DataFrame, together with additional metadata
     """
 
-    df: pd.DataFrame = None  ## Mappings
-    prefixmap: Dict[str, str] = None  ## maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str, str]] = None  ## header metadata excluding prefixes
+    df: pd.DataFrame = None  # Mappings
+    prefixmap: Dict[str, str] = None  # maps CURIE prefixes to URI bases
+    metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
 
     def merge(self, msdf2):
         """Merges two MappingSetDataframes
@@ -269,8 +270,9 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
     """
     removes rows if there is another row with same S/O and higher confidence
 
-    :param df:
-    :return:
+    Args:
+        df: data frame to filter
+        ignore_predicate: if true, the predicate_id column is ignored
     """
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
@@ -431,6 +433,8 @@ def dataframe_to_ptable(
         # residual confidence
         rc = (1 - (c + ic)) / 2.0
 
+        pi = None
+
         p = row[PREDICATE_ID]
         if p == "owl:equivalentClass":
             pi = 2
@@ -491,7 +495,6 @@ def merge_msdf(
     msdf1: MappingSetDataFrame,
     msdf2: MappingSetDataFrame,
     reconcile: bool = True,
-    inplace: bool = False,
 ) -> MappingSetDataFrame:
     """
     Merging msdf2 into msdf1,
@@ -557,20 +560,21 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
                      If same confidence prefer "HumanCurated" .If same again prefer negative.
             3. Prefixes:
-                [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different, throw an error and fail hard
+                [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different, 
+                throw an error and fail hard
                     else just merge the two prefix maps
             4. Metadata: same as rule 1.
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         """
 
-    ######  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
+    #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
     negation_df = df.loc[
         df[PREDICATE_ID].str.startswith("!")
     ]  # or df.loc[df['predicate_modifier'] == 'NOT']
 
-    # #####This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
+    # This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
     normalized_negation_df = negation_df.reset_index()
     normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
         PREDICATE_ID
@@ -597,14 +601,12 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         _defining_features, as_index=False
     )[CONFIDENCE].max()
 
-    ####### If same confidence prefer "HumanCurated". ################
+    # If same confidence prefer "HumanCurated".
     reconciled_df_subset: pd.DataFrame
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
     for idx_1, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
-            (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
-            & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
-            & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
+            (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID]) & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID]) & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
         # match_condition_1[match_condition_1] gives the list of 'True's.
         # In other words, the rows that match the condition (rules declared).

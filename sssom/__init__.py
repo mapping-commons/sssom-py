@@ -1,3 +1,5 @@
+from .sssom_datamodel import Mapping, MappingSet
+from .sssom_datamodel import slots
 from .util import (
     parse,
     collapse,
@@ -6,5 +8,3 @@ from .util import (
     group_mappings,
     compare_dataframes,
 )
-from .sssom_datamodel import Mapping, MappingSet
-from .sssom_datamodel import slots

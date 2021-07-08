@@ -1,11 +1,8 @@
-from sssom import parse, collapse, dataframe_to_ptable
-from sssom.parsers import from_tsv
-from sssom.cliques import split_into_cliques, summarize_cliques
-
-import unittest
 import os
+import unittest
 
-import logging
+from sssom.cliques import split_into_cliques, summarize_cliques
+from sssom.parsers import from_tsv
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
