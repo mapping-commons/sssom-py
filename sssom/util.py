@@ -9,6 +9,7 @@ import contextlib
 
 import pandas as pd
 import yaml
+import json
 from scipy.stats.stats import normaltest
 from sssom.sssom_datamodel import Entity, slots
 from sssom.sssom_document import MappingSetDocument
@@ -63,15 +64,17 @@ class MappingSetDataFrame:
     def clean_prefix_map(self):
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes = dict()
-        missing_prefix = False
+        missing_prefix = []
         for prefix in prefixes_in_map:
             if prefix in self.prefixmap:
                 new_prefixes[prefix]=self.prefixmap[prefix]
             else:
                 logging.warning(f"{prefix} is used in the data frame but does not exist in prefix map")
-                missing_prefix = True
-        if not missing_prefix:
-            self.prefixmap = new_prefixes
+                missing_prefix.append(prefix)
+        if missing_prefix:
+            self.df = filter_out_prefixes(self.df, missing_prefix)
+        self.prefixmap = new_prefixes
+
 
 @dataclass
 class EntityPair:
@@ -742,3 +745,20 @@ def get_prefixes_used_in_table(df: pd.DataFrame):
         for v in df[col].values:
             prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
+
+def filter_out_prefixes(df: pd.DataFrame, filter_prefixes)->pd.DataFrame:
+    rows = []
+    for index, row in df.iterrows():
+        ok = True
+        for col in _defining_features:
+            v = row[col]
+            prefix = get_prefix_from_curie(v)
+            if prefix in filter_prefixes:
+                ok = False
+                break
+        if ok:
+            rows.append(row)
+    if rows:
+        return pd.DataFrame(rows)
+    else:
+        return pd.DataFrame(columns=_defining_features)
