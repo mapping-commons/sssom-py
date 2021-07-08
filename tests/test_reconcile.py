@@ -1,20 +1,27 @@
 from sssom.parsers import from_tsv
-from sssom import parse, collapse, dataframe_to_ptable, filter_redundant_rows, group_mappings, compare_dataframes
+from sssom import (
+    parse,
+    collapse,
+    dataframe_to_ptable,
+    filter_redundant_rows,
+    group_mappings,
+    compare_dataframes,
+)
 from sssom.util import merge_msdf, deal_with_negation
 
 import unittest
 import os
-#from pandasql import sqldf
+
+# from pandasql import sqldf
 import logging
+
 cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, 'data')
+data_dir = os.path.join(cwd, "data")
 
 
 class TestReconcile(unittest.TestCase):
-
     def setUp(self) -> None:
-        self.msdf = from_tsv(f'{data_dir}/basic3.tsv')
-        
+        self.msdf = from_tsv(f"{data_dir}/basic3.tsv")
 
     def test_df(self):
         df = self.msdf.df
@@ -31,9 +38,9 @@ class TestReconcile(unittest.TestCase):
         assert len(df.index) == 7
 
     def test_merge(self):
-        msdf1 = from_tsv(f'{data_dir}/basic.tsv')
-        msdf2 = from_tsv(f'{data_dir}/basic2.tsv')
-        
+        msdf1 = from_tsv(f"{data_dir}/basic.tsv")
+        msdf2 = from_tsv(f"{data_dir}/basic2.tsv")
+
         merged_msdf = merge_msdf(msdf1=msdf1, msdf2=msdf2)
 
         assert len(merged_msdf.df) == 94

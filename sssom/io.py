@@ -17,18 +17,18 @@ def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
     else:
         obj = {}
     if msdf.prefixmap is not None:
-        obj['curie_map'] = msdf.prefixmap
+        obj["curie_map"] = msdf.prefixmap
     lines = yaml.safe_dump(obj).split("\n")
-    lines = [f'# {line}' for line in lines if line != '']
+    lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep="\t", index=False)
     lines = lines + [s]
     if output is None:
         for line in lines:
             print(line)
     else:
-        with open(output, 'w') as stream:
+        with open(output, "w") as stream:
             for line in lines:
-                stream.write(line + '\n')
+                stream.write(line + "\n")
 
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):
@@ -50,8 +50,13 @@ def convert_file(input_path: str, output_path: str = None, output_format: str = 
         raise Exception(f"{input_path} is not a valid file path or url.")
 
 
-def parse_file(input_path: str, output_path: str = None, input_format: str = None, metadata_path: str = None,
-               curie_map_mode: str = None):
+def parse_file(
+    input_path: str,
+    output_path: str = None,
+    input_format: str = None,
+    metadata_path: str = None,
+    curie_map_mode: str = None,
+):
     """
 
     Args:
@@ -67,7 +72,9 @@ def parse_file(input_path: str, output_path: str = None, input_format: str = Non
 
     """
     if validators.url(input_path) or os.path.exists(input_path):
-        curie_map, meta = get_metadata_and_curie_map(metadata_path=metadata_path, curie_map_mode=curie_map_mode)
+        curie_map, meta = get_metadata_and_curie_map(
+            metadata_path=metadata_path, curie_map_mode=curie_map_mode
+        )
         parse_func = get_parsing_function(input_format, input_path)
         doc = parse_func(input_path, curie_map=curie_map, meta=meta)
         if not metadata_path:

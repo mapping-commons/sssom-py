@@ -12,35 +12,71 @@ from pandasql import sqldf
 from scipy.stats import chi2_contingency
 
 from sssom.sparql_util import EndpointConfig, query_mappings
-from sssom.util import (SSSOM_EXPORT_FORMATS, SSSOM_READ_FORMATS,
-                        MappingSetDataFrame, to_mapping_set_dataframe)
+from sssom.util import (
+    SSSOM_EXPORT_FORMATS,
+    SSSOM_READ_FORMATS,
+    MappingSetDataFrame,
+    to_mapping_set_dataframe,
+)
 
 from .cliques import split_into_cliques, summarize_cliques
-from .io import (convert_file, parse_file, split_file, validate_file,
-                 write_sssom)
+from .io import convert_file, parse_file, split_file, validate_file, write_sssom
 from .parsers import from_tsv
-from .util import (collapse, compare_dataframes, dataframe_to_ptable,
-                   filter_redundant_rows, merge_msdf, parse, remove_unmatched,
-                   smart_open)
+from .util import (
+    collapse,
+    compare_dataframes,
+    dataframe_to_ptable,
+    filter_redundant_rows,
+    merge_msdf,
+    parse,
+    remove_unmatched,
+    smart_open,
+)
 
 # Click input options common across commands
-input_option = click.option('-i', '--input', required=True, type=click.Path(),
-                            help='Input file, e.g. a SSSOM tsv file.')
-input_format_option = click.option('-I', '--input-format',
-                                   help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}')
-output_option = click.option('-o', '--output', help='Output file, e.g. a SSSOM tsv file.')
-output_format_option = click.option('-O', '--output-format',
-                                    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}')
-output_directory_option = click.option('-d', '--output-directory', type=click.Path(), help='Output directory path.')
-metadata_option = click.option('-m', '--metadata', required=False, type=click.Path(), help='The path to a file containing the sssom metadata (including curie_map) to be used.')
-transpose_option = click.option('-t', '--transpose/--no-transpose', default=False)
-fields_option = click.option('-F', '--fields', nargs=2,
-                             default=('subject_category', 'object_category'), help='Fields.')
+input_option = click.option(
+    "-i",
+    "--input",
+    required=True,
+    type=click.Path(),
+    help="Input file, e.g. a SSSOM tsv file.",
+)
+input_format_option = click.option(
+    "-I",
+    "--input-format",
+    help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}',
+)
+output_option = click.option(
+    "-o", "--output", help="Output file, e.g. a SSSOM tsv file."
+)
+output_format_option = click.option(
+    "-O",
+    "--output-format",
+    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}',
+)
+output_directory_option = click.option(
+    "-d", "--output-directory", type=click.Path(), help="Output directory path."
+)
+metadata_option = click.option(
+    "-m",
+    "--metadata",
+    required=False,
+    type=click.Path(),
+    help="The path to a file containing the sssom metadata (including curie_map) to be used.",
+)
+transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
+fields_option = click.option(
+    "-F",
+    "--fields",
+    nargs=2,
+    default=("subject_category", "object_category"),
+    help="Fields.",
+)
 
 
 @click.group()
-@click.option('-v', '--verbose', count=True)
-@click.option('-q', '--quiet')
+@click.option("-v", "--verbose", count=True)
+@click.option("-q", "--quiet")
 def main(verbose: int, quiet: bool):
     """Main
 
@@ -52,7 +88,7 @@ def main(verbose: int, quiet: bool):
     Returns:
 
         None.
-        
+
     """
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
@@ -94,12 +130,22 @@ def convert(input: str, output: str, output_format: str):
 @input_option
 @input_format_option
 @metadata_option
-@click.option('-C', '--curie-map-mode', default='metadata_only', show_default=True, required=True,
-              type=click.Choice(['metadata_only', 'sssom_default_only', 'merged'], case_sensitive=False),
-              help='Defines wether the curie map in the metadata should be extended or replaced with '
-                   'the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged')
+@click.option(
+    "-C",
+    "--curie-map-mode",
+    default="metadata_only",
+    show_default=True,
+    required=True,
+    type=click.Choice(
+        ["metadata_only", "sssom_default_only", "merged"], case_sensitive=False
+    ),
+    help="Defines wether the curie map in the metadata should be extended or replaced with "
+    "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
+)
 @output_option
-def parse(input: str, input_format: str, metadata: str, curie_map_mode: str, output: str):
+def parse(
+    input: str, input_format: str, metadata: str, curie_map_mode: str, output: str
+):
     """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
     Args:
@@ -111,12 +157,17 @@ def parse(input: str, input_format: str, metadata: str, curie_map_mode: str, out
         output (str): The path to the SSSOM TSV output file.
 
     Returns:
-    
+
         None.
     """
 
-    parse_file(input_path=input, output_path=output, input_format=input_format, metadata_path=metadata,
-               curie_map_mode=curie_map_mode)
+    parse_file(
+        input_path=input,
+        output_path=output,
+        input_format=input_format,
+        metadata_path=metadata,
+        curie_map_mode=curie_map_mode,
+    )
 
 
 @main.command()
@@ -158,7 +209,7 @@ def split(input: str, output_directory: str):
 @main.command()
 @input_option
 @output_option
-@click.option('-W', '--inverse-factor', help='Inverse factor.')
+@click.option("-W", "--inverse-factor", help="Inverse factor.")
 def ptable(input=None, output=None, inverse_factor=None):
     """Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
 
@@ -183,7 +234,6 @@ def ptable(input=None, output=None, inverse_factor=None):
             print("\t".join(row), file=fh)
 
 
-
 @main.command()
 @input_option
 @output_option
@@ -202,14 +252,16 @@ def dedupe(input: str, output: str):
     # df = parse(input)
     msdf = from_tsv(input)
     df = filter_redundant_rows(msdf.df)
-    msdf_out = MappingSetDataFrame(df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata)
+    msdf_out = MappingSetDataFrame(
+        df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata
+    )
     # df.to_csv(output, sep="\t", index=False)
     write_sssom(msdf_out, output)
 
 
 @main.command()
-@click.option('-q', '--query', help='SQL query. Use "df" as table name.')
-@click.argument('inputs', nargs=-1)
+@click.option("-q", "--query", help='SQL query. Use "df" as table name.')
+@click.argument("inputs", nargs=-1)
 @output_option
 def dosql(query: str, inputs: List[str], output: str):
     """
@@ -244,8 +296,8 @@ def dosql(query: str, inputs: List[str], output: str):
         fn = inputs[n - 1]
         df = from_tsv(fn).df
         # df = parse(fn)
-        globals()[f'df{n}'] = df
-        tn = re.sub('[.].*', '', Path(fn).stem).lower()
+        globals()[f"df{n}"] = df
+        tn = re.sub("[.].*", "", Path(fn).stem).lower()
         globals()[tn] = df
         n += 1
     df = sqldf(query)
@@ -256,23 +308,32 @@ def dosql(query: str, inputs: List[str], output: str):
 
 
 @main.command()
-@click.option('-c', '--config', type=click.File('rb'))
-@click.option('-e', '--url')
-@click.option('-g', '--graph')
-@click.option('--object-labels/--no-object-labels', default=None, help='if set, includes object labels')
-@click.option('-l', '--limit', type=int)
-@click.option('-P', '--prefix', type=click.Tuple([str, str]), multiple=True)
+@click.option("-c", "--config", type=click.File("rb"))
+@click.option("-e", "--url")
+@click.option("-g", "--graph")
+@click.option(
+    "--object-labels/--no-object-labels",
+    default=None,
+    help="if set, includes object labels",
+)
+@click.option("-l", "--limit", type=int)
+@click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
 @output_option
-def sparql(url: str = None, config=None, graph: str = None, limit: int = None,
-           object_labels: bool = None,
-           prefix: List[Dict[str, str]] = None,
-           output: str = None):
+def sparql(
+    url: str = None,
+    config=None,
+    graph: str = None,
+    limit: int = None,
+    object_labels: bool = None,
+    prefix: List[Dict[str, str]] = None,
+    output: str = None,
+):
     """Run a SPARQL query.
 
     Args:
 
         url (str):
-        config (str): 
+        config (str):
         graph (str):
         limit (int):
         object_labels (bool):
@@ -308,7 +369,7 @@ def sparql(url: str = None, config=None, graph: str = None, limit: int = None,
 
 @main.command()
 @output_option
-@click.argument('inputs', nargs=2)
+@click.argument("inputs", nargs=2)
 def diff(inputs: Tuple[str, str], output: str):
     """
     Compare two SSSOM files.
@@ -331,13 +392,15 @@ def diff(inputs: Tuple[str, str], output: str):
     msdf1 = from_tsv(input1)
     msdf2 = from_tsv(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
-    logging.info(f'COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}')
+    logging.info(
+        f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
+    )
     d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
 
 @main.command()
 @output_directory_option
-@click.argument('inputs', nargs=-1)
+@click.argument("inputs", nargs=-1)
 def partition(inputs: List[str], output_directory: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
@@ -354,13 +417,13 @@ def partition(inputs: List[str], output_directory: str):
 
     docs = [from_tsv(input) for input in inputs]
     doc = docs.pop()
-    '''for d2 in docs:
-        doc.mapping_set.mappings += d2.mapping_set.mappings'''
+    """for d2 in docs:
+        doc.mapping_set.mappings += d2.mapping_set.mappings"""
     cliquedocs = split_into_cliques(doc)
     n = 0
     for cdoc in cliquedocs:
         n += 1
-        ofn = f'{output_directory}/clique_{n}.sssom.tsv'
+        ofn = f"{output_directory}/clique_{n}.sssom.tsv"
         # logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
@@ -373,7 +436,7 @@ def partition(inputs: List[str], output_directory: str):
 @input_option
 @output_option
 @metadata_option
-@click.option('-s', '--statsfile')
+@click.option("-s", "--statsfile")
 def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
@@ -392,6 +455,7 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
         None.
     """
     import yaml
+
     if metadata is None:
         doc = from_tsv(input)
     else:
@@ -425,10 +489,10 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
 
         None.
     """
-    
+
     df = remove_unmatched(from_tsv(input).df)
     # df = parse(input)
-    logging.info(f'#CROSSTAB ON {fields}')
+    logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
@@ -466,11 +530,11 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
         logging.error(msg)
         exit(1)
 
-    logging.info(f'#CROSSTAB ON {fields}')
+    logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
 
-    logging.info(f'F1 {f1} UNIQUE: {df[f1].unique()}')
-    logging.info(f'F2 {f2} UNIQUE: {df[f2].unique()}')
+    logging.info(f"F1 {f1} UNIQUE: {df[f1].unique()}")
+    logging.info(f"F2 {f2} UNIQUE: {df[f2].unique()}")
 
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
@@ -489,18 +553,25 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     tups = []
     for i, row in corr.iterrows():
         for j, v in row.iteritems():
-            logging.info(f'{i} x {j} = {v}')
+            logging.info(f"{i} x {j} = {v}")
             tups.append((v, i, j))
     tups = sorted(tups, key=lambda t: t[0])
     for t in tups:
-        print(f'{t[0]}\t{t[1]}\t{t[2]}')
+        print(f"{t[0]}\t{t[1]}\t{t[2]}")
+
 
 @main.command()
-@click.argument('inputs', nargs=-1)
-@click.option('-r', '--reconcile', default=True, help='Boolean indicating the need for reconciliation of the SSSOM tsv file.')
+@click.argument("inputs", nargs=-1)
+@click.option(
+    "-r",
+    "--reconcile",
+    default=True,
+    help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
+)
 @output_option
-
-def merge(inputs: Tuple[str, str], output: str,  reconcile:bool=True)->MappingSetDataFrame:
+def merge(
+    inputs: Tuple[str, str], output: str, reconcile: bool = True
+) -> MappingSetDataFrame:
     """
     Merging msdf2 into msdf1,
         if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -510,7 +581,7 @@ def merge(inputs: Tuple[str, str], output: str,  reconcile:bool=True)->MappingSe
 
         Args:
             inputs Tuple(MappingSetDataFrame): All MappingSetDataFrames that need to be merged
-            
+
             reconcile (bool, optional): [description]. Defaults to True.
 
         Returns:
@@ -521,26 +592,27 @@ def merge(inputs: Tuple[str, str], output: str,  reconcile:bool=True)->MappingSe
     msdf2 = from_tsv(input2)
     merged_msdf = merge_msdf(msdf1, msdf2)
 
-    # If > 2 input files, iterate through each one 
+    # If > 2 input files, iterate through each one
     # and merge them into the merged file above
     if len(inputs) > 2:
         for input_file in inputs[2:]:
             msdf1 = merged_msdf
             msdf2 = from_tsv(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2)
-    
-    if  os.path.exists(output):
+
+    if os.path.exists(output):
         os.remove(output)
     # Export MappingSetDataFrame into a TSV
-    with open(output, 'a') as f:
+    with open(output, "a") as f:
         # Prefixmap is injected into the dataframe of msdf
-        f.write(f'# curie_map:\n')
+        f.write(f"# curie_map:\n")
         for p in merged_msdf.prefixmap.items():
-            f.write(f'# \t{p[0]}: {p[1]}\n')
-    
-    merged_msdf.df.to_csv(output,sep='\t',index=None, mode='a')
+            f.write(f"# \t{p[0]}: {p[1]}\n")
 
-    #return merge_msdf
+    merged_msdf.df.to_csv(output, sep="\t", index=None, mode="a")
+
+    # return merge_msdf
+
 
 if __name__ == "__main__":
     main()

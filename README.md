@@ -15,3 +15,16 @@ See https://sssom-py.readthedocs.io/
 See the [schema/](schema) folder for source schema in YAML, plus
 derivations to JSON-Schema, ShEx, etc. 
 
+## Testing
+
+`tox` is similar to `make`, but specific for Python software projects. Its
+configuration is stored in [`tox.ini`](tox.ini) in different "environments"
+whose headers look like `[testenv:...]`. All tests can be run with:
+
+```shell
+$ pip install tox
+$ tox
+```
+
+A specific environment can be run using the `-e` flag, such as `tox -e lint` to run
+the linting environment.
