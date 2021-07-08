@@ -188,7 +188,7 @@ def validate(input: str):
 @input_option
 @output_directory_option
 def split(input: str, output_directory: str):
-    """Parse file (currently only supports conversion to RDF)
+    """Split input file into multiple output broken down by prefixes
 
     Args:
 
