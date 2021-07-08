@@ -1,5 +1,5 @@
 import os
-from sssom.datamodel_util import MappingSetDataFrame, read_metadata
+from sssom.util import MappingSetDataFrame, read_metadata
 
 from .parsers import get_parsing_function, from_tsv, split_dataframe
 from .writers import get_writer_function, write_tsv, write_tsvs
@@ -28,7 +28,7 @@ def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
     else:
         with open(output, "w") as stream:
             for line in lines:
-                stream.write(line)
+                stream.write(line + '\n')
 
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):

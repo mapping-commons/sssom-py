@@ -2,6 +2,7 @@ set -e
 
 INPUT_FILE_1='tests/data/basic.tsv'
 INPUT_FILE_2='tests/data/basic2.tsv'
+INPUT_FILE_3='tests/data/basic3.tsv'
 OUTPUT_DIR='tests/tmp/'
 QUERY_1="SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence"
 
@@ -19,4 +20,5 @@ sssom partition -d $OUTPUT_DIR $INPUT_FILE_1 $INPUT_FILE_2
 sssom cliquesummary -i $INPUT_FILE_1 -o $OUTPUT_DIR/cliquesummary_output.tsv
 sssom crosstab -i $INPUT_FILE_1 -o $OUTPUT_DIR/crosstab_output.tsv
 sssom correlations -i $INPUT_FILE_1 -o $OUTPUT_DIR/correlation_output.tsv
+sssom merge $INPUT_FILE_1 $INPUT_FILE_2 $INPUT_FILE_3 -o $OUTPUT_DIR/merged_msdf.tsv
 

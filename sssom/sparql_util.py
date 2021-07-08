@@ -3,7 +3,7 @@ from rdflib import URIRef
 from rdflib.namespace import RDF, RDFS, OWL, SKOS
 from typing import Dict, Set, List, Optional
 from dataclasses import dataclass
-from sssom.datamodel_util import MappingSetDataFrame
+from sssom.util import MappingSetDataFrame
 import pandas as pd
 import logging
 

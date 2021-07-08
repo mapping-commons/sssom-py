@@ -13,14 +13,9 @@ from rdflib import Graph, URIRef
 from .sssom_document import MappingSet, Mapping, MappingSetDocument
 
 from .util import RDF_FORMATS
-from .datamodel_util import (
-    MappingSetDataFrame,
-    get_file_extension,
-    to_mapping_set_dataframe,
-    is_curie,
-)
+from .util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe, is_curie
 
-from sssom.datamodel_util import read_pandas
+from sssom.util import read_pandas
 import validators
 
 cwd = os.path.abspath(os.path.dirname(__file__))
@@ -29,9 +24,7 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Readers (from file)
 
 
-def from_tsv(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_tsv(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
@@ -39,12 +32,10 @@ def from_tsv(
         df = read_pandas(file_path)
         if meta is None:
             meta = _read_metadata_from_table(file_path)
-        if "curie_map" in meta:
-            logging.info(
-                "Context provided, but SSSOM file provides its own CURIE map. "
-                "CURIE map from context is disregarded."
-            )
-            curie_map = meta["curie_map"]
+        if 'curie_map' in meta:
+            logging.info("Context provided, but SSSOM file provides its own CURIE map. "
+                         "CURIE map from context is disregarded.")
+            curie_map = meta['curie_map']
         msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
         # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
         return msdf
@@ -52,9 +43,7 @@ def from_tsv(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_rdf(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_rdf(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
@@ -69,9 +58,7 @@ def from_rdf(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_owl(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_owl(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
@@ -86,9 +73,7 @@ def from_owl(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_jsonld(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_jsonld(file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
@@ -101,9 +86,8 @@ def from_jsonld(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_obographs_json(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_obographs_json(file_path: str, curie_map: Dict[str, str] = None,
+                        meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses an obographs file as a JSON object and translates it into a MappingSetDataFrame
     :param file_path: The path to the obographs file
@@ -127,14 +111,11 @@ def guess_file_format(filename):
     elif extension in RDF_FORMATS:
         return extension
     else:
-        raise Exception(
-            f"File extension {extension} does not correspond to a legal file format"
-        )
+        raise Exception(f"File extension {extension} does not correspond to a legal file format")
 
 
-def from_alignment_xml(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_alignment_xml(file_path: str, curie_map: Dict[str, str] = None,
+                       meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
@@ -147,9 +128,8 @@ def from_alignment_xml(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def from_alignment_minidom(
-    dom: Document, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
+def from_alignment_minidom(dom: Document, curie_map: Dict[str, str] = None,
+                           meta: Dict[str, str] = None) -> MappingSetDataFrame:
     """
     Reads a minidom Document object
     :param dom: XML (minidom) object
@@ -158,27 +138,26 @@ def from_alignment_minidom(
     :return: MappingSetDocument
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception(f'No valid curie_map provided')
 
     ms = MappingSet()
     mlist = []
     bad_attrs = {}
 
-    alignments = dom.getElementsByTagName("Alignment")
+    alignments = dom.getElementsByTagName('Alignment')
     for n in alignments:
         for e in n.childNodes:
             if e.nodeType == Node.ELEMENT_NODE:
                 node_name = e.nodeName
                 if node_name == "map":
-                    cell = e.getElementsByTagName("Cell")
+                    cell = e.getElementsByTagName('Cell')
                     for c_node in cell:
                         m = _prepare_mapping(_cell_element_values(c_node, curie_map))
                         mlist.append(m)
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
                         raise Exception(
-                            f"Alignment format: xml element said, but not set to yes. Only XML is supported!"
-                        )
+                            f"Alignment format: xml element said, but not set to yes. Only XML is supported!")
                 elif node_name == "onto1":
                     ms["subject_source_id"] = e.firstChild.nodeValue
                 elif node_name == "onto2":
@@ -191,7 +170,7 @@ def from_alignment_minidom(
     ms.mappings = mlist
     if meta:
         for k, v in meta.items():
-            if k != "curie_map":
+            if k != 'curie_map':
                 ms[k] = v
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
@@ -199,10 +178,7 @@ def from_alignment_minidom(
 
 # Readers (from object)
 
-
-def from_dataframe(
-    df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]
-) -> MappingSetDataFrame:
+def from_dataframe(df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDataFrame
     :param df:
@@ -211,7 +187,7 @@ def from_dataframe(
     :return: MappingSetDataFrame
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception(f'No valid curie_map provided')
 
     mlist = []
     ms = MappingSet()
@@ -239,10 +215,10 @@ def from_dataframe(
         m = _prepare_mapping(Mapping(**mdict))
         mlist.append(m)
     for k, v in bad_attrs.items():
-        logging.warning(f"No attr for {k} [{v} instances]")
+        logging.warning(f'No attr for {k} [{v} instances]')
     ms.mappings = mlist
     for k, v in meta.items():
-        if k != "curie_map":
+        if k != 'curie_map':
             ms[k] = v
     doc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(doc)
@@ -255,9 +231,7 @@ def is_extract_property(p, properties):
         return False
 
 
-def from_obographs(
-    jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]
-) -> MappingSetDataFrame:
+def from_obographs(jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
     Converts a obographs json object to an SSSOM data frame
 
@@ -271,7 +245,7 @@ def from_obographs(
 
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception(f'No valid curie_map provided')
 
     ms = MappingSet()
     mlist = []
@@ -283,62 +257,60 @@ def from_obographs(
         "http://www.w3.org/2004/02/skos/core#broadMatch",
         "http://www.w3.org/2004/02/skos/core#closeMatch",
         "http://www.w3.org/2004/02/skos/core#narrowMatch",
-        "http://www.w3.org/2004/02/skos/core#relatedMatch",
+        "http://www.w3.org/2004/02/skos/core#relatedMatch"
     ]
 
-    if "graphs" in jsondoc:
-        for g in jsondoc["graphs"]:
-            if "nodes" in g:
-                for n in g["nodes"]:
-                    nid = n["id"]
-                    if "lbl" in n:
-                        label = n["lbl"]
+    if 'graphs' in jsondoc:
+        for g in jsondoc['graphs']:
+            if 'nodes' in g:
+                for n in g['nodes']:
+                    nid = n['id']
+                    if 'lbl' in n:
+                        label = n['lbl']
                     else:
                         label = ""
-                    if "meta" in n:
-                        if "xrefs" in n["meta"]:
-                            for xref in n["meta"]["xrefs"]:
-                                xref_id = xref["val"]
+                    if 'meta' in n:
+                        if 'xrefs' in n['meta']:
+                            for xref in n['meta']['xrefs']:
+                                xref_id = xref['val']
                                 mdict = {}
                                 try:
-                                    mdict["subject_id"] = curie(nid, curie_map)
-                                    mdict["object_id"] = curie(xref_id, curie_map)
-                                    mdict["subject_label"] = label
-                                    mdict["predicate_id"] = "oboInOwl:hasDbXref"
-                                    mdict["match_type"] = "Unspecified"
+                                    mdict['subject_id'] = curie(nid, curie_map)
+                                    mdict['object_id'] = curie(xref_id, curie_map)
+                                    mdict['subject_label'] = label
+                                    mdict['predicate_id'] = "oboInOwl:hasDbXref"
+                                    mdict['match_type'] = "Unspecified"
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     logging.warning(e)
-                        if "basicPropertyValues" in n["meta"]:
-                            for basicPropertyBalue in n["meta"]["basicPropertyValues"]:
-                                pred = basicPropertyBalue["pred"]
+                        if 'basicPropertyValues' in n['meta']:
+                            for basicPropertyBalue in n['meta']['basicPropertyValues']:
+                                pred = basicPropertyBalue['pred']
                                 if pred in allowed_properties:
-                                    xref_id = basicPropertyBalue["val"]
+                                    xref_id = basicPropertyBalue['val']
                                     mdict = {}
                                     try:
-                                        mdict["subject_id"] = curie(nid, curie_map)
-                                        mdict["object_id"] = curie(xref_id, curie_map)
-                                        mdict["subject_label"] = label
-                                        mdict["predicate_id"] = curie(pred, curie_map)
-                                        mdict["match_type"] = "Unspecified"
+                                        mdict['subject_id'] = curie(nid, curie_map)
+                                        mdict['object_id'] = curie(xref_id, curie_map)
+                                        mdict['subject_label'] = label
+                                        mdict['predicate_id'] = curie(pred, curie_map)
+                                        mdict['match_type'] = "Unspecified"
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
                                         logging.warning(e)
     else:
-        raise Exception(f"No graphs element in obographs file, wrong format?")
+        raise Exception(f'No graphs element in obographs file, wrong format?')
 
     ms.mappings = mlist
     if meta:
         for k, v in meta.items():
-            if k != "curie_map":
+            if k != 'curie_map':
                 ms[k] = v
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
-def from_owl_graph(
-    g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]
-) -> MappingSetDataFrame:
+def from_owl_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
@@ -347,19 +319,15 @@ def from_owl_graph(
     :return: MappingSetDataFrame
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception(f'No valid curie_map provided')
 
     ms = MappingSet()
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
-def from_rdf_graph(
-    g: Graph,
-    curie_map: Dict[str, str],
-    meta: Dict[str, str],
-    mapping_predicates: Set[str] = None,
-) -> MappingSetDataFrame:
+def from_rdf_graph(g: Graph, curie_map: Dict[str, str], meta: Dict[str, str],
+                   mapping_predicates: Set[str] = None) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDataFrame
     :param g: A Graph object (rdflib)
@@ -368,7 +336,7 @@ def from_rdf_graph(
     :return: MappingSetDataFrame
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception(f'No valid curie_map provided')
     if mapping_predicates is None:
         mapping_predicates = get_default_mapping_predicates()
     ms = MappingSet()
@@ -380,7 +348,9 @@ def from_rdf_graph(
                     s_id = curie(s, curie_map)
                     if isinstance(o, URIRef):
                         o_id = curie(o, curie_map)
-                        m = Mapping(subject_id=s_id, object_id=o_id, predicate_id=p_id)
+                        m = Mapping(subject_id=s_id,
+                                    object_id=o_id,
+                                    predicate_id=p_id)
                         ms.mappings.append(m)
             except NoCURIEException as e:
                 logging.warning(e)
@@ -391,42 +361,39 @@ def from_rdf_graph(
 # Utilities (reading)
 # All from_* should return MappingSetDataFrame
 
-
 def get_default_mapping_predicates():
     return {
-        "oio:hasDbXref",
-        "skos:exactMatch",
-        "skos:narrowMatch",
-        "skos:broadMatch",
-        "skos:exactMatch",
-        "skos:closeMatch",
-        "owl:sameAs",
-        "owl:equivalentClass",
-        "owl:equivalentProperty",
+        'oio:hasDbXref',
+        'skos:exactMatch',
+        'skos:narrowMatch',
+        'skos:broadMatch',
+        'skos:exactMatch',
+        'skos:closeMatch',
+        'owl:sameAs',
+        'owl:equivalentClass',
+        'owl:equivalentProperty'
     }
 
 
 def get_parsing_function(input_format, filename):
     if input_format is None:
         input_format = get_file_extension(filename)
-    if input_format == "tsv":
+    if input_format == 'tsv':
         return from_tsv
-    elif input_format == "rdf":
+    elif input_format == 'rdf':
         return from_rdf
-    elif input_format == "owl":
+    elif input_format == 'owl':
         return from_owl
-    elif input_format == "alignment-api-xml":
+    elif input_format == 'alignment-api-xml':
         return from_alignment_xml
-    elif input_format == "obographs-json":
+    elif input_format == 'obographs-json':
         return from_obographs_json
-    elif input_format == "json-ld":
+    elif input_format == 'json-ld':
         return from_jsonld
-    elif input_format == "json":
-        raise Exception(
-            f"LinkML JSON not yet implemented, did you mean json-ld or obographs-json."
-        )
+    elif input_format == 'json':
+        raise Exception(f'LinkML JSON not yet implemented, did you mean json-ld or obographs-json.')
     else:
-        raise Exception(f"Unknown input format: {input_format}")
+        raise Exception(f'Unknown input format: {input_format}')
 
 
 def _prepare_mapping(mapping: Mapping):
@@ -438,13 +405,8 @@ def _prepare_mapping(mapping: Mapping):
 
 
 def _swap_object_subject(mapping):
-    members = [
-        attr.replace("subject_", "")
-        for attr in dir(mapping)
-        if not callable(getattr(mapping, attr))
-        and not attr.startswith("__")
-        and attr.startswith("subject_")
-    ]
+    members = [attr.replace("subject_", "") for attr in dir(mapping) if
+               not callable(getattr(mapping, attr)) and not attr.startswith("__") and attr.startswith("subject_")]
     for var in members:
         subject_val = getattr(mapping, "subject_" + var)
         object_val = getattr(mapping, "object_" + var)
@@ -454,16 +416,16 @@ def _swap_object_subject(mapping):
 
 
 def _read_metadata_from_table(filename: str):
-    with open(filename, "r") as s:
+    with open(filename, 'r') as s:
         yamlstr = ""
         for line in s:
             if line.startswith("#"):
-                yamlstr += re.sub("^#", "", line)
+                yamlstr += re.sub('^#', '', line)
             else:
                 break
         if yamlstr:
             meta = yaml.safe_load(yamlstr)
-            logging.info(f"Meta={meta}")
+            logging.info(f'Meta={meta}')
             return meta
     return {}
 
@@ -474,7 +436,6 @@ def is_valid_mapping(m):
 
 class NoCURIEException(Exception):
     pass
-
 
 def curie(uri: str, curie_map):
     if is_curie(uri):
@@ -493,13 +454,9 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
         if child.nodeType == Node.ELEMENT_NODE:
             try:
                 if child.nodeName == "entity1":
-                    mdict["subject_id"] = curie(
-                        child.getAttribute("rdf:resource"), curie_map
-                    )
+                    mdict["subject_id"] = curie(child.getAttribute('rdf:resource'), curie_map)
                 elif child.nodeName == "entity2":
-                    mdict["object_id"] = curie(
-                        child.getAttribute("rdf:resource"), curie_map
-                    )
+                    mdict["object_id"] = curie(child.getAttribute('rdf:resource'), curie_map)
                 elif child.nodeName == "measure":
                     mdict["confidence"] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
@@ -509,9 +466,7 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
-                    logging.warning(
-                        f"Unsupported alignment api element: {child.nodeName}"
-                    )
+                    logging.warning(f"Unsupported alignment api element: {child.nodeName}")
             except NoCURIEException as e:
                 logging.warning(e)
 
@@ -527,7 +482,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     :return: MappingSetDocument
     """
     if not msdf.prefixmap:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception(f'No valid curie_map provided')
 
     mlist = []
     ms = MappingSet()
@@ -552,30 +507,24 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         m = _prepare_mapping(Mapping(**mdict))
         mlist.append(m)
     for k, v in bad_attrs.items():
-        logging.warning(f"No attr for {k} [{v} instances]")
+        logging.warning(f'No attr for {k} [{v} instances]')
     ms.mappings = mlist
     for k, v in msdf.metadata.items():
-        if k != "curie_map":
+        if k != 'curie_map':
             ms[k] = v
     return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
 def split_dataframe(msdf: MappingSetDataFrame):
     df = msdf.df
-    subject_prefixes = set(df["subject_id"].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(df["object_id"].str.split(":", 1, expand=True)[0])
-    relations = set(df["predicate_id"])
-    return split_dataframe_by_prefix(
-        msdf=msdf,
-        subject_prefixes=subject_prefixes,
-        object_prefixes=object_prefixes,
-        relations=relations,
-    )
+    subject_prefixes = set(df['subject_id'].str.split(':', 1, expand=True)[0])
+    object_prefixes = set(df['object_id'].str.split(':', 1, expand=True)[0])
+    relations = set(df['predicate_id'])
+    return split_dataframe_by_prefix(msdf=msdf, subject_prefixes=subject_prefixes, object_prefixes=object_prefixes,
+                                     relations=relations)
 
 
-def split_dataframe_by_prefix(
-    msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
-):
+def split_dataframe_by_prefix(msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations):
     """
 
     :param msdf: An SSSOM MappingSetDataFrame
@@ -595,22 +544,15 @@ def split_dataframe_by_prefix(
                 relppost = rel.split(":")[1]
                 split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
 
-                dfs = df[
-                    (df["subject_id"].str.startswith(pre_subj + ":"))
-                    & (df["predicate_id"] == rel)
-                    & (df["object_id"].str.startswith(pre_obj + ":"))
-                ]
+                dfs = df[(df['subject_id'].str.startswith(pre_subj + ":"))
+                         & (df['predicate_id'] == rel)
+                         & (df['object_id'].str.startswith(pre_obj + ":"))]
                 if pre_subj in curie_map and pre_obj in curie_map and len(dfs) > 0:
-                    cm = {
-                        pre_subj: curie_map[pre_subj],
-                        pre_obj: curie_map[pre_obj],
-                        relpre: curie_map[relpre],
-                    }
+                    cm = {pre_subj: curie_map[pre_subj], pre_obj: curie_map[pre_obj], relpre: curie_map[relpre]}
                     msdf = from_dataframe(dfs, curie_map=cm, meta=meta)
                     splitted[split_name] = msdf
                 else:
                     print(
                         f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), "
-                        f"or no matches ({len(dfs)} matches found)"
-                    )
+                        f"or no matches ({len(dfs)} matches found)")
     return splitted
