@@ -28,7 +28,7 @@ def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
     else:
         with open(output, "w") as stream:
             for line in lines:
-                stream.write(line + '\n')
+                stream.write(line + "\n")
 
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):
