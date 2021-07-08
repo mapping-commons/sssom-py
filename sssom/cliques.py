@@ -1,11 +1,12 @@
-from sssom.util import MappingSetDataFrame, to_mapping_set_dataframe
-from sssom.parsers import to_mapping_set_document
-import networkx as nx
-import pandas as pd
 import hashlib
 import statistics
 
-from .sssom_datamodel import slots, MappingSet
+import networkx as nx
+import pandas as pd
+
+from sssom.parsers import to_mapping_set_document
+from sssom.util import MappingSetDataFrame
+from .sssom_datamodel import MappingSet
 from .sssom_document import MappingSetDocument
 
 
@@ -16,7 +17,7 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
 
     doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
-    M = {
+    m = {
         "owl:subClassOf",
     }
     for mapping in doc.mapping_set.mappings:
@@ -24,6 +25,9 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
         o = mapping.object_id
         p = mapping.predicate_id
         # TODO: this is copypastad from export_ptable
+
+        pi = None
+
         if p == "owl:equivalentClass":
             pi = 2
         elif p == "skos:exactMatch":
@@ -43,6 +47,7 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
             pi = 3
         elif p == "dbpedia-owl:different":
             pi = 3
+
         if pi == 0:
             g.add_edge(o, s)
         elif pi == 1:
@@ -54,7 +59,6 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
 
 
 def split_into_cliques(msdf: MappingSetDataFrame):
-
     doc = to_mapping_set_document(msdf)
     g = to_networkx(msdf)
     gen = nx.algorithms.components.strongly_connected_components(g)
@@ -88,9 +92,9 @@ def invert_dict(d: dict) -> dict:
     return invdict
 
 
-def get_src(src, id):
+def get_src(src, cid):
     if src is None:
-        return id.split(":")[0]
+        return cid.split(":")[0]
     else:
         return src
 
@@ -100,7 +104,6 @@ def summarize_cliques(doc: MappingSetDataFrame):
     summary stats on a clique doc
     """
     cliquedocs = split_into_cliques(doc)
-    df = pd.DataFrame()
     items = []
     for cdoc in cliquedocs:
         ms = cdoc.mapping_set.mappings
@@ -157,14 +160,14 @@ def summarize_cliques(doc: MappingSetDataFrame):
         item["total_conflated"] = total_conflated
         item["proportion_conflated"] = total_conflated / len(src2ids.items())
         item["conflation_score"] = (min(src_counts) - 1) * len(src2ids.items()) + (
-            statistics.harmonic_mean(src_counts) - 1
+                statistics.harmonic_mean(src_counts) - 1
         )
         item["members_count"] = sum(src_counts)
         item["min_count_by_source"] = min(src_counts)
         item["max_count_by_source"] = max(src_counts)
         item["avg_count_by_source"] = statistics.mean(src_counts)
         item["harmonic_mean_count_by_source"] = statistics.harmonic_mean(src_counts)
-        ## item['geometric_mean_conflated'] = statistics.geometric_mean(conflateds) py3.8
+        # item['geometric_mean_conflated'] = statistics.geometric_mean(conflateds) py3.8
         items.append(item)
     df = pd.DataFrame(items)
     return df

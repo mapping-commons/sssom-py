@@ -1,27 +1,27 @@
+import json
 import logging
 import os
 import re
 from typing import Dict, Set
 from xml.dom import minidom, Node
 from xml.dom.minidom import Document
-import json
 
 import pandas as pd
+import validators
 import yaml
 from rdflib import Graph, URIRef
 
-from .sssom_document import MappingSet, Mapping, MappingSetDocument
+from sssom.util import read_pandas
+from .sssom_document import MappingSetDocument
+from .sssom_datamodel import MappingSet, Mapping
 
-from .util import RDF_FORMATS
 from .util import (
     MappingSetDataFrame,
     get_file_extension,
     to_mapping_set_dataframe,
     is_curie,
 )
-
-from sssom.util import read_pandas
-import validators
+from .util import RDF_FORMATS
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -158,11 +158,11 @@ def from_alignment_minidom(
     :return: MappingSetDocument
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception("No valid curie_map provided")
 
     ms = MappingSet()
     mlist = []
-    bad_attrs = {}
+    # bad_attrs = {}
 
     alignments = dom.getElementsByTagName("Alignment")
     for n in alignments:
@@ -177,7 +177,7 @@ def from_alignment_minidom(
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
                         raise Exception(
-                            f"Alignment format: xml element said, but not set to yes. Only XML is supported!"
+                            "Alignment format: xml element said, but not set to yes. Only XML is supported!"
                         )
                 elif node_name == "onto1":
                     ms["subject_source_id"] = e.firstChild.nodeValue
@@ -211,7 +211,7 @@ def from_dataframe(
     :return: MappingSetDataFrame
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception("No valid curie_map provided")
 
     mlist = []
     ms = MappingSet()
@@ -271,11 +271,11 @@ def from_obographs(
 
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception("No valid curie_map provided")
 
     ms = MappingSet()
     mlist = []
-    bad_attrs = {}
+    # bad_attrs = {}
 
     allowed_properties = [
         "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
@@ -325,7 +325,7 @@ def from_obographs(
                                     except NoCURIEException as e:
                                         logging.warning(e)
     else:
-        raise Exception(f"No graphs element in obographs file, wrong format?")
+        raise Exception("No graphs element in obographs file, wrong format?")
 
     ms.mappings = mlist
     if meta:
@@ -347,7 +347,7 @@ def from_owl_graph(
     :return: MappingSetDataFrame
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception("No valid curie_map provided")
 
     ms = MappingSet()
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
@@ -368,7 +368,7 @@ def from_rdf_graph(
     :return: MappingSetDataFrame
     """
     if not curie_map:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception("No valid curie_map provided")
     if mapping_predicates is None:
         mapping_predicates = get_default_mapping_predicates()
     ms = MappingSet()
@@ -423,7 +423,7 @@ def get_parsing_function(input_format, filename):
         return from_jsonld
     elif input_format == "json":
         raise Exception(
-            f"LinkML JSON not yet implemented, did you mean json-ld or obographs-json."
+            "LinkML JSON not yet implemented, did you mean json-ld or obographs-json."
         )
     else:
         raise Exception(f"Unknown input format: {input_format}")
@@ -527,7 +527,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     :return: MappingSetDocument
     """
     if not msdf.prefixmap:
-        raise Exception(f"No valid curie_map provided")
+        raise Exception("No valid curie_map provided")
 
     mlist = []
     ms = MappingSet()
