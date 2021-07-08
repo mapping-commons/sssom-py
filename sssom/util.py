@@ -37,6 +37,7 @@ HUMAN_CURATED_MATCH_TYPE = 'HumanCurated'
 
 _defining_features = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
+
 @dataclass
 class MappingSetDataFrame:
     """
