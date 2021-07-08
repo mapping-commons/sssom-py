@@ -61,6 +61,17 @@ class MappingSetDataFrame:
         self.prefixmap = msdf.prefixmap
         self.metadata = msdf.metadata
 
+    def __str__(self):
+        description = "SSSOM data table \n"
+        description += f"Number of mappings: {len(self.df.index)} \n"
+        description += f"Number of prefixes: {len(self.prefixmap)} \n"
+        description += f"Metadata: {json.dumps(self.metadata)} \n"
+        description += "\nFirst rows of data: \n"
+        description += self.df.head().to_string()+"\n"
+        description += "\nLast rows of data: \n"
+        description += self.df.tail().to_string()+"\n"
+        return description
+    
     def clean_prefix_map(self):
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes = dict()
