@@ -9,10 +9,6 @@ from typing import Any, Dict, List, Optional, Set
 
 import pandas as pd
 import yaml
-import json
-from scipy.stats.stats import normaltest
-from sssom.sssom_datamodel import Entity, slots
-from sssom.sssom_document import MappingSetDocument
 
 from sssom.sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
