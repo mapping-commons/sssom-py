@@ -78,12 +78,13 @@ class MappingSetDataFrame:
             if prefix in self.prefixmap:
                 new_prefixes[prefix] = self.prefixmap[prefix]
             else:
-                logging.warning(f"{prefix} is used in the data frame but does not exist in prefix map")
+                logging.warning(
+                    f"{prefix} is used in the data frame but does not exist in prefix map"
+                )
                 missing_prefix.append(prefix)
         if missing_prefix:
             self.df = filter_out_prefixes(self.df, missing_prefix)
         self.prefixmap = new_prefixes
-
 
 
 @dataclass
@@ -818,7 +819,8 @@ def get_prefixes_used_in_table(df: pd.DataFrame):
             prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
 
-def filter_out_prefixes(df: pd.DataFrame, filter_prefixes)->pd.DataFrame:
+
+def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
     for index, row in df.iterrows():
         ok = True
