@@ -1,6 +1,6 @@
 name: SSSOM qc
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
