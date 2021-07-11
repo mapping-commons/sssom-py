@@ -2,7 +2,7 @@ import os
 import unittest
 
 from sssom.cliques import split_into_cliques, summarize_cliques
-from sssom.parsers import from_tsv
+from sssom.parsers import read_sssom_tsv
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
@@ -14,7 +14,7 @@ class TestSCC(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.mset = from_tsv(f"{data_dir}/basic.tsv")
+        self.mset = read_sssom_tsv(f"{data_dir}/basic.tsv")
 
     def test_scc(self):
         cliquedocs = split_into_cliques(self.mset)

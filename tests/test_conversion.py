@@ -8,7 +8,7 @@ from rdflib import Graph
 from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import read_pandas, to_mapping_set_dataframe
-from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld_dict
+from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld, to_json
 from sssom.writers import write_json, write_rdf, write_owl, write_tsv
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
 
@@ -51,6 +51,13 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             getattr(test, "ct_graph_queries_owl"),
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
+
+    def _test_to_json(self, mdoc, test: SSSOMTestCase):
+        msdf = to_mapping_set_dataframe(mdoc)
+        json = to_json(msdf)
+        assert len(json)==test.ct_json_elements
+        write_json(msdf, test.get_out_file("json"), fileformat="json")
+
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -120,12 +127,13 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
 
     def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
-        json_dict = to_jsonld_dict(msdf)
+        json_dict = to_jsonld(msdf)
         self.assertEqual(
             len(json_dict),
             test.ct_json_elements,
             f"JSON document has less elements than the orginal one for {test.filename}",
         )
+
 
         with open(test.get_out_file("roundtrip.json"), "w", encoding="utf-8") as f:
             json.dump(json_dict, f, ensure_ascii=False, indent=4)
@@ -138,8 +146,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_json_elements,
             f"The re-serialised JSON file has less elements than the orginal one for {test.filename}",
         )
-        write_json(msdf, test.get_out_file("json"))
-        with open(test.get_out_file("json")) as json_file:
+        write_json(msdf, test.get_out_file("jsonld"))
+        with open(test.get_out_file("jsonld")) as json_file:
             data = json.load(json_file)
         # self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))
         self.assertEqual(

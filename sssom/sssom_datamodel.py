@@ -15,6 +15,7 @@ from linkml.utils.dataclass_extensions_376 import dataclasses_init_fn_with_kwarg
 from linkml.utils.metamodelcore import empty_list
 from linkml.utils.slot import Slot
 from linkml.utils.yamlutils import YAMLRoot, extended_str
+
 from rdflib import URIRef
 
 metamodel_version = "1.7.0"

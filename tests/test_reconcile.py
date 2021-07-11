@@ -4,7 +4,7 @@ import unittest
 from sssom import (
     filter_redundant_rows,
 )
-from sssom.parsers import from_tsv
+from sssom.parsers import read_sssom_tsv
 from sssom.util import merge_msdf, deal_with_negation
 
 # from pandasql import sqldf
@@ -15,7 +15,7 @@ data_dir = os.path.join(cwd, "data")
 
 class TestReconcile(unittest.TestCase):
     def setUp(self) -> None:
-        self.msdf = from_tsv(f"{data_dir}/basic3.tsv")
+        self.msdf = read_sssom_tsv(f"{data_dir}/basic3.tsv")
 
     def test_df(self):
         df = self.msdf.df
@@ -32,8 +32,8 @@ class TestReconcile(unittest.TestCase):
         assert len(df.index) == 7
 
     def test_merge(self):
-        msdf1 = from_tsv(f"{data_dir}/basic.tsv")
-        msdf2 = from_tsv(f"{data_dir}/basic2.tsv")
+        msdf1 = read_sssom_tsv(f"{data_dir}/basic.tsv")
+        msdf2 = read_sssom_tsv(f"{data_dir}/basic2.tsv")
 
         merged_msdf = merge_msdf(msdf1=msdf1, msdf2=msdf2)
 

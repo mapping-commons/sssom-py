@@ -813,6 +813,9 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
 
+class NoCURIEException(Exception):
+    pass
+
 
 def is_curie(string: str):
     return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
@@ -823,6 +826,18 @@ def get_prefix_from_curie(curie: str):
         return curie.split(":")[0]
     else:
         return ""
+
+
+def curie_from_uri(uri: str, curie_map):
+    if is_curie(uri):
+        return uri
+    for prefix in curie_map:
+        uri_prefix = curie_map[prefix]
+        if uri.startswith(uri_prefix):
+            remainder = uri.replace(uri_prefix, "")
+            return f"{prefix}:{remainder}"
+    raise NoCURIEException(f"{uri} does not follow any known prefixes")
+
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame):
@@ -849,3 +864,17 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
         return pd.DataFrame(rows)
     else:
         return pd.DataFrame(columns=_defining_features)
+
+
+def guess_file_format(filename):
+    extension = get_file_extension(filename)
+    if extension in ["owl", "rdf"]:
+        return "xml"
+    elif extension in RDF_FORMATS:
+        return extension
+    else:
+        raise Exception(
+            f"File extension {extension} does not correspond to a legal file format"
+        )
+
+
