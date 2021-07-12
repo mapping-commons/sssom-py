@@ -27,7 +27,7 @@ x:bone_element	bone element	owl:equivalentClass		z:bone_tissue		Lexical	x	z	rdf_
 x:bone_element	bone element	owl:equivalentClass		z:bone_tissue		Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_tissue	bone tissue	owl:equivalentClass		y:bone	bones	Lexical|Stemming	x	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_element		Lexical	x	z	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_element		Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_element		Lexical|Stemming	x	z	rdf_matcher		oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002481	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical	x	z	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
