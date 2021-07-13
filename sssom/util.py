@@ -826,7 +826,10 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
     
     for index, row in df.iterrows():
+        # Get list of CURIEs from the 3 columns (_defining_features) for the row.
         list_of_curies = [get_prefix_from_curie(row_values) for row_values in row[_defining_features]]
+        # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
+        # If TRUE, append row.
         if not any(curie in list_of_curies for curie in filter_prefixes):
             rows.append(row)
     if rows:
