@@ -1,50 +1,16 @@
-id: http://w3id.org/sssom/schema/
-name: sssom
+id: http://w3id.org/sssom
 description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
 imports:
 - linkml:types
 prefixes:
   linkml: https://w3id.org/linkml/
   sssom: http://w3id.org/sssom/
-  oboInOwl: http://www.geneontology.org/formats/oboInOwl#
 see_also:
 - https://github.com/OBOFoundry/SSSOM
 default_curi_maps:
 - semweb_context
-- obo_context
 default_prefix: sssom
-
-enums:
-  mapping_cardinality_enum:
-    permissible_values:
-      "1:1":
-      "1:n":
-      "n:1":
-      "1:0":
-      "0:1":
-      "n:n":
-
 slots:
-  entity_field:
-    abstract: true
-    description: grouping for normalized fields for entities
-  subject_field:
-    abstract: true
-    mixin: true
-    description: denormalized field representing aspect of a subject
-  object_field:
-    abstract: true
-    mixin: true
-    description: denormalized field representing aspect of a object
-  label:
-    is_a: entity_field
-    description: label of an entity
-  source:
-    is_a: entity_field
-    description: the database or ontology prefix of the entity
-  category:
-    is_a: entity_field
-    description: category of the entity. Could be biolink, COB, etc
   mappings:
     description: Contains a list of mapping objects
     range: mapping
@@ -53,21 +19,15 @@ slots:
     description: CURIE or IRI identifier
     identifier: true
   subject_id:
-    mixins:
-      - subject_field
     description: The ID of the subject of the mapping.
     mappings:
     - owl:annotatedSource
     range: entity
     slot_uri: owl:annotatedSource
   subject_label:
-    mixins:
-      - subject_field
     description: The label of subject of the mapping
     range: string
   subject_category:
-    mixins:
-      - subject_field
     description: The conceptual category to which the subject belongs to. This can
       be a string denoting the category or a term from a controlled vocabulary.
     range: string
@@ -82,21 +42,15 @@ slots:
     description: The label of the predicate/relation of the mapping
     range: string
   object_id:
-    mixins:
-      - object_field
     description: The ID of the object of the mapping.
     mappings:
     - owl:annotatedTarget
     range: entity
     slot_uri: owl:annotatedTarget
   object_label:
-    mixins:
-      - object_field
     description: The label of object of the mapping
     range: string
   object_category:
-    mixins:
-      - object_field
     description: The conceptual category to which the subject belongs to. This can
       be a string denoting the category or a term from a controlled vocabulary.
     range: string
@@ -113,9 +67,6 @@ slots:
     description: A version string for the mapping.
     mappings:
     - owl:versionInfo
-    range: string
-  mapping_set_description:
-    description: A description of the mapping set.
     range: string
   creator_id:
     description: Identifies the persons or groups responsible for the creation of
@@ -151,12 +102,6 @@ slots:
     description: URL pointing to the source that provided the mapping, for example
       an ontology that already contains the mappings.
     range: string
-  mapping_cardinality:
-    description: A string indicating whether this mapping is from a 1:1 (the subject_id
-      maps to a single object_id), 1:n (the subject maps to more than one object_id), 
-      n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable 
-      from the mapping set.
-    range: mapping_cardinality_enum
   mapping_tool:
     description: A reference to the tool or algorithm that was used to generate the
       mapping. Should be a URL pointing to more info about it, but can be free text.
@@ -247,7 +192,6 @@ classes:
     - mappings
     - mapping_set_id
     - mapping_set_version
-    - mapping_set_description
     - creator_id
     - creator_label
     - license
@@ -286,7 +230,6 @@ classes:
     - object_source
     - object_source_version
     - mapping_provider
-    - mapping_cardinality
     - mapping_tool
     - mapping_date
     - confidence
@@ -309,6 +252,3 @@ classes:
     - rdf:Resource
     slots:
     - id
-    - label
-    - category
-    - source
