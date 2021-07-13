@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 rdflib = ">=0.0"
 pandas = ">=0.0"
-linkml = "==0.0.7"
+linkml = ">=1.0.0"
 jsonasobj = "~=1.2.1"
 sphinx-rtd-theme = "==0.4.3"
 sphinx-click = "==2.3.1"

@@ -1,7 +1,7 @@
+linkml>=1.0.0
 rdflib>=0.0
 pandas>=0.0
 pyyaml>=0.0
-linkml==0.0.7
 jsonasobj~=1.2.1
 Sphinx>=2.3.1
 sphinx-rtd-theme==0.4.3
