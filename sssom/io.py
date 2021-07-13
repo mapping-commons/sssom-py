@@ -57,6 +57,7 @@ def parse_file(
     input_format: str = None,
     metadata_path: str = None,
     curie_map_mode: str = None,
+    clean_prefixes: bool = True,
 ):
     """
 
@@ -68,7 +69,7 @@ def parse_file(
          to be used during parse.
         curie_map_mode (str): Defines wether the curie map in the metadata should be extended or replaced with
          the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged
-
+        clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
     Returns:
 
     """
@@ -78,7 +79,7 @@ def parse_file(
         )
         parse_func = get_parsing_function(input_format, input_path)
         doc = parse_func(input_path, curie_map=curie_map, meta=meta)
-        if not metadata_path:
+        if clean_prefixes:
             # We do this because we got a lot of prefixes from the default SSSOM prefixes!
             doc.clean_prefix_map()
         write_tsv(doc, output_path)
