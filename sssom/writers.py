@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import yaml
 from jsonasobj import as_json_obj
-from linkml.utils.yamlutils import as_json_object as yaml_to_json
+from linkml_runtime.utils.yamlutils import as_json_object as yaml_to_json
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
