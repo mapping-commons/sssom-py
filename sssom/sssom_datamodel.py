@@ -299,9 +299,7 @@ class Mapping(YAMLRoot):
         if self.mapping_date is not None and not isinstance(self.mapping_date, str):
             self.mapping_date = str(self.mapping_date)
 
-        if self.confidence == '' or self.confidence is None:
-           self.confidence = 1
-        elif self.confidence is not None and not isinstance(self.confidence, float):
+        if self.confidence is not None and not isinstance(self.confidence, float):
             self.confidence = float(self.confidence)
 
         if self.subject_match_field is not None and not isinstance(
