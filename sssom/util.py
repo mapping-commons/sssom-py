@@ -542,9 +542,14 @@ def merge_msdf(
             msdf1.df = merged_msdf.df"""
 
     if reconcile:
-        merged_msdf.df = filter_redundant_rows(merged_msdf.df)
+        # Get rows having numpy.NaN as confidence
+        nan1_df = msdf1.df[msdf1.df['confidence'].isna()]
+        nan2_df = msdf2.df[msdf2.df['confidence'].isna()]
+        nan_df = nan1_df.merge(nan2_df,how='outer')
 
+        merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
+        merged_msdf.df = merged_msdf.df.append(nan_df, ignore_index=True) # append NaN confidence rows 
 
     return merged_msdf
 
