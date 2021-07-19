@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional, Set
 
 import pandas as pd
 import yaml
+import numpy as np
 
 from sssom.sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
@@ -287,6 +288,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
     # df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: x + random.random() / 10000)
+    df, nan_df = assign_default_confidence(df)
     if ignore_predicate:
         key = [SUBJECT_ID, OBJECT_ID]
     else:
@@ -302,21 +304,35 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
                 CONFIDENCE
             ]
     if ignore_predicate:
-        return df[
+        df[
             df.apply(
                 lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
                 axis=1,
             )
         ]
     else:
-        return df[
+        df[
             df.apply(
                 lambda x: x[CONFIDENCE]
                 >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                 axis=1,
             )
         ]
+    # We are preserving confidence = NaN rows without making assumptions. 
+    # This means that there are potential duplicate mappings
+    return_df = df.append(nan_df).drop_duplicates()
+    return return_df
 
+def assign_default_confidence(df:pd.DataFrame):
+    # Get rows having numpy.NaN as confidence
+    if df is not None and 'confidence' not in df.columns:
+        df['confidence'] = np.NaN
+
+    nan_df = df[df['confidence'].isna()]
+    if nan_df is None:
+        nan_df = pd.DataFrame(columns=df.columns)
+    return df, nan_df
+        
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -542,14 +558,9 @@ def merge_msdf(
             msdf1.df = merged_msdf.df"""
 
     if reconcile:
-        # Get rows having numpy.NaN as confidence
-        nan1_df = msdf1.df[msdf1.df['confidence'].isna()]
-        nan2_df = msdf2.df[msdf2.df['confidence'].isna()]
-        nan_df = nan1_df.merge(nan2_df,how='outer')
-
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
-        merged_msdf.df = merged_msdf.df.append(nan_df, ignore_index=True) # append NaN confidence rows 
+        
 
     return merged_msdf
 
@@ -581,7 +592,12 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         """
+    # Handle DataFrames with no 'confidence' column
+    df, nan_df = assign_default_confidence(df)
 
+    if df is None:
+        raise(Exception('Illegal dataframe (deal_with_negation'))
+    
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
     negation_df = df.loc[
@@ -669,8 +685,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
         )
-
-    return reconciled_df
+    return_df = reconciled_df.append(nan_df).drop_duplicates()
+    return return_df
 
 
 def dict_merge(source: Dict, target: Dict, dict_name: str) -> Dict:
