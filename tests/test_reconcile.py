@@ -25,7 +25,7 @@ class TestReconcile(unittest.TestCase):
     def test_filter(self):
         df = filter_redundant_rows(self.msdf.df)
         print(df[0:20])
-        assert len(df.index) == 10
+        assert len(df.index) == 11
 
     def test_deal_with_negation(self):
         df = deal_with_negation(self.msdf.df)
