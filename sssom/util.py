@@ -561,7 +561,6 @@ def merge_msdf(
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
         
-
     return merged_msdf
 
 
