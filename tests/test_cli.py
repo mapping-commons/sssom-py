@@ -67,7 +67,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_convert(self, runner, test_case: SSSOMTestCase):
         params = [
-            "--input",
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
@@ -79,13 +78,12 @@ class SSSOMCLITestSuite(unittest.TestCase):
         return result
 
     def run_validate(self, runner, test_case: SSSOMTestCase):
-        result = runner.invoke(validate, ["--input", test_case.filepath])
+        result = runner.invoke(validate, [test_case.filepath])
         self.run_successful(result)
         return result
 
     def run_parse(self, runner, test_case: SSSOMTestCase):
         params = [
-            "--input",
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
@@ -104,7 +102,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_split(self, runner, test_case: SSSOMTestCase):
         result = runner.invoke(
-            split, ["--input", test_case.filepath, "--output-directory", test_out_dir]
+            split, [test_case.filepath, "--output-directory", test_out_dir]
         )
         self.run_successful(result)
         return result
@@ -112,14 +110,13 @@ class SSSOMCLITestSuite(unittest.TestCase):
     # Added by H2
 
     def run_ptable(self, runner, test_case: SSSOMTestCase):
-        params = ["--input", test_case.filepath]
+        params = [test_case.filepath]
         result = runner.invoke(ptable, params)
         self.run_successful(result)
         return result
 
     def run_dedupe(self, runner, test_case: SSSOMTestCase):
         params = [
-            "--input",
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
@@ -162,7 +159,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_cliquesummary(self, runner, test_case: SSSOMTestCase):
         params = [
-            "--input",
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
@@ -173,7 +169,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_crosstab(self, runner, test_case: SSSOMTestCase):
         params = [
-            "--input",
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
@@ -184,7 +179,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_correlations(self, runner, test_case: SSSOMTestCase):
         params = [
-            "--input",
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
