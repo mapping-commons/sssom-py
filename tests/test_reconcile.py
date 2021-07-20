@@ -37,4 +37,4 @@ class TestReconcile(unittest.TestCase):
 
         merged_msdf = merge_msdf(msdf1=msdf1, msdf2=msdf2)
 
-        assert len(merged_msdf.df) == 95
+        assert len(merged_msdf.df) == 94
