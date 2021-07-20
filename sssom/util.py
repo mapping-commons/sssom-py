@@ -8,6 +8,8 @@ from io import StringIO
 from typing import Any, Dict, List, Optional, Set
 
 import pandas as pd
+import validators
+from urllib.request import urlopen
 import yaml
 import numpy as np
 
@@ -745,8 +747,12 @@ def get_file_extension(filename: str) -> str:
 
 
 def read_csv(filename, comment="#", sep=","):
-    with open(filename, "r") as f:
-        lines = "".join([line for line in f if not line.startswith(comment)])
+    if validators.url(filename):
+        response = urlopen(filename)
+        lines = "".join([line.decode("utf-8") for line in response if not line.decode("utf-8").startswith(comment)])
+    else:
+        with open(filename, "r") as f:
+            lines = "".join([line for line in f if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
