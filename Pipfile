@@ -15,6 +15,7 @@ networkx = ">=0.0"
 pandasql = ">=0.0"
 PyYAML = ">=0.0"
 Sphinx = ">=2.3.1"
+validators = ">=0.0"
 
 [dev-packages]
 
