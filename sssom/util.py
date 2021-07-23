@@ -828,7 +828,7 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     
     for index, row in df.iterrows():
         # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
-        prefixes = {get_prefix_from_curie(curies) for curies in row[KEY_FEATURES]}
+        prefixes = {get_prefix_from_curie(curie) for curies in row[KEY_FEATURES]}
         # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
         if not any(prefix in prefixes for prefix in filter_prefixes):
