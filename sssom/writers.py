@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sys
 
 import pandas as pd
 import yaml
@@ -49,15 +50,20 @@ def write_tsv(
     msdoc = to_mapping_set_document(msdf)
     df = to_dataframe(msdf)
     meta = extract_global_metadata(msdoc)
-    if os.path.isfile(filename):
-        os.remove(filename)
-    f = open(filename, "a")
-    if meta:
-        mapping_data_string = yaml.dump(meta)
-        for line in mapping_data_string.splitlines():
-            f.write("#" + line + "\n")
-    df.to_csv(f, sep=sep, index=False)
-    f.close()
+    if(filename):
+        if os.path.isfile(filename):
+            os.remove(filename)
+        f = open(filename, "a")
+        if meta:
+            mapping_data_string = yaml.dump(meta)
+            for line in mapping_data_string.splitlines():
+                f.write("#" + line + "\n")
+        df.to_csv(f, sep=sep, index=False)
+        f.close()
+    else:
+        # stdout the result for now
+        sys.stdout.write(str(meta))
+        sys.stdout.write(str(df))
 
 
 def write_rdf(
