@@ -8,7 +8,7 @@ prefixes:
   sssom: http://w3id.org/sssom/
   sssom.cs: http://w3id.org/sssom/cliquesummary
 see_also:
-- https://github.com/OBOFoundry/SSSOM
+- http://w3id.org/sssom/SSSOM.md
 default_curi_maps:
 - semweb_context
 - obo_context
