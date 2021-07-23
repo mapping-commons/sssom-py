@@ -40,7 +40,7 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 
-# The 3 columns whose combination would be used as primary keys while merging/grouping
+#: The 3 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
