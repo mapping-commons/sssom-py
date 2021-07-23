@@ -40,7 +40,8 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 
-_defining_features = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
+# The 3 columns whose combination would be used as primary keys while merging/grouping
+KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 @dataclass
@@ -596,7 +597,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
     max_confidence_df = combined_normalized_subset.groupby(
-        _defining_features, as_index=False
+        KEY_FEATURES, as_index=False
     )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
@@ -816,7 +817,7 @@ def get_prefix_from_curie(curie: str):
 
 def get_prefixes_used_in_table(df: pd.DataFrame):
     prefixes = []
-    for col in _defining_features:
+    for col in KEY_FEATURES:
         for v in df[col].values:
             prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
@@ -826,13 +827,13 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
     
     for index, row in df.iterrows():
-        # Get list of CURIEs from the 3 columns (_defining_features) for the row.
-        list_of_curies = [get_prefix_from_curie(row_values) for row_values in row[_defining_features]]
+        # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
+        prefixes = {get_prefix_from_curie(curies) for curies in row[KEY_FEATURES]}
         # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
-        if not any(curie in list_of_curies for curie in filter_prefixes):
+        if not any(prefix in prefixes for prefix in filter_prefixes):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
     else:
-        return pd.DataFrame(columns=_defining_features)
+        return pd.DataFrame(columns=KEY_FEATURES)
