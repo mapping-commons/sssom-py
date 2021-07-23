@@ -22,6 +22,7 @@ from .util import (
     is_curie,
 )
 from .util import RDF_FORMATS
+import numpy as np
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -37,6 +38,10 @@ def from_tsv(
     """
     if validators.url(file_path) or os.path.exists(file_path):
         df = read_pandas(file_path)
+
+        if 'confidence' in df.columns:
+            df['confidence'].replace(r'^\s*$', np.NaN, regex=True, inplace=True)
+            
         if meta is None:
             meta = _read_metadata_from_table(file_path)
         if "curie_map" in meta:
