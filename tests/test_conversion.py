@@ -55,9 +55,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
     def _test_to_json(self, mdoc, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
         json = to_json(msdf)
-        assert len(json)==test.ct_json_elements
+        assert len(json) == test.ct_json_elements
         write_json(msdf, test.get_out_file("json"), fileformat="json")
-
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -133,7 +132,6 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_json_elements,
             f"JSON document has less elements than the orginal one for {test.filename}",
         )
-
 
         with open(test.get_out_file("roundtrip.json"), "w", encoding="utf-8") as f:
             json.dump(json_dict, f, ensure_ascii=False, indent=4)

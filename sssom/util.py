@@ -1,17 +1,18 @@
 import contextlib
 import hashlib
+import json
 import logging
 import re
 import sys
 from dataclasses import dataclass
-from io import StringIO
+from io import StringIO, FileIO
 from typing import Any, Dict, List, Optional, Set
+from urllib.request import urlopen
 
+import numpy as np
 import pandas as pd
 import validators
-from urllib.request import urlopen
 import yaml
-import numpy as np
 
 from sssom.sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
@@ -62,6 +63,8 @@ class MappingSetDataFrame:
 
         Args:
             msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame (self => primary)
+            inplace (bool): if true, msdf2 is merged into the calling MappingSetDataFrame, if false, it simply return
+                            the merged data frame.
 
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame
@@ -79,11 +82,11 @@ class MappingSetDataFrame:
         description += f"Number of prefixes: {len(self.prefixmap)} \n"
         description += f"Metadata: {json.dumps(self.metadata)} \n"
         description += "\nFirst rows of data: \n"
-        description += self.df.head().to_string()+"\n"
+        description += self.df.head().to_string() + "\n"
         description += "\nLast rows of data: \n"
-        description += self.df.tail().to_string()+"\n"
+        description += self.df.tail().to_string() + "\n"
         return description
-    
+
     def clean_prefix_map(self):
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes = dict()
@@ -160,7 +163,7 @@ class MetaTSVConverter:
 
     def convert(self) -> Dict[str, Any]:
         # note that 'mapping' is both a metaproperty and a property of this model...
-        slots = {
+        cslots = {
             "mappings": {
                 "description": "Contains a list of mapping objects",
                 "range": "mapping",
@@ -195,18 +198,18 @@ class MetaTSVConverter:
             "see_also": ["https://github.com/OBOFoundry/SSSOM"],
             "default_curi_maps": ["semweb_context"],
             "default_prefix": "sssom",
-            "slots": slots,
+            "slots": cslots,
             "classes": classes,
         }
         for _, row in self.df.iterrows():
-            id = row["Element ID"]
-            if id == "ID":
+            eid = row["Element ID"]
+            if eid == "ID":
                 continue
-            id = id.replace("sssom:", "")
+            eid = eid.replace("sssom:", "")
             dt = row["Datatype"]
             if dt == "xsd:double":
                 dt = "double"
-            elif id.endswith("_id") or id.endswith("match_field"):
+            elif eid.endswith("_id") or eid.endswith("match_field"):
                 dt = "entity"
             else:
                 dt = "string"
@@ -219,21 +222,21 @@ class MetaTSVConverter:
                 slot["required"] = True
 
             slot["range"] = dt
-            slots[id] = slot
+            cslots[eid] = slot
             slot_uri = None
-            if id == "subject_id":
+            if eid == "subject_id":
                 slot_uri = "owl:annotatedSource"
-            elif id == "object_id":
+            elif eid == "object_id":
                 slot_uri = "owl:annotatedTarget"
-            elif id == "predicate_id":
+            elif eid == "predicate_id":
                 slot_uri = "owl:annotatedProperty"
             if slot_uri is not None:
                 slot["slot_uri"] = slot_uri
             scope = row["Scope"]
             if "G" in scope:
-                classes["mapping set"]["slots"].append(id)
+                classes["mapping set"]["slots"].append(eid)
             if "L" in scope:
-                classes["mapping"]["slots"].append(id)
+                classes["mapping"]["slots"].append(eid)
         return obj
 
     def convert_and_save(self, fn: str) -> None:
@@ -321,21 +324,22 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
                 axis=1,
             )
         ]
-    # We are preserving confidence = NaN rows without making assumptions. 
+    # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
     return_df = df.append(nan_df).drop_duplicates()
     return return_df
 
-def assign_default_confidence(df:pd.DataFrame):
-    # Get rows having numpy.NaN as confidence
-    if df is not None and 'confidence' not in df.columns:
-        df['confidence'] = np.NaN
 
-    nan_df = df[df['confidence'].isna()]
+def assign_default_confidence(df: pd.DataFrame):
+    # Get rows having numpy.NaN as confidence
+    if df is not None and "confidence" not in df.columns:
+        df["confidence"] = np.NaN
+
+    nan_df = df[df["confidence"].isna()]
     if nan_df is None:
         nan_df = pd.DataFrame(columns=df.columns)
     return df, nan_df
-        
+
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -346,8 +350,9 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(row, id: str, mappings: Dict) -> Entity:
-    e = Entity(id=id)
+def create_entity(row, eid: str, mappings: Dict) -> Entity:
+    logging.warning(f"create_entity() has row parameter ({row}), but not used.")
+    e = Entity(id=eid)
     for k, v in mappings.items():
         if k in e:
             e[k] = v
@@ -444,11 +449,18 @@ def dataframe_to_ptable(
     df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5
 ):
     """
-    exports kboom ptable
-    :param df: SSSOM dataframe
-    :param inverse_factor: relative weighting of probability of inverse of predicate
-    :return:
+    Exporting KBOOM table
+    Args:
+        df:
+        priors:
+        inverse_factor:
+
+    Returns:
+        List of rows
     """
+    logging.warning(
+        f"Priors given ({priors}), but not being used by dataframe_to_ptable() method."
+    )
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
@@ -514,6 +526,7 @@ def sha256sum(filename):
     b = bytearray(128 * 1024)
     mv = memoryview(b)
     with open(filename, "rb", buffering=0) as f:
+        f: FileIO
         for n in iter(lambda: f.readinto(mv), 0):
             h.update(mv[:n])
     return h.hexdigest()
@@ -563,7 +576,7 @@ def merge_msdf(
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
-        
+
     return merged_msdf
 
 
@@ -598,8 +611,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     df, nan_df = assign_default_confidence(df)
 
     if df is None:
-        raise(Exception('Illegal dataframe (deal_with_negation'))
-    
+        raise (Exception("Illegal dataframe (deal_with_negation"))
+
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
     negation_df = df.loc[
@@ -750,7 +763,13 @@ def get_file_extension(filename: str) -> str:
 def read_csv(filename, comment="#", sep=","):
     if validators.url(filename):
         response = urlopen(filename)
-        lines = "".join([line.decode("utf-8") for line in response if not line.decode("utf-8").startswith(comment)])
+        lines = "".join(
+            [
+                line.decode("utf-8")
+                for line in response
+                if not line.decode("utf-8").startswith(comment)
+            ]
+        )
     else:
         with open(filename, "r") as f:
             lines = "".join([line for line in f if not line.startswith(comment)])
@@ -840,6 +859,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
 
+
 class NoCURIEException(Exception):
     pass
 
@@ -866,7 +886,6 @@ def curie_from_uri(uri: str, curie_map):
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
-
 def get_prefixes_used_in_table(df: pd.DataFrame):
     prefixes = []
     for col in KEY_FEATURES:
@@ -877,7 +896,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame):
 
 def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
-    
+
     for index, row in df.iterrows():
         # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
         prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
@@ -901,5 +920,3 @@ def guess_file_format(filename):
         raise Exception(
             f"File extension {extension} does not correspond to a legal file format"
         )
-
-

@@ -3,16 +3,17 @@ import logging
 import os
 import re
 from typing import Dict, Set
+from urllib.request import urlopen
 from xml.dom import minidom, Node
 from xml.dom.minidom import Document
 
+import numpy as np
 import pandas as pd
 import validators
 import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdf_loader import RDFLoader
 from rdflib import Graph, URIRef
-from urllib.request import urlopen
 
 from sssom.util import read_pandas, guess_file_format, NoCURIEException, curie_from_uri
 from .sssom_datamodel import MappingSet, Mapping
@@ -22,8 +23,6 @@ from .util import (
     get_file_extension,
     to_mapping_set_dataframe,
 )
-from .util import RDF_FORMATS
-import numpy as np
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -40,9 +39,9 @@ def read_sssom_tsv(
     if validators.url(file_path) or os.path.exists(file_path):
         df = read_pandas(file_path)
 
-        if 'confidence' in df.columns:
-            df['confidence'].replace(r'^\s*$', np.NaN, regex=True, inplace=True)
-            
+        if "confidence" in df.columns:
+            df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
+
         if not meta:
             meta = _read_metadata_from_table(file_path)
         if "curie_map" in meta:
@@ -59,12 +58,13 @@ def read_sssom_tsv(
 
 
 def read_sssom_rdf(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str, curie_map: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     if validators.url(file_path) or os.path.exists(file_path):
+        # noinspection PyTypeChecker
         ms = RDFLoader().load(source=file_path, target_class=MappingSet)
         ms: MappingSet
         mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
@@ -106,18 +106,20 @@ def read_sssom_jsonld(
 
 
 def read_sssom_json(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str, curie_map: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     if validators.url(file_path) or os.path.exists(file_path):
+        # noinspection PyTypeChecker
         ms = JSONLoader().load(source=file_path, target_class=MappingSet)
         ms: MappingSet
         mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
         return to_mapping_set_dataframe(mdoc)
     else:
         raise Exception(f"{file_path} is not a valid file path or url.")
+
 
 # Import methods from external file formats
 
@@ -154,6 +156,7 @@ def read_alignment_xml(
         return msdf
     else:
         raise Exception(f"{file_path} is not a valid file path or url.")
+
 
 # Readers (from object)
 
@@ -303,7 +306,9 @@ def from_obographs(
                                 mdict = {}
                                 try:
                                     mdict["subject_id"] = curie_from_uri(nid, curie_map)
-                                    mdict["object_id"] = curie_from_uri(xref_id, curie_map)
+                                    mdict["object_id"] = curie_from_uri(
+                                        xref_id, curie_map
+                                    )
                                     mdict["subject_label"] = label
                                     mdict["predicate_id"] = "oboInOwl:hasDbXref"
                                     mdict["match_type"] = "Unspecified"
@@ -317,10 +322,16 @@ def from_obographs(
                                     xref_id = basicPropertyBalue["val"]
                                     mdict = {}
                                     try:
-                                        mdict["subject_id"] = curie_from_uri(nid, curie_map)
-                                        mdict["object_id"] = curie_from_uri(xref_id, curie_map)
+                                        mdict["subject_id"] = curie_from_uri(
+                                            nid, curie_map
+                                        )
+                                        mdict["object_id"] = curie_from_uri(
+                                            xref_id, curie_map
+                                        )
                                         mdict["subject_label"] = label
-                                        mdict["predicate_id"] = curie_from_uri(pred, curie_map)
+                                        mdict["predicate_id"] = curie_from_uri(
+                                            pred, curie_map
+                                        )
                                         mdict["match_type"] = "Unspecified"
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
@@ -347,9 +358,7 @@ def from_owl_graph(
     :param meta: an optional set of metadata elements
     :return: MappingSetDataFrame
     """
-    raise Exception(
-        "Importing from SSSOM OWL is not yet implemented"
-    )
+    raise Exception("Importing from SSSOM OWL is not yet implemented")
 
 
 def from_rdf_graph(
@@ -396,6 +405,7 @@ def from_rdf_graph(
 
 # Utilities (reading)
 # All from_* should return MappingSetDataFrame
+
 
 def get_parsing_function(input_format, filename):
     if input_format is None:
@@ -459,8 +469,14 @@ def _swap_object_subject(mapping):
 def _read_metadata_from_table(filename: str):
     if validators.url(filename):
         response = urlopen(filename)
-        yamlstr = "".join([line.decode("utf-8") for line in response if line.decode("utf-8").startswith('#')]).replace('#', '')
-        
+        yamlstr = "".join(
+            [
+                line.decode("utf-8")
+                for line in response
+                if line.decode("utf-8").startswith("#")
+            ]
+        ).replace("#", "")
+
     else:
         with open(filename, "r") as s:
             yamlstr = ""
@@ -511,6 +527,7 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
     m = Mapping(**mdict)
     if _is_valid_mapping(m):
         return m
+
 
 # The following methods dont really belong in the parser package..
 

@@ -1,11 +1,9 @@
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 import click
-from click.decorators import help_option
 import pandas as pd
 import yaml
 from pandasql import sqldf
@@ -32,7 +30,7 @@ from .util import (
 )
 
 # Click input options common across commands
-input_argument = click.argument('input',required=True, type=click.Path())
+input_argument = click.argument("input", required=True, type=click.Path())
 
 input_format_option = click.option(
     "-I",
@@ -232,6 +230,9 @@ def ptable(input=None, output=None, inverse_factor=None):
         None
 
     """
+    logging.warning(
+        f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
+    )
     msdf = read_sssom_tsv(input)
     # df = parse(input)
     df = collapse(msdf.df)
@@ -562,7 +563,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
         for j, v in row.iteritems():
             logging.info(f"{i} x {j} = {v}")
             tups.append((v, i, j))
-    tups = sorted(tups, key=lambda t: t[0])
+    tups = sorted(tups, key=lambda tx: tx[0])
     for t in tups:
         print(f"{t[0]}\t{t[1]}\t{t[2]}")
 

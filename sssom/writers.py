@@ -6,8 +6,14 @@ import sys
 import pandas as pd
 import yaml
 from jsonasobj import as_json_obj
-from linkml_runtime.utils.yamlutils import as_json_object as yaml_to_json
+from linkml_runtime.dumpers import JSONDumper, RDFDumper
+from linkml_runtime.utils.yamlutils import (
+    as_json_object as yaml_to_json,
+    as_json_object,
+)
 from rdflib import Graph, URIRef
+
+# noinspection PyProtectedMember
 from rdflib.namespace import OWL, RDF
 
 from .parsers import to_mapping_set_document
@@ -31,7 +37,7 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 
 
 def write_tsv(
-        msdf: MappingSetDataFrame, filename: str, fileformat="tsv"
+    msdf: MappingSetDataFrame, filename: str, fileformat="tsv"
 ) -> None:  # , context_path=None) -> None:
     """
     dataframe 2 tsv
@@ -68,9 +74,7 @@ def write_tsv(
         df.to_csv(sys.stdout, sep=sep, index=False)
 
 
-def write_rdf(
-        msdf: MappingSetDataFrame, filename: str, fileformat="xml"
-) -> None:
+def write_rdf(msdf: MappingSetDataFrame, filename: str, fileformat="xml") -> None:
     """
     dataframe 2 tsv
     """
@@ -78,8 +82,7 @@ def write_rdf(
     graph.serialize(destination=filename, format=fileformat)
 
 
-def write_owl(
-        msdf: MappingSetDataFrame, filename: str, fileformat="xml") -> None:
+def write_owl(msdf: MappingSetDataFrame, filename: str, fileformat="xml") -> None:
     """
     dataframe 2 tsv
     """
@@ -87,8 +90,7 @@ def write_owl(
     graph.serialize(destination=filename, format=fileformat)
 
 
-def write_json(
-        msdf: MappingSetDataFrame, filename: str, fileformat="jsonld") -> None:
+def write_json(msdf: MappingSetDataFrame, filename: str, fileformat="jsonld") -> None:
     """
     dataframe 2 tsv
     """
@@ -175,19 +177,13 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
         logging.info(f"Axiom: {axiom}")
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
             for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(
-                        subject=axiom, predicate=OWL.annotatedTarget
-                ):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
                     if p.toPython() == OWL_EQUIV_CLASS:
                         graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_CLASS)))
                         graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_CLASS)))
                     elif p.toPython() == OWL_EQUIV_OBJECTPROPERTY:
-                        graph.add(
-                            (o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY))
-                        )
-                        graph.add(
-                            (s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY))
-                        )
+                        graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
+                        graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
                     graph.add((s, p, o))
                     if p.toPython().startswith(SSSOM_NS):
                         # prefix commons has that working
