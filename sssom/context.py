@@ -5,6 +5,7 @@ try:
     import importlib.resources as pkg_resources
 except ImportError:
     # Try backported to PY<37 `importlib_resources`.
+    # noinspection PyUnresolvedReferences
     import importlib_resources as pkg_resources
 
 # cwd = os.path.abspath(os.path.dirname(__file__))

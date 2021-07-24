@@ -15,3 +15,5 @@ validators>=0.0
 click>=0.0
 scipy>=0.0
 numpy>=0.0
+jsonasobj2>=1.0.4
+setuptools>=57.4.0

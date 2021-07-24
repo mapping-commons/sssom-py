@@ -5,7 +5,7 @@ import sys
 
 import pandas as pd
 import yaml
-from jsonasobj import as_json_obj
+from jsonasobj2 import JsonObj, as_json_obj
 from linkml_runtime.dumpers import JSONDumper, RDFDumper
 from linkml_runtime.utils.yamlutils import (
     as_json_object as yaml_to_json,
@@ -94,7 +94,6 @@ def write_json(msdf: MappingSetDataFrame, filename: str, fileformat="jsonld") ->
     """
     dataframe 2 tsv
     """
-    _prepare_context_from_curie_map()
     if fileformat == "jsonld":
         data = json.dumps(to_jsonld(msdf), indent=4)
         with open(filename, "w") as outfile:
@@ -230,7 +229,7 @@ def to_jsonld(msdf: MappingSetDataFrame) -> dict:
     return json_obj
 
 
-def to_json(msdf: MappingSetDataFrame) -> dict:
+def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """
 
     Args:
