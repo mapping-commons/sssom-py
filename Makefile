@@ -39,9 +39,9 @@ deploy-dm:
 	cp schema/sssom.context.jsonld sssom/
 	cp schema/sssom.external.context.jsonld sssom/
 
-# run after tests
-deploy-schema:
-	cp tests/data/sssom.yaml schema/
+# # run after tests
+# deploy-schema:
+# 	cp tests/data/sssom.yaml schema/
 
 copy-spec:
 	cp ../SSSOM/sssom_metadata.tsv tests/data

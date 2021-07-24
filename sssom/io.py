@@ -13,6 +13,8 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 
 
 def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
+    if output and os.path.exists(output):
+        os.remove(output)
     if msdf.metadata is not None:
         obj = {k: v for k, v in msdf.metadata.items()}
     else:
