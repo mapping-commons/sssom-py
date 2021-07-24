@@ -605,8 +605,6 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
             msdf2 = from_tsv(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
-    if os.path.exists(output):
-        os.remove(output)
     # Export MappingSetDataFrame into a TSV
     write_sssom(merged_msdf, output)
 
