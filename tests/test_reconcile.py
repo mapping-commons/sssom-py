@@ -40,11 +40,11 @@ class TestReconcile(unittest.TestCase):
         assert len(merged_msdf.df) == 95
 
     def test_merge_no_reconcile(self):
-        msdf1 = read_sssom_tsv(f"{data_dir}/basic.tsv")
-        msdf2 = read_sssom_tsv(f"{data_dir}/basic4.tsv")
+        msdf1 = read_sssom_tsv(f"{data_dir}/basic4.tsv")
+        msdf2 = read_sssom_tsv(f"{data_dir}/basic5.tsv")
 
         merged_msdf = merge_msdf(msdf1=msdf1, msdf2=msdf2, reconcile=False)
         
-        assert len(msdf1.df) == 141
-        assert len(msdf2.df) == 141
+        assert len(msdf1.df) == 53
+        assert len(msdf2.df) == 53
         assert len(merged_msdf.df) == (len(msdf1.df)+len(msdf2.df))
