@@ -143,7 +143,7 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """
 
     doc = to_mapping_set_document(msdf)
-
+    logging.warning(f"to_owl_graph: doc size={len(doc.mapping_set)}")
     graph = Graph()
     for k, v in doc.curie_map.items():
         graph.namespace_manager.bind(k, URIRef(v))
@@ -158,7 +158,7 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     #        jsonobj[m.subject_id][m.predicate_id] = []
     #    jsonobj[m.subject_id][m.predicate_id].append(m.object_id)
     #    print(f'T {m.subject_id} = {jsonobj[m.subject_id]}')
-    # TODO: should be covered by context?
+    # TODO: THIS IS BROKEN NOW AND NEEDS PROPER THINKING. THING FROM SCRATCH
     elements = []
     for m in jsonobj["mappings"]:
         m["@type"] = "owl:Axiom"
@@ -167,6 +167,7 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
                 if not field.startswith("@"):
                     elements.append(field)
     jsonld = json.dumps(as_json_obj(jsonobj))
+    logging.warning(f"to_owl_graph:jsonlod={jsonld}")
     graph.parse(data=jsonld, format="json-ld")
     elements = list(set(elements))
     # assert reified triple
@@ -192,6 +193,7 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
 
     # for m in doc.mapping_set.mappings:
     #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
+    logging.warning(f"to_owl_graph:g={graph}")
     return graph
 
 

@@ -6,7 +6,7 @@ import re
 import sys
 from dataclasses import dataclass
 from io import StringIO, FileIO
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Union
 from urllib.request import urlopen
 
 import numpy as np
@@ -310,14 +310,14 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
                 CONFIDENCE
             ]
     if ignore_predicate:
-        df[
+        df = df[
             df.apply(
                 lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
                 axis=1,
             )
         ]
     else:
-        df[
+        df = df[
             df.apply(
                 lambda x: x[CONFIDENCE]
                 >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
@@ -607,11 +607,11 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         """
-    # Handle DataFrames with no 'confidence' column
+    # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
 
     if df is None:
-        raise (Exception("Illegal dataframe (deal_with_negation"))
+        raise Exception("The dataframe, after assigning default confidence, appears empty (deal_with_negation")
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
@@ -655,6 +655,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
             & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
+        match_condition_1: Union[bool, ...]
         # match_condition_1[match_condition_1] gives the list of 'True's.
         # In other words, the rows that match the condition (rules declared).
         # Ideally, there should be 1 row. If not apply an extra rule to look for 'HumanCurated'.
@@ -684,6 +685,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
             & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
+        match_condition_2: Union[bool, ...]
         reconciled_df_subset.loc[
             match_condition_2[match_condition_2].index, PREDICATE_ID
         ] = row_2[PREDICATE_ID]
@@ -697,6 +699,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (df[CONFIDENCE] == row_3[CONFIDENCE])
             & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
         )
+        match_condition_3: Union[bool, ...]
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
         )
