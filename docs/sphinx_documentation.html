@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>setup module &mdash; sssom-py 0.0.1 documentation</title>
+  <title>Documentation Update and Redeployment &mdash; sssom-py 0.0.1 documentation</title>
   
 
   
@@ -36,8 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="sssom package" href="sssom.html" />
-    <link rel="prev" title="SSSOM-PY" href="modules.html" /> 
+    <link rel="prev" title="SSSOM CLI usage" href="cli_usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,17 +82,17 @@
             
               <p><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">SSSOM-PY</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">setup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sssom.html">sssom package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">SSSOM-PY</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_usage.html">SSSOM CLI usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sphinx_documentation.html">Documentation Update and Redeployment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation Update and Redeployment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#new-page">New page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-page">Update page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deploy-page">Deploy page</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -139,16 +138,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">SSSOM-PY</a> &raquo;</li>
-        
-      <li>setup module</li>
+      <li>Documentation Update and Redeployment</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/setup.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/sphinx_documentation.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -162,9 +159,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-setup">
-<span id="setup-module"></span><h1>setup module<a class="headerlink" href="#module-setup" title="Permalink to this headline">¶</a></h1>
-<p>The setup module.</p>
+  <section id="documentation-update-and-redeployment">
+<h1>Documentation Update and Redeployment<a class="headerlink" href="#documentation-update-and-redeployment" title="Permalink to this headline">¶</a></h1>
+<p>Using your terminal, <code class="docutils literal notranslate"><span class="pre">cd</span></code> to the ‘sphinx’ directory within the project.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">sphinx</span>
+</pre></div>
+</div>
+<section id="new-page">
+<h2>New page<a class="headerlink" href="#new-page" title="Permalink to this headline">¶</a></h2>
+<p>If you need to add a new page create a new file under the sphinx directory (sphinx/<em>filename</em>.rst). Update the content
+within <em>filename</em>.rst to the documentation you wish to add using the guidance provided by the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/contents.html">Sphinx</a> web page.</p>
+</section>
+<section id="update-page">
+<h2>Update page<a class="headerlink" href="#update-page" title="Permalink to this headline">¶</a></h2>
+<p>If you need to update a particular page, go to the corresponding <code class="docutils literal notranslate"><span class="pre">.rst</span></code> file within the ‘sphinx’ folder and make changes accordingly.</p>
+</section>
+<section id="deploy-page">
+<h2>Deploy page<a class="headerlink" href="#deploy-page" title="Permalink to this headline">¶</a></h2>
+<p>Using the terminal within the ‘sphinx’ directory, type <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> and then followed by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>. This creates the HTML equivaleny
+files for the ‘<a href="#id1"><span class="problematic" id="id2">*</span></a>.rst’ files within the ‘sphinx/_build/html’ directory. Copy-paste the contents within the ‘sphinx/_build/html’ directory into
+the ‘docs’ directory in the project. Commit the changes into your GitHub project repository and see the changes reflected on
+the <a class="reference external" href="https://mapping-commons.github.io/sssom-py/index.html">documentation page</a></p>
+</section>
 </section>
 
 
@@ -175,10 +192,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sssom.html" class="btn btn-neutral float-right" title="sssom package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="modules.html" class="btn btn-neutral float-left" title="SSSOM-PY" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cli_usage.html" class="btn btn-neutral float-left" title="SSSOM CLI usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
