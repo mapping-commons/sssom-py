@@ -86,7 +86,10 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">SSSOM CLI usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SSSOM CLI usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parse">parse</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -160,6 +163,72 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom convert -i tests/data/basic.tsv -o basic.ttl
 </pre></div>
 </div>
+<section id="parse">
+<h2>parse<a class="headerlink" href="#parse" title="Permalink to this headline">¶</a></h2>
+<p>Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+input_format (str): The string denoting the input format.
+metadata (str): The path to a file containing the sssom metadata (including curie_map) to be used during parse.
+curie_map_mode (str): Curie map mode.
+clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
+output (str): The path to the SSSOM TSV output file.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>parse <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-parse-i">
+<code class="sig-name descname">-I</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--input-format</code><code class="sig-prename descclassname"> &lt;input_format&gt;</code><a class="headerlink" href="#cmdoption-parse-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>The string denoting the input format, e.g. tsv,rdf,owl,alignment-api-xml,obographs-json,json</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-parse-m">
+<code class="sig-name descname">-m</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--metadata</code><code class="sig-prename descclassname"> &lt;metadata&gt;</code><a class="headerlink" href="#cmdoption-parse-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to a file containing the sssom metadata (including curie_map) to be used.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-parse-c">
+<code class="sig-name descname">-C</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--curie-map-mode</code><code class="sig-prename descclassname"> &lt;curie_map_mode&gt;</code><a class="headerlink" href="#cmdoption-parse-c" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Required</strong> Defines wether the curie map in the metadata should be extended or replaced with the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>metadata_only</p>
+</dd>
+<dt class="field-even">Options</dt>
+<dd class="field-even"><p>metadata_only | sssom_default_only | merged</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-parse-p">
+<code class="sig-name descname">-p</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--clean-prefixes</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-parse-p" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Required</strong> If True (default), records with unknown prefixes are removed from the SSSOM file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-parse-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-parse-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-parse-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-parse-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
 </section>
 
 
