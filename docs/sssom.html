@@ -1,0 +1,1666 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sssom package &mdash; sssom-py 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tests package" href="tests.html" />
+    <link rel="prev" title="setup module" href="setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sssom-py
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">sssom-py</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="setup.html">setup module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sssom package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cli">sssom.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cliques">sssom.cliques module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.context">sssom.context module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.io">sssom.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.parsers">sssom.parsers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.sparql_util">sssom.sparql_util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.sssom_datamodel">sssom.sssom_datamodel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.sssom_document">sssom.sssom_document module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.util">sssom.util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.writers">sssom.writers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_usage.html">SSSOM CLI usage</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sssom-py</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">sssom-py</a> &raquo;</li>
+        
+      <li>sssom package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/sssom.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="sssom-package">
+<h1>sssom package<a class="headerlink" href="#sssom-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-sssom.cli">
+<span id="sssom-cli-module"></span><h2>sssom.cli module<a class="headerlink" href="#module-sssom.cli" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-sssom.cliques">
+<span id="sssom-cliques-module"></span><h2>sssom.cliques module<a class="headerlink" href="#module-sssom.cliques" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="sssom.cliques.get_src">
+<code class="sig-prename descclassname">sssom.cliques.</code><code class="sig-name descname">get_src</code><span class="sig-paren">(</span><em class="sig-param">src</em>, <em class="sig-param">cid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/cliques.html#get_src"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.cliques.get_src" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.cliques.invert_dict">
+<code class="sig-prename descclassname">sssom.cliques.</code><code class="sig-name descname">invert_dict</code><span class="sig-paren">(</span><em class="sig-param">d: dict</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/sssom/cliques.html#invert_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.cliques.invert_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.cliques.split_into_cliques">
+<code class="sig-prename descclassname">sssom.cliques.</code><code class="sig-name descname">split_into_cliques</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/cliques.html#split_into_cliques"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.cliques.split_into_cliques" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.cliques.summarize_cliques">
+<code class="sig-prename descclassname">sssom.cliques.</code><code class="sig-name descname">summarize_cliques</code><span class="sig-paren">(</span><em class="sig-param">doc: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/cliques.html#summarize_cliques"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.cliques.summarize_cliques" title="Permalink to this definition">¶</a></dt>
+<dd><p>summary stats on a clique doc</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.cliques.to_networkx">
+<code class="sig-prename descclassname">sssom.cliques.</code><code class="sig-name descname">to_networkx</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span> &#x2192; networkx.classes.digraph.DiGraph<a class="reference internal" href="_modules/sssom/cliques.html#to_networkx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.cliques.to_networkx" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts a MappingSetDocument to a networkx DiGraph</p>
+</dd></dl>
+
+</section>
+<section id="module-sssom.context">
+<span id="sssom-context-module"></span><h2>sssom.context module<a class="headerlink" href="#module-sssom.context" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="sssom.context.get_default_metadata">
+<code class="sig-prename descclassname">sssom.context.</code><code class="sig-name descname">get_default_metadata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/context.html#get_default_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.context.get_default_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.context.get_external_jsonld_context">
+<code class="sig-prename descclassname">sssom.context.</code><code class="sig-name descname">get_external_jsonld_context</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/context.html#get_external_jsonld_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.context.get_external_jsonld_context" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.context.get_jsonld_context">
+<code class="sig-prename descclassname">sssom.context.</code><code class="sig-name descname">get_jsonld_context</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/context.html#get_jsonld_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.context.get_jsonld_context" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-sssom.io">
+<span id="sssom-io-module"></span><h2>sssom.io module<a class="headerlink" href="#module-sssom.io" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="sssom.io.convert_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">convert_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em>, <em class="sig-param">output_path: str = None</em>, <em class="sig-param">output_format: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#convert_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.convert_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>input_path: The path to the input SSSOM tsv file
+output_path: The path to the output file.
+output_format: The format to which the the SSSOM TSV should be converted.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.get_metadata_and_curie_map">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">get_metadata_and_curie_map</code><span class="sig-paren">(</span><em class="sig-param">metadata_path</em>, <em class="sig-param">curie_map_mode: str = 'metadata_only'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#get_metadata_and_curie_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.get_metadata_and_curie_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads sssom metadata from a file, and then augments it with default prefixes.
+:param metadata_path: The metadata file in YAML format
+:param curie_map_mode: one of metadata_only, sssom_default_only, merged
+:return: a curie map dictionary and a metadata object dictionary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.parse_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">parse_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em>, <em class="sig-param">output_path: str = None</em>, <em class="sig-param">input_format: str = None</em>, <em class="sig-param">metadata_path: str = None</em>, <em class="sig-param">curie_map_mode: str = None</em>, <em class="sig-param">clean_prefixes: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#parse_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.parse_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>Args:</dt><dd><p>input_path (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+output_path (str): The path to the output file.
+input_format (str): The string denoting the input format.
+metadata_path (str): The path to a file containing the sssom metadata (including curie_map)</p>
+<blockquote>
+<div><p>to be used during parse.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>curie_map_mode (str): Defines wether the curie map in the metadata should be extended or replaced with</dt><dd><p>the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged</p>
+</dd>
+</dl>
+<p>clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.split_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">split_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em>, <em class="sig-param">output_directory: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#split_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.split_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits an SSSOM TSV by prefixes and relations.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>input_path (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+output_directory (str): The directory to which the split file should be exported.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.validate_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">validate_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#validate_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.validate_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the incoming SSSOM tsv according to the SSSOM specification</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>input_path (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p>
+</dd>
+<dt>Returns:</dt><dd><p>Boolean. True if valid SSSOM, false otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.write_sssom">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">write_sssom</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">output: str = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/io.html#write_sssom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.write_sssom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-sssom.parsers">
+<span id="sssom-parsers-module"></span><h2>sssom.parsers module<a class="headerlink" href="#module-sssom.parsers" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="sssom.parsers.NoCURIEException">
+<em class="property">exception </em><code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">NoCURIEException</code><a class="reference internal" href="_modules/sssom/parsers.html#NoCURIEException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.NoCURIEException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.curie">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">curie</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">curie_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#curie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_alignment_minidom">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_alignment_minidom</code><span class="sig-paren">(</span><em class="sig-param">dom: xml.dom.minidom.Document</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_alignment_minidom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_alignment_minidom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a minidom Document object
+:param dom: XML (minidom) object
+:param curie_map:
+:param meta: Optional meta data
+:return: MappingSetDocument</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_alignment_xml">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_alignment_xml</code><span class="sig-paren">(</span><em class="sig-param">file_path: str</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_alignment_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_alignment_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_dataframe">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_dataframe</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a dataframe to a MappingSetDataFrame
+:param df:
+:param curie_map:
+:param meta:
+:return: MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_jsonld">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_jsonld</code><span class="sig-paren">(</span><em class="sig-param">file_path: str</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_jsonld"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_jsonld" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_obographs">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_obographs</code><span class="sig-paren">(</span><em class="sig-param">jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_obographs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_obographs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a obographs json object to an SSSOM data frame</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>jsondoc: The JSON object representing the ontology in obographs format
+curie_map: The curie map to be used
+meta: Any additional metadata that needs to be added to the resulting SSSOM data frame</p>
+</dd>
+<dt>Returns:</dt><dd><p>An SSSOM data frame (MappingSetDataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_obographs_json">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_obographs_json</code><span class="sig-paren">(</span><em class="sig-param">file_path: str</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_obographs_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_obographs_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses an obographs file as a JSON object and translates it into a MappingSetDataFrame
+:param file_path: The path to the obographs file
+:param curie_map: an optional curie map
+:param meta: an optional dictionary of metadata elements
+:return: A SSSOM MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_owl">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_owl</code><span class="sig-paren">(</span><em class="sig-param">file_path: str</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_owl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_owl" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_owl_graph">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_owl_graph</code><span class="sig-paren">(</span><em class="sig-param">g: rdflib.graph.Graph, curie_map: Dict[str, str], meta: Dict[str, str]</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_owl_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_owl_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a dataframe to a MappingSetDataFrame
+:param g: A Graph object (rdflib)
+:param curie_map:
+:param meta: an optional set of metadata elements
+:return: MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_rdf">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_rdf</code><span class="sig-paren">(</span><em class="sig-param">file_path: str</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_rdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_rdf_graph">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_rdf_graph</code><span class="sig-paren">(</span><em class="sig-param">g: rdflib.graph.Graph, curie_map: Dict[str, str], meta: Dict[str, str], mapping_predicates: Set[str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_rdf_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_rdf_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a dataframe to a MappingSetDataFrame
+:param g: A Graph object (rdflib)
+:param curie_map:
+:param meta: an optional set of metadata elements
+:return: MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.from_tsv">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">from_tsv</code><span class="sig-paren">(</span><em class="sig-param">file_path: str</em>, <em class="sig-param">curie_map: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">meta: Dict[str</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/parsers.html#from_tsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.from_tsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.get_default_mapping_predicates">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">get_default_mapping_predicates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#get_default_mapping_predicates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.get_default_mapping_predicates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.get_parsing_function">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">get_parsing_function</code><span class="sig-paren">(</span><em class="sig-param">input_format</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#get_parsing_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.get_parsing_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.guess_file_format">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">guess_file_format</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#guess_file_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.guess_file_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.is_extract_property">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">is_extract_property</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">properties</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#is_extract_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.is_extract_property" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.is_valid_mapping">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">is_valid_mapping</code><span class="sig-paren">(</span><em class="sig-param">m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#is_valid_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.is_valid_mapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.split_dataframe">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">split_dataframe</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#split_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.split_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.split_dataframe_by_prefix">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">split_dataframe_by_prefix</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">subject_prefixes</em>, <em class="sig-param">object_prefixes</em>, <em class="sig-param">relations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/parsers.html#split_dataframe_by_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.split_dataframe_by_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> – An SSSOM MappingSetDataFrame</p></li>
+<li><p><strong>subject_prefixes</strong> – a list of prefixes pertaining to the subject</p></li>
+<li><p><strong>object_prefixes</strong> – a list of prefixes pertaining to the object</p></li>
+<li><p><strong>relations</strong> – a list of relations of interest</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict of SSSOM data frame names to MappingSetDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.parsers.to_mapping_set_document">
+<code class="sig-prename descclassname">sssom.parsers.</code><code class="sig-name descname">to_mapping_set_document</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span> &#x2192; sssom.sssom_document.MappingSetDocument<a class="reference internal" href="_modules/sssom/parsers.html#to_mapping_set_document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.parsers.to_mapping_set_document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a MappingSetDataFrame to a MappingSetDocument
+:param msdf:
+:return: MappingSetDocument</p>
+</dd></dl>
+
+</section>
+<section id="module-sssom.sparql_util">
+<span id="sssom-sparql-util-module"></span><h2>sssom.sparql_util module<a class="headerlink" href="#module-sssom.sparql_util" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sssom.sparql_util.EndpointConfig">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sparql_util.</code><code class="sig-name descname">EndpointConfig</code><span class="sig-paren">(</span><em class="sig-param">url: str = None, graph: rdflib.term.URIRef = None, predmap: Dict[str, str] = None, predicates: Union[List[str], NoneType] = None, limit: Union[int, NoneType] = None, curie_map: Union[Dict[str, str], NoneType] = None, include_object_labels: bool = False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sparql_util.html#EndpointConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sparql_util.EndpointConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.curie_map">
+<code class="sig-name descname">curie_map</code><em class="property">: Optional[Dict[str, str]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.curie_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.graph">
+<code class="sig-name descname">graph</code><em class="property">: rdflib.term.URIRef</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.include_object_labels">
+<code class="sig-name descname">include_object_labels</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.include_object_labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.limit">
+<code class="sig-name descname">limit</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.predicates">
+<code class="sig-name descname">predicates</code><em class="property">: Optional[List[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.predicates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.predmap">
+<code class="sig-name descname">predmap</code><em class="property">: Dict[str, str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.predmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sparql_util.EndpointConfig.url">
+<code class="sig-name descname">url</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.sparql_util.contract_uri">
+<code class="sig-prename descclassname">sssom.sparql_util.</code><code class="sig-name descname">contract_uri</code><span class="sig-paren">(</span><em class="sig-param">uristr: str</em>, <em class="sig-param">config: sssom.sparql_util.EndpointConfig</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sssom/sparql_util.html#contract_uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sparql_util.contract_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.sparql_util.curiefy_row">
+<code class="sig-prename descclassname">sssom.sparql_util.</code><code class="sig-name descname">curiefy_row</code><span class="sig-paren">(</span><em class="sig-param">row: Dict[str, str], config: sssom.sparql_util.EndpointConfig</em><span class="sig-paren">)</span> &#x2192; Dict[str, str]<a class="reference internal" href="_modules/sssom/sparql_util.html#curiefy_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sparql_util.curiefy_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.sparql_util.expand_curie">
+<code class="sig-prename descclassname">sssom.sparql_util.</code><code class="sig-name descname">expand_curie</code><span class="sig-paren">(</span><em class="sig-param">curie: str</em>, <em class="sig-param">config: sssom.sparql_util.EndpointConfig</em><span class="sig-paren">)</span> &#x2192; rdflib.term.URIRef<a class="reference internal" href="_modules/sssom/sparql_util.html#expand_curie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sparql_util.expand_curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.sparql_util.query_mappings">
+<code class="sig-prename descclassname">sssom.sparql_util.</code><code class="sig-name descname">query_mappings</code><span class="sig-paren">(</span><em class="sig-param">config: sssom.sparql_util.EndpointConfig</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/sparql_util.html#query_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sparql_util.query_mappings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query a SPARQL endpoint to obtain a set of mapping</p>
+</dd></dl>
+
+</section>
+<section id="module-sssom.sssom_datamodel">
+<span id="sssom-sssom-datamodel-module"></span><h2>sssom.sssom_datamodel module<a class="headerlink" href="#module-sssom.sssom_datamodel" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sssom.sssom_datamodel.Entity">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">Entity</code><span class="sig-paren">(</span><em class="sig-param">id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId] = None</em>, <em class="sig-param">label: Optional[str] = None</em>, <em class="sig-param">category: Optional[str] = None</em>, <em class="sig-param">source: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.YAMLRoot</span></code></p>
+<p>Represents any entity that can be mapped, such as an OWL class or SKOS concept</p>
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.category">
+<code class="sig-name descname">category</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.class_class_curie">
+<code class="sig-name descname">class_class_curie</code><em class="property">: ClassVar[str]</em><em class="property"> = 'sssom:Entity'</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.class_class_curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.class_class_uri">
+<code class="sig-name descname">class_class_uri</code><em class="property">: ClassVar[rdflib.term.URIRef]</em><em class="property"> = rdflib.term.URIRef('http://w3id.org/sssom/Entity')</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.class_class_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.class_model_uri">
+<code class="sig-name descname">class_model_uri</code><em class="property">: ClassVar[rdflib.term.URIRef]</em><em class="property"> = rdflib.term.URIRef('http://w3id.org/sssom/Entity')</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.class_model_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.class_name">
+<code class="sig-name descname">class_name</code><em class="property">: ClassVar[str]</em><em class="property"> = 'entity'</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.class_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.id">
+<code class="sig-name descname">id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.label">
+<code class="sig-name descname">label</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Entity.source">
+<code class="sig-name descname">source</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Entity.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.EntityId">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">EntityId</code><span class="sig-paren">(</span><em class="sig-param">v: Union[Any, TypedNode]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#EntityId"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.EntityId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.extended_str</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.Mapping">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">Mapping</code><span class="sig-paren">(</span><em class="sig-param">subject_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">subject_label: Optional[str] = None</em>, <em class="sig-param">subject_category: Optional[str] = None</em>, <em class="sig-param">predicate_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">predicate_label: Optional[str] = None</em>, <em class="sig-param">object_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">object_label: Optional[str] = None</em>, <em class="sig-param">object_category: Optional[str] = None</em>, <em class="sig-param">match_type: Optional[str] = None</em>, <em class="sig-param">creator_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">creator_label: Optional[str] = None</em>, <em class="sig-param">license: Optional[str] = None</em>, <em class="sig-param">subject_source: Optional[str] = None</em>, <em class="sig-param">subject_source_version: Optional[str] = None</em>, <em class="sig-param">object_source: Optional[str] = None</em>, <em class="sig-param">object_source_version: Optional[str] = None</em>, <em class="sig-param">mapping_provider: Optional[str] = None</em>, <em class="sig-param">mapping_cardinality: Union[str</em>, <em class="sig-param">MappingCardinalityEnum</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">mapping_tool: Optional[str] = None</em>, <em class="sig-param">mapping_date: Optional[str] = None</em>, <em class="sig-param">confidence: Optional[float] = None</em>, <em class="sig-param">subject_match_field: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">object_match_field: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">match_string: Optional[str] = None</em>, <em class="sig-param">subject_preprocessing: Optional[str] = None</em>, <em class="sig-param">object_preprocessing: Optional[str] = None</em>, <em class="sig-param">match_term_type: Optional[str] = None</em>, <em class="sig-param">semantic_similarity_score: Optional[float] = None</em>, <em class="sig-param">information_content_mica_score: Optional[float] = None</em>, <em class="sig-param">see_also: Optional[str] = None</em>, <em class="sig-param">other: Optional[str] = None</em>, <em class="sig-param">comment: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#Mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.Mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.YAMLRoot</span></code></p>
+<p>Represents an individual mapping between a pair of entities</p>
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.class_class_curie">
+<code class="sig-name descname">class_class_curie</code><em class="property">: ClassVar[str]</em><em class="property"> = 'owl:Axiom'</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.class_class_curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.class_class_uri">
+<code class="sig-name descname">class_class_uri</code><em class="property">: ClassVar[rdflib.term.URIRef]</em><em class="property"> = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#Axiom')</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.class_class_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.class_model_uri">
+<code class="sig-name descname">class_model_uri</code><em class="property">: ClassVar[rdflib.term.URIRef]</em><em class="property"> = rdflib.term.URIRef('http://w3id.org/sssom/Mapping')</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.class_model_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.class_name">
+<code class="sig-name descname">class_name</code><em class="property">: ClassVar[str]</em><em class="property"> = 'mapping'</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.class_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.comment">
+<code class="sig-name descname">comment</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.confidence">
+<code class="sig-name descname">confidence</code><em class="property">: Optional[float]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.confidence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.creator_id">
+<code class="sig-name descname">creator_id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.creator_label">
+<code class="sig-name descname">creator_label</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.creator_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.information_content_mica_score">
+<code class="sig-name descname">information_content_mica_score</code><em class="property">: Optional[float]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.information_content_mica_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.license">
+<code class="sig-name descname">license</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.license" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.mapping_cardinality">
+<code class="sig-name descname">mapping_cardinality</code><em class="property">: Union[str, MappingCardinalityEnum, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.mapping_cardinality" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.mapping_date">
+<code class="sig-name descname">mapping_date</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.mapping_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.mapping_provider">
+<code class="sig-name descname">mapping_provider</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.mapping_provider" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.mapping_tool">
+<code class="sig-name descname">mapping_tool</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.mapping_tool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.match_string">
+<code class="sig-name descname">match_string</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.match_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.match_term_type">
+<code class="sig-name descname">match_term_type</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.match_term_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.match_type">
+<code class="sig-name descname">match_type</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.match_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_category">
+<code class="sig-name descname">object_category</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_id">
+<code class="sig-name descname">object_id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_label">
+<code class="sig-name descname">object_label</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_match_field">
+<code class="sig-name descname">object_match_field</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_match_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_preprocessing">
+<code class="sig-name descname">object_preprocessing</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_source">
+<code class="sig-name descname">object_source</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.object_source_version">
+<code class="sig-name descname">object_source_version</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.object_source_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.other">
+<code class="sig-name descname">other</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.other" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.predicate_id">
+<code class="sig-name descname">predicate_id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.predicate_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.predicate_label">
+<code class="sig-name descname">predicate_label</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.predicate_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.see_also">
+<code class="sig-name descname">see_also</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.see_also" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.semantic_similarity_score">
+<code class="sig-name descname">semantic_similarity_score</code><em class="property">: Optional[float]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.semantic_similarity_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_category">
+<code class="sig-name descname">subject_category</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_id">
+<code class="sig-name descname">subject_id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_label">
+<code class="sig-name descname">subject_label</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_match_field">
+<code class="sig-name descname">subject_match_field</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_match_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_preprocessing">
+<code class="sig-name descname">subject_preprocessing</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_source">
+<code class="sig-name descname">subject_source</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.Mapping.subject_source_version">
+<code class="sig-name descname">subject_source_version</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.subject_source_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.MappingCardinalityEnum">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">MappingCardinalityEnum</code><span class="sig-paren">(</span><em class="sig-param">code: Union[str, linkml_runtime.utils.metamodelcore.Curie]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#MappingCardinalityEnum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.MappingCardinalityEnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.enumerations.EnumDefinitionImpl</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.MappingSet">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">MappingSet</code><span class="sig-paren">(</span><em class="sig-param">mappings: Union[dict, Mapping, List[Union[dict, Mapping]], None] = &lt;factory&gt;, mapping_set_id: Union[str, sssom.sssom_datamodel.EntityId, None] = None, mapping_set_version: Optional[str] = None, mapping_set_description: Optional[str] = None, creator_id: Union[str, sssom.sssom_datamodel.EntityId, None] = None, creator_label: Optional[str] = None, license: Optional[str] = None, subject_source: Optional[str] = None, subject_source_version: Optional[str] = None, object_source: Optional[str] = None, object_source_version: Optional[str] = None, mapping_provider: Optional[str] = None, mapping_tool: Optional[str] = None, mapping_date: Optional[str] = None, subject_match_field: Union[str, sssom.sssom_datamodel.EntityId, None] = None, object_match_field: Union[str, sssom.sssom_datamodel.EntityId, None] = None, subject_preprocessing: Optional[str] = None, object_preprocessing: Optional[str] = None, match_term_type: Optional[str] = None, see_also: Optional[str] = None, other: Optional[str] = None, comment: Optional[str] = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#MappingSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.YAMLRoot</span></code></p>
+<p>Represents a set of mappings</p>
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.class_class_curie">
+<code class="sig-name descname">class_class_curie</code><em class="property">: ClassVar[str]</em><em class="property"> = 'sssom:MappingSet'</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.class_class_curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.class_class_uri">
+<code class="sig-name descname">class_class_uri</code><em class="property">: ClassVar[rdflib.term.URIRef]</em><em class="property"> = rdflib.term.URIRef('http://w3id.org/sssom/MappingSet')</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.class_class_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.class_model_uri">
+<code class="sig-name descname">class_model_uri</code><em class="property">: ClassVar[rdflib.term.URIRef]</em><em class="property"> = rdflib.term.URIRef('http://w3id.org/sssom/MappingSet')</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.class_model_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.class_name">
+<code class="sig-name descname">class_name</code><em class="property">: ClassVar[str]</em><em class="property"> = 'mapping set'</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.class_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.comment">
+<code class="sig-name descname">comment</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.creator_id">
+<code class="sig-name descname">creator_id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.creator_label">
+<code class="sig-name descname">creator_label</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.creator_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.license">
+<code class="sig-name descname">license</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.license" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mapping_date">
+<code class="sig-name descname">mapping_date</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mapping_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mapping_provider">
+<code class="sig-name descname">mapping_provider</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mapping_provider" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mapping_set_description">
+<code class="sig-name descname">mapping_set_description</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mapping_set_description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mapping_set_id">
+<code class="sig-name descname">mapping_set_id</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mapping_set_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mapping_set_version">
+<code class="sig-name descname">mapping_set_version</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mapping_set_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mapping_tool">
+<code class="sig-name descname">mapping_tool</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mapping_tool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.mappings">
+<code class="sig-name descname">mappings</code><em class="property">: Optional[Union[Union[dict, 'Mapping'], List[Union[dict, 'Mapping']]]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.mappings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.match_term_type">
+<code class="sig-name descname">match_term_type</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.match_term_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.object_match_field">
+<code class="sig-name descname">object_match_field</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.object_match_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.object_preprocessing">
+<code class="sig-name descname">object_preprocessing</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.object_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.object_source">
+<code class="sig-name descname">object_source</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.object_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.object_source_version">
+<code class="sig-name descname">object_source_version</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.object_source_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.other">
+<code class="sig-name descname">other</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.other" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.see_also">
+<code class="sig-name descname">see_also</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.see_also" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.subject_match_field">
+<code class="sig-name descname">subject_match_field</code><em class="property">: Union[str, sssom.sssom_datamodel.EntityId, None]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.subject_match_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.subject_preprocessing">
+<code class="sig-name descname">subject_preprocessing</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.subject_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.subject_source">
+<code class="sig-name descname">subject_source</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.subject_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.MappingSet.subject_source_version">
+<code class="sig-name descname">subject_source_version</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.subject_source_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.slots">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">slots</code><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#slots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.slots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.category">
+<code class="sig-name descname">category</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/category'), name='category', curie='sssom:category', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/category'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.comment">
+<code class="sig-name descname">comment</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/comment'), name='comment', curie='sssom:comment', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/comment'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.confidence">
+<code class="sig-name descname">confidence</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/confidence'), name='confidence', curie='sssom:confidence', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/confidence'), domain=None, range=typing.Union[float, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.confidence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.creator_id">
+<code class="sig-name descname">creator_id</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/creator_id'), name='creator_id', curie='sssom:creator_id', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/creator_id'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=[rdflib.term.URIRef('http://purl.org/dc/terms/creator')], pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.creator_label">
+<code class="sig-name descname">creator_label</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/creator_label'), name='creator_label', curie='sssom:creator_label', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/creator_label'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.creator_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.entity_field">
+<code class="sig-name descname">entity_field</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/entity_field'), name='entity_field', curie='sssom:entity_field', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/entity_field'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.entity_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.equivalent_property">
+<code class="sig-name descname">equivalent_property</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/equivalent_property'), name='equivalent_property', curie='sssom:equivalent_property', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/equivalent_property'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.equivalent_property" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.id">
+<code class="sig-name descname">id</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/id'), name='id', curie='sssom:id', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/id'), domain=None, range=&lt;class 'rdflib.term.URIRef'&gt;, mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.information_content_mica_score">
+<code class="sig-name descname">information_content_mica_score</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/information_content_mica_score'), name='information_content_mica_score', curie='sssom:information_content_mica_score', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/information_content_mica_score'), domain=None, range=typing.Union[float, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.information_content_mica_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.label">
+<code class="sig-name descname">label</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/label'), name='label', curie='sssom:label', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/label'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.license">
+<code class="sig-name descname">license</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/license'), name='license', curie='sssom:license', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/license'), domain=None, range=typing.Union[str, NoneType], mappings=[rdflib.term.URIRef('http://purl.org/dc/terms/license')], pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.license" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_cardinality">
+<code class="sig-name descname">mapping_cardinality</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_cardinality'), name='mapping_cardinality', curie='sssom:mapping_cardinality', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_cardinality'), domain=None, range=typing.Union[str, ForwardRef('MappingCardinalityEnum'), NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_cardinality" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_date">
+<code class="sig-name descname">mapping_date</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_date'), name='mapping_date', curie='sssom:mapping_date', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_date'), domain=None, range=typing.Union[str, NoneType], mappings=[rdflib.term.URIRef('http://purl.org/dc/terms/date')], pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_provider">
+<code class="sig-name descname">mapping_provider</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_provider'), name='mapping_provider', curie='sssom:mapping_provider', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_provider'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_provider" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_set_description">
+<code class="sig-name descname">mapping_set_description</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_set_description'), name='mapping_set_description', curie='sssom:mapping_set_description', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_set_description'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_set_description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_set_id">
+<code class="sig-name descname">mapping_set_id</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_set_id'), name='mapping_set_id', curie='sssom:mapping_set_id', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_set_id'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_set_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_set_version">
+<code class="sig-name descname">mapping_set_version</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_set_version'), name='mapping_set_version', curie='sssom:mapping_set_version', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_set_version'), domain=None, range=typing.Union[str, NoneType], mappings=[rdflib.term.URIRef('http://www.w3.org/2002/07/owl#versionInfo')], pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_set_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mapping_tool">
+<code class="sig-name descname">mapping_tool</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_tool'), name='mapping_tool', curie='sssom:mapping_tool', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mapping_tool'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mapping_tool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.mappings">
+<code class="sig-name descname">mappings</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/mappings'), name='mappings', curie='sssom:mappings', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/mappings'), domain=None, range=typing.Union[dict, sssom.sssom_datamodel.Mapping, typing.List[typing.Union[dict, sssom.sssom_datamodel.Mapping]], NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.mappings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.match_string">
+<code class="sig-name descname">match_string</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/match_string'), name='match_string', curie='sssom:match_string', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/match_string'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.match_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.match_term_type">
+<code class="sig-name descname">match_term_type</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/match_term_type'), name='match_term_type', curie='sssom:match_term_type', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/match_term_type'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.match_term_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.match_type">
+<code class="sig-name descname">match_type</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/match_type'), name='match_type', curie='sssom:match_type', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/match_type'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.match_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.metadata_element">
+<code class="sig-name descname">metadata_element</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/metadata_element'), name='metadata_element', curie='sssom:metadata_element', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/metadata_element'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.metadata_element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_category">
+<code class="sig-name descname">object_category</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_category'), name='object_category', curie='sssom:object_category', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_category'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_field">
+<code class="sig-name descname">object_field</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_field'), name='object_field', curie='sssom:object_field', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_field'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_id">
+<code class="sig-name descname">object_id</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://www.w3.org/2002/07/owl#annotatedTarget'), name='object_id', curie='owl:annotatedTarget', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_id'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_label">
+<code class="sig-name descname">object_label</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_label'), name='object_label', curie='sssom:object_label', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_label'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_match_field">
+<code class="sig-name descname">object_match_field</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_match_field'), name='object_match_field', curie='sssom:object_match_field', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_match_field'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_match_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_preprocessing">
+<code class="sig-name descname">object_preprocessing</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_preprocessing'), name='object_preprocessing', curie='sssom:object_preprocessing', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_preprocessing'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_source">
+<code class="sig-name descname">object_source</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_source'), name='object_source', curie='sssom:object_source', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_source'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.object_source_version">
+<code class="sig-name descname">object_source_version</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/object_source_version'), name='object_source_version', curie='sssom:object_source_version', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/object_source_version'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.object_source_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.other">
+<code class="sig-name descname">other</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/other'), name='other', curie='sssom:other', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/other'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.other" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.predicate_id">
+<code class="sig-name descname">predicate_id</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://www.w3.org/2002/07/owl#annotatedProperty'), name='predicate_id', curie='owl:annotatedProperty', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/predicate_id'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.predicate_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.predicate_label">
+<code class="sig-name descname">predicate_label</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/predicate_label'), name='predicate_label', curie='sssom:predicate_label', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/predicate_label'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.predicate_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.rdf_example">
+<code class="sig-name descname">rdf_example</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/rdf_example'), name='rdf_example', curie='sssom:rdf_example', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/rdf_example'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.rdf_example" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.required">
+<code class="sig-name descname">required</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/required'), name='required', curie='sssom:required', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/required'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.required" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.scope">
+<code class="sig-name descname">scope</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/scope'), name='scope', curie='sssom:scope', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/scope'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.scope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.see_also">
+<code class="sig-name descname">see_also</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/see_also'), name='see_also', curie='sssom:see_also', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/see_also'), domain=None, range=typing.Union[str, NoneType], mappings=[rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')], pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.see_also" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.semantic_similarity_score">
+<code class="sig-name descname">semantic_similarity_score</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/semantic_similarity_score'), name='semantic_similarity_score', curie='sssom:semantic_similarity_score', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/semantic_similarity_score'), domain=None, range=typing.Union[float, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.semantic_similarity_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.source">
+<code class="sig-name descname">source</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/source'), name='source', curie='sssom:source', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/source'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_category">
+<code class="sig-name descname">subject_category</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_category'), name='subject_category', curie='sssom:subject_category', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_category'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_field">
+<code class="sig-name descname">subject_field</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_field'), name='subject_field', curie='sssom:subject_field', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_field'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_id">
+<code class="sig-name descname">subject_id</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://www.w3.org/2002/07/owl#annotatedSource'), name='subject_id', curie='owl:annotatedSource', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_id'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_label">
+<code class="sig-name descname">subject_label</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_label'), name='subject_label', curie='sssom:subject_label', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_label'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_match_field">
+<code class="sig-name descname">subject_match_field</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_match_field'), name='subject_match_field', curie='sssom:subject_match_field', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_match_field'), domain=None, range=typing.Union[str, sssom.sssom_datamodel.EntityId, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_match_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_preprocessing">
+<code class="sig-name descname">subject_preprocessing</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_preprocessing'), name='subject_preprocessing', curie='sssom:subject_preprocessing', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_preprocessing'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_source">
+<code class="sig-name descname">subject_source</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_source'), name='subject_source', curie='sssom:subject_source', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_source'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.subject_source_version">
+<code class="sig-name descname">subject_source_version</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_source_version'), name='subject_source_version', curie='sssom:subject_source_version', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/subject_source_version'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.subject_source_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_datamodel.slots.tsv_example">
+<code class="sig-name descname">tsv_example</code><em class="property"> = Slot(uri=rdflib.term.URIRef('http://w3id.org/sssom/tsv_example'), name='tsv_example', curie='sssom:tsv_example', model_uri=rdflib.term.URIRef('http://w3id.org/sssom/tsv_example'), domain=None, range=typing.Union[str, NoneType], mappings=None, pattern=None)</em><a class="headerlink" href="#sssom.sssom_datamodel.slots.tsv_example" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-sssom.sssom_document">
+<span id="sssom-sssom-document-module"></span><h2>sssom.sssom_document module<a class="headerlink" href="#module-sssom.sssom_document" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sssom.sssom_document.MappingSetDocument">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_document.</code><code class="sig-name descname">MappingSetDocument</code><span class="sig-paren">(</span><em class="sig-param">mapping_set: sssom.sssom_datamodel.MappingSet, curie_map: Dict[str, str], **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_document.html#MappingSetDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a single SSSOM document.</p>
+<p>A document is simply a holder for a MappingSet object plus a CURIE map</p>
+<dl class="attribute">
+<dt id="sssom.sssom_document.MappingSetDocument.curie_map">
+<code class="sig-name descname">curie_map</code><em class="property">: Dict[str, str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.curie_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mappings between ID prefixes and URI Bases, used to map CURIEs to URIs.
+Note that the CURIE map is not part of the core SSSOM model, hence it belongs here in the document
+object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_document.MappingSetDocument.mapping_set">
+<code class="sig-name descname">mapping_set</code><em class="property">: MappingSet</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.mapping_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>a set of mappings plus metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>The main part of the document</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-sssom.util">
+<span id="sssom-util-module"></span><h2>sssom.util module<a class="headerlink" href="#module-sssom.util" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sssom.util.EntityPair">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">EntityPair</code><span class="sig-paren">(</span><em class="sig-param">subject_entity: sssom.sssom_datamodel.Entity</em>, <em class="sig-param">object_entity: sssom.sssom_datamodel.Entity</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#EntityPair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.EntityPair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A tuple of entities.</p>
+<p>Note that (e1,e2) == (e2,e1)</p>
+<dl class="attribute">
+<dt id="sssom.util.EntityPair.object_entity">
+<code class="sig-name descname">object_entity</code><em class="property">: Entity</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.EntityPair.object_entity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.EntityPair.subject_entity">
+<code class="sig-name descname">subject_entity</code><em class="property">: Entity</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.EntityPair.subject_entity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="sssom.util.KEY_FEATURES">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">KEY_FEATURES</code><em class="property"> = ['subject_id', 'predicate_id', 'object_id']</em><a class="headerlink" href="#sssom.util.KEY_FEATURES" title="Permalink to this definition">¶</a></dt>
+<dd><p>The 3 columns whose combination would be used as primary keys while merging/grouping</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.util.MappingSetDataFrame">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">MappingSetDataFrame</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame = None</em>, <em class="sig-param">prefixmap: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">metadata: Optional[Dict[str</em>, <em class="sig-param">str]] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of mappings represented as a DataFrame, together with additional metadata</p>
+<dl class="method">
+<dt id="sssom.util.MappingSetDataFrame.clean_prefix_map">
+<code class="sig-name descname">clean_prefix_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame.clean_prefix_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_prefix_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDataFrame.df">
+<code class="sig-name descname">df</code><em class="property">: pandas.core.frame.DataFrame</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sssom.util.MappingSetDataFrame.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param">msdf2</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges two MappingSetDataframes</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame (self =&gt; primary)</p>
+</dd>
+<dt>Returns:</dt><dd><p>MappingSetDataFrame: Merged MappingSetDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDataFrame.metadata">
+<code class="sig-name descname">metadata</code><em class="property">: Optional[Dict[str, str]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDataFrame.prefixmap">
+<code class="sig-name descname">prefixmap</code><em class="property">: Dict[str, str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.prefixmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.util.MappingSetDiff">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">MappingSetDiff</code><span class="sig-paren">(</span><em class="sig-param">unique_tuples1: Optional[Set[str]] = None</em>, <em class="sig-param">unique_tuples2: Optional[Set[str]] = None</em>, <em class="sig-param">common_tuples: Optional[Set[str]] = None</em>, <em class="sig-param">combined_dataframe: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>represents a difference between two mapping sets</p>
+<p>Currently this is limited to diffs at the level of entity-pairs.
+For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMatch B,
+this is considered a mapping in common.</p>
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDiff.combined_dataframe">
+<code class="sig-name descname">combined_dataframe</code><em class="property">: Optional[pandas.core.frame.DataFrame]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDiff.combined_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dataframe that combines with left and right dataframes with information injected into
+the comment column</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDiff.common_tuples">
+<code class="sig-name descname">common_tuples</code><em class="property">: Optional[Set[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDiff.common_tuples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDiff.unique_tuples1">
+<code class="sig-name descname">unique_tuples1</code><em class="property">: Optional[Set[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDiff.unique_tuples1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDiff.unique_tuples2">
+<code class="sig-name descname">unique_tuples2</code><em class="property">: Optional[Set[str]]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDiff.unique_tuples2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.util.MetaTSVConverter">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">MetaTSVConverter</code><span class="sig-paren">(</span><em class="sig-param">df: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MetaTSVConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MetaTSVConverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>converts SSSOM/sssom_metadata.tsv
+DO NOT USE, NOW DEPRECATED!</p>
+<dl class="method">
+<dt id="sssom.util.MetaTSVConverter.convert">
+<code class="sig-name descname">convert</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/sssom/util.html#MetaTSVConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MetaTSVConverter.convert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sssom.util.MetaTSVConverter.convert_and_save">
+<code class="sig-name descname">convert_and_save</code><span class="sig-paren">(</span><em class="sig-param">fn: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/util.html#MetaTSVConverter.convert_and_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MetaTSVConverter.convert_and_save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.util.MetaTSVConverter.df">
+<code class="sig-name descname">df</code><em class="property">: Optional[pandas.core.frame.DataFrame]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MetaTSVConverter.df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sssom.util.MetaTSVConverter.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/util.html#MetaTSVConverter.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MetaTSVConverter.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>loads from folder
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.assign_default_confidence">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">assign_default_confidence</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#assign_default_confidence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.assign_default_confidence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.collapse">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">collapse</code><span class="sig-paren">(</span><em class="sig-param">df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#collapse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.collapse" title="Permalink to this definition">¶</a></dt>
+<dd><p>collapses rows with same S/P/O and combines confidence</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.compare_dataframes">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">compare_dataframes</code><span class="sig-paren">(</span><em class="sig-param">df1: pandas.core.frame.DataFrame</em>, <em class="sig-param">df2: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDiff<a class="reference internal" href="_modules/sssom/util.html#compare_dataframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.compare_dataframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a diff between two SSSOM dataframes</p>
+<p>Currently does not discriminate between mappings with different predicates</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.create_entity">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">create_entity</code><span class="sig-paren">(</span><em class="sig-param">row</em>, <em class="sig-param">id: str</em>, <em class="sig-param">mappings: Dict</em><span class="sig-paren">)</span> &#x2192; sssom.sssom_datamodel.Entity<a class="reference internal" href="_modules/sssom/util.html#create_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.create_entity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.dataframe_to_ptable">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">dataframe_to_ptable</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#dataframe_to_ptable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.dataframe_to_ptable" title="Permalink to this definition">¶</a></dt>
+<dd><p>exports kboom ptable
+:param df: SSSOM dataframe
+:param inverse_factor: relative weighting of probability of inverse of predicate
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.deal_with_negation">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">deal_with_negation</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#deal_with_negation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.deal_with_negation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination
+taking into account the rule that negative trumps positive given equal confidence values.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df (pd.DataFrame): Merged Pandas DataFrame</p>
+</dd>
+<dt>Returns:</dt><dd><p>pd.DataFrame: Pandas DataFrame with negations addressed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.dict_merge">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">dict_merge</code><span class="sig-paren">(</span><em class="sig-param">source: Dict</em>, <em class="sig-param">target: Dict</em>, <em class="sig-param">dict_name: str</em><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/sssom/util.html#dict_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.dict_merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes 2 MappingSetDataFrame elements (prefixmap OR metadata) and merges source =&gt; target</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>source (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+target (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+dict_name (str): prefixmap or metadata</p>
+</dd>
+<dt>Returns:</dt><dd><p>Dict: merged MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.extract_global_metadata">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">extract_global_metadata</code><span class="sig-paren">(</span><em class="sig-param">msdoc: sssom.sssom_document.MappingSetDocument</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#extract_global_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.extract_global_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.filter_out_prefixes">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">filter_out_prefixes</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em>, <em class="sig-param">filter_prefixes</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.filter_out_prefixes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.filter_redundant_rows">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">filter_redundant_rows</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em>, <em class="sig-param">ignore_predicate=False</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#filter_redundant_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.filter_redundant_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes rows if there is another row with same S/O and higher confidence</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df: data frame to filter
+ignore_predicate: if true, the predicate_id column is ignored</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.get_file_extension">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">get_file_extension</code><span class="sig-paren">(</span><em class="sig-param">filename: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/sssom/util.html#get_file_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.get_file_extension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.get_prefix_from_curie">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">get_prefix_from_curie</code><span class="sig-paren">(</span><em class="sig-param">curie: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#get_prefix_from_curie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.get_prefix_from_curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.get_prefixes_used_in_table">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">get_prefixes_used_in_table</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#get_prefixes_used_in_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.group_mappings">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">group_mappings</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; Dict[sssom.util.EntityPair, List]<a class="reference internal" href="_modules/sssom/util.html#group_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.group_mappings" title="Permalink to this definition">¶</a></dt>
+<dd><p>group mappings by EntityPairs</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.inject_metadata_into_df">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">inject_metadata_into_df</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/util.html#inject_metadata_into_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.inject_metadata_into_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msdf (MappingSetDataFrame): MappingSetDataFrame with metadata separate.</p>
+</dd>
+<dt>Returns:</dt><dd><p>MappingSetDataFrame: MappingSetDataFrame with metadata as columns</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.is_curie">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">is_curie</code><span class="sig-paren">(</span><em class="sig-param">string: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#is_curie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.is_curie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.merge_msdf">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">merge_msdf</code><span class="sig-paren">(</span><em class="sig-param">msdf1: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">msdf2: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">reconcile: bool = True</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/util.html#merge_msdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.merge_msdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merging msdf2 into msdf1,
+if reconcile=True, then dedupe(remove redundant lower confidence mappings) and</p>
+<blockquote>
+<div><p>reconcile (if msdf contains a higher confidence _negative_ mapping,
+then remove lower confidence positive one. If confidence is the same,
+prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msdf1 (MappingSetDataFrame): The primary MappingSetDataFrame
+msdf2 (MappingSetDataFrame): The secondary MappingSetDataFrame
+reconcile (bool, optional): [description]. Defaults to True.</p>
+</dd>
+<dt>Returns:</dt><dd><p>MappingSetDataFrame: Merged MappingSetDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.parse">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV to a pandas frame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.read_csv">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">read_csv</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">comment='#'</em>, <em class="sig-param">sep='</em>, <em class="sig-param">'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#read_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.read_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.read_metadata">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">read_metadata</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#read_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.read_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reading metadata file (yaml) that is supplied separately from a tsv
+:param filename: location of file
+:return: two objects, a metadata and a curie_map object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.read_pandas">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">read_pandas</code><span class="sig-paren">(</span><em class="sig-param">filename: str</em>, <em class="sig-param">sep='\t'</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#read_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.read_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrapper to pd.read_csv that handles comment lines correctly
+:param filename:
+:param sep: File separator in pandas (       or ,)
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.remove_unmatched">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">remove_unmatched</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#remove_unmatched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.remove_unmatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes rows where no match is found. TODO: <a class="reference external" href="https://github.com/OBOFoundry/SSSOM/issues/28">https://github.com/OBOFoundry/SSSOM/issues/28</a>
+:param df:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.sha256sum">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">sha256sum</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#sha256sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.sha256sum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.smart_open">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">smart_open</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#smart_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.smart_open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.sort_sssom">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">sort_sssom</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#sort_sssom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.sort_sssom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.sort_sssom_columns">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">sort_sssom_columns</code><span class="sig-paren">(</span><em class="sig-param">columns: list</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="_modules/sssom/util.html#sort_sssom_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.sort_sssom_columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.to_mapping_set_dataframe">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">to_mapping_set_dataframe</code><span class="sig-paren">(</span><em class="sig-param">doc: sssom.sssom_document.MappingSetDocument</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/util.html#to_mapping_set_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.to_mapping_set_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-sssom.writers">
+<span id="sssom-writers-module"></span><h2>sssom.writers module<a class="headerlink" href="#module-sssom.writers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="sssom.writers.get_writer_function">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">get_writer_function</code><span class="sig-paren">(</span><em class="sig-param">output_format</em>, <em class="sig-param">output</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#get_writer_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.get_writer_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.to_dataframe">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">to_dataframe</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/writers.html#to_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.to_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.to_jsonld_dict">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">to_jsonld_dict</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">context_path=None</em><span class="sig-paren">)</span> &#x2192; rdflib.graph.Graph<a class="reference internal" href="_modules/sssom/writers.html#to_jsonld_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.to_jsonld_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>msdf:
+context_path:</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.to_owl_graph">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">to_owl_graph</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">context_path=None</em><span class="sig-paren">)</span> &#x2192; rdflib.graph.Graph<a class="reference internal" href="_modules/sssom/writers.html#to_owl_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.to_owl_graph" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>msdf:
+context_path:</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.to_rdf_graph">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">to_rdf_graph</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">context_path=None</em><span class="sig-paren">)</span> &#x2192; rdflib.graph.Graph<a class="reference internal" href="_modules/sssom/writers.html#to_rdf_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.to_rdf_graph" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>msdf:
+context_path:</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.write_json">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">write_json</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">filename: str</em>, <em class="sig-param">fileformat='jsonld'</em>, <em class="sig-param">context_path=None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/writers.html#write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.write_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe 2 tsv</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.write_owl">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">write_owl</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">filename: str</em>, <em class="sig-param">fileformat='xml'</em>, <em class="sig-param">context_path=None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/writers.html#write_owl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.write_owl" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe 2 tsv</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.write_rdf">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">write_rdf</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">filename: str</em>, <em class="sig-param">fileformat='xml'</em>, <em class="sig-param">context_path=None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/writers.html#write_rdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.write_rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe 2 tsv</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.write_tsv">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">write_tsv</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">filename: str</em>, <em class="sig-param">fileformat='tsv'</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/writers.html#write_tsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.write_tsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe 2 tsv</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.writers.write_tsvs">
+<code class="sig-prename descclassname">sssom.writers.</code><code class="sig-name descname">write_tsvs</code><span class="sig-paren">(</span><em class="sig-param">sssom_dict</em>, <em class="sig-param">output_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#write_tsvs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.writers.write_tsvs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>sssom_dict:
+output_dir:</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</section>
+<section id="module-sssom">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sssom" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tests.html" class="btn btn-neutral float-right" title="tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="setup.html" class="btn btn-neutral float-left" title="setup module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

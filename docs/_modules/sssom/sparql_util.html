@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sssom.sparql_util &mdash; sssom-py 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sssom-py
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">sssom-py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">SSSOM CLI usage</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sssom-py</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sssom.sparql_util</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sssom.sparql_util</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">SPARQLWrapper</span> <span class="kn">import</span> <span class="n">SPARQLWrapper</span><span class="p">,</span> <span class="n">JSON</span>
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span>
+<span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">RDFS</span><span class="p">,</span> <span class="n">SKOS</span>
+
+<span class="kn">from</span> <span class="nn">sssom.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span>
+
+
+<div class="viewcode-block" id="EndpointConfig"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.EndpointConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">EndpointConfig</span><span class="p">:</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">graph</span><span class="p">:</span> <span class="n">URIRef</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">predmap</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">curie_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">include_object_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="query_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.query_mappings">[docs]</a><span class="k">def</span> <span class="nf">query_mappings</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Query a SPARQL endpoint to obtain a set of mapping</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sparql</span> <span class="o">=</span> <span class="n">SPARQLWrapper</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">graph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="s2">&quot;?g&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">graph</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">n3</span><span class="p">()</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">predicates</span>
+    <span class="k">if</span> <span class="n">preds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">{</span><span class="n">SKOS</span><span class="o">.</span><span class="n">exactMatch</span><span class="p">,</span> <span class="n">SKOS</span><span class="o">.</span><span class="n">closeMatch</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="n">expand_curie</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preds</span><span class="p">]</span>
+    <span class="n">predstr</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">n3</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preds</span><span class="p">])</span>
+    <span class="n">limitstr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">limitstr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LIMIT </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;subject_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;subject_label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;predicate_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;object_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mapping_provider&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">include_object_labels</span><span class="p">:</span>
+        <span class="n">cols</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;object_label&quot;</span><span class="p">)</span>
+    <span class="n">colstr</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;?</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">])</span>
+    <span class="n">olq</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;OPTIONAL { ?object_id rdfs:label ?object_label }&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">include_object_labels</span>
+        <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    PREFIX rdfs: </span><span class="si">{</span><span class="n">RDFS</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">n3</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span>
+<span class="s2">    SELECT </span><span class="si">{</span><span class="n">colstr</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    WHERE </span><span class="se">{{</span><span class="s2"></span>
+<span class="s2">        GRAPH </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2"> </span><span class="se">{{</span><span class="s2"> </span>
+<span class="s2">          VALUES ?predicate_id </span><span class="se">{{</span><span class="s2"> </span><span class="si">{</span><span class="n">predstr</span><span class="si">}</span><span class="s2"> </span><span class="se">}}</span><span class="s2"> .</span>
+<span class="s2">          ?subject_id ?predicate_id ?object_id .</span>
+<span class="s2">          ?subject_id rdfs:label ?subject_label </span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2"> .</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">olq</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">        BIND(</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2"> as ?mapping_provider)</span>
+<span class="s2">    </span><span class="se">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">limitstr</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">sparql</span><span class="o">.</span><span class="n">setQuery</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">sparql</span><span class="o">.</span><span class="n">setReturnFormat</span><span class="p">(</span><span class="n">JSON</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">sparql</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="s2">&quot;bindings&quot;</span><span class="p">]:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curiefy_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MappingSetDataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">prefixmap</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">curie_map</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="curiefy_row"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.curiefy_row">[docs]</a><span class="k">def</span> <span class="nf">curiefy_row</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="n">new_row</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">new_row</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">contract_uri</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_row</span></div>
+
+
+<div class="viewcode-block" id="contract_uri"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.contract_uri">[docs]</a><span class="k">def</span> <span class="nf">contract_uri</span><span class="p">(</span><span class="n">uristr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">curie_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">uristr</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">curie_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">uristr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">uristr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">uristr</span></div>
+
+
+<div class="viewcode-block" id="expand_curie"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.expand_curie">[docs]</a><span class="k">def</span> <span class="nf">expand_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">curie_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">curie_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span>
+        <span class="k">if</span> <span class="n">curie</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

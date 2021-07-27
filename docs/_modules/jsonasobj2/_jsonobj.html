@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>jsonasobj2._jsonobj &mdash; sssom-py 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sssom-py
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">sssom-py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">SSSOM CLI usage</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sssom-py</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>jsonasobj2._jsonobj</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jsonasobj2._jsonobj</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">hbreader</span> <span class="kn">import</span> <span class="n">hbread</span>
+
+<span class="kn">from</span> <span class="nn">jsonasobj2.extendednamespace</span> <span class="kn">import</span> <span class="n">ExtendedNamespace</span>
+
+<span class="c1"># Possible types in the JsonObj representation</span>
+<span class="n">JsonObjTypes</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;JsonObj&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;JsonObjTypes&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+<span class="c1"># Types in the pure JSON representation</span>
+<span class="n">JsonTypes</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;JsonTypes&quot;</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;JsonTypes&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+<span class="c1"># Control variables -- note that subclasses can add to this list</span>
+<span class="n">hide</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_if_missing&#39;</span><span class="p">,</span> <span class="s1">&#39;_root&#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">JsonObj</span><span class="p">(</span><span class="n">ExtendedNamespace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A namespace/dictionary representation of a JSON object. Any name in a JSON object that is a valid python</span>
+<span class="sd">    identifier is represented as a first-class member of the objects.  JSON identifiers that begin with &quot;_&quot; are</span>
+<span class="sd">    disallowed in this implementation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set this class variable to False if recursive construction is absolutely necessare (see: test_issue13.py for</span>
+    <span class="c1"># details</span>
+    <span class="n">_idempotent</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">_if_missing</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;JsonObj&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Construct a JsonObj from set of keyword/value pairs</span>
+
+<span class="sd">        :param list_or_dict: A list or dictionary that can be used to construct the object</span>
+<span class="sd">        :param _if_missing: Function to call if attempt is made to access an undefined value.  Function takes JsonObj</span>
+<span class="sd">        instance and parameter as input and returns a tuple -- handled (y or n) and result.  If handled is &#39;n&#39; inline</span>
+<span class="sd">        processing proceeds.</span>
+<span class="sd">        :param kwargs: A dictionary as an alternative constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This makes JsonObj idempotent</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_idempotent</span> <span class="ow">and</span> <span class="n">args</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">JsonObj</span><span class="p">):</span>
+            <span class="c1"># If we&#39;re being called with a single argument</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">and</span>\
+                    <span class="p">(</span><span class="ow">not</span> <span class="n">_if_missing</span> <span class="ow">or</span> <span class="n">_if_missing</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">cls</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExtendedNamespace</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">_if_missing</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;JsonObj&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Construct a JsonObj from set of keyword/value pairs</span>
+
+<span class="sd">        :param list_or_dict: A list or dictionary that can be used to construct the object</span>
+<span class="sd">        :param _if_missing: Function to call if attempt is made to access an undefined value.  Function takes JsonObj</span>
+<span class="sd">        instance and parameter as input and returns a tuple -- handled (y or n) and result.  If handled is &#39;n&#39; inline</span>
+<span class="sd">        processing proceeds.</span>
+<span class="sd">        :param kwargs: A dictionary as an alternative constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_idempotent</span> <span class="ow">and</span> \
+                    <span class="p">(</span><span class="ow">not</span> <span class="n">_if_missing</span> <span class="ow">or</span> <span class="n">_if_missing</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">_if_missing</span> <span class="ow">and</span> <span class="n">_if_missing</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_if_missing</span> <span class="o">=</span> <span class="n">_if_missing</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Constructor can&#39;t have both a single item and a dict&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">JsonObj</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_dict</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">ExtendedNamespace</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                           <span class="n">_root</span><span class="o">=</span><span class="p">[</span><span class="n">JsonObj</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="k">else</span>
+                                                  <span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;JSON Object can only be a list or dictionary&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_if_missing</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="s2">&quot;JsonObj&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_init_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="s2">&quot;JsonObj&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Construct a JsonObj from a dictionary or another JsonObj &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">):</span>
+            <span class="n">ExtendedNamespace</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_if_missing</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">,</span>
+                                       <span class="o">**</span><span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">JsonObj</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+
+    <span class="k">def</span> <span class="nf">_hide_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="k">if</span> <span class="s1">&#39;_root&#39;</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">else</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;_root&#39;</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">else</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="c1"># ===================================================</span>
+    <span class="c1"># JSON Serializer method</span>
+    <span class="c1"># ===================================================</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_static_default</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filtr</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; return a serialized version of obj or raise a TypeError.  Used by the JSON serializer</span>
+
+<span class="sd">        :param obj:</span>
+<span class="sd">        :param filtr: dictionary filter</span>
+<span class="sd">        :return: Serialized version of obj</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">filtr</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecoder</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filtr</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This default method is here to allow inheriting classes to override it when needed &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">JsonObj</span><span class="o">.</span><span class="n">_static_default</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filtr</span><span class="p">)</span>
+
+    <span class="c1"># ===================================================</span>
+    <span class="c1"># Underscore equivalent of useful dictionary functions</span>
+    <span class="c1"># ===================================================</span>
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">JsonObjTypes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObjTypes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Equivalent to dictionary get function w/o polluting namespace &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">else</span> <span class="n">default</span>
+
+    <span class="k">def</span> <span class="nf">_setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonTypes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">JsonObjTypes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Equivalent of dictionary setdefault without messing in namespace &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">JsonObj</span><span class="p">(</span><span class="n">_if_missing</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">,</span> <span class="o">**</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot; Return all non-hidden keys &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hide_list</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hide</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">k</span>
+
+    <span class="k">def</span> <span class="nf">_items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">JsonObjTypes</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot; Return all non-hidden items &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hide_list</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hide</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="nf">_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">JsonObjTypes</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot; Return all non hidden values &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">v</span>
+
+    <span class="c1"># ===================================================</span>
+    <span class="c1"># Various converters -- use exposed methods in place of underscores</span>
+    <span class="c1"># ===================================================</span>
+    <span class="k">def</span> <span class="nf">_as_json_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonTypes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Return self as pure json &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_as_json_dumps</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;_root&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">found</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">found</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_if_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;_root&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">()))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Convert a JsonObj into straight json text</span>
+
+<span class="sd">        :return: JSON formatted str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_as_json_dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;   &#39;</span><span class="p">,</span> <span class="n">filtr</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Convert to a stringified json object.</span>
+
+<span class="sd">        This is the same as _as_json with the exception that it isn&#39;t</span>
+<span class="sd">        a property, meaning that we can actually pass arguments...</span>
+<span class="sd">        :param indent: indent argument to dumps</span>
+<span class="sd">        :param filtr: dictionary filter</span>
+<span class="sd">        :param kwargs: other arguments for dumps</span>
+<span class="sd">        :return: JSON formatted string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filtr</span><span class="p">)</span> <span class="k">if</span> <span class="n">filtr</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span>
+                          <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">JsonTypes</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot; Convert a JsonObj into a straight dictionary</span>
+
+<span class="sd">        :return: dictionary that cooresponds to the json object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Convert a json_str into a JsonObj</span>
+
+<span class="sd">    :param s: a str instance containing a JSON document</span>
+<span class="sd">    :param kwargs: arguments see: json.load for details</span>
+<span class="sd">    :return: JsonObj representing the json string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">detect_encoding</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="s1">&#39;surrogatepass&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">JsonObj</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pairs</span><span class="p">:</span> <span class="n">JsonObj</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Deserialize a JSON source.</span>
+
+<span class="sd">    :param source: a URI, File name or a .read()-supporting file-like object containing a JSON document</span>
+<span class="sd">    :param kwargs: arguments. see: json.load for details</span>
+<span class="sd">    :return: JsonObj representing fp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">loads</span><span class="p">(</span><span class="n">hbread</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">accept_header</span><span class="o">=</span><span class="s2">&quot;application/json, text/json;q=0.9&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">JsonObj</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine whether obj is a dictionary or a JsonObj containing a dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_hide_list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">is_list</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">JsonObj</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine whether obj is a dictionary or a JsonObj containing a dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_hide_list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">JsonObj</span><span class="p">,</span> <span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">JsonTypes</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot; Convert a JsonObj into a straight dictionary or list</span>
+
+<span class="sd">    :param obj: pseudo &#39;self&#39;</span>
+<span class="sd">    :return: dictionary that cooresponds to the json object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)):</span>
+        <span class="k">return</span> \
+            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">as_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">))</span> <span class="k">else</span> <span class="n">v</span>
+             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span> <span class="k">if</span> <span class="n">is_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> \
+            <span class="p">[</span><span class="n">as_dict</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">))</span> <span class="k">else</span>
+             <span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_hide_list</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+<span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">,</span> <span class="n">List</span><span class="p">],</span> <span class="n">indent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;   &#39;</span><span class="p">,</span>
+            <span class="n">filtr</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Convert obj to json string representation.</span>
+
+<span class="sd">        :param obj: pseudo &#39;self&#39;</span>
+<span class="sd">        :param indent: indent argument to dumps</span>
+<span class="sd">        :param filtr: filter to remove unwanted elements</span>
+<span class="sd">        :param kwargs: other arguments for dumps</span>
+<span class="sd">        :return: JSON formatted string</span>
+<span class="sd">       &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;_root&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_root</span>
+    <span class="n">default_processor</span> <span class="o">=</span> \
+        <span class="n">obj</span><span class="o">.</span><span class="n">_default</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">JsonObj</span><span class="o">.</span><span class="n">_static_default</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_as_json_dumps</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span>
+                              <span class="n">filtr</span><span class="o">=</span><span class="n">filtr</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> \
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span>
+                   <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">default_processor</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">filtr</span><span class="p">)</span> <span class="k">if</span> <span class="n">filtr</span> <span class="k">else</span> <span class="n">default_processor</span><span class="p">(</span><span class="n">o</span><span class="p">),</span>
+                   <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span>
+                   <span class="o">*</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">as_json_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">,</span> <span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">JsonTypes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Return obj as pure python json (vs. JsonObj)</span>
+<span class="sd">        :param obj: pseudo &#39;self&#39;</span>
+<span class="sd">        :return: Pure python json image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_hide_list</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">as_json_obj</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span>\
+        <span class="n">obj</span><span class="o">.</span><span class="n">_as_json_obj</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span>
+
+
+<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">],</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">JsonObjTypes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObjTypes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Dictionary get routine &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">setdefault</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonTypes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">JsonObjTypes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Dictionary setdefault routine &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot; same as dict keys() without polluting the namespace &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_keys</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">JsonObjTypes</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot; Same as dict items() except that the values are JsonObjs instead of vanilla dictionaries</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">JsonObjTypes</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot; Same as dict values() except that the values are JsonObjs &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">JsonObj</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
