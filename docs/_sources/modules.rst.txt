@@ -1,4 +1,4 @@
-sssom-py
+SSSOM-PY
 ========
 
 .. toctree::
