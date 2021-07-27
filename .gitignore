@@ -15,4 +15,4 @@ tmp/
 schema/sssom-docs/
 .DS_Store
 .tox
-docs/_build
+sphinx/_build
