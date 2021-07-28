@@ -17,4 +17,4 @@ schema/sssom-docs/
 .tox
 sphinx/_build
 sphinx/_static
-spinx/_templates
+sphinx/_templates
