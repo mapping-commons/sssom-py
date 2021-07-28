@@ -16,3 +16,6 @@ schema/sssom-docs/
 .DS_Store
 .tox
 sphinx/_build
+docs/_static
+docs/_modules
+docs/_sources
