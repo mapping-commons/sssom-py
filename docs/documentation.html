@@ -1,0 +1,1047 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation &mdash; sssom-py 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sssom-py
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">SSSOM-PY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#datamodel">Datamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-o">I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_usage.html">SSSOM CLI usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sphinx_documentation.html">Documentation Update and Redeployment</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sssom-py</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/documentation.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<section id="datamodel">
+<h2>Datamodel<a class="headerlink" href="#datamodel" title="Permalink to this headline">¶</a></h2>
+<p>Top-level Document object</p>
+<span class="target" id="module-sssom.sssom_document"></span><dl class="class">
+<dt id="sssom.sssom_document.MappingSetDocument">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_document.</code><code class="sig-name descname">MappingSetDocument</code><span class="sig-paren">(</span><em class="sig-param">mapping_set: sssom.sssom_datamodel.MappingSet, curie_map: Dict[str, str], **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_document.html#MappingSetDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a single SSSOM document.</p>
+<p>A document is simply a holder for a MappingSet object plus a CURIE map</p>
+<dl class="attribute">
+<dt id="sssom.sssom_document.MappingSetDocument.curie_map">
+<code class="sig-name descname">curie_map</code><em class="property">: Dict[str, str]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.curie_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mappings between ID prefixes and URI Bases, used to map CURIEs to URIs.
+Note that the CURIE map is not part of the core SSSOM model, hence it belongs here in the document
+object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sssom.sssom_document.MappingSetDocument.mapping_set">
+<code class="sig-name descname">mapping_set</code><em class="property">: MappingSet</em><em class="property"> = None</em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.mapping_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>a set of mappings plus metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>The main part of the document</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>A Document holds a MappingSet which is a collection of mappings</p>
+<span class="target" id="module-sssom.sssom_datamodel"></span><dl class="class">
+<dt id="sssom.sssom_datamodel.Entity">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">Entity</code><span class="sig-paren">(</span><em class="sig-param">id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId] = None</em>, <em class="sig-param">label: Optional[str] = None</em>, <em class="sig-param">category: Optional[str] = None</em>, <em class="sig-param">source: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.YAMLRoot</span></code></p>
+<p>Represents any entity that can be mapped, such as an OWL class or SKOS concept</p>
+<dl class="method">
+<dt id="sssom.sssom_datamodel.Entity.MissingRequiredField">
+<code class="sig-name descname">MissingRequiredField</code><span class="sig-paren">(</span><em class="sig-param">field_name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#sssom.sssom_datamodel.Entity.MissingRequiredField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic loader error handler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.Entity.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param">cls, *args, _if_missing: Callable[[JsonObj, str], Tuple[bool, Any]] = None, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.Entity.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a JsonObj from set of keyword/value pairs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_or_dict</strong> – A list or dictionary that can be used to construct the object</p></li>
+<li><p><strong>_if_missing</strong> – Function to call if attempt is made to access an undefined value.  Function takes JsonObj</p></li>
+</ul>
+</dd>
+</dl>
+<p>instance and parameter as input and returns a tuple – handled (y or n) and result.  If handled is ‘n’ inline
+processing proceeds.
+:param kwargs: A dictionary as an alternative constructor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.EntityId">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">EntityId</code><span class="sig-paren">(</span><em class="sig-param">v: Union[Any, TypedNode]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#EntityId"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.EntityId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.extended_str</span></code></p>
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.capitalize">
+<code class="sig-name descname">capitalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.capitalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a capitalized version of the string.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.casefold">
+<code class="sig-name descname">casefold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.casefold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string suitable for caseless comparisons.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.center">
+<code class="sig-name descname">center</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a centered string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.count">
+<code class="sig-name descname">count</code><span class="sig-paren">(</span><em class="sig-param">sub</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of non-overlapping occurrences of substring sub in
+string S[start:end].  Optional arguments start and end are
+interpreted as in slice notation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.encode">
+<code class="sig-name descname">encode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode the string using the codec registered for encoding.</p>
+<dl class="simple">
+<dt>encoding</dt><dd><p>The encoding in which to encode the string.</p>
+</dd>
+<dt>errors</dt><dd><p>The error handling scheme to use for encoding errors.
+The default is ‘strict’ meaning that encoding errors raise a
+UnicodeEncodeError.  Other possible values are ‘ignore’, ‘replace’ and
+‘xmlcharrefreplace’ as well as any other name registered with
+codecs.register_error that can handle UnicodeEncodeErrors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.endswith">
+<code class="sig-name descname">endswith</code><span class="sig-paren">(</span><em class="sig-param">suffix</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S ends with the specified suffix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+suffix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.expandtabs">
+<code class="sig-name descname">expandtabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.expandtabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy where all tab characters are expanded using spaces.</p>
+<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.find">
+<code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param">sub</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.format">
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from args and kwargs.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.format_map">
+<code class="sig-name descname">format_map</code><span class="sig-paren">(</span><em class="sig-param">mapping</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.format_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a formatted version of S, using substitutions from mapping.
+The substitutions are identified by braces (‘{’ and ‘}’).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.index">
+<code class="sig-name descname">index</code><span class="sig-paren">(</span><em class="sig-param">sub</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isalnum">
+<code class="sig-name descname">isalnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isalnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alpha-numeric string, False otherwise.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isalpha">
+<code class="sig-name descname">isalpha</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isalpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an alphabetic string, False otherwise.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isascii">
+<code class="sig-name descname">isascii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if all characters in the string are ASCII, False otherwise.</p>
+<p>ASCII characters have code points in the range U+0000-U+007F.
+Empty string is ASCII too.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isdecimal">
+<code class="sig-name descname">isdecimal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isdecimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a decimal string, False otherwise.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isdigit">
+<code class="sig-name descname">isdigit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isdigit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a digit string, False otherwise.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isidentifier">
+<code class="sig-name descname">isidentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isidentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a valid Python identifier, False otherwise.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as “def” or “class”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.islower">
+<code class="sig-name descname">islower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.islower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a lowercase string, False otherwise.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isnumeric">
+<code class="sig-name descname">isnumeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isnumeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a numeric string, False otherwise.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isprintable">
+<code class="sig-name descname">isprintable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isprintable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is printable, False otherwise.</p>
+<p>A string is printable if all of its characters are considered printable in
+repr() or if it is empty.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isspace">
+<code class="sig-name descname">isspace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a whitespace string, False otherwise.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.istitle">
+<code class="sig-name descname">istitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.istitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is a title-cased string, False otherwise.</p>
+<p>In a title-cased string, upper- and title-case characters may only
+follow uncased characters and lowercase characters only cased ones.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.isupper">
+<code class="sig-name descname">isupper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.isupper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the string is an uppercase string, False otherwise.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.join">
+<code class="sig-name descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate any number of strings.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
+<p>Example: ‘.’.join([‘ab’, ‘pq’, ‘rs’]) -&gt; ‘ab.pq.rs’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.ljust">
+<code class="sig-name descname">ljust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.ljust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a left-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.lower">
+<code class="sig-name descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to lowercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.lstrip">
+<code class="sig-name descname">lstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.lstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.maketrans">
+<em class="property">static </em><code class="sig-name descname">maketrans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.maketrans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a translation table usable for str.translate().</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.partition">
+<code class="sig-name descname">partition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.replace">
+<code class="sig-name descname">replace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy with all occurrences of substring old replaced by new.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>count</dt><dd><p>Maximum number of occurrences to replace.
+-1 (the default value) means replace all occurrences.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>If the optional argument count is given, only the first count occurrences are
+replaced.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.rfind">
+<code class="sig-name descname">rfind</code><span class="sig-paren">(</span><em class="sig-param">sub</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.rfind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.rindex">
+<code class="sig-name descname">rindex</code><span class="sig-paren">(</span><em class="sig-param">sub</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.rindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.rjust">
+<code class="sig-name descname">rjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.rjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a right-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.rpartition">
+<code class="sig-name descname">rpartition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.rpartition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.rsplit">
+<code class="sig-name descname">rsplit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.rsplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the words in the string, using sep as the delimiter string.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>sep</dt><dd><p>The delimiter according which to split the string.
+None (the default value) means split according to any whitespace,
+and discard empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt><dd><p>Maximum number of splits to do.
+-1 (the default value) means no limit.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Splits are done starting at the end of the string and working to the front.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.rstrip">
+<code class="sig-name descname">rstrip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.rstrip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.split">
+<code class="sig-name descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the words in the string, using sep as the delimiter string.</p>
+<dl class="simple">
+<dt>sep</dt><dd><p>The delimiter according which to split the string.
+None (the default value) means split according to any whitespace,
+and discard empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt><dd><p>Maximum number of splits to do.
+-1 (the default value) means no limit.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.splitlines">
+<code class="sig-name descname">splitlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.splitlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the lines in the string, breaking at line boundaries.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.startswith">
+<code class="sig-name descname">startswith</code><span class="sig-paren">(</span><em class="sig-param">prefix</em><span class="optional">[</span>, <em class="sig-param">start</em><span class="optional">[</span>, <em class="sig-param">end</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if S starts with the specified prefix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+prefix can also be a tuple of strings to try.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.strip">
+<code class="sig-name descname">strip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string with leading and trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.swapcase">
+<code class="sig-name descname">swapcase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.swapcase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.title">
+<code class="sig-name descname">title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the string where each word is titlecased.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.translate">
+<code class="sig-name descname">translate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace each character in the string using the given translation table.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>table</dt><dd><p>Translation table, which must be a mapping of Unicode ordinals to
+Unicode ordinals, strings, or None.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>The table must implement lookup/indexing via __getitem__, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.upper">
+<code class="sig-name descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the string converted to uppercase.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.yaml_loc">
+<em class="property">static </em><code class="sig-name descname">yaml_loc</code><span class="sig-paren">(</span><em class="sig-param">loc_str: Union[TypedNode</em>, <em class="sig-param">str</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">suffix: Optional[str] = ': '</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#sssom.sssom_datamodel.EntityId.yaml_loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the yaml file and location of loc_str if it exists</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.EntityId.zfill">
+<code class="sig-name descname">zfill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.EntityId.zfill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
+<p>The string is never truncated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.Mapping">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">Mapping</code><span class="sig-paren">(</span><em class="sig-param">subject_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">subject_label: Optional[str] = None</em>, <em class="sig-param">subject_category: Optional[str] = None</em>, <em class="sig-param">predicate_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">predicate_label: Optional[str] = None</em>, <em class="sig-param">object_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">object_label: Optional[str] = None</em>, <em class="sig-param">object_category: Optional[str] = None</em>, <em class="sig-param">match_type: Optional[str] = None</em>, <em class="sig-param">creator_id: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">creator_label: Optional[str] = None</em>, <em class="sig-param">license: Optional[str] = None</em>, <em class="sig-param">subject_source: Optional[str] = None</em>, <em class="sig-param">subject_source_version: Optional[str] = None</em>, <em class="sig-param">object_source: Optional[str] = None</em>, <em class="sig-param">object_source_version: Optional[str] = None</em>, <em class="sig-param">mapping_provider: Optional[str] = None</em>, <em class="sig-param">mapping_cardinality: Union[str</em>, <em class="sig-param">MappingCardinalityEnum</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">mapping_tool: Optional[str] = None</em>, <em class="sig-param">mapping_date: Optional[str] = None</em>, <em class="sig-param">confidence: Optional[float] = None</em>, <em class="sig-param">subject_match_field: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">object_match_field: Union[str</em>, <em class="sig-param">sssom.sssom_datamodel.EntityId</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">match_string: Optional[str] = None</em>, <em class="sig-param">subject_preprocessing: Optional[str] = None</em>, <em class="sig-param">object_preprocessing: Optional[str] = None</em>, <em class="sig-param">match_term_type: Optional[str] = None</em>, <em class="sig-param">semantic_similarity_score: Optional[float] = None</em>, <em class="sig-param">information_content_mica_score: Optional[float] = None</em>, <em class="sig-param">see_also: Optional[str] = None</em>, <em class="sig-param">other: Optional[str] = None</em>, <em class="sig-param">comment: Optional[str] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#Mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.Mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.YAMLRoot</span></code></p>
+<p>Represents an individual mapping between a pair of entities</p>
+<dl class="method">
+<dt id="sssom.sssom_datamodel.Mapping.MissingRequiredField">
+<code class="sig-name descname">MissingRequiredField</code><span class="sig-paren">(</span><em class="sig-param">field_name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#sssom.sssom_datamodel.Mapping.MissingRequiredField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic loader error handler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.Mapping.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param">cls, *args, _if_missing: Callable[[JsonObj, str], Tuple[bool, Any]] = None, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.Mapping.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a JsonObj from set of keyword/value pairs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_or_dict</strong> – A list or dictionary that can be used to construct the object</p></li>
+<li><p><strong>_if_missing</strong> – Function to call if attempt is made to access an undefined value.  Function takes JsonObj</p></li>
+</ul>
+</dd>
+</dl>
+<p>instance and parameter as input and returns a tuple – handled (y or n) and result.  If handled is ‘n’ inline
+processing proceeds.
+:param kwargs: A dictionary as an alternative constructor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.MappingCardinalityEnum">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">MappingCardinalityEnum</code><span class="sig-paren">(</span><em class="sig-param">code: Union[str, linkml_runtime.utils.metamodelcore.Curie]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#MappingCardinalityEnum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.MappingCardinalityEnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.enumerations.EnumDefinitionImpl</span></code></p>
+<dl class="method">
+<dt id="sssom.sssom_datamodel.MappingCardinalityEnum.MissingRequiredField">
+<code class="sig-name descname">MissingRequiredField</code><span class="sig-paren">(</span><em class="sig-param">field_name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#sssom.sssom_datamodel.MappingCardinalityEnum.MissingRequiredField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic loader error handler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.MappingCardinalityEnum.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param">cls, *args, _if_missing: Callable[[JsonObj, str], Tuple[bool, Any]] = None, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.MappingCardinalityEnum.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a JsonObj from set of keyword/value pairs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_or_dict</strong> – A list or dictionary that can be used to construct the object</p></li>
+<li><p><strong>_if_missing</strong> – Function to call if attempt is made to access an undefined value.  Function takes JsonObj</p></li>
+</ul>
+</dd>
+</dl>
+<p>instance and parameter as input and returns a tuple – handled (y or n) and result.  If handled is ‘n’ inline
+processing proceeds.
+:param kwargs: A dictionary as an alternative constructor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.sssom_datamodel.MappingSet">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.sssom_datamodel.</code><code class="sig-name descname">MappingSet</code><span class="sig-paren">(</span><em class="sig-param">mappings: Union[dict, Mapping, List[Union[dict, Mapping]], None] = &lt;factory&gt;, mapping_set_id: Union[str, sssom.sssom_datamodel.EntityId, None] = None, mapping_set_version: Optional[str] = None, mapping_set_description: Optional[str] = None, creator_id: Union[str, sssom.sssom_datamodel.EntityId, None] = None, creator_label: Optional[str] = None, license: Optional[str] = None, subject_source: Optional[str] = None, subject_source_version: Optional[str] = None, object_source: Optional[str] = None, object_source_version: Optional[str] = None, mapping_provider: Optional[str] = None, mapping_tool: Optional[str] = None, mapping_date: Optional[str] = None, subject_match_field: Union[str, sssom.sssom_datamodel.EntityId, None] = None, object_match_field: Union[str, sssom.sssom_datamodel.EntityId, None] = None, subject_preprocessing: Optional[str] = None, object_preprocessing: Optional[str] = None, match_term_type: Optional[str] = None, see_also: Optional[str] = None, other: Optional[str] = None, comment: Optional[str] = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sssom_datamodel.html#MappingSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">linkml_runtime.utils.yamlutils.YAMLRoot</span></code></p>
+<p>Represents a set of mappings</p>
+<dl class="method">
+<dt id="sssom.sssom_datamodel.MappingSet.MissingRequiredField">
+<code class="sig-name descname">MissingRequiredField</code><span class="sig-paren">(</span><em class="sig-param">field_name: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.MissingRequiredField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic loader error handler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sssom.sssom_datamodel.MappingSet.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param">cls, *args, _if_missing: Callable[[JsonObj, str], Tuple[bool, Any]] = None, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#sssom.sssom_datamodel.MappingSet.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a JsonObj from set of keyword/value pairs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_or_dict</strong> – A list or dictionary that can be used to construct the object</p></li>
+<li><p><strong>_if_missing</strong> – Function to call if attempt is made to access an undefined value.  Function takes JsonObj</p></li>
+</ul>
+</dd>
+</dl>
+<p>instance and parameter as input and returns a tuple – handled (y or n) and result.  If handled is ‘n’ inline
+processing proceeds.
+:param kwargs: A dictionary as an alternative constructor.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="i-o">
+<h2>I/O<a class="headerlink" href="#i-o" title="Permalink to this headline">¶</a></h2>
+<p>Conversion between TSV/pandas, internal datamodel and RDF</p>
+<span class="target" id="module-sssom.io"></span><dl class="function">
+<dt id="sssom.io.convert_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">convert_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em>, <em class="sig-param">output_path: str = None</em>, <em class="sig-param">output_format: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#convert_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.convert_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><p>input_path: The path to the input SSSOM tsv file
+output_path: The path to the output file.
+output_format: The format to which the the SSSOM TSV should be converted.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.get_metadata_and_curie_map">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">get_metadata_and_curie_map</code><span class="sig-paren">(</span><em class="sig-param">metadata_path</em>, <em class="sig-param">curie_map_mode: str = 'metadata_only'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#get_metadata_and_curie_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.get_metadata_and_curie_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads sssom metadata from a file, and then augments it with default prefixes.
+:param metadata_path: The metadata file in YAML format
+:param curie_map_mode: one of metadata_only, sssom_default_only, merged
+:return: a curie map dictionary and a metadata object dictionary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.parse_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">parse_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em>, <em class="sig-param">output_path: str = None</em>, <em class="sig-param">input_format: str = None</em>, <em class="sig-param">metadata_path: str = None</em>, <em class="sig-param">curie_map_mode: str = None</em>, <em class="sig-param">clean_prefixes: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#parse_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.parse_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>Args:</dt><dd><p>input_path (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+output_path (str): The path to the output file.
+input_format (str): The string denoting the input format.
+metadata_path (str): The path to a file containing the sssom metadata (including curie_map)</p>
+<blockquote>
+<div><p>to be used during parse.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>curie_map_mode (str): Defines wether the curie map in the metadata should be extended or replaced with</dt><dd><p>the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged</p>
+</dd>
+</dl>
+<p>clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.split_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">split_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em>, <em class="sig-param">output_directory: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#split_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.split_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits an SSSOM TSV by prefixes and relations.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>input_path (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+output_directory (str): The directory to which the split file should be exported.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.io.validate_file">
+<code class="sig-prename descclassname">sssom.io.</code><code class="sig-name descname">validate_file</code><span class="sig-paren">(</span><em class="sig-param">input_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#validate_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.io.validate_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the incoming SSSOM tsv according to the SSSOM specification</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>input_path (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p>
+</dd>
+<dt>Returns:</dt><dd><p>Boolean. True if valid SSSOM, false otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="utils">
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
+<p>Utils - currently boomer-specific</p>
+<span class="target" id="module-sssom.util"></span><dl class="class">
+<dt id="sssom.util.EntityPair">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">EntityPair</code><span class="sig-paren">(</span><em class="sig-param">subject_entity: sssom.sssom_datamodel.Entity</em>, <em class="sig-param">object_entity: sssom.sssom_datamodel.Entity</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#EntityPair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.EntityPair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A tuple of entities.</p>
+<p>Note that (e1,e2) == (e2,e1)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sssom.util.KEY_FEATURES">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">KEY_FEATURES</code><em class="property"> = ['subject_id', 'predicate_id', 'object_id']</em><a class="headerlink" href="#sssom.util.KEY_FEATURES" title="Permalink to this definition">¶</a></dt>
+<dd><p>The 3 columns whose combination would be used as primary keys while merging/grouping</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.util.MappingSetDataFrame">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">MappingSetDataFrame</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame = None</em>, <em class="sig-param">prefixmap: Dict[str</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">metadata: Optional[Dict[str</em>, <em class="sig-param">str]] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of mappings represented as a DataFrame, together with additional metadata</p>
+<dl class="method">
+<dt id="sssom.util.MappingSetDataFrame.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param">msdf2</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges two MappingSetDataframes</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame (self =&gt; primary)</p>
+</dd>
+<dt>Returns:</dt><dd><p>MappingSetDataFrame: Merged MappingSetDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.util.MappingSetDiff">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">MappingSetDiff</code><span class="sig-paren">(</span><em class="sig-param">unique_tuples1: Optional[Set[str]] = None</em>, <em class="sig-param">unique_tuples2: Optional[Set[str]] = None</em>, <em class="sig-param">common_tuples: Optional[Set[str]] = None</em>, <em class="sig-param">combined_dataframe: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MappingSetDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>represents a difference between two mapping sets</p>
+<p>Currently this is limited to diffs at the level of entity-pairs.
+For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMatch B,
+this is considered a mapping in common.</p>
+<dl class="attribute">
+<dt id="sssom.util.MappingSetDiff.combined_dataframe">
+<code class="sig-name descname">combined_dataframe</code><em class="property">: Optional[pandas.core.frame.DataFrame]</em><em class="property"> = None</em><a class="headerlink" href="#sssom.util.MappingSetDiff.combined_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dataframe that combines with left and right dataframes with information injected into
+the comment column</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sssom.util.MetaTSVConverter">
+<em class="property">class </em><code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">MetaTSVConverter</code><span class="sig-paren">(</span><em class="sig-param">df: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MetaTSVConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MetaTSVConverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>converts SSSOM/sssom_metadata.tsv
+DO NOT USE, NOW DEPRECATED!</p>
+<dl class="method">
+<dt id="sssom.util.MetaTSVConverter.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/sssom/util.html#MetaTSVConverter.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.MetaTSVConverter.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>loads from folder
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.collapse">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">collapse</code><span class="sig-paren">(</span><em class="sig-param">df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#collapse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.collapse" title="Permalink to this definition">¶</a></dt>
+<dd><p>collapses rows with same S/P/O and combines confidence</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.compare_dataframes">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">compare_dataframes</code><span class="sig-paren">(</span><em class="sig-param">df1: pandas.core.frame.DataFrame</em>, <em class="sig-param">df2: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDiff<a class="reference internal" href="_modules/sssom/util.html#compare_dataframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.compare_dataframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a diff between two SSSOM dataframes</p>
+<p>Currently does not discriminate between mappings with different predicates</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.dataframe_to_ptable">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">dataframe_to_ptable</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#dataframe_to_ptable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.dataframe_to_ptable" title="Permalink to this definition">¶</a></dt>
+<dd><p>exports kboom ptable
+:param df: SSSOM dataframe
+:param inverse_factor: relative weighting of probability of inverse of predicate
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.deal_with_negation">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">deal_with_negation</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#deal_with_negation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.deal_with_negation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination
+taking into account the rule that negative trumps positive given equal confidence values.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df (pd.DataFrame): Merged Pandas DataFrame</p>
+</dd>
+<dt>Returns:</dt><dd><p>pd.DataFrame: Pandas DataFrame with negations addressed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.dict_merge">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">dict_merge</code><span class="sig-paren">(</span><em class="sig-param">source: Dict</em>, <em class="sig-param">target: Dict</em>, <em class="sig-param">dict_name: str</em><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/sssom/util.html#dict_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.dict_merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes 2 MappingSetDataFrame elements (prefixmap OR metadata) and merges source =&gt; target</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>source (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+target (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+dict_name (str): prefixmap or metadata</p>
+</dd>
+<dt>Returns:</dt><dd><p>Dict: merged MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.filter_redundant_rows">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">filter_redundant_rows</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em>, <em class="sig-param">ignore_predicate=False</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#filter_redundant_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.filter_redundant_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes rows if there is another row with same S/O and higher confidence</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df: data frame to filter
+ignore_predicate: if true, the predicate_id column is ignored</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.group_mappings">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">group_mappings</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; Dict[sssom.util.EntityPair, List]<a class="reference internal" href="_modules/sssom/util.html#group_mappings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.group_mappings" title="Permalink to this definition">¶</a></dt>
+<dd><p>group mappings by EntityPairs</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.inject_metadata_into_df">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">inject_metadata_into_df</code><span class="sig-paren">(</span><em class="sig-param">msdf: sssom.util.MappingSetDataFrame</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/util.html#inject_metadata_into_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.inject_metadata_into_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msdf (MappingSetDataFrame): MappingSetDataFrame with metadata separate.</p>
+</dd>
+<dt>Returns:</dt><dd><p>MappingSetDataFrame: MappingSetDataFrame with metadata as columns</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.merge_msdf">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">merge_msdf</code><span class="sig-paren">(</span><em class="sig-param">msdf1: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">msdf2: sssom.util.MappingSetDataFrame</em>, <em class="sig-param">reconcile: bool = True</em><span class="sig-paren">)</span> &#x2192; sssom.util.MappingSetDataFrame<a class="reference internal" href="_modules/sssom/util.html#merge_msdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.merge_msdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merging msdf2 into msdf1,
+if reconcile=True, then dedupe(remove redundant lower confidence mappings) and</p>
+<blockquote>
+<div><p>reconcile (if msdf contains a higher confidence _negative_ mapping,
+then remove lower confidence positive one. If confidence is the same,
+prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msdf1 (MappingSetDataFrame): The primary MappingSetDataFrame
+msdf2 (MappingSetDataFrame): The secondary MappingSetDataFrame
+reconcile (bool, optional): [description]. Defaults to True.</p>
+</dd>
+<dt>Returns:</dt><dd><p>MappingSetDataFrame: Merged MappingSetDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.parse">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses a TSV to a pandas frame</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.read_metadata">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">read_metadata</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#read_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.read_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reading metadata file (yaml) that is supplied separately from a tsv
+:param filename: location of file
+:return: two objects, a metadata and a curie_map object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.read_pandas">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">read_pandas</code><span class="sig-paren">(</span><em class="sig-param">filename: str</em>, <em class="sig-param">sep='\t'</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#read_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.read_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrapper to pd.read_csv that handles comment lines correctly
+:param filename:
+:param sep: File separator in pandas (       or ,)
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sssom.util.remove_unmatched">
+<code class="sig-prename descclassname">sssom.util.</code><code class="sig-name descname">remove_unmatched</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="_modules/sssom/util.html#remove_unmatched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sssom.util.remove_unmatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes rows where no match is found. TODO: <a class="reference external" href="https://github.com/OBOFoundry/SSSOM/issues/28">https://github.com/OBOFoundry/SSSOM/issues/28</a>
+:param df:
+:return:</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

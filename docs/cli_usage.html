@@ -1,0 +1,823 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SSSOM CLI usage &mdash; sssom-py 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Documentation Update and Redeployment" href="sphinx_documentation.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sssom-py
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">SSSOM-PY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SSSOM CLI usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sssom-py">sssom-py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-cliquesummary">cliquesummary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-convert">convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-correlations">correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-crosstab">crosstab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-dedupe">dedupe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-diff">diff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-dosql">dosql</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-merge">merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-parse">parse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-partition">partition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-ptable">ptable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-sparql">sparql</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-split">split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-py-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sphinx_documentation.html">Documentation Update and Redeployment</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sssom-py</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>SSSOM CLI usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/cli_usage.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="sssom-cli-usage">
+<h1>SSSOM CLI usage<a class="headerlink" href="#sssom-cli-usage" title="Permalink to this headline">¶</a></h1>
+<p>The <cite>sssom</cite> script is a wrapper for multiple sub-commands</p>
+<p>The main one is <cite>convert</cite></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom convert -i tests/data/basic.tsv -o basic.ttl
+</pre></div>
+</div>
+<section id="sssom-py">
+<h2>sssom-py<a class="headerlink" href="#sssom-py" title="Permalink to this headline">¶</a></h2>
+<p>Main</p>
+<p>Args:</p>
+<blockquote>
+<div><p>verbose (int): Verbose.
+quiet (bool): Quiet.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-v">
+<code class="sig-name descname">-v</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--verbose</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-v" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-q">
+<code class="sig-name descname">-q</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--quiet</code><code class="sig-prename descclassname"> &lt;quiet&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-q" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<section id="sssom-py-cliquesummary">
+<h3>cliquesummary<a class="headerlink" href="#sssom-py-cliquesummary" title="Permalink to this headline">¶</a></h3>
+<p>Partitions an SSSOM file into multiple files, where each
+file is a strongly connected component.</p>
+<p>The data dictionary for the output is in cliquesummary.yaml</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file
+output (str): Output TSV/SSSOM file
+metadata (str): Metadata.
+statsfile (str): Stats File.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py cliquesummary <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-cliquesummary-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-cliquesummary-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-cliquesummary-m">
+<code class="sig-name descname">-m</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--metadata</code><code class="sig-prename descclassname"> &lt;metadata&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-cliquesummary-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to a file containing the sssom metadata (including curie_map) to be used.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-cliquesummary-s">
+<code class="sig-name descname">-s</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--statsfile</code><code class="sig-prename descclassname"> &lt;statsfile&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-cliquesummary-s" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-cliquesummary-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-cliquesummary-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-convert">
+<h3>convert<a class="headerlink" href="#sssom-py-convert" title="Permalink to this headline">¶</a></h3>
+<p>Convert file (currently only supports conversion to RDF)</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>sssom covert –input my.sssom.tsv –output-format rdfxml –output my.sssom.owl</p>
+</dd>
+</dl>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): The path to the input SSSOM tsv file
+output (str): The path to the output file.
+output_format (str): The format to which the the SSSOM TSV should be converted.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py convert <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-convert-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-convert-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-convert-output-format">
+<code class="sig-name descname">-O</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-format</code><code class="sig-prename descclassname"> &lt;output_format&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-convert-output-format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Desired output format, e.g. tsv,rdf,owl,json</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-convert-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-convert-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-correlations">
+<h3>correlations<a class="headerlink" href="#sssom-py-correlations" title="Permalink to this headline">¶</a></h3>
+<p>Correlations</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file
+output (str): Output TSV/SSSOM file
+transpose (bool): Yes/No
+fields (Type): Fields.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py correlations <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-correlations-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-correlations-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-correlations-t">
+<code class="sig-name descname">-t</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--transpose</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--no-transpose</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-correlations-t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-correlations-f">
+<code class="sig-name descname">-F</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--fields</code><code class="sig-prename descclassname"> &lt;fields&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-correlations-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fields.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-correlations-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-correlations-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-crosstab">
+<h3>crosstab<a class="headerlink" href="#sssom-py-crosstab" title="Permalink to this headline">¶</a></h3>
+<p>Write sssom summary cross-tabulated by categories.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file
+output (str): Output TSV/SSSOM file
+transpose (bool): Yes/No
+fields (Type):</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py crosstab <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-crosstab-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-crosstab-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-crosstab-t">
+<code class="sig-name descname">-t</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--transpose</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--no-transpose</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-crosstab-t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-crosstab-f">
+<code class="sig-name descname">-F</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--fields</code><code class="sig-prename descclassname"> &lt;fields&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-crosstab-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fields.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-crosstab-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-crosstab-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-dedupe">
+<h3>dedupe<a class="headerlink" href="#sssom-py-dedupe" title="Permalink to this headline">¶</a></h3>
+<p>Remove lower confidence duplicate lines.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file.
+output (str): Output TSV/SSSOM file.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py dedupe <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-dedupe-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-dedupe-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-dedupe-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-dedupe-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-diff">
+<h3>diff<a class="headerlink" href="#sssom-py-diff" title="Permalink to this headline">¶</a></h3>
+<p>Compare two SSSOM files.
+The output is a new SSSOM file with the union of all mappings, and
+injected comments indicating uniqueness to set1 or set2.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>inputs (tuple): A tuple of input filenames
+output (str): Output TSV/SSSOM file.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py diff <span class="o">[</span>OPTIONS<span class="o">]</span> INPUTS...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-diff-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-diff-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-diff-arg-inputs">
+<code class="sig-name descname">INPUTS</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-diff-arg-inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-dosql">
+<h3>dosql<a class="headerlink" href="#sssom-py-dosql" title="Permalink to this headline">¶</a></h3>
+<p>Run a SQL query over one or more sssom files.</p>
+<p>Each of the N inputs is assigned a table name df1, df2, …, dfN</p>
+<p>Alternatively, the filenames can be used as table names - these are first stemmed
+E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>sssom dosql -q “SELECT * FROM df1 WHERE confidence&gt;0.5 ORDER BY confidence” my.sssom.tsv</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>sssom dosql -q “SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id” FROM file1.sssom.tsv file2.sssom.tsv</cite></p>
+</dd>
+<dt>Args:</dt><dd><p>query (str): SQL query. Use “df” as table name.
+inputs (List): List of input files.
+output (str): Output TSV/SSSOM file.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None.</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py dosql <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-dosql-q">
+<code class="sig-name descname">-q</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--query</code><code class="sig-prename descclassname"> &lt;query&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-dosql-q" title="Permalink to this definition">¶</a></dt>
+<dd><p>SQL query. Use “df” as table name.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-dosql-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-dosql-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-dosql-arg-inputs">
+<code class="sig-name descname">INPUTS</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-dosql-arg-inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-merge">
+<h3>merge<a class="headerlink" href="#sssom-py-merge" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>Merging msdf2 into msdf1,</dt><dd><dl class="simple">
+<dt>if reconcile=True, then dedupe(remove redundant lower confidence mappings) and</dt><dd><p>reconcile (if msdf contains a higher confidence _negative_ mapping,
+then remove lower confidence positive one. If confidence is the same,
+prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
+</dd>
+<dt>Args:</dt><dd><p>inputs: All MappingSetDataFrames that need to be merged
+output: SSSOM file containing the merged output
+reconcile (bool, optional): [description]. Defaults to True.</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py merge <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-merge-r">
+<code class="sig-name descname">-r</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--reconcile</code><code class="sig-prename descclassname"> &lt;reconcile&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-merge-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean indicating the need for reconciliation of the SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-merge-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-merge-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-merge-arg-inputs">
+<code class="sig-name descname">INPUTS</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-merge-arg-inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-parse">
+<h3>parse<a class="headerlink" href="#sssom-py-parse" title="Permalink to this headline">¶</a></h3>
+<p>Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+input_format (str): The string denoting the input format.
+metadata (str): The path to a file containing the sssom metadata (including curie_map) to be used during parse.
+curie_map_mode (str): Curie map mode.
+clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
+output (str): The path to the SSSOM TSV output file.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py parse <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-parse-i">
+<code class="sig-name descname">-I</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--input-format</code><code class="sig-prename descclassname"> &lt;input_format&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-parse-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>The string denoting the input format, e.g. tsv,rdf,owl,alignment-api-xml,obographs-json,json</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-parse-m">
+<code class="sig-name descname">-m</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--metadata</code><code class="sig-prename descclassname"> &lt;metadata&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-parse-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to a file containing the sssom metadata (including curie_map) to be used.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-parse-c">
+<code class="sig-name descname">-C</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--curie-map-mode</code><code class="sig-prename descclassname"> &lt;curie_map_mode&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-parse-c" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Required</strong> Defines wether the curie map in the metadata should be extended or replaced with the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>metadata_only</p>
+</dd>
+<dt class="field-even">Options</dt>
+<dd class="field-even"><p>metadata_only | sssom_default_only | merged</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-parse-p">
+<code class="sig-name descname">-p</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--clean-prefixes</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-parse-p" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Required</strong> If True (default), records with unknown prefixes are removed from the SSSOM file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-parse-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-parse-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-parse-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-parse-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-partition">
+<h3>partition<a class="headerlink" href="#sssom-py-partition" title="Permalink to this headline">¶</a></h3>
+<p>Partitions an SSSOM file into multiple files, where each
+file is a strongly connected component.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>inputs (List): List of input files.
+output_directory (str): Output directory path.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py partition <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-partition-d">
+<code class="sig-name descname">-d</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-directory</code><code class="sig-prename descclassname"> &lt;output_directory&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-partition-d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output directory path.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-partition-arg-inputs">
+<code class="sig-name descname">INPUTS</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-partition-arg-inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-ptable">
+<h3>ptable<a class="headerlink" href="#sssom-py-ptable" title="Permalink to this headline">¶</a></h3>
+<p>Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file.
+output (str): the Output file
+inverse_factor (str): Inverse factor.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py ptable <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-ptable-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-ptable-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-ptable-w">
+<code class="sig-name descname">-W</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--inverse-factor</code><code class="sig-prename descclassname"> &lt;inverse_factor&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-ptable-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse factor.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-ptable-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-ptable-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-sparql">
+<h3>sparql<a class="headerlink" href="#sssom-py-sparql" title="Permalink to this headline">¶</a></h3>
+<p>Run a SPARQL query.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>url (str):
+config (str):
+graph (str):
+limit (int):
+object_labels (bool):
+prefix (List):
+output (str): Output TSV/SSSOM file.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py sparql <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-c">
+<code class="sig-name descname">-c</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--config</code><code class="sig-prename descclassname"> &lt;config&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-sparql-c" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-e">
+<code class="sig-name descname">-e</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--url</code><code class="sig-prename descclassname"> &lt;url&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-sparql-e" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-g">
+<code class="sig-name descname">-g</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--graph</code><code class="sig-prename descclassname"> &lt;graph&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-sparql-g" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-object-labels">
+<code class="sig-name descname">--object-labels</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--no-object-labels</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-sparql-object-labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>if set, includes object labels</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-l">
+<code class="sig-name descname">-l</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--limit</code><code class="sig-prename descclassname"> &lt;limit&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-sparql-l" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-p">
+<code class="sig-name descname">-P</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--prefix</code><code class="sig-prename descclassname"> &lt;prefix&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-sparql-p" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-sssom-py-sparql-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output</code><code class="sig-prename descclassname"> &lt;output&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-sparql-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file, e.g. a SSSOM tsv file.</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-split">
+<h3>split<a class="headerlink" href="#sssom-py-split" title="Permalink to this headline">¶</a></h3>
+<p>Split input file into multiple output broken down by prefixes</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file.
+output_directory (str): Output directory path.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py split <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-split-d">
+<code class="sig-name descname">-d</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-directory</code><code class="sig-prename descclassname"> &lt;output_directory&gt;</code><a class="headerlink" href="#cmdoption-sssom-py-split-d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output directory path.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-split-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-split-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-py-validate">
+<h3>validate<a class="headerlink" href="#sssom-py-validate" title="Permalink to this headline">¶</a></h3>
+<p>Takes 1 sssom file as input and produce an error report</p>
+<p>Args:</p>
+<blockquote>
+<div><p>input (str): Input file. For e.g.: SSSOM tsv file</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>None.</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py validate <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-sssom-py-validate-arg-input">
+<code class="sig-name descname">INPUT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-sssom-py-validate-arg-input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sphinx_documentation.html" class="btn btn-neutral float-right" title="Documentation Update and Redeployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

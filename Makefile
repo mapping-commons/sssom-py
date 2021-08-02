@@ -56,6 +56,16 @@ pypi: test
 	python setup.py sdist
 	twine upload dist/*
 
+.PHONY: lint
 lint:
 	pip install tox
 	tox -e lint
+
+.PHONY: sphinx
+sphinx:
+	cd sphinx &&\
+	make clean html
+
+.PHONY: deploy-docs
+deploy-docs:
+	cp -r sphinx/_build/html/* docs/
