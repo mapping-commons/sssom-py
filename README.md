@@ -12,6 +12,12 @@ See
 * [old](https://sssom-py.readthedocs.io/) or
 * [new](https://mapping-commons.github.io/sssom-py/index.html#)
 
+### Deploy documentation
+```shell
+make sphinx
+make deploy-docs
+```
+
 ## Schema
 
 See the [schema/](schema) folder for source schema in YAML, plus
