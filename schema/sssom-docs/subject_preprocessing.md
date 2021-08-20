@@ -9,7 +9,7 @@ URI: [sssom:subject_preprocessing](http://w3id.org/sssom/subject_preprocessing)
 
 ## Domain and Range
 
-None ->  <sub>OPT</sub> [String](types/String.md)
+None &#8594;  <sub>0..1</sub> [String](types/String.md)
 
 ## Parents
 

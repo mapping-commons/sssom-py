@@ -9,7 +9,7 @@ URI: [sssom:license](http://w3id.org/sssom/license)
 
 ## Domain and Range
 
-None ->  <sub>OPT</sub> [String](types/String.md)
+None &#8594;  <sub>0..1</sub> [String](types/String.md)
 
 ## Parents
 
