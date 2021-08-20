@@ -9,7 +9,7 @@ URI: [sssom:subject_id](http://w3id.org/sssom/subject_id)
 
 ## Domain and Range
 
-None &#8594;  <sub>0..1</sub> [Entity](Entity.md)
+None ->  <sub>OPT</sub> [Entity](Entity.md)
 
 ## Parents
 

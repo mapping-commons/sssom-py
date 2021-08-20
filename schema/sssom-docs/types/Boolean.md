@@ -1,5 +1,5 @@
 
-# Type: boolean
+# Type: Boolean
 
 
 A binary (true or false) value

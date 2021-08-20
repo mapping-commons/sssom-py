@@ -1,5 +1,5 @@
 
-# Type: uri
+# Type: Uri
 
 
 a complete URI

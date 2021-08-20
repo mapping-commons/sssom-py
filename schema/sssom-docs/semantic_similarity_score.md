@@ -9,7 +9,7 @@ URI: [sssom:semantic_similarity_score](http://w3id.org/sssom/semantic_similarity
 
 ## Domain and Range
 
-None &#8594;  <sub>0..1</sub> [Double](types/Double.md)
+None ->  <sub>OPT</sub> [Double](types/Double.md)
 
 ## Parents
 

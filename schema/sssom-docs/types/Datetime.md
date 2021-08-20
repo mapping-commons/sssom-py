@@ -1,5 +1,5 @@
 
-# Type: datetime
+# Type: Datetime
 
 
 The combination of a date and time
