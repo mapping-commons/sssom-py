@@ -9,7 +9,7 @@ URI: [sssom:object_source_version](http://w3id.org/sssom/object_source_version)
 
 ## Domain and Range
 
-None ->  <sub>OPT</sub> [String](types/String.md)
+None &#8594;  <sub>0..1</sub> [String](types/String.md)
 
 ## Parents
 

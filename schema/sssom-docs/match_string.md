@@ -9,7 +9,7 @@ URI: [sssom:match_string](http://w3id.org/sssom/match_string)
 
 ## Domain and Range
 
-None ->  <sub>OPT</sub> [String](types/String.md)
+None &#8594;  <sub>0..1</sub> [String](types/String.md)
 
 ## Parents
 
