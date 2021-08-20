@@ -1,5 +1,5 @@
 
-# Type: objectidentifier
+# Type: Objectidentifier
 
 
 A URI or CURIE that represents an object in the model.

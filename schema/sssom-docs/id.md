@@ -9,7 +9,7 @@ URI: [sssom:id](http://w3id.org/sssom/id)
 
 ## Domain and Range
 
-None &#8594;  <sub>1..1</sub> [String](types/String.md)
+None ->  <sub>REQ</sub> [String](types/String.md)
 
 ## Parents
 

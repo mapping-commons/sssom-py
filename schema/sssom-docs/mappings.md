@@ -9,7 +9,7 @@ URI: [sssom:mappings](http://w3id.org/sssom/mappings)
 
 ## Domain and Range
 
-None &#8594;  <sub>0..\*</sub> [Mapping](Mapping.md)
+None ->  <sub>0..*</sub> [Mapping](Mapping.md)
 
 ## Parents
 

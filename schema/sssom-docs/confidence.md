@@ -9,7 +9,7 @@ URI: [sssom:confidence](http://w3id.org/sssom/confidence)
 
 ## Domain and Range
 
-None &#8594;  <sub>0..1</sub> [Double](types/Double.md)
+None ->  <sub>OPT</sub> [Double](types/Double.md)
 
 ## Parents
 

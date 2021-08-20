@@ -1,5 +1,5 @@
 
-# Type: ncname
+# Type: Ncname
 
 
 Prefix part of CURIE

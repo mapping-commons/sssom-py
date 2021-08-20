@@ -9,7 +9,7 @@ URI: [sssom:see_also](http://w3id.org/sssom/see_also)
 
 ## Domain and Range
 
-None &#8594;  <sub>0..1</sub> [String](types/String.md)
+None ->  <sub>OPT</sub> [String](types/String.md)
 
 ## Parents
 

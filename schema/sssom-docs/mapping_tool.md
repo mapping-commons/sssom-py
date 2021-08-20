@@ -9,7 +9,7 @@ URI: [sssom:mapping_tool](http://w3id.org/sssom/mapping_tool)
 
 ## Domain and Range
 
-None &#8594;  <sub>0..1</sub> [String](types/String.md)
+None ->  <sub>OPT</sub> [String](types/String.md)
 
 ## Parents
 

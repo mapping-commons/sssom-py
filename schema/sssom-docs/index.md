@@ -1,5 +1,5 @@
 
-# sssom schema
+# Sssom schema
 
 
 Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
@@ -65,13 +65,6 @@ Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
  * [subject_source](subject_source.md) - IRI of ontology source for the subject. Version IRI preferred.
  * [subject_source_version](subject_source_version.md) - Version IRI of the source of the subject term.
  * [tsv_example](tsv_example.md) - An example value of the a SSSOM element in RDF.
-
-### Enums
-
- * [mapping_cardinality_enum](mapping_cardinality_enum.md)
-
-### Subsets
-
 
 ### Types
 

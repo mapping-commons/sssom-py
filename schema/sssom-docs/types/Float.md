@@ -1,5 +1,5 @@
 
-# Type: float
+# Type: Float
 
 
 A real number that conforms to the xsd:float specification

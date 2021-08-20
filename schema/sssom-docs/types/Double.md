@@ -1,5 +1,5 @@
 
-# Type: double
+# Type: Double
 
 
 A real number that conforms to the xsd:double specification

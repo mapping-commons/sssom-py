@@ -9,7 +9,7 @@ URI: [sssom:rdf_example](http://w3id.org/sssom/rdf_example)
 
 ## Domain and Range
 
-None &#8594;  <sub>0..1</sub> [String](types/String.md)
+None ->  <sub>OPT</sub> [String](types/String.md)
 
 ## Parents
 
