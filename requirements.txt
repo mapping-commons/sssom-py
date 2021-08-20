@@ -1,4 +1,4 @@
-linkml>=1.0.0
+linkml-runtime>=1.0.13
 rdflib>=0.0
 pandas>=0.0
 pyyaml>=0.0
