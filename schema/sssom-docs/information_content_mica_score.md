@@ -9,7 +9,7 @@ URI: [sssom:information_content_mica_score](http://w3id.org/sssom/information_co
 
 ## Domain and Range
 
-None ->  <sub>OPT</sub> [Double](types/Double.md)
+None &#8594;  <sub>0..1</sub> [Double](types/Double.md)
 
 ## Parents
 

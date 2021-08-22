@@ -9,7 +9,7 @@ URI: [sssom:mapping_set_id](http://w3id.org/sssom/mapping_set_id)
 
 ## Domain and Range
 
-None ->  <sub>OPT</sub> [Entity](Entity.md)
+None &#8594;  <sub>0..1</sub> [Entity](Entity.md)
 
 ## Parents
 

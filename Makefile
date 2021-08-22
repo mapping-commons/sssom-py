@@ -29,7 +29,7 @@ schema/%.owl: schema/%.yaml
 schema/%.ttl: schema/%.owl
 	cp $< $@
 schema/%-docs: schema/%.yaml
-	pipenv run gen-markdown --dir $@ $<
+	gen-markdown --dir $@ $<
 
 test:
 	pytest
