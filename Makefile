@@ -10,6 +10,8 @@ all_schema: $(patsubst %,schema/sssom%, $(EXTS))
 
 schema/%_datamodel.py: schema/%.yaml
 	gen-py-classes $< > $@
+schema/cliquesummary.py: schema/cliquesummary.yaml
+	gen-py-classes $< > $@
 schema/%.graphql: schema/%.yaml
 	gen-graphql $< > $@
 schema/%.schema.json: schema/%.yaml
@@ -27,7 +29,7 @@ schema/%.owl: schema/%.yaml
 schema/%.ttl: schema/%.owl
 	cp $< $@
 schema/%-docs: schema/%.yaml
-	pipenv run gen-markdown --dir $@ $<
+	gen-markdown --dir $@ $<
 
 test:
 	pytest
@@ -35,6 +37,7 @@ test:
 
 
 deploy-dm:
+	cp schema/cliquesummary.py sssom/
 	cp schema/sssom_datamodel.py sssom/
 	cp schema/sssom.context.jsonld sssom/
 	cp schema/sssom.external.context.jsonld sssom/
@@ -56,6 +59,16 @@ pypi: test
 	python setup.py sdist
 	twine upload dist/*
 
+.PHONY: lint
 lint:
 	pip install tox
 	tox -e lint
+
+.PHONY: sphinx
+sphinx:
+	cd sphinx &&\
+	make clean html
+
+.PHONY: deploy-docs
+deploy-docs:
+	cp -r sphinx/_build/html/* docs/

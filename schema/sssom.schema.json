@@ -1,6 +1,7 @@
 {
    "$id": "http://w3id.org/sssom/schema/",
    "$schema": "http://json-schema.org/draft-07/schema#",
+   "additionalProperties": true,
    "definitions": {
       "Entity": {
          "additionalProperties": false,
@@ -58,8 +59,8 @@
                "type": "string"
             },
             "mapping_cardinality": {
-               "description": "A string indicating whether this mapping is from a 1:1 (the subject_id maps to a single object_id), 1:n (the subject maps to more than one object_id), n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable from the mapping set.",
-               "type": "string"
+               "$ref": "#/definitions/MappingCardinalityEnum",
+               "description": "A string indicating whether this mapping is from a 1:1 (the subject_id maps to a single object_id), 1:n (the subject maps to more than one object_id), n:1, 1:0, 0:1 or n:n group. Note that this is a convenience field that should be derivable from the mapping set."
             },
             "mapping_date": {
                "description": "The date the mapping was computed",
@@ -165,6 +166,19 @@
          "required": [],
          "title": "Mapping",
          "type": "object"
+      },
+      "MappingCardinalityEnum": {
+         "description": "",
+         "enum": [
+            "1:1",
+            "1:n",
+            "n:1",
+            "1:0",
+            "0:1",
+            "n:n"
+         ],
+         "title": "MappingCardinalityEnum",
+         "type": "string"
       },
       "MappingSet": {
          "additionalProperties": false,

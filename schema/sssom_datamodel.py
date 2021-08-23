@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-07-13 09:04
+# Generation date: 2021-08-22 19:17
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -9,7 +9,7 @@
 import dataclasses
 import sys
 import re
-from jsonasobj2 import JsonObj
+from jsonasobj2 import JsonObj, as_dict
 from typing import Optional, List, Union, Dict, ClassVar, Any
 from dataclasses import dataclass
 from linkml_runtime.linkml_model.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
@@ -86,7 +86,7 @@ class MappingSet(YAMLRoot):
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
         if not isinstance(self.mappings, list):
             self.mappings = [self.mappings] if self.mappings is not None else []
-        self.mappings = [v if isinstance(v, Mapping) else Mapping(**v) for v in self.mappings]
+        self.mappings = [v if isinstance(v, Mapping) else Mapping(**as_dict(v)) for v in self.mappings]
 
         if self.mapping_set_id is not None and not isinstance(self.mapping_set_id, EntityId):
             self.mapping_set_id = EntityId(self.mapping_set_id)
