@@ -8,7 +8,10 @@ from io import StringIO
 from typing import Any, Dict, List, Optional, Set
 
 import pandas as pd
+import validators
+from urllib.request import urlopen
 import yaml
+import numpy as np
 
 from sssom.sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
@@ -40,7 +43,8 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 
-_defining_features = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
+#: The 3 columns whose combination would be used as primary keys while merging/grouping
+KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 @dataclass
@@ -287,6 +291,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
     # df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: x + random.random() / 10000)
+    df, nan_df = assign_default_confidence(df)
     if ignore_predicate:
         key = [SUBJECT_ID, OBJECT_ID]
     else:
@@ -302,21 +307,35 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
                 CONFIDENCE
             ]
     if ignore_predicate:
-        return df[
+        df[
             df.apply(
                 lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
                 axis=1,
             )
         ]
     else:
-        return df[
+        df[
             df.apply(
                 lambda x: x[CONFIDENCE]
                 >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                 axis=1,
             )
         ]
+    # We are preserving confidence = NaN rows without making assumptions. 
+    # This means that there are potential duplicate mappings
+    return_df = df.append(nan_df).drop_duplicates()
+    return return_df
 
+def assign_default_confidence(df:pd.DataFrame):
+    # Get rows having numpy.NaN as confidence
+    if df is not None and 'confidence' not in df.columns:
+        df['confidence'] = np.NaN
+
+    nan_df = df[df['confidence'].isna()]
+    if nan_df is None:
+        nan_df = pd.DataFrame(columns=df.columns)
+    return df, nan_df
+        
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -543,9 +562,8 @@ def merge_msdf(
 
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-
         merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
-
+        
     return merged_msdf
 
 
@@ -576,7 +594,12 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
             #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
         """
+    # Handle DataFrames with no 'confidence' column
+    df, nan_df = assign_default_confidence(df)
 
+    if df is None:
+        raise(Exception('Illegal dataframe (deal_with_negation'))
+    
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
     negation_df = df.loc[
@@ -607,7 +630,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
     max_confidence_df = combined_normalized_subset.groupby(
-        _defining_features, as_index=False
+        KEY_FEATURES, as_index=False
     )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
@@ -664,8 +687,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
         )
-
-    return reconciled_df
+    return_df = reconciled_df.append(nan_df).drop_duplicates()
+    return return_df
 
 
 def dict_merge(source: Dict, target: Dict, dict_name: str) -> Dict:
@@ -725,8 +748,12 @@ def get_file_extension(filename: str) -> str:
 
 
 def read_csv(filename, comment="#", sep=","):
-    with open(filename, "r") as f:
-        lines = "".join([line for line in f if not line.startswith(comment)])
+    if validators.url(filename):
+        response = urlopen(filename)
+        lines = "".join([line.decode("utf-8") for line in response if not line.decode("utf-8").startswith(comment)])
+    else:
+        with open(filename, "r") as f:
+            lines = "".join([line for line in f if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
@@ -827,7 +854,7 @@ def get_prefix_from_curie(curie: str):
 
 def get_prefixes_used_in_table(df: pd.DataFrame):
     prefixes = []
-    for col in _defining_features:
+    for col in KEY_FEATURES:
         for v in df[col].values:
             prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
@@ -835,17 +862,15 @@ def get_prefixes_used_in_table(df: pd.DataFrame):
 
 def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
+    
     for index, row in df.iterrows():
-        ok = True
-        for col in _defining_features:
-            v = row[col]
-            prefix = get_prefix_from_curie(v)
-            if prefix in filter_prefixes:
-                ok = False
-                break
-        if ok:
+        # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
+        prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
+        # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
+        # If TRUE, append row.
+        if not any(prefix in prefixes for prefix in filter_prefixes):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
     else:
-        return pd.DataFrame(columns=_defining_features)
+        return pd.DataFrame(columns=KEY_FEATURES)

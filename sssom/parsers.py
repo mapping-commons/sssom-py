@@ -10,6 +10,7 @@ import pandas as pd
 import validators
 import yaml
 from rdflib import Graph, URIRef
+from urllib.request import urlopen
 
 from sssom.util import read_pandas
 from .sssom_document import MappingSetDocument
@@ -22,6 +23,7 @@ from .util import (
     is_curie,
 )
 from .util import RDF_FORMATS
+import numpy as np
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -37,7 +39,11 @@ def from_tsv(
     """
     if validators.url(file_path) or os.path.exists(file_path):
         df = read_pandas(file_path)
-        if meta is None:
+
+        if 'confidence' in df.columns:
+            df['confidence'].replace(r'^\s*$', np.NaN, regex=True, inplace=True)
+            
+        if not meta:
             meta = _read_metadata_from_table(file_path)
         if "curie_map" in meta:
             logging.info(
@@ -454,17 +460,22 @@ def _swap_object_subject(mapping):
 
 
 def _read_metadata_from_table(filename: str):
-    with open(filename, "r") as s:
-        yamlstr = ""
-        for line in s:
-            if line.startswith("#"):
-                yamlstr += re.sub("^#", "", line)
-            else:
-                break
-        if yamlstr:
-            meta = yaml.safe_load(yamlstr)
-            logging.info(f"Meta={meta}")
-            return meta
+    if validators.url(filename):
+        response = urlopen(filename)
+        yamlstr = "".join([line.decode("utf-8") for line in response if line.decode("utf-8").startswith('#')]).replace('#', '')
+        
+    else:
+        with open(filename, "r") as s:
+            yamlstr = ""
+            for line in s:
+                if line.startswith("#"):
+                    yamlstr += re.sub("^#", "", line)
+                else:
+                    break
+    if yamlstr:
+        meta = yaml.safe_load(yamlstr)
+        logging.info(f"Meta={meta}")
+        return meta
     return {}
 
 

@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import click
+from click.decorators import help_option
 import pandas as pd
 import yaml
 from pandasql import sqldf
@@ -31,13 +32,8 @@ from .util import (
 )
 
 # Click input options common across commands
-input_option = click.option(
-    "-i",
-    "--input",
-    required=True,
-    type=click.Path(),
-    help="Input file, e.g. a SSSOM tsv file.",
-)
+input_argument = click.argument('input',required=True, type=click.Path())
+
 input_format_option = click.option(
     "-I",
     "--input-format",
@@ -98,7 +94,7 @@ def main(verbose: int, quiet: bool):
 
 
 @main.command()
-@input_option
+@input_argument
 @output_option
 @output_format_option
 def convert(input: str, output: str, output_format: str):
@@ -124,7 +120,7 @@ def convert(input: str, output: str, output_format: str):
 
 # Input and metadata would be files (file paths). Check if exists.
 @main.command()
-@input_option
+@input_argument
 @input_format_option
 @metadata_option
 @click.option(
@@ -183,7 +179,7 @@ def parse(
 
 
 @main.command()
-@input_option
+@input_argument
 def validate(input: str):
     """Takes 1 sssom file as input and produce an error report
 
@@ -200,7 +196,7 @@ def validate(input: str):
 
 
 @main.command()
-@input_option
+@input_argument
 @output_directory_option
 def split(input: str, output_directory: str):
     """Split input file into multiple output broken down by prefixes
@@ -219,7 +215,7 @@ def split(input: str, output_directory: str):
 
 
 @main.command()
-@input_option
+@input_argument
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
 def ptable(input=None, output=None, inverse_factor=None):
@@ -248,7 +244,7 @@ def ptable(input=None, output=None, inverse_factor=None):
 
 
 @main.command()
-@input_option
+@input_argument
 @output_option
 def dedupe(input: str, output: str):
     """Remove lower confidence duplicate lines.
@@ -444,7 +440,7 @@ def partition(inputs: List[str], output_directory: str):
 
 
 @main.command()
-@input_option
+@input_argument
 @output_option
 @metadata_option
 @click.option("-s", "--statsfile")
@@ -481,7 +477,7 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 
 
 @main.command()
-@input_option
+@input_argument
 @output_option
 @transpose_option
 @fields_option
@@ -518,7 +514,7 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
 @output_option
 @transpose_option
 @fields_option
-@input_option
+@input_argument
 def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     """Correlations
 
@@ -609,8 +605,6 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
             msdf2 = from_tsv(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
-    if os.path.exists(output):
-        os.remove(output)
     # Export MappingSetDataFrame into a TSV
     write_sssom(merged_msdf, output)
 

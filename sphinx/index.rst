@@ -1,5 +1,5 @@
-.. sssom documentation master file, created by
-   sphinx-quickstart on Tue Jun 18 16:51:38 2019.
+.. sssom-py documentation master file, created by
+   sphinx-quickstart on Tue Jul 27 09:17:43 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -17,17 +17,19 @@ SSSOM:
 
 https://github.com/cmungall/sssom-py
 
-
 Contents
 --------
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
+   modules
    installation
    documentation
    examples
    cli_usage
+   sphinx_documentation
 
 
 Indices and tables
