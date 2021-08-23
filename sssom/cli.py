@@ -30,7 +30,7 @@ from .util import (
 )
 
 # Click input options common across commands
-input_argument = click.argument("input", required=True, type=click.Path())
+input_argument = click.argument('input', required=True, type=click.Path())
 
 input_format_option = click.option(
     "-I",
