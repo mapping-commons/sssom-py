@@ -6,7 +6,7 @@ import yaml
 
 from sssom.util import MappingSetDataFrame, read_metadata
 from .context import get_default_metadata
-from .parsers import get_parsing_function, read_sssom_tsv, split_dataframe
+from .parsers import get_parsing_function, read_sssom_table, split_dataframe
 from .writers import get_writer_function, write_tsv, write_tsvs
 
 cwd = os.path.abspath(os.path.dirname(__file__))
@@ -46,7 +46,7 @@ def convert_file(input_path: str, output_path: str = None, output_format: str = 
 
     """
     if validators.url(input_path) or os.path.exists(input_path):
-        doc = read_sssom_tsv(input_path)
+        doc = read_sssom_table(input_path)
         write_func, fileformat = get_writer_function(output_format, output_path)
         write_func(doc, output_path, fileformat=fileformat)
     else:
@@ -100,7 +100,7 @@ def validate_file(input_path: str):
         Boolean. True if valid SSSOM, false otherwise.
     """
     try:
-        read_sssom_tsv(file_path=input_path)
+        read_sssom_table(file_path=input_path)
         return True
     except Exception as e:
         logging.exception("The file is invalid", e)
@@ -119,7 +119,7 @@ def split_file(input_path: str, output_directory: str):
 
     """
     if validators.url(input_path) or os.path.exists(input_path):
-        msdf = read_sssom_tsv(input_path)
+        msdf = read_sssom_table(input_path)
         splitted = split_dataframe(msdf)
         write_tsvs(splitted, output_directory)
     else:

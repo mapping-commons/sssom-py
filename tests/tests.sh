@@ -18,6 +18,13 @@ sssom split $INPUT_URL_1 --output-directory $OUTPUT_DIR
 sssom convert $INPUT_FILE_1 --output $OUTPUT_DIR/converted_basic.tsv --output-format tsv
 sssom convert $INPUT_URL_1 --output $OUTPUT_DIR/converted_basic.tsv --output-format tsv
 
+for fmt in tsv json owl rdf
+do
+  sssom convert $INPUT_FILE_1 --output $OUTPUT_DIR/converted_basic.tsv --output-format $fmt
+  sssom convert $INPUT_URL_1 --output $OUTPUT_DIR/converted_basic.tsv --output-format $fmt
+done
+
+
 sssom validate $INPUT_FILE_1
 sssom validate $INPUT_URL_1
 

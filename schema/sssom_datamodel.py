@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-08-22 19:17
+# Generation date: 2021-08-23 16:36
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -30,9 +30,12 @@ metamodel_version = "1.7.0"
 dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 
 # Namespaces
+ORPHANET = CurieNamespace('Orphanet', 'http://www.orpha.net/ORDO/Orphanet_')
 DC = CurieNamespace('dc', 'http://purl.org/dc/terms/')
+DCE = CurieNamespace('dce', 'http://purl.org/dc/elements/1.1/')
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
+NEURONAME = CurieNamespace('neuroname', 'http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=')
 OBOINOWL = CurieNamespace('oboInOwl', 'http://www.geneontology.org/formats/oboInOwl#')
 OWL = CurieNamespace('owl', 'http://www.w3.org/2002/07/owl#')
 RDF = CurieNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')

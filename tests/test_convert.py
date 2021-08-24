@@ -1,11 +1,7 @@
 import os
 import unittest
 
-from sssom import (
-    filter_redundant_rows,
-)
-from sssom.parsers import read_sssom_tsv
-from sssom.util import merge_msdf, deal_with_negation
+from sssom.parsers import read_sssom_table
 from sssom.writers import to_owl_graph, to_rdf_graph
 
 # from pandasql import sqldf
@@ -16,7 +12,7 @@ data_dir = os.path.join(cwd, "data")
 
 class TestConvert(unittest.TestCase):
     def setUp(self) -> None:
-        self.msdf = read_sssom_tsv(f"{data_dir}/basic.tsv")
+        self.msdf = read_sssom_table(f"{data_dir}/basic.tsv")
 
     def test_df(self):
         df = self.msdf.df

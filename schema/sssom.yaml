@@ -7,6 +7,9 @@ prefixes:
   linkml: https://w3id.org/linkml/
   sssom: http://w3id.org/sssom/
   oboInOwl: http://www.geneontology.org/formats/oboInOwl#
+  neuroname: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=
+  dce: http://purl.org/dc/elements/1.1/
+  Orphanet: http://www.orpha.net/ORDO/Orphanet_
 see_also:
 - https://github.com/OBOFoundry/SSSOM
 default_curi_maps:

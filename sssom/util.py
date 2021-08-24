@@ -27,6 +27,7 @@ SSSOM_READ_FORMATS = [
 ]
 SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
 
+SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 # TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = "subject_id"
@@ -446,7 +447,7 @@ def smart_open(filename=None):
 
 
 def dataframe_to_ptable(
-    df: pd.DataFrame, priors=[0.02, 0.02, 0.02, 0.02], inverse_factor: float = 0.5
+    df: pd.DataFrame, priors=None, inverse_factor: float = 0.5
 ):
     """
     Exporting KBOOM table
@@ -458,9 +459,14 @@ def dataframe_to_ptable(
     Returns:
         List of rows
     """
+
+    if not priors:
+        priors = [0.02, 0.02, 0.02, 0.02]
+
     logging.warning(
         f"Priors given ({priors}), but not being used by dataframe_to_ptable() method."
     )
+
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
@@ -518,7 +524,7 @@ def dataframe_to_ptable(
     return rows
 
 
-RDF_FORMATS = ["ttl", "turtle", "nt"]
+RDF_FORMATS = ["ttl", "turtle", "nt", "xml"]
 
 
 def sha256sum(filename):
@@ -916,7 +922,7 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
 def guess_file_format(filename):
     extension = get_file_extension(filename)
     if extension in ["owl", "rdf"]:
-        return "xml"
+        return SSSOM_DEFAULT_RDF_SERIALISATION
     elif extension in RDF_FORMATS:
         return extension
     else:

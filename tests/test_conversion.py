@@ -8,7 +8,7 @@ from rdflib import Graph
 from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import read_pandas, to_mapping_set_dataframe
-from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_jsonld, to_json
+from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_json
 from sssom.writers import write_json, write_rdf, write_owl, write_tsv
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
 
@@ -54,9 +54,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
 
     def _test_to_json(self, mdoc, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
-        json = to_json(msdf)
-        assert len(json) == test.ct_json_elements
-        write_json(msdf, test.get_out_file("json"), fileformat="json")
+        jsonob = to_json(msdf)
+        self.assertEqual(len(jsonob), test.ct_json_elements)
+        write_json(msdf, test.get_out_file("json"), serialisation="json")
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -126,7 +126,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
 
     def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
-        json_dict = to_jsonld(msdf)
+        json_dict = to_json(msdf)
         self.assertEqual(
             len(json_dict),
             test.ct_json_elements,

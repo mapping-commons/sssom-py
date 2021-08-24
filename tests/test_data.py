@@ -34,18 +34,24 @@ def get_all_test_cases():
 
 
 def get_multiple_input_test_cases():
-    test_cases = []
+    test_cases = dict()
     config = load_config()
     for test in config["tests"]:
         if test["multiple_input"]:
-            test_cases.append(SSSOMTestCase(test, config["queries"]))
+            test = SSSOMTestCase(test, config["queries"])
+            test_cases[test.id] = test
     return test_cases
 
 
 class SSSOMTestCase:
     def __init__(self, config, queries):
         self.filepath = get_test_file(config["filename"])
-        self.filename = config["filename"]
+        self.filename = config['filename']
+        if "id" in config:
+            self.id = config['id']
+        else:
+            self.id = config['filename']
+
         if "metadata_file" in config:
             self.metadata_file = config["metadata_file"]
         else:

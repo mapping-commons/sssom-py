@@ -1,6 +1,7 @@
 import unittest
 
 from click.testing import CliRunner
+from typing import List
 
 from sssom.cli import (
     cliquesummary,
@@ -63,7 +64,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_successful(self, result):
         # self.assertTrue(result.exit_code == 0, f"Run failed with message {result.exception}")
-        assert result.exit_code == 0
+        self.assertEqual(result.exit_code, 0)
 
     def run_convert(self, runner, test_case: SSSOMTestCase):
         params = [
@@ -132,26 +133,27 @@ class SSSOMCLITestSuite(unittest.TestCase):
     """def run_sparql(self, runner, test_case: SSSOMTestCase):
         prams = []"""
 
-    def run_diff(self, runner, test_case: "list[SSSOMTestCase]"):
+    def run_diff(self, runner, test_case: List[SSSOMTestCase]):
         params = []
-        out_file: SSSOMTestCase
+        out_file = None
         for t in test_case:
             t: SSSOMTestCase
             params.append(t.filepath)
             out_file = t
-        params.extend(["--output", out_file.get_out_file("tsv")])
-        result = runner.invoke(diff, params)
-        print(result)
-        self.run_successful(result)
-        return result
+        if out_file:
+            params.extend(["--output", out_file.get_out_file("tsv")])
+            result = runner.invoke(diff, params)
+            print(result)
+            self.run_successful(result)
+            return result
+        else:
+            self.fail("No test to run.")
 
-    def run_partition(self, runner, test_case: SSSOMTestCase):
+    def run_partition(self, runner, test_case: List[SSSOMTestCase]):
         params = []
-        out_file: SSSOMTestCase
         for t in test_case:
             t: SSSOMTestCase
             params.append(t.filepath)
-            out_file = t
         params.extend(["--output-directory", test_out_dir])
         result = runner.invoke(partition, params)
         self.run_successful(result)

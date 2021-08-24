@@ -18,7 +18,7 @@ from sssom.util import (
 )
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file, write_sssom
-from .parsers import read_sssom_tsv
+from .parsers import read_sssom_table
 from .util import (
     collapse,
     compare_dataframes,
@@ -233,7 +233,7 @@ def ptable(input=None, output=None, inverse_factor=None):
     logging.warning(
         f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
     )
-    msdf = read_sssom_tsv(input)
+    msdf = read_sssom_table(input)
     # df = parse(input)
     df = collapse(msdf.df)
     # , priors=list(priors)
@@ -260,7 +260,7 @@ def dedupe(input: str, output: str):
         None.
     """
     # df = parse(input)
-    msdf = read_sssom_tsv(input)
+    msdf = read_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
     msdf_out = MappingSetDataFrame(
         df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata
@@ -302,7 +302,7 @@ def dosql(query: str, inputs: List[str], output: str):
     n = 1
     while len(inputs) >= n:
         fn = inputs[n - 1]
-        df = read_sssom_tsv(fn).df
+        df = read_sssom_table(fn).df
         # df = parse(fn)
         globals()[f"df{n}"] = df
         tn = re.sub("[.].*", "", Path(fn).stem).lower()
@@ -397,8 +397,8 @@ def diff(inputs: Tuple[str, str], output: str):
     (input1, input2) = inputs
     # df1 = parse(input1)
     # df2 = parse(input2)
-    msdf1 = read_sssom_tsv(input1)
-    msdf2 = read_sssom_tsv(input2)
+    msdf1 = read_sssom_table(input1)
+    msdf2 = read_sssom_table(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
     logging.info(
         f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
@@ -423,7 +423,7 @@ def partition(inputs: List[str], output_directory: str):
         None.
     """
 
-    docs = [read_sssom_tsv(input) for input in inputs]
+    docs = [read_sssom_table(input) for input in inputs]
     doc = docs.pop()
     """for d2 in docs:
         doc.mapping_set.mappings += d2.mapping_set.mappings"""
@@ -465,10 +465,10 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     import yaml
 
     if metadata is None:
-        doc = read_sssom_tsv(input)
+        doc = read_sssom_table(input)
     else:
         meta_obj = yaml.safe_load(open(metadata))
-        doc = read_sssom_tsv(input, meta=meta_obj)
+        doc = read_sssom_table(input, meta=meta_obj)
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
     if statsfile is None:
@@ -498,7 +498,7 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
         None.
     """
 
-    df = remove_unmatched(read_sssom_tsv(input).df)
+    df = remove_unmatched(read_sssom_table(input).df)
     # df = parse(input)
     logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
@@ -530,7 +530,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
 
         None.
     """
-    msdf = read_sssom_tsv(input)
+    msdf = read_sssom_table(input)
     df = remove_unmatched(msdf.df)
     # df = remove_unmatched(parse(input))
     if len(df) == 0:
@@ -594,8 +594,8 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
 
     """
     (input1, input2) = inputs[:2]
-    msdf1 = read_sssom_tsv(input1)
-    msdf2 = read_sssom_tsv(input2)
+    msdf1 = read_sssom_table(input1)
+    msdf2 = read_sssom_table(input2)
     merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     # If > 2 input files, iterate through each one
@@ -603,7 +603,7 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
     if len(inputs) > 2:
         for input_file in inputs[2:]:
             msdf1 = merged_msdf
-            msdf2 = read_sssom_tsv(input_file)
+            msdf2 = read_sssom_table(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     # Export MappingSetDataFrame into a TSV

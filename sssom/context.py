@@ -34,6 +34,10 @@ def get_default_metadata():
         v = contxt["@context"][key]
         if isinstance(v, str):
             curie_map[key] = v
+        elif isinstance(v, dict):
+            if "@id" in v and "@prefix" in v:
+                if v["@prefix"]:
+                    curie_map[key] = v["@id"]
     for key in contxt_external["@context"]:
         v = contxt_external["@context"][key]
         if isinstance(v, str):

@@ -42,6 +42,7 @@ class TestCollapse(unittest.TestCase):
 
     def test_groupings(self):
         mappings = group_mappings(self.df)
+        self.assertEqual(len(mappings), 3)
 
     def test_diff(self):
         diff = compare_dataframes(self.df, self.df)

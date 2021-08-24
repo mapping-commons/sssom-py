@@ -15,7 +15,8 @@ from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdf_loader import RDFLoader
 from rdflib import Graph, URIRef
 
-from sssom.util import read_pandas, guess_file_format, NoCURIEException, curie_from_uri
+from sssom.util import read_pandas, NoCURIEException, curie_from_uri, SSSOM_DEFAULT_RDF_SERIALISATION
+from .context import get_default_metadata
 from .sssom_datamodel import MappingSet, Mapping
 from .sssom_document import MappingSetDocument
 from .util import (
@@ -30,8 +31,8 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Readers (from file)
 
 
-def read_sssom_tsv(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+def read_sssom_table(
+        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -50,7 +51,7 @@ def read_sssom_tsv(
                 "CURIE map from context is disregarded."
             )
             curie_map = meta["curie_map"]
-        msdf = from_dataframe(df, curie_map=curie_map, meta=meta)
+        msdf = from_sssom_dataframe(df, curie_map=curie_map, meta=meta)
         # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
         return msdf
     else:
@@ -58,14 +59,15 @@ def read_sssom_tsv(
 
 
 def read_sssom_rdf(
-    file_path: str, curie_map: Dict[str, str] = None
+        file_path: str, curie_map: Dict[str, str] = None, serialisation=SSSOM_DEFAULT_RDF_SERIALISATION
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     if validators.url(file_path) or os.path.exists(file_path):
         # noinspection PyTypeChecker
-        ms = RDFLoader().load(source=file_path, target_class=MappingSet)
+        context = _prepare_context_from_curie_map(curie_map)
+        ms = RDFLoader().load(source=file_path, target_class=MappingSet, fmt=serialisation, contexts=context)
         ms: MappingSet
         mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
         return to_mapping_set_dataframe(mdoc)
@@ -73,40 +75,15 @@ def read_sssom_rdf(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def read_sssom_owl(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
-    """
-    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
-    """
-    if validators.url(file_path) or os.path.exists(file_path):
-        g = Graph()
-        file_format = guess_file_format(file_path)
-        g.parse(file_path, format=file_format)
-        msdf = from_owl_graph(g, curie_map, meta)
-        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
-        return msdf
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
-
-
-def read_sssom_jsonld(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
-) -> MappingSetDataFrame:
-    """
-    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
-    """
-    if validators.url(file_path) or os.path.exists(file_path):
-        g = Graph()
-        g.parse(file_path, format="json-ld")
-        msdf = from_rdf_graph(g, curie_map, meta)
-        return msdf
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
+def _prepare_context_from_curie_map(curie_map: dict):
+    if not curie_map:
+        meta, curie_map = get_default_metadata()
+    context = {"@context": curie_map}
+    return json.dumps(curie_map, indent=4)
 
 
 def read_sssom_json(
-    file_path: str, curie_map: Dict[str, str] = None
+        file_path: str, curie_map: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -125,7 +102,7 @@ def read_sssom_json(
 
 
 def read_obographs_json(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses an obographs file as a JSON object and translates it into a MappingSetDataFrame
@@ -144,7 +121,7 @@ def read_obographs_json(
 
 
 def read_alignment_xml(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -161,8 +138,8 @@ def read_alignment_xml(
 # Readers (from object)
 
 
-def from_dataframe(
-    df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]
+def from_sssom_dataframe(
+        df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDataFrame
@@ -209,8 +186,66 @@ def from_dataframe(
     return to_mapping_set_dataframe(doc)
 
 
+def from_sssom_rdf(
+        g: Graph,
+        curie_map: Dict[str, str] = None,
+        meta: Dict[str, str] = None,
+        mapping_predicates: Set[str] = None,
+) -> MappingSetDataFrame:
+    """
+    Converts an SSSOM RDF graph into a SSSOM data table
+    Args:
+        g: the Grah (rdflib)
+        curie_map: A dictionary conatining the prefix map
+        meta: Potentially additional metadata
+        mapping_predicates: A set of predicates that should be extracted from the RDF graph
+
+    Returns:
+
+    """
+    if not curie_map:
+        raise Exception("No valid curie_map provided")
+    if mapping_predicates is None:
+        mapping_predicates = _get_default_mapping_predicates()
+    ms = MappingSet()
+    for s, p, o in g.triples((None, None, None)):
+        if isinstance(s, URIRef):
+            try:
+                p_id = curie_from_uri(p, curie_map)
+                if p_id in mapping_predicates:
+                    s_id = curie_from_uri(s, curie_map)
+                    if isinstance(o, URIRef):
+                        o_id = curie_from_uri(o, curie_map)
+                        m = Mapping(subject_id=s_id, object_id=o_id, predicate_id=p_id)
+                        ms.mappings.append(m)
+            except NoCURIEException as e:
+                logging.warning(e)
+    if meta:
+        for k, v in meta.items():
+            if k != "curie_map":
+                ms[k] = v
+    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(mdoc)
+
+
+def from_sssom_json(
+        jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]
+) -> MappingSetDataFrame:
+    ms = JSONLoader().load(source=jsondoc, target_class=MappingSet)
+    _set_metadata_in_mapping_set(ms, meta)
+    ms: MappingSet
+    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
+    return to_mapping_set_dataframe(mdoc)
+
+
+def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict):
+    for k, v in metadata.items():
+        if k != "curie_map":
+            mapping_set[k] = v
+
+
 def from_alignment_minidom(
-    dom: Document, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+        dom: Document, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     Reads a minidom Document object
@@ -234,8 +269,14 @@ def from_alignment_minidom(
                 if node_name == "map":
                     cell = e.getElementsByTagName("Cell")
                     for c_node in cell:
-                        m = _prepare_mapping(_cell_element_values(c_node, curie_map))
-                        mlist.append(m)
+                        mdict = _cell_element_values(c_node, curie_map)
+                        if mdict:
+                            m = _prepare_mapping(mdict)
+                            mlist.append(m)
+                        else:
+                            logging.warning(f"While trying to prepare a mapping for {c_node}, something went wrong. "
+                                            f"This usually happens when a critical curie_map entry is missing.")
+
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
                         raise Exception(
@@ -260,7 +301,7 @@ def from_alignment_minidom(
 
 
 def from_obographs(
-    jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]
+        jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
     """
     Converts a obographs json object to an SSSOM data frame
@@ -348,82 +389,22 @@ def from_obographs(
     return to_mapping_set_dataframe(mdoc)
 
 
-def from_owl_graph(
-    g: Graph, curie_map: Dict[str, str], meta: Dict[str, str]
-) -> MappingSetDataFrame:
-    """
-    Converts a dataframe to a MappingSetDataFrame
-    :param g: A Graph object (rdflib)
-    :param curie_map:
-    :param meta: an optional set of metadata elements
-    :return: MappingSetDataFrame
-    """
-    raise Exception("Importing from SSSOM OWL is not yet implemented")
-
-
-def from_rdf_graph(
-    g: Graph,
-    curie_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
-    mapping_predicates: Set[str] = None,
-) -> MappingSetDataFrame:
-    """
-    Converts an SSSOM RDF graph into a SSSOM data table
-    Args:
-        g: the Grah (rdflib)
-        curie_map: A dictionary conatining the prefix map
-        meta: Potentially additional metadata
-        mapping_predicates: A set of predicates that should be extracted from the RDF graph
-
-    Returns:
-
-    """
-    if not curie_map:
-        raise Exception("No valid curie_map provided")
-    if mapping_predicates is None:
-        mapping_predicates = _get_default_mapping_predicates()
-    ms = MappingSet()
-    for s, p, o in g.triples((None, None, None)):
-        if isinstance(s, URIRef):
-            try:
-                p_id = curie_from_uri(p, curie_map)
-                if p_id in mapping_predicates:
-                    s_id = curie_from_uri(s, curie_map)
-                    if isinstance(o, URIRef):
-                        o_id = curie_from_uri(o, curie_map)
-                        m = Mapping(subject_id=s_id, object_id=o_id, predicate_id=p_id)
-                        ms.mappings.append(m)
-            except NoCURIEException as e:
-                logging.warning(e)
-    if meta:
-        for k, v in meta.items():
-            if k != "curie_map":
-                ms[k] = v
-    mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
-    return to_mapping_set_dataframe(mdoc)
-
-
-# Utilities (reading)
-# All from_* should return MappingSetDataFrame
-
+# All from_* take as an input a python object (data frame, json, etc) and return a MappingSetDataFrame
+# All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 def get_parsing_function(input_format, filename):
     if input_format is None:
         input_format = get_file_extension(filename)
     if input_format == "tsv":
-        return read_sssom_tsv
+        return read_sssom_table
     elif input_format == "rdf":
         return read_sssom_rdf
-    elif input_format == "owl":
-        return read_sssom_owl
+    elif input_format == "json":
+        return read_sssom_json
     elif input_format == "alignment-api-xml":
         return read_alignment_xml
     elif input_format == "obographs-json":
         return read_obographs_json
-    elif input_format == "json-ld":
-        return read_sssom_jsonld
-    elif input_format == "json":
-        return read_sssom_json
     else:
         raise Exception(f"Unknown input format: {input_format}")
 
@@ -455,8 +436,8 @@ def _swap_object_subject(mapping):
         attr.replace("subject_", "")
         for attr in dir(mapping)
         if not callable(getattr(mapping, attr))
-        and not attr.startswith("__")
-        and attr.startswith("subject_")
+           and not attr.startswith("__")
+           and attr.startswith("subject_")
     ]
     for var in members:
         subject_val = getattr(mapping, "subject_" + var)
@@ -586,7 +567,7 @@ def split_dataframe(msdf: MappingSetDataFrame):
 
 
 def split_dataframe_by_prefix(
-    msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
+        msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
 ):
     """
 
@@ -611,14 +592,14 @@ def split_dataframe_by_prefix(
                     (df["subject_id"].str.startswith(pre_subj + ":"))
                     & (df["predicate_id"] == rel)
                     & (df["object_id"].str.startswith(pre_obj + ":"))
-                ]
+                    ]
                 if pre_subj in curie_map and pre_obj in curie_map and len(dfs) > 0:
                     cm = {
                         pre_subj: curie_map[pre_subj],
                         pre_obj: curie_map[pre_obj],
                         relpre: curie_map[relpre],
                     }
-                    msdf = from_dataframe(dfs, curie_map=cm, meta=meta)
+                    msdf = from_sssom_dataframe(dfs, curie_map=cm, meta=meta)
                     splitted[split_name] = msdf
                 else:
                     print(
