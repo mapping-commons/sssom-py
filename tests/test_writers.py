@@ -13,7 +13,8 @@ class TestWrite(unittest.TestCase):
     def setUp(self) -> None:
         if not os.path.exists(test_out_dir):
             os.mkdir(test_out_dir)
-        self.msdf = read_sssom_table(f"{test_data_dir}/basic.tsv")
+        self.msdf = read_sssom_table(f"{test_data_dir}/basic-small.tsv")
+        self.mapping_count = 4 # 141 for basic.tsv
 
     def test_write_sssom_dataframe(self):
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
@@ -21,7 +22,7 @@ class TestWrite(unittest.TestCase):
         msdf = read_sssom_table(tmp_file)
         self.assertEqual(
             len(msdf.df),
-            141,
+            self.mapping_count,
             f"{tmp_file} has the wrong number of mappings.",
         )
 
@@ -31,7 +32,7 @@ class TestWrite(unittest.TestCase):
         msdf = read_sssom_rdf(tmp_file)
         self.assertEqual(
             len(msdf.df),
-            141,
+            self.mapping_count,
             f"{tmp_file} has the wrong number of mappings.",
         )
 
@@ -41,7 +42,7 @@ class TestWrite(unittest.TestCase):
         msdf = read_sssom_json(tmp_file)
         self.assertEqual(
             len(msdf.df),
-            141,
+            self.mapping_count,
             f"{tmp_file} has the wrong number of mappings.",
         )
 

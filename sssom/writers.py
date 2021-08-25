@@ -5,14 +5,15 @@ import sys
 
 import pandas as pd
 import yaml
-from jsonasobj2 import JsonObj
+from jsonasobj2 import JsonObj, as_json_obj
 from linkml_runtime.dumpers import JSONDumper, RDFDumper
+from rdflib.namespace import OWL, RDF
 from linkml_runtime.utils.yamlutils import (
     as_json_object,
 )
 from rdflib import Graph, URIRef
 
-from .context import get_default_metadata
+from .context import get_default_metadata, get_jsonld_context
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
 from .util import MappingSetDataFrame, extract_global_metadata
@@ -228,13 +229,64 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     doc = to_mapping_set_document(msdf)
     cntxt = _prepare_context_from_curie_map(doc.curie_map)
 
-    graph = RDFDumper().as_rdf_graph(doc.mapping_set, contexts=cntxt)
-
-    for k, v in doc.curie_map.items():
-        graph.namespace_manager.bind(k, URIRef(v))
-
+    # TODO following line needs to be replaced by:
+    graph = RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
+    #graph = _temporary_as_rdf_graph(element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map)
     return graph
 
+
+def _temporary_as_rdf_graph(element, contexts, namespaces) -> Graph:
+    # TODO needs to be replaced by RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
+    graph = Graph()
+
+    for k, v in namespaces.items():
+        graph.namespace_manager.bind(k, URIRef(v))
+
+    if not contexts:
+        raise Exception(f"ERROR: No context provided to as_rdf_graph().")
+
+    if "@context" not in contexts:
+        contexts["@context"] = dict()
+
+    for k, v in namespaces.items():
+        contexts["@context"][k] = v
+
+    jsonobj = as_json_object(element, contexts)
+
+
+    # for m in doc.mapping_set.mappings:
+    #    if m.subject_id not in jsonobj:
+    #        jsonobj[m.subject_id] = {}
+    #    if m.predicate_id not in jsonobj[m.subject_id]:
+    #        jsonobj[m.subject_id][m.predicate_id] = []
+    #    jsonobj[m.subject_id][m.predicate_id].append(m.object_id)
+    #    print(f'T {m.subject_id} = {jsonobj[m.subject_id]}')
+    # TODO: should be covered by context?
+    # elements = []
+    # for m in jsonobj["mappings"]:
+    #     m["@type"] = "owl:Axiom"
+    #     for field in m:
+    #         if m[field]:
+    #             if not field.startswith("@"):
+    #                 elements.append(field)
+    jsonld = json.dumps(as_json_obj(jsonobj))
+    graph.parse(data=jsonld, format="json-ld")
+    # elements = list(set(elements))
+    # assert reified triple
+    # _inject_annotation_properties(graph, elements)
+
+    for axiom in graph.subjects(RDF.type, OWL.Axiom):
+        logging.info(f"Axiom: {axiom}")
+        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
+            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
+                for o in graph.objects(
+                        subject=axiom, predicate=OWL.annotatedTarget
+                ):
+                    graph.add((s, p, o))
+
+    # for m in doc.mapping_set.mappings:
+    #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
+    return graph
 
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """
@@ -307,7 +359,20 @@ def _inject_annotation_properties(graph: Graph, elements):
 
 
 def _prepare_context_from_curie_map(curie_map: dict):
+    meta, default_curie_map = get_default_metadata()
+    context = get_jsonld_context()
     if not curie_map:
-        meta, curie_map = get_default_metadata()
-    context = {"@context": curie_map}
-    return json.dumps(context, indent=4)
+        curie_map = default_curie_map
+
+    for k, v in curie_map.items():
+        if isinstance(v, str):
+            if k not in context["@context"]:
+                context["@context"][k] = v
+            else:
+                if context["@context"][k] != v:
+                    logging.info(
+                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
+                        f"but with a different value than {v}. Overwriting!"
+                    )
+                    context["@context"][k] = v
+    return json.dumps(context)
