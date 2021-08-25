@@ -139,9 +139,10 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """
 
     Args:
-        msdf:
+        msdf: The MappingSetDataFrame (SSSOM table)
 
     Returns:
+        an rdfib Graph obect
 
     """
 
@@ -166,54 +167,7 @@ WHERE {
  ?c owl:equivalentClass ?d .
 }
 """
-    print(sparql_equiv_class)
     graph.update(sparql_equiv_class)
-
-    # jsonobj = yaml_to_json(doc.mapping_set, json.dumps(cntxt))
-
-    # # for m in doc.mapping_set.mappings:
-    # #    if m.subject_id not in jsonobj:
-    # #        jsonobj[m.subject_id] = {}
-    # #    if m.predicate_id not in jsonobj[m.subject_id]:
-    # #        jsonobj[m.subject_id][m.predicate_id] = []
-    # #    jsonobj[m.subject_id][m.predicate_id].append(m.object_id)
-    # #    print(f'T {m.subject_id} = {jsonobj[m.subject_id]}')
-    # # TODO: THIS IS BROKEN NOW AND NEEDS PROPER THINKING. THING FROM SCRATCH
-    # elements = []
-    # for m in jsonobj["mappings"]:
-    #     m["@type"] = "owl:Axiom"
-    #     for field in m:
-    #         if m[field]:
-    #             if not field.startswith("@"):
-    #                 elements.append(field)
-    # jsonld = json.dumps(as_json_obj(jsonobj))
-    # logging.warning(f"to_owl_graph:jsonlod={jsonld}")
-    # graph.parse(data=jsonld, format="json-ld")
-    # elements = list(set(elements))
-    # # assert reified triple
-    # _inject_annotation_properties(graph, elements)
-    #
-    # for axiom in graph.subjects(RDF.type, OWL.Axiom):
-    #     logging.info(f"Axiom: {axiom}")
-    #     for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-    #         for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-    #             for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-    #                 if p.toPython() == OWL_EQUIV_CLASS:
-    #                     graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_CLASS)))
-    #                     graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_CLASS)))
-    #                 elif p.toPython() == OWL_EQUIV_OBJECTPROPERTY:
-    #                     graph.add((o, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
-    #                     graph.add((s, URIRef(RDF_TYPE), URIRef(OWL_OBJECT_PROPERTY)))
-    #                 graph.add((s, p, o))
-    #                 if p.toPython().startswith(SSSOM_NS):
-    #                     # prefix commons has that working
-    #                     graph.add(
-    #                         (p, URIRef(RDF_TYPE), URIRef(OWL_ANNOTATION_PROPERTY))
-    #                     )
-
-    # for m in doc.mapping_set.mappings:
-    #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
-    logging.warning(f"to_owl_graph:g={graph}")
     return graph
 
 
@@ -229,9 +183,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     doc = to_mapping_set_document(msdf)
     cntxt = _prepare_context_from_curie_map(doc.curie_map)
 
-    # TODO following line needs to be replaced by:
-    graph = RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
-    #graph = _temporary_as_rdf_graph(element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map)
+    graph = _temporary_as_rdf_graph(element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map)
     return graph
 
 
@@ -246,13 +198,9 @@ def _temporary_as_rdf_graph(element, contexts, namespaces) -> Graph:
         raise Exception(f"ERROR: No context provided to as_rdf_graph().")
 
     if "@context" not in contexts:
-        contexts["@context"] = dict()
-
-    for k, v in namespaces.items():
-        contexts["@context"][k] = v
+        raise Exception("Illegal context supplied to _temporary_as_rdf_graph.")
 
     jsonobj = as_json_object(element, contexts)
-
 
     # for m in doc.mapping_set.mappings:
     #    if m.subject_id not in jsonobj:
@@ -262,21 +210,23 @@ def _temporary_as_rdf_graph(element, contexts, namespaces) -> Graph:
     #    jsonobj[m.subject_id][m.predicate_id].append(m.object_id)
     #    print(f'T {m.subject_id} = {jsonobj[m.subject_id]}')
     # TODO: should be covered by context?
-    # elements = []
-    # for m in jsonobj["mappings"]:
-    #     m["@type"] = "owl:Axiom"
-    #     for field in m:
-    #         if m[field]:
-    #             if not field.startswith("@"):
-    #                 elements.append(field)
+    elements = []
+    for m in jsonobj["mappings"]:
+        m["@type"] = "owl:Axiom"
+        for field in m:
+            if m[field]:
+                if not field.startswith("@"):
+                    elements.append(field)
     jsonld = json.dumps(as_json_obj(jsonobj))
     graph.parse(data=jsonld, format="json-ld")
-    # elements = list(set(elements))
+    elements = list(set(elements))
+
     # assert reified triple
-    # _inject_annotation_properties(graph, elements)
+    _inject_annotation_properties(graph, elements)
+
+    #print(graph.serialize(fmt="turtle").decode())
 
     for axiom in graph.subjects(RDF.type, OWL.Axiom):
-        logging.info(f"Axiom: {axiom}")
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
             for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
                 for o in graph.objects(
@@ -287,6 +237,7 @@ def _temporary_as_rdf_graph(element, contexts, namespaces) -> Graph:
     # for m in doc.mapping_set.mappings:
     #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
     return graph
+
 
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """
@@ -316,7 +267,7 @@ def get_writer_function(output_format, output):
     elif output_format == "rdf":
         return write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION
     elif output_format == "json":
-        return write_json, "json"
+        return write_json, output_format
     elif output_format == "owl":
         return write_owl, SSSOM_DEFAULT_RDF_SERIALISATION
     else:
@@ -337,7 +288,7 @@ def write_tsvs(sssom_dict, output_dir):
         sssom_file = os.path.join(output_dir, f"{split_id}.sssom.tsv")
         msdf = sssom_dict[split_id]
         write_tsv(msdf=msdf, filename=sssom_file)
-        print(f"Writing {sssom_file} complete!")
+        logging.info(f"Writing {sssom_file} complete!")
 
 
 def _inject_annotation_properties(graph: Graph, elements):

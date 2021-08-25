@@ -27,7 +27,7 @@ SSSOM_READ_FORMATS = [
 ]
 SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
 
-SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
+SSSOM_DEFAULT_RDF_SERIALISATION = "xml"
 
 # TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = "subject_id"
