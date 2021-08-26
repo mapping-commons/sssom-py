@@ -11,6 +11,9 @@ import yaml
 from pandasql import sqldf
 from scipy.stats import chi2_contingency
 
+from rdflib import Graph
+
+from sssom.rdf_util import rewire_graph
 from sssom.sparql_util import EndpointConfig, query_mappings
 from sssom.util import (
     SSSOM_EXPORT_FORMATS,
@@ -608,6 +611,30 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
     # Export MappingSetDataFrame into a TSV
     write_sssom(merged_msdf, output)
 
+@main.command()
+@click.option("-i", "--input", help="Path to ontology file.")
+@click.option("-m", "--mapping-file", help="Path to SSSOM file.")
+@click.option("-I", "--input-format", default='turtle', help="Ontology input format.")
+@click.option("-O", "--output-format", default='turtle', help="Ontology output format.")
+@click.option("--precedence", multiple=True, help="List of prefixes in order of precedence.")
+@click.option("-o", "--output", help="Where to save ontology file")
+def rewire(input, mapping_file, precedence=None, output=None, input_format=None, output_format=None):
+    """Rewire an ontology using equivalence predicates from a mapping file
+
+    Example:
+
+        sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+    """
+    msdf = from_tsv(mapping_file)
+    g = Graph()
+    g.parse(input, format=input_format)
+    rewire_graph(g, msdf, precedence=precedence)
+    rdfstr = g.serialize(format=output_format).decode()
+    if output:
+        with open(output, 'w') as stream:
+            stream.write(rdfstr)
+    else:
+        print(rdfstr)
 
 if __name__ == "__main__":
     main()
