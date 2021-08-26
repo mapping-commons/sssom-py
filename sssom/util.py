@@ -15,6 +15,7 @@ import validators
 import yaml
 
 from sssom.sssom_datamodel import Entity, slots
+from .context import get_default_metadata, get_jsonld_context
 from .sssom_document import MappingSetDocument
 
 SSSOM_READ_FORMATS = [
@@ -27,7 +28,7 @@ SSSOM_READ_FORMATS = [
 ]
 SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
 
-SSSOM_DEFAULT_RDF_SERIALISATION = "xml"
+SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 # TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = "subject_id"
@@ -44,6 +45,8 @@ COMMENT = "comment"
 MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
+
+URI_SSSOM_MAPPINGS="http://w3id.org/sssom/mappings"
 
 #: The 3 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
@@ -929,3 +932,23 @@ def guess_file_format(filename):
         raise Exception(
             f"File extension {extension} does not correspond to a legal file format"
         )
+
+
+def prepare_context_from_curie_map(curie_map: dict):
+    meta, default_curie_map = get_default_metadata()
+    context = get_jsonld_context()
+    if not curie_map:
+        curie_map = default_curie_map
+
+    for k, v in curie_map.items():
+        if isinstance(v, str):
+            if k not in context["@context"]:
+                context["@context"][k] = v
+            else:
+                if context["@context"][k] != v:
+                    logging.info(
+                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
+                        f"but with a different value than {v}. Overwriting!"
+                    )
+                    context["@context"][k] = v
+    return json.dumps(context)

@@ -32,7 +32,7 @@ class TestCollapse(unittest.TestCase):
     def test_filter(self):
         df = filter_redundant_rows(self.df)
         print(df[0:20])
-        assert len(df.index) == 141
+        self.assertEqual(len(df.index), 141)
 
     def test_ptable(self):
         rows = dataframe_to_ptable(self.df)

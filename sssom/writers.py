@@ -5,18 +5,14 @@ import sys
 
 import pandas as pd
 import yaml
-from jsonasobj2 import JsonObj, as_json_obj
+from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, RDFDumper
-from rdflib.namespace import OWL, RDF
-from linkml_runtime.utils.yamlutils import (
-    as_json_object,
-)
 from rdflib import Graph, URIRef
+from rdflib.namespace import OWL, RDF
 
-from .context import get_default_metadata, get_jsonld_context
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
-from .util import MappingSetDataFrame, extract_global_metadata
+from .util import MappingSetDataFrame, prepare_context_from_curie_map, URI_SSSOM_MAPPINGS
 from .util import RDF_FORMATS, SSSOM_DEFAULT_RDF_SERIALISATION
 from .util import get_file_extension
 
@@ -38,40 +34,38 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 
 def write_tsv(
         msdf: MappingSetDataFrame, filename: str, serialisation="tsv"
-) -> None:  # , context_path=None) -> None:
+) -> None:
     """
     dataframe 2 tsv
     """
 
-    if serialisation == "csv":
-        sep = ","
-    elif serialisation == "tsv":
-        sep = "\t"
-    else:
-        raise Exception(
-            f"Unknown table format: {serialisation}, should be one of tsv or csv"
-        )
+    sep = _get_separator(serialisation)
 
-    msdoc = to_mapping_set_document(msdf)
     df = to_dataframe(msdf)
-    meta = extract_global_metadata(msdoc)
+
+    if msdf.metadata is not None:
+        meta = {k: v for k, v in msdf.metadata.items()}
+    else:
+        meta = {}
+    if msdf.prefixmap is not None:
+        meta["curie_map"] = msdf.prefixmap
+
+    lines = yaml.safe_dump(meta).split("\n")
+    lines = [f"# {line}" for line in lines if line != ""]
+    s = msdf.df.to_csv(sep=sep, index=False)
+    lines = lines + [s]
+
     if filename and filename != "-":
         if os.path.isfile(filename):
             os.remove(filename)
         f = open(filename, "a")
-        if meta:
-            mapping_data_string = yaml.dump(meta)
-            for line in mapping_data_string.splitlines():
-                f.write("#" + line + "\n")
-        df.to_csv(f, sep=sep, index=False)
+        for line in lines:
+            f.write(line + "\n")
         f.close()
     else:
         # stdout the result for now
-        if meta:
-            mapping_data_string = yaml.dump(meta)
-            for line in mapping_data_string.splitlines():
-                sys.stdout.write("#" + line + "\n")
-        df.to_csv(sys.stdout, sep=sep, index=False)
+        for line in lines:
+            sys.stdout.write("#" + line + "\n")
 
 
 def write_rdf(msdf: MappingSetDataFrame, filename: str, serialisation=SSSOM_DEFAULT_RDF_SERIALISATION) -> None:
@@ -93,11 +87,12 @@ def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -
     dataframe 2 tsv
     """
     if serialisation == "json":
-        doc = to_mapping_set_document(msdf)
-        context = _prepare_context_from_curie_map(doc.curie_map)
-        data = JSONDumper().dumps(doc.mapping_set, contexts=context)
+        data = to_json(msdf)
+        # doc = to_mapping_set_document(msdf)
+        # context = prepare_context_from_curie_map(doc.curie_map)
+        # data = JSONDumper().dumps(doc.mapping_set, contexts=context)
         with open(filename, "w") as outfile:
-            print(data, file=outfile)
+            json.dump(data, outfile, indent='  ')
 
     else:
         raise Exception(
@@ -181,50 +176,29 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
 
     """
     doc = to_mapping_set_document(msdf)
-    cntxt = _prepare_context_from_curie_map(doc.curie_map)
+    cntxt = prepare_context_from_curie_map(doc.curie_map)
+    #json_obj = to_json(msdf)
+    #g = Graph()
+    #g.load(json_obj, format="json-ld")
+    #print(g.serialize(format="xml"))
 
     graph = _temporary_as_rdf_graph(element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map)
     return graph
 
 
-def _temporary_as_rdf_graph(element, contexts, namespaces) -> Graph:
+def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
     # TODO needs to be replaced by RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
-    graph = Graph()
+    graph = RDFDumper().as_rdf_graph(element=element, contexts=contexts)
+    #print(graph.serialize(fmt="turtle").decode())
+
+    # Adding some stuff that the default RDF serialisation does not do:
+    # Direct triples
 
     for k, v in namespaces.items():
-        graph.namespace_manager.bind(k, URIRef(v))
+        graph.bind(k, v)
 
-    if not contexts:
-        raise Exception(f"ERROR: No context provided to as_rdf_graph().")
-
-    if "@context" not in contexts:
-        raise Exception("Illegal context supplied to _temporary_as_rdf_graph.")
-
-    jsonobj = as_json_object(element, contexts)
-
-    # for m in doc.mapping_set.mappings:
-    #    if m.subject_id not in jsonobj:
-    #        jsonobj[m.subject_id] = {}
-    #    if m.predicate_id not in jsonobj[m.subject_id]:
-    #        jsonobj[m.subject_id][m.predicate_id] = []
-    #    jsonobj[m.subject_id][m.predicate_id].append(m.object_id)
-    #    print(f'T {m.subject_id} = {jsonobj[m.subject_id]}')
-    # TODO: should be covered by context?
-    elements = []
-    for m in jsonobj["mappings"]:
-        m["@type"] = "owl:Axiom"
-        for field in m:
-            if m[field]:
-                if not field.startswith("@"):
-                    elements.append(field)
-    jsonld = json.dumps(as_json_obj(jsonobj))
-    graph.parse(data=jsonld, format="json-ld")
-    elements = list(set(elements))
-
-    # assert reified triple
-    _inject_annotation_properties(graph, elements)
-
-    #print(graph.serialize(fmt="turtle").decode())
+    for s, p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
+        graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
 
     for axiom in graph.subjects(RDF.type, OWL.Axiom):
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
@@ -233,9 +207,6 @@ def _temporary_as_rdf_graph(element, contexts, namespaces) -> Graph:
                         subject=axiom, predicate=OWL.annotatedTarget
                 ):
                     graph.add((s, p, o))
-
-    # for m in doc.mapping_set.mappings:
-    #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
     return graph
 
 
@@ -248,9 +219,12 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     Returns:
         The standard SSSOM json representation
     """
+
     doc = to_mapping_set_document(msdf)
-    context = _prepare_context_from_curie_map(doc.curie_map)
-    return as_json_object(doc.mapping_set, context)
+    context = prepare_context_from_curie_map(doc.curie_map)
+    data = JSONDumper().dumps(doc.mapping_set, contexts=context)
+    json_obj = json.loads(data)
+    return json_obj
 
 
 # Support methods
@@ -309,21 +283,13 @@ def _inject_annotation_properties(graph: Graph, elements):
                 )
 
 
-def _prepare_context_from_curie_map(curie_map: dict):
-    meta, default_curie_map = get_default_metadata()
-    context = get_jsonld_context()
-    if not curie_map:
-        curie_map = default_curie_map
-
-    for k, v in curie_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return json.dumps(context)
+def _get_separator(serialisation):
+    if serialisation == "csv":
+        sep = ","
+    elif serialisation == "tsv":
+        sep = "\t"
+    else:
+        raise Exception(
+            f"Unknown table format: {serialisation}, should be one of tsv or csv"
+        )
+    return sep

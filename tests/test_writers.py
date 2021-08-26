@@ -30,7 +30,8 @@ class TestWrite(unittest.TestCase):
     def test_write_sssom_rdf(self):
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         write_rdf(self.msdf, tmp_file)
-        msdf = read_sssom_rdf(tmp_file)
+        msdf = read_sssom_rdf(tmp_file, self.msdf.prefixmap)
+        write_tsv(self.msdf, os.path.join(test_out_dir, "test_write_sssom_rdf.rdf.tsv"))
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,

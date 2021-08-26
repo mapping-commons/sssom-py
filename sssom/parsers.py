@@ -11,11 +11,13 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from hbreader import hbread
 from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdf_loader import RDFLoader
 from rdflib import Graph, URIRef
 
-from sssom.util import read_pandas, NoCURIEException, curie_from_uri, SSSOM_DEFAULT_RDF_SERIALISATION
+from sssom.util import read_pandas, NoCURIEException, curie_from_uri, SSSOM_DEFAULT_RDF_SERIALISATION, \
+    prepare_context_from_curie_map, URI_SSSOM_MAPPINGS
 from .context import get_default_metadata
 from .sssom_datamodel import MappingSet, Mapping
 from .sssom_document import MappingSetDocument
@@ -40,60 +42,63 @@ def read_sssom_table(
     if validators.url(file_path) or os.path.exists(file_path):
         df = read_pandas(file_path)
 
-        if "confidence" in df.columns:
-            df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
+        # If SSSOM external metadata is provided, merge it with the internal metadata
+        sssom_metadata = _read_metadata_from_table(file_path)
 
-        if not meta:
-            meta = _read_metadata_from_table(file_path)
-        if "curie_map" in meta:
-            logging.info(
-                "Context provided, but SSSOM file provides its own CURIE map. "
-                "CURIE map from context is disregarded."
-            )
-            curie_map = meta["curie_map"]
+        if sssom_metadata:
+            if meta:
+                for k, v in meta.items():
+                    if k in sssom_metadata:
+                        if sssom_metadata[k] != meta[k]:
+                            logging.warning(f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
+                                            f"conflicts with provided ({meta[k]}).")
+                    else:
+                        logging.info(f"Externally provided metadata {k}:{meta[k]} is added to metadata set.")
+                        sssom_metadata[k] = meta[k]
+            meta = sssom_metadata
+
+        curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+
         msdf = from_sssom_dataframe(df, curie_map=curie_map, meta=meta)
-        # msdf = to_mapping_set_dataframe(doc) # Creates a MappingSetDataFrame object
         return msdf
     else:
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
 def read_sssom_rdf(
-        file_path: str, curie_map: Dict[str, str] = None, serialisation=SSSOM_DEFAULT_RDF_SERIALISATION
+        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     if validators.url(file_path) or os.path.exists(file_path):
-        # noinspection PyTypeChecker
-        context = _prepare_context_from_curie_map(curie_map)
-        ms = RDFLoader().load(source=file_path, target_class=MappingSet, fmt=serialisation, contexts=context)
-        ms: MappingSet
-        mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
-        return to_mapping_set_dataframe(mdoc)
+        curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+
+        g = Graph()
+        g.load(file_path, format=serialisation)
+        #json_obj = json.loads(g.serialize(format="json-ld"))
+        #print(json_obj)
+        #msdf = from_sssom_json(json_obj, curie_map=curie_map, meta=meta)
+        msdf = from_sssom_rdf(g, curie_map=curie_map, meta=meta)
+        return msdf
     else:
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
-def _prepare_context_from_curie_map(curie_map: dict):
-    if not curie_map:
-        meta, curie_map = get_default_metadata()
-    context = {"@context": curie_map}
-    return json.dumps(curie_map, indent=4)
-
-
 def read_sssom_json(
-        file_path: str, curie_map: Dict[str, str] = None
+        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
+
+    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+
     if validators.url(file_path) or os.path.exists(file_path):
-        # noinspection PyTypeChecker
-        ms = JSONLoader().load(source=file_path, target_class=MappingSet)
-        ms: MappingSet
-        mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
-        return to_mapping_set_dataframe(mdoc)
+        with open(file_path) as json_file:
+            jsondoc = json.load(json_file)
+        msdf = from_sssom_json(jsondoc=jsondoc, curie_map=curie_map, meta=meta)
+        return msdf
     else:
         raise Exception(f"{file_path} is not a valid file path or url.")
 
@@ -111,6 +116,9 @@ def read_obographs_json(
     :param meta: an optional dictionary of metadata elements
     :return: A SSSOM MappingSetDataFrame
     """
+
+    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+
     if validators.url(file_path) or os.path.exists(file_path):
         with open(file_path) as json_file:
             jsondoc = json.load(json_file)
@@ -120,12 +128,35 @@ def read_obographs_json(
         raise Exception(f"{file_path} is not a valid file path or url.")
 
 
+def _get_curie_map_and_metadata(curie_map: Dict, meta: Dict):
+    default_meta, default_curie_map = get_default_metadata()
+
+    if not curie_map:
+        logging.warning("No curie map provided (not recommended), trying to use defaults..")
+        curie_map = default_curie_map
+
+    if not meta:
+        meta = default_meta
+    else:
+        if curie_map and "curie_map" in meta:
+            logging.info(
+                "Curie map prvoided as parameter, but SSSOM file provides its own CURIE map. "
+                "CURIE map provided externally is disregarded in favour of the curie map in the SSSOM file."
+            )
+            curie_map = meta["curie_map"]
+
+    return curie_map, meta
+
+
 def read_alignment_xml(
         file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
+
+    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+
     if validators.url(file_path) or os.path.exists(file_path):
         logging.info("Loading from alignment API")
         xmldoc = minidom.parse(file_path)
@@ -148,8 +179,11 @@ def from_sssom_dataframe(
     :param meta:
     :return: MappingSetDataFrame
     """
-    if not curie_map:
-        raise Exception("No valid curie_map provided")
+
+    _check_curie_map(curie_map)
+
+    if "confidence" in df.columns:
+        df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
 
     mlist = []
     ms = MappingSet()
@@ -173,15 +207,13 @@ def from_sssom_dataframe(
                     bad_attrs[k] = 1
                 else:
                     bad_attrs[k] += 1
-        # logging.info(f'Row={mdict}')
         m = _prepare_mapping(Mapping(**mdict))
+
         mlist.append(m)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
     ms.mappings = mlist
-    for k, v in meta.items():
-        if k != "curie_map":
-            ms[k] = v
+    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     doc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(doc)
 
@@ -203,45 +235,69 @@ def from_sssom_rdf(
     Returns:
 
     """
-    if not curie_map:
-        raise Exception("No valid curie_map provided")
+    _check_curie_map(curie_map)
+
     if mapping_predicates is None:
         mapping_predicates = _get_default_mapping_predicates()
+
     ms = MappingSet()
-    for s, p, o in g.triples((None, None, None)):
-        if isinstance(s, URIRef):
-            try:
-                p_id = curie_from_uri(p, curie_map)
-                if p_id in mapping_predicates:
-                    s_id = curie_from_uri(s, curie_map)
+    mlist = []
+
+    for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
+        mdict = {}
+        for s, p, o in g.triples((ox, None, None)):
+            if isinstance(p, URIRef):
+                try:
+                    p_id = curie_from_uri(p, curie_map)
+                    k = None
+
+                    if p_id.startswith("sssom:"):
+                        k = p_id.replace("sssom:","")
+                    elif p_id == "owl:annotatedProperty":
+                        k = "predicate_id"
+                    elif p_id == "owl:annotatedTarget":
+                        k = "object_id"
+                    elif p_id == "owl:annotatedSource":
+                        k = "subject_id"
+
                     if isinstance(o, URIRef):
-                        o_id = curie_from_uri(o, curie_map)
-                        m = Mapping(subject_id=s_id, object_id=o_id, predicate_id=p_id)
-                        ms.mappings.append(m)
-            except NoCURIEException as e:
-                logging.warning(e)
-    if meta:
-        for k, v in meta.items():
-            if k != "curie_map":
-                ms[k] = v
+                        v = curie_from_uri(o, curie_map)
+                    else:
+                        v = o.toPython()
+
+                    if k:
+                        mdict[k] = v
+
+                except NoCURIEException as e:
+                    logging.warning(e)
+        if mdict:
+            m = _prepare_mapping(Mapping(**mdict))
+            if _is_valid_mapping(m):
+                mlist.append(m)
+            else:
+                logging.warning(f"While trying to prepare a mapping for {mdict}, something went wrong. "
+                                f"One of subject_id, object_id or predicate_id was missing.")
+        else:
+            logging.warning(f"While trying to prepare a mapping for {sx},{px}, {ox}, something went wrong. "
+                            f"This usually happens when a critical curie_map entry is missing.")
+
+    ms.mappings = mlist
+    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
 def from_sssom_json(
-        jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]
+        jsondoc: Dict, curie_map: Dict, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
+    _check_curie_map(curie_map)
+
     ms = JSONLoader().load(source=jsondoc, target_class=MappingSet)
-    _set_metadata_in_mapping_set(ms, meta)
+
+    _set_metadata_in_mapping_set(ms, metadata=meta)
     ms: MappingSet
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
-
-
-def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict):
-    for k, v in metadata.items():
-        if k != "curie_map":
-            mapping_set[k] = v
 
 
 def from_alignment_minidom(
@@ -254,8 +310,7 @@ def from_alignment_minidom(
     :param meta: Optional meta data
     :return: MappingSetDocument
     """
-    if not curie_map:
-        raise Exception("No valid curie_map provided")
+    _check_curie_map(curie_map)
 
     ms = MappingSet()
     mlist = []
@@ -292,16 +347,13 @@ def from_alignment_minidom(
                     ms["object_source"] = e.firstChild.nodeValue
 
     ms.mappings = mlist
-    if meta:
-        for k, v in meta.items():
-            if k != "curie_map":
-                ms[k] = v
+    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
 def from_obographs(
-        jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str]
+        jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """
     Converts a obographs json object to an SSSOM data frame
@@ -315,8 +367,7 @@ def from_obographs(
         An SSSOM data frame (MappingSetDataFrame)
 
     """
-    if not curie_map:
-        raise Exception("No valid curie_map provided")
+    _check_curie_map(curie_map)
 
     ms = MappingSet()
     mlist = []
@@ -381,10 +432,7 @@ def from_obographs(
         raise Exception("No graphs element in obographs file, wrong format?")
 
     ms.mappings = mlist
-    if meta:
-        for k, v in meta.items():
-            if k != "curie_map":
-                ms[k] = v
+    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
@@ -407,6 +455,11 @@ def get_parsing_function(input_format, filename):
         return read_obographs_json
     else:
         raise Exception(f"Unknown input format: {input_format}")
+
+
+def _check_curie_map(curie_map):
+    if not curie_map:
+        raise Exception("No valid curie_map provided")
 
 
 def _get_default_mapping_predicates():
@@ -475,6 +528,15 @@ def _read_metadata_from_table(filename: str):
 
 def _is_valid_mapping(m: Mapping):
     return m.predicate_id and m.object_id and m.subject_id
+
+
+def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict):
+    if not metadata:
+        logging.info("Tried setting metadata but none provided.")
+    else:
+        for k, v in metadata.items():
+            if k != "curie_map":
+                mapping_set[k] = v
 
 
 def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
@@ -602,7 +664,7 @@ def split_dataframe_by_prefix(
                     msdf = from_sssom_dataframe(dfs, curie_map=cm, meta=meta)
                     splitted[split_name] = msdf
                 else:
-                    print(
+                    logging.warning(
                         f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), "
                         f"or no matches ({len(dfs)} matches found)"
                     )

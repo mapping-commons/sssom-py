@@ -16,8 +16,9 @@ from sssom.util import (
     MappingSetDataFrame,
     to_mapping_set_dataframe,
 )
+from sssom.writers import write_tsv
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, split_file, validate_file, write_sssom
+from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import read_sssom_table
 from .util import (
     collapse,
@@ -266,7 +267,7 @@ def dedupe(input: str, output: str):
         df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata
     )
     # df.to_csv(output, sep="\t", index=False)
-    write_sssom(msdf_out, output)
+    write_tsv(msdf_out, output)
 
 
 @main.command()
@@ -372,7 +373,7 @@ def sparql(
         for k, v in prefix:
             endpoint.curie_map[k] = v
     msdf = query_mappings(endpoint)
-    write_sssom(msdf, output)
+    write_tsv(msdf, output)
 
 
 @main.command()
@@ -436,7 +437,7 @@ def partition(inputs: List[str], output_directory: str):
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
-        write_sssom(msdf, ofn)
+        write_tsv(msdf, ofn)
         # write_tsv(msdf, ofn)
 
 
@@ -607,7 +608,7 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     # Export MappingSetDataFrame into a TSV
-    write_sssom(merged_msdf, output)
+    write_tsv(merged_msdf, output)
 
 
 if __name__ == "__main__":

@@ -12,27 +12,6 @@ from .writers import get_writer_function, write_tsv, write_tsvs
 cwd = os.path.abspath(os.path.dirname(__file__))
 
 
-def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
-    if output and os.path.exists(output):
-        os.remove(output)
-    if msdf.metadata is not None:
-        obj = {k: v for k, v in msdf.metadata.items()}
-    else:
-        obj = {}
-    if msdf.prefixmap is not None:
-        obj["curie_map"] = msdf.prefixmap
-    lines = yaml.safe_dump(obj).split("\n")
-    lines = [f"# {line}" for line in lines if line != ""]
-    s = msdf.df.to_csv(sep="\t", index=False)
-    lines = lines + [s]
-    if output is None:
-        for line in lines:
-            print(line)
-    else:
-        with open(output, "w") as stream:
-            for line in lines:
-                stream.write(line + "\n")
-
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):
     """

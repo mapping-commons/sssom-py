@@ -28,8 +28,6 @@ class TestParse(unittest.TestCase):
         with open(f"{test_data_dir}/pato.json") as json_file:
             self.obographs = json.load(json_file)
         self.json = hbread(f"{test_data_dir}/basic.json")
-        print(self.json)
-
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
             self.df_meta = yaml.load(file, Loader=yaml.FullLoader)
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
