@@ -11,6 +11,7 @@ prefixes:
   neuroname: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=
   dce: http://purl.org/dc/elements/1.1/
   Orphanet: http://www.orpha.net/ORDO/Orphanet_
+  oio: http://www.geneontology.org/formats/oboInOwl#
 see_also:
 - https://github.com/OBOFoundry/SSSOM
 default_curi_maps:

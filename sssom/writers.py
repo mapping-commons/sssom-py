@@ -197,6 +197,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     WHERE {
         ?o a owl:Axiom ;
         ?p ?v .
+        FILTER(?p!=rdf:type)
     }
     """)
 
