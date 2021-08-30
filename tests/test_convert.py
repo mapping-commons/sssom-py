@@ -16,7 +16,7 @@ class TestConvert(unittest.TestCase):
 
     def test_df(self):
         df = self.msdf.df
-        assert len(df.index) == 11
+        self.assertEqual(len(df.index), 141, "The tested SSSOM file has an unexpected number of mappings.")
 
     def test_to_owl(self):
         g = to_owl_graph(self.msdf)
@@ -25,8 +25,7 @@ class TestConvert(unittest.TestCase):
                   ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
                 }""")
         size = len(results)
-        print(size)
-        assert size == 10
+        self.assertEqual(size, 90)
 
     def test_to_rdf(self):
         g = to_rdf_graph(self.msdf)
@@ -35,5 +34,4 @@ class TestConvert(unittest.TestCase):
                   ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
                 }""")
         size = len(results)
-        print(size)
-        assert size == 10
+        self.assertEqual(size, 90)

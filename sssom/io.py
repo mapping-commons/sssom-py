@@ -2,15 +2,13 @@ import logging
 import os
 
 import validators
-import yaml
 
-from sssom.util import MappingSetDataFrame, read_metadata
+from sssom.util import read_metadata
 from .context import get_default_metadata
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
 from .writers import get_writer_function, write_tsv, write_tsvs
 
 cwd = os.path.abspath(os.path.dirname(__file__))
-
 
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):
@@ -27,18 +25,18 @@ def convert_file(input_path: str, output_path: str = None, output_format: str = 
     if validators.url(input_path) or os.path.exists(input_path):
         doc = read_sssom_table(input_path)
         write_func, fileformat = get_writer_function(output_format, output_path)
-        write_func(doc, output_path, fileformat=fileformat)
+        write_func(doc, output_path, serialisation=fileformat)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")
 
 
 def parse_file(
-    input_path: str,
-    output_path: str = None,
-    input_format: str = None,
-    metadata_path: str = None,
-    curie_map_mode: str = None,
-    clean_prefixes: bool = True,
+        input_path: str,
+        output_path: str = None,
+        input_format: str = None,
+        metadata_path: str = None,
+        curie_map_mode: str = None,
+        clean_prefixes: bool = True,
 ):
     """
 

@@ -14,8 +14,8 @@ class TestWrite(unittest.TestCase):
         if not os.path.exists(test_out_dir):
             os.mkdir(test_out_dir)
         self.msdf = read_sssom_table(f"{test_data_dir}/basic.tsv")
-        #self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
-        self.mapping_count = 141 # 141 for basic.tsv
+        # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
+        self.mapping_count = 141  # 141 for basic.tsv
 
     def test_write_sssom_dataframe(self):
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")

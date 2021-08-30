@@ -127,10 +127,18 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
     def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
         json_dict = to_json(msdf)
+        self.assertTrue("mappings" in json_dict)
+
         self.assertEqual(
             len(json_dict),
             test.ct_json_elements,
-            f"JSON document has less elements than the orginal one for {test.filename}",
+            f"JSON document has less elements than the orginal one for {test.filename}. Json: {json.dumps(json_dict)}",
+        )
+
+        self.assertEqual(
+            len(json_dict["mappings"]),
+            len(msdf.df),
+            f"JSON document has less mappings than the orginal ({test.filename}). Json: {json.dumps(json_dict)}",
         )
 
         with open(test.get_out_file("roundtrip.json"), "w", encoding="utf-8") as f:

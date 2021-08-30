@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import re
-from typing import Dict, Set
+from typing import Dict, Set, Union, TextIO
 from urllib.request import urlopen
 from xml.dom import minidom, Node
 from xml.dom.minidom import Document
@@ -11,14 +11,12 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
-from hbreader import hbread
 from linkml_runtime.loaders.json_loader import JSONLoader
-from linkml_runtime.loaders.rdf_loader import RDFLoader
 from rdflib import Graph, URIRef
 
 from sssom.util import read_pandas, NoCURIEException, curie_from_uri, SSSOM_DEFAULT_RDF_SERIALISATION, \
-    prepare_context_from_curie_map, URI_SSSOM_MAPPINGS
-from .context import get_default_metadata
+    URI_SSSOM_MAPPINGS
+from .context import get_default_metadata, add_built_in_prefixes_to_prefix_map
 from .sssom_datamodel import MappingSet, Mapping
 from .sssom_document import MappingSetDocument
 from .util import (
@@ -66,7 +64,8 @@ def read_sssom_table(
 
 
 def read_sssom_rdf(
-        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None, serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
+        file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None,
+        serialisation=SSSOM_DEFAULT_RDF_SERIALISATION
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -76,9 +75,9 @@ def read_sssom_rdf(
 
         g = Graph()
         g.load(file_path, format=serialisation)
-        #json_obj = json.loads(g.serialize(format="json-ld"))
-        #print(json_obj)
-        #msdf = from_sssom_json(json_obj, curie_map=curie_map, meta=meta)
+        # json_obj = json.loads(g.serialize(format="json-ld"))
+        # print(json_obj)
+        # msdf = from_sssom_json(json_obj, curie_map=curie_map, meta=meta)
         msdf = from_sssom_rdf(g, curie_map=curie_map, meta=meta)
         return msdf
     else:
@@ -235,7 +234,7 @@ def from_sssom_rdf(
     Returns:
 
     """
-    _check_curie_map(curie_map)
+    curie_map = _check_curie_map(curie_map)
 
     if mapping_predicates is None:
         mapping_predicates = _get_default_mapping_predicates()
@@ -252,7 +251,7 @@ def from_sssom_rdf(
                     k = None
 
                     if p_id.startswith("sssom:"):
-                        k = p_id.replace("sssom:","")
+                        k = p_id.replace("sssom:", "")
                     elif p_id == "owl:annotatedProperty":
                         k = "predicate_id"
                     elif p_id == "owl:annotatedTarget":
@@ -288,10 +287,11 @@ def from_sssom_rdf(
 
 
 def from_sssom_json(
-        jsondoc: Dict, curie_map: Dict, meta: Dict[str, str] = None
+        jsondoc: Union[str, dict, TextIO], curie_map: Dict, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     _check_curie_map(curie_map)
 
+    # noinspection PyTypeChecker
     ms = JSONLoader().load(source=jsondoc, target_class=MappingSet)
 
     _set_metadata_in_mapping_set(ms, metadata=meta)
@@ -460,6 +460,8 @@ def get_parsing_function(input_format, filename):
 def _check_curie_map(curie_map):
     if not curie_map:
         raise Exception("No valid curie_map provided")
+    else:
+        return add_built_in_prefixes_to_prefix_map(curie_map)
 
 
 def _get_default_mapping_predicates():

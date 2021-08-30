@@ -41,7 +41,7 @@ def write_tsv(
 
     sep = _get_separator(serialisation)
 
-    df = to_dataframe(msdf)
+    # df = to_dataframe(msdf)
 
     if msdf.metadata is not None:
         meta = {k: v for k, v in msdf.metadata.items()}
@@ -177,10 +177,10 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """
     doc = to_mapping_set_document(msdf)
     cntxt = prepare_context_from_curie_map(doc.curie_map)
-    #json_obj = to_json(msdf)
-    #g = Graph()
-    #g.load(json_obj, format="json-ld")
-    #print(g.serialize(format="xml"))
+    # json_obj = to_json(msdf)
+    # g = Graph()
+    # g.load(json_obj, format="json-ld")
+    # print(g.serialize(format="xml"))
 
     graph = _temporary_as_rdf_graph(element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map)
     return graph
@@ -189,7 +189,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
 def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
     # TODO needs to be replaced by RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
     graph = RDFDumper().as_rdf_graph(element=element, contexts=contexts)
-    #print(graph.serialize(fmt="turtle").decode())
+    # print(graph.serialize(fmt="turtle").decode())
 
     # Adding some stuff that the default RDF serialisation does not do:
     # Direct triples

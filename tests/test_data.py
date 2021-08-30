@@ -86,3 +86,6 @@ class SSSOMTestCase:
 
     def get_validate_file(self, extension):
         return os.path.join(test_validate_dir, f"{self.filename}.{extension}")
+
+    def __str__(self):
+        return f"Testcase {self.id} (Filepath: {self.filepath})"

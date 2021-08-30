@@ -46,7 +46,7 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 
-URI_SSSOM_MAPPINGS="http://w3id.org/sssom/mappings"
+URI_SSSOM_MAPPINGS = "http://w3id.org/sssom/mappings"
 
 #: The 3 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
@@ -265,8 +265,8 @@ def collapse(df):
     """
     df2 = (
         df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE]
-        .apply(max)
-        .reset_index()
+            .apply(max)
+            .reset_index()
     )
     return df2
 
@@ -324,7 +324,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
         df = df[
             df.apply(
                 lambda x: x[CONFIDENCE]
-                >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                          >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                 axis=1,
             )
         ]
@@ -450,7 +450,7 @@ def smart_open(filename=None):
 
 
 def dataframe_to_ptable(
-    df: pd.DataFrame, priors=None, inverse_factor: float = 0.5
+        df: pd.DataFrame, priors=None, inverse_factor: float = 0.5
 ):
     """
     Exporting KBOOM table
@@ -542,9 +542,9 @@ def sha256sum(filename):
 
 
 def merge_msdf(
-    msdf1: MappingSetDataFrame,
-    msdf2: MappingSetDataFrame,
-    reconcile: bool = True,
+        msdf1: MappingSetDataFrame,
+        msdf2: MappingSetDataFrame,
+        reconcile: bool = True,
 ) -> MappingSetDataFrame:
     """
     Merging msdf2 into msdf1,
@@ -660,9 +660,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
     for idx_1, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
-            (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
-            & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
-            & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
+                (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
+                & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
+                & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
         match_condition_1: Union[bool, ...]
         # match_condition_1[match_condition_1] gives the list of 'True's.
@@ -670,10 +670,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         # Ideally, there should be 1 row. If not apply an extra rule to look for 'HumanCurated'.
         if len(match_condition_1[match_condition_1].index) > 1:
             match_condition_1 = (
-                (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
-                & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
-                & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
-                & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+                    (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
+                    & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
+                    & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
+                    & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
             )
             # In spite of this, if match_condition_1 is returning multiple rows, pick any random row from above.
             if len(match_condition_1[match_condition_1].index) > 1:
@@ -681,7 +681,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
         reconciled_df_subset = reconciled_df_subset.append(
             combined_normalized_subset.loc[
-                match_condition_1[match_condition_1].index, :
+            match_condition_1[match_condition_1].index, :
             ]
         )
 
@@ -690,9 +690,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
     for idx_2, row_2 in negation_df.iterrows():
         match_condition_2 = (
-            (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID])
-            & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
-            & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
+                (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID])
+                & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
+                & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
         match_condition_2: Union[bool, ...]
         reconciled_df_subset.loc[
@@ -703,10 +703,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     reconciled_df = pd.DataFrame(columns=df.columns)
     for idx_3, row_3 in reconciled_df_subset.iterrows():
         match_condition_3 = (
-            (df[SUBJECT_ID] == row_3[SUBJECT_ID])
-            & (df[OBJECT_ID] == row_3[OBJECT_ID])
-            & (df[CONFIDENCE] == row_3[CONFIDENCE])
-            & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
+                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
+                & (df[OBJECT_ID] == row_3[OBJECT_ID])
+                & (df[CONFIDENCE] == row_3[CONFIDENCE])
+                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
         )
         match_condition_3: Union[bool, ...]
         reconciled_df = reconciled_df.append(
