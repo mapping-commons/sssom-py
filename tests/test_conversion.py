@@ -9,7 +9,7 @@ from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import read_pandas, to_mapping_set_dataframe
 from sssom.writers import to_owl_graph, to_rdf_graph, to_dataframe, to_json
-from sssom.writers import write_json, write_rdf, write_owl, write_tsv
+from sssom.writers import write_json, write_rdf, write_owl, write_table
 from .test_data import ensure_test_dir_exists, SSSOMTestCase, get_all_test_cases
 
 
@@ -115,7 +115,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_data_frame_rows,
             f"The re-serialised pandas data frame has less elements than the orginal one for {test.filename}",
         )
-        write_tsv(msdf, test.get_out_file("tsv"))
+        write_table(msdf, test.get_out_file("tsv"))
         # self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
         df = read_pandas(test.get_out_file("tsv"))
         self.assertEqual(

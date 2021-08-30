@@ -32,7 +32,7 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Writers
 
 
-def write_tsv(
+def write_table(
         msdf: MappingSetDataFrame, filename: str, serialisation="tsv"
 ) -> None:
     """
@@ -276,7 +276,7 @@ def get_writer_function(output_format, output):
         output_format = get_file_extension(output)
 
     if output_format == "tsv":
-        return write_tsv, output_format
+        return write_table, output_format
     elif output_format in RDF_FORMATS:
         return write_rdf, output_format
     elif output_format == "rdf":
@@ -289,7 +289,7 @@ def get_writer_function(output_format, output):
         raise Exception(f"Unknown output format: {output_format}")
 
 
-def write_tsvs(sssom_dict, output_dir):
+def write_tables(sssom_dict, output_dir):
     """
 
     Args:
@@ -302,7 +302,7 @@ def write_tsvs(sssom_dict, output_dir):
     for split_id in sssom_dict:
         sssom_file = os.path.join(output_dir, f"{split_id}.sssom.tsv")
         msdf = sssom_dict[split_id]
-        write_tsv(msdf=msdf, filename=sssom_file)
+        write_table(msdf=msdf, filename=sssom_file)
         logging.info(f"Writing {sssom_file} complete!")
 
 

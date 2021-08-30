@@ -6,7 +6,7 @@ import validators
 from sssom.util import read_metadata
 from .context import get_default_metadata
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
-from .writers import get_writer_function, write_tsv, write_tsvs
+from .writers import get_writer_function, write_table, write_tables
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -61,7 +61,7 @@ def parse_file(
         if clean_prefixes:
             # We do this because we got a lot of prefixes from the default SSSOM prefixes!
             doc.clean_prefix_map()
-        write_tsv(doc, output_path)
+        write_table(doc, output_path)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")
 
@@ -98,7 +98,7 @@ def split_file(input_path: str, output_directory: str):
     if validators.url(input_path) or os.path.exists(input_path):
         msdf = read_sssom_table(input_path)
         splitted = split_dataframe(msdf)
-        write_tsvs(splitted, output_directory)
+        write_tables(splitted, output_directory)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")
 
