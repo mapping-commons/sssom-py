@@ -33,7 +33,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
             get_all_test_cases()
         )  # Initially returned 2 tsv and 1 rdf. The RDF failed test
         for test in test_cases:
-            print(test.filepath)
             test: SSSOMTestCase
             self.run_convert(runner, test)
             if test.inputformat == "tsv":
@@ -75,7 +74,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
             "owl",
         ]
         result = runner.invoke(convert, params)
-        print(params)
         self.run_successful(result, test_case)
         return result
 
@@ -145,7 +143,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
         if out_file:
             params.extend(["--output", out_file.get_out_file("tsv")])
             result = runner.invoke(diff, params)
-            print(result)
             self.run_successful(result, out_file)
             return result
         else:
