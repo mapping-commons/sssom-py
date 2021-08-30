@@ -26,11 +26,11 @@ class TestCollapse(unittest.TestCase):
 
     def test_collapse(self):
         df = collapse(self.df)
-        self.assertEquals(len(df), 92, f"Dataframe should have a different {df.head(10)}")
+        self.assertEquals(len(df), 91, f"Dataframe should have a different {df.head(10)}")
 
     def test_filter(self):
         df = filter_redundant_rows(self.df)
-        self.assertEqual(len(df.index), 141)
+        self.assertEqual(len(df.index), 92)
 
     def test_ptable(self):
         rows = dataframe_to_ptable(self.df)
