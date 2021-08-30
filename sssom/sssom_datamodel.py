@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-08-30 17:16
+# Generation date: 2021-08-30 21:03
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -484,14 +484,14 @@ slots.semantic_similarity_score = Slot(uri=SSSOM.semantic_similarity_score, name
 slots.information_content_mica_score = Slot(uri=SSSOM.information_content_mica_score, name="information_content_mica_score", curie=SSSOM.curie('information_content_mica_score'),
                    model_uri=SSSOM.information_content_mica_score, domain=None, range=Optional[float])
 
-slots.see_also = Slot(uri=SSSOM.see_also, name="see_also", curie=SSSOM.curie('see_also'),
-                   model_uri=SSSOM.see_also, domain=None, range=Optional[str], mappings = [RDFS.seeAlso])
+slots.see_also = Slot(uri=RDFS.seeAlso, name="see_also", curie=RDFS.curie('seeAlso'),
+                   model_uri=SSSOM.see_also, domain=None, range=Optional[str])
 
 slots.other = Slot(uri=SSSOM.other, name="other", curie=SSSOM.curie('other'),
                    model_uri=SSSOM.other, domain=None, range=Optional[str])
 
-slots.comment = Slot(uri=SSSOM.comment, name="comment", curie=SSSOM.curie('comment'),
-                   model_uri=SSSOM.comment, domain=None, range=Optional[str], mappings = [RDFS.comment])
+slots.comment = Slot(uri=RDFS.comment, name="comment", curie=RDFS.curie('comment'),
+                   model_uri=SSSOM.comment, domain=None, range=Optional[str])
 
 slots.required = Slot(uri=SSSOM.required, name="required", curie=SSSOM.curie('required'),
                    model_uri=SSSOM.required, domain=None, range=Optional[str])

@@ -1,5 +1,6 @@
 BASE <http://w3id.org/sssom/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX linkml: <https://w3id.org/linkml/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -72,9 +73,9 @@ linkml:Nodeidentifier NONLITERAL
           <match_term_type> @linkml:String ? ;
           <semantic_similarity_score> @linkml:Double ? ;
           <information_content_mica_score> @linkml:Double ? ;
-          <see_also> @linkml:String ? ;
+          rdfs:seeAlso @linkml:String ? ;
           <other> @linkml:String ? ;
-          <comment> @linkml:String ?
+          rdfs:comment @linkml:String ?
        ) ;
        rdf:type [ owl:Axiom ] ?
     )
@@ -100,9 +101,9 @@ linkml:Nodeidentifier NONLITERAL
           <subject_preprocessing> @linkml:String ? ;
           <object_preprocessing> @linkml:String ? ;
           <match_term_type> @linkml:String ? ;
-          <see_also> @linkml:String ? ;
+          rdfs:seeAlso @linkml:String ? ;
           <other> @linkml:String ? ;
-          <comment> @linkml:String ?
+          rdfs:comment @linkml:String ?
        ) ;
        rdf:type [ <MappingSet> ] ?
     )
