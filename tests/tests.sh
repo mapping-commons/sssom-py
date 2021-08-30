@@ -37,7 +37,7 @@ sssom dedupe $INPUT_URL_1 --output $OUTPUT_DIR/deduped_basic_url.tsv
 sssom dosql -q "$QUERY_1" $INPUT_FILE_1 -o $OUTPUT_DIR/dosql_output_file.tsv
 sssom dosql -q "$QUERY_1" $INPUT_URL_1 -o $OUTPUT_DIR/dosql_output_url.tsv
 
-#sssom sparql 
+# sssom sparql 
 
 sssom diff $INPUT_FILE_1 $INPUT_FILE_2 -o $OUTPUT_DIR/diff_output_file.tsv
 sssom diff $INPUT_URL_1 $INPUT_URL_2 -o $OUTPUT_DIR/diff_output_url.tsv
