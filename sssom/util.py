@@ -30,6 +30,8 @@ SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
+SSSOM_URI_PREFIX = "http://w3id.org/sssom/"
+
 # TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = "subject_id"
 SUBJECT_LABEL = "subject_label"
@@ -45,8 +47,10 @@ COMMENT = "comment"
 MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
+MAPPING_SET_ID = "mapping_set_id"
+DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/default"
 
-URI_SSSOM_MAPPINGS = "http://w3id.org/sssom/mappings"
+URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
 #: The 3 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]

@@ -6,6 +6,7 @@ imports:
 prefixes:
   linkml: https://w3id.org/linkml/
   sssom: http://w3id.org/sssom/
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
   oboInOwl: http://www.geneontology.org/formats/oboInOwl#
   neuroname: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=
   dce: http://purl.org/dc/elements/1.1/
@@ -223,6 +224,8 @@ slots:
   comment:
     description: Free text field containing either curator notes or text generated
       by tool providing additional informative information.
+    mappings:
+    - rdfs:comment
     range: string
   required:
     description: Indicates wether the SSSOM metadata element is required

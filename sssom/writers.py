@@ -12,8 +12,8 @@ from rdflib.namespace import OWL, RDF
 
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
-from .util import MappingSetDataFrame, prepare_context_from_curie_map, URI_SSSOM_MAPPINGS
-from .util import RDF_FORMATS, SSSOM_DEFAULT_RDF_SERIALISATION
+from .util import MappingSetDataFrame, prepare_context_from_curie_map, URI_SSSOM_MAPPINGS, DEFAULT_MAPPING_SET_ID, SSSOM_URI_PREFIX
+from .util import RDF_FORMATS, SSSOM_DEFAULT_RDF_SERIALISATION, MAPPING_SET_ID
 from .util import get_file_extension
 
 # noinspection PyProtectedMember
@@ -24,7 +24,7 @@ OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
 OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
-SSSOM_NS = "http://w3id.org/sssom/"
+SSSOM_NS = SSSOM_URI_PREFIX
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -143,6 +143,11 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
 
     graph = to_rdf_graph(msdf=msdf)
 
+    if MAPPING_SET_ID in msdf.metadata:
+        mapping_set_id = msdf.metadata[MAPPING_SET_ID]
+    else:
+        mapping_set_id = DEFAULT_MAPPING_SET_ID
+
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -152,17 +157,52 @@ PREFIX IAO: <http://purl.obolibrary.org/obo/IAO_>
 PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 
 """
+    queries = []
 
-    sparql_equiv_class = sparql_prefixes + """
-INSERT {
-  ?c rdf:type owl:Class .
-  ?d rdf:type owl:Class .
-}
-WHERE {
- ?c owl:equivalentClass ?d .
-}
-"""
-    graph.update(sparql_equiv_class)
+    queries.append(sparql_prefixes + """
+    INSERT {
+      ?c rdf:type owl:Class .
+      ?d rdf:type owl:Class .
+    }
+    WHERE {
+     ?c owl:equivalentClass ?d .
+    }
+    """)
+
+    queries.append(sparql_prefixes + """
+    DELETE {
+      ?o rdf:type sssom:MappingSet .  
+    }
+    INSERT {
+      ?o rdf:type owl:Ontology .
+    }
+    WHERE {
+     ?o rdf:type sssom:MappingSet .
+    }
+    """)
+
+    queries.append(sparql_prefixes + """
+    DELETE {
+      ?o sssom:mappings ?mappings .  
+    }
+    WHERE {
+     ?o sssom:mappings ?mappings .
+    }
+    """)
+
+    queries.append(sparql_prefixes + """
+    INSERT {
+        ?p rdf:type owl:AnnotationProperty .  
+    }
+    WHERE {
+        ?o a owl:Axiom ;
+        ?p ?v .
+    }
+    """)
+
+    for query in queries:
+        graph.update(query)
+
     return graph
 
 
