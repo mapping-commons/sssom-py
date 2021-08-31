@@ -36,3 +36,21 @@ $ tox
 
 A specific environment can be run using the `-e` flag, such as `tox -e lint` to run
 the linting environment.
+
+## Outstanding Contributors
+
+Outstanding contributors are groups and institutions that have helped with organising the SSSOM
+Python package's development, providing funding, advice and infrastructure. We are very grateful
+for all your contribution - the project would not exist without you!
+
+### Harvard Medical School
+
+<img width="250" src="https://hms.harvard.edu/themes/harvardmedical/logo.svg" alt="Harvard Medical School Logo" />
+
+The [INDRA Lab](https://indralab.github.io), a part of the
+[Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/)
+and the [Harvard Program in Therapeutic Science (HiTS)](https://hits.harvard.edu), is interested in
+natural language processing and large-scale knowledge assembly. Their work on SSSOM is funded by the
+DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
+
+https://indralab.github.io
