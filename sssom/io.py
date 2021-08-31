@@ -4,6 +4,7 @@ import os
 import validators
 
 from sssom.util import read_metadata
+
 from .context import get_default_metadata
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
 from .writers import get_writer_function, write_table, write_tables

@@ -1,5 +1,6 @@
 import os
 import unittest
+
 from sssom.util import MetaTSVConverter
 
 cwd = os.path.abspath(os.path.dirname(__file__))

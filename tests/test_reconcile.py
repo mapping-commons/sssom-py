@@ -1,11 +1,9 @@
 import os
 import unittest
 
-from sssom import (
-    filter_redundant_rows,
-)
+from sssom import filter_redundant_rows
 from sssom.parsers import read_sssom_table
-from sssom.util import merge_msdf, deal_with_negation
+from sssom.util import deal_with_negation, merge_msdf
 
 # from pandasql import sqldf
 
