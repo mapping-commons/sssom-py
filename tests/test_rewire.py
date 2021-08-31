@@ -18,7 +18,7 @@ class TestRewire(unittest.TestCase):
     def setUp(self) -> None:
         self.mset = read_sssom_table(f"{data_dir}/cob-to-external.tsv")
         g = Graph()
-        g.parse(f"{data_dir}/cob.owl", format='xml')
+        g.parse(f"{data_dir}/cob.owl", format="xml")
         self.graph = g
 
     def test_rewire(self):
@@ -29,8 +29,7 @@ class TestRewire(unittest.TestCase):
             # we expect this to fail due to PR/CHEBI ambiguity
             expected_exception = True
         assert expected_exception
-        n = rewire_graph(self.graph, self.mset, precedence=['PR'])
-        print(f'Num changed = {n}')
-        with open(f"{test_out_dir}/rewired-cob.ttl", 'w') as stream:
-            stream.write(self.graph.serialize(format='turtle').decode())
-
+        n = rewire_graph(self.graph, self.mset, precedence=["PR"])
+        print(f"Num changed = {n}")
+        with open(f"{test_out_dir}/rewired-cob.ttl", "w") as stream:
+            stream.write(self.graph.serialize(format="turtle").decode())

@@ -34,7 +34,7 @@ from .util import (
 )
 
 # Click input options common across commands
-input_argument = click.argument('input', required=True, type=click.Path())
+input_argument = click.argument("input", required=True, type=click.Path())
 
 input_format_option = click.option(
     "-I",
@@ -135,7 +135,7 @@ def convert(input: str, output: str, output_format: str):
         ["metadata_only", "sssom_default_only", "merged"], case_sensitive=False
     ),
     help="Defines wether the curie map in the metadata should be extended or replaced with "
-         "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
+    "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
 )
 @click.option(
     "-p",
@@ -147,12 +147,12 @@ def convert(input: str, output: str, output_format: str):
 )
 @output_option
 def parse(
-        input: str,
-        input_format: str,
-        metadata: str,
-        curie_map_mode: str,
-        clean_prefixes: bool,
-        output: str,
+    input: str,
+    input_format: str,
+    metadata: str,
+    curie_map_mode: str,
+    clean_prefixes: bool,
+    output: str,
 ):
     """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
@@ -332,13 +332,13 @@ def dosql(query: str, inputs: List[str], output: str):
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
 @output_option
 def sparql(
-        url: str = None,
-        config=None,
-        graph: str = None,
-        limit: int = None,
-        object_labels: bool = None,
-        prefix: List[Dict[str, str]] = None,
-        output: str = None,
+    url: str = None,
+    config=None,
+    graph: str = None,
+    limit: int = None,
+    object_labels: bool = None,
+    prefix: List[Dict[str, str]] = None,
+    output: str = None,
 ):
     """Run a SPARQL query.
 
@@ -617,11 +617,20 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
 @main.command()
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
-@click.option("-I", "--input-format", default='turtle', help="Ontology input format.")
-@click.option("-O", "--output-format", default='turtle', help="Ontology output format.")
-@click.option("--precedence", multiple=True, help="List of prefixes in order of precedence.")
+@click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
+@click.option("-O", "--output-format", default="turtle", help="Ontology output format.")
+@click.option(
+    "--precedence", multiple=True, help="List of prefixes in order of precedence."
+)
 @click.option("-o", "--output", help="Where to save ontology file")
-def rewire(input, mapping_file, precedence=None, output=None, input_format=None, output_format=None):
+def rewire(
+    input,
+    mapping_file,
+    precedence=None,
+    output=None,
+    input_format=None,
+    output_format=None,
+):
     """Rewire an ontology using equivalence predicates from a mapping file
 
     Example:
@@ -634,7 +643,7 @@ def rewire(input, mapping_file, precedence=None, output=None, input_format=None,
     rewire_graph(g, msdf, precedence=precedence)
     rdfstr = g.serialize(format=output_format).decode()
     if output:
-        with open(output, 'w') as stream:
+        with open(output, "w") as stream:
             stream.write(rdfstr)
     else:
         print(rdfstr)

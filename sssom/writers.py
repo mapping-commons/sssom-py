@@ -12,8 +12,13 @@ from rdflib.namespace import OWL, RDF
 
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
-from .util import MappingSetDataFrame, prepare_context_from_curie_map, URI_SSSOM_MAPPINGS, DEFAULT_MAPPING_SET_ID, SSSOM_URI_PREFIX
-from .util import RDF_FORMATS, SSSOM_DEFAULT_RDF_SERIALISATION, MAPPING_SET_ID
+from .util import (
+    MappingSetDataFrame,
+    prepare_context_from_curie_map,
+    URI_SSSOM_MAPPINGS,
+    SSSOM_URI_PREFIX,
+)
+from .util import RDF_FORMATS, SSSOM_DEFAULT_RDF_SERIALISATION
 from .util import get_file_extension
 
 # noinspection PyProtectedMember
@@ -32,9 +37,7 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 # Writers
 
 
-def write_table(
-        msdf: MappingSetDataFrame, filename: str, serialisation="tsv"
-) -> None:
+def write_table(msdf: MappingSetDataFrame, filename: str, serialisation="tsv") -> None:
     """
     dataframe 2 tsv
     """
@@ -68,14 +71,20 @@ def write_table(
             sys.stdout.write("#" + line + "\n")
 
 
-def write_rdf(msdf: MappingSetDataFrame, filename: str, serialisation=SSSOM_DEFAULT_RDF_SERIALISATION) -> None:
+def write_rdf(
+    msdf: MappingSetDataFrame,
+    filename: str,
+    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+) -> None:
     """
     dataframe 2 tsv
     """
 
     if serialisation not in RDF_FORMATS:
-        logging.warning(f"Serialisation {serialisation} is not supported, "
-                        f"using {SSSOM_DEFAULT_RDF_SERIALISATION} instead.")
+        logging.warning(
+            f"Serialisation {serialisation} is not supported, "
+            f"using {SSSOM_DEFAULT_RDF_SERIALISATION} instead."
+        )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     graph = to_rdf_graph(msdf=msdf)
@@ -92,7 +101,7 @@ def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -
         # context = prepare_context_from_curie_map(doc.curie_map)
         # data = JSONDumper().dumps(doc.mapping_set, contexts=context)
         with open(filename, "w") as outfile:
-            json.dump(data, outfile, indent='  ')
+            json.dump(data, outfile, indent="  ")
 
     else:
         raise Exception(
@@ -100,10 +109,16 @@ def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -
         )
 
 
-def write_owl(msdf: MappingSetDataFrame, filename: str, serialisation=SSSOM_DEFAULT_RDF_SERIALISATION) -> None:
+def write_owl(
+    msdf: MappingSetDataFrame,
+    filename: str,
+    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+) -> None:
     if serialisation not in RDF_FORMATS:
-        logging.warning(f"Serialisation {serialisation} is not supported, "
-                        f"using {SSSOM_DEFAULT_RDF_SERIALISATION} instead.")
+        logging.warning(
+            f"Serialisation {serialisation} is not supported, "
+            f"using {SSSOM_DEFAULT_RDF_SERIALISATION} instead."
+        )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     graph = to_owl_graph(msdf)
@@ -143,10 +158,10 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
 
     graph = to_rdf_graph(msdf=msdf)
 
-    if MAPPING_SET_ID in msdf.metadata:
-        mapping_set_id = msdf.metadata[MAPPING_SET_ID]
-    else:
-        mapping_set_id = DEFAULT_MAPPING_SET_ID
+    # if MAPPING_SET_ID in msdf.metadata:
+    #    mapping_set_id = msdf.metadata[MAPPING_SET_ID]
+    # else:
+    #    mapping_set_id = DEFAULT_MAPPING_SET_ID
 
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -159,7 +174,9 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 """
     queries = []
 
-    queries.append(sparql_prefixes + """
+    queries.append(
+        sparql_prefixes
+        + """
     INSERT {
       ?c rdf:type owl:Class .
       ?d rdf:type owl:Class .
@@ -167,11 +184,14 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     WHERE {
      ?c owl:equivalentClass ?d .
     }
-    """)
+    """
+    )
 
-    queries.append(sparql_prefixes + """
+    queries.append(
+        sparql_prefixes
+        + """
     DELETE {
-      ?o rdf:type sssom:MappingSet .  
+      ?o rdf:type sssom:MappingSet .
     }
     INSERT {
       ?o rdf:type owl:Ontology .
@@ -179,27 +199,34 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     WHERE {
      ?o rdf:type sssom:MappingSet .
     }
-    """)
+    """
+    )
 
-    queries.append(sparql_prefixes + """
+    queries.append(
+        sparql_prefixes
+        + """
     DELETE {
-      ?o sssom:mappings ?mappings .  
+      ?o sssom:mappings ?mappings .
     }
     WHERE {
      ?o sssom:mappings ?mappings .
     }
-    """)
+    """
+    )
 
-    queries.append(sparql_prefixes + """
+    queries.append(
+        sparql_prefixes
+        + """
     INSERT {
-        ?p rdf:type owl:AnnotationProperty .  
+        ?p rdf:type owl:AnnotationProperty .
     }
     WHERE {
         ?o a owl:Axiom ;
         ?p ?v .
         FILTER(?p!=rdf:type)
     }
-    """)
+    """
+    )
 
     for query in queries:
         graph.update(query)
@@ -223,7 +250,9 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     # g.load(json_obj, format="json-ld")
     # print(g.serialize(format="xml"))
 
-    graph = _temporary_as_rdf_graph(element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map)
+    graph = _temporary_as_rdf_graph(
+        element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map
+    )
     return graph
 
 
@@ -244,9 +273,7 @@ def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
     for axiom in graph.subjects(RDF.type, OWL.Axiom):
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
             for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(
-                        subject=axiom, predicate=OWL.annotatedTarget
-                ):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
                     graph.add((s, p, o))
     return graph
 

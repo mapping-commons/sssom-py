@@ -1,6 +1,6 @@
-from .sssom_datamodel import Mapping, MappingSet
-from .sssom_datamodel import slots
-from .util import (
+from .sssom_datamodel import Mapping, MappingSet  # noqa:401
+from .sssom_datamodel import slots  # noqa:401
+from .util import (  # noqa:401
     parse,
     collapse,
     dataframe_to_ptable,

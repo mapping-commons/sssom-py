@@ -46,11 +46,11 @@ def get_multiple_input_test_cases():
 class SSSOMTestCase:
     def __init__(self, config, queries):
         self.filepath = get_test_file(config["filename"])
-        self.filename = config['filename']
+        self.filename = config["filename"]
         if "id" in config:
-            self.id = config['id']
+            self.id = config["id"]
         else:
-            self.id = config['filename']
+            self.id = config["filename"]
 
         if "metadata_file" in config:
             self.metadata_file = config["metadata_file"]

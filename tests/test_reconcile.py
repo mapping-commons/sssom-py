@@ -44,7 +44,7 @@ class TestReconcile(unittest.TestCase):
         msdf2 = read_sssom_table(f"{data_dir}/basic5.tsv")
 
         merged_msdf = merge_msdf(msdf1=msdf1, msdf2=msdf2, reconcile=False)
-        
+
         assert len(msdf1.df) == 53
         assert len(msdf2.df) == 53
-        assert len(merged_msdf.df) == (len(msdf1.df)+len(msdf2.df))
+        assert len(merged_msdf.df) == (len(msdf1.df) + len(msdf2.df))

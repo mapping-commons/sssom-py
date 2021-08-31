@@ -47,7 +47,8 @@ def add_built_in_prefixes_to_prefix_map(prefixmap):
                 prefixmap[k] = v
             elif builtinmap[k] != prefixmap[k]:
                 logging.warning(
-                    f"Built-in prefix {k} is specified ({prefixmap[k]}) but differs from default ({builtinmap[k]})")
+                    f"Built-in prefix {k} is specified ({prefixmap[k]}) but differs from default ({builtinmap[k]})"
+                )
     return prefixmap
 
 
