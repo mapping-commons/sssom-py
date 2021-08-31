@@ -24,6 +24,8 @@ class TestParse(unittest.TestCase):
         if not os.path.exists(test_out_dir):
             os.mkdir(test_out_dir)
 
+        self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
+
         self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"
         self.rdf_graph = Graph()
         self.rdf_graph.parse(self.rdf_graph_file, format="ttl")
@@ -52,11 +54,20 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_dataframe(self):
         file = f"{test_data_dir}/basic.tsv"
         msdf = read_sssom_table(file)
-        write_table(msdf, os.path.join(test_out_dir, "test_parse_tsv.tsv"))
+        write_table(msdf, os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv"))
         self.assertEqual(
             len(msdf.df),
             141,
             f"{file} has the wrong number of mappings.",
+        )
+
+    def test_parse_sssom_dataframe_url(self):
+        msdf = read_sssom_table(self.df_url)
+        write_table(msdf, os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv"))
+        self.assertEqual(
+            len(msdf.df),
+            141,
+            f"{self.df_url} has the wrong number of mappings.",
         )
 
     def test_parse_obographs(self):

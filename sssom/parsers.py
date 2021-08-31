@@ -505,14 +505,13 @@ def _swap_object_subject(mapping):
 def _read_metadata_from_table(filename: str):
     if validators.url(filename):
         response = urlopen(filename)
-        yamlstr = "".join(
-            [
-                line.decode("utf-8")
-                for line in response
-                if line.decode("utf-8").startswith("#")
-            ]
-        ).replace("#", "")
-
+        yamlstr = ""
+        for lin in response:
+            line = lin.decode("utf-8")
+            if line.startswith("#"):
+                yamlstr += re.sub("^#", "", line)
+            else:
+                break
     else:
         with open(filename, "r") as s:
             yamlstr = ""
