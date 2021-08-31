@@ -2,8 +2,9 @@ import os
 import unittest
 
 from rdflib import Graph
-from sssom.rdf_util import rewire_graph
+
 from sssom.parsers import read_sssom_table
+from sssom.rdf_util import rewire_graph
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")

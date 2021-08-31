@@ -7,9 +7,8 @@ import click
 import pandas as pd
 import yaml
 from pandasql import sqldf
-from scipy.stats import chi2_contingency
-
 from rdflib import Graph
+from scipy.stats import chi2_contingency
 
 from sssom.rdf_util import rewire_graph
 from sssom.sparql_util import EndpointConfig, query_mappings
@@ -20,6 +19,7 @@ from sssom.util import (
     to_mapping_set_dataframe,
 )
 from sssom.writers import write_table
+
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import read_sssom_table

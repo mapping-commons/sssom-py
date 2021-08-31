@@ -1,11 +1,11 @@
 import os
 import unittest
 
-from sssom.parsers import read_sssom_table, read_sssom_json, read_sssom_rdf
-from sssom.writers import write_table, write_json, write_rdf, write_owl
+from sssom.parsers import read_sssom_json, read_sssom_rdf, read_sssom_table
+from sssom.writers import write_json, write_owl, write_rdf, write_table
 
 # from pandasql import sqldf
-from tests.test_data import test_out_dir, test_data_dir
+from tests.test_data import test_data_dir, test_out_dir
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
