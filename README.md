@@ -39,9 +39,9 @@ the linting environment.
 
 ## Outstanding Contributors
 
-Outstanding contributors are groups and institutions that have helped with organising the ODK
-development, providing funding, advice and infrastructure. We are very grateful for all your
-contribution - the project would not exist without you!
+Outstanding contributors are groups and institutions that have helped with organising the SSSOM
+Python package's development, providing funding, advice and infrastructure. We are very grateful
+for all your contribution - the project would not exist without you!
 
 ### Harvard Medical School
 
