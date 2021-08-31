@@ -1,3 +1,4 @@
+import collections
 import hashlib
 import statistics
 
@@ -17,9 +18,9 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
 
     doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
-    m = {
-        "owl:subClassOf",
-    }
+    # m = {
+    #    "owl:subClassOf",
+    # }
     for mapping in doc.mapping_set.mappings:
         s = mapping.subject_id
         o = mapping.object_id
@@ -67,6 +68,7 @@ def split_into_cliques(msdf: MappingSetDataFrame):
     comp_id = 0
     newdocs = []
     for comp in sorted(gen, key=len, reverse=True):
+        comp: collections.Iterable
         for n in comp:
             node_to_comp[n] = comp_id
         comp_id += 1

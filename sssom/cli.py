@@ -1,11 +1,9 @@
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 import click
-from click.decorators import help_option
 import pandas as pd
 import yaml
 from pandasql import sqldf
@@ -21,9 +19,10 @@ from sssom.util import (
     MappingSetDataFrame,
     to_mapping_set_dataframe,
 )
+from sssom.writers import write_table
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, split_file, validate_file, write_sssom
-from .parsers import from_tsv
+from .io import convert_file, parse_file, split_file, validate_file
+from .parsers import read_sssom_table
 from .util import (
     collapse,
     compare_dataframes,
@@ -35,7 +34,7 @@ from .util import (
 )
 
 # Click input options common across commands
-input_argument = click.argument('input',required=True, type=click.Path())
+input_argument = click.argument('input', required=True, type=click.Path())
 
 input_format_option = click.option(
     "-I",
@@ -235,7 +234,10 @@ def ptable(input=None, output=None, inverse_factor=None):
         None
 
     """
-    msdf = from_tsv(input)
+    logging.warning(
+        f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
+    )
+    msdf = read_sssom_table(input)
     # df = parse(input)
     df = collapse(msdf.df)
     # , priors=list(priors)
@@ -262,13 +264,13 @@ def dedupe(input: str, output: str):
         None.
     """
     # df = parse(input)
-    msdf = from_tsv(input)
+    msdf = read_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
     msdf_out = MappingSetDataFrame(
         df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata
     )
     # df.to_csv(output, sep="\t", index=False)
-    write_sssom(msdf_out, output)
+    write_table(msdf_out, output)
 
 
 @main.command()
@@ -304,7 +306,7 @@ def dosql(query: str, inputs: List[str], output: str):
     n = 1
     while len(inputs) >= n:
         fn = inputs[n - 1]
-        df = from_tsv(fn).df
+        df = read_sssom_table(fn).df
         # df = parse(fn)
         globals()[f"df{n}"] = df
         tn = re.sub("[.].*", "", Path(fn).stem).lower()
@@ -374,7 +376,7 @@ def sparql(
         for k, v in prefix:
             endpoint.curie_map[k] = v
     msdf = query_mappings(endpoint)
-    write_sssom(msdf, output)
+    write_table(msdf, output)
 
 
 @main.command()
@@ -399,8 +401,8 @@ def diff(inputs: Tuple[str, str], output: str):
     (input1, input2) = inputs
     # df1 = parse(input1)
     # df2 = parse(input2)
-    msdf1 = from_tsv(input1)
-    msdf2 = from_tsv(input2)
+    msdf1 = read_sssom_table(input1)
+    msdf2 = read_sssom_table(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
     logging.info(
         f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
@@ -425,7 +427,7 @@ def partition(inputs: List[str], output_directory: str):
         None.
     """
 
-    docs = [from_tsv(input) for input in inputs]
+    docs = [read_sssom_table(input) for input in inputs]
     doc = docs.pop()
     """for d2 in docs:
         doc.mapping_set.mappings += d2.mapping_set.mappings"""
@@ -438,7 +440,7 @@ def partition(inputs: List[str], output_directory: str):
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
-        write_sssom(msdf, ofn)
+        write_table(msdf, ofn)
         # write_tsv(msdf, ofn)
 
 
@@ -467,10 +469,10 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
     import yaml
 
     if metadata is None:
-        doc = from_tsv(input)
+        doc = read_sssom_table(input)
     else:
         meta_obj = yaml.safe_load(open(metadata))
-        doc = from_tsv(input, meta=meta_obj)
+        doc = read_sssom_table(input, meta=meta_obj)
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
     if statsfile is None:
@@ -500,7 +502,7 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
         None.
     """
 
-    df = remove_unmatched(from_tsv(input).df)
+    df = remove_unmatched(read_sssom_table(input).df)
     # df = parse(input)
     logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
@@ -532,7 +534,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
 
         None.
     """
-    msdf = from_tsv(input)
+    msdf = read_sssom_table(input)
     df = remove_unmatched(msdf.df)
     # df = remove_unmatched(parse(input))
     if len(df) == 0:
@@ -565,7 +567,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
         for j, v in row.iteritems():
             logging.info(f"{i} x {j} = {v}")
             tups.append((v, i, j))
-    tups = sorted(tups, key=lambda t: t[0])
+    tups = sorted(tups, key=lambda tx: tx[0])
     for t in tups:
         print(f"{t[0]}\t{t[1]}\t{t[2]}")
 
@@ -596,8 +598,8 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
 
     """
     (input1, input2) = inputs[:2]
-    msdf1 = from_tsv(input1)
-    msdf2 = from_tsv(input2)
+    msdf1 = read_sssom_table(input1)
+    msdf2 = read_sssom_table(input2)
     merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     # If > 2 input files, iterate through each one
@@ -605,11 +607,11 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
     if len(inputs) > 2:
         for input_file in inputs[2:]:
             msdf1 = merged_msdf
-            msdf2 = from_tsv(input_file)
+            msdf2 = read_sssom_table(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
 
     # Export MappingSetDataFrame into a TSV
-    write_sssom(merged_msdf, output)
+    write_table(merged_msdf, output)
 
 @main.command()
 @click.option("-i", "--input", help="Path to ontology file.")

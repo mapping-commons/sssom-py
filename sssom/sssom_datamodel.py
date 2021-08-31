@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-07-13 09:04
+# Generation date: 2021-08-30 21:03
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -9,7 +9,7 @@
 import dataclasses
 import sys
 import re
-from jsonasobj2 import JsonObj
+from jsonasobj2 import JsonObj, as_dict
 from typing import Optional, List, Union, Dict, ClassVar, Any
 from dataclasses import dataclass
 from linkml_runtime.linkml_model.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
@@ -30,10 +30,14 @@ metamodel_version = "1.7.0"
 dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 
 # Namespaces
+ORPHANET = CurieNamespace('Orphanet', 'http://www.orpha.net/ORDO/Orphanet_')
 DC = CurieNamespace('dc', 'http://purl.org/dc/terms/')
+DCE = CurieNamespace('dce', 'http://purl.org/dc/elements/1.1/')
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
+NEURONAME = CurieNamespace('neuroname', 'http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=')
 OBOINOWL = CurieNamespace('oboInOwl', 'http://www.geneontology.org/formats/oboInOwl#')
+OIO = CurieNamespace('oio', 'http://www.geneontology.org/formats/oboInOwl#')
 OWL = CurieNamespace('owl', 'http://www.w3.org/2002/07/owl#')
 RDF = CurieNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 RDFS = CurieNamespace('rdfs', 'http://www.w3.org/2000/01/rdf-schema#')
@@ -86,7 +90,7 @@ class MappingSet(YAMLRoot):
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
         if not isinstance(self.mappings, list):
             self.mappings = [self.mappings] if self.mappings is not None else []
-        self.mappings = [v if isinstance(v, Mapping) else Mapping(**v) for v in self.mappings]
+        self.mappings = [v if isinstance(v, Mapping) else Mapping(**as_dict(v)) for v in self.mappings]
 
         if self.mapping_set_id is not None and not isinstance(self.mapping_set_id, EntityId):
             self.mapping_set_id = EntityId(self.mapping_set_id)
@@ -480,13 +484,13 @@ slots.semantic_similarity_score = Slot(uri=SSSOM.semantic_similarity_score, name
 slots.information_content_mica_score = Slot(uri=SSSOM.information_content_mica_score, name="information_content_mica_score", curie=SSSOM.curie('information_content_mica_score'),
                    model_uri=SSSOM.information_content_mica_score, domain=None, range=Optional[float])
 
-slots.see_also = Slot(uri=SSSOM.see_also, name="see_also", curie=SSSOM.curie('see_also'),
-                   model_uri=SSSOM.see_also, domain=None, range=Optional[str], mappings = [RDFS.seeAlso])
+slots.see_also = Slot(uri=RDFS.seeAlso, name="see_also", curie=RDFS.curie('seeAlso'),
+                   model_uri=SSSOM.see_also, domain=None, range=Optional[str])
 
 slots.other = Slot(uri=SSSOM.other, name="other", curie=SSSOM.curie('other'),
                    model_uri=SSSOM.other, domain=None, range=Optional[str])
 
-slots.comment = Slot(uri=SSSOM.comment, name="comment", curie=SSSOM.curie('comment'),
+slots.comment = Slot(uri=RDFS.comment, name="comment", curie=RDFS.curie('comment'),
                    model_uri=SSSOM.comment, domain=None, range=Optional[str])
 
 slots.required = Slot(uri=SSSOM.required, name="required", curie=SSSOM.curie('required'),
