@@ -2,7 +2,6 @@ import json
 import logging
 import pathlib
 
-# cwd = os.path.abspath(os.path.dirname(__file__))
 HERE = pathlib.Path(__file__).parent.resolve()
 DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
 EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
