@@ -49,16 +49,16 @@ def read_sssom_table(
             if meta:
                 for k, v in meta.items():
                     if k in sssom_metadata:
-                        if sssom_metadata[k] != meta[k]:
+                        if sssom_metadata[k] != v:
                             logging.warning(
                                 f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
                                 f"conflicts with provided ({meta[k]})."
                             )
                     else:
                         logging.info(
-                            f"Externally provided metadata {k}:{meta[k]} is added to metadata set."
+                            f"Externally provided metadata {k}:{v} is added to metadata set."
                         )
-                        sssom_metadata[k] = meta[k]
+                        sssom_metadata[k] = v
             meta = sssom_metadata
 
         curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
@@ -254,7 +254,8 @@ def from_sssom_rdf(
 
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         mdict = {}
-        for s, p, o in g.triples((ox, None, None)):
+        # TODO replace with g.predicate_objects()
+        for _s, p, o in g.triples((ox, None, None)):
             if isinstance(p, URIRef):
                 try:
                     p_id = curie_from_uri(p, curie_map)
@@ -424,10 +425,10 @@ def from_obographs(
                                 except NoCURIEException as e:
                                     logging.warning(e)
                         if "basicPropertyValues" in n["meta"]:
-                            for basicPropertyBalue in n["meta"]["basicPropertyValues"]:
-                                pred = basicPropertyBalue["pred"]
+                            for value in n["meta"]["basicPropertyValues"]:
+                                pred = value["pred"]
                                 if pred in allowed_properties:
-                                    xref_id = basicPropertyBalue["val"]
+                                    xref_id = value["val"]
                                     mdict = {}
                                     try:
                                         mdict["subject_id"] = curie_from_uri(

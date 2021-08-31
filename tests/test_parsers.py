@@ -45,7 +45,7 @@ class TestParse(unittest.TestCase):
             self.json = json.load(json_file)
 
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
-            df_meta = yaml.load(file, Loader=yaml.FullLoader)
+            df_meta = yaml.safe_load(file)
             self.df_curie_map = df_meta["curie_map"]
             self.df_meta = df_meta
             self.df_meta.pop("curie_map", None)

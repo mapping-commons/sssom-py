@@ -564,7 +564,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
 
     tups = []
     for i, row in corr.iterrows():
-        for j, v in row.iteritems():
+        for j, v in row.items():
             logging.info(f"{i} x {j} = {v}")
             tups.append((v, i, j))
     tups = sorted(tups, key=lambda tx: tx[0])

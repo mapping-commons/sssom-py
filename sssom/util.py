@@ -311,7 +311,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
     dfmax: pd.DataFrame
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
     max_conf = {}
-    for index, row in dfmax.iterrows():
+    for _, row in dfmax.iterrows():
         if ignore_predicate:
             max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
         else:
@@ -663,7 +663,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # If same confidence prefer "HumanCurated".
     reconciled_df_subset: pd.DataFrame
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
-    for idx_1, row_1 in max_confidence_df.iterrows():
+    for _, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
             (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
             & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
@@ -693,7 +693,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # Add negations (NOT symbol) back to the PREDICATE_ID
     # NOTE: negative TRUMPS positive if negative and positive with same
     # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
-    for idx_2, row_2 in negation_df.iterrows():
+    for _, row_2 in negation_df.iterrows():
         match_condition_2 = (
             (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID])
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
@@ -706,7 +706,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     reconciled_df: pd.DataFrame
     reconciled_df = pd.DataFrame(columns=df.columns)
-    for idx_3, row_3 in reconciled_df_subset.iterrows():
+    for _, row_3 in reconciled_df_subset.iterrows():
         match_condition_3 = (
             (df[SUBJECT_ID] == row_3[SUBJECT_ID])
             & (df[OBJECT_ID] == row_3[OBJECT_ID])
@@ -877,7 +877,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
 
 
-class NoCURIEException(Exception):
+class NoCURIEException(ValueError):
     pass
 
 
@@ -914,7 +914,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame):
 def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
     rows = []
 
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
         prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
         # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.

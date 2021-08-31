@@ -128,7 +128,7 @@ def summarize_cliques(doc: MappingSetDataFrame):
             confs.append(m.confidence)
         src2ids = invert_dict(id2src)
         mstr = "|".join(members)
-        md5 = hashlib.md5(mstr.encode("utf-8")).hexdigest()
+        md5 = hashlib.md5(mstr.encode("utf-8")).hexdigest()  # noqa:S303
         item = {
             "id": md5,
             "num_mappings": len(ms),

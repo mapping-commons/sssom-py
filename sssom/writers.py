@@ -288,7 +288,8 @@ def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
     for k, v in namespaces.items():
         graph.bind(k, v)
 
-    for s, p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
+    # TODO replace with graph.objects()
+    for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
 
     for axiom in graph.subjects(RDF.type, OWL.Axiom):

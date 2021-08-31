@@ -22,7 +22,7 @@ def ensure_test_dir_exists():
 
 def load_config():
     with open(TEST_CONFIG) as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)
+        config = yaml.safe_load(file)
     return config
 
 
