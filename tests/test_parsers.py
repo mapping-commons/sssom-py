@@ -9,15 +9,15 @@ from rdflib import Graph
 
 from sssom.context import get_default_metadata
 from sssom.parsers import (
-    read_sssom_table,
+    from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
-    from_alignment_minidom,
-    from_sssom_rdf,
     from_sssom_json,
+    from_sssom_rdf,
+    read_sssom_table,
 )
 from sssom.writers import write_table
-from tests.test_data import test_out_dir, test_data_dir
+from tests.test_data import test_data_dir, test_out_dir
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 

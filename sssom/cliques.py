@@ -7,6 +7,7 @@ import pandas as pd
 
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame
+
 from .sssom_datamodel import MappingSet
 from .sssom_document import MappingSetDocument
 

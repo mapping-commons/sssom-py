@@ -13,13 +13,14 @@ from rdflib.namespace import OWL, RDF
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
 from .util import (
-    MappingSetDataFrame,
-    prepare_context_from_curie_map,
-    URI_SSSOM_MAPPINGS,
+    RDF_FORMATS,
+    SSSOM_DEFAULT_RDF_SERIALISATION,
     SSSOM_URI_PREFIX,
+    URI_SSSOM_MAPPINGS,
+    MappingSetDataFrame,
+    get_file_extension,
+    prepare_context_from_curie_map,
 )
-from .util import RDF_FORMATS, SSSOM_DEFAULT_RDF_SERIALISATION
-from .util import get_file_extension
 
 # noinspection PyProtectedMember
 
