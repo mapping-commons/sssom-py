@@ -23,13 +23,10 @@ class TestRewire(unittest.TestCase):
         self.graph = g
 
     def test_rewire(self):
-        expected_exception = False
-        try:
-            rewire_graph(self.graph, self.mset)
-        except Exception:
+        with self.assertRaises(Exception):
             # we expect this to fail due to PR/CHEBI ambiguity
-            expected_exception = True
-        assert expected_exception
+            rewire_graph(self.graph, self.mset)
+
         n = rewire_graph(self.graph, self.mset, precedence=["PR"])
         print(f"Num changed = {n}")
         with open(f"{test_out_dir}/rewired-cob.ttl", "w") as stream:

@@ -42,7 +42,7 @@ class TestCollapse(unittest.TestCase):
         rows = dataframe_to_ptable(self.df)
         for row in rows[0:10]:
             print("\t".join(row))
-        assert len(rows) == 91
+        self.assertEqual(91, len(rows))
 
     def test_groupings(self):
         mappings = group_mappings(self.df)
@@ -50,15 +50,15 @@ class TestCollapse(unittest.TestCase):
 
     def test_diff(self):
         diff = compare_dataframes(self.df, self.df)
-        assert len(diff.unique_tuples1) == 0
-        assert len(diff.unique_tuples2) == 0
-        assert len(diff.common_tuples) == 91
+        self.assertEqual(0, len(diff.unique_tuples1))
+        self.assertEqual(0, len(diff.unique_tuples2))
+        self.assertEqual(91, len(diff.common_tuples))
         diff_df = diff.combined_dataframe
         # print(len(diff_df.index))
         # print(diff_df[0:20])
-        assert len(diff_df.index) > 100
+        self.assertLess(100, len(diff_df.index))
         for c in diff_df["comment"]:
-            assert c.startswith("COMMON_TO_BOTH")
+            self.assertTrue(c.startswith("COMMON_TO_BOTH"))
         output = sqldf("select * from diff_df where comment != ''")
         print(output)
         # print(diff)
@@ -68,11 +68,11 @@ class TestCollapse(unittest.TestCase):
         # print(len(diff.unique_tuples1))
         # print(len(diff.unique_tuples2))
         # print(len(diff.common_tuples))
-        assert len(diff.unique_tuples1) == 15
-        assert len(diff.unique_tuples2) == 3
-        assert len(diff.common_tuples) == 76
+        self.assertEqual(15, len(diff.unique_tuples1))
+        self.assertEqual(3, len(diff.unique_tuples2))
+        self.assertEqual(76, len(diff.common_tuples))
         # totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)
-        # assert totlen == len(self.df.index) + len(df2.index)
+        # self.assertEqual(totlen, len(self.df.index) + len(df2.index))
         diff_df = diff.combined_dataframe
         print(len(diff_df.index))
         # print(diff_df[0:10])
