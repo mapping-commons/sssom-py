@@ -3,7 +3,7 @@ import unittest
 
 from rdflib import Graph
 from sssom.rdf_util import rewire_graph
-from sssom.parsers import from_tsv
+from sssom.parsers import read_sssom_table
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
@@ -16,7 +16,7 @@ class TestRewire(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.mset = from_tsv(f"{data_dir}/cob-to-external.tsv")
+        self.mset = read_sssom_table(f"{data_dir}/cob-to-external.tsv")
         g = Graph()
         g.parse(f"{data_dir}/cob.owl", format='xml')
         self.graph = g
