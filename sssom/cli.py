@@ -135,7 +135,7 @@ def convert(input: str, output: str, output_format: str):
         ["metadata_only", "sssom_default_only", "merged"], case_sensitive=False
     ),
     help="Defines wether the curie map in the metadata should be extended or replaced with "
-    "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
+         "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
 )
 @click.option(
     "-p",
@@ -147,12 +147,12 @@ def convert(input: str, output: str, output_format: str):
 )
 @output_option
 def parse(
-    input: str,
-    input_format: str,
-    metadata: str,
-    curie_map_mode: str,
-    clean_prefixes: bool,
-    output: str,
+        input: str,
+        input_format: str,
+        metadata: str,
+        curie_map_mode: str,
+        clean_prefixes: bool,
+        output: str,
 ):
     """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
@@ -332,13 +332,13 @@ def dosql(query: str, inputs: List[str], output: str):
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
 @output_option
 def sparql(
-    url: str = None,
-    config=None,
-    graph: str = None,
-    limit: int = None,
-    object_labels: bool = None,
-    prefix: List[Dict[str, str]] = None,
-    output: str = None,
+        url: str = None,
+        config=None,
+        graph: str = None,
+        limit: int = None,
+        object_labels: bool = None,
+        prefix: List[Dict[str, str]] = None,
+        output: str = None,
 ):
     """Run a SPARQL query.
 
@@ -613,8 +613,9 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
     # Export MappingSetDataFrame into a TSV
     write_table(merged_msdf, output)
 
+
 @main.command()
-@click.option("-i", "--input", help="Path to ontology file.")
+@input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
 @click.option("-I", "--input-format", default='turtle', help="Ontology input format.")
 @click.option("-O", "--output-format", default='turtle', help="Ontology output format.")
@@ -627,7 +628,7 @@ def rewire(input, mapping_file, precedence=None, output=None, input_format=None,
 
         sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
     """
-    msdf = from_tsv(mapping_file)
+    msdf = read_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
     rewire_graph(g, msdf, precedence=precedence)
@@ -637,6 +638,7 @@ def rewire(input, mapping_file, precedence=None, output=None, input_format=None,
             stream.write(rdfstr)
     else:
         print(rdfstr)
+
 
 if __name__ == "__main__":
     main()
