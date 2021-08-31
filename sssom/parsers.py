@@ -427,10 +427,10 @@ def from_obographs(
                                 except NoCURIEException as e:
                                     logging.warning(e)
                         if "basicPropertyValues" in n["meta"]:
-                            for basicPropertyBalue in n["meta"]["basicPropertyValues"]:
-                                pred = basicPropertyBalue["pred"]
+                            for value in n["meta"]["basicPropertyValues"]:
+                                pred = value["pred"]
                                 if pred in allowed_properties:
-                                    xref_id = basicPropertyBalue["val"]
+                                    xref_id = value["val"]
                                     mdict = {}
                                     try:
                                         mdict["subject_id"] = curie_from_uri(

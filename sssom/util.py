@@ -876,7 +876,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 # to_mapping_set_document is in parser.py in order to avoid circular import errors
 
 
-class NoCURIEException(Exception):
+class NoCURIEException(ValueError):
     pass
 
 
