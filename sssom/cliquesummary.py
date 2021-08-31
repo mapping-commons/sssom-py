@@ -22,7 +22,7 @@ from linkml_runtime.utils.formatutils import camelcase, underscore, sfx
 from linkml_runtime.utils.enumerations import EnumDefinitionImpl
 from rdflib import Namespace, URIRef
 from linkml_runtime.utils.curienamespace import CurieNamespace
-from linkml_runtime.utils.metamodelcore import Bool, Decimal, ElementIdentifier, NCName, NodeIdentifier, URI, URIorCURIE, XSDDate, XSDDateTime, XSDTime, integer
+from linkml_runtime.utils.metamodelcore import Bool, Decimal, ElementIdentifier, NCName, NodeIdentifier, URI, URIorCURIE, XSDDate, XSDDateTime, XSDTime
 
 metamodel_version = "1.7.0"
 
@@ -39,7 +39,7 @@ DEFAULT_ = SSSOM.CS
 
 
 # Types
-class Count(integer):
+class Count(int):
     type_class_uri = XSD.integer
     type_class_curie = "xsd:integer"
     type_name = "count"
@@ -178,16 +178,16 @@ class Clique(YAMLRoot):
     id: Union[str, CliqueId] = None
     members: Optional[Union[str, List[str]]] = empty_list()
     members_labels: Optional[Union[str, List[str]]] = empty_list()
-    num_members: Optional[integer] = None
+    num_members: Optional[int] = None
     max_confidence: Optional[float] = None
     min_confidence: Optional[float] = None
     avg_confidence: Optional[float] = None
     is_conflated: Optional[Union[bool, Bool]] = None
     is_all_conflated: Optional[Union[bool, Bool]] = None
-    total_conflated: Optional[integer] = None
+    total_conflated: Optional[int] = None
     proportion_conflated: Optional[float] = None
     conflation_score: Optional[float] = None
-    members_count: Optional[integer] = None
+    members_count: Optional[int] = None
     min_count_by_source: Optional[int] = None
     max_count_by_source: Optional[int] = None
     avg_count_by_source: Optional[float] = None
@@ -207,8 +207,8 @@ class Clique(YAMLRoot):
             self.members_labels = [self.members_labels] if self.members_labels is not None else []
         self.members_labels = [v if isinstance(v, str) else str(v) for v in self.members_labels]
 
-        if self.num_members is not None and not isinstance(self.num_members, integer):
-            self.num_members = integer(self.num_members)
+        if self.num_members is not None and not isinstance(self.num_members, int):
+            self.num_members = int(self.num_members)
 
         if self.max_confidence is not None and not isinstance(self.max_confidence, float):
             self.max_confidence = float(self.max_confidence)
@@ -225,8 +225,8 @@ class Clique(YAMLRoot):
         if self.is_all_conflated is not None and not isinstance(self.is_all_conflated, Bool):
             self.is_all_conflated = Bool(self.is_all_conflated)
 
-        if self.total_conflated is not None and not isinstance(self.total_conflated, integer):
-            self.total_conflated = integer(self.total_conflated)
+        if self.total_conflated is not None and not isinstance(self.total_conflated, int):
+            self.total_conflated = int(self.total_conflated)
 
         if self.proportion_conflated is not None and not isinstance(self.proportion_conflated, float):
             self.proportion_conflated = float(self.proportion_conflated)
@@ -234,8 +234,8 @@ class Clique(YAMLRoot):
         if self.conflation_score is not None and not isinstance(self.conflation_score, float):
             self.conflation_score = float(self.conflation_score)
 
-        if self.members_count is not None and not isinstance(self.members_count, integer):
-            self.members_count = integer(self.members_count)
+        if self.members_count is not None and not isinstance(self.members_count, int):
+            self.members_count = int(self.members_count)
 
         if self.min_count_by_source is not None and not isinstance(self.min_count_by_source, int):
             self.min_count_by_source = int(self.min_count_by_source)
@@ -269,13 +269,13 @@ slots.members_labels = Slot(uri=SSSOM.CS.members_labels, name="members_labels", 
                    model_uri=SSSOM.CS.members_labels, domain=None, range=Optional[Union[str, List[str]]])
 
 slots.num_members = Slot(uri=SSSOM.CS.num_members, name="num_members", curie=SSSOM.CS.curie('num_members'),
-                   model_uri=SSSOM.CS.num_members, domain=None, range=Optional[integer])
+                   model_uri=SSSOM.CS.num_members, domain=None, range=Optional[int])
 
 slots.sources = Slot(uri=SSSOM.CS.sources, name="sources", curie=SSSOM.CS.curie('sources'),
                    model_uri=SSSOM.CS.sources, domain=None, range=Optional[Union[str, List[str]]])
 
 slots.num_sources = Slot(uri=SSSOM.CS.num_sources, name="num_sources", curie=SSSOM.CS.curie('num_sources'),
-                   model_uri=SSSOM.CS.num_sources, domain=None, range=Optional[integer])
+                   model_uri=SSSOM.CS.num_sources, domain=None, range=Optional[int])
 
 slots.max_confidence = Slot(uri=SSSOM.CS.max_confidence, name="max_confidence", curie=SSSOM.CS.curie('max_confidence'),
                    model_uri=SSSOM.CS.max_confidence, domain=None, range=Optional[float])
@@ -293,7 +293,7 @@ slots.is_all_conflated = Slot(uri=SSSOM.CS.is_all_conflated, name="is_all_confla
                    model_uri=SSSOM.CS.is_all_conflated, domain=None, range=Optional[Union[bool, Bool]])
 
 slots.total_conflated = Slot(uri=SSSOM.CS.total_conflated, name="total_conflated", curie=SSSOM.CS.curie('total_conflated'),
-                   model_uri=SSSOM.CS.total_conflated, domain=None, range=Optional[integer])
+                   model_uri=SSSOM.CS.total_conflated, domain=None, range=Optional[int])
 
 slots.proportion_conflated = Slot(uri=SSSOM.CS.proportion_conflated, name="proportion_conflated", curie=SSSOM.CS.curie('proportion_conflated'),
                    model_uri=SSSOM.CS.proportion_conflated, domain=None, range=Optional[float])
@@ -302,7 +302,7 @@ slots.conflation_score = Slot(uri=SSSOM.CS.conflation_score, name="conflation_sc
                    model_uri=SSSOM.CS.conflation_score, domain=None, range=Optional[float])
 
 slots.members_count = Slot(uri=SSSOM.CS.members_count, name="members_count", curie=SSSOM.CS.curie('members_count'),
-                   model_uri=SSSOM.CS.members_count, domain=None, range=Optional[integer])
+                   model_uri=SSSOM.CS.members_count, domain=None, range=Optional[int])
 
 slots.min_count_by_source = Slot(uri=SSSOM.CS.min_count_by_source, name="min_count_by_source", curie=SSSOM.CS.curie('min_count_by_source'),
                    model_uri=SSSOM.CS.min_count_by_source, domain=None, range=Optional[int])

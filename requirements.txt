@@ -4,7 +4,7 @@ linkml-model>=1.0.4
 rdflib>=0.0
 pandas>=0.0
 pyyaml>=0.0
-jsonasobj~=1.2.1
+jsonasobj==1.3.1
 Sphinx>=2.3.1
 sphinx-rtd-theme==0.4.3
 sphinx-click==3.0.1
@@ -16,4 +16,7 @@ pytest>=0.0
 validators>=0.0
 click>=0.0
 scipy>=0.0
+numpy>=0.0
+jsonasobj2>=1.0.4
+setuptools>=57.4.0
 recommonmark>=0.7

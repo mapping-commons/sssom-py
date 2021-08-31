@@ -2,36 +2,13 @@ import logging
 import os
 
 import validators
-import yaml
 
-from sssom.util import MappingSetDataFrame, read_metadata
+from sssom.util import read_metadata
 from .context import get_default_metadata
-from .parsers import get_parsing_function, from_tsv, split_dataframe
-from .writers import get_writer_function, write_tsv, write_tsvs
+from .parsers import get_parsing_function, read_sssom_table, split_dataframe
+from .writers import get_writer_function, write_table, write_tables
 
 cwd = os.path.abspath(os.path.dirname(__file__))
-
-
-def write_sssom(msdf: MappingSetDataFrame, output: str = None) -> None:
-    if output and os.path.exists(output):
-        os.remove(output)
-    if msdf.metadata is not None:
-        obj = {k: v for k, v in msdf.metadata.items()}
-    else:
-        obj = {}
-    if msdf.prefixmap is not None:
-        obj["curie_map"] = msdf.prefixmap
-    lines = yaml.safe_dump(obj).split("\n")
-    lines = [f"# {line}" for line in lines if line != ""]
-    s = msdf.df.to_csv(sep="\t", index=False)
-    lines = lines + [s]
-    if output is None:
-        for line in lines:
-            print(line)
-    else:
-        with open(output, "w") as stream:
-            for line in lines:
-                stream.write(line + "\n")
 
 
 def convert_file(input_path: str, output_path: str = None, output_format: str = None):
@@ -46,20 +23,20 @@ def convert_file(input_path: str, output_path: str = None, output_format: str = 
 
     """
     if validators.url(input_path) or os.path.exists(input_path):
-        doc = from_tsv(input_path)
+        doc = read_sssom_table(input_path)
         write_func, fileformat = get_writer_function(output_format, output_path)
-        write_func(doc, output_path, fileformat=fileformat)
+        write_func(doc, output_path, serialisation=fileformat)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")
 
 
 def parse_file(
-    input_path: str,
-    output_path: str = None,
-    input_format: str = None,
-    metadata_path: str = None,
-    curie_map_mode: str = None,
-    clean_prefixes: bool = True,
+        input_path: str,
+        output_path: str = None,
+        input_format: str = None,
+        metadata_path: str = None,
+        curie_map_mode: str = None,
+        clean_prefixes: bool = True,
 ):
     """
 
@@ -84,7 +61,7 @@ def parse_file(
         if clean_prefixes:
             # We do this because we got a lot of prefixes from the default SSSOM prefixes!
             doc.clean_prefix_map()
-        write_tsv(doc, output_path)
+        write_table(doc, output_path)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")
 
@@ -100,7 +77,7 @@ def validate_file(input_path: str):
         Boolean. True if valid SSSOM, false otherwise.
     """
     try:
-        from_tsv(file_path=input_path)
+        read_sssom_table(file_path=input_path)
         return True
     except Exception as e:
         logging.exception("The file is invalid", e)
@@ -119,9 +96,9 @@ def split_file(input_path: str, output_directory: str):
 
     """
     if validators.url(input_path) or os.path.exists(input_path):
-        msdf = from_tsv(input_path)
+        msdf = read_sssom_table(input_path)
         splitted = split_dataframe(msdf)
-        write_tsvs(splitted, output_directory)
+        write_tables(splitted, output_directory)
     else:
         raise Exception(f"{input_path} is not a valid file path or url.")
 

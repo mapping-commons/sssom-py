@@ -6,7 +6,12 @@ imports:
 prefixes:
   linkml: https://w3id.org/linkml/
   sssom: http://w3id.org/sssom/
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
   oboInOwl: http://www.geneontology.org/formats/oboInOwl#
+  neuroname: http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=
+  dce: http://purl.org/dc/elements/1.1/
+  Orphanet: http://www.orpha.net/ORDO/Orphanet_
+  oio: http://www.geneontology.org/formats/oboInOwl#
 see_also:
 - https://github.com/OBOFoundry/SSSOM
 default_curi_maps:
@@ -105,6 +110,7 @@ slots:
       In the case of multiple match types for a single subject, predicate, object
       triplet, two seperate mappings must be specified.
     range: string
+    #multivalued: true #consider linkml runtime csvreader
   mapping_set_id:
     description: A globally unique identifier for the mapping set (not each individual
       mapping). Should be IRI, ideally resolvable.
@@ -210,8 +216,7 @@ slots:
     description: A URL specific for the mapping instance. E.g. for kboom we have a
       per-mapping image that shows surrounding axioms that drive probability. Could
       also be a github issue URL that discussed a complicated alignment
-    mappings:
-    - rdfs:seeAlso
+    slot_uri: rdfs:seeAlso
     range: string
   other:
     description: Pipe separated list of key value pairs for properties not part of
@@ -220,6 +225,7 @@ slots:
   comment:
     description: Free text field containing either curator notes or text generated
       by tool providing additional informative information.
+    slot_uri: rdfs:comment
     range: string
   required:
     description: Indicates wether the SSSOM metadata element is required

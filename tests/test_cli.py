@@ -1,6 +1,7 @@
 import unittest
 
 from click.testing import CliRunner
+from typing import Dict
 
 from sssom.cli import (
     cliquesummary,
@@ -32,7 +33,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
             get_all_test_cases()
         )  # Initially returned 2 tsv and 1 rdf. The RDF failed test
         for test in test_cases:
-            print(test.filepath)
             test: SSSOMTestCase
             self.run_convert(runner, test)
             if test.inputformat == "tsv":
@@ -61,9 +61,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
         self.assertTrue(len(test_cases) >= 2)
 
-    def run_successful(self, result):
+    def run_successful(self, result, test_case: SSSOMTestCase):
         # self.assertTrue(result.exit_code == 0, f"Run failed with message {result.exception}")
-        assert result.exit_code == 0
+        self.assertEqual(result.exit_code, 0, f"{test_case} did not as expected: {result.exception}")
 
     def run_convert(self, runner, test_case: SSSOMTestCase):
         params = [
@@ -74,12 +74,12 @@ class SSSOMCLITestSuite(unittest.TestCase):
             "owl",
         ]
         result = runner.invoke(convert, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     def run_validate(self, runner, test_case: SSSOMTestCase):
         result = runner.invoke(validate, [test_case.filepath])
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     def run_parse(self, runner, test_case: SSSOMTestCase):
@@ -97,14 +97,14 @@ class SSSOMCLITestSuite(unittest.TestCase):
             params.append(test_case.metadata_file)
 
         result = runner.invoke(parse, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     def run_split(self, runner, test_case: SSSOMTestCase):
         result = runner.invoke(
             split, [test_case.filepath, "--output-directory", test_out_dir]
         )
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     # Added by H2
@@ -112,7 +112,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def run_ptable(self, runner, test_case: SSSOMTestCase):
         params = [test_case.filepath]
         result = runner.invoke(ptable, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     def run_dedupe(self, runner, test_case: SSSOMTestCase):
@@ -122,7 +122,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             test_case.get_out_file("tsv"),
         ]
         result = runner.invoke(dedupe, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     # TODO: dosql and sparql
@@ -132,29 +132,34 @@ class SSSOMCLITestSuite(unittest.TestCase):
     """def run_sparql(self, runner, test_case: SSSOMTestCase):
         prams = []"""
 
-    def run_diff(self, runner, test_case: "list[SSSOMTestCase]"):
+    def run_diff(self, runner, test_cases: Dict[str, SSSOMTestCase]):
         params = []
-        out_file: SSSOMTestCase
-        for t in test_case:
+        out_file = None
+        for tid in test_cases:
+            t = test_cases[tid]
             t: SSSOMTestCase
             params.append(t.filepath)
             out_file = t
-        params.extend(["--output", out_file.get_out_file("tsv")])
-        result = runner.invoke(diff, params)
-        print(result)
-        self.run_successful(result)
-        return result
+        if out_file:
+            params.extend(["--output", out_file.get_out_file("tsv")])
+            result = runner.invoke(diff, params)
+            self.run_successful(result, out_file)
+            return result
+        else:
+            self.fail("No test to run.")
 
-    def run_partition(self, runner, test_case: SSSOMTestCase):
+    def run_partition(self, runner, test_cases: dict):
         params = []
-        out_file: SSSOMTestCase
-        for t in test_case:
+        primary_test_case = None
+        for tid in test_cases:
+            t = test_cases[tid]
+            if not primary_test_case:
+                primary_test_case = t
             t: SSSOMTestCase
             params.append(t.filepath)
-            out_file = t
         params.extend(["--output-directory", test_out_dir])
         result = runner.invoke(partition, params)
-        self.run_successful(result)
+        self.run_successful(result, primary_test_case)
         return result
 
     def run_cliquesummary(self, runner, test_case: SSSOMTestCase):
@@ -164,7 +169,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             test_case.get_out_file("tsv"),
         ]
         result = runner.invoke(cliquesummary, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     def run_crosstab(self, runner, test_case: SSSOMTestCase):
@@ -174,7 +179,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             test_case.get_out_file("tsv"),
         ]
         result = runner.invoke(crosstab, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
 
     def run_correlations(self, runner, test_case: SSSOMTestCase):
@@ -184,5 +189,5 @@ class SSSOMCLITestSuite(unittest.TestCase):
             test_case.get_out_file("tsv"),
         ]
         result = runner.invoke(correlations, params)
-        self.run_successful(result)
+        self.run_successful(result, test_case)
         return result
