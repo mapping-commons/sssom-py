@@ -60,13 +60,13 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         else ""
     )
     q = f"""
-    PREFIX rdfs: {RDFS.uri.n3()} 
+    PREFIX rdfs: {RDFS.uri.n3()}
     SELECT {colstr}
     WHERE {{
-        GRAPH {g} {{ 
+        GRAPH {g} {{
           VALUES ?predicate_id {{ {predstr} }} .
           ?subject_id ?predicate_id ?object_id .
-          ?subject_id rdfs:label ?subject_label 
+          ?subject_id rdfs:label ?subject_label
         }} .
         {olq}
         BIND({g} as ?mapping_provider)

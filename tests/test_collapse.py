@@ -22,11 +22,17 @@ class TestCollapse(unittest.TestCase):
 
     def test_df(self):
         df = self.df
-        self.assertEquals(len(df), 141, f"Dataframe should have a different number of rows {df.head(10)}")
+        self.assertEquals(
+            len(df),
+            141,
+            f"Dataframe should have a different number of rows {df.head(10)}",
+        )
 
     def test_collapse(self):
         df = collapse(self.df)
-        self.assertEquals(len(df), 91, f"Dataframe should have a different {df.head(10)}")
+        self.assertEquals(
+            len(df), 91, f"Dataframe should have a different {df.head(10)}"
+        )
 
     def test_filter(self):
         df = filter_redundant_rows(self.df)
@@ -54,7 +60,7 @@ class TestCollapse(unittest.TestCase):
         for c in diff_df["comment"]:
             assert c.startswith("COMMON_TO_BOTH")
         output = sqldf("select * from diff_df where comment != ''")
-        # print(output)
+        print(output)
         # print(diff)
 
         df2 = parse(f"{data_dir}/basic2.tsv")
@@ -68,5 +74,5 @@ class TestCollapse(unittest.TestCase):
         # totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)
         # assert totlen == len(self.df.index) + len(df2.index)
         diff_df = diff.combined_dataframe
-        # print(len(diff_df.index))
+        print(len(diff_df.index))
         # print(diff_df[0:10])

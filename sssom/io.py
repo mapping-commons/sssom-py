@@ -31,12 +31,12 @@ def convert_file(input_path: str, output_path: str = None, output_format: str = 
 
 
 def parse_file(
-        input_path: str,
-        output_path: str = None,
-        input_format: str = None,
-        metadata_path: str = None,
-        curie_map_mode: str = None,
-        clean_prefixes: bool = True,
+    input_path: str,
+    output_path: str = None,
+    input_format: str = None,
+    metadata_path: str = None,
+    curie_map_mode: str = None,
+    clean_prefixes: bool = True,
 ):
     """
 

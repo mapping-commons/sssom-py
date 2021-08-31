@@ -63,7 +63,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_successful(self, result, test_case: SSSOMTestCase):
         # self.assertTrue(result.exit_code == 0, f"Run failed with message {result.exception}")
-        self.assertEqual(result.exit_code, 0, f"{test_case} did not as expected: {result.exception}")
+        self.assertEqual(
+            result.exit_code, 0, f"{test_case} did not as expected: {result.exception}"
+        )
 
     def run_convert(self, runner, test_case: SSSOMTestCase):
         params = [
