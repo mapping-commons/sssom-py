@@ -57,7 +57,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self._test_load_graph_size(
             test.get_out_file(file_format),
             test.graph_serialisation,
-            getattr(test, "ct_graph_queries_owl"),
+            test.ct_graph_queries_owl,
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
@@ -76,7 +76,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self._test_load_graph_size(
             test.get_out_file(file_format),
             test.graph_serialisation,
-            getattr(test, "ct_graph_queries_rdf"),
+            test.ct_graph_queries_rdf,
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 

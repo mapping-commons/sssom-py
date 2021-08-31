@@ -23,7 +23,7 @@ class TestRewire(unittest.TestCase):
         self.graph = g
 
     def test_rewire(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValueError):
             # we expect this to fail due to PR/CHEBI ambiguity
             rewire_graph(self.graph, self.mset)
 

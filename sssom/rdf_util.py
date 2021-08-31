@@ -46,7 +46,7 @@ def rewire_graph(
                             rewire_map[src] = tgt
                             logging.info(f"{tgt} has precedence, due to {precedence}")
                 else:
-                    raise Exception(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
+                    raise ValueError(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
             else:
                 rewire_map[src] = tgt
     rewire_map = {expand_curie(k): expand_curie(v) for k, v in rewire_map.items()}
