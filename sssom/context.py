@@ -1,27 +1,22 @@
 import json
 import logging
-
-try:
-    import importlib.resources as pkg_resources
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    # noinspection PyUnresolvedReferences
-    import importlib_resources as pkg_resources
+import pathlib
 
 # cwd = os.path.abspath(os.path.dirname(__file__))
-DEFAULT_CONTEXT_PATH = "sssom.context.jsonld"
-EXTERNAL_CONTEXT_PATH = "sssom.external.context.jsonld"
+HERE = pathlib.Path(__file__).parent.resolve()
+DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
+EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
 SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
 
 
 def get_jsonld_context():
-    with pkg_resources.open_text(__package__, DEFAULT_CONTEXT_PATH) as json_file:
+    with DEFAULT_CONTEXT_PATH.open() as json_file:
         contxt = json.load(json_file)
     return contxt
 
 
 def get_external_jsonld_context():
-    with pkg_resources.open_text(__package__, EXTERNAL_CONTEXT_PATH) as json_file:
+    with EXTERNAL_CONTEXT_PATH.open() as json_file:
         contxt = json.load(json_file)
     return contxt
 
