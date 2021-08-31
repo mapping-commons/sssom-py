@@ -32,7 +32,7 @@ schema/%-docs: schema/%.yaml
 	gen-markdown --dir $@ $<
 
 test:
-	pytest
+	tox
 	sh tests/tests.sh
 
 
