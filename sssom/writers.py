@@ -5,8 +5,10 @@ import sys
 
 import pandas as pd
 import yaml
+from jsonasobj import as_json_obj
 from jsonasobj2 import JsonObj
-from linkml_runtime.dumpers import JSONDumper, RDFDumper
+from linkml_runtime.dumpers import JSONDumper
+from linkml_runtime.utils.yamlutils import as_json_object as yaml_to_json
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
@@ -191,6 +193,19 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     queries.append(
         sparql_prefixes
         + """
+        INSERT {
+          ?c rdf:type owl:ObjectProperty .
+          ?d rdf:type owl:ObjectProperty .
+        }
+        WHERE {
+         ?c owl:equivalentProperty ?d .
+        }
+        """
+    )
+
+    queries.append(
+        sparql_prefixes
+        + """
     DELETE {
       ?o rdf:type sssom:MappingSet .
     }
@@ -224,7 +239,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     WHERE {
         ?o a owl:Axiom ;
         ?p ?v .
-        FILTER(?p!=rdf:type)
+        FILTER(?p!=rdf:type && ?p!=owl:annotatedProperty && ?p!=owl:annotatedTarget && ?p!=owl:annotatedSource)
     }
     """
     )
@@ -246,6 +261,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """
     doc = to_mapping_set_document(msdf)
     cntxt = prepare_context_from_curie_map(doc.curie_map)
+
     # json_obj = to_json(msdf)
     # g = Graph()
     # g.load(json_obj, format="json-ld")
@@ -254,13 +270,17 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     graph = _temporary_as_rdf_graph(
         element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map
     )
+    # print(graph.serialize(format="turtle").decode())
     return graph
 
 
 def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
     # TODO needs to be replaced by RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
-    graph = RDFDumper().as_rdf_graph(element=element, contexts=contexts)
-    # print(graph.serialize(fmt="turtle").decode())
+    # graph = RDFDumper().as_rdf_graph(element=element, contexts=contexts)
+
+    graph = Graph()
+    jsonld = json.dumps(as_json_obj(yaml_to_json(element, contexts)))
+    graph.parse(data=jsonld, format="json-ld")
 
     # Adding some stuff that the default RDF serialisation does not do:
     # Direct triples
@@ -277,6 +297,14 @@ def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
                 for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
                     graph.add((s, p, o))
     return graph
+
+
+def _tmp_as_rdf_graph(graph, jsonobj):
+
+    return graph
+
+    # for m in doc.mapping_set.mappings:
+    #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
 
 
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
