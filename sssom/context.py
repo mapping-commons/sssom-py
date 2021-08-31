@@ -1,23 +1,21 @@
 import json
 import logging
-import pathlib
 
-HERE = pathlib.Path(__file__).parent.resolve()
-DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
-EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
+from sssom.external_context import sssom_external_context
+from sssom.internal_context import sssom_context
+
+# HERE = pathlib.Path(__file__).parent.resolve()
+# DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
+# EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
 SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
 
 
 def get_jsonld_context():
-    with DEFAULT_CONTEXT_PATH.open() as json_file:
-        contxt = json.load(json_file)
-    return contxt
+    return json.loads(sssom_context, strict=False)
 
 
 def get_external_jsonld_context():
-    with EXTERNAL_CONTEXT_PATH.open() as json_file:
-        contxt = json.load(json_file)
-    return contxt
+    return json.loads(sssom_external_context, strict=False)
 
 
 def get_built_in_prefix_map():
