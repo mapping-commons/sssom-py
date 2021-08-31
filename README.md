@@ -52,3 +52,5 @@ The [INDRA Lab](https://indralab.github.io), a part of the
 and the [Harvard Program in Therapeutic Science (HiTS)](https://hits.harvard.edu), is interested in
 natural language processing and large-scale knowledge assembly. Their work on SSSOM is funded by the
 DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
+
+https://indralab.github.io
