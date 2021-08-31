@@ -49,9 +49,7 @@ copy-spec:
 	cp ../SSSOM/sssom_metadata.tsv tests/data
 
 install:
-	$(PYTHON) setup.py install
-	pip install -r requirements.txt
-	pip install .[test]
+	pip install .[test,docs]
 
 pypi: test
 	echo "Uploading to pypi. Make sure you have twine installed.."
