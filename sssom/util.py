@@ -5,7 +5,7 @@ import logging
 import re
 import sys
 from dataclasses import dataclass
-from io import StringIO, FileIO
+from io import FileIO, StringIO
 from typing import Any, Dict, List, Optional, Set, Union
 from urllib.request import urlopen
 
@@ -15,6 +15,7 @@ import validators
 import yaml
 
 from sssom.sssom_datamodel import Entity, slots
+
 from .context import get_default_metadata, get_jsonld_context
 from .sssom_document import MappingSetDocument
 

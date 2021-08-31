@@ -4,12 +4,12 @@ import unittest
 from pandasql import sqldf
 
 from sssom import (
-    parse,
     collapse,
+    compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
     group_mappings,
-    compare_dataframes,
+    parse,
 )
 
 cwd = os.path.abspath(os.path.dirname(__file__))

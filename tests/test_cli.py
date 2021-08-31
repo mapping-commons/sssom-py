@@ -1,7 +1,7 @@
 import unittest
+from typing import Dict
 
 from click.testing import CliRunner
-from typing import Dict
 
 from sssom.cli import (
     cliquesummary,
@@ -10,18 +10,18 @@ from sssom.cli import (
     crosstab,
     dedupe,
     diff,
+    parse,
     partition,
     ptable,
-    validate,
     split,
-    parse,
+    validate,
 )
 from tests.test_data import (
+    SSSOMTestCase,
     ensure_test_dir_exists,
     get_all_test_cases,
-    SSSOMTestCase,
-    test_out_dir,
     get_multiple_input_test_cases,
+    test_out_dir,
 )
 
 

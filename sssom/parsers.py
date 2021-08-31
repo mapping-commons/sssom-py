@@ -2,9 +2,9 @@ import json
 import logging
 import os
 import re
-from typing import Dict, Set, Union, TextIO
+from typing import Dict, Set, TextIO, Union
 from urllib.request import urlopen
-from xml.dom import minidom, Node
+from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
 import numpy as np
@@ -15,20 +15,17 @@ from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
 from sssom.util import (
-    read_pandas,
-    NoCURIEException,
-    curie_from_uri,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
+    NoCURIEException,
+    curie_from_uri,
+    read_pandas,
 )
-from .context import get_default_metadata, add_built_in_prefixes_to_prefix_map
-from .sssom_datamodel import MappingSet, Mapping
+
+from .context import add_built_in_prefixes_to_prefix_map, get_default_metadata
+from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
-from .util import (
-    MappingSetDataFrame,
-    get_file_extension,
-    to_mapping_set_dataframe,
-)
+from .util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
