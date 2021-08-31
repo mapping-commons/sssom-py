@@ -21,3 +21,10 @@ None &#8594;  <sub>0..1</sub> [String](types/String.md)
 
  * [Mapping](Mapping.md)
  * [MappingSet](MappingSet.md)
+
+## Other properties
+
+|  |  |  |
+| --- | --- | --- |
+| **Mappings:** | | rdfs:comment |
+

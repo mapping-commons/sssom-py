@@ -37,7 +37,6 @@ test:
 
 
 deploy-dm:
-	cp schema/cliquesummary.py sssom/
 	cp schema/sssom_datamodel.py sssom/
 	cp schema/sssom.context.jsonld sssom/
 	cp schema/sssom.external.context.jsonld sssom/
