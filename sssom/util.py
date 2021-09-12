@@ -2,11 +2,12 @@ import contextlib
 import hashlib
 import json
 import logging
+import os
 import re
 import sys
 from dataclasses import dataclass
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Mapping, Optional, Set, Union
 from urllib.request import urlopen
 
 import numpy as np
@@ -794,7 +795,8 @@ def read_csv(filename, comment="#", sep=","):
 
 def read_metadata(filename):
     """
-    Reading metadata file (yaml) that is supplied separately from a tsv
+    Read a metadata file (yaml) that is supplied separately from a TSV.
+
     :param filename: location of file
     :return: two objects, a metadata and a curie_map object
     """
@@ -808,13 +810,14 @@ def read_metadata(filename):
             m.pop("curie_map", None)
             meta = m
         except yaml.YAMLError as exc:
-            print(exc)
+            print(exc)  # FIXME this clobbers the exception. Remove try/except
     return meta, curie_map
 
 
-def read_pandas(filename: str, sep="\t") -> pd.DataFrame:
+def read_pandas(filename: str, sep: Optional[str] = "\t") -> pd.DataFrame:
     """
-    wrapper to pd.read_csv that handles comment lines correctly
+    Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
+
     :param filename:
     :param sep: File separator in pandas (\t or ,)
     :return:
@@ -880,18 +883,21 @@ class NoCURIEException(ValueError):
     pass
 
 
-def is_curie(string: str):
-    return re.match(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]", string)
+CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
 
 
-def get_prefix_from_curie(curie: str):
+def is_curie(string: str) -> bool:
+    return bool(CURIE_RE.match(string))
+
+
+def get_prefix_from_curie(curie: str) -> str:
     if is_curie(curie):
         return curie.split(":")[0]
     else:
         return ""
 
 
-def curie_from_uri(uri: str, curie_map):
+def curie_from_uri(uri: str, curie_map: Mapping[str, str]):
     if is_curie(uri):
         return uri
     for prefix in curie_map:
@@ -956,3 +962,8 @@ def prepare_context_from_curie_map(curie_map: dict):
                     )
                     context["@context"][k] = v
     return json.dumps(context)
+
+
+def raise_for_bad_path(file_path: str) -> None:
+    if not validators.url(file_path) and not os.path.exists(file_path):
+        raise Exception(f"{file_path} is not a valid file path or url.")

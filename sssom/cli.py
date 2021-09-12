@@ -70,18 +70,7 @@ fields_option = click.option(
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
 def main(verbose: int, quiet: bool):
-    """Main
-
-    Args:
-
-        verbose (int): Verbose.
-        quiet (bool): Quiet.
-
-    Returns:
-
-        None.
-
-    """
+    """Main."""
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
     elif verbose == 1:
@@ -113,7 +102,6 @@ def convert(input: str, output: str, output_format: str):
         None.
 
     """
-
     convert_file(input_path=input, output_path=output, output_format=output_format)
 
 

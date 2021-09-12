@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Any, Mapping, Tuple
 
 from .external_context import sssom_external_context
 from .internal_context import sssom_context
@@ -44,7 +45,7 @@ def add_built_in_prefixes_to_prefix_map(prefixmap):
     return prefixmap
 
 
-def get_default_metadata():
+def get_default_metadata() -> Tuple[Mapping[str, Any], Mapping[str, Any]]:
     contxt = get_jsonld_context()
     contxt_external = get_external_jsonld_context()
     curie_map = {}

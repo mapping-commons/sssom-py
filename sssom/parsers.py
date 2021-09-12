@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import re
-from typing import Dict, Set, TextIO, Union
+from typing import Any, Dict, Optional, Set, TextIO, Union
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -24,6 +24,7 @@ from .util import (
     NoCURIEException,
     curie_from_uri,
     get_file_extension,
+    raise_for_bad_path,
     read_pandas,
     to_mapping_set_dataframe,
 )
@@ -37,34 +38,32 @@ def read_sssom_table(
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    if validators.url(file_path) or os.path.exists(file_path):
-        df = read_pandas(file_path)
+    raise_for_bad_path(file_path)
+    df = read_pandas(file_path)
 
-        # If SSSOM external metadata is provided, merge it with the internal metadata
-        sssom_metadata = _read_metadata_from_table(file_path)
+    # If SSSOM external metadata is provided, merge it with the internal metadata
+    sssom_metadata = _read_metadata_from_table(file_path)
 
-        if sssom_metadata:
-            if meta:
-                for k, v in meta.items():
-                    if k in sssom_metadata:
-                        if sssom_metadata[k] != v:
-                            logging.warning(
-                                f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
-                                f"conflicts with provided ({meta[k]})."
-                            )
-                    else:
-                        logging.info(
-                            f"Externally provided metadata {k}:{v} is added to metadata set."
+    if sssom_metadata:
+        if meta:
+            for k, v in meta.items():
+                if k in sssom_metadata:
+                    if sssom_metadata[k] != v:
+                        logging.warning(
+                            f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
+                            f"conflicts with provided ({meta[k]})."
                         )
-                        sssom_metadata[k] = v
-            meta = sssom_metadata
+                else:
+                    logging.info(
+                        f"Externally provided metadata {k}:{v} is added to metadata set."
+                    )
+                    sssom_metadata[k] = v
+        meta = sssom_metadata
 
-        curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
-        msdf = from_sssom_dataframe(df, curie_map=curie_map, meta=meta)
-        return msdf
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
+    msdf = from_sssom_dataframe(df, curie_map=curie_map, meta=meta)
+    return msdf
 
 
 def read_sssom_rdf(
@@ -76,18 +75,16 @@ def read_sssom_rdf(
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-    if validators.url(file_path) or os.path.exists(file_path):
-        curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+    raise_for_bad_path(file_path)
+    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
-        g = Graph()
-        g.load(file_path, format=serialisation)
-        # json_obj = json.loads(g.serialize(format="json-ld"))
-        # print(json_obj)
-        # msdf = from_sssom_json(json_obj, curie_map=curie_map, meta=meta)
-        msdf = from_sssom_rdf(g, curie_map=curie_map, meta=meta)
-        return msdf
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
+    g = Graph()
+    g.load(file_path, format=serialisation)
+    # json_obj = json.loads(g.serialize(format="json-ld"))
+    # print(json_obj)
+    # msdf = from_sssom_json(json_obj, curie_map=curie_map, meta=meta)
+    msdf = from_sssom_rdf(g, curie_map=curie_map, meta=meta)
+    return msdf
 
 
 def read_sssom_json(
@@ -96,16 +93,13 @@ def read_sssom_json(
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
-
+    raise_for_bad_path(file_path)
     curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
-    if validators.url(file_path) or os.path.exists(file_path):
-        with open(file_path) as json_file:
-            jsondoc = json.load(json_file)
-        msdf = from_sssom_json(jsondoc=jsondoc, curie_map=curie_map, meta=meta)
-        return msdf
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
+    with open(file_path) as json_file:
+        jsondoc = json.load(json_file)
+    msdf = from_sssom_json(jsondoc=jsondoc, curie_map=curie_map, meta=meta)
+    return msdf
 
 
 # Import methods from external file formats
@@ -121,16 +115,14 @@ def read_obographs_json(
     :param meta: an optional dictionary of metadata elements
     :return: A SSSOM MappingSetDataFrame
     """
+    raise_for_bad_path(file_path)
 
     curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
-    if validators.url(file_path) or os.path.exists(file_path):
-        with open(file_path) as json_file:
-            jsondoc = json.load(json_file)
+    with open(file_path) as json_file:
+        jsondoc = json.load(json_file)
 
-        return from_obographs(jsondoc, curie_map, meta)
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
+    return from_obographs(jsondoc, curie_map, meta)
 
 
 def _get_curie_map_and_metadata(curie_map: Dict, meta: Dict):
@@ -161,16 +153,13 @@ def read_alignment_xml(
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
+    raise_for_bad_path(file_path)
 
     curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
-
-    if validators.url(file_path) or os.path.exists(file_path):
-        logging.info("Loading from alignment API")
-        xmldoc = minidom.parse(file_path)
-        msdf = from_alignment_minidom(xmldoc, curie_map, meta)
-        return msdf
-    else:
-        raise Exception(f"{file_path} is not a valid file path or url.")
+    logging.info("Loading from alignment API")
+    xmldoc = minidom.parse(file_path)
+    msdf = from_alignment_minidom(xmldoc, curie_map, meta)
+    return msdf
 
 
 # Readers (from object)
@@ -245,6 +234,7 @@ def from_sssom_rdf(
     curie_map = _check_curie_map(curie_map)
 
     if mapping_predicates is None:
+        # FIXME unused
         mapping_predicates = _get_default_mapping_predicates()
 
     ms = MappingSet()
@@ -494,7 +484,7 @@ def _get_default_mapping_predicates():
     }
 
 
-def _prepare_mapping(mapping: Mapping):
+def _prepare_mapping(mapping: Mapping) -> Mapping:
     p = mapping.predicate_id
     if p == "sssom:superClassOf":
         mapping.predicate_id = "rdfs:subClassOf"
@@ -502,7 +492,7 @@ def _prepare_mapping(mapping: Mapping):
     return mapping
 
 
-def _swap_object_subject(mapping):
+def _swap_object_subject(mapping: Mapping) -> Mapping:
     members = [
         attr.replace("subject_", "")
         for attr in dir(mapping)
@@ -518,7 +508,7 @@ def _swap_object_subject(mapping):
     return mapping
 
 
-def _read_metadata_from_table(filename: str):
+def _read_metadata_from_table(filename: str) -> Mapping[str, Any]:
     if validators.url(filename):
         response = urlopen(filename)
         yamlstr = ""
@@ -543,11 +533,11 @@ def _read_metadata_from_table(filename: str):
     return {}
 
 
-def _is_valid_mapping(m: Mapping):
-    return m.predicate_id and m.object_id and m.subject_id
+def _is_valid_mapping(m: Mapping) -> bool:
+    return bool(m.predicate_id and m.object_id and m.subject_id)
 
 
-def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict):
+def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict) -> None:
     if not metadata:
         logging.info("Tried setting metadata but none provided.")
     else:
@@ -556,7 +546,7 @@ def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict):
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
+def _cell_element_values(cell_node, curie_map: dict) -> Optional[Mapping]:
     mdict = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -593,11 +583,7 @@ def _cell_element_values(cell_node, curie_map: dict) -> Mapping:
 
 
 def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
-    """
-    Converts a MappingSetDataFrame to a MappingSetDocument
-    :param msdf:
-    :return: MappingSetDocument
-    """
+    """Convert a MappingSetDataFrame to a MappingSetDocument."""
     if not msdf.prefixmap:
         raise Exception("No valid curie_map provided")
 
@@ -632,7 +618,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
-def split_dataframe(msdf: MappingSetDataFrame):
+def split_dataframe(msdf: MappingSetDataFrame) -> Mapping[str, MappingSetDataFrame]:
     df = msdf.df
     subject_prefixes = set(df["subject_id"].str.split(":", 1, expand=True)[0])
     object_prefixes = set(df["object_id"].str.split(":", 1, expand=True)[0])
@@ -647,7 +633,7 @@ def split_dataframe(msdf: MappingSetDataFrame):
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
-):
+) -> Mapping[str, MappingSetDataFrame]:
     """
 
     :param msdf: An SSSOM MappingSetDataFrame
