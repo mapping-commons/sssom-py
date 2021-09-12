@@ -12,7 +12,7 @@ from .writers import get_writer_function, write_table, write_tables
 cwd = os.path.abspath(os.path.dirname(__file__))
 
 
-def convert_file(input_path: str, output_path: str = None, output_format: str = None):
+def convert_file(input_path: str, output_path: str, output_format: str = None):
     """
 
     Args:
@@ -23,6 +23,8 @@ def convert_file(input_path: str, output_path: str = None, output_format: str = 
     Returns:
 
     """
+    if not os.path.exists(os.path.dirname(output_path)):
+        raise ValueError(f"Directory for output file does not exist: {output_path}")
     if validators.url(input_path) or os.path.exists(input_path):
         doc = read_sssom_table(input_path)
         write_func, fileformat = get_writer_function(output_format, output_path)
