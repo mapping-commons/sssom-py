@@ -631,7 +631,7 @@ def rewire(
     input_format=None,
     output_format=None,
 ):
-    """Rewire an ontology using equivalence predicates from a mapping file
+    """Rewire an ontology using equivalent classes/properties from a mapping file
 
     Example:
 

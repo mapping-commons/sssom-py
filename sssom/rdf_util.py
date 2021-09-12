@@ -28,7 +28,7 @@ def rewire_graph(
 
     for m in mdoc.mapping_set.mappings:
         m: Mapping
-        if m.predicate_id == "owl:equivalentClass":
+        if m.predicate_id == "owl:equivalentClass" or m.predicate_id == "owl:equivalentProperty":
             if subject_to_object:
                 src, tgt = m.subject_id, m.object_id
             else:
