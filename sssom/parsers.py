@@ -14,21 +14,19 @@ import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-from sssom.util import (
-    SSSOM_DEFAULT_RDF_SERIALISATION,
-    URI_SSSOM_MAPPINGS,
-    NoCURIEException,
-    curie_from_uri,
-    read_pandas,
-)
-
 from .context import add_built_in_prefixes_to_prefix_map, get_default_metadata
 from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
-from .util import MappingSetDataFrame, get_file_extension, to_mapping_set_dataframe
-
-cwd = os.path.abspath(os.path.dirname(__file__))
-
+from .util import (
+    SSSOM_DEFAULT_RDF_SERIALISATION,
+    URI_SSSOM_MAPPINGS,
+    MappingSetDataFrame,
+    NoCURIEException,
+    curie_from_uri,
+    get_file_extension,
+    read_pandas,
+    to_mapping_set_dataframe,
+)
 
 # Readers (from file)
 

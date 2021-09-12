@@ -14,9 +14,8 @@ import pandas as pd
 import validators
 import yaml
 
-from sssom.sssom_datamodel import Entity, slots
-
 from .context import get_default_metadata, get_jsonld_context
+from .sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
 
 SSSOM_READ_FORMATS = [
@@ -530,7 +529,7 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=None, inverse_factor: float = 0
     return rows
 
 
-RDF_FORMATS = ["ttl", "turtle", "nt", "xml"]
+RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
 
 def sha256sum(filename):

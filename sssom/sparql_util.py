@@ -4,12 +4,10 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 from rdflib import URIRef
-
-# noinspection PyProtectedMember
 from rdflib.namespace import RDFS, SKOS
 from SPARQLWrapper import JSON, SPARQLWrapper
 
-from sssom.util import MappingSetDataFrame
+from .util import MappingSetDataFrame
 
 
 @dataclass

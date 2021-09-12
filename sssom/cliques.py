@@ -5,11 +5,10 @@ import statistics
 import networkx as nx
 import pandas as pd
 
-from sssom.parsers import to_mapping_set_document
-from sssom.util import MappingSetDataFrame
-
+from .parsers import to_mapping_set_document
 from .sssom_datamodel import MappingSet
 from .sssom_document import MappingSetDocument
+from .util import MappingSetDataFrame
 
 
 def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:

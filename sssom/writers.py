@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sys
+from typing import Optional
 
 import pandas as pd
 import yaml
@@ -33,8 +34,6 @@ OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
-
-cwd = os.path.abspath(os.path.dirname(__file__))
 
 
 # Writers
@@ -77,13 +76,14 @@ def write_table(msdf: MappingSetDataFrame, filename: str, serialisation="tsv") -
 def write_rdf(
     msdf: MappingSetDataFrame,
     filename: str,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    serialisation: Optional[str] = None,
 ) -> None:
     """
     dataframe 2 tsv
     """
-
-    if serialisation not in RDF_FORMATS:
+    if serialisation is None:
+        serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
+    elif serialisation not in RDF_FORMATS:
         logging.warning(
             f"Serialisation {serialisation} is not supported, "
             f"using {SSSOM_DEFAULT_RDF_SERIALISATION} instead."

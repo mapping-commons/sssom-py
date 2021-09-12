@@ -1,8 +1,8 @@
 import json
 import logging
 
-from sssom.external_context import sssom_external_context
-from sssom.internal_context import sssom_context
+from .external_context import sssom_external_context
+from .internal_context import sssom_context
 
 # HERE = pathlib.Path(__file__).parent.resolve()
 # DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
