@@ -9,14 +9,14 @@ from .writers import get_writer_function, write_table, write_tables
 
 def convert_file(
     input_path: str,
-    output_path: str,
+    output_path: Optional[str] = None,
     output_format: Optional[str] = None,
 ) -> None:
     """Convert a file.
 
     Args:
         input_path: The path to the input SSSOM tsv file
-        output_path: The path to the output file.
+        output_path: The path to the output file. If none is given, will default to using stdout.
         output_format: The format to which the the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
