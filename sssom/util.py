@@ -7,7 +7,7 @@ import re
 import sys
 from dataclasses import dataclass
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Mapping, Optional, Set, Union
+from typing import Any, Dict, List, Mapping, Optional, Set
 from urllib.request import urlopen
 
 import numpy as np
@@ -63,17 +63,20 @@ class MappingSetDataFrame:
     A collection of mappings represented as a DataFrame, together with additional metadata
     """
 
-    df: pd.DataFrame = None  # Mappings
-    prefixmap: Dict[str, str] = None  # maps CURIE prefixes to URI bases
+    df: Optional[pd.DataFrame] = None  # Mappings
+    prefixmap: Optional[Dict[str, str]] = None  # maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
 
-    def merge(self, msdf2, inplace=True):
+    def merge(
+        self, msdf2: "MappingSetDataFrame", inplace: bool = True
+    ) -> "MappingSetDataFrame":
         """Merges two MappingSetDataframes
 
         Args:
-            msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame (self => primary)
-            inplace (bool): if true, msdf2 is merged into the calling MappingSetDataFrame, if false, it simply return
-                            the merged data frame.
+            msdf: Secondary MappingSetDataFrame (self => primary)
+            inplace:
+                if true, msdf2 is merged into the calling MappingSetDataFrame, if false, it simply return
+                the merged data frame.
 
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame
@@ -83,6 +86,7 @@ class MappingSetDataFrame:
             self.df = msdf.df
             self.prefixmap = msdf.prefixmap
             self.metadata = msdf.metadata
+            # FIXME should return self if inplace
         return msdf
 
     def __str__(self):
@@ -171,6 +175,8 @@ class MetaTSVConverter:
         self.df = read_pandas(filename)
 
     def convert(self) -> Dict[str, Any]:
+        if self.df is None:
+            raise RuntimeError("dataframe is not loaded properly")
         # note that 'mapping' is both a metaproperty and a property of this model...
         cslots = {
             "mappings": {
@@ -592,7 +598,9 @@ def merge_msdf(
     else:
         merged_msdf.df = msdf1.df
     # merge the non DataFrame elements
-    merged_msdf.prefixmap = dict_merge(msdf2.prefixmap, msdf1.prefixmap, "prefixmap")
+    merged_msdf.prefixmap = dict_merge(
+        source=msdf2.prefixmap, target=msdf1.prefixmap, dict_name="prefixmap"
+    )
     # After a Slack convo with @matentzn, commented out below.
     # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
 
@@ -677,7 +685,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
-    reconciled_df_subset: pd.DataFrame
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
     for _, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
@@ -685,7 +692,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
             & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
-        match_condition_1: Union[bool, ...]
         # match_condition_1[match_condition_1] gives the list of 'True's.
         # In other words, the rows that match the condition (rules declared).
         # Ideally, there should be 1 row. If not apply an extra rule to look for 'HumanCurated'.
@@ -715,12 +721,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
             & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
-        match_condition_2: Union[bool, ...]
         reconciled_df_subset.loc[
             match_condition_2[match_condition_2].index, PREDICATE_ID
         ] = row_2[PREDICATE_ID]
 
-    reconciled_df: pd.DataFrame
     reconciled_df = pd.DataFrame(columns=df.columns)
     for _, row_3 in reconciled_df_subset.iterrows():
         match_condition_3 = (
@@ -729,7 +733,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (df[CONFIDENCE] == row_3[CONFIDENCE])
             & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
         )
-        match_condition_3: Union[bool, ...]
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
         )
@@ -737,20 +740,24 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     return return_df
 
 
-def dict_merge(source: Dict, target: Dict, dict_name: str) -> Dict:
+def dict_merge(
+    *,
+    source: Optional[Dict[str, Any]] = None,
+    target: Dict[str, Any],
+    dict_name: str,
+) -> Dict[str, Any]:
     """
     Takes 2 MappingSetDataFrame elements (prefixmap OR metadata) and merges source => target
 
     Args:
-        source (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-        target (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-        dict_name (str): prefixmap or metadata
+        source: MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+        target: MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+        dict_name: prefixmap or metadata
 
     Returns:
         Dict: merged MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
     """
     if source is not None:
-        k: str
         for k, v in source.items():
             if k not in target:
                 if v not in list(target.values()):
