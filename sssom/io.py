@@ -21,7 +21,9 @@ def convert_file(
     """
     raise_for_bad_path(input_path)
     doc = read_sssom_table(input_path)
-    write_func, fileformat = get_writer_function(output_format, output_path)
+    write_func, fileformat = get_writer_function(
+        output_format=output_format, output=output_path
+    )
     write_func(doc, output_path, serialisation=fileformat)
 
 
