@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+import typing
 from typing import Any, Dict, Optional, Set, TextIO, Union
 from urllib.request import urlopen
 from xml.dom import Node, minidom
@@ -507,7 +508,7 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
     return mapping
 
 
-def _read_metadata_from_table(filename: str) -> Mapping[str, Any]:
+def _read_metadata_from_table(filename: str) -> typing.Mapping[str, Any]:
     if validators.url(filename):
         response = urlopen(filename)
         yamlstr = ""
@@ -617,7 +618,9 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
-def split_dataframe(msdf: MappingSetDataFrame) -> Mapping[str, MappingSetDataFrame]:
+def split_dataframe(
+    msdf: MappingSetDataFrame,
+) -> typing.Mapping[str, MappingSetDataFrame]:
     df = msdf.df
     subject_prefixes = set(df["subject_id"].str.split(":", 1, expand=True)[0])
     object_prefixes = set(df["object_id"].str.split(":", 1, expand=True)[0])
@@ -632,7 +635,7 @@ def split_dataframe(msdf: MappingSetDataFrame) -> Mapping[str, MappingSetDataFra
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
-) -> Mapping[str, MappingSetDataFrame]:
+) -> typing.Mapping[str, MappingSetDataFrame]:
     """
 
     :param msdf: An SSSOM MappingSetDataFrame
