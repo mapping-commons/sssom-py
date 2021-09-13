@@ -5,18 +5,14 @@ import statistics
 import networkx as nx
 import pandas as pd
 
-from sssom.parsers import to_mapping_set_document
-from sssom.util import MappingSetDataFrame
-
+from .parsers import to_mapping_set_document
 from .sssom_datamodel import MappingSet
 from .sssom_document import MappingSetDocument
+from .util import MappingSetDataFrame
 
 
 def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
-    """
-    converts a MappingSetDocument to a networkx DiGraph
-    """
-
+    """Convert a MappingSetDocument to a networkx DiGraph."""
     doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
     # m = {
@@ -103,9 +99,7 @@ def get_src(src, cid):
 
 
 def summarize_cliques(doc: MappingSetDataFrame):
-    """
-    summary stats on a clique doc
-    """
+    """Summarize stats on a clique doc."""
     cliquedocs = split_into_cliques(doc)
     items = []
     for cdoc in cliquedocs:

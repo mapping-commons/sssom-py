@@ -10,20 +10,15 @@ from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
-from sssom.rdf_util import rewire_graph
-from sssom.sparql_util import EndpointConfig, query_mappings
-from sssom.util import (
-    SSSOM_EXPORT_FORMATS,
-    SSSOM_READ_FORMATS,
-    MappingSetDataFrame,
-    to_mapping_set_dataframe,
-)
-from sssom.writers import write_table
-
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import read_sssom_table
+from .rdf_util import rewire_graph
+from .sparql_util import EndpointConfig, query_mappings
 from .util import (
+    SSSOM_EXPORT_FORMATS,
+    SSSOM_READ_FORMATS,
+    MappingSetDataFrame,
     collapse,
     compare_dataframes,
     dataframe_to_ptable,
@@ -31,7 +26,9 @@ from .util import (
     merge_msdf,
     remove_unmatched,
     smart_open,
+    to_mapping_set_dataframe,
 )
+from .writers import write_table
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
@@ -73,18 +70,7 @@ fields_option = click.option(
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
 def main(verbose: int, quiet: bool):
-    """Main
-
-    Args:
-
-        verbose (int): Verbose.
-        quiet (bool): Quiet.
-
-    Returns:
-
-        None.
-
-    """
+    """Main."""
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
     elif verbose == 1:
@@ -116,7 +102,6 @@ def convert(input: str, output: str, output_format: str):
         None.
 
     """
-
     convert_file(input_path=input, output_path=output, output_format=output_format)
 
 

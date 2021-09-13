@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sys
+from typing import Optional
 
 import pandas as pd
 import yaml
@@ -33,8 +34,6 @@ OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
-
-cwd = os.path.abspath(os.path.dirname(__file__))
 
 
 # Writers
@@ -77,13 +76,14 @@ def write_table(msdf: MappingSetDataFrame, filename: str, serialisation="tsv") -
 def write_rdf(
     msdf: MappingSetDataFrame,
     filename: str,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    serialisation: Optional[str] = None,
 ) -> None:
     """
     dataframe 2 tsv
     """
-
-    if serialisation not in RDF_FORMATS:
+    if serialisation is None:
+        serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
+    elif serialisation not in RDF_FORMATS:
         logging.warning(
             f"Serialisation {serialisation} is not supported, "
             f"using {SSSOM_DEFAULT_RDF_SERIALISATION} instead."
@@ -107,7 +107,7 @@ def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -
             json.dump(data, outfile, indent="  ")
 
     else:
-        raise Exception(
+        raise ValueError(
             f"Unknown json format: {serialisation}, currently only json supported"
         )
 
@@ -328,7 +328,7 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
 # Support methods
 
 
-def get_writer_function(output_format, output):
+def get_writer_function(*, output_format: Optional[str] = None, output: str):
     if output_format is None:
         output_format = get_file_extension(output)
 
@@ -343,19 +343,10 @@ def get_writer_function(output_format, output):
     elif output_format == "owl":
         return write_owl, SSSOM_DEFAULT_RDF_SERIALISATION
     else:
-        raise Exception(f"Unknown output format: {output_format}")
+        raise ValueError(f"Unknown output format: {output_format}")
 
 
-def write_tables(sssom_dict, output_dir):
-    """
-
-    Args:
-        sssom_dict:
-        output_dir:
-
-    Returns:
-
-    """
+def write_tables(sssom_dict, output_dir) -> None:
     for split_id in sssom_dict:
         sssom_file = os.path.join(output_dir, f"{split_id}.sssom.tsv")
         msdf = sssom_dict[split_id]
@@ -363,7 +354,7 @@ def write_tables(sssom_dict, output_dir):
         logging.info(f"Writing {sssom_file} complete!")
 
 
-def _inject_annotation_properties(graph: Graph, elements):
+def _inject_annotation_properties(graph: Graph, elements) -> None:
     for var in [
         slot
         for slot in dir(slots)
@@ -381,13 +372,13 @@ def _inject_annotation_properties(graph: Graph, elements):
                 )
 
 
-def _get_separator(serialisation):
+def _get_separator(serialisation: Optional[str] = None) -> str:
     if serialisation == "csv":
         sep = ","
-    elif serialisation == "tsv":
+    elif serialisation == "tsv" or serialisation is None:
         sep = "\t"
     else:
-        raise Exception(
+        raise ValueError(
             f"Unknown table format: {serialisation}, should be one of tsv or csv"
         )
     return sep
