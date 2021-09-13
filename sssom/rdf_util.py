@@ -4,9 +4,9 @@ from typing import List
 from rdflib import Graph, URIRef
 from rdflib.plugins.memory import Any
 
-from sssom import Mapping
-from sssom.parsers import to_mapping_set_document
-from sssom.util import MappingSetDataFrame
+from .parsers import to_mapping_set_document
+from .sssom_datamodel import Mapping
+from .util import MappingSetDataFrame
 
 
 def rewire_graph(
