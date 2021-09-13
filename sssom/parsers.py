@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import re
 from typing import Any, Dict, Optional, Set, TextIO, Union
 from urllib.request import urlopen
