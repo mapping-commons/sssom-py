@@ -455,8 +455,8 @@ def smart_open(filename=None):
 
 
 def dataframe_to_ptable(df: pd.DataFrame, priors=None, inverse_factor: float = 0.5):
-    """
-    Exporting KBOOM table
+    """Export a KBOOM table.
+
     Args:
         df:
         priors:
@@ -465,70 +465,86 @@ def dataframe_to_ptable(df: pd.DataFrame, priors=None, inverse_factor: float = 0
     Returns:
         List of rows
     """
-
     if not priors:
         priors = [0.02, 0.02, 0.02, 0.02]
-
-    logging.warning(
-        f"Priors given ({priors}), but not being used by dataframe_to_ptable() method."
-    )
+    else:
+        logging.warning(
+            f"Priors given ({priors}), but not being used by dataframe_to_ptable() method."
+        )
 
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
-        s = row[SUBJECT_ID]
-        o = row[OBJECT_ID]
-        c = row[CONFIDENCE]
+        subject_id = row[SUBJECT_ID]
+        object_id = row[OBJECT_ID]
+        confidence = row[CONFIDENCE]
         # confidence of inverse
         # e.g. if Pr(super) = 0.2, then Pr(sub) = (1-0.2) * IF
-        ic = (1.0 - c) * inverse_factor
-        # residual confidence
-        rc = (1 - (c + ic)) / 2.0
+        inverse_confidence = (1.0 - confidence) * inverse_factor
+        residual_confidence = (1 - (confidence + inverse_confidence)) / 2.0
 
-        pi = None
-
-        p = row[PREDICATE_ID]
-        if p == "owl:equivalentClass":
-            pi = 2
-        elif p == "skos:exactMatch":
-            pi = 2
-        elif p == "skos:closeMatch":
+        predicate = row[PREDICATE_ID]
+        if predicate == "owl:equivalentClass":
+            predicate_type = PREDICATE_EQUIVALENT
+        elif predicate == "skos:exactMatch":
+            predicate_type = PREDICATE_EQUIVALENT
+        elif predicate == "skos:closeMatch":
             # TODO: consider distributing
-            pi = 2
-        elif p == "owl:subClassOf":
-            pi = 0
-        elif p == "skos:broadMatch":
-            pi = 0
-        elif p == "inverseOf(owl:subClassOf)":
-            pi = 1
-        elif p == "skos:narrowMatch":
-            pi = 1
-        elif p == "owl:differentFrom":
-            pi = 3
-        elif p == "dbpedia-owl:different":
-            pi = 3
+            predicate_type = PREDICATE_EQUIVALENT
+        elif predicate == "owl:subClassOf":
+            predicate_type = PREDICATE_SUBCLASS
+        elif predicate == "skos:broadMatch":
+            predicate_type = PREDICATE_SUBCLASS
+        elif predicate == "inverseOf(owl:subClassOf)":
+            predicate_type = PREDICATE_SUPERCLASS
+        elif predicate == "skos:narrowMatch":
+            predicate_type = PREDICATE_SUPERCLASS
+        elif predicate == "owl:differentFrom":
+            predicate_type = PREDICATE_SIBLING
+        elif predicate == "dbpedia-owl:different":
+            predicate_type = PREDICATE_SIBLING
         else:
-            # raise Exception(f'Unknown predicate {p}')
-            logging.warning(f"Unknown predicate {p}")
+            raise ValueError(f"Unhandled predicate: {predicate}")
 
-        if pi == 0:
-            # subClassOf
-            ps = (c, ic, rc, rc)
-        elif pi == 1:
-            # superClassOf
-            ps = (ic, c, rc, rc)
-        elif pi == 2:
-            # equivalent
-            ps = (rc, rc, c, ic)
-        elif pi == 3:
-            # sibling
-            ps = (rc, rc, ic, c)
+        if predicate_type == PREDICATE_SUBCLASS:
+            ps = (
+                confidence,
+                inverse_confidence,
+                residual_confidence,
+                residual_confidence,
+            )
+        elif predicate_type == PREDICATE_SUPERCLASS:
+            ps = (
+                inverse_confidence,
+                confidence,
+                residual_confidence,
+                residual_confidence,
+            )
+        elif predicate_type == PREDICATE_EQUIVALENT:
+            ps = (
+                residual_confidence,
+                residual_confidence,
+                confidence,
+                inverse_confidence,
+            )
+        elif predicate_type == PREDICATE_SIBLING:
+            ps = (
+                residual_confidence,
+                residual_confidence,
+                inverse_confidence,
+                confidence,
+            )
         else:
-            raise Exception(f"pi: {pi}")
-        row = [s, o] + [str(p) for p in ps]
+            raise ValueError(f"predicate: {predicate_type}")
+        row = [subject_id, object_id] + [str(p) for p in ps]
         rows.append(row)
     return rows
 
+
+PREDICATE_SUBCLASS = 0
+PREDICATE_SUPERCLASS = 1
+PREDICATE_EQUIVALENT = 2
+PREDICATE_SIBLING = 3
 
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
