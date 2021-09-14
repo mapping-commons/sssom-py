@@ -1,7 +1,8 @@
 import logging
 import re
+import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -83,26 +84,21 @@ def main(verbose: int, quiet: bool):
 
 @main.command()
 @input_argument
-@output_option
+@click.option(
+    "-o",
+    "--output",
+    help="Output file, e.g. a SSSOM tsv file.",
+    type=click.File(mode="w"),
+    default=sys.stdout,
+)
 @output_format_option
-def convert(input: str, output: str, output_format: str):
+def convert(input: str, output: TextIO, output_format: str):
     """Convert file (currently only supports conversion to RDF)
 
     Example:
         sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
-
-    Args:
-
-        input (str): The path to the input SSSOM tsv file
-        output (str): The path to the output file.
-        output_format (str): The format to which the the SSSOM TSV should be converted.
-
-    Returns:
-
-        None.
-
     """
-    convert_file(input_path=input, output_path=output, output_format=output_format)
+    convert_file(input_path=input, output=output, output_format=output_format)
 
 
 # Input and metadata would be files (file paths). Check if exists.

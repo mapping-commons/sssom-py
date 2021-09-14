@@ -7,7 +7,7 @@ import re
 import sys
 from dataclasses import dataclass
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Mapping, Optional, Set, Union
+from typing import Any, Dict, List, Mapping, Optional, Set, TextIO, Union
 from urllib.request import urlopen
 
 import numpy as np
@@ -784,7 +784,8 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(filename: str) -> str:
+def get_file_extension(file: TextIO) -> str:
+    filename = file.name
     parts = filename.split(".")
     if len(parts) > 0:
         f_format = parts[-1]

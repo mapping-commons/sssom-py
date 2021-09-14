@@ -1,8 +1,7 @@
 import json
 import logging
 import os
-import sys
-from typing import Optional
+from typing import Callable, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
@@ -38,8 +37,10 @@ SSSOM_NS = SSSOM_URI_PREFIX
 
 # Writers
 
+MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
-def write_table(msdf: MappingSetDataFrame, filename: str, serialisation="tsv") -> None:
+
+def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
     """
     dataframe 2 tsv
     """
@@ -59,23 +60,13 @@ def write_table(msdf: MappingSetDataFrame, filename: str, serialisation="tsv") -
     lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep=sep, index=False)
     lines = lines + [s]
-
-    if filename and filename != "-":
-        if os.path.isfile(filename):
-            os.remove(filename)
-        f = open(filename, "a")
-        for line in lines:
-            f.write(line + "\n")
-        f.close()
-    else:
-        # stdout the result for now
-        for line in lines:
-            sys.stdout.write("#" + line + "\n")
+    for line in lines:
+        print(line, file=file)
 
 
 def write_rdf(
     msdf: MappingSetDataFrame,
-    filename: str,
+    filename: Union[None, str, TextIO],
     serialisation: Optional[str] = None,
 ) -> None:
     """
@@ -94,7 +85,7 @@ def write_rdf(
     graph.serialize(filename, format=serialisation)
 
 
-def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -> None:
+def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
     """
     dataframe 2 tsv
     """
@@ -103,8 +94,7 @@ def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -
         # doc = to_mapping_set_document(msdf)
         # context = prepare_context_from_curie_map(doc.curie_map)
         # data = JSONDumper().dumps(doc.mapping_set, contexts=context)
-        with open(filename, "w") as outfile:
-            json.dump(data, outfile, indent="  ")
+        json.dump(data, output, indent=2)
 
     else:
         raise ValueError(
@@ -114,7 +104,7 @@ def write_json(msdf: MappingSetDataFrame, filename: str, serialisation="json") -
 
 def write_owl(
     msdf: MappingSetDataFrame,
-    filename: str,
+    output: TextIO,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     if serialisation not in RDF_FORMATS:
@@ -125,7 +115,7 @@ def write_owl(
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     graph = to_owl_graph(msdf)
-    graph.serialize(destination=filename, format=serialisation)
+    graph.serialize(destination=output, format=serialisation)
 
 
 # Converters
@@ -328,7 +318,9 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
 # Support methods
 
 
-def get_writer_function(*, output_format: Optional[str] = None, output: str):
+def get_writer_function(
+    *, output_format: Optional[str] = None, output: TextIO
+) -> Tuple[MSDFWriter, str]:
     if output_format is None:
         output_format = get_file_extension(output)
 
