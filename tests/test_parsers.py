@@ -55,13 +55,15 @@ class TestParse(unittest.TestCase):
         self.metadata, self.curie_map = get_default_metadata()
 
     def test_parse_sssom_dataframe(self):
-        file = f"{test_data_dir}/basic.tsv"
-        msdf = read_sssom_table(file)
-        write_table(msdf, os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv"))
+        input_path = f"{test_data_dir}/basic.tsv"
+        msdf = read_sssom_table(input_path)
+        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv")
+        with open(output_path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             141,
-            f"{file} has the wrong number of mappings.",
+            f"{input_path} has the wrong number of mappings.",
         )
 
     def test_parse_sssom_dataframe_url(self):

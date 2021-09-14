@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import Callable, Optional, TextIO, Tuple, Union
+from typing import BinaryIO, Callable, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
@@ -34,7 +34,6 @@ OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
 
-
 # Writers
 
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
@@ -66,7 +65,7 @@ def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") ->
 
 def write_rdf(
     msdf: MappingSetDataFrame,
-    filename: Union[None, str, TextIO],
+    file: TextIO,
     serialisation: Optional[str] = None,
 ) -> None:
     """
@@ -82,7 +81,8 @@ def write_rdf(
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     graph = to_rdf_graph(msdf=msdf)
-    graph.serialize(filename, format=serialisation)
+    t = graph.serialize(format=serialisation, encoding="utf-8")
+    print(t.decode("utf-8"), file=file)
 
 
 def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
@@ -104,7 +104,7 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
 
 def write_owl(
     msdf: MappingSetDataFrame,
-    output: TextIO,
+    file: TextIO,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     if serialisation not in RDF_FORMATS:
@@ -115,7 +115,8 @@ def write_owl(
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     graph = to_owl_graph(msdf)
-    graph.serialize(destination=output, format=serialisation)
+    t = graph.serialize(format=serialisation, encoding="utf-8")
+    print(t.decode("utf-8"), file=file)
 
 
 # Converters
@@ -291,7 +292,6 @@ def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
 
 
 def _tmp_as_rdf_graph(graph, jsonobj):
-
     return graph
 
     # for m in doc.mapping_set.mappings:
