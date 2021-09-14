@@ -1,10 +1,8 @@
-import contextlib
 import hashlib
 import json
 import logging
 import os
 import re
-import sys
 from dataclasses import dataclass
 from io import FileIO, StringIO
 from typing import Any, Dict, List, Mapping, Optional, Set, TextIO, Union
@@ -437,21 +435,6 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     #    r['other'] = 'synthesized sssom file'
     d.combined_dataframe = pd.DataFrame(rows)
     return d
-
-
-@contextlib.contextmanager
-def smart_open(filename=None):
-    # https://stackoverflow.com/questions/17602878/how-to-handle-both-with-open-and-sys-stdout-nicely
-    if filename and filename != "-":
-        fh = open(filename, "w")
-    else:
-        fh = sys.stdout
-
-    try:
-        yield fh
-    finally:
-        if fh is not sys.stdout:
-            fh.close()
 
 
 def dataframe_to_ptable(df: pd.DataFrame, priors=None, inverse_factor: float = 0.5):

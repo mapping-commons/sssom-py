@@ -26,7 +26,6 @@ from .util import (
     filter_redundant_rows,
     merge_msdf,
     remove_unmatched,
-    smart_open,
     to_mapping_set_dataframe,
 )
 from .writers import write_table
@@ -40,9 +39,6 @@ input_format_option = click.option(
     help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}',
 )
 output_option = click.option(
-    "-o", "--output", help="Output file, e.g. a SSSOM tsv file."
-)
-improved_output_option = click.option(
     "-o",
     "--output",
     help="Output file, e.g. a SSSOM tsv file.",
@@ -91,7 +87,7 @@ def main(verbose: int, quiet: bool):
 
 @main.command()
 @input_argument
-@improved_output_option
+@output_option
 @output_format_option
 def convert(input: str, output: TextIO, output_format: str):
     """Convert file (currently only supports conversion to RDF)
@@ -127,7 +123,7 @@ def convert(input: str, output: TextIO, output_format: str):
     required=True,
     help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
 )
-@improved_output_option
+@output_option
 def parse(
     input: str,
     input_format: str,
@@ -202,7 +198,7 @@ def split(input: str, output_directory: str):
 @input_argument
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
-def ptable(input=None, output=None, inverse_factor=None):
+def ptable(input, output: TextIO, inverse_factor):
     """Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
 
     Args:
@@ -224,15 +220,13 @@ def ptable(input=None, output=None, inverse_factor=None):
     df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
-
-    with smart_open(output) as fh:
-        for row in rows:
-            print("\t".join(row), file=fh)
+    for row in rows:
+        print(row, sep="\t", file=output)
 
 
 @main.command()
 @input_argument
-@improved_output_option
+@output_option
 def dedupe(input: str, output: TextIO):
     """Remove lower confidence duplicate lines.
 
@@ -259,7 +253,7 @@ def dedupe(input: str, output: TextIO):
 @click.option("-q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
-def dosql(query: str, inputs: List[str], output: str):
+def dosql(query: str, inputs: List[str], output: TextIO):
     """
     Run a SQL query over one or more sssom files.
 
@@ -295,10 +289,7 @@ def dosql(query: str, inputs: List[str], output: str):
         globals()[tn] = df
         n += 1
     df = sqldf(query)
-    if output is None:
-        print(df.to_csv(sep="\t", index=False))
-    else:
-        df.to_csv(output, sep="\t", index=False)
+    df.to_csv(output, sep="\t", index=False)
 
 
 @main.command()
@@ -312,7 +303,7 @@ def dosql(query: str, inputs: List[str], output: str):
 )
 @click.option("-l", "--limit", type=int)
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
-@improved_output_option
+@output_option
 def sparql(
     url: str,
     config,
@@ -362,7 +353,7 @@ def sparql(
 
 
 @main.command()
-@improved_output_option
+@output_option
 @click.argument("inputs", nargs=2)
 def diff(inputs: Tuple[str, str], output: TextIO):
     """
@@ -432,7 +423,7 @@ def partition(inputs: List[str], output_directory: str):
 @output_option
 @metadata_option
 @click.option("-s", "--statsfile")
-def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
+def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
 
@@ -466,7 +457,7 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 
 @main.command()
 @input_argument
-@improved_output_option
+@output_option
 @transpose_option
 @fields_option
 def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
@@ -496,7 +487,7 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
 
 
 @main.command()
-@improved_output_option
+@output_option
 @transpose_option
 @fields_option
 @input_argument
@@ -557,7 +548,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     default=True,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
-@improved_output_option
+@output_option
 def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
     """
     Merging msdf2 into msdf1,
@@ -599,7 +590,7 @@ def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
 @click.option(
     "--precedence", multiple=True, help="List of prefixes in order of precedence."
 )
-@improved_output_option
+@output_option
 def rewire(
     input,
     mapping_file,
