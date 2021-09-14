@@ -7,7 +7,7 @@ import re
 import sys
 from dataclasses import dataclass
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Mapping, Optional, Set
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
 from urllib.request import urlopen
 
 import numpy as np
@@ -316,7 +316,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
-    max_conf = {}
+    max_conf = {}  # type: Dict[Tuple[Any]]
     for _, row in dfmax.iterrows():
         if ignore_predicate:
             max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
