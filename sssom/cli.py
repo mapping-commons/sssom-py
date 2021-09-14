@@ -42,6 +42,13 @@ input_format_option = click.option(
 output_option = click.option(
     "-o", "--output", help="Output file, e.g. a SSSOM tsv file."
 )
+improved_output_option = click.option(
+    "-o",
+    "--output",
+    help="Output file, e.g. a SSSOM tsv file.",
+    type=click.File(mode="w"),
+    default=sys.stdout,
+)
 output_format_option = click.option(
     "-O",
     "--output-format",
@@ -84,13 +91,7 @@ def main(verbose: int, quiet: bool):
 
 @main.command()
 @input_argument
-@click.option(
-    "-o",
-    "--output",
-    help="Output file, e.g. a SSSOM tsv file.",
-    type=click.File(mode="w"),
-    default=sys.stdout,
-)
+@improved_output_option
 @output_format_option
 def convert(input: str, output: TextIO, output_format: str):
     """Convert file (currently only supports conversion to RDF)
@@ -231,8 +232,8 @@ def ptable(input=None, output=None, inverse_factor=None):
 
 @main.command()
 @input_argument
-@output_option
-def dedupe(input: str, output: str):
+@improved_output_option
+def dedupe(input: str, output: TextIO):
     """Remove lower confidence duplicate lines.
 
     Args:
@@ -311,15 +312,15 @@ def dosql(query: str, inputs: List[str], output: str):
 )
 @click.option("-l", "--limit", type=int)
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
-@output_option
+@improved_output_option
 def sparql(
-    url: str = None,
-    config=None,
-    graph: str = None,
-    limit: int = None,
-    object_labels: bool = None,
-    prefix: List[Dict[str, str]] = None,
-    output: str = None,
+    url: str,
+    config,
+    graph: str,
+    limit: int,
+    object_labels: bool,
+    prefix: List[Dict[str, str]],
+    output: TextIO,
 ):
     """Run a SPARQL query.
 
@@ -361,9 +362,9 @@ def sparql(
 
 
 @main.command()
-@output_option
+@improved_output_option
 @click.argument("inputs", nargs=2)
-def diff(inputs: Tuple[str, str], output: str):
+def diff(inputs: Tuple[str, str], output: TextIO):
     """
     Compare two SSSOM files.
     The output is a new SSSOM file with the union of all mappings, and
@@ -421,7 +422,8 @@ def partition(inputs: List[str], output_directory: str):
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
-        write_table(msdf, ofn)
+        with open(ofn, "w") as file:
+            write_table(msdf, file)
         # write_tsv(msdf, ofn)
 
 
@@ -464,10 +466,10 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 
 @main.command()
 @input_argument
-@output_option
+@improved_output_option
 @transpose_option
 @fields_option
-def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
+def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
     """
     Write sssom summary cross-tabulated by categories.
 
@@ -490,18 +492,15 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
-    if output is not None:
-        ct.to_csv(output, sep="\t")
-    else:
-        logging.info(ct)
+    ct.to_csv(output, sep="\t")
 
 
 @main.command()
-@output_option
+@improved_output_option
 @transpose_option
 @fields_option
 @input_argument
-def correlations(input: str, output: str, transpose: bool, fields: Tuple):
+def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     """Correlations
 
     Args:
@@ -538,10 +537,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     logging.info(chi2)
     _, _, _, ndarray = chi2
     corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
-    if output:
-        corr.to_csv(output, sep="\t")
-    else:
-        logging.info(corr)
+    corr.to_csv(output, sep="\t")
 
     tups = []
     for i, row in corr.iterrows():
@@ -561,8 +557,8 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     default=True,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
-@output_option
-def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
+@improved_output_option
+def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
     """
     Merging msdf2 into msdf1,
         if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -603,14 +599,14 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
 @click.option(
     "--precedence", multiple=True, help="List of prefixes in order of precedence."
 )
-@click.option("-o", "--output", help="Where to save ontology file")
+@improved_output_option
 def rewire(
     input,
     mapping_file,
-    precedence=None,
-    output=None,
-    input_format=None,
-    output_format=None,
+    precedence,
+    output: TextIO,
+    input_format,
+    output_format,
 ):
     """Rewire an ontology using equivalence predicates from a mapping file
 
@@ -623,11 +619,7 @@ def rewire(
     g.parse(input, format=input_format)
     rewire_graph(g, msdf, precedence=precedence)
     rdfstr = g.serialize(format=output_format).decode()
-    if output:
-        with open(output, "w") as stream:
-            stream.write(rdfstr)
-    else:
-        print(rdfstr)
+    print(rdfstr, file=output)
 
 
 if __name__ == "__main__":
