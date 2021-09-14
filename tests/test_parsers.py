@@ -68,9 +68,9 @@ class TestParse(unittest.TestCase):
 
     def test_parse_sssom_dataframe_url(self):
         msdf = read_sssom_table(self.df_url)
-        write_table(
-            msdf, os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
-        )
+        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
+        with open(output_path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             141,
@@ -81,7 +81,9 @@ class TestParse(unittest.TestCase):
         msdf = from_obographs(
             jsondoc=self.obographs, curie_map=self.curie_map, meta=self.metadata
         )
-        write_table(msdf, os.path.join(test_out_dir, "test_parse_obographs.tsv"))
+        path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             9941,
@@ -92,7 +94,9 @@ class TestParse(unittest.TestCase):
         msdf = from_sssom_dataframe(
             df=self.df, curie_map=self.df_curie_map, meta=self.df_meta
         )
-        write_table(msdf, os.path.join(test_out_dir, "test_parse_tsv.tsv"))
+        path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             141,
@@ -103,9 +107,9 @@ class TestParse(unittest.TestCase):
         msdf = from_alignment_minidom(
             dom=self.alignmentxml, curie_map=self.curie_map, meta=self.metadata
         )
-        write_table(
-            msdf, os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
-        )
+        path = os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             646,
@@ -116,7 +120,9 @@ class TestParse(unittest.TestCase):
         msdf = from_sssom_rdf(
             g=self.rdf_graph, curie_map=self.df_curie_map, meta=self.metadata
         )
-        write_table(msdf, os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv"))
+        path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             136,
@@ -127,7 +133,9 @@ class TestParse(unittest.TestCase):
         msdf = from_sssom_json(
             jsondoc=self.json, curie_map=self.df_curie_map, meta=self.metadata
         )
-        write_table(msdf, os.path.join(test_out_dir, "test_parse_sssom_json.tsv"))
+        path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
             141,
