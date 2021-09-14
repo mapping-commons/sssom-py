@@ -127,14 +127,14 @@ def convert(input: str, output: TextIO, output_format: str):
     required=True,
     help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
 )
-@output_option
+@improved_output_option
 def parse(
     input: str,
     input_format: str,
     metadata: str,
     curie_map_mode: str,
     clean_prefixes: bool,
-    output: str,
+    output: TextIO,
 ):
     """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
@@ -154,7 +154,7 @@ def parse(
 
     parse_file(
         input_path=input,
-        output_path=output,
+        output=output,
         input_format=input_format,
         metadata_path=metadata,
         curie_map_mode=curie_map_mode,

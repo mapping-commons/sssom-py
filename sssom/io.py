@@ -29,7 +29,7 @@ def convert_file(
 
 def parse_file(
     input_path: str,
-    output_path: Optional[str] = None,
+    output: TextIO,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
     curie_map_mode: Optional[str] = None,
@@ -39,7 +39,7 @@ def parse_file(
 
     Args:
         input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-        output_path: The path to the output file.
+        output: The path to the output file.
         input_format: The string denoting the input format.
         metadata_path: The path to a file containing the sssom metadata (including curie_map)
             to be used during parse.
@@ -56,7 +56,7 @@ def parse_file(
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map()
-    write_table(doc, output_path)
+    write_table(doc, output)
 
 
 def validate_file(input_path: str) -> bool:

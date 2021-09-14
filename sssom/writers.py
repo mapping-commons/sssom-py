@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import BinaryIO, Callable, Optional, TextIO, Tuple, Union
+from typing import Callable, Optional, TextIO, Tuple
 
 import pandas as pd
 import yaml
@@ -339,11 +339,11 @@ def get_writer_function(
 
 
 def write_tables(sssom_dict, output_dir) -> None:
-    for split_id in sssom_dict:
-        sssom_file = os.path.join(output_dir, f"{split_id}.sssom.tsv")
-        msdf = sssom_dict[split_id]
-        write_table(msdf=msdf, filename=sssom_file)
-        logging.info(f"Writing {sssom_file} complete!")
+    for split_id, msdf in sssom_dict.items():
+        path = os.path.join(output_dir, f"{split_id}.sssom.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
+        logging.info(f"Writing {path} complete!")
 
 
 def _inject_annotation_properties(graph: Graph, elements) -> None:
