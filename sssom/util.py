@@ -5,7 +5,7 @@ import logging
 import os
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from io import FileIO, StringIO
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
 from urllib.request import urlopen
@@ -64,7 +64,7 @@ class MappingSetDataFrame:
     """
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    prefixmap: Dict[str, Any] = None  # maps CURIE prefixes to URI bases
+    prefixmap: Dict[str, Any] = field(default_factory=dict)  # maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
 
     def merge(
@@ -968,7 +968,7 @@ def guess_file_format(filename):
         )
 
 
-def prepare_context_from_curie_map(curie_map: dict):
+def prepare_context_from_curie_map(curie_map: Mapping[str, Any]):
     meta, default_curie_map = get_default_metadata()
     context = get_jsonld_context()
     if not curie_map:
