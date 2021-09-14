@@ -64,7 +64,7 @@ class MappingSetDataFrame:
     """
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    prefixmap: Optional[Dict[str, str]] = None  # maps CURIE prefixes to URI bases
+    prefixmap: Dict[str, Any] = None  # maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
 
     def merge(
@@ -186,7 +186,7 @@ class MetaTSVConverter:
             },
             "id": {"description": "CURIE or IRI identifier", "identifier": True},
         }
-        classes = {
+        classes: Dict[str, Any] = {
             "mapping set": {
                 "description": "Represents a set of mappings",
                 "slots": ["mappings"],
@@ -592,7 +592,7 @@ def merge_msdf(
 
     merged_msdf = MappingSetDataFrame()
     # If msdf2 has a DataFrame
-    if msdf2.df is not None:
+    if msdf1.df is not None and msdf2.df is not None:
         # 'outer' join in pandas == FULL JOIN in SQL
         merged_msdf.df = msdf1.df.merge(msdf2.df, how="outer")
     else:
@@ -784,7 +784,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     Returns:
         MappingSetDataFrame: MappingSetDataFrame with metadata as columns
     """
-    if bool(msdf.metadata):
+    if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
             if k not in msdf.df.columns:
                 msdf.df[k] = v
@@ -885,13 +885,14 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     # convert MappingSetDocument into MappingSetDataFrame
     ###
     data = []
-    for mapping in doc.mapping_set.mappings:
-        mdict = mapping.__dict__
-        m = {}
-        for key in mdict:
-            if mdict[key]:
-                m[key] = mdict[key]
-        data.append(m)
+    if doc.mapping_set.mappings is not None:
+        for mapping in doc.mapping_set.mappings:
+            mdict = mapping.__dict__
+            m = {}
+            for key in mdict:
+                if mdict[key]:
+                    m[key] = mdict[key]
+            data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
     meta.pop("curie_map", None)
