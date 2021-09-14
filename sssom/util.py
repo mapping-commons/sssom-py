@@ -146,9 +146,9 @@ class MappingSetDiff:
     this is considered a mapping in common.
     """
 
-    unique_tuples1: Optional[Set[str]] = None
-    unique_tuples2: Optional[Set[str]] = None
-    common_tuples: Optional[Set[str]] = None
+    unique_tuples1: Optional[Set[EntityPair]] = None
+    unique_tuples2: Optional[Set[EntityPair]] = None
+    common_tuples: Optional[Set[EntityPair]] = None
 
     combined_dataframe: Optional[pd.DataFrame] = None
     """
