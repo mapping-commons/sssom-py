@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, TextIO
 
 from .context import get_default_metadata
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
@@ -9,27 +9,27 @@ from .writers import get_writer_function, write_table, write_tables
 
 def convert_file(
     input_path: str,
-    output_path: Optional[str] = None,
+    output: TextIO,
     output_format: Optional[str] = None,
 ) -> None:
     """Convert a file.
 
     Args:
         input_path: The path to the input SSSOM tsv file
-        output_path: The path to the output file. If none is given, will default to using stdout.
+        output: The path to the output file. If none is given, will default to using stdout.
         output_format: The format to which the the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
     doc = read_sssom_table(input_path)
     write_func, fileformat = get_writer_function(
-        output_format=output_format, output=output_path
+        output_format=output_format, output=output
     )
-    write_func(doc, output_path, serialisation=fileformat)
+    write_func(doc, output, serialisation=fileformat)
 
 
 def parse_file(
     input_path: str,
-    output_path: Optional[str] = None,
+    output: TextIO,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
     curie_map_mode: Optional[str] = None,
@@ -39,7 +39,7 @@ def parse_file(
 
     Args:
         input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-        output_path: The path to the output file.
+        output: The path to the output file.
         input_format: The string denoting the input format.
         metadata_path: The path to a file containing the sssom metadata (including curie_map)
             to be used during parse.
@@ -56,7 +56,7 @@ def parse_file(
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map()
-    write_table(doc, output_path)
+    write_table(doc, output)
 
 
 def validate_file(input_path: str) -> bool:

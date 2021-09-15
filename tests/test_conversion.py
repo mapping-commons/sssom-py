@@ -53,9 +53,11 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         g = to_owl_graph(msdf)
         file_format = "owl"
         self._test_graph_roundtrip(g, test, file_format)
-        write_owl(msdf, test.get_out_file(file_format), test.graph_serialisation)
+        path = test.get_out_file(file_format)
+        with open(path, "w") as file:
+            write_owl(msdf, file, test.graph_serialisation)
         self._test_load_graph_size(
-            test.get_out_file(file_format),
+            path,
             test.graph_serialisation,
             test.ct_graph_queries_owl,
         )
@@ -72,9 +74,11 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         g = to_rdf_graph(msdf)
         file_format = "rdf"
         self._test_graph_roundtrip(g, test, file_format)
-        write_rdf(msdf, test.get_out_file(file_format), test.graph_serialisation)
+        path = test.get_out_file(file_format)
+        with open(path, "w") as file:
+            write_rdf(msdf, file, test.graph_serialisation)
         self._test_load_graph_size(
-            test.get_out_file(file_format),
+            path,
             test.graph_serialisation,
             test.ct_graph_queries_rdf,
         )
@@ -124,9 +128,11 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_data_frame_rows,
             f"The re-serialised pandas data frame has less elements than the orginal one for {test.filename}",
         )
-        write_table(msdf, test.get_out_file("tsv"))
+        path = test.get_out_file("tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
         # self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
-        df = read_pandas(test.get_out_file("tsv"))
+        df = read_pandas(path)
         self.assertEqual(
             len(df),
             test.ct_data_frame_rows,
@@ -161,8 +167,10 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_json_elements,
             f"The re-serialised JSON file has less elements than the orginal one for {test.filename}",
         )
-        write_json(msdf, test.get_out_file("jsonld"))
-        with open(test.get_out_file("jsonld")) as json_file:
+        path = test.get_out_file("jsonld")
+        with open(path, "w") as file:
+            write_json(msdf, file)
+        with open(path) as json_file:
             data = json.load(json_file)
         # self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))
         self.assertEqual(
