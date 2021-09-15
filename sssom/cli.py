@@ -1,7 +1,8 @@
 import logging
 import re
+import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -25,7 +26,6 @@ from .util import (
     filter_redundant_rows,
     merge_msdf,
     remove_unmatched,
-    smart_open,
     to_mapping_set_dataframe,
 )
 from .writers import write_table
@@ -39,7 +39,11 @@ input_format_option = click.option(
     help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}',
 )
 output_option = click.option(
-    "-o", "--output", help="Output file, e.g. a SSSOM tsv file."
+    "-o",
+    "--output",
+    help="Output file, e.g. a SSSOM tsv file.",
+    type=click.File(mode="w"),
+    default=sys.stdout,
 )
 output_format_option = click.option(
     "-O",
@@ -85,24 +89,13 @@ def main(verbose: int, quiet: bool):
 @input_argument
 @output_option
 @output_format_option
-def convert(input: str, output: str, output_format: str):
+def convert(input: str, output: TextIO, output_format: str):
     """Convert file (currently only supports conversion to RDF)
 
     Example:
         sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
-
-    Args:
-
-        input (str): The path to the input SSSOM tsv file
-        output (str): The path to the output file.
-        output_format (str): The format to which the the SSSOM TSV should be converted.
-
-    Returns:
-
-        None.
-
     """
-    convert_file(input_path=input, output_path=output, output_format=output_format)
+    convert_file(input_path=input, output=output, output_format=output_format)
 
 
 # Input and metadata would be files (file paths). Check if exists.
@@ -137,7 +130,7 @@ def parse(
     metadata: str,
     curie_map_mode: str,
     clean_prefixes: bool,
-    output: str,
+    output: TextIO,
 ):
     """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
@@ -157,7 +150,7 @@ def parse(
 
     parse_file(
         input_path=input,
-        output_path=output,
+        output=output,
         input_format=input_format,
         metadata_path=metadata,
         curie_map_mode=curie_map_mode,
@@ -205,7 +198,7 @@ def split(input: str, output_directory: str):
 @input_argument
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
-def ptable(input=None, output=None, inverse_factor=None):
+def ptable(input, output: TextIO, inverse_factor):
     """Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
 
     Args:
@@ -227,16 +220,14 @@ def ptable(input=None, output=None, inverse_factor=None):
     df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
-
-    with smart_open(output) as fh:
-        for row in rows:
-            print("\t".join(row), file=fh)
+    for row in rows:
+        print(row, sep="\t", file=output)
 
 
 @main.command()
 @input_argument
 @output_option
-def dedupe(input: str, output: str):
+def dedupe(input: str, output: TextIO):
     """Remove lower confidence duplicate lines.
 
     Args:
@@ -262,7 +253,7 @@ def dedupe(input: str, output: str):
 @click.option("-q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
-def dosql(query: str, inputs: List[str], output: str):
+def dosql(query: str, inputs: List[str], output: TextIO):
     """
     Run a SQL query over one or more sssom files.
 
@@ -298,10 +289,7 @@ def dosql(query: str, inputs: List[str], output: str):
         globals()[tn] = df
         n += 1
     df = sqldf(query)
-    if output is None:
-        print(df.to_csv(sep="\t", index=False))
-    else:
-        df.to_csv(output, sep="\t", index=False)
+    df.to_csv(output, sep="\t", index=False)
 
 
 @main.command()
@@ -317,13 +305,13 @@ def dosql(query: str, inputs: List[str], output: str):
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
 @output_option
 def sparql(
-    url: str = None,
-    config=None,
-    graph: str = None,
-    limit: int = None,
-    object_labels: bool = None,
-    prefix: List[Dict[str, str]] = None,
-    output: str = None,
+    url: str,
+    config,
+    graph: str,
+    limit: int,
+    object_labels: bool,
+    prefix: List[Dict[str, str]],
+    output: TextIO,
 ):
     """Run a SPARQL query.
 
@@ -367,7 +355,7 @@ def sparql(
 @main.command()
 @output_option
 @click.argument("inputs", nargs=2)
-def diff(inputs: Tuple[str, str], output: str):
+def diff(inputs: Tuple[str, str], output: TextIO):
     """
     Compare two SSSOM files.
     The output is a new SSSOM file with the union of all mappings, and
@@ -425,7 +413,8 @@ def partition(inputs: List[str], output_directory: str):
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
         # logging.info(f'Writing to {ofn}. Size={len(cdoc)}')
         msdf = to_mapping_set_dataframe(cdoc)
-        write_table(msdf, ofn)
+        with open(ofn, "w") as file:
+            write_table(msdf, file)
         # write_tsv(msdf, ofn)
 
 
@@ -434,7 +423,7 @@ def partition(inputs: List[str], output_directory: str):
 @output_option
 @metadata_option
 @click.option("-s", "--statsfile")
-def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
+def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
     """Partitions an SSSOM file into multiple files, where each
     file is a strongly connected component.
 
@@ -471,7 +460,7 @@ def cliquesummary(input: str, output: str, metadata: str, statsfile: str):
 @output_option
 @transpose_option
 @fields_option
-def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
+def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
     """
     Write sssom summary cross-tabulated by categories.
 
@@ -494,10 +483,7 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
-    if output is not None:
-        ct.to_csv(output, sep="\t")
-    else:
-        logging.info(ct)
+    ct.to_csv(output, sep="\t")
 
 
 @main.command()
@@ -505,7 +491,7 @@ def crosstab(input: str, output: str, transpose: bool, fields: Tuple):
 @transpose_option
 @fields_option
 @input_argument
-def correlations(input: str, output: str, transpose: bool, fields: Tuple):
+def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     """Correlations
 
     Args:
@@ -542,10 +528,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     logging.info(chi2)
     _, _, _, ndarray = chi2
     corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
-    if output:
-        corr.to_csv(output, sep="\t")
-    else:
-        logging.info(corr)
+    corr.to_csv(output, sep="\t")
 
     tups = []
     for i, row in corr.iterrows():
@@ -566,7 +549,7 @@ def correlations(input: str, output: str, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
+def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
     """
     Merging msdf2 into msdf1,
         if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -607,16 +590,16 @@ def merge(inputs: Tuple[str, str], output: str, reconcile: bool = True):
 @click.option(
     "--precedence", multiple=True, help="List of prefixes in order of precedence."
 )
-@click.option("-o", "--output", help="Where to save ontology file")
+@output_option
 def rewire(
     input,
     mapping_file,
-    precedence=None,
-    output=None,
-    input_format=None,
-    output_format=None,
+    precedence,
+    output: TextIO,
+    input_format,
+    output_format,
 ):
-    """Rewire an ontology using equivalence predicates from a mapping file
+    """Rewire an ontology using equivalent classes/properties from a mapping file
 
     Example:
 
@@ -627,11 +610,7 @@ def rewire(
     g.parse(input, format=input_format)
     rewire_graph(g, msdf, precedence=precedence)
     rdfstr = g.serialize(format=output_format).decode()
-    if output:
-        with open(output, "w") as stream:
-            stream.write(rdfstr)
-    else:
-        print(rdfstr)
+    print(rdfstr, file=output)
 
 
 if __name__ == "__main__":

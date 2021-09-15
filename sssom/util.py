@@ -1,4 +1,3 @@
-import contextlib
 import hashlib
 import json
 import logging
@@ -7,7 +6,7 @@ import re
 import sys
 from dataclasses import dataclass, field
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Set, TextIO, Tuple, Union
 from urllib.request import urlopen
 
 import numpy as np
@@ -64,7 +63,9 @@ class MappingSetDataFrame:
     """
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    prefixmap: Dict[str, Any] = field(default_factory=dict)  # maps CURIE prefixes to URI bases
+    prefixmap: Dict[str, Any] = field(
+        default_factory=dict
+    )  # maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
 
     def merge(
@@ -445,21 +446,6 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-@contextlib.contextmanager
-def smart_open(filename=None):
-    # https://stackoverflow.com/questions/17602878/how-to-handle-both-with-open-and-sys-stdout-nicely
-    if filename and filename != "-":
-        fh = open(filename, "w")
-    else:
-        fh = sys.stdout
-
-    try:
-        yield fh
-    finally:
-        if fh is not sys.stdout:
-            fh.close()
-
-
 def dataframe_to_ptable(df: pd.DataFrame, priors=None, inverse_factor: float = 0.5):
     """Export a KBOOM table.
 
@@ -791,7 +777,8 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(filename: str) -> str:
+def get_file_extension(file: TextIO) -> str:
+    filename = file.name
     parts = filename.split(".")
     if len(parts) > 0:
         f_format = parts[-1]
