@@ -824,7 +824,7 @@ def read_metadata(filename):
     return meta, curie_map
 
 
-def read_pandas(filename: str, sep: Optional[str] = "\t") -> pd.DataFrame:
+def read_pandas(filename: TextIO, sep: Optional[str] = "\t") -> pd.DataFrame:
     """
     Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
