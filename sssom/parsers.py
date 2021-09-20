@@ -33,7 +33,7 @@ from .util import (
 
 
 def read_sssom_table(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str, curie_map: Dict[str, Any] = None, meta: Dict[str, Any] = None
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -125,7 +125,7 @@ def read_obographs_json(
     return from_obographs(jsondoc, curie_map, meta)
 
 
-def _get_curie_map_and_metadata(curie_map: Dict[str, str], meta: Dict):
+def _get_curie_map_and_metadata(curie_map: Dict[str, Any], meta: Dict[str, Any]):
     default_meta, default_curie_map = get_default_metadata()
 
     if not curie_map:
@@ -148,7 +148,7 @@ def _get_curie_map_and_metadata(curie_map: Dict[str, str], meta: Dict):
 
 
 def read_alignment_xml(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str, curie_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -298,7 +298,6 @@ def from_sssom_json(
     ms = JSONLoader().load(source=jsondoc, target_class=MappingSet)
 
     _set_metadata_in_mapping_set(ms, metadata=meta)
-    ms: MappingSet
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
@@ -577,6 +576,8 @@ def _cell_element_values(cell_node, curie_map: Dict[str, str]) -> Optional[Mappi
     m = Mapping(**mdict)
     if _is_valid_mapping(m):
         return m
+    else:
+        return None
 
 
 # The following methods dont really belong in the parser package..
@@ -590,31 +591,33 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     mlist = []
     ms = MappingSet()
     bad_attrs = {}
-    for _, row in msdf.df.iterrows():
-        mdict = {}
-        for k, v in row.items():
-            ok = False
-            if k:
-                k = str(k)
-            if hasattr(Mapping, k):
-                mdict[k] = v
-                ok = True
-            if hasattr(MappingSet, k):
-                ms[k] = v
-                ok = True
-            if not ok:
-                if k not in bad_attrs:
-                    bad_attrs[k] = 1
-                else:
-                    bad_attrs[k] += 1
-        m = _prepare_mapping(Mapping(**mdict))
-        mlist.append(m)
+    if msdf.df is not None:
+        for _, row in msdf.df.iterrows():
+            mdict = {}
+            for k, v in row.items():
+                ok = False
+                if k:
+                    k = str(k)
+                if hasattr(Mapping, k):
+                    mdict[k] = v
+                    ok = True
+                if hasattr(MappingSet, k):
+                    ms[k] = v
+                    ok = True
+                if not ok:
+                    if k not in bad_attrs:
+                        bad_attrs[k] = 1
+                    else:
+                        bad_attrs[k] += 1
+            m = _prepare_mapping(Mapping(**mdict))
+            mlist.append(m)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
     ms.mappings = mlist
-    for k, v in msdf.metadata.items():
-        if k != "curie_map":
-            ms[k] = v
+    if msdf.metadata is not None:
+        for k, v in msdf.metadata.items():
+            if k != "curie_map":
+                ms[k] = v
     return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
@@ -622,9 +625,10 @@ def split_dataframe(
     msdf: MappingSetDataFrame,
 ) -> typing.Mapping[str, MappingSetDataFrame]:
     df = msdf.df
-    subject_prefixes = set(df["subject_id"].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(df["object_id"].str.split(":", 1, expand=True)[0])
-    relations = set(df["predicate_id"])
+    if df is not None:
+        subject_prefixes = set(df["subject_id"].str.split(":", 1, expand=True)[0])
+        object_prefixes = set(df["object_id"].str.split(":", 1, expand=True)[0])
+        relations = set(df["predicate_id"])
     return split_dataframe_by_prefix(
         msdf=msdf,
         subject_prefixes=subject_prefixes,
@@ -654,12 +658,12 @@ def split_dataframe_by_prefix(
                 relpre = rel.split(":")[0]
                 relppost = rel.split(":")[1]
                 split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
-
-                dfs = df[
-                    (df["subject_id"].str.startswith(pre_subj + ":"))
-                    & (df["predicate_id"] == rel)
-                    & (df["object_id"].str.startswith(pre_obj + ":"))
-                ]
+                if df is not None:
+                    dfs = df[
+                        (df["subject_id"].str.startswith(pre_subj + ":"))
+                        & (df["predicate_id"] == rel)
+                        & (df["object_id"].str.startswith(pre_obj + ":"))
+                    ]
                 if pre_subj in curie_map and pre_obj in curie_map and len(dfs) > 0:
                     cm = {
                         pre_subj: curie_map[pre_subj],

@@ -377,10 +377,12 @@ def diff(inputs: Tuple[str, str], output: TextIO):
     msdf1 = read_sssom_table(input1)
     msdf2 = read_sssom_table(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
-    logging.info(
-        f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
-    )
-    d.combined_dataframe.to_csv(output, sep="\t", index=False)
+    if d.common_tuples is not None and d.unique_tuples1 is not None and d.unique_tuples2 is not None:
+        logging.info(
+            f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
+        )
+    if d.combined_dataframe is not None:
+        d.combined_dataframe.to_csv(output, sep="\t", index=False)
 
 
 @main.command()

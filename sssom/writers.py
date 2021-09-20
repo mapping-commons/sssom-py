@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import Callable, Optional, TextIO, Tuple
+from typing import Any, Callable, Dict, Optional, TextIO, Tuple
 
 import pandas as pd
 import yaml
@@ -49,7 +49,7 @@ def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") ->
     # df = to_dataframe(msdf)
 
     if msdf.metadata is not None:
-        meta = {k: v for k, v in msdf.metadata.items()}
+        meta = {k: v for k, v in msdf.metadata.items()}  # type: Dict[Any, Any]
     else:
         meta = {}
     if msdf.prefixmap is not None:
