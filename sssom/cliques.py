@@ -1,6 +1,6 @@
-import collections
 import hashlib
 import statistics
+from typing import Dict
 
 import networkx as nx
 import pandas as pd
@@ -65,7 +65,6 @@ def split_into_cliques(msdf: MappingSetDataFrame):
     comp_id = 0
     newdocs = []
     for comp in sorted(gen, key=len, reverse=True):
-        comp: collections.Iterable
         for n in comp:
             node_to_comp[n] = comp_id
         comp_id += 1
@@ -83,7 +82,7 @@ def split_into_cliques(msdf: MappingSetDataFrame):
 
 
 def invert_dict(d: dict) -> dict:
-    invdict = {}
+    invdict = {}  # type: Dict[str, str]
     for k, v in d.items():
         if v not in invdict:
             invdict[v] = []

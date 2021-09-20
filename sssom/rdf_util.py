@@ -5,7 +5,6 @@ from rdflib import Graph, URIRef
 from rdflib.plugins.memory import Any
 
 from .parsers import to_mapping_set_document
-from .sssom_datamodel import Mapping
 from .util import MappingSetDataFrame
 
 
@@ -14,7 +13,7 @@ def rewire_graph(
     mset: MappingSetDataFrame,
     subject_to_object=True,
     precedence: List[str] = None,
-) -> str:
+) -> int:
     """
     rewires an RDF Graph replacing using equivalence mappings
     """
@@ -27,7 +26,6 @@ def rewire_graph(
         return URIRef(f"{pm[pfx]}{local}")
 
     for m in mdoc.mapping_set.mappings:
-        m: Mapping
         if m.predicate_id in {"owl:equivalentClass", "owl:equivalentProperty"}:
             if subject_to_object:
                 src, tgt = m.subject_id, m.object_id

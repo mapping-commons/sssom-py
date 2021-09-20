@@ -537,7 +537,7 @@ def _is_valid_mapping(m: Mapping) -> bool:
     return bool(m.predicate_id and m.object_id and m.subject_id)
 
 
-def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict) -> None:
+def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: Dict[str, str]) -> None:
     if not metadata:
         logging.info("Tried setting metadata but none provided.")
     else:

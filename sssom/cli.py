@@ -573,7 +573,7 @@ def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
     # If > 2 input files, iterate through each one
     # and merge them into the merged file above
     if len(inputs) > 2:
-        for input_file in inputs[2:]:
+        for input_file in inputs[2:]:  # type: str
             msdf1 = merged_msdf
             msdf2 = read_sssom_table(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
