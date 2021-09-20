@@ -5,7 +5,7 @@ import os
 import re
 from dataclasses import dataclass
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Mapping, Optional, Set, TextIO, Union
+from typing import Dict, List, Mapping, Optional, Set, TextIO, Union
 from urllib.request import urlopen
 
 import numpy as np
