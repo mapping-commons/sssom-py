@@ -125,7 +125,7 @@ def read_obographs_json(
     return from_obographs(jsondoc, curie_map, meta)
 
 
-def _get_curie_map_and_metadata(curie_map: Dict, meta: Dict):
+def _get_curie_map_and_metadata(curie_map: Dict[str, str], meta: Dict):
     default_meta, default_curie_map = get_default_metadata()
 
     if not curie_map:
@@ -290,7 +290,7 @@ def from_sssom_rdf(
 
 
 def from_sssom_json(
-    jsondoc: Union[str, dict, TextIO], curie_map: Dict, meta: Dict[str, str] = None
+    jsondoc: Union[str, dict, TextIO], curie_map: Dict[str, str], meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     _check_curie_map(curie_map)
 
@@ -304,7 +304,7 @@ def from_sssom_json(
 
 
 def from_alignment_minidom(
-    dom: Document, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    dom: Document, curie_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
     """
     Reads a minidom Document object
@@ -313,7 +313,7 @@ def from_alignment_minidom(
     :param meta: Optional meta data
     :return: MappingSetDocument
     """
-    _check_curie_map(curie_map)
+    _check_curie_map(curie_map)  # FIXME: should be curie_map =  _check_curie_map(curie_map)
 
     ms = MappingSet()
     mlist = []
@@ -508,7 +508,7 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
     return mapping
 
 
-def _read_metadata_from_table(filename: str) -> typing.Mapping[str, Any]:
+def _read_metadata_from_table(filename: str) -> Any:
     if validators.url(filename):
         response = urlopen(filename)
         yamlstr = ""
@@ -546,7 +546,7 @@ def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict) -> Non
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, curie_map: dict) -> Optional[Mapping]:
+def _cell_element_values(cell_node, curie_map: Dict[str, str]) -> Optional[Mapping]:
     mdict = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
