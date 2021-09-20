@@ -63,7 +63,7 @@ class MappingSetDataFrame:
     """
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    prefixmap: Dict[str, Any] = field(
+    prefixmap: Dict[str, str] = field(
         default_factory=dict
     )  # maps CURIE prefixes to URI bases
     metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes

@@ -12,12 +12,12 @@ from .util import MappingSetDataFrame
 
 @dataclass
 class EndpointConfig:
-    url: str = None
-    graph: URIRef = None
-    predmap: Dict[str, str] = None
-    predicates: Optional[List[str]] = None
-    limit: Optional[int] = None
-    curie_map: Optional[Dict[str, str]] = None
+    url: str
+    graph: URIRef
+    predmap: Dict[str, str]
+    predicates: Optional[List[str]]
+    limit: Optional[int]
+    curie_map: Optional[Dict[str, str]]
     include_object_labels: bool = False
 
 
@@ -27,7 +27,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     """
     sparql = SPARQLWrapper(config.url)
     if config.graph is None:
-        g = "?g"
+        g = "?g"  # type:URIRef
     else:
         g = config.graph
         if isinstance(g, str):
@@ -35,10 +35,10 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         g = g.n3()
     preds = config.predicates
     if preds is None:
-        preds = {SKOS.exactMatch, SKOS.closeMatch}
+        preds = [SKOS.exactMatch, SKOS.closeMatch]
     else:
         preds = [expand_curie(p, config) for p in preds]
-    predstr = " ".join([p.n3() for p in preds])
+    predstr = " ".join([URIRef(p).n3() for p in preds])
     limitstr = ""
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
