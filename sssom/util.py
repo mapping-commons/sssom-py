@@ -330,7 +330,7 @@ def filter_redundant_rows(
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
-    max_conf: Dict[Tuple, float] = {}
+    max_conf: Dict[Tuple[str, ...], float] = {}
     for _, row in dfmax.iterrows():
         if ignore_predicate:
             max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
