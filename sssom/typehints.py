@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
+
+"""Type hints for SSSOM."""
+
 from typing import Any, Dict, NamedTuple
 
 __all__ = [
     "PrefixMap",
     "MetadataType",
     "Metadata",
-    "ModeLiteral",
 ]
 
 PrefixMap = Dict[str, str]

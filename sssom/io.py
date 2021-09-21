@@ -3,7 +3,7 @@ from typing import Optional, TextIO
 
 from .context import get_default_metadata
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
-from .typehints import Metadata, ModeLiteral
+from .typehints import Metadata
 from .util import raise_for_bad_path, read_metadata
 from .writers import get_writer_function, write_table, write_tables
 
