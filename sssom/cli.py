@@ -2,7 +2,7 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, TextIO, Tuple
+from typing import Dict, List, Sequence, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -540,7 +540,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
+def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
     """
     Merging msdf2 into msdf1,
         if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -564,7 +564,7 @@ def merge(inputs: Tuple[str, str], output: TextIO, reconcile: bool = True):
     # If > 2 input files, iterate through each one
     # and merge them into the merged file above
     if len(inputs) > 2:
-        for input_file in inputs[2:]:  # type: str
+        for input_file in inputs[2:]:
             msdf1 = merged_msdf
             msdf2 = read_sssom_table(input_file)
             merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
