@@ -1,6 +1,6 @@
 import hashlib
 import statistics
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import networkx as nx
 import pandas as pd
@@ -91,7 +91,7 @@ def split_into_cliques(msdf: MappingSetDataFrame):
 
 
 def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
-    invdict = {}  # type: Dict[Any, Any]
+    invdict: Dict[str, Any] = {}
     for k, v in d.items():
         if v not in invdict:
             invdict[v] = []
