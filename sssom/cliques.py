@@ -6,7 +6,7 @@ import networkx as nx
 import pandas as pd
 
 from .parsers import to_mapping_set_document
-from .sssom_datamodel import MappingSet
+from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
 
@@ -20,6 +20,8 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
     # }
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
+            if not isinstance(mapping, Mapping):
+                raise TypeError
             s = mapping.subject_id
             o = mapping.object_id
             p = mapping.predicate_id
@@ -75,9 +77,15 @@ def split_into_cliques(msdf: MappingSetDataFrame):
             )
         )
 
+    if not isinstance(doc.mapping_set.mappings, list):
+        raise TypeError
     for m in doc.mapping_set.mappings:
+        if not isinstance(m, Mapping):
+            raise TypeError
         comp_id = node_to_comp[m.subject_id]
         subdoc = newdocs[comp_id]
+        if not isinstance(subdoc.mapping_set.mappings, list):
+            raise TypeError
         subdoc.mapping_set.mappings.append(m)
     return newdocs
 

@@ -43,15 +43,16 @@ def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") ->
     """
     dataframe 2 tsv
     """
+    if msdf.df is None:
+        raise TypeError
 
     sep = _get_separator(serialisation)
 
     # df = to_dataframe(msdf)
 
+    meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
-        meta = {k: v for k, v in msdf.metadata.items()}  # type: Dict[Any, Any]
-    else:
-        meta = {}
+        meta.update(msdf.metadata)
     if msdf.prefixmap is not None:
         meta["curie_map"] = msdf.prefixmap
 
@@ -125,9 +126,9 @@ def write_owl(
 
 def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
     data = []
-
     doc = to_mapping_set_document(msdf)
-
+    if doc.mapping_set.mappings is None:
+        raise TypeError
     for mapping in doc.mapping_set.mappings:
         mdict = mapping.__dict__
         m = {}

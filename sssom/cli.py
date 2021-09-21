@@ -313,25 +313,9 @@ def sparql(
     prefix: List[Dict[str, str]],
     output: TextIO,
 ):
-    """Run a SPARQL query.
-
-    Args:
-
-        url (str):
-        config (str):
-        graph (str):
-        limit (int):
-        object_labels (bool):
-        prefix (List):
-        output (str): Output TSV/SSSOM file.
-
-
-    Returns:
-
-        None.
-    """
-
-    endpoint = EndpointConfig()
+    """Run a SPARQL query."""
+    # FIXME this usage needs _serious_ refactoring
+    endpoint = EndpointConfig()  # type: ignore
     if config is not None:
         for k, v in yaml.safe_load(config).items():
             setattr(endpoint, k, v)
@@ -377,7 +361,11 @@ def diff(inputs: Tuple[str, str], output: TextIO):
     msdf1 = read_sssom_table(input1)
     msdf2 = read_sssom_table(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
-    if d.common_tuples is not None and d.unique_tuples1 is not None and d.unique_tuples2 is not None:
+    if (
+        d.common_tuples is not None
+        and d.unique_tuples1 is not None
+        and d.unique_tuples2 is not None
+    ):
         logging.info(
             f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
         )

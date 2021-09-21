@@ -1,13 +1,16 @@
 import json
 import logging
-from typing import Any, Dict, Mapping, Tuple
+from typing import Optional
 
 from .external_context import sssom_external_context
 from .internal_context import sssom_context
+from .typehints import Metadata, MetadataType, PrefixMap
 
 # HERE = pathlib.Path(__file__).parent.resolve()
 # DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
 # EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
+
+
 SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
 
 
@@ -19,7 +22,7 @@ def get_external_jsonld_context():
     return json.loads(sssom_external_context, strict=False)
 
 
-def get_built_in_prefix_map():
+def get_built_in_prefix_map() -> PrefixMap:
     contxt = get_jsonld_context()
     curie_map = {}
     for key in contxt["@context"]:
@@ -30,7 +33,9 @@ def get_built_in_prefix_map():
     return curie_map
 
 
-def add_built_in_prefixes_to_prefix_map(prefixmap):
+def add_built_in_prefixes_to_prefix_map(
+    prefixmap: Optional[PrefixMap] = None,
+) -> PrefixMap:
     builtinmap = get_built_in_prefix_map()
     if not prefixmap:
         prefixmap = builtinmap
@@ -45,27 +50,27 @@ def add_built_in_prefixes_to_prefix_map(prefixmap):
     return prefixmap
 
 
-def get_default_metadata() -> Tuple[Mapping[str, Any], Mapping[str, Any]]:
+def get_default_metadata() -> Metadata:
     contxt = get_jsonld_context()
     contxt_external = get_external_jsonld_context()
-    curie_map = {}
-    meta: Dict[str, str] = {}
+    prefix_map = {}
+    metadata: MetadataType = {}
     for key in contxt["@context"]:
         v = contxt["@context"][key]
         if isinstance(v, str):
-            curie_map[key] = v
+            prefix_map[key] = v
         elif isinstance(v, dict):
             if "@id" in v and "@prefix" in v:
                 if v["@prefix"]:
-                    curie_map[key] = v["@id"]
+                    prefix_map[key] = v["@id"]
     for key in contxt_external["@context"]:
         v = contxt_external["@context"][key]
         if isinstance(v, str):
-            if key not in curie_map:
-                curie_map[key] = v
+            if key not in prefix_map:
+                prefix_map[key] = v
             else:
-                if curie_map[key] != v:
+                if prefix_map[key] != v:
                     logging.warning(
-                        f"{key} is already in curie map ({curie_map[key]}, but with a different value than {v}"
+                        f"{key} is already in curie map ({prefix_map[key]}, but with a different value than {v}"
                     )
-    return meta, curie_map
+    return Metadata(prefix_map=prefix_map, metadata=metadata)

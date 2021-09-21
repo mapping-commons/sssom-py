@@ -1,36 +1,42 @@
 import logging
-from typing import List
+from typing import Any, Dict, List, Optional
 
 from rdflib import Graph, URIRef
-from rdflib.plugins.memory import Any
 
 from .parsers import to_mapping_set_document
+from .sssom_datamodel import EntityId, Mapping
 from .util import MappingSetDataFrame
 
 
 def rewire_graph(
     g: Graph,
     mset: MappingSetDataFrame,
-    subject_to_object=True,
-    precedence: List[str] = None,
+    subject_to_object: bool = True,
+    precedence: Optional[List[str]] = None,
 ) -> int:
     """
     rewires an RDF Graph replacing using equivalence mappings
     """
     pm = mset.prefixmap
     mdoc = to_mapping_set_document(mset)
-    rewire_map = {}
+    rewire_map: Dict[EntityId, EntityId] = {}
 
-    def expand_curie(curie: str):
+    def expand_curie(curie: str) -> URIRef:
         pfx, local = curie.split(":")
         return URIRef(f"{pm[pfx]}{local}")
 
+    if mdoc.mapping_set.mappings is None:
+        raise TypeError
     for m in mdoc.mapping_set.mappings:
+        if not isinstance(m, Mapping):
+            continue
         if m.predicate_id in {"owl:equivalentClass", "owl:equivalentProperty"}:
             if subject_to_object:
                 src, tgt = m.subject_id, m.object_id
             else:
                 src, tgt = m.object_id, m.subject_id
+            if not isinstance(src, EntityId) or not isinstance(tgt, EntityId):
+                raise TypeError
             if src in rewire_map:
                 curr_tgt = rewire_map[src]
                 logging.info(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
@@ -47,12 +53,15 @@ def rewire_graph(
                     raise ValueError(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
             else:
                 rewire_map[src] = tgt
-    rewire_map = {expand_curie(k): expand_curie(v) for k, v in rewire_map.items()}
+
+    uri_ref_rewire_map: Dict[URIRef, URIRef] = {
+        expand_curie(k): expand_curie(v) for k, v in rewire_map.items()
+    }
 
     def rewire_node(n: Any):
         if isinstance(n, URIRef):
-            if n in rewire_map:
-                return rewire_map[n]
+            if n in uri_ref_rewire_map:
+                return uri_ref_rewire_map[n]
             else:
                 return n
         else:

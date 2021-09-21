@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Mapping, Optional
 
 import pandas as pd
 from rdflib import URIRef
@@ -27,21 +27,22 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     """
     sparql = SPARQLWrapper(config.url)
     if config.graph is None:
-        g = "?g"  # type:URIRef
+        g = "?g"
+    elif isinstance(config.graph, str):
+        g = URIRef(config.graph).n3()
     else:
-        g = config.graph
-        if isinstance(g, str):
-            g = URIRef(g)
-        g = g.n3()
-    preds = config.predicates
-    if preds is None:
-        preds = [SKOS.exactMatch, SKOS.closeMatch]
+        g = config.graph.n3()
+    if config.predicates is None:
+        predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
-        preds = [expand_curie(p, config) for p in preds]
-    predstr = " ".join([URIRef(p).n3() for p in preds])
-    limitstr = ""
+        predicates = [
+            expand_curie(predicate, config) for predicate in config.predicates
+        ]
+    predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
+    else:
+        limitstr = ""
     cols = [
         "subject_id",
         "subject_label",
@@ -57,7 +58,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         if config.include_object_labels
         else ""
     )
-    q = f"""
+    q = f"""\
     PREFIX rdfs: {RDFS.uri.n3()}
     SELECT {colstr}
     WHERE {{
@@ -79,14 +80,13 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         row = {k: v["value"] for k, v in result.items()}
         rows.append(curiefy_row(row, config))
     df = pd.DataFrame(rows)
+    if config.curie_map is None:
+        raise TypeError
     return MappingSetDataFrame(df=df, prefixmap=config.curie_map)
 
 
-def curiefy_row(row: Dict[str, str], config: EndpointConfig) -> Dict[str, str]:
-    new_row = {}
-    for k, v in row.items():
-        new_row[k] = contract_uri(v, config)
-    return new_row
+def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str]:
+    return {k: contract_uri(v, config) for k, v in row.items()}
 
 
 def contract_uri(uristr: str, config: EndpointConfig) -> str:

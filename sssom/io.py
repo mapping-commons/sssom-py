@@ -3,6 +3,7 @@ from typing import Optional, TextIO
 
 from .context import get_default_metadata
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
+from .typehints import Metadata, ModeLiteral
 from .util import raise_for_bad_path, read_metadata
 from .writers import get_writer_function, write_table, write_tables
 
@@ -24,7 +25,8 @@ def convert_file(
     write_func, fileformat = get_writer_function(
         output_format=output_format, output=output
     )
-    write_func(doc, output, serialisation=fileformat)
+    # TODO cthoyt figure out how to use protocols for this
+    write_func(doc, output, serialisation=fileformat)  # type:ignore
 
 
 def parse_file(
@@ -48,11 +50,13 @@ def parse_file(
         clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     """
     raise_for_bad_path(input_path)
-    meta, curie_map = get_metadata_and_curie_map(
+    metadata = get_metadata_and_curie_map(
         metadata_path=metadata_path, curie_map_mode=curie_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
-    doc = parse_func(input_path, curie_map=curie_map, meta=meta)
+    doc = parse_func(
+        input_path, curie_map=metadata.prefix_map, meta=metadata.prefix_map
+    )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map()
@@ -92,8 +96,8 @@ def split_file(input_path: str, output_directory: str) -> None:
 
 
 def get_metadata_and_curie_map(
-    metadata_path: Optional[str] = None, curie_map_mode: str = "metadata_only"
-):
+    metadata_path: Optional[str] = None, curie_map_mode: Optional[str] = None
+) -> Metadata:
     """
     Load SSSOM metadata from a file, and then augments it with default prefixes.
 
@@ -103,15 +107,17 @@ def get_metadata_and_curie_map(
     """
     if metadata_path is None:
         return get_default_metadata()
-
-    meta, curie_map = read_metadata(metadata_path)
+    if curie_map_mode is None:
+        curie_map_mode = "metadata_only"
+    prefix_map, metadata = read_metadata(metadata_path)
+    # TODO reduce complexity by flipping conditionals
+    #  and returning eagerly (it's fine if there are multiple returns)
     if curie_map_mode != "metadata_only":
         meta_sssom, curie_map_sssom = get_default_metadata()
         if curie_map_mode == "sssom_default_only":
-            curie_map = curie_map_sssom
+            prefix_map = curie_map_sssom
         elif curie_map_mode == "merged":
             for prefix, uri_prefix in curie_map_sssom.items():
-                if prefix not in curie_map:
-                    curie_map[prefix] = uri_prefix
-
-    return meta, curie_map
+                if prefix not in prefix_map:
+                    prefix_map[prefix] = uri_prefix
+    return Metadata(prefix_map=prefix_map, metadata=metadata)

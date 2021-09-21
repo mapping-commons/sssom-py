@@ -3,10 +3,21 @@ import json
 import logging
 import os
 import re
-import sys
+from collections import defaultdict
 from dataclasses import dataclass, field
 from io import FileIO, StringIO
-from typing import Any, Dict, List, Mapping, Optional, Set, TextIO, Tuple, Union
+from typing import (
+    Any,
+    DefaultDict,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+)
 from urllib.request import urlopen
 
 import numpy as np
@@ -17,6 +28,7 @@ import yaml
 from .context import get_default_metadata, get_jsonld_context
 from .sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
+from .typehints import Metadata, MetadataType, PrefixMap
 
 SSSOM_READ_FORMATS = [
     "tsv",
@@ -63,10 +75,9 @@ class MappingSetDataFrame:
     """
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    prefixmap: Dict[str, str] = field(
-        default_factory=dict
-    )  # maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
+    #: maps CURIE prefixes to URI bases
+    prefixmap: PrefixMap = field(default_factory=dict)
+    metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
     def merge(
         self, msdf2: "MappingSetDataFrame", inplace: bool = True
@@ -101,9 +112,9 @@ class MappingSetDataFrame:
         description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map(self):
+    def clean_prefix_map(self) -> None:
         prefixes_in_map = get_prefixes_used_in_table(self.df)
-        new_prefixes = dict()
+        new_prefixes: PrefixMap = dict()
         missing_prefix = []
         for prefix in prefixes_in_map:
             if prefix in self.prefixmap:
@@ -261,7 +272,7 @@ class MetaTSVConverter:
             yaml.safe_dump(obj, stream, sort_keys=False)
 
 
-def parse(filename) -> pd.DataFrame:
+def parse(filename: str) -> pd.DataFrame:
     """
     parses a TSV to a pandas frame
     """
@@ -271,7 +282,7 @@ def parse(filename) -> pd.DataFrame:
     # return read_pandas(filename)
 
 
-def collapse(df):
+def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """
     collapses rows with same S/P/O and combines confidence
     """
@@ -283,7 +294,7 @@ def collapse(df):
     return df2
 
 
-def sort_sssom_columns(columns: list) -> list:
+def sort_sssom_columns(columns: List[str]) -> List[str]:
     # Ideally, the order of the sssom column names is parsed strictly from sssom.yaml
 
     logging.warning("SSSOM sort columns not implemented")
@@ -298,7 +309,9 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFrame:
+def filter_redundant_rows(
+    df: pd.DataFrame, ignore_predicate: bool = False
+) -> pd.DataFrame:
     """
     removes rows if there is another row with same S/O and higher confidence
 
@@ -346,7 +359,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
     return return_df
 
 
-def assign_default_confidence(df: pd.DataFrame):
+def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     # Get rows having numpy.NaN as confidence
     if df is not None and "confidence" not in df.columns:
         df["confidence"] = np.NaN
@@ -366,7 +379,7 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(row, eid: str, mappings: Dict) -> Entity:
+def create_entity(row, eid: str, mappings: Dict[str, Any]) -> Entity:
     logging.warning(f"create_entity() has row parameter ({row}), but not used.")
     e = Entity(id=eid)
     for k, v in mappings.items():
@@ -375,37 +388,32 @@ def create_entity(row, eid: str, mappings: Dict) -> Entity:
     return e
 
 
-def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List]:
+def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
     """
     group mappings by EntityPairs
     """
-    mappings: Dict = {}
+    mappings: DefaultDict[EntityPair, List[pd.Series]] = defaultdict(list)
     for _, row in df.iterrows():
-        sid = row[SUBJECT_ID]
-        oid = row[OBJECT_ID]
-        s = create_entity(
+        subject_entity = create_entity(
             row,
-            sid,
+            row[SUBJECT_ID],
             {
                 "label": SUBJECT_LABEL,
                 "category": SUBJECT_CATEGORY,
                 "source": SUBJECT_SOURCE,
             },
         )
-        o = create_entity(
+        object_entity = create_entity(
             row,
-            oid,
+            row[OBJECT_ID],
             {
                 "label": OBJECT_LABEL,
                 "category": OBJECT_CATEGORY,
                 "source": OBJECT_SOURCE,
             },
         )
-        pair = EntityPair(s, o)
-        if pair not in mappings:
-            mappings[pair] = []
-        mappings[pair].append(row)
-    return mappings
+        mappings[EntityPair(subject_entity, object_entity)].append(row)
+    return dict(mappings)
 
 
 def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
@@ -777,8 +785,11 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: TextIO) -> str:
-    filename = file.name
+def get_file_extension(file: Union[str, TextIO]) -> str:
+    if isinstance(file, str):
+        filename = file
+    else:
+        filename = file.name
     parts = filename.split(".")
     if len(parts) > 0:
         f_format = parts[-1]
@@ -803,7 +814,7 @@ def read_csv(filename, comment="#", sep=","):
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
-def read_metadata(filename):
+def read_metadata(filename: str) -> Metadata:
     """
     Read a metadata file (yaml) that is supplied separately from a TSV.
 
@@ -821,35 +832,27 @@ def read_metadata(filename):
             meta = m
         except yaml.YAMLError as exc:
             print(exc)  # FIXME this clobbers the exception. Remove try/except
-    return meta, curie_map
+    return Metadata(prefix_map=curie_map, metadata=meta)
 
 
-def read_pandas(filename: TextIO, sep: Optional[str] = "\t") -> pd.DataFrame:
+def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
     """
     Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
-    :param filename:
+    :param file: The file to read. If no separator is given, this file should be named.
     :param sep: File separator in pandas (\t or ,)
-    :return:
+    :return: A pandas dataframe
     """
-    if not sep:
-        extension = get_file_extension(filename)
-        sep = "\t"
+    if sep is None:
+        extension = get_file_extension(file)
         if extension == "tsv":
             sep = "\t"
         elif extension == "csv":
             sep = ","
         else:
+            sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-
-    # from tempfile import NamedTemporaryFile
-    # with NamedTemporaryFile("r+") as tmp:
-    #    with open(filename, "r") as f:
-    #        for line in f:
-    #            if not line.startswith('#'):
-    #                tmp.write(line + "\n")
-    #    tmp.seek(0)
-    return read_csv(filename, comment="#", sep=sep).fillna("")
+    return read_csv(file, comment="#", sep=sep).fillna("")
 
 
 def extract_global_metadata(msdoc: MappingSetDocument):
@@ -943,7 +946,7 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
         return pd.DataFrame(columns=KEY_FEATURES)
 
 
-def guess_file_format(filename):
+def guess_file_format(filename: Union[str, TextIO]) -> str:
     extension = get_file_extension(filename)
     if extension in ["owl", "rdf"]:
         return SSSOM_DEFAULT_RDF_SERIALISATION
@@ -955,11 +958,10 @@ def guess_file_format(filename):
         )
 
 
-def prepare_context_from_curie_map(curie_map: Mapping[str, Any]):
-    meta, default_curie_map = get_default_metadata()
+def prepare_context_from_curie_map(curie_map: Optional[PrefixMap] = None) -> str:
     context = get_jsonld_context()
-    if not curie_map:
-        curie_map = default_curie_map
+    if curie_map is None:
+        curie_map = get_default_metadata().prefix_map
 
     for k, v in curie_map.items():
         if isinstance(v, str):
