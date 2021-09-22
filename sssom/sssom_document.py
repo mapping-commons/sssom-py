@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Dict
 
 from .sssom_datamodel import MappingSet
+from .typehints import PrefixMap
 
 
 @dataclass()
@@ -17,7 +17,7 @@ class MappingSetDocument:
     The main part of the document: a set of mappings plus metadata
     """
 
-    curie_map: Dict[str, str]
+    curie_map: PrefixMap
     """
     Mappings between ID prefixes and URI Bases, used to map CURIEs to URIs.
     Note that the CURIE map is not part of the core SSSOM model, hence it belongs here in the document

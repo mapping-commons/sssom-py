@@ -74,6 +74,11 @@ lint:
 	pip install tox
 	tox -e lint
 
+.PHONY: mypy
+mypy:
+	pip install tox
+	tox -e mypy
+
 .PHONY: sphinx
 sphinx:
 	cd sphinx &&\

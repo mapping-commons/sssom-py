@@ -52,7 +52,7 @@ class TestParse(unittest.TestCase):
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
-        self.metadata, self.curie_map = get_default_metadata()
+        self.curie_map, self.metadata = get_default_metadata()
 
     def test_parse_sssom_dataframe(self):
         input_path = f"{test_data_dir}/basic.tsv"
