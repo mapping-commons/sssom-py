@@ -2,7 +2,8 @@ import json
 import logging
 import re
 import typing
-from typing import Any, Dict, Optional, Set, TextIO, Union
+from collections import Counter
+from typing import Any, Dict, List, Optional, Set, TextIO, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -17,6 +18,7 @@ from rdflib import Graph, URIRef
 from .context import add_built_in_prefixes_to_prefix_map, get_default_metadata
 from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
+from .typehints import Metadata, MetadataType, PrefixMap
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -33,7 +35,9 @@ from .util import (
 
 
 def read_sssom_table(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str,
+    curie_map: Optional[PrefixMap] = None,
+    meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
@@ -76,14 +80,14 @@ def read_sssom_rdf(
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
-    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+    metadata = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
     g = Graph()
     g.load(file_path, format=serialisation)
     # json_obj = json.loads(g.serialize(format="json-ld"))
     # print(json_obj)
     # msdf = from_sssom_json(json_obj, curie_map=curie_map, meta=meta)
-    msdf = from_sssom_rdf(g, curie_map=curie_map, meta=meta)
+    msdf = from_sssom_rdf(g, curie_map=metadata.prefix_map, meta=metadata.metadata)
     return msdf
 
 
@@ -94,11 +98,13 @@ def read_sssom_json(
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
-    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+    metadata = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-    msdf = from_sssom_json(jsondoc=jsondoc, curie_map=curie_map, meta=meta)
+    msdf = from_sssom_json(
+        jsondoc=jsondoc, curie_map=metadata.prefix_map, meta=metadata.metadata
+    )
     return msdf
 
 
@@ -117,48 +123,54 @@ def read_obographs_json(
     """
     raise_for_bad_path(file_path)
 
-    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+    _xmetadata = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
 
-    return from_obographs(jsondoc, curie_map, meta)
+    return from_obographs(
+        jsondoc, curie_map=_xmetadata.prefix_map, meta=_xmetadata.metadata
+    )
 
 
-def _get_curie_map_and_metadata(curie_map: Dict, meta: Dict):
-    default_meta, default_curie_map = get_default_metadata()
+def _get_curie_map_and_metadata(
+    curie_map: Optional[PrefixMap] = None, meta: Optional[MetadataType] = None
+) -> Metadata:
+    default_metadata = get_default_metadata()
 
-    if not curie_map:
+    if curie_map is None:
         logging.warning(
             "No curie map provided (not recommended), trying to use defaults.."
         )
-        curie_map = default_curie_map
+        curie_map = default_metadata.prefix_map
 
-    if not meta:
-        meta = default_meta
+    if meta is None:
+        meta = default_metadata.metadata
     else:
         if curie_map and "curie_map" in meta:
             logging.info(
-                "Curie map prvoided as parameter, but SSSOM file provides its own CURIE map. "
+                "Curie map provided as parameter, but SSSOM file provides its own CURIE map. "
                 "CURIE map provided externally is disregarded in favour of the curie map in the SSSOM file."
             )
-            curie_map = meta["curie_map"]
+            curie_map = cast(PrefixMap, meta["curie_map"])
 
-    return curie_map, meta
+    return Metadata(prefix_map=curie_map, metadata=meta)
 
 
 def read_alignment_xml(
-    file_path: str, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str, curie_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
     """
     parses a TSV -> MappingSetDocument -> MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
 
-    curie_map, meta = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
+    metadata = _get_curie_map_and_metadata(curie_map=curie_map, meta=meta)
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(file_path)
-    msdf = from_alignment_minidom(xmldoc, curie_map, meta)
+    msdf = from_alignment_minidom(
+        xmldoc, curie_map=metadata.prefix_map, meta=metadata.metadata
+    )
     return msdf
 
 
@@ -166,7 +178,10 @@ def read_alignment_xml(
 
 
 def from_sssom_dataframe(
-    df: pd.DataFrame, curie_map: Dict[str, str], meta: Dict[str, str]
+    df: pd.DataFrame,
+    *,
+    curie_map: Optional[PrefixMap] = None,
+    meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """
     Converts a dataframe to a MappingSetDataFrame
@@ -175,15 +190,14 @@ def from_sssom_dataframe(
     :param meta:
     :return: MappingSetDataFrame
     """
-
-    _check_curie_map(curie_map)
+    curie_map = _ensure_prefix_map(curie_map)
 
     if "confidence" in df.columns:
         df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
 
-    mlist = []
+    mlist: List[Mapping] = []
     ms = MappingSet()
-    bad_attrs = {}
+    bad_attrs: typing.Counter[str] = Counter()
     for _, row in df.iterrows():
         mdict = {}
         for k, v in row.items():
@@ -199,16 +213,14 @@ def from_sssom_dataframe(
                 ms[k] = v
                 ok = True
             if not ok:
-                if k not in bad_attrs:
-                    bad_attrs[k] = 1
-                else:
-                    bad_attrs[k] += 1
-        m = _prepare_mapping(Mapping(**mdict))
+                bad_attrs[k] += 1
+        mlist.append(_prepare_mapping(Mapping(**mdict)))
 
-        mlist.append(m)
-    for k, v in bad_attrs.items():
+    for k, v in bad_attrs.most_common():
         logging.warning(f"No attr for {k} [{v} instances]")
-    ms.mappings = mlist
+    # the autogenerated code's type annotations are _really_ messy. This is in fact okay,
+    # so with a heavy heart we employ type:ignore
+    ms.mappings = mlist  # type:ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     doc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(doc)
@@ -216,14 +228,14 @@ def from_sssom_dataframe(
 
 def from_sssom_rdf(
     g: Graph,
-    curie_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
-    mapping_predicates: Set[str] = None,
+    curie_map: Optional[PrefixMap] = None,
+    meta: Optional[MetadataType] = None,
+    mapping_predicates: Optional[Set[str]] = None,
 ) -> MappingSetDataFrame:
     """
     Converts an SSSOM RDF graph into a SSSOM data table
     Args:
-        g: the Grah (rdflib)
+        g: the Graph (rdflib)
         curie_map: A dictionary conatining the prefix map
         meta: Potentially additional metadata
         mapping_predicates: A set of predicates that should be extracted from the RDF graph
@@ -231,14 +243,14 @@ def from_sssom_rdf(
     Returns:
 
     """
-    curie_map = _check_curie_map(curie_map)
+    curie_map = _ensure_prefix_map(curie_map)
 
     if mapping_predicates is None:
         # FIXME unused
         mapping_predicates = _get_default_mapping_predicates()
 
     ms = MappingSet()
-    mlist = []
+    mlist: List[Mapping] = []
 
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         mdict = {}
@@ -283,28 +295,30 @@ def from_sssom_rdf(
                 f"This usually happens when a critical curie_map entry is missing."
             )
 
-    ms.mappings = mlist
+    ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
 def from_sssom_json(
-    jsondoc: Union[str, dict, TextIO], curie_map: Dict, meta: Dict[str, str] = None
+    jsondoc: Union[str, dict, TextIO],
+    *,
+    curie_map: Dict[str, str],
+    meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
-    _check_curie_map(curie_map)
+    _ensure_prefix_map(curie_map)
 
     # noinspection PyTypeChecker
     ms = JSONLoader().load(source=jsondoc, target_class=MappingSet)
 
     _set_metadata_in_mapping_set(ms, metadata=meta)
-    ms: MappingSet
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
 def from_alignment_minidom(
-    dom: Document, curie_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    dom: Document, *, curie_map: PrefixMap, meta: MetadataType
 ) -> MappingSetDataFrame:
     """
     Reads a minidom Document object
@@ -313,10 +327,11 @@ def from_alignment_minidom(
     :param meta: Optional meta data
     :return: MappingSetDocument
     """
-    _check_curie_map(curie_map)
+    # FIXME: should be curie_map =  _check_curie_map(curie_map)
+    _ensure_prefix_map(curie_map)
 
     ms = MappingSet()
-    mlist = []
+    mlist: List[Mapping] = []
     # bad_attrs = {}
 
     alignments = dom.getElementsByTagName("Alignment")
@@ -351,14 +366,14 @@ def from_alignment_minidom(
                 elif node_name == "uri2":
                     ms["object_source"] = e.firstChild.nodeValue
 
-    ms.mappings = mlist
+    ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
 
 
 def from_obographs(
-    jsondoc: Dict, curie_map: Dict[str, str], meta: Dict[str, str] = None
+    jsondoc: Dict, *, curie_map: PrefixMap, meta: Optional[MetadataType] = None
 ) -> MappingSetDataFrame:
     """
     Converts a obographs json object to an SSSOM data frame
@@ -372,10 +387,10 @@ def from_obographs(
         An SSSOM data frame (MappingSetDataFrame)
 
     """
-    _check_curie_map(curie_map)
+    _ensure_prefix_map(curie_map)
 
     ms = MappingSet()
-    mlist = []
+    mlist: List[Mapping] = []
     # bad_attrs = {}
 
     allowed_properties = [
@@ -436,7 +451,7 @@ def from_obographs(
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
 
-    ms.mappings = mlist
+    ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, curie_map=curie_map)
     return to_mapping_set_dataframe(mdoc)
@@ -463,7 +478,7 @@ def get_parsing_function(input_format, filename):
         raise Exception(f"Unknown input format: {input_format}")
 
 
-def _check_curie_map(curie_map):
+def _ensure_prefix_map(curie_map: Optional[PrefixMap] = None) -> PrefixMap:
     if not curie_map:
         raise Exception("No valid curie_map provided")
     else:
@@ -508,9 +523,9 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
     return mapping
 
 
-def _read_metadata_from_table(filename: str) -> typing.Mapping[str, Any]:
-    if validators.url(filename):
-        response = urlopen(filename)
+def _read_metadata_from_table(path: str) -> Dict[str, Any]:
+    if validators.url(path):
+        response = urlopen(path)
         yamlstr = ""
         for lin in response:
             line = lin.decode("utf-8")
@@ -519,9 +534,9 @@ def _read_metadata_from_table(filename: str) -> typing.Mapping[str, Any]:
             else:
                 break
     else:
-        with open(filename, "r") as s:
+        with open(path) as file:
             yamlstr = ""
-            for line in s:
+            for line in file:
                 if line.startswith("#"):
                     yamlstr += re.sub("^#", "", line)
                 else:
@@ -537,8 +552,10 @@ def _is_valid_mapping(m: Mapping) -> bool:
     return bool(m.predicate_id and m.object_id and m.subject_id)
 
 
-def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict) -> None:
-    if not metadata:
+def _set_metadata_in_mapping_set(
+    mapping_set: MappingSet, metadata: Optional[MetadataType] = None
+) -> None:
+    if metadata is None:
         logging.info("Tried setting metadata but none provided.")
     else:
         for k, v in metadata.items():
@@ -546,7 +563,7 @@ def _set_metadata_in_mapping_set(mapping_set: MappingSet, metadata: dict) -> Non
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, curie_map: dict) -> Optional[Mapping]:
+def _cell_element_values(cell_node, curie_map: PrefixMap) -> Optional[Mapping]:
     mdict = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -577,6 +594,8 @@ def _cell_element_values(cell_node, curie_map: dict) -> Optional[Mapping]:
     m = Mapping(**mdict)
     if _is_valid_mapping(m):
         return m
+    else:
+        return None
 
 
 # The following methods dont really belong in the parser package..
@@ -587,44 +606,47 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     if not msdf.prefixmap:
         raise Exception("No valid curie_map provided")
 
-    mlist = []
+    mlist: List[Mapping] = []
     ms = MappingSet()
     bad_attrs = {}
-    for _, row in msdf.df.iterrows():
-        mdict = {}
-        for k, v in row.items():
-            ok = False
-            if k:
-                k = str(k)
-            if hasattr(Mapping, k):
-                mdict[k] = v
-                ok = True
-            if hasattr(MappingSet, k):
-                ms[k] = v
-                ok = True
-            if not ok:
-                if k not in bad_attrs:
-                    bad_attrs[k] = 1
-                else:
-                    bad_attrs[k] += 1
-        m = _prepare_mapping(Mapping(**mdict))
-        mlist.append(m)
+    if msdf.df is not None:
+        for _, row in msdf.df.iterrows():
+            mdict = {}
+            for k, v in row.items():
+                ok = False
+                if k:
+                    k = str(k)
+                if hasattr(Mapping, k):
+                    mdict[k] = v
+                    ok = True
+                if hasattr(MappingSet, k):
+                    ms[k] = v
+                    ok = True
+                if not ok:
+                    if k not in bad_attrs:
+                        bad_attrs[k] = 1
+                    else:
+                        bad_attrs[k] += 1
+            m = _prepare_mapping(Mapping(**mdict))
+            mlist.append(m)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
-    ms.mappings = mlist
-    for k, v in msdf.metadata.items():
-        if k != "curie_map":
-            ms[k] = v
+    ms.mappings = mlist  # type: ignore
+    if msdf.metadata is not None:
+        for k, v in msdf.metadata.items():
+            if k != "curie_map":
+                ms[k] = v
     return MappingSetDocument(mapping_set=ms, curie_map=msdf.prefixmap)
 
 
 def split_dataframe(
     msdf: MappingSetDataFrame,
 ) -> typing.Mapping[str, MappingSetDataFrame]:
-    df = msdf.df
-    subject_prefixes = set(df["subject_id"].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(df["object_id"].str.split(":", 1, expand=True)[0])
-    relations = set(df["predicate_id"])
+    if msdf.df is None:
+        raise RuntimeError
+    subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
+    object_prefixes = set(msdf.df["object_id"].str.split(":", 1, expand=True)[0])
+    relations = set(msdf.df["predicate_id"])
     return split_dataframe_by_prefix(
         msdf=msdf,
         subject_prefixes=subject_prefixes,
@@ -654,12 +676,12 @@ def split_dataframe_by_prefix(
                 relpre = rel.split(":")[0]
                 relppost = rel.split(":")[1]
                 split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
-
-                dfs = df[
-                    (df["subject_id"].str.startswith(pre_subj + ":"))
-                    & (df["predicate_id"] == rel)
-                    & (df["object_id"].str.startswith(pre_obj + ":"))
-                ]
+                if df is not None:
+                    dfs = df[
+                        (df["subject_id"].str.startswith(pre_subj + ":"))
+                        & (df["predicate_id"] == rel)
+                        & (df["object_id"].str.startswith(pre_obj + ":"))
+                    ]
                 if pre_subj in curie_map and pre_obj in curie_map and len(dfs) > 0:
                     cm = {
                         pre_subj: curie_map[pre_subj],

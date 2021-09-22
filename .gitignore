@@ -19,4 +19,4 @@ sphinx/_build
 sphinx/_static
 sphinx/_templates
 docs/_build
-.vscode/
+.vscode/*

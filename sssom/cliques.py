@@ -1,12 +1,12 @@
-import collections
 import hashlib
 import statistics
+from typing import Any, Dict
 
 import networkx as nx
 import pandas as pd
 
 from .parsers import to_mapping_set_document
-from .sssom_datamodel import MappingSet
+from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
 
@@ -18,41 +18,44 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
     # m = {
     #    "owl:subClassOf",
     # }
-    for mapping in doc.mapping_set.mappings:
-        s = mapping.subject_id
-        o = mapping.object_id
-        p = mapping.predicate_id
-        # TODO: this is copypastad from export_ptable
+    if doc.mapping_set.mappings is not None:
+        for mapping in doc.mapping_set.mappings:
+            if not isinstance(mapping, Mapping):
+                raise TypeError
+            s = mapping.subject_id
+            o = mapping.object_id
+            p = mapping.predicate_id
+            # TODO: this is copypastad from export_ptable
 
-        pi = None
+            pi = None
 
-        if p == "owl:equivalentClass":
-            pi = 2
-        elif p == "skos:exactMatch":
-            pi = 2
-        elif p == "skos:closeMatch":
-            # TODO: consider distributing
-            pi = 2
-        elif p == "owl:subClassOf":
-            pi = 0
-        elif p == "skos:broadMatch":
-            pi = 0
-        elif p == "inverseOf(owl:subClassOf)":
-            pi = 1
-        elif p == "skos:narrowMatch":
-            pi = 1
-        elif p == "owl:differentFrom":
-            pi = 3
-        elif p == "dbpedia-owl:different":
-            pi = 3
+            if p == "owl:equivalentClass":
+                pi = 2
+            elif p == "skos:exactMatch":
+                pi = 2
+            elif p == "skos:closeMatch":
+                # TODO: consider distributing
+                pi = 2
+            elif p == "owl:subClassOf":
+                pi = 0
+            elif p == "skos:broadMatch":
+                pi = 0
+            elif p == "inverseOf(owl:subClassOf)":
+                pi = 1
+            elif p == "skos:narrowMatch":
+                pi = 1
+            elif p == "owl:differentFrom":
+                pi = 3
+            elif p == "dbpedia-owl:different":
+                pi = 3
 
-        if pi == 0:
-            g.add_edge(o, s)
-        elif pi == 1:
-            g.add_edge(s, o)
-        elif pi == 2:
-            g.add_edge(s, o)
-            g.add_edge(o, s)
+            if pi == 0:
+                g.add_edge(o, s)
+            elif pi == 1:
+                g.add_edge(s, o)
+            elif pi == 2:
+                g.add_edge(s, o)
+                g.add_edge(o, s)
     return g
 
 
@@ -65,7 +68,6 @@ def split_into_cliques(msdf: MappingSetDataFrame):
     comp_id = 0
     newdocs = []
     for comp in sorted(gen, key=len, reverse=True):
-        comp: collections.Iterable
         for n in comp:
             node_to_comp[n] = comp_id
         comp_id += 1
@@ -75,15 +77,21 @@ def split_into_cliques(msdf: MappingSetDataFrame):
             )
         )
 
+    if not isinstance(doc.mapping_set.mappings, list):
+        raise TypeError
     for m in doc.mapping_set.mappings:
+        if not isinstance(m, Mapping):
+            raise TypeError
         comp_id = node_to_comp[m.subject_id]
         subdoc = newdocs[comp_id]
+        if not isinstance(subdoc.mapping_set.mappings, list):
+            raise TypeError
         subdoc.mapping_set.mappings.append(m)
     return newdocs
 
 
-def invert_dict(d: dict) -> dict:
-    invdict = {}
+def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
+    invdict: Dict[str, Any] = {}
     for k, v in d.items():
         if v not in invdict:
             invdict[v] = []

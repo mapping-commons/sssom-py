@@ -3,9 +3,22 @@ import json
 import logging
 import os
 import re
-from dataclasses import dataclass
+from collections import defaultdict
+from dataclasses import dataclass, field
 from io import FileIO, StringIO
 from typing import Dict, List, Mapping, Optional, Set, TextIO, Union
+from typing import (
+    Any,
+    DefaultDict,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+)
 from urllib.request import urlopen
 
 import numpy as np
@@ -16,6 +29,7 @@ import yaml
 from .context import get_default_metadata, get_jsonld_context
 from .sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
+from .typehints import Metadata, MetadataType, PrefixMap
 
 SSSOM_READ_FORMATS = [
     "tsv",
@@ -61,17 +75,21 @@ class MappingSetDataFrame:
     A collection of mappings represented as a DataFrame, together with additional metadata
     """
 
-    df: pd.DataFrame = None  # Mappings
-    prefixmap: Dict[str, str] = None  # maps CURIE prefixes to URI bases
-    metadata: Optional[Dict[str, str]] = None  # header metadata excluding prefixes
+    df: Optional[pd.DataFrame] = None  # Mappings
+    #: maps CURIE prefixes to URI bases
+    prefixmap: PrefixMap = field(default_factory=dict)
+    metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
-    def merge(self, msdf2, inplace=True):
+    def merge(
+        self, msdf2: "MappingSetDataFrame", inplace: bool = True
+    ) -> "MappingSetDataFrame":
         """Merges two MappingSetDataframes
 
         Args:
-            msdf2 (MappingSetDataFrame): Secondary MappingSetDataFrame (self => primary)
-            inplace (bool): if true, msdf2 is merged into the calling MappingSetDataFrame, if false, it simply return
-                            the merged data frame.
+            msdf: Secondary MappingSetDataFrame (self => primary)
+            inplace:
+                if true, msdf2 is merged into the calling MappingSetDataFrame, if false, it simply return
+                the merged data frame.
 
         Returns:
             MappingSetDataFrame: Merged MappingSetDataFrame
@@ -81,6 +99,7 @@ class MappingSetDataFrame:
             self.df = msdf.df
             self.prefixmap = msdf.prefixmap
             self.metadata = msdf.metadata
+            # FIXME should return self if inplace
         return msdf
 
     def __str__(self):
@@ -94,9 +113,9 @@ class MappingSetDataFrame:
         description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map(self):
+    def clean_prefix_map(self) -> None:
         prefixes_in_map = get_prefixes_used_in_table(self.df)
-        new_prefixes = dict()
+        new_prefixes: PrefixMap = dict()
         missing_prefix = []
         for prefix in prefixes_in_map:
             if prefix in self.prefixmap:
@@ -140,9 +159,9 @@ class MappingSetDiff:
     this is considered a mapping in common.
     """
 
-    unique_tuples1: Optional[Set[str]] = None
-    unique_tuples2: Optional[Set[str]] = None
-    common_tuples: Optional[Set[str]] = None
+    unique_tuples1: Optional[Set[EntityPair]] = None
+    unique_tuples2: Optional[Set[EntityPair]] = None
+    common_tuples: Optional[Set[EntityPair]] = None
 
     combined_dataframe: Optional[pd.DataFrame] = None
     """
@@ -151,7 +170,7 @@ class MappingSetDiff:
     """
 
 
-def parse(filename) -> pd.DataFrame:
+def parse(filename: str) -> pd.DataFrame:
     """
     parses a TSV to a pandas frame
     """
@@ -161,7 +180,7 @@ def parse(filename) -> pd.DataFrame:
     # return read_pandas(filename)
 
 
-def collapse(df):
+def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """
     collapses rows with same S/P/O and combines confidence
     """
@@ -173,7 +192,7 @@ def collapse(df):
     return df2
 
 
-def sort_sssom_columns(columns: list) -> list:
+def sort_sssom_columns(columns: List[str]) -> List[str]:
     # Ideally, the order of the sssom column names is parsed strictly from sssom.yaml
 
     logging.warning("SSSOM sort columns not implemented")
@@ -188,7 +207,9 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFrame:
+def filter_redundant_rows(
+    df: pd.DataFrame, ignore_predicate: bool = False
+) -> pd.DataFrame:
     """
     removes rows if there is another row with same S/O and higher confidence
 
@@ -207,7 +228,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
-    max_conf = {}
+    max_conf: Dict[Tuple[str, ...], float] = {}
     for _, row in dfmax.iterrows():
         if ignore_predicate:
             max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
@@ -236,7 +257,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate=False) -> pd.DataFr
     return return_df
 
 
-def assign_default_confidence(df: pd.DataFrame):
+def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     # Get rows having numpy.NaN as confidence
     if df is not None and "confidence" not in df.columns:
         df["confidence"] = np.NaN
@@ -256,7 +277,7 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(row, eid: str, mappings: Dict) -> Entity:
+def create_entity(row, eid: str, mappings: Dict[str, Any]) -> Entity:
     logging.warning(f"create_entity() has row parameter ({row}), but not used.")
     e = Entity(id=eid)
     for k, v in mappings.items():
@@ -265,37 +286,32 @@ def create_entity(row, eid: str, mappings: Dict) -> Entity:
     return e
 
 
-def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List]:
+def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
     """
     group mappings by EntityPairs
     """
-    mappings: Dict = {}
+    mappings: DefaultDict[EntityPair, List[pd.Series]] = defaultdict(list)
     for _, row in df.iterrows():
-        sid = row[SUBJECT_ID]
-        oid = row[OBJECT_ID]
-        s = create_entity(
+        subject_entity = create_entity(
             row,
-            sid,
+            row[SUBJECT_ID],
             {
                 "label": SUBJECT_LABEL,
                 "category": SUBJECT_CATEGORY,
                 "source": SUBJECT_SOURCE,
             },
         )
-        o = create_entity(
+        object_entity = create_entity(
             row,
-            oid,
+            row[OBJECT_ID],
             {
                 "label": OBJECT_LABEL,
                 "category": OBJECT_CATEGORY,
                 "source": OBJECT_SOURCE,
             },
         )
-        pair = EntityPair(s, o)
-        if pair not in mappings:
-            mappings[pair] = []
-        mappings[pair].append(row)
-    return mappings
+        mappings[EntityPair(subject_entity, object_entity)].append(row)
+    return dict(mappings)
 
 
 def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
@@ -468,13 +484,15 @@ def merge_msdf(
 
     merged_msdf = MappingSetDataFrame()
     # If msdf2 has a DataFrame
-    if msdf2.df is not None:
+    if msdf1.df is not None and msdf2.df is not None:
         # 'outer' join in pandas == FULL JOIN in SQL
         merged_msdf.df = msdf1.df.merge(msdf2.df, how="outer")
     else:
         merged_msdf.df = msdf1.df
     # merge the non DataFrame elements
-    merged_msdf.prefixmap = dict_merge(msdf2.prefixmap, msdf1.prefixmap, "prefixmap")
+    merged_msdf.prefixmap = dict_merge(
+        source=msdf2.prefixmap, target=msdf1.prefixmap, dict_name="prefixmap"
+    )
     # After a Slack convo with @matentzn, commented out below.
     # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
 
@@ -559,7 +577,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
-    reconciled_df_subset: pd.DataFrame
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
     for _, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
@@ -567,7 +584,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
             & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
-        match_condition_1: Union[bool, ...]
         # match_condition_1[match_condition_1] gives the list of 'True's.
         # In other words, the rows that match the condition (rules declared).
         # Ideally, there should be 1 row. If not apply an extra rule to look for 'HumanCurated'.
@@ -597,12 +613,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
             & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
-        match_condition_2: Union[bool, ...]
         reconciled_df_subset.loc[
             match_condition_2[match_condition_2].index, PREDICATE_ID
         ] = row_2[PREDICATE_ID]
 
-    reconciled_df: pd.DataFrame
     reconciled_df = pd.DataFrame(columns=df.columns)
     for _, row_3 in reconciled_df_subset.iterrows():
         match_condition_3 = (
@@ -611,7 +625,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (df[CONFIDENCE] == row_3[CONFIDENCE])
             & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
         )
-        match_condition_3: Union[bool, ...]
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
         )
@@ -619,20 +632,24 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     return return_df
 
 
-def dict_merge(source: Dict, target: Dict, dict_name: str) -> Dict:
+def dict_merge(
+    *,
+    source: Optional[Dict[str, Any]] = None,
+    target: Dict[str, Any],
+    dict_name: str,
+) -> Dict[str, Any]:
     """
     Takes 2 MappingSetDataFrame elements (prefixmap OR metadata) and merges source => target
 
     Args:
-        source (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-        target (Dict): MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-        dict_name (str): prefixmap or metadata
+        source: MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+        target: MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
+        dict_name: prefixmap or metadata
 
     Returns:
         Dict: merged MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
     """
     if source is not None:
-        k: str
         for k, v in source.items():
             if k not in target:
                 if v not in list(target.values()):
@@ -659,15 +676,18 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     Returns:
         MappingSetDataFrame: MappingSetDataFrame with metadata as columns
     """
-    if bool(msdf.metadata):
+    if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
             if k not in msdf.df.columns:
                 msdf.df[k] = v
     return msdf
 
 
-def get_file_extension(file: TextIO) -> str:
-    filename = file.name
+def get_file_extension(file: Union[str, TextIO]) -> str:
+    if isinstance(file, str):
+        filename = file
+    else:
+        filename = file.name
     parts = filename.split(".")
     if len(parts) > 0:
         f_format = parts[-1]
@@ -692,7 +712,7 @@ def read_csv(filename, comment="#", sep=","):
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
-def read_metadata(filename):
+def read_metadata(filename: str) -> Metadata:
     """
     Read a metadata file (yaml) that is supplied separately from a TSV.
 
@@ -710,35 +730,27 @@ def read_metadata(filename):
             meta = m
         except yaml.YAMLError as exc:
             print(exc)  # FIXME this clobbers the exception. Remove try/except
-    return meta, curie_map
+    return Metadata(prefix_map=curie_map, metadata=meta)
 
 
-def read_pandas(filename: str, sep: Optional[str] = "\t") -> pd.DataFrame:
+def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
     """
     Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
-    :param filename:
+    :param file: The file to read. If no separator is given, this file should be named.
     :param sep: File separator in pandas (\t or ,)
-    :return:
+    :return: A pandas dataframe
     """
-    if not sep:
-        extension = get_file_extension(filename)
-        sep = "\t"
+    if sep is None:
+        extension = get_file_extension(file)
         if extension == "tsv":
             sep = "\t"
         elif extension == "csv":
             sep = ","
         else:
+            sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-
-    # from tempfile import NamedTemporaryFile
-    # with NamedTemporaryFile("r+") as tmp:
-    #    with open(filename, "r") as f:
-    #        for line in f:
-    #            if not line.startswith('#'):
-    #                tmp.write(line + "\n")
-    #    tmp.seek(0)
-    return read_csv(filename, comment="#", sep=sep).fillna("")
+    return read_csv(file, comment="#", sep=sep).fillna("")
 
 
 def extract_global_metadata(msdoc: MappingSetDocument):
@@ -761,13 +773,14 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     # convert MappingSetDocument into MappingSetDataFrame
     ###
     data = []
-    for mapping in doc.mapping_set.mappings:
-        mdict = mapping.__dict__
-        m = {}
-        for key in mdict:
-            if mdict[key]:
-                m[key] = mdict[key]
-        data.append(m)
+    if doc.mapping_set.mappings is not None:
+        for mapping in doc.mapping_set.mappings:
+            mdict = mapping.__dict__
+            m = {}
+            for key in mdict:
+                if mdict[key]:
+                    m[key] = mdict[key]
+            data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
     meta.pop("curie_map", None)
@@ -831,7 +844,7 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
         return pd.DataFrame(columns=KEY_FEATURES)
 
 
-def guess_file_format(filename):
+def guess_file_format(filename: Union[str, TextIO]) -> str:
     extension = get_file_extension(filename)
     if extension in ["owl", "rdf"]:
         return SSSOM_DEFAULT_RDF_SERIALISATION
@@ -843,11 +856,10 @@ def guess_file_format(filename):
         )
 
 
-def prepare_context_from_curie_map(curie_map: dict):
-    meta, default_curie_map = get_default_metadata()
+def prepare_context_from_curie_map(curie_map: Optional[PrefixMap] = None) -> str:
     context = get_jsonld_context()
-    if not curie_map:
-        curie_map = default_curie_map
+    if curie_map is None:
+        curie_map = get_default_metadata().prefix_map
 
     for k, v in curie_map.items():
         if isinstance(v, str):
