@@ -105,14 +105,14 @@ def convert(input: str, output: TextIO, output_format: str):
 @metadata_option
 @click.option(
     "-C",
-    "--mode",
+    "--prefix-map-mode",
     default="metadata_only",
     show_default=True,
     required=True,
     type=click.Choice(
         ["metadata_only", "sssom_default_only", "merged"], case_sensitive=False
     ),
-    help="Defines wether the prefix map in the metadata should be extended or replaced with "
+    help="Defines whether the prefix map in the metadata should be extended or replaced with "
     "the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged",
 )
 @click.option(
@@ -128,32 +128,26 @@ def parse(
     input: str,
     input_format: str,
     metadata: str,
-    mode: str,
+    prefix_map_mode: str,
     clean_prefixes: bool,
     output: TextIO,
 ):
-    """Parses a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
+    """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
 
     Args:
-
-        input (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-        input_format (str): The string denoting the input format.
-        metadata (str): The path to a file containing the sssom metadata (including prefix_map) to be used during parse.
-        mode (str): Curie map mode.
-        clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
-        output (str): The path to the SSSOM TSV output file.
-
-    Returns:
-
-        None.
+        input: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+        input_format: The string denoting the input format.
+        metadata: The path to a file containing the sssom metadata (including prefix_map) to be used during parse.
+        prefix_map_mode: prefix map mode.
+        clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
+        output: The path to the SSSOM TSV output file.
     """
-
     parse_file(
         input_path=input,
         output=output,
         input_format=input_format,
         metadata_path=metadata,
-        mode=mode,
+        prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
     )
 
