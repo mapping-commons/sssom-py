@@ -91,7 +91,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             test_case.get_out_file("tsv"),
             "--input-format",
             test_case.inputformat,
-            "--curie-map-mode",
+            "--prefix-map-mode",
             "merged",
         ]
         if test_case.metadata_file:

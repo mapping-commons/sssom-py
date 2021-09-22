@@ -16,6 +16,7 @@ from sssom.parsers import (
     from_sssom_rdf,
     read_sssom_table,
 )
+from sssom.util import PREFIX_MAP_KEY
 from sssom.writers import write_table
 from tests.test_data import test_data_dir, test_out_dir
 
@@ -46,13 +47,12 @@ class TestParse(unittest.TestCase):
 
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
             df_meta = yaml.safe_load(file)
-            self.df_curie_map = df_meta["curie_map"]
+            self.df_prefix_map = df_meta.pop(PREFIX_MAP_KEY)
             self.df_meta = df_meta
-            self.df_meta.pop("curie_map", None)
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
-        self.curie_map, self.metadata = get_default_metadata()
+        self.prefix_map, self.metadata = get_default_metadata()
 
     def test_parse_sssom_dataframe(self):
         input_path = f"{test_data_dir}/basic.tsv"
@@ -79,7 +79,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_obographs(self):
         msdf = from_obographs(
-            jsondoc=self.obographs, curie_map=self.curie_map, meta=self.metadata
+            jsondoc=self.obographs, prefix_map=self.prefix_map, meta=self.metadata
         )
         path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
         with open(path, "w") as file:
@@ -92,7 +92,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_tsv(self):
         msdf = from_sssom_dataframe(
-            df=self.df, curie_map=self.df_curie_map, meta=self.df_meta
+            df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta
         )
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
         with open(path, "w") as file:
@@ -105,7 +105,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_alignment_minidom(self):
         msdf = from_alignment_minidom(
-            dom=self.alignmentxml, curie_map=self.curie_map, meta=self.metadata
+            dom=self.alignmentxml, prefix_map=self.prefix_map, meta=self.metadata
         )
         path = os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
         with open(path, "w") as file:
@@ -118,7 +118,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_sssom_rdf(self):
         msdf = from_sssom_rdf(
-            g=self.rdf_graph, curie_map=self.df_curie_map, meta=self.metadata
+            g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
         with open(path, "w") as file:
@@ -131,7 +131,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_sssom_json(self):
         msdf = from_sssom_json(
-            jsondoc=self.json, curie_map=self.df_curie_map, meta=self.metadata
+            jsondoc=self.json, prefix_map=self.df_prefix_map, meta=self.metadata
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")
         with open(path, "w") as file:

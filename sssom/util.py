@@ -30,6 +30,9 @@ from .sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
+#: The key that's used in the YAML section of an SSSOM file
+PREFIX_MAP_KEY = "curie_map"
+
 SSSOM_READ_FORMATS = [
     "tsv",
     "rdf",
@@ -76,7 +79,7 @@ class MappingSetDataFrame:
 
     df: Optional[pd.DataFrame] = None  # Mappings
     #: maps CURIE prefixes to URI bases
-    prefixmap: PrefixMap = field(default_factory=dict)
+    prefix_map: PrefixMap = field(default_factory=dict)
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
     def merge(
@@ -96,7 +99,7 @@ class MappingSetDataFrame:
         msdf = merge_msdf(msdf1=self, msdf2=msdf2)
         if inplace:
             self.df = msdf.df
-            self.prefixmap = msdf.prefixmap
+            self.prefix_map = msdf.prefix_map
             self.metadata = msdf.metadata
             # FIXME should return self if inplace
         return msdf
@@ -104,7 +107,7 @@ class MappingSetDataFrame:
     def __str__(self):
         description = "SSSOM data table \n"
         description += f"Number of mappings: {len(self.df.index)} \n"
-        description += f"Number of prefixes: {len(self.prefixmap)} \n"
+        description += f"Number of prefixes: {len(self.prefix_map)} \n"
         description += f"Metadata: {json.dumps(self.metadata)} \n"
         description += "\nFirst rows of data: \n"
         description += self.df.head().to_string() + "\n"
@@ -117,8 +120,8 @@ class MappingSetDataFrame:
         new_prefixes: PrefixMap = dict()
         missing_prefix = []
         for prefix in prefixes_in_map:
-            if prefix in self.prefixmap:
-                new_prefixes[prefix] = self.prefixmap[prefix]
+            if prefix in self.prefix_map:
+                new_prefixes[prefix] = self.prefix_map[prefix]
             else:
                 logging.warning(
                     f"{prefix} is used in the data frame but does not exist in prefix map"
@@ -126,7 +129,7 @@ class MappingSetDataFrame:
                 missing_prefix.append(prefix)
         if missing_prefix:
             self.df = filter_out_prefixes(self.df, missing_prefix)
-        self.prefixmap = new_prefixes
+        self.prefix_map = new_prefixes
 
 
 @dataclass
@@ -592,14 +595,14 @@ def merge_msdf(
     else:
         merged_msdf.df = msdf1.df
     # merge the non DataFrame elements
-    merged_msdf.prefixmap = dict_merge(
-        source=msdf2.prefixmap, target=msdf1.prefixmap, dict_name="prefixmap"
+    merged_msdf.prefix_map = dict_merge(
+        source=msdf2.prefix_map, target=msdf1.prefix_map, dict_name="prefix_map"
     )
     # After a Slack convo with @matentzn, commented out below.
     # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
 
     """if inplace:
-            msdf1.prefixmap = merged_msdf.prefixmap
+            msdf1.prefix_map = merged_msdf.prefix_map
             msdf1.metadata = merged_msdf.metadata
             msdf1.df = merged_msdf.df"""
 
@@ -740,32 +743,22 @@ def dict_merge(
     target: Dict[str, Any],
     dict_name: str,
 ) -> Dict[str, Any]:
-    """
-    Takes 2 MappingSetDataFrame elements (prefixmap OR metadata) and merges source => target
-
-    Args:
-        source: MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-        target: MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-        dict_name: prefixmap or metadata
-
-    Returns:
-        Dict: merged MappingSetDataFrame.prefixmap / MappingSetDataFrame.metadata
-    """
-    if source is not None:
-        for k, v in source.items():
-            if k not in target:
-                if v not in list(target.values()):
-                    target[k] = v
-                else:
-                    common_values = [i for i, val in target.items() if val == v]
-                    raise ValueError(
-                        f"Value [{v}] is present in {dict_name} for multiple keys [{common_values}]."
-                    )
+    """Merge two dictionaries with a certain structure."""
+    if source is None:
+        return target
+    for k, v in source.items():
+        if k not in target:
+            if v not in list(target.values()):
+                target[k] = v
             else:
-                if target[k] != v:
-                    raise ValueError(
-                        f"{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different."
-                    )
+                common_values = [i for i, val in target.items() if val == v]
+                raise ValueError(
+                    f"Value [{v}] is present in {dict_name} for multiple keys [{common_values}]."
+                )
+        elif target[k] != v:
+            raise ValueError(
+                f"{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different."
+            )
     return target
 
 
@@ -815,24 +808,13 @@ def read_csv(filename, comment="#", sep=","):
 
 
 def read_metadata(filename: str) -> Metadata:
-    """
-    Read a metadata file (yaml) that is supplied separately from a TSV.
-
-    :param filename: location of file
-    :return: two objects, a metadata and a curie_map object
-    """
-    meta = {}
-    curie_map = {}
-    with open(filename, "r") as stream:
-        try:
-            m = yaml.safe_load(stream)
-            if "curie_map" in m:
-                curie_map = m["curie_map"]
-            m.pop("curie_map", None)
-            meta = m
-        except yaml.YAMLError as exc:
-            print(exc)  # FIXME this clobbers the exception. Remove try/except
-    return Metadata(prefix_map=curie_map, metadata=meta)
+    """Read a metadata file (yaml) that is supplied separately from a TSV."""
+    prefix_map = {}
+    with open(filename) as file:
+        metadata = yaml.safe_load(file)
+    if PREFIX_MAP_KEY in metadata:
+        prefix_map = metadata.pop(PREFIX_MAP_KEY)
+    return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
 def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
@@ -856,7 +838,7 @@ def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataF
 
 
 def extract_global_metadata(msdoc: MappingSetDocument):
-    meta = {"curie_map": msdoc.curie_map}
+    meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
     for key in [
         slot
@@ -885,8 +867,8 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
             data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
-    meta.pop("curie_map", None)
-    msdf = MappingSetDataFrame(df=df, prefixmap=doc.curie_map, metadata=meta)
+    meta.pop(PREFIX_MAP_KEY, None)
+    msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     return msdf
 
 
@@ -911,18 +893,38 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
-def curie_from_uri(uri: str, curie_map: Mapping[str, str]):
+def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
+    """Parse a CURIE from an IRI.
+
+    :param uri: The URI to parse. If this is already a CURIE, return directly.
+    :param prefix_map: The prefix map against which the IRI is checked
+    :return: A CURIE
+    :raises NoCURIEException: if a CURIE can not be parsed
+
+    Example parsing:
+    >>> m = {"hgnc.genegroup": "https://example.org/hgnc.genegroup:"}
+    >>> curie_from_uri("https://example.org/hgnc.genegroup:1234", {})
+    'hgnc.genegroup:1234'
+
+    Example CURIE passthrough:
+    >>> curie_from_uri("hgnc:1234", {})
+    'hgnc:1234'
+    >>> curie_from_uri("hgnc.genegroup:1234", {})
+    'hgnc.genegroup:1234'
+    """
+    # TODO consider replacing with :func:`bioregistry.curie_from_iri`
+    # FIXME what if the curie has a subspace in it? RE will fail
     if is_curie(uri):
         return uri
-    for prefix in curie_map:
-        uri_prefix = curie_map[prefix]
+    for prefix in prefix_map:
+        uri_prefix = prefix_map[prefix]
         if uri.startswith(uri_prefix):
             remainder = uri.replace(uri_prefix, "")
             return f"{prefix}:{remainder}"
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
-def get_prefixes_used_in_table(df: pd.DataFrame):
+def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     prefixes = []
     for col in KEY_FEATURES:
         for v in df[col].values:
@@ -958,12 +960,12 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
         )
 
 
-def prepare_context_from_curie_map(curie_map: Optional[PrefixMap] = None) -> str:
+def prepare_context(prefix_map: Optional[PrefixMap] = None):
     context = get_jsonld_context()
-    if curie_map is None:
-        curie_map = get_default_metadata().prefix_map
+    if prefix_map is None:
+        prefix_map = get_default_metadata().prefix_map
 
-    for k, v in curie_map.items():
+    for k, v in prefix_map.items():
         if isinstance(v, str):
             if k not in context["@context"]:
                 context["@context"][k] = v
@@ -974,7 +976,11 @@ def prepare_context_from_curie_map(curie_map: Optional[PrefixMap] = None) -> str
                         f"but with a different value than {v}. Overwriting!"
                     )
                     context["@context"][k] = v
-    return json.dumps(context)
+    return context
+
+
+def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
+    return json.dumps(prepare_context(prefix_map), **kwargs)
 
 
 def raise_for_bad_path(file_path: str) -> None:

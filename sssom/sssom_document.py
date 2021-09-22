@@ -17,9 +17,14 @@ class MappingSetDocument:
     The main part of the document: a set of mappings plus metadata
     """
 
-    curie_map: PrefixMap
+    prefix_map: PrefixMap
     """
     Mappings between ID prefixes and URI Bases, used to map CURIEs to URIs.
-    Note that the CURIE map is not part of the core SSSOM model, hence it belongs here in the document
+    Note that the prefix map is not part of the core SSSOM model, hence it belongs here in the document
     object
     """
+
+    @classmethod
+    def empty(cls, prefix_map: PrefixMap) -> "MappingSetDocument":
+        """Get an empty mapping set document with the given prefix map."""
+        return cls(prefix_map=prefix_map, mapping_set=MappingSet(mappings=[]))

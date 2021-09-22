@@ -30,8 +30,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         for test in test_cases:
             with self.subTest():
                 read_func = get_parsing_function(test.inputformat, test.filepath)
-                # mdoc = read_func(test.filepath, curie_map=test.curie_map)
-                msdf = read_func(test.filepath, curie_map=test.curie_map)
+                msdf = read_func(test.filepath, prefix_map=test.prefix_map)
                 mdoc = to_mapping_set_document(msdf)
                 logging.info(f"Testing {test.filepath}")
                 self.assertEqual(

@@ -6,7 +6,7 @@ import networkx as nx
 import pandas as pd
 
 from .parsers import to_mapping_set_document
-from .sssom_datamodel import Mapping, MappingSet
+from .sssom_datamodel import Mapping
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
 
@@ -71,11 +71,7 @@ def split_into_cliques(msdf: MappingSetDataFrame):
         for n in comp:
             node_to_comp[n] = comp_id
         comp_id += 1
-        newdocs.append(
-            MappingSetDocument(
-                curie_map=doc.curie_map, mapping_set=MappingSet(mappings=[])
-            )
-        )
+        newdocs.append(MappingSetDocument.empty(prefix_map=doc.prefix_map))
 
     if not isinstance(doc.mapping_set.mappings, list):
         raise TypeError

@@ -17,7 +17,7 @@ class EndpointConfig:
     predmap: Dict[str, str]
     predicates: Optional[List[str]]
     limit: Optional[int]
-    curie_map: Optional[Dict[str, str]]
+    prefix_map: Optional[Dict[str, str]]
     include_object_labels: bool = False
 
 
@@ -80,9 +80,9 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         row = {k: v["value"] for k, v in result.items()}
         rows.append(curiefy_row(row, config))
     df = pd.DataFrame(rows)
-    if config.curie_map is None:
+    if config.prefix_map is None:
         raise TypeError
-    return MappingSetDataFrame(df=df, prefixmap=config.curie_map)
+    return MappingSetDataFrame(df=df, prefix_map=config.prefix_map)
 
 
 def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str]:
@@ -90,18 +90,18 @@ def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str
 
 
 def contract_uri(uristr: str, config: EndpointConfig) -> str:
-    if config.curie_map is None:
+    if config.prefix_map is None:
         return uristr
-    for k, v in config.curie_map.items():
+    for k, v in config.prefix_map.items():
         if uristr.startswith(v):
             return uristr.replace(v, f"{k}:")
     return uristr
 
 
 def expand_curie(curie: str, config: EndpointConfig) -> URIRef:
-    if config.curie_map is None:
+    if config.prefix_map is None:
         return URIRef(curie)
-    for k, v in config.curie_map.items():
+    for k, v in config.prefix_map.items():
         prefix = f"{k}:"
         if curie.startswith(prefix):
             return URIRef(curie.replace(prefix, v))
