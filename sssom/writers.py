@@ -41,9 +41,7 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
 def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
-    """
-    dataframe 2 tsv
-    """
+    """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
         raise TypeError
 
@@ -70,9 +68,7 @@ def write_rdf(
     file: TextIO,
     serialisation: Optional[str] = None,
 ) -> None:
-    """
-    dataframe 2 tsv
-    """
+    """Write a mapping set dataframe to the file as RDF."""
     if serialisation is None:
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
     elif serialisation not in RDF_FORMATS:
@@ -88,9 +84,7 @@ def write_rdf(
 
 
 def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
-    """
-    dataframe 2 tsv
-    """
+    """Write a mapping set dataframe to the file as JSON."""
     if serialisation == "json":
         data = to_json(msdf)
         json.dump(data, output, indent=2)
@@ -106,6 +100,7 @@ def write_owl(
     file: TextIO,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
+    """Write a mapping set dataframe to the file as OWL."""
     if serialisation not in RDF_FORMATS:
         logging.warning(
             f"Serialisation {serialisation} is not supported, "
@@ -123,6 +118,7 @@ def write_owl(
 
 
 def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
+    """Convert a mapping set dataframe to a dataframe."""
     data = []
     doc = to_mapping_set_document(msdf)
     if doc.mapping_set.mappings is None:
@@ -139,16 +135,7 @@ def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
 
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
-    """
-
-    Args:
-        msdf: The MappingSetDataFrame (SSSOM table)
-
-    Returns:
-        an rdfib Graph obect
-
-    """
-
+    """Convert a mapping set dataframe to OWL in an RDF graph."""
     graph = to_rdf_graph(msdf=msdf)
 
     # if MAPPING_SET_ID in msdf.metadata:
@@ -241,14 +228,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 
 
 def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
-    """
-
-    Args:
-        msdf:
-
-    Returns:
-
-    """
+    """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
     cntxt = prepare_context_str(doc.prefix_map)
 
@@ -298,15 +278,7 @@ def _tmp_as_rdf_graph(graph, jsonobj):
 
 
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
-    """
-
-    Args:
-        msdf: A SSSOM Data Table
-
-    Returns:
-        The standard SSSOM json representation
-    """
-
+    """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
     context = prepare_context_str(doc.prefix_map)
     data = JSONDumper().dumps(doc.mapping_set, contexts=context)

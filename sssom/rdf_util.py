@@ -14,9 +14,7 @@ def rewire_graph(
     subject_to_object: bool = True,
     precedence: Optional[List[str]] = None,
 ) -> int:
-    """
-    rewires an RDF Graph replacing using equivalence mappings
-    """
+    """Rewire an RDF Graph replacing using equivalence mappings."""
     pm = mset.prefix_map
     mdoc = to_mapping_set_document(mset)
     rewire_map: Dict[EntityId, EntityId] = {}

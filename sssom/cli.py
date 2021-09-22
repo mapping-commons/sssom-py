@@ -74,7 +74,7 @@ fields_option = click.option(
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
 def main(verbose: int, quiet: bool):
-    """Main."""
+    """Run the SSSOM CLI."""
     if verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
     elif verbose == 1:
@@ -90,7 +90,9 @@ def main(verbose: int, quiet: bool):
 @output_option
 @output_format_option
 def convert(input: str, output: TextIO, output_format: str):
-    """Convert file (currently only supports conversion to RDF)
+    """Convert a file.
+
+    .. warning:: currently only supports conversion to RDF)
 
     Example:
         sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
@@ -155,17 +157,7 @@ def parse(
 @main.command()
 @input_argument
 def validate(input: str):
-    """Takes 1 sssom file as input and produce an error report
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file
-
-    Returns:
-
-        None.
-    """
-
+    """Produce an error report for an SSSOM file."""
     validate_file(input_path=input)
 
 
@@ -173,18 +165,7 @@ def validate(input: str):
 @input_argument
 @output_directory_option
 def split(input: str, output_directory: str):
-    """Split input file into multiple output broken down by prefixes
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file.
-        output_directory (str): Output directory path.
-
-    Returns:
-
-        None.
-    """
-
+    """Split input file into multiple output broken down by prefixes."""
     split_file(input_path=input, output_directory=output_directory)
 
 
@@ -193,19 +174,8 @@ def split(input: str, output_directory: str):
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
 def ptable(input, output: TextIO, inverse_factor):
-    """Write ptable (kboom/boomer input) should maybe move to boomer (but for now it can live here, so cjm can tweak
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file.
-        output (str): the Output file
-        inverse_factor (str): Inverse factor.
-
-    Returns:
-
-        None
-
-    """
+    """Convert an SSSOM file to a ptable for kboom/boomer."""
+    # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     logging.warning(
         f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
     )
@@ -222,17 +192,7 @@ def ptable(input, output: TextIO, inverse_factor):
 @input_argument
 @output_option
 def dedupe(input: str, output: TextIO):
-    """Remove lower confidence duplicate lines.
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file.
-        output (str): Output TSV/SSSOM file.
-
-    Returns:
-
-        None.
-    """
+    """Remove lower confidence duplicate lines from an SSSOM file."""
     # df = parse(input)
     msdf = read_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
@@ -248,8 +208,7 @@ def dedupe(input: str, output: TextIO):
 @click.argument("inputs", nargs=-1)
 @output_option
 def dosql(query: str, inputs: List[str], output: TextIO):
-    """
-    Run a SQL query over one or more sssom files.
+    """Run a SQL query over one or more SSSOM files.
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
 
@@ -262,15 +221,6 @@ def dosql(query: str, inputs: List[str], output: TextIO):
     Example:
         `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
-
-    Args:
-        query (str): SQL query. Use "df" as table name.
-        inputs (List): List of input files.
-        output (str): Output TSV/SSSOM file.
-
-    Returns:
-        None.
-
     """
     # should start with from_tsv and MOST should return write_sssom
     n = 1
@@ -334,24 +284,12 @@ def sparql(
 @output_option
 @click.argument("inputs", nargs=2)
 def diff(inputs: Tuple[str, str], output: TextIO):
-    """
-    Compare two SSSOM files.
+    """Compare two SSSOM files.
+
     The output is a new SSSOM file with the union of all mappings, and
     injected comments indicating uniqueness to set1 or set2.
-
-    Args:
-
-        inputs (tuple): A tuple of input filenames
-        output (str): Output TSV/SSSOM file.
-
-    Returns:
-
-        None.
     """
-
-    (input1, input2) = inputs
-    # df1 = parse(input1)
-    # df2 = parse(input2)
+    input1, input2 = inputs
     msdf1 = read_sssom_table(input1)
     msdf2 = read_sssom_table(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
@@ -372,27 +310,13 @@ def diff(inputs: Tuple[str, str], output: TextIO):
 @output_directory_option
 @click.argument("inputs", nargs=-1)
 def partition(inputs: List[str], output_directory: str):
-    """Partitions an SSSOM file into multiple files, where each
-    file is a strongly connected component.
-
-    Args:
-
-        inputs (List): List of input files.
-        output_directory (str): Output directory path.
-
-    Returns:
-
-        None.
-    """
-
+    """Partition an SSSOM into one file for each strongly connected component."""
     docs = [read_sssom_table(input) for input in inputs]
     doc = docs.pop()
     """for d2 in docs:
         doc.mapping_set.mappings += d2.mapping_set.mappings"""
     cliquedocs = split_into_cliques(doc)
-    n = 0
-    for cdoc in cliquedocs:
-        n += 1
+    for n, cdoc in enumerate(cliquedocs, start=1):
         ofn = f"{output_directory}/clique_{n}.sssom.tsv"
         # logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
         # logging.info(f'Example: {cdoc.mapping_set.mappings[0].subject_id}')
@@ -409,22 +333,7 @@ def partition(inputs: List[str], output_directory: str):
 @metadata_option
 @click.option("-s", "--statsfile")
 def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
-    """Partitions an SSSOM file into multiple files, where each
-    file is a strongly connected component.
-
-    The data dictionary for the output is in cliquesummary.yaml
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file
-        output (str): Output TSV/SSSOM file
-        metadata (str): Metadata.
-        statsfile (str): Stats File.
-
-    Returns:
-
-        None.
-    """
+    """Calculate summaries for each clique in a SSSOM file."""
     import yaml
 
     if metadata is None:
@@ -446,21 +355,7 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
 @transpose_option
 @fields_option
 def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
-    """
-    Write sssom summary cross-tabulated by categories.
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file
-        output (str): Output TSV/SSSOM file
-        transpose (bool): Yes/No
-        fields (Type):
-
-    Returns:
-
-        None.
-    """
-
+    """Write sssom summary cross-tabulated by categories."""
     df = remove_unmatched(read_sssom_table(input).df)
     # df = parse(input)
     logging.info(f"#CROSSTAB ON {fields}")
@@ -477,19 +372,7 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @fields_option
 @input_argument
 def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
-    """Correlations
-
-    Args:
-
-        input (str): Input file. For e.g.: SSSOM tsv file
-        output (str): Output TSV/SSSOM file
-        transpose (bool): Yes/No
-        fields (Type): Fields.
-
-    Returns:
-
-        None.
-    """
+    """Calculate correlations."""
     msdf = read_sssom_table(input)
     df = remove_unmatched(msdf.df)
     # df = remove_unmatched(parse(input))
@@ -535,20 +418,12 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
 )
 @output_option
 def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
-    """
-    Merging msdf2 into msdf1,
-        if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
-            reconcile (if msdf contains a higher confidence _negative_ mapping,
-            then remove lower confidence positive one. If confidence is the same,
-            prefer HumanCurated. If both HumanCurated, prefer negative mapping).
+    """Merge msdf2 into msdf1.
 
-        Args:
-            inputs: All MappingSetDataFrames that need to be merged
-            output: SSSOM file containing the merged output
-            reconcile (bool, optional): [description]. Defaults to True.
-
-        Returns:
-
+    if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
+        reconcile (if msdf contains a higher confidence _negative_ mapping,
+        then remove lower confidence positive one. If confidence is the same,
+        prefer HumanCurated. If both HumanCurated, prefer negative mapping).
     """
     (input1, input2) = inputs[:2]
     msdf1 = read_sssom_table(input1)
@@ -584,10 +459,9 @@ def rewire(
     input_format,
     output_format,
 ):
-    """Rewire an ontology using equivalent classes/properties from a mapping file
+    """Rewire an ontology using equivalent classes/properties from a mapping file.
 
     Example:
-
         sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
     """
     msdf = read_sssom_table(mapping_file)

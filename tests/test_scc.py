@@ -9,9 +9,7 @@ data_dir = os.path.join(cwd, "data")
 
 
 class TestSCC(unittest.TestCase):
-    """
-    Tests strongly connected components
-    """
+    """Tests strongly connected components."""
 
     def setUp(self) -> None:
         self.mset = read_sssom_table(f"{data_dir}/basic.tsv")

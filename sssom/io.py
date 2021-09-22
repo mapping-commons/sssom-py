@@ -37,7 +37,7 @@ def parse_file(
     prefix_map_mode: Optional[str] = None,
     clean_prefixes: bool = True,
 ) -> None:
-    """
+    """Parse an SSSOM metadata file and write to a table.
 
     Args:
         input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml

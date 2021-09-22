@@ -40,9 +40,7 @@ def read_sssom_table(
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
-    """
-    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
-    """
+    """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     df = read_pandas(file_path)
 
@@ -77,9 +75,7 @@ def read_sssom_rdf(
     meta: Dict[str, str] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> MappingSetDataFrame:
-    """
-    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
-    """
+    """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
@@ -92,9 +88,7 @@ def read_sssom_rdf(
 def read_sssom_json(
     file_path: str, prefix_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
-    """
-    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
-    """
+    """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
@@ -158,9 +152,7 @@ def _get_prefix_map_and_metadata(
 def read_alignment_xml(
     file_path: str, prefix_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
-    """
-    parses a TSV -> MappingSetDocument -> MappingSetDataFrame
-    """
+    """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
     raise_for_bad_path(file_path)
 
     metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
@@ -181,8 +173,8 @@ def from_sssom_dataframe(
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
-    """
-    Converts a dataframe to a MappingSetDataFrame
+    """Convert a dataframe to a MappingSetDataFrame.
+
     :param df:
     :param prefix_map:
     :param meta:
@@ -230,16 +222,13 @@ def from_sssom_rdf(
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[Set[str]] = None,
 ) -> MappingSetDataFrame:
-    """
-    Converts an SSSOM RDF graph into a SSSOM data table
+    """Convert an SSSOM RDF graph into a SSSOM data table.
+
     Args:
         g: the Graph (rdflib)
         prefix_map: A dictionary containing the prefix map
         meta: Potentially additional metadata
         mapping_predicates: A set of predicates that should be extracted from the RDF graph
-
-    Returns:
-
     """
     prefix_map = _ensure_prefix_map(prefix_map)
 
@@ -319,8 +308,8 @@ def from_sssom_json(
 def from_alignment_minidom(
     dom: Document, *, prefix_map: PrefixMap, meta: MetadataType
 ) -> MappingSetDataFrame:
-    """
-    Reads a minidom Document object
+    """Read a minidom Document object.
+
     :param dom: XML (minidom) object
     :param prefix_map:
     :param meta: Optional meta data
@@ -374,8 +363,7 @@ def from_alignment_minidom(
 def from_obographs(
     jsondoc: Dict, *, prefix_map: PrefixMap, meta: Optional[MetadataType] = None
 ) -> MappingSetDataFrame:
-    """
-    Converts a obographs json object to an SSSOM data frame
+    """Convert a obographs json object to an SSSOM data frame.
 
     Args:
         jsondoc: The JSON object representing the ontology in obographs format
@@ -661,7 +649,7 @@ def split_dataframe(
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
 ) -> typing.Mapping[str, MappingSetDataFrame]:
-    """
+    """Split a mapping set dataframe by prefix.
 
     :param msdf: An SSSOM MappingSetDataFrame
     :param subject_prefixes: a list of prefixes pertaining to the subject
