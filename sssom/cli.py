@@ -58,7 +58,7 @@ metadata_option = click.option(
     "--metadata",
     required=False,
     type=click.Path(),
-    help="The path to a file containing the sssom metadata (including curie_map) to be used.",
+    help="The path to a file containing the sssom metadata (including prefix_map) to be used.",
 )
 transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
 fields_option = click.option(
@@ -105,15 +105,15 @@ def convert(input: str, output: TextIO, output_format: str):
 @metadata_option
 @click.option(
     "-C",
-    "--curie-map-mode",
+    "--prefix-map-mode",
     default="metadata_only",
     show_default=True,
     required=True,
     type=click.Choice(
         ["metadata_only", "sssom_default_only", "merged"], case_sensitive=False
     ),
-    help="Defines wether the curie map in the metadata should be extended or replaced with "
-    "the SSSOM default curie map. Must be one of metadata_only, sssom_default_only, merged",
+    help="Defines wether the prefix map in the metadata should be extended or replaced with "
+    "the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged",
 )
 @click.option(
     "-p",
@@ -128,7 +128,7 @@ def parse(
     input: str,
     input_format: str,
     metadata: str,
-    curie_map_mode: str,
+    prefix_map_mode: str,
     clean_prefixes: bool,
     output: TextIO,
 ):
@@ -138,8 +138,8 @@ def parse(
 
         input (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
         input_format (str): The string denoting the input format.
-        metadata (str): The path to a file containing the sssom metadata (including curie_map) to be used during parse.
-        curie_map_mode (str): Curie map mode.
+        metadata (str): The path to a file containing the sssom metadata (including prefix_map) to be used during parse.
+        prefix_map_mode (str): Curie map mode.
         clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
         output (str): The path to the SSSOM TSV output file.
 
@@ -153,7 +153,7 @@ def parse(
         output=output,
         input_format=input_format,
         metadata_path=metadata,
-        curie_map_mode=curie_map_mode,
+        prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
     )
 
@@ -243,7 +243,7 @@ def dedupe(input: str, output: TextIO):
     msdf = read_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
     msdf_out = MappingSetDataFrame(
-        df=df, prefixmap=msdf.prefixmap, metadata=msdf.metadata
+        df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata
     )
     # df.to_csv(output, sep="\t", index=False)
     write_table(msdf_out, output)
@@ -328,10 +328,10 @@ def sparql(
     if object_labels is not None:
         endpoint.include_object_labels = object_labels
     if prefix is not None:
-        if endpoint.curie_map is None:
-            endpoint.curie_map = {}
+        if endpoint.prefix_map is None:
+            endpoint.prefix_map = {}
         for k, v in prefix:
-            endpoint.curie_map[k] = v
+            endpoint.prefix_map[k] = v
     msdf = query_mappings(endpoint)
     write_table(msdf, output)
 

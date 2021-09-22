@@ -15,13 +15,14 @@ from rdflib.namespace import OWL, RDF
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
 from .util import (
+    PREFIX_MAP_KEY,
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     SSSOM_URI_PREFIX,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
-    prepare_context_from_curie_map,
+    prepare_context_str,
 )
 
 # noinspection PyProtectedMember
@@ -53,8 +54,8 @@ def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") ->
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
         meta.update(msdf.metadata)
-    if msdf.prefixmap is not None:
-        meta["curie_map"] = msdf.prefixmap
+    if msdf.prefix_map is not None:
+        meta[PREFIX_MAP_KEY] = msdf.prefix_map
 
     lines = yaml.safe_dump(meta).split("\n")
     lines = [f"# {line}" for line in lines if line != ""]
@@ -92,9 +93,6 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
     """
     if serialisation == "json":
         data = to_json(msdf)
-        # doc = to_mapping_set_document(msdf)
-        # context = prepare_context_from_curie_map(doc.curie_map)
-        # data = JSONDumper().dumps(doc.mapping_set, contexts=context)
         json.dump(data, output, indent=2)
 
     else:
@@ -252,7 +250,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
 
     """
     doc = to_mapping_set_document(msdf)
-    cntxt = prepare_context_from_curie_map(doc.curie_map)
+    cntxt = prepare_context_str(doc.prefix_map)
 
     # json_obj = to_json(msdf)
     # g = Graph()
@@ -260,7 +258,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     # print(g.serialize(format="xml"))
 
     graph = _temporary_as_rdf_graph(
-        element=doc.mapping_set, contexts=cntxt, namespaces=doc.curie_map
+        element=doc.mapping_set, contexts=cntxt, namespaces=doc.prefix_map
     )
     # print(graph.serialize(format="turtle").decode())
     return graph
@@ -310,7 +308,7 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """
 
     doc = to_mapping_set_document(msdf)
-    context = prepare_context_from_curie_map(doc.curie_map)
+    context = prepare_context_str(doc.prefix_map)
     data = JSONDumper().dumps(doc.mapping_set, contexts=context)
     json_obj = json.loads(data)
     return json_obj

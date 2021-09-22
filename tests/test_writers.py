@@ -29,7 +29,7 @@ class TestWrite(unittest.TestCase):
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         with open(path_1, "w") as file:
             write_rdf(self.msdf, file)
-        msdf = read_sssom_rdf(path_1, self.msdf.prefixmap)
+        msdf = read_sssom_rdf(path_1, self.msdf.prefix_map)
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,

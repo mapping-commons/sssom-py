@@ -24,30 +24,30 @@ def get_external_jsonld_context():
 
 def get_built_in_prefix_map() -> PrefixMap:
     contxt = get_jsonld_context()
-    curie_map = {}
+    prefix_map = {}
     for key in contxt["@context"]:
         if key in SSSOM_BUILT_IN_PREFIXES:
             v = contxt["@context"][key]
             if isinstance(v, str):
-                curie_map[key] = v
-    return curie_map
+                prefix_map[key] = v
+    return prefix_map
 
 
 def add_built_in_prefixes_to_prefix_map(
-    prefixmap: Optional[PrefixMap] = None,
+    prefix_map: Optional[PrefixMap] = None,
 ) -> PrefixMap:
     builtinmap = get_built_in_prefix_map()
-    if not prefixmap:
-        prefixmap = builtinmap
+    if not prefix_map:
+        prefix_map = builtinmap
     else:
         for k, v in builtinmap.items():
-            if k not in prefixmap:
-                prefixmap[k] = v
-            elif builtinmap[k] != prefixmap[k]:
+            if k not in prefix_map:
+                prefix_map[k] = v
+            elif builtinmap[k] != prefix_map[k]:
                 logging.warning(
-                    f"Built-in prefix {k} is specified ({prefixmap[k]}) but differs from default ({builtinmap[k]})"
+                    f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
-    return prefixmap
+    return prefix_map
 
 
 def get_default_metadata() -> Metadata:
@@ -71,6 +71,6 @@ def get_default_metadata() -> Metadata:
             else:
                 if prefix_map[key] != v:
                     logging.warning(
-                        f"{key} is already in curie map ({prefix_map[key]}, but with a different value than {v}"
+                        f"{key} is already in prefix map ({prefix_map[key]}, but with a different value than {v}"
                     )
     return Metadata(prefix_map=prefix_map, metadata=metadata)

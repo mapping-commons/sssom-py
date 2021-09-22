@@ -2,6 +2,8 @@ import os
 
 import yaml
 
+from sssom.util import PREFIX_MAP_KEY
+
 cwd = os.path.abspath(os.path.dirname(__file__))
 test_data_dir = os.path.join(cwd, "data")
 test_out_dir = os.path.join(cwd, "tmp")
@@ -70,10 +72,7 @@ class SSSOMTestCase:
         self.ct_graph_queries_rdf = self._query_tuple(
             config, "ct_graph_queries_rdf", queries
         )
-        if "curie_map" in config:
-            self.curie_map = config["curie_map"]
-        else:
-            self.curie_map = None
+        self.prefix_map = config.pop(PREFIX_MAP_KEY, None)
 
     def _query_tuple(self, config, tuple_id, queries_dict):
         queries = []
