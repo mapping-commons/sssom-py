@@ -105,7 +105,7 @@ def convert(input: str, output: TextIO, output_format: str):
 @metadata_option
 @click.option(
     "-C",
-    "--prefix-map-mode",
+    "--mode",
     default="metadata_only",
     show_default=True,
     required=True,
@@ -128,7 +128,7 @@ def parse(
     input: str,
     input_format: str,
     metadata: str,
-    prefix_map_mode: str,
+    mode: str,
     clean_prefixes: bool,
     output: TextIO,
 ):
@@ -139,7 +139,7 @@ def parse(
         input (str): The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
         input_format (str): The string denoting the input format.
         metadata (str): The path to a file containing the sssom metadata (including prefix_map) to be used during parse.
-        prefix_map_mode (str): Curie map mode.
+        mode (str): Curie map mode.
         clean_prefixes (bool): If True (default), records with unknown prefixes are removed from the SSSOM file.
         output (str): The path to the SSSOM TSV output file.
 
@@ -153,7 +153,7 @@ def parse(
         output=output,
         input_format=input_format,
         metadata_path=metadata,
-        prefix_map_mode=prefix_map_mode,
+        mode=mode,
         clean_prefixes=clean_prefixes,
     )
 

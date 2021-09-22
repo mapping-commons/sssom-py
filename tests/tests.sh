@@ -9,8 +9,8 @@ INPUT_URL_3='https://raw.githubusercontent.com/mapping-commons/sssom-py/master/t
 OUTPUT_DIR='tests/tmp/'
 QUERY_1="SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence"
 
-sssom parse $INPUT_FILE_1 --output $OUTPUT_DIR/parsed_basic_file.tsv --input-format tsv --curie-map-mode merged
-sssom parse $INPUT_URL_1 --output $OUTPUT_DIR/parsed_basic_url.tsv --input-format tsv --curie-map-mode merged
+sssom parse $INPUT_FILE_1 --output $OUTPUT_DIR/parsed_basic_file.tsv --input-format tsv --mode merged
+sssom parse $INPUT_URL_1 --output $OUTPUT_DIR/parsed_basic_url.tsv --input-format tsv --mode merged
 
 sssom split $INPUT_FILE_1 --output-directory $OUTPUT_DIR
 sssom split $INPUT_URL_1 --output-directory $OUTPUT_DIR
