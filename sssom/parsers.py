@@ -251,7 +251,7 @@ def from_sssom_rdf(
     mlist: List[Mapping] = []
 
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
-        mdict = {}
+        mdict: Dict[str, Any] = {}
         # TODO replace with g.predicate_objects()
         for _s, p, o in g.triples((ox, None, None)):
             if isinstance(p, URIRef):
@@ -414,7 +414,7 @@ def from_obographs(
                         if "xrefs" in n["meta"]:
                             for xref in n["meta"]["xrefs"]:
                                 xref_id = xref["val"]
-                                mdict = {}
+                                mdict: Dict[str, Any] = {}
                                 try:
                                     mdict["subject_id"] = curie_from_uri(
                                         nid, prefix_map
@@ -427,6 +427,7 @@ def from_obographs(
                                     mdict["match_type"] = "Unspecified"
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
+                                    # FIXME this will cause all sorts of ragged Mappings
                                     logging.warning(e)
                         if "basicPropertyValues" in n["meta"]:
                             for value in n["meta"]["basicPropertyValues"]:
@@ -448,6 +449,7 @@ def from_obographs(
                                         mdict["match_type"] = "Unspecified"
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
+                                        # FIXME this will cause ragged mappings
                                         logging.warning(e)
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
@@ -565,7 +567,7 @@ def _set_metadata_in_mapping_set(
 
 
 def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
-    mdict = {}
+    mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
             try:
