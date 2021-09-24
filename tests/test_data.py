@@ -1,5 +1,5 @@
 import os
-from typing import Any, Mapping
+from typing import Any, Mapping, TextIO
 
 import yaml
 
@@ -14,22 +14,40 @@ TEST_CONFIG = os.path.join(cwd, "test_config.yaml")
 DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
 
 
-def get_test_file(filename):
+def get_test_file(filename: TextIO) -> str:
+    """Get test file.
+
+    :param filename: Filename
+    :type filename: TextIO
+    :return: File path
+    :rtype: str
+    """
     return os.path.join(test_data_dir, filename)
 
 
 def ensure_test_dir_exists():
+    """Create directory if not already present."""
     if not os.path.exists(test_out_dir):
         os.makedirs(test_out_dir)
 
 
 def load_config():
+    """Load configuration.
+
+    :return: Confiuration
+    :rtype: Any
+    """
     with open(TEST_CONFIG) as file:
         config = yaml.safe_load(file)
     return config
 
 
 def get_all_test_cases():
+    """Get all test cases.
+
+    :return: List of test cases
+    :rtype: List[SSOMTestCase]
+    """
     test_cases = []
     config = load_config()
     for test in config["tests"]:
@@ -38,6 +56,11 @@ def get_all_test_cases():
 
 
 def get_multiple_input_test_cases():
+    """Get multiple input test cases.
+
+    :return: List of test cases
+    :rtype: List[SSOMTestCase]
+    """
     test_cases = dict()
     config = load_config()
     for test in config["tests"]:
