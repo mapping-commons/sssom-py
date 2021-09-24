@@ -12,9 +12,7 @@ test_out_dir = os.path.join(cwd, "tmp")
 
 
 class TestRewire(unittest.TestCase):
-    """
-    Tests strongly connected components
-    """
+    """Tests rewiring."""
 
     def setUp(self) -> None:
         self.mset = read_sssom_table(f"{data_dir}/cob-to-external.tsv")

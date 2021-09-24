@@ -73,9 +73,7 @@ KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 @dataclass
 class MappingSetDataFrame:
-    """
-    A collection of mappings represented as a DataFrame, together with additional metadata
-    """
+    """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: Optional[pd.DataFrame] = None  # Mappings
     #: maps CURIE prefixes to URI bases
@@ -85,7 +83,7 @@ class MappingSetDataFrame:
     def merge(
         self, msdf2: "MappingSetDataFrame", inplace: bool = True
     ) -> "MappingSetDataFrame":
-        """Merges two MappingSetDataframes
+        """Merge two MappingSetDataframes.
 
         Args:
             msdf: Secondary MappingSetDataFrame (self => primary)
@@ -154,7 +152,7 @@ class EntityPair:
 @dataclass
 class MappingSetDiff:
     """
-    represents a difference between two mapping sets
+    Represents a difference between two mapping sets.
 
     Currently this is limited to diffs at the level of entity-pairs.
     For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMatch B,
@@ -173,9 +171,7 @@ class MappingSetDiff:
 
 
 def parse(filename: str) -> pd.DataFrame:
-    """
-    parses a TSV to a pandas frame
-    """
+    """Parse a TSV to a pandas frame."""
     # return from_tsv(filename)
     logging.info(f"Parsing {filename}")
     return pd.read_csv(filename, sep="\t", comment="#")
@@ -183,9 +179,7 @@ def parse(filename: str) -> pd.DataFrame:
 
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    collapses rows with same S/P/O and combines confidence
-    """
+    """Collapse rows with same S/P/O and combines confidence."""
     df2 = (
         df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE]
         .apply(max)
@@ -212,8 +206,7 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
 def filter_redundant_rows(
     df: pd.DataFrame, ignore_predicate: bool = False
 ) -> pd.DataFrame:
-    """
-    removes rows if there is another row with same S/O and higher confidence
+    """Remove rows if there is another row with same S/O and higher confidence.
 
     Args:
         df: data frame to filter
@@ -271,8 +264,9 @@ def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
 
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Removes rows where no match is found. TODO: https://github.com/OBOFoundry/SSSOM/issues/28
+    """Remove rows where no match is found.
+
+    TODO: https://github.com/OBOFoundry/SSSOM/issues/28
     :param df:
     :return:
     """
@@ -289,9 +283,7 @@ def create_entity(row, eid: str, mappings: Dict[str, Any]) -> Entity:
 
 
 def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
-    """
-    group mappings by EntityPairs
-    """
+    """Group mappings by EntityPairs."""
     mappings: DefaultDict[EntityPair, List[pd.Series]] = defaultdict(list)
     for _, row in df.iterrows():
         subject_entity = create_entity(
@@ -317,8 +309,7 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
 
 
 def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
-    """
-    Perform a diff between two SSSOM dataframes
+    """Perform a diff between two SSSOM dataframes.
 
     Currently does not discriminate between mappings with different predicates
     """
@@ -465,8 +456,8 @@ def merge_msdf(
     msdf2: MappingSetDataFrame,
     reconcile: bool = True,
 ) -> MappingSetDataFrame:
-    """
-    Merging msdf2 into msdf1,
+    """Merge msdf2 into msdf1.
+
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
         reconcile (if msdf contains a higher confidence _negative_ mapping,
         then remove lower confidence positive one. If confidence is the same,
@@ -511,7 +502,8 @@ def merge_msdf(
 
 
 def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
-    """Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination
+    """Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination.
+
     taking into account the rule that negative trumps positive given equal confidence values.
 
     Args:
@@ -520,7 +512,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Pandas DataFrame with negations addressed
     """
-
     """
             1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
                the one in mapping1 is preserved).
@@ -715,11 +706,10 @@ def read_metadata(filename: str) -> Metadata:
 
 
 def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
-    """
-    Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
+    """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file: The file to read. If no separator is given, this file should be named.
-    :param sep: File separator in pandas (\t or ,)
+    :param sep: File separator for pandas
     :return: A pandas dataframe
     """
     if sep is None:

@@ -22,9 +22,7 @@ class EndpointConfig:
 
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
-    """
-    Query a SPARQL endpoint to obtain a set of mapping
-    """
+    """Query a SPARQL endpoint to obtain a set of mapping."""
     sparql = SPARQLWrapper(config.url)
     if config.graph is None:
         g = "?g"
