@@ -84,7 +84,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
 
 
 def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str]:
-    """CURIEfy row.
+    """CURIE-fy row.
 
     :param row: Mapping object row
     :type row: Mapping[str, str]
