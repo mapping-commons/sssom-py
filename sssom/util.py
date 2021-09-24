@@ -189,14 +189,26 @@ def collapse(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def sort_sssom_columns(columns: List[str]) -> List[str]:
-    # Ideally, the order of the sssom column names is parsed strictly from sssom.yaml
+    """Sort columns: Ideally, the order of the sssom column names is parsed strictly from sssom.yaml.
 
+    :param columns: Column names
+    :type columns: List[str]
+    :return: Sorted column names
+    :rtype: List[str]
+    """
     logging.warning("SSSOM sort columns not implemented")
     columns.sort()
     return columns
 
 
 def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
+    """Sort SSSOM by columns.
+
+    :param df: SSSOM DataFrame to be sorted.
+    :type df: pd.DataFrame
+    :return: Sorted SSSOM DataFrame
+    :rtype: pd.DataFrame
+    """
     df.sort_values(
         by=sort_sssom_columns(list(df.columns)), ascending=False, inplace=True
     )
@@ -253,6 +265,13 @@ def filter_redundant_rows(
 
 
 def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Assign numpy.NaN values to confidence that are blank.
+
+    :param df: SSSOM DataFrame
+    :type df: pd.DataFrame
+    :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
+    :rtype: Tuple[pd.DataFrame, pd.DataFrame]
+    """
     # Get rows having numpy.NaN as confidence
     if df is not None and "confidence" not in df.columns:
         df["confidence"] = np.NaN
@@ -274,6 +293,17 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def create_entity(row, eid: str, mappings: Dict[str, Any]) -> Entity:
+    """Create an Entity object.
+
+    :param row: Row - [UNUSED]
+    :type row: [type]
+    :param eid: Entity Id
+    :type eid: str
+    :param mappings: Mapping dictionary
+    :type mappings: Dict[str, Any]
+    :return: An Entity object
+    :rtype: Entity
+    """
     logging.warning(f"create_entity() has row parameter ({row}), but not used.")
     e = Entity(id=eid)
     for k, v in mappings.items():
@@ -440,7 +470,14 @@ PREDICATE_SIBLING = 3
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
 
-def sha256sum(filename):
+def sha256sum(filename: str) -> str:
+    """Hashing function.
+
+    :param filename: Filename
+    :type filename: str
+    :return: Hashed value
+    :rtype: str
+    """
     h = hashlib.sha256()
     b = bytearray(128 * 1024)
     mv = memoryview(b)
@@ -667,6 +704,14 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
 
 def get_file_extension(file: Union[str, TextIO]) -> str:
+    """Get file extension.
+
+    :param file: Name of the file
+    :type file: Union[str, TextIO]
+    :raises Exception: Cannot determine extension exception
+    :return: format of the file passed
+    :rtype: str
+    """
     if isinstance(file, str):
         filename = file
     else:
@@ -679,7 +724,18 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
         raise Exception(f"Cannot guess format from {filename}")
 
 
-def read_csv(filename, comment="#", sep=","):
+def read_csv(filename: str, comment: str = "#", sep: str = ",") -> pd.DataFrame:
+    """Read TSV file.
+
+    :param filename: filename
+    :type filename: str
+    :param comment: character that indicates beginning of a comment, defaults to "#"
+    :type comment: str, optional
+    :param sep: separator, defaults to ","
+    :type sep: str, optional
+    :return: Pandas DataFrame
+    :rtype: pd.DataFrame
+    """
     if validators.url(filename):
         response = urlopen(filename)
         lines = "".join(
@@ -724,7 +780,14 @@ def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataF
     return read_csv(file, comment="#", sep=sep).fillna("")
 
 
-def extract_global_metadata(msdoc: MappingSetDocument):
+def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
+    """Extract metadata.
+
+    :param msdoc: MappingSetDocument object
+    :type msdoc: MappingSetDocument
+    :return: Dictionary containing metadata
+    :rtype: Dict[str, PrefixMap]
+    """
     meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
     for key in [
@@ -740,9 +803,13 @@ def extract_global_metadata(msdoc: MappingSetDocument):
 
 
 def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
-    ###
-    # convert MappingSetDocument into MappingSetDataFrame
-    ###
+    """Convert MappingSetDocument into MappingSetDataFrame.
+
+    :param doc: MappingSetDocument object
+    :type doc: MappingSetDocument
+    :return: MappingSetDataFrame object
+    :rtype: MappingSetDataFrame
+    """
     data = []
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
@@ -770,10 +837,24 @@ CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
 
 
 def is_curie(string: str) -> bool:
+    """Check if string is CURIE or not.
+
+    :param string: String
+    :type string: str
+    :return: Boolean indicating CURIE or not
+    :rtype: bool
+    """
     return bool(CURIE_RE.match(string))
 
 
 def get_prefix_from_curie(curie: str) -> str:
+    """Get prefix from CURIE.
+
+    :param curie: CURIE
+    :type curie: str
+    :return: Prefix
+    :rtype: str
+    """
     if is_curie(curie):
         return curie.split(":")[0]
     else:
@@ -812,6 +893,13 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
+    """Get prefixes used in table.
+
+    :param df: Pandas DatafFrame
+    :type df: pd.DataFrame
+    :return: List of unique prefixes
+    :rtype: List[str]
+    """
     prefixes = []
     for col in KEY_FEATURES:
         for v in df[col].values:
@@ -819,7 +907,16 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     return list(set(prefixes))
 
 
-def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
+def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.DataFrame:
+    """Get all prefixes in filter_prefixes from pandas DataFrame.
+
+    :param df: Pandas DataFrame
+    :type df: pd.DataFrame
+    :param filter_prefixes: List of prefixes
+    :type filter_prefixes: List[str]
+    :return: Pandas Dataframe
+    :rtype: pd.DataFrame
+    """
     rows = []
 
     for _, row in df.iterrows():
@@ -836,6 +933,14 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes) -> pd.DataFrame:
 
 
 def guess_file_format(filename: Union[str, TextIO]) -> str:
+    """Get file format.
+
+    :param filename: filename
+    :type filename: Union[str, TextIO]
+    :raises Exception: Unrecoginized file extension
+    :return: File extension
+    :rtype: str
+    """
     extension = get_file_extension(filename)
     if extension in ["owl", "rdf"]:
         return SSSOM_DEFAULT_RDF_SERIALISATION
@@ -848,6 +953,13 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
 
 
 def prepare_context(prefix_map: Optional[PrefixMap] = None):
+    """Prepare context.
+
+    :param prefix_map: Prefix map, defaults to None
+    :type prefix_map: Optional[PrefixMap], optional
+    :return: Context
+    :rtype: Any
+    """
     context = get_jsonld_context()
     if prefix_map is None:
         prefix_map = get_default_metadata().prefix_map
@@ -867,9 +979,22 @@ def prepare_context(prefix_map: Optional[PrefixMap] = None):
 
 
 def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
+    """Prepare context string.
+
+    :param prefix_map: Prefix map, defaults to None
+    :type prefix_map: Optional[PrefixMap], optional
+    :return: Context in str format
+    :rtype: str
+    """
     return json.dumps(prepare_context(prefix_map), **kwargs)
 
 
 def raise_for_bad_path(file_path: str) -> None:
+    """Raise exception if file path is invalid.
+
+    :param file_path: File path
+    :type file_path: str
+    :raises Exception: Invalid file path
+    """
     if not validators.url(file_path) and not os.path.exists(file_path):
         raise Exception(f"{file_path} is not a valid file path or url.")
