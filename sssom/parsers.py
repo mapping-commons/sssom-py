@@ -3,7 +3,7 @@ import logging
 import re
 import typing
 from collections import Counter
-from typing import Any, Dict, List, Optional, Set, TextIO, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -294,6 +294,17 @@ def from_sssom_json(
     prefix_map: Dict[str, str],
     meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
+    """Get data from JSON.
+
+    :param jsondoc: JSON document
+    :type jsondoc: Union[str, dict, TextIO]
+    :param prefix_map: Prefix map
+    :type prefix_map: Dict[str, str]
+    :param meta: metadata, defaults to None
+    :type meta: Dict[str, str], optional
+    :return: MappingSetDataFrame object
+    :rtype: MappingSetDataFrame
+    """
     prefix_map = _ensure_prefix_map(prefix_map)
     mapping_set = cast(
         MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
@@ -452,7 +463,17 @@ def from_obographs(
 # All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-def get_parsing_function(input_format, filename):
+def get_parsing_function(input_format: str, filename: str) -> Callable:
+    """Return appropriate function based on input format of file.
+
+    :param input_format: File format
+    :type input_format: str
+    :param filename: Filename
+    :type filename: str
+    :raises Exception: Unknown file format
+    :return: Appropriate 'read' function
+    :rtype: function
+    """
     if input_format is None:
         input_format = get_file_extension(filename)
     if input_format == "tsv":
@@ -633,6 +654,14 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 def split_dataframe(
     msdf: MappingSetDataFrame,
 ) -> typing.Mapping[str, MappingSetDataFrame]:
+    """Split DataFrame.
+
+    :param msdf: MappingSetDataFrame object
+    :type msdf: MappingSetDataFrame
+    :raises RuntimeError: Object is None
+    :return: Mapping object
+    :rtype: typing.Mapping[str, MappingSetDataFrame]
+    """
     if msdf.df is None:
         raise RuntimeError
     subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
