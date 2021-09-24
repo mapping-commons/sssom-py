@@ -292,6 +292,16 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
 def get_writer_function(
     *, output_format: Optional[str] = None, output: TextIO
 ) -> Tuple[MSDFWriter, str]:
+    """Get appropriate writer function based on file format.
+
+    :param output: Output file
+    :type output: TextIO
+    :param output_format: Output file format, defaults to None
+    :type output_format: Optional[str], optional
+    :raises ValueError: Unknown output format
+    :return: Type of writer function
+    :rtype: Tuple[MSDFWriter, str]
+    """
     if output_format is None:
         output_format = get_file_extension(output)
 
@@ -309,7 +319,17 @@ def get_writer_function(
         raise ValueError(f"Unknown output format: {output_format}")
 
 
-def write_tables(sssom_dict, output_dir) -> None:
+def write_tables(
+    sssom_dict: Dict[str, MappingSetDataFrame],
+    output_dir: TextIO
+) -> None:
+    """Write table from MappingSetDataFrame object.
+
+    :param sssom_dict: Dictionary of MappingSetDataframes
+    :type sssom_dict: Dict[str, MappingSetDataFrame]
+    :param output_dir: Target location
+    :type output_dir: TextIO
+    """
     for split_id, msdf in sssom_dict.items():
         path = os.path.join(output_dir, f"{split_id}.sssom.tsv")
         with open(path, "w") as file:
