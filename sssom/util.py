@@ -102,7 +102,7 @@ class MappingSetDataFrame:
             # FIXME should return self if inplace
         return msdf
 
-    def __str__(self):
+    def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
         description += f"Number of mappings: {len(self.df.index)} \n"
         description += f"Number of prefixes: {len(self.prefix_map)} \n"
@@ -141,7 +141,7 @@ class EntityPair:
     subject_entity: Entity
     object_entity: Entity
 
-    def __hash__(self):
+    def __hash__(self) -> int:  # noqa:D105
         if self.subject_entity.id <= self.object_entity.id:
             t = self.subject_entity.id, self.object_entity.id
         else:

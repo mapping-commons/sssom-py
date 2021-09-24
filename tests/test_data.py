@@ -56,29 +56,19 @@ class SSSOMTestCase:
         """
         self.filepath = get_test_file(config["filename"])
         self.filename = config["filename"]
-        if "id" in config:
-            self.id = config["id"]
-        else:
-            self.id = config["filename"]
-
-        if "metadata_file" in config:
-            self.metadata_file = config["metadata_file"]
-        else:
-            self.metadata_file = None
+        self.id = config.get("id", self.filename)
+        self.metadata_file = config.get("metadata_file")
         self.graph_serialisation = "turtle"
         self.ct_json_elements = config["ct_json_elements"]
         self.ct_data_frame_rows = config["ct_data_frame_rows"]
-        if "inputformat" in config:
-            self.inputformat = config["inputformat"]
-        else:
-            self.inputformat = None
+        self.inputformat = config.get("inputformat")
         self.ct_graph_queries_owl = self._query_tuple(
             config, "ct_graph_queries_owl", queries
         )
         self.ct_graph_queries_rdf = self._query_tuple(
             config, "ct_graph_queries_rdf", queries
         )
-        self.prefix_map = config.pop(PREFIX_MAP_KEY, None)
+        self.prefix_map = config.get(PREFIX_MAP_KEY)
 
     def _query_tuple(self, config, tuple_id, queries_dict):
         queries = []
@@ -93,5 +83,5 @@ class SSSOMTestCase:
     def get_validate_file(self, extension):
         return os.path.join(test_validate_dir, f"{self.filename}.{extension}")
 
-    def __str__(self):
+    def __str__(self) -> str:  # noqa:D105
         return f"Testcase {self.id} (Filepath: {self.filepath})"
