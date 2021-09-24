@@ -22,7 +22,7 @@ class TestCollapse(unittest.TestCase):
 
     def test_df(self):
         df = self.df
-        self.assertEquals(
+        self.assertEqual(
             len(df),
             141,
             f"Dataframe should have a different number of rows {df.head(10)}",
@@ -30,7 +30,7 @@ class TestCollapse(unittest.TestCase):
 
     def test_collapse(self):
         df = collapse(self.df)
-        self.assertEquals(
+        self.assertEqual(
             len(df), 91, f"Dataframe should have a different {df.head(10)}"
         )
 
