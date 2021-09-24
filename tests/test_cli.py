@@ -137,9 +137,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def run_diff(self, runner, test_cases: Dict[str, SSSOMTestCase]):
         params = []
         out_file = None
-        for tid in test_cases:
-            t = test_cases[tid]
-            t: SSSOMTestCase
+        for t in test_cases.values():
             params.append(t.filepath)
             out_file = t
         if out_file:

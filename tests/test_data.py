@@ -1,4 +1,5 @@
 import os
+from typing import Any, Mapping
 
 import yaml
 
@@ -47,7 +48,12 @@ def get_multiple_input_test_cases():
 
 
 class SSSOMTestCase:
-    def __init__(self, config, queries):
+    def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]):
+        """Initialize the SSSOM test case.
+
+        :param config: A dictionary of configuration values
+        :param queries: A mapping from query name to SPARQL query strings
+        """
         self.filepath = get_test_file(config["filename"])
         self.filename = config["filename"]
         if "id" in config:
