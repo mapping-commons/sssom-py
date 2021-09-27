@@ -104,13 +104,19 @@ class MappingSetDataFrame:
 
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
-        description += f"Number of mappings: {len(self.df.index)} \n"
         description += f"Number of prefixes: {len(self.prefix_map)} \n"
-        description += f"Metadata: {json.dumps(self.metadata)} \n"
-        description += "\nFirst rows of data: \n"
-        description += self.df.head().to_string() + "\n"
-        description += "\nLast rows of data: \n"
-        description += self.df.tail().to_string() + "\n"
+        if self.metadata is None:
+            description += "No metadata available \n"
+        else:
+            description += f"Metadata: {json.dumps(self.metadata)} \n"
+        if self.df is None:
+            description += "No dataframe available"
+        else:
+            description += f"Number of mappings: {len(self.df.index)} \n"
+            description += "\nFirst rows of data: \n"
+            description += self.df.head().to_string() + "\n"
+            description += "\nLast rows of data: \n"
+            description += self.df.tail().to_string() + "\n"
         return description
 
     def clean_prefix_map(self) -> None:
@@ -482,8 +488,7 @@ def sha256sum(filename: str) -> str:
     b = bytearray(128 * 1024)
     mv = memoryview(b)
     with open(filename, "rb", buffering=0) as f:
-        f: FileIO
-        for n in iter(lambda: f.readinto(mv), 0):
+        for n in iter(lambda: f.readinto(mv), 0):  # type: ignore
             h.update(mv[:n])
     return h.hexdigest()
 
