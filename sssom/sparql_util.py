@@ -87,11 +87,8 @@ def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str
     """CURIE-fy row.
 
     :param row: Mapping object row
-    :type row: Mapping[str, str]
     :param config: Configuration
-    :type config: EndpointConfig
     :return: Dictionary of CURIEs
-    :rtype: Dict[str, str]
     """
     return {k: contract_uri(v, config) for k, v in row.items()}
 
@@ -100,11 +97,8 @@ def contract_uri(uristr: str, config: EndpointConfig) -> str:
     """Contract URI.
 
     :param uristr: URI string
-    :type uristr: str
     :param config: Configuration
-    :type config: EndpointConfig
     :return: URI string (contracted)
-    :rtype: str
     """
     if config.prefix_map is None:
         return uristr
@@ -118,11 +112,8 @@ def expand_curie(curie: str, config: EndpointConfig) -> URIRef:
     """Expand CURIE.
 
     :param curie: CURIE
-    :type curie: str
     :param config: Configuration
-    :type config: EndpointConfig
     :return: URI of CURIE
-    :rtype: URIRef
     """
     if config.prefix_map is None:
         return URIRef(curie)

@@ -63,12 +63,10 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     """Split MappingSetDataFrames into cliques.
 
     :param msdf: MappingSetDataFrame object
-    :type msdf: MappingSetDataFrame
     :raises TypeError: If Mappings is not of type List
     :raises TypeError: If each mapping is not of type Mapping
     :raises TypeError: If Mappings is not of type List
     :return: List of MappingSetDocument objects
-    :rtype: List[MappingSetDocument]
     """
     doc = to_mapping_set_document(msdf)
     g = to_networkx(msdf)
@@ -100,9 +98,7 @@ def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
     """Invert Dictionary.
 
     :param d: Dictionary
-    :type d: Dict[str, str]
     :return: Dictionary with keys and values interchanged
-    :rtype: Dict[str, str]
     """
     invdict: Dict[str, Any] = {}
     for k, v in d.items():
@@ -116,11 +112,8 @@ def get_src(src: str, cid: str):
     """Get source.
 
     :param src: Source
-    :type src: str
     :param cid: CURIE
-    :type cid: str
     :return: Source
-    :rtype: [type]
     """
     if src is None:
         return cid.split(":")[0]

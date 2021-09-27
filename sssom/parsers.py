@@ -224,11 +224,11 @@ def from_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
 
-    Args:
-        g: the Graph (rdflib)
-        prefix_map: A dictionary containing the prefix map
-        meta: Potentially additional metadata
-        mapping_predicates: A set of predicates that should be extracted from the RDF graph
+    :param g: the Graph (rdflib)
+    :param prefix_map: A dictionary containing the prefix map, defaults to None
+    :param meta: Potentially additional metadata, defaults to None
+    :param mapping_predicates: A set of predicates that should be extracted from the RDF graph, defaults to None
+    :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
 
@@ -297,13 +297,9 @@ def from_sssom_json(
     """Get data from JSON.
 
     :param jsondoc: JSON document
-    :type jsondoc: Union[str, dict, TextIO]
     :param prefix_map: Prefix map
-    :type prefix_map: Dict[str, str]
     :param meta: metadata, defaults to None
-    :type meta: Dict[str, str], optional
     :return: MappingSetDataFrame object
-    :rtype: MappingSetDataFrame
     """
     prefix_map = _ensure_prefix_map(prefix_map)
     mapping_set = cast(
@@ -376,14 +372,11 @@ def from_obographs(
 ) -> MappingSetDataFrame:
     """Convert a obographs json object to an SSSOM data frame.
 
-    Args:
-        jsondoc: The JSON object representing the ontology in obographs format
-        prefix_map: The prefix map to be used
-        meta: Any additional metadata that needs to be added to the resulting SSSOM data frame
-
-    Returns:
-        An SSSOM data frame (MappingSetDataFrame)
-
+    :param jsondoc: The JSON object representing the ontology in obographs format
+    :param prefix_map: The prefix map to be used
+    :param meta: Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None
+    :raises Exception: When there is no CURIE
+    :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
 
@@ -467,12 +460,9 @@ def get_parsing_function(input_format: str, filename: str) -> Callable:
     """Return appropriate function based on input format of file.
 
     :param input_format: File format
-    :type input_format: str
     :param filename: Filename
-    :type filename: str
     :raises Exception: Unknown file format
     :return: Appropriate 'read' function
-    :rtype: function
     """
     if input_format is None:
         input_format = get_file_extension(filename)
@@ -657,10 +647,8 @@ def split_dataframe(
     """Split DataFrame.
 
     :param msdf: MappingSetDataFrame object
-    :type msdf: MappingSetDataFrame
     :raises RuntimeError: Object is None
     :return: Mapping object
-    :rtype: typing.Mapping[str, MappingSetDataFrame]
     """
     if msdf.df is None:
         raise RuntimeError

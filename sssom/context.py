@@ -18,7 +18,6 @@ def get_jsonld_context():
     """Get JSON-LD context.
 
     :return: JSON-LD context
-    :rtype: Any
     """
     return json.loads(sssom_context, strict=False)
 
@@ -27,7 +26,6 @@ def get_external_jsonld_context():
     """Get JSON-LD context.
 
     :return: JSON-LD context
-    :rtype: Any
     """
     return json.loads(sssom_external_context, strict=False)
 
@@ -36,7 +34,6 @@ def get_built_in_prefix_map() -> PrefixMap:
     """Get built-in prefix map.
 
     :return: Prefix map
-    :rtype: PrefixMap
     """
     contxt = get_jsonld_context()
     prefix_map = {}
@@ -54,9 +51,7 @@ def add_built_in_prefixes_to_prefix_map(
     """Add built-in prefix map.
 
     :param prefix_map: Prefix map, defaults to None
-    :type prefix_map: Optional[PrefixMap], optional
     :return: Prefix map
-    :rtype: PrefixMap
     """
     builtinmap = get_built_in_prefix_map()
     if not prefix_map:
@@ -76,7 +71,6 @@ def get_default_metadata() -> Metadata:
     """Get Default metadata.
 
     :return: Metadata
-    :rtype: Metadata
     """
     contxt = get_jsonld_context()
     contxt_external = get_external_jsonld_context()
