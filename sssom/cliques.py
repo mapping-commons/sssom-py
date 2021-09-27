@@ -95,7 +95,7 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
 
 
 def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
-    """Invert Dictionary.
+    """Invert Dictionary: sxkeys become values and values become keys.
 
     :param d: Dictionary
     :return: Dictionary with keys and values interchanged
