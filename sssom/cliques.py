@@ -1,6 +1,6 @@
 import hashlib
 import statistics
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import networkx as nx
 import pandas as pd
@@ -108,7 +108,7 @@ def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
     return invdict
 
 
-def get_src(src: str, cid: str):
+def get_src(src: Optional[str], cid: str):
     """Get source/CURIE of subject/object in the MappingSetDataFrame.
 
     :param src: Source

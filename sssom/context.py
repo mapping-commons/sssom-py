@@ -15,7 +15,9 @@ SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
 
 
 def get_jsonld_context():
-    """Get JSON-LD context.
+    """Get JSON-LD form of sssom_context variable from auto-generated 'internal_context.py' file.
+
+    [Auto generated from sssom.yaml by jsonldcontextgen.py]
 
     :return: JSON-LD context
     """
@@ -23,7 +25,7 @@ def get_jsonld_context():
 
 
 def get_external_jsonld_context():
-    """Get JSON-LD context.
+    """Get JSON-LD form of sssom_external_context variable from auto-generated 'external_context.py' file.
 
     :return: JSON-LD context
     """
@@ -31,7 +33,9 @@ def get_external_jsonld_context():
 
 
 def get_built_in_prefix_map() -> PrefixMap:
-    """Get built-in prefix map.
+    """Get built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
+
+    [Auto generated from sssom.yaml by jsonldcontextgen.py]
 
     :return: Prefix map
     """
@@ -48,7 +52,9 @@ def get_built_in_prefix_map() -> PrefixMap:
 def add_built_in_prefixes_to_prefix_map(
     prefix_map: Optional[PrefixMap] = None,
 ) -> PrefixMap:
-    """Add built-in prefix map.
+    """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
+
+    [Auto generated from sssom.yaml by jsonldcontextgen.py]
 
     :param prefix_map: Prefix map, defaults to None
     :return: Prefix map
@@ -68,7 +74,9 @@ def add_built_in_prefixes_to_prefix_map(
 
 
 def get_default_metadata() -> Metadata:
-    """Get Default metadata.
+    """Get @context property value from the sssom_context variable in the auto-generated 'internal_context.py' file.
+
+    [Auto generated from sssom.yaml by jsonldcontextgen.py]
 
     :return: Metadata
     """

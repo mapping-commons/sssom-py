@@ -21,7 +21,7 @@ def get_test_file(filename: str) -> str:
 
 
 def load_config():
-    """Load configuration.
+    """Load test file information from 'test_config.yaml'.
 
     :return: Confiuration
     :rtype: Any
@@ -35,7 +35,6 @@ def get_all_test_cases():
     """Get all test cases.
 
     :return: List of test cases
-    :rtype: List[SSOMTestCase]
     """
     test_cases = []
     config = load_config()
@@ -45,10 +44,9 @@ def get_all_test_cases():
 
 
 def get_multiple_input_test_cases():
-    """Get multiple input test cases.
+    """Get test cases that require multiple parameters.
 
     :return: List of test cases
-    :rtype: List[SSOMTestCase]
     """
     test_cases = dict()
     config = load_config()
