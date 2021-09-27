@@ -320,8 +320,7 @@ def get_writer_function(
 
 
 def write_tables(
-    sssom_dict: Dict[str, MappingSetDataFrame],
-    output_dir: TextIO
+    sssom_dict: Dict[str, MappingSetDataFrame], output_dir: TextIO
 ) -> None:
     """Write table from MappingSetDataFrame object.
 
