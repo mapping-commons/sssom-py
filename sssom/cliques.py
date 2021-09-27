@@ -60,7 +60,7 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
 
 
 def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
-    """Split MappingSetDataFrames into cliques.
+    """Split MappingSetDataFrames into a list of MappingSetDocuments.
 
     :param msdf: MappingSetDataFrame object
     :raises TypeError: If Mappings is not of type List
@@ -109,7 +109,7 @@ def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
 
 
 def get_src(src: str, cid: str):
-    """Get source.
+    """Get source/CURIE of subject/object in the MappingSetDataFrame.
 
     :param src: Source
     :param cid: CURIE
