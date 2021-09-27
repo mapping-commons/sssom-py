@@ -1,5 +1,5 @@
 import os
-from typing import Any, Mapping, TextIO
+from typing import Any, Mapping
 
 import yaml
 

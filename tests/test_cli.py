@@ -18,7 +18,6 @@ from sssom.cli import (
 )
 from tests.test_data import (
     SSSOMTestCase,
-    ensure_test_dir_exists,
     get_all_test_cases,
     get_multiple_input_test_cases,
     test_out_dir,
@@ -27,7 +26,6 @@ from tests.test_data import (
 
 class SSSOMCLITestSuite(unittest.TestCase):
     def test_cli_single_input(self):
-        ensure_test_dir_exists()
         runner = CliRunner()
         test_cases = (
             get_all_test_cases()
@@ -53,7 +51,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.assertTrue(len(test_cases) > 2)
 
     def test_cli_multiple_input(self):
-        ensure_test_dir_exists()
         runner = CliRunner()
         test_cases = get_multiple_input_test_cases()
         self.run_diff(runner, test_cases)
