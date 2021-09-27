@@ -8,27 +8,16 @@ from sssom.util import PREFIX_MAP_KEY
 cwd = os.path.abspath(os.path.dirname(__file__))
 test_data_dir = os.path.join(cwd, "data")
 test_out_dir = os.path.join(cwd, "tmp")
+os.makedirs(test_out_dir, exist_ok=True)
 test_validate_dir = os.path.join(cwd, "validate_data")
 schema_dir = os.path.join(cwd, "../schema")
 TEST_CONFIG = os.path.join(cwd, "test_config.yaml")
 DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
 
 
-def get_test_file(filename: TextIO) -> str:
-    """Get test file.
-
-    :param filename: Filename
-    :type filename: TextIO
-    :return: File path
-    :rtype: str
-    """
+def get_test_file(filename: str) -> str:
+    """Get a test file path inside the test data directory."""
     return os.path.join(test_data_dir, filename)
-
-
-def ensure_test_dir_exists():
-    """Create directory if not already present."""
-    if not os.path.exists(test_out_dir):
-        os.makedirs(test_out_dir)
 
 
 def load_config():
