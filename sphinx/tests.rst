@@ -36,14 +36,6 @@ tests.test\_data module
    :undoc-members:
    :show-inheritance:
 
-tests.test\_datamodel\_util module
-----------------------------------
-
-.. automodule:: tests.test_datamodel_util
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 tests.test\_reconcile module
 ----------------------------
 
