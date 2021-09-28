@@ -190,17 +190,6 @@ def collapse(df: pd.DataFrame) -> pd.DataFrame:
     return df2
 
 
-def sort_sssom_columns(columns: List[str]) -> List[str]:
-    """Sort columns: Ideally, the order of the sssom column names is parsed strictly from sssom.yaml.
-
-    :param columns: Column names
-    :return: Sorted column names
-    """
-    logging.warning("SSSOM sort columns not implemented")
-    columns.sort()
-    return columns
-
-
 def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     """Sort SSSOM by columns.
 
@@ -208,7 +197,7 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     :return: Sorted SSSOM DataFrame
     """
     df.sort_values(
-        by=sort_sssom_columns(list(df.columns)), ascending=False, inplace=True
+        by=sorted(df.columns), ascending=False, inplace=True
     )
     return df
 
