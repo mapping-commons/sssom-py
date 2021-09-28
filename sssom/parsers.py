@@ -643,7 +643,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 
 def split_dataframe(
     msdf: MappingSetDataFrame,
-) -> typing.Mapping[str, MappingSetDataFrame]:
+) -> Dict[str, MappingSetDataFrame]:
     """Split DataFrame.
 
     :param msdf: MappingSetDataFrame object
@@ -665,7 +665,7 @@ def split_dataframe(
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
-) -> typing.Mapping[str, MappingSetDataFrame]:
+) -> Dict[str, MappingSetDataFrame]:
     """Split a mapping set dataframe by prefix.
 
     :param msdf: An SSSOM MappingSetDataFrame

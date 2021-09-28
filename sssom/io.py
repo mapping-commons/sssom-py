@@ -53,6 +53,8 @@ def parse_file(
     metadata = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
+    if input_format is None:
+        raise(ValueError('Input format not provided.'))
     parse_func = get_parsing_function(input_format, input_path)
     doc = parse_func(
         input_path, prefix_map=metadata.prefix_map, meta=metadata.prefix_map
@@ -81,7 +83,7 @@ def validate_file(input_path: str) -> bool:
         return False
 
 
-def split_file(input_path: str, output_directory: str) -> None:
+def split_file(input_path: str, output_directory: TextIO) -> None:
     """
     Split an SSSOM TSV by prefixes and relations.
 

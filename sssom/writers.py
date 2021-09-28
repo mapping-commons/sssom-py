@@ -325,7 +325,7 @@ def write_tables(
     :param output_dir: Target location
     """
     for split_id, msdf in sssom_dict.items():
-        path = os.path.join(output_dir, f"{split_id}.sssom.tsv")
+        path = os.path.join(str(output_dir), f"{split_id}.sssom.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
         logging.info(f"Writing {path} complete!")

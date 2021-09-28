@@ -754,7 +754,7 @@ def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataF
         else:
             sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-    return read_csv(file, comment="#", sep=sep).fillna("")
+    return read_csv(str(file), comment="#", sep=sep).fillna("")
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:

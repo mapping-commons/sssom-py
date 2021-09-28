@@ -1,6 +1,6 @@
 import hashlib
 import statistics
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import networkx as nx
 import pandas as pd
@@ -126,23 +126,26 @@ def summarize_cliques(doc: MappingSetDataFrame):
     cliquedocs = split_into_cliques(doc)
     items = []
     for cdoc in cliquedocs:
+        ms: Dict[Any, Any]  # NEEDS CORRECTION
         ms = cdoc.mapping_set.mappings
         members = set()
         members_names = set()
-        confs = []
-        id2src = {}
-        for m in ms:
-            sub = m.subject_id
-            obj = m.object_id
-            subsrc = get_src(m.subject_source, sub)
-            objsrc = get_src(m.object_source, obj)
-            id2src[sub] = subsrc
-            id2src[obj] = objsrc
-            members.add(sub)
-            members.add(obj)
-            members_names.add(str(m.subject_label))
-            members_names.add(str(m.object_label))
-            confs.append(m.confidence)
+        confs: List[float] = []
+        id2src: Dict[Any, str] = {}
+        if ms is not None:
+            for m in ms:
+                sub = str(m.subject_id)
+                obj = str(m.object_id)
+                subsrc = get_src(m.subject_source, sub)
+                objsrc = get_src(m.object_source, obj)
+                id2src[sub] = subsrc
+                id2src[obj] = objsrc
+                members.add(sub)
+                members.add(obj)
+                members_names.add(str(m.subject_label))
+                members_names.add(str(m.object_label))
+                if m.confidence is not None:
+                    confs.append(m.confidence)
         src2ids = invert_dict(id2src)
         mstr = "|".join(members)
         md5 = hashlib.md5(mstr.encode("utf-8")).hexdigest()  # noqa:S303
