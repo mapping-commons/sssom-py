@@ -1,5 +1,5 @@
 import os
-from typing import Any, Mapping
+from typing import Any, List, Mapping
 
 import yaml
 
@@ -10,51 +10,16 @@ test_data_dir = os.path.join(cwd, "data")
 test_out_dir = os.path.join(cwd, "tmp")
 os.makedirs(test_out_dir, exist_ok=True)
 test_validate_dir = os.path.join(cwd, "validate_data")
-schema_dir = os.path.join(cwd, "../schema")
-TEST_CONFIG = os.path.join(cwd, "test_config.yaml")
+schema_dir = os.path.join(cwd, os.pardir, "schema")
 DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
+TEST_CONFIG_PATH = os.path.join(cwd, "test_config.yaml")
+with open(TEST_CONFIG_PATH) as file:
+    TEST_CONFIG = yaml.safe_load(file)
 
 
 def get_test_file(filename: str) -> str:
     """Get a test file path inside the test data directory."""
     return os.path.join(test_data_dir, filename)
-
-
-def load_config():
-    """Load test file information from 'test_config.yaml'.
-
-    :return: Confiuration
-    :rtype: Any
-    """
-    with open(TEST_CONFIG) as file:
-        config = yaml.safe_load(file)
-    return config
-
-
-def get_all_test_cases():
-    """Get all test cases.
-
-    :return: List of test cases
-    """
-    test_cases = []
-    config = load_config()
-    for test in config["tests"]:
-        test_cases.append(SSSOMTestCase(test, config["queries"]))
-    return test_cases
-
-
-def get_multiple_input_test_cases():
-    """Get test cases that require multiple parameters.
-
-    :return: List of test cases
-    """
-    test_cases = dict()
-    config = load_config()
-    for test in config["tests"]:
-        if test["multiple_input"]:
-            test = SSSOMTestCase(test, config["queries"])
-            test_cases[test.id] = test
-    return test_cases
 
 
 class SSSOMTestCase:
@@ -95,3 +60,21 @@ class SSSOMTestCase:
 
     def __str__(self) -> str:  # noqa:D105
         return f"Testcase {self.id} (Filepath: {self.filepath})"
+
+
+def get_all_test_cases() -> List[SSSOMTestCase]:
+    """Get a list of all test cases."""
+    test_cases = []
+    for test in TEST_CONFIG["tests"]:
+        test_cases.append(SSSOMTestCase(test, TEST_CONFIG["queries"]))
+    return test_cases
+
+
+def get_multiple_input_test_cases() -> Mapping[str, SSSOMTestCase]:
+    """Get a mapping from identifiers to test cases that require multiple parameters."""
+    test_cases = dict()
+    for test in TEST_CONFIG["tests"]:
+        if test["multiple_input"]:
+            test = SSSOMTestCase(test, TEST_CONFIG["queries"])
+            test_cases[test.id] = test
+    return test_cases
