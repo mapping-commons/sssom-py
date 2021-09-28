@@ -164,7 +164,7 @@ def validate(input: str):
 @main.command()
 @input_argument
 @output_directory_option
-def split(input: str, output_directory: TextIO):
+def split(input: str, output_directory: str):
     """Split input file into multiple output broken down by prefixes."""
     split_file(input_path=input, output_directory=output_directory)
 

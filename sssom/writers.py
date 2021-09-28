@@ -1,7 +1,7 @@
 import json
 import logging
-import os
-from typing import Any, Callable, Dict, Optional, TextIO, Tuple
+from pathlib import Path
+from typing import Any, Callable, Dict, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
@@ -317,16 +317,20 @@ def get_writer_function(
 
 
 def write_tables(
-    sssom_dict: Dict[str, MappingSetDataFrame], output_dir: TextIO
+    sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]
 ) -> None:
     """Write table from MappingSetDataFrame object.
 
     :param sssom_dict: Dictionary of MappingSetDataframes
-    :param output_dir: Target location
+    :param output_dir: The directory in which the derived SSSOM files are written
     """
+    # FIXME documentation does not actually describe what this is doing
+    # FIXME explanation of sssom_dict does not make sense
+    # FIXME sssom_dict is a bad variable name
+    output_dir = Path(output_dir).resolve()
     for split_id, msdf in sssom_dict.items():
-        path = os.path.join(str(output_dir), f"{split_id}.sssom.tsv")
-        with open(path, "w") as file:
+        path = output_dir.joinpath(f"{split_id}.sssom.tsv")
+        with path.open("w") as file:
             write_table(msdf, file)
         logging.info(f"Writing {path} complete!")
 
