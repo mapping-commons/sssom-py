@@ -477,10 +477,10 @@ def merge_msdf(
     :param msdf1: The primary MappingSetDataFrame
     :param msdf2: The secondary MappingSetDataFrame
     :param reconcile: If reconcile=True, then dedupe(remove redundant lower confidence mappings)
-                      and reconcile (if msdf contains a higher confidence _negative_ mapping,
-                      then remove lower confidence positive one. If confidence is the same,
-                      prefer HumanCurated. If both HumanCurated, prefer negative mapping).
-                      Defaults to True.
+        and reconcile (if msdf contains a higher confidence _negative_ mapping,
+        then remove lower confidence positive one. If confidence is the same,
+        prefer HumanCurated. If both HumanCurated, prefer negative mapping).
+        Defaults to True.
 
     Returns:
         MappingSetDataFrame: Merged MappingSetDataFrame.
