@@ -1,6 +1,7 @@
 import hashlib
 import statistics
-from typing import Any, Dict, List, Optional, Union
+from collections import defaultdict
+from typing import Any, DefaultDict, Dict, List, Optional
 
 import networkx as nx
 import pandas as pd
@@ -94,18 +95,12 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     return newdocs
 
 
-def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
-    """Invert Dictionary: sxkeys become values and values become keys.
-
-    :param d: Dictionary
-    :return: Dictionary with keys and values interchanged
-    """
-    invdict: Dict[str, Any] = {}
+def group_values(d: Dict[str, str]) -> Dict[str, List[str]]:
+    """Group all keys in the dictionary that share the same value."""
+    rv: DefaultDict[str, List[str]] = defaultdict(list)
     for k, v in d.items():
-        if v not in invdict:
-            invdict[v] = []
-        invdict[v].append(k)
-    return invdict
+        rv[v].append(k)
+    return dict(rv)
 
 
 def get_src(src: Optional[str], cid: str):
@@ -146,7 +141,7 @@ def summarize_cliques(doc: MappingSetDataFrame):
                 members_names.add(str(m.object_label))
                 if m.confidence is not None:
                     confs.append(m.confidence)
-        src2ids = invert_dict(id2src)
+        src2ids = group_values(id2src)
         mstr = "|".join(members)
         md5 = hashlib.md5(mstr.encode("utf-8")).hexdigest()  # noqa:S303
         item = {
