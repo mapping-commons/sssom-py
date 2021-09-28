@@ -1,7 +1,7 @@
 import hashlib
 import statistics
 from collections import defaultdict
-from typing import Any, DefaultDict, Dict, List, Optional
+from typing import DefaultDict, Dict, List, Optional, Set
 
 import networkx as nx
 import pandas as pd
@@ -121,32 +121,32 @@ def summarize_cliques(doc: MappingSetDataFrame):
     cliquedocs = split_into_cliques(doc)
     items = []
     for cdoc in cliquedocs:
-        ms: Dict[Any, Any]  # NEEDS CORRECTION
-        ms = cdoc.mapping_set.mappings
-        members = set()
-        members_names = set()
+        mappings = cdoc.mapping_set.mappings
+        if mappings is None:
+            continue
+        members: Set[str] = set()
+        members_names: Set[str] = set()
         confs: List[float] = []
-        id2src: Dict[Any, str] = {}
-        if ms is not None:
-            for m in ms:
-                sub = str(m.subject_id)
-                obj = str(m.object_id)
-                subsrc = get_src(m.subject_source, sub)
-                objsrc = get_src(m.object_source, obj)
-                id2src[sub] = subsrc
-                id2src[obj] = objsrc
-                members.add(sub)
-                members.add(obj)
-                members_names.add(str(m.subject_label))
-                members_names.add(str(m.object_label))
-                if m.confidence is not None:
-                    confs.append(m.confidence)
+        id2src: Dict[str, str] = {}
+        for mapping in mappings:
+            if not isinstance(mapping, Mapping):
+                raise TypeError
+            sub = str(mapping.subject_id)
+            obj = str(mapping.object_id)
+            id2src[sub] = get_src(mapping.subject_source, sub)
+            id2src[obj] = get_src(mapping.object_source, obj)
+            members.add(sub)
+            members.add(obj)
+            members_names.add(str(mapping.subject_label))
+            members_names.add(str(mapping.object_label))
+            if mapping.confidence is not None:
+                confs.append(mapping.confidence)
         src2ids = group_values(id2src)
         mstr = "|".join(members)
         md5 = hashlib.md5(mstr.encode("utf-8")).hexdigest()  # noqa:S303
         item = {
             "id": md5,
-            "num_mappings": len(ms),
+            "num_mappings": len(mappings),
             "num_members": len(members),
             "members": mstr,
             "members_labels": "|".join(members_names),
