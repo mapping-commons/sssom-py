@@ -94,7 +94,7 @@ def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str
 
 
 def contract_uri(uristr: str, config: EndpointConfig) -> str:
-    """Contract URI. For e.g. "http://purl.org/dc/terms/" => "dc".
+    """Replace the URI with a prefix based on the prefix map in the given configuration.
 
     :param uristr: Prefix
     :param config: Configuration
