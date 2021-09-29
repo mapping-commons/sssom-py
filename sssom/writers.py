@@ -327,6 +327,8 @@ def write_tables(
     # FIXME documentation does not actually describe what this is doing
     # FIXME explanation of sssom_dict does not make sense
     # FIXME sssom_dict is a bad variable name
+    if output_dir is None:
+        raise ValueError('Output directory not provided.')
     output_dir = Path(output_dir).resolve()
     for split_id, msdf in sssom_dict.items():
         path = output_dir.joinpath(f"{split_id}.sssom.tsv")
