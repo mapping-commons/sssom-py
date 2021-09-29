@@ -18,7 +18,7 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.request import Request, urlopen
+from urllib.request import urlopen
 
 import numpy as np
 import pandas as pd
