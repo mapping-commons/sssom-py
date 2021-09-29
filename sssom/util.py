@@ -354,23 +354,15 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def dataframe_to_ptable(df: pd.DataFrame, priors=None, inverse_factor: float = 0.5):
+def dataframe_to_ptable(df: pd.DataFrame, inverse_factor: float = 0.5):
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
-    :param priors: [NOT USED], defaults to None
     :param inverse_factor: Multiplier to (1 - confidence), defaults to 0.5
     :raises ValueError: Predicate value error
     :raises ValueError: Predicate type value error
     :return: List of rows
     """
-    if not priors:
-        priors = [0.02, 0.02, 0.02, 0.02]
-    else:
-        logging.warning(
-            f"Priors given ({priors}), but not being used by dataframe_to_ptable() method."
-        )
-
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
