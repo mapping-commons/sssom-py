@@ -294,11 +294,11 @@ def from_sssom_json(
     prefix_map: Dict[str, str],
     meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
-    """Get data from JSON.
+    """Load a mapping set dataframe from a JSON object.
 
     :param jsondoc: JSON document
     :param prefix_map: Prefix map
-    :param meta: metadata, defaults to None
+    :param meta: metadata
     :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
@@ -644,7 +644,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 def split_dataframe(
     msdf: MappingSetDataFrame,
 ) -> Dict[str, MappingSetDataFrame]:
-    """Split DataFrame.
+    """Group the mapping set dataframe into several subdataframes by prefix.
 
     :param msdf: MappingSetDataFrame object
     :raises RuntimeError: DataFrame object within MappingSetDataFrame is None

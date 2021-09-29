@@ -12,13 +12,10 @@ from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
 
 
-def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
-    """Convert a MappingSetDocument to a networkx DiGraph."""
+def to_digraph(msdf: MappingSetDataFrame) -> nx.DiGraph:
+    """Convert to a graph where the nodes are entities' CURIEs and edges are their mappings."""
     doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
-    # m = {
-    #    "owl:subClassOf",
-    # }
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
             if not isinstance(mapping, Mapping):
@@ -70,29 +67,29 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     :return: List of MappingSetDocument objects
     """
     doc = to_mapping_set_document(msdf)
-    g = to_networkx(msdf)
-    gen = nx.algorithms.components.strongly_connected_components(g)
+    graph = to_digraph(msdf)
+    components_it = nx.algorithms.components.strongly_connected_components(graph)
+    components = sorted(components_it, key=len, reverse=True)
 
-    node_to_comp = {}
-    comp_id = 0
-    newdocs = []
-    for comp in sorted(gen, key=len, reverse=True):
-        for n in comp:
-            node_to_comp[n] = comp_id
-        comp_id += 1
-        newdocs.append(MappingSetDocument.empty(prefix_map=doc.prefix_map))
+    curie_to_component = {}
+    for i, component in enumerate(components):
+        for curie in component:
+            curie_to_component[curie] = i
+    documents = [
+        MappingSetDocument.empty(prefix_map=doc.prefix_map)
+        for _ in range(len(components))
+    ]
 
     if not isinstance(doc.mapping_set.mappings, list):
         raise TypeError
-    for m in doc.mapping_set.mappings:
-        if not isinstance(m, Mapping):
+    for mapping in doc.mapping_set.mappings:
+        if not isinstance(mapping, Mapping):
             raise TypeError
-        comp_id = node_to_comp[m.subject_id]
-        subdoc = newdocs[comp_id]
-        if not isinstance(subdoc.mapping_set.mappings, list):
+        subject_document = documents[curie_to_component[mapping.subject_id]]
+        if not isinstance(subject_document.mapping_set.mappings, list):
             raise TypeError
-        subdoc.mapping_set.mappings.append(m)
-    return newdocs
+        subject_document.mapping_set.mappings.append(mapping)
+    return documents
 
 
 def group_values(d: Dict[str, str]) -> Dict[str, List[str]]:
