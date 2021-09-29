@@ -64,14 +64,10 @@ def parse_file(
 
 
 def validate_file(input_path: str) -> bool:
-    """
-    Validate the incoming SSSOM TSV according to the SSSOM specification.
+    """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
-    Args:
-        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-
-    Returns:
-        Boolean. True if valid SSSOM, false otherwise.
+    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :return: True if valid SSSOM, false otherwise.
     """
     try:
         read_sssom_table(file_path=input_path)
