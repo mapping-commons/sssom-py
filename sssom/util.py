@@ -5,7 +5,6 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from io import StringIO
 from typing import (
     Any,
     DefaultDict,
@@ -18,7 +17,6 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.request import urlopen
 
 import numpy as np
 import pandas as pd
@@ -684,31 +682,6 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
         raise Exception(f"Cannot guess format from {filename}")
 
 
-def read_csv(
-    filename: Union[str, TextIO], comment: str = "#", sep: str = ","
-) -> pd.DataFrame:
-    """Read CSV file.
-
-    :param filename: filename
-    :param comment: character that indicates beginning of a comment, defaults to "#"
-    :param sep: separator, defaults to ","
-    :return: Pandas DataFrame
-    """
-    if validators.url(filename):
-        response = urlopen(filename)
-        lines = "".join(
-            [
-                line.decode("utf-8")
-                for line in response
-                if not line.decode("utf-8").startswith(comment)
-            ]
-        )
-    else:
-        with open(filename, "r") as f:
-            lines = "".join([line for line in f if not line.startswith(comment)])
-    return pd.read_csv(StringIO(lines), sep=sep)
-
-
 def read_metadata(filename: str) -> Metadata:
     """Read a metadata file (yaml) that is supplied separately from a TSV."""
     prefix_map = {}
@@ -735,7 +708,7 @@ def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataF
         else:
             sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-    return read_csv(file, comment="#", sep=sep).fillna("")
+    return pd.read_csv(file, comment="#", sep=sep).fillna("")
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
