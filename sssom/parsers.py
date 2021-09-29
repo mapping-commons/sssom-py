@@ -607,10 +607,14 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
                 ok = False
                 if k:
                     k = str(k)
-                if hasattr(Mapping, k) or hasattr(MappingSet, k):
+                if (
+                    (hasattr(Mapping, k) or hasattr(MappingSet, k))
+                    and v is not None
+                    and "|" in str(v)
+                ):
                     # IF k is multivalued, then v = List[values]
-                    # v = v.split('|').strip()
-                    pass
+                    v = [s.strip() for s in v.split("|")]
+
                 if hasattr(Mapping, k):
                     mdict[k] = v
                     ok = True
