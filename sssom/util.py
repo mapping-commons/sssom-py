@@ -18,7 +18,7 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 import numpy as np
 import pandas as pd
@@ -196,9 +196,7 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     :param df: SSSOM DataFrame to be sorted.
     :return: Sorted SSSOM DataFrame
     """
-    df.sort_values(
-        by=sorted(df.columns), ascending=False, inplace=True
-    )
+    df.sort_values(by=sorted(df.columns), ascending=False, inplace=True)
     return df
 
 
@@ -451,7 +449,7 @@ RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
 
 def sha256sum(filename: str) -> str:
-    """Hashing function.
+    """Calculate the SHA256 hash over the bytes in a file.
 
     :param filename: Filename
     :type filename: str
@@ -518,10 +516,10 @@ def merge_msdf(
 def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     """Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination.
 
-    Taking into account the rule that negative trumps positive given equal confidence values.
+    Rule: negative trumps positive if modulus of confidence values are equal.
 
     :param df: Merged Pandas DataFrame
-    :return: pd.DataFrame: Pandas DataFrame with negations addressed
+    :return: Pandas DataFrame with negations addressed
     """
     """
             1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
@@ -678,7 +676,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 def get_file_extension(file: Union[str, TextIO]) -> str:
     """Get file extension.
 
-    :param file: Name of the file
+    :param file: File path
     :raises Exception: Cannot determine extension exception
     :return: format of the file passed
     """
@@ -694,8 +692,10 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
         raise Exception(f"Cannot guess format from {filename}")
 
 
-def read_csv(filename: str, comment: str = "#", sep: str = ",") -> pd.DataFrame:
-    """Read TSV file.
+def read_csv(
+    filename: Union[str, TextIO], comment: str = "#", sep: str = ","
+) -> pd.DataFrame:
+    """Read CSV file.
 
     :param filename: filename
     :param comment: character that indicates beginning of a comment, defaults to "#"
@@ -743,7 +743,7 @@ def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataF
         else:
             sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-    return read_csv(str(file), comment="#", sep=sep).fillna("")
+    return read_csv(file, comment="#", sep=sep).fillna("")
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:

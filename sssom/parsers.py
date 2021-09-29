@@ -647,7 +647,7 @@ def split_dataframe(
     """Split DataFrame.
 
     :param msdf: MappingSetDataFrame object
-    :raises RuntimeError: Object is None
+    :raises RuntimeError: DataFrame object within MappingSetDataFrame is None
     :return: Mapping object
     """
     if msdf.df is None:

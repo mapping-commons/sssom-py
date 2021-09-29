@@ -96,7 +96,7 @@ def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str
 def contract_uri(uristr: str, config: EndpointConfig) -> str:
     """Contract URI. For e.g. "http://purl.org/dc/terms/" => "dc".
 
-    :param uristr: URI string
+    :param uristr: Prefix
     :param config: Configuration
     :return: URI string (contracted)
     """
@@ -109,7 +109,7 @@ def contract_uri(uristr: str, config: EndpointConfig) -> str:
 
 
 def expand_curie(curie: str, config: EndpointConfig) -> URIRef:
-    """Expand CURIE. For e.g. "dc" => "http://purl.org/dc/terms/".
+    """Expand prefix. For e.g. "dc" => "http://purl.org/dc/terms/".
 
     :param curie: CURIE
     :param config: Configuration
