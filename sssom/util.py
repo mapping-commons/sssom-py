@@ -297,8 +297,8 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
     for _, row in df.iterrows():
         subject_entity = create_entity(
             row,
-            row[SUBJECT_ID],
-            {
+            eid=row[SUBJECT_ID],
+            mappings={
                 "label": SUBJECT_LABEL,
                 "category": SUBJECT_CATEGORY,
                 "source": SUBJECT_SOURCE,
@@ -306,8 +306,8 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
         )
         object_entity = create_entity(
             row,
-            row[OBJECT_ID],
-            {
+            eid=row[OBJECT_ID],
+            mappings={
                 "label": OBJECT_LABEL,
                 "category": OBJECT_CATEGORY,
                 "source": OBJECT_SOURCE,
