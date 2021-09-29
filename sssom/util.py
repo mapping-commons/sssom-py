@@ -273,7 +273,7 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(row, eid: str, mappings: Dict[str, Any]) -> Entity:
+def create_entity(eid: str, mappings: Dict[str, Any]) -> Entity:
     """Create an Entity object.
 
     :param row: Row - [UNUSED]
@@ -281,7 +281,6 @@ def create_entity(row, eid: str, mappings: Dict[str, Any]) -> Entity:
     :param mappings: Mapping dictionary
     :return: An Entity object
     """
-    logging.warning(f"create_entity() has row parameter ({row}), but not used.")
     e = Entity(id=eid)
     for k, v in mappings.items():
         if k in e:
@@ -294,7 +293,6 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
     mappings: DefaultDict[EntityPair, List[pd.Series]] = defaultdict(list)
     for _, row in df.iterrows():
         subject_entity = create_entity(
-            row,
             eid=row[SUBJECT_ID],
             mappings={
                 "label": SUBJECT_LABEL,
@@ -303,7 +301,6 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
             },
         )
         object_entity = create_entity(
-            row,
             eid=row[OBJECT_ID],
             mappings={
                 "label": OBJECT_LABEL,
