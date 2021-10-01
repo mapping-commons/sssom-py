@@ -15,8 +15,9 @@ from sssom.parsers import (
     from_sssom_json,
     from_sssom_rdf,
     read_sssom_table,
+    to_mapping_set_document,
 )
-from sssom.util import PREFIX_MAP_KEY
+from sssom.util import PREFIX_MAP_KEY, to_mapping_set_dataframe
 from sssom.writers import write_table
 from tests.test_data import test_data_dir, test_out_dir
 
@@ -141,3 +142,15 @@ class TestParse(unittest.TestCase):
             141,
             f"{self.json_file} has the wrong number of mappings.",
         )
+
+    def test_piped_element_to_list(self):
+        input_path = f"{test_data_dir}/basic.tsv"
+        msdf = read_sssom_table(input_path)
+        df = msdf.df
+        msdf.df = df[df["match_type"].str.contains("\\|")].reset_index()
+        old_match_type = msdf.df["match_type"]
+        old_match_type = old_match_type.str.split("\\|").astype(str)
+        msdoc = to_mapping_set_document(msdf)
+        new_msdf = to_mapping_set_dataframe(msdoc)
+        new_match_type = new_msdf.df["match_type"]
+        self.assertTrue(old_match_type.equals(new_match_type))
