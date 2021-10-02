@@ -679,12 +679,12 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
         raise Exception(f"Cannot guess format from {filename}")
 
 
-def read_csv(url_or_path: Union[str, TextIO], comment: str = "#", sep: str = ","):
+def read_csv(filename: Union[str, TextIO], comment: str = "#", sep: str = ","):
     """Read a CSV that contains frontmatter commented by a specific character."""
-    if isinstance(url_or_path, TextIO):
-        return pd.read_csv(url_or_path, sep=sep)
-    if validators.url(url_or_path):
-        response = urlopen(url_or_path)
+    if isinstance(filename, TextIO):
+        return pd.read_csv(filename, sep=sep)
+    if validators.url(filename):
+        response = urlopen(filename)
         lines = "".join(
             [
                 line.decode("utf-8")
@@ -693,7 +693,7 @@ def read_csv(url_or_path: Union[str, TextIO], comment: str = "#", sep: str = ","
             ]
         )
     else:
-        with open(url_or_path, "r") as f:
+        with open(filename, "r") as f:
             lines = "".join([line for line in f if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
@@ -780,20 +780,12 @@ CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
 
 
 def is_curie(string: str) -> bool:
-    """Check if string is CURIE or not.
-
-    :param string: String
-    :return: Boolean indicating CURIE or not
-    """
+    """Check if the string is a CURIE."""
     return bool(CURIE_RE.match(string))
 
 
 def get_prefix_from_curie(curie: str) -> str:
-    """Get prefix from CURIE.
-
-    :param curie: CURIE
-    :return: Prefix
-    """
+    """Get the prefix from a CURIE."""
     if is_curie(curie):
         return curie.split(":")[0]
     else:
@@ -832,11 +824,7 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
-    """Get prefixes used in table.
-
-    :param df: Pandas DatafFrame
-    :return: List of unique prefixes
-    """
+    """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = []
     for col in KEY_FEATURES:
         for v in df[col].values:
@@ -866,11 +854,12 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.Data
         return pd.DataFrame(columns=KEY_FEATURES)
 
 
+# TODO this is not used anywhere
 def guess_file_format(filename: Union[str, TextIO]) -> str:
     """Get file format.
 
     :param filename: filename
-    :raises Exception: Unrecoginized file extension
+    :raises ValueError: Unrecognized file extension
     :return: File extension
     """
     extension = get_file_extension(filename)
@@ -879,17 +868,13 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
     elif extension in RDF_FORMATS:
         return extension
     else:
-        raise Exception(
+        raise ValueError(
             f"File extension {extension} does not correspond to a legal file format"
         )
 
 
-def prepare_context(prefix_map: Optional[PrefixMap] = None):
-    """Prepare context.
-
-    :param prefix_map: Prefix map, defaults to None
-    :return: Context
-    """
+def prepare_context(prefix_map: Optional[PrefixMap] = None) -> Mapping[str, Any]:
+    """Prepare a JSON-LD context from a prefix map."""
     context = get_jsonld_context()
     if prefix_map is None:
         prefix_map = get_default_metadata().prefix_map
@@ -909,7 +894,7 @@ def prepare_context(prefix_map: Optional[PrefixMap] = None):
 
 
 def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
-    """Prepare context string.
+    """Prepare a JSON-LD context and dump to a string.
 
     :param prefix_map: Prefix map, defaults to None
     :return: Context in str format
@@ -921,7 +906,7 @@ def raise_for_bad_path(file_path: str) -> None:
     """Raise exception if file path is invalid.
 
     :param file_path: File path
-    :raises Exception: Invalid file path
+    :raises ValueError: Invalid file path
     """
     if not validators.url(file_path) and not os.path.exists(file_path):
-        raise Exception(f"{file_path} is not a valid file path or url.")
+        raise ValueError(f"{file_path} is not a valid file path or url.")
