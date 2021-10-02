@@ -58,7 +58,7 @@ def to_digraph(msdf: MappingSetDataFrame) -> nx.DiGraph:
 
 
 def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
-    """Split MappingSetDataFrames into a list of MappingSetDocuments consisting of nodes in strongly connected components of graph.
+    """Split a MappingSetDataFrames documents corresponding to a strongly connected components of the associated graph.
 
     :param msdf: MappingSetDataFrame object
     :raises TypeError: If Mappings is not of type List
@@ -100,15 +100,15 @@ def group_values(d: Dict[str, str]) -> Dict[str, List[str]]:
     return dict(rv)
 
 
-def get_src(src: Optional[str], cid: str):
+def get_src(src: Optional[str], curie: str):
     """Get prefix of subject/object in the MappingSetDataFrame.
 
     :param src: Source
-    :param cid: CURIE
+    :param curie: CURIE
     :return: Source
     """
     if src is None:
-        return cid.split(":")[0]
+        return curie.split(":")[0]
     else:
         return src
 

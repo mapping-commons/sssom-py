@@ -54,8 +54,6 @@ def parse_file(
     metadata = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
-    if input_format is None:
-        raise ValueError("Input format not provided.")
     parse_func = get_parsing_function(input_format, input_path)
     doc = parse_func(
         input_path, prefix_map=metadata.prefix_map, meta=metadata.prefix_map

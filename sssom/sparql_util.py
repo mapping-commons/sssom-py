@@ -22,7 +22,7 @@ class EndpointConfig:
 
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
-    """Query a SPARQL endpoint to obtain a set of mapping."""
+    """Query a SPARQL endpoint to obtain a set of mappings."""
     sparql = SPARQLWrapper(config.url)
     if config.graph is None:
         g = "?g"
@@ -76,40 +76,40 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     rows = []
     for result in results["results"]["bindings"]:
         row = {k: v["value"] for k, v in result.items()}
-        rows.append(curiefy_row(row, config))
+        rows.append(curiefy_values(row, config))
     df = pd.DataFrame(rows)
     if config.prefix_map is None:
         raise TypeError
     return MappingSetDataFrame(df=df, prefix_map=config.prefix_map)
 
 
-def curiefy_row(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str]:
-    """Assign a contracted URI ("dc") if Mapping object dictionary value is "http://purl.org/dc/terms/".
+def curiefy_values(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, str]:
+    """Convert all values in the dict from URIs to CURIEs.
 
-    :param row: Mapping object row
+    :param row: A dictionary of string keys to URIs
     :param config: Configuration
-    :return: Dictionary of CURIEs
+    :return: A dictionary of string keys to CURIEs
     """
     return {k: contract_uri(v, config) for k, v in row.items()}
 
 
-def contract_uri(uristr: str, config: EndpointConfig) -> str:
-    """Replace the URI with a prefix based on the prefix map in the given configuration.
+def contract_uri(uri: str, config: EndpointConfig) -> str:
+    """Replace the URI with a CURIE based on the prefix map in the given configuration.
 
-    :param uristr: Prefix
+    :param uri: A uniform resource identifier
     :param config: Configuration
-    :return: URI string (contracted)
+    :return: A CURIE if it's able to contract, otherwise return the original URI
     """
     if config.prefix_map is None:
-        return uristr
+        return uri
     for k, v in config.prefix_map.items():
-        if uristr.startswith(v):
-            return uristr.replace(v, f"{k}:")
-    return uristr
+        if uri.startswith(v):
+            return uri.replace(v, f"{k}:")
+    return uri
 
 
 def expand_curie(curie: str, config: EndpointConfig) -> URIRef:
-    """Expand prefix. For e.g. "dc" => "http://purl.org/dc/terms/".
+    """Expand a CURIE to a URI.
 
     :param curie: CURIE
     :param config: Configuration

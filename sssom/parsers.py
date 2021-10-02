@@ -456,8 +456,8 @@ def from_obographs(
 # All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-def get_parsing_function(input_format: str, filename: str) -> Callable:
-    """Return appropriate function based on input format of file.
+def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
+    """Return appropriate parser function based on input format of file.
 
     :param input_format: File format
     :param filename: Filename
