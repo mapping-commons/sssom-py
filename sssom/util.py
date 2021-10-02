@@ -118,7 +118,7 @@ class MappingSetDataFrame:
     def clean_prefix_map(self) -> None:
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes: PrefixMap = dict()
-        missing_prefix = []
+        missing_prefixes = []
         for prefix in prefixes_in_map:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
@@ -126,9 +126,9 @@ class MappingSetDataFrame:
                 logging.warning(
                     f"{prefix} is used in the data frame but does not exist in prefix map"
                 )
-                missing_prefix.append(prefix)
-        if missing_prefix:
-            self.df = filter_out_prefixes(self.df, missing_prefix)
+                missing_prefixes.append(prefix)
+        if missing_prefixes:
+            self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
 
 
@@ -832,12 +832,13 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
 
 
 def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.DataFrame:
-    """Get all prefixes in filter_prefixes from pandas DataFrame.
+    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
 
     :param df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
     :return: Pandas Dataframe
     """
+    filter_prefix_set = set(filter_prefixes)
     rows = []
 
     for _, row in df.iterrows():
@@ -845,7 +846,7 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.Data
         prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
         # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
-        if not any(prefix in prefixes for prefix in filter_prefixes):
+        if not any(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
