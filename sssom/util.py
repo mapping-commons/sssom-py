@@ -678,8 +678,19 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
         raise Exception(f"Cannot guess format from {filename}")
 
 
-def read_csv(filename: Union[str, TextIO], comment: str = "#", sep: str = ","):
-    """Read a CSV that contains frontmatter commented by a specific character."""
+def read_csv(
+    filename: Union[str, TextIO], comment: str = "#", sep: str = ","
+) -> pd.DataFrame:
+    """Read a CSV that contains frontmatter commented by a specific character.
+
+    :param filename: Either the file path, a URL, or a file object to read as a TSV
+        with frontmatter
+    :param comment: The comment character used for the frontmatter. This isn't the
+        same as the comment keyword in :func:`pandas.read_csv` because it only
+        works on the first charcter in the line
+    :param sep: The separator for the TSV file
+    :returns: A pandas dataframe
+    """
     if isinstance(filename, TextIO):
         return pd.read_csv(filename, sep=sep)
     if validators.url(filename):
