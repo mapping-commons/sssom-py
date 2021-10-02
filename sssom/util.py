@@ -248,7 +248,7 @@ def filter_redundant_rows(
 
 
 def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """Assign numpy.NaN values to confidence that are blank.
+    """Assign :data:`numpy.nan` to confidence that are blank.
 
     :param df: SSSOM DataFrame
     :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
