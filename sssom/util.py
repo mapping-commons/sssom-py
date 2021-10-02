@@ -275,19 +275,18 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(eid: str, mappings: Dict[str, Any]) -> Entity:
+def create_entity(identifier: str, mappings: Dict[str, Any]) -> Entity:
     """Create an Entity object.
 
-    :param row: Row - [UNUSED]
-    :param eid: Entity Id
+    :param identifier: Entity Id
     :param mappings: Mapping dictionary
     :return: An Entity object
     """
-    e = Entity(id=eid)
-    for k, v in mappings.items():
-        if k in e:
-            e[k] = v
-    return e
+    entity = Entity(id=identifier)
+    for key, value in mappings.items():
+        if key in entity:
+            entity[key] = value
+    return entity
 
 
 def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
@@ -295,7 +294,7 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
     mappings: DefaultDict[EntityPair, List[pd.Series]] = defaultdict(list)
     for _, row in df.iterrows():
         subject_entity = create_entity(
-            eid=row[SUBJECT_ID],
+            identifier=row[SUBJECT_ID],
             mappings={
                 "label": SUBJECT_LABEL,
                 "category": SUBJECT_CATEGORY,
@@ -303,7 +302,7 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
             },
         )
         object_entity = create_entity(
-            eid=row[OBJECT_ID],
+            identifier=row[OBJECT_ID],
             mappings={
                 "label": OBJECT_LABEL,
                 "category": OBJECT_CATEGORY,
