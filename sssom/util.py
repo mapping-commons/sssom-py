@@ -435,19 +435,17 @@ PREDICATE_SIBLING = 3
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
 
-def sha256sum(filename: str) -> str:
+def sha256sum(path: str) -> str:
     """Calculate the SHA256 hash over the bytes in a file.
 
-    :param filename: Filename
-    :type filename: str
+    :param path: Filename
     :return: Hashed value
-    :rtype: str
     """
     h = hashlib.sha256()
     b = bytearray(128 * 1024)
     mv = memoryview(b)
-    with open(filename, "rb", buffering=0) as f:
-        for n in iter(lambda: f.readinto(mv), 0):  # type: ignore
+    with open(path, "rb", buffering=0) as file:
+        for n in iter(lambda: file.readinto(mv), 0):  # type: ignore
             h.update(mv[:n])
     return h.hexdigest()
 
