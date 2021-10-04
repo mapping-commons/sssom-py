@@ -27,6 +27,7 @@ from .util import (
     NoCURIEException,
     curie_from_uri,
     get_file_extension,
+    is_multivalued_slot,
     raise_for_bad_path,
     read_pandas,
     to_mapping_set_dataframe,
@@ -86,7 +87,9 @@ def read_sssom_rdf(
 
 
 def read_sssom_json(
-    file_path: str, prefix_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -104,7 +107,9 @@ def read_sssom_json(
 
 
 def read_obographs_json(
-    file_path: str, prefix_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
 
@@ -368,7 +373,10 @@ def from_alignment_minidom(
 
 
 def from_obographs(
-    jsondoc: Dict, *, prefix_map: PrefixMap, meta: Optional[MetadataType] = None
+    jsondoc: Dict,
+    *,
+    prefix_map: PrefixMap,
+    meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a obographs json object to an SSSOM data frame.
 
@@ -619,9 +627,10 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
                 if k:
                     k = str(k)
                 if (
-                    (hasattr(Mapping, k) or hasattr(MappingSet, k))
+                    is_multivalued_slot(k)
                     and v is not None
-                    and "|" in str(v)
+                    and isinstance(v, str)
+                    and "|" in v
                 ):
                     # IF k is multivalued, then v = List[values]
                     v = [s.strip() for s in v.split("|")]

@@ -26,6 +26,7 @@ import validators
 import yaml
 
 from .context import get_default_metadata, get_jsonld_context
+from .internal_context import multivalued_slots
 from .sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -921,3 +922,19 @@ def raise_for_bad_path(file_path: str) -> None:
     """
     if not validators.url(file_path) and not os.path.exists(file_path):
         raise ValueError(f"{file_path} is not a valid file path or url.")
+
+
+def is_multivalued_slot(slot: str) -> bool:
+    """Check whether the slot is multivalued according to the SSSOM specification.
+
+    :param slot: Slot name
+    :return: Slot is multivalued or no
+    """
+    # Ideally:
+    # view = SchemaView('schema/sssom.yaml')
+    # return view.get_slot(slot).multivalued
+
+    if slot not in multivalued_slots:
+        return False
+
+    return True
