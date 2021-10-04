@@ -1,7 +1,13 @@
+"""Additional SSSOM object models."""
+
 from dataclasses import dataclass
 
 from .sssom_datamodel import MappingSet
 from .typehints import PrefixMap
+
+__all__ = [
+    "MappingSetDocument",
+]
 
 
 @dataclass()

@@ -1,12 +1,11 @@
 """Tests for reconcilation utilities."""
 
-import os
 import unittest
 
 from sssom import filter_redundant_rows
 from sssom.parsers import read_sssom_table
 from sssom.util import deal_with_negation, merge_msdf
-from tests.constants import cwd, data_dir
+from tests.constants import data_dir
 
 
 class TestReconcile(unittest.TestCase):

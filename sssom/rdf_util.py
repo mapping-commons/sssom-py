@@ -1,3 +1,5 @@
+"""Rewriting functionality for RDFlib graphs."""
+
 import logging
 from typing import Any, Dict, List, Optional
 
@@ -6,6 +8,10 @@ from rdflib import Graph, URIRef
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import EntityId, Mapping
 from .util import MappingSetDataFrame
+
+__all__ = [
+    "rewire_graph",
+]
 
 
 def rewire_graph(

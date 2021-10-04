@@ -1,3 +1,5 @@
+"""Utilities for SSSOM."""
+
 import hashlib
 import json
 import logging
@@ -784,7 +786,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 
 
 class NoCURIEException(ValueError):
-    pass
+    """An exception raised when a CURIE can not be parsed with a given prefix map."""
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")

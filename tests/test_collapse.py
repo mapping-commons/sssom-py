@@ -1,6 +1,5 @@
 """Test various grouping functionalities."""
 
-import os
 import unittest
 
 from pandasql import sqldf
@@ -13,7 +12,7 @@ from sssom import (
     group_mappings,
     parse,
 )
-from tests.constants import cwd, data_dir
+from tests.constants import data_dir
 
 
 class TestCollapse(unittest.TestCase):

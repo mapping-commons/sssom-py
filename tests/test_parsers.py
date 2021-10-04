@@ -20,7 +20,6 @@ from sssom.parsers import (
 )
 from sssom.util import PREFIX_MAP_KEY
 from sssom.writers import write_table
-from tests.test_data import cwd
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
 

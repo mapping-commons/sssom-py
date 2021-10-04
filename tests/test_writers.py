@@ -8,9 +8,10 @@ from tests.constants import test_out_dir
 
 
 class TestWrite(unittest.TestCase):
+    """A test case for SSSOM writers."""
+
     def setUp(self) -> None:
-        if not os.path.exists(test_out_dir):
-            os.mkdir(test_out_dir)
+        """Set up the test case with a basic SSSOM example."""
         self.msdf = read_sssom_table(f"{test_data_dir}/basic.tsv")
         # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
         self.mapping_count = 141  # 141 for basic.tsv

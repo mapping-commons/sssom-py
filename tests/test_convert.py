@@ -1,11 +1,10 @@
 """Tests for conversion utilities."""
 
-import os
 import unittest
 
 from sssom.parsers import read_sssom_table
 from sssom.writers import to_owl_graph, to_rdf_graph
-from tests.constants import cwd, data_dir
+from tests.constants import data_dir
 
 
 class TestConvert(unittest.TestCase):

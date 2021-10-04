@@ -1,6 +1,5 @@
 """Test case for splitting strongly connected components."""
 
-import os
 import unittest
 
 from sssom.cliques import split_into_cliques, summarize_cliques

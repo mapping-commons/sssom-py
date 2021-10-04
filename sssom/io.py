@@ -1,3 +1,5 @@
+"""I/O utilities for SSSOM."""
+
 import logging
 from pathlib import Path
 from typing import Optional, TextIO, Union
