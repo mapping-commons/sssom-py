@@ -47,7 +47,7 @@ sssom/internal_context.py: schema/sssom.context.jsonld
 	echo "sssom_context = \"\"\""  >> $@
 	cat $< >> $@
 	echo "\"\"\""  >> $@
-	echo "multivalued_slots = \"match_type\", \"creator_id\", \"creator_label\", \"author_id\", \"author_label\", \"reviewer_id\", \"reviewer_label\", \"license\", \"mapping_set_source\", \"subject_match_field\", \"object_match_field\", \"match_string\", \"subject_preprocessing\", \"object_preprocessing\", \"see_also\""  >> $@
+	echo "multivalued_slots = [\"match_type\", \"creator_id\", \"creator_label\", \"author_id\", \"author_label\", \"reviewer_id\", \"reviewer_label\", \"license\", \"mapping_set_source\", \"subject_match_field\", \"object_match_field\", \"match_string\", \"subject_preprocessing\", \"object_preprocessing\", \"see_also\"]"  >> $@
 
 
 deploy-dm: sssom/external_context.py sssom/internal_context.py
