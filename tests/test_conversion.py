@@ -1,3 +1,5 @@
+"""Tests for conversion utilities."""
+
 import filecmp
 import json
 import logging
@@ -23,6 +25,8 @@ from .test_data import SSSOMTestCase, get_all_test_cases
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
+    """A test case for conversion utilities."""
+
     def test(self):
         test_cases = get_all_test_cases()
         self.assertTrue(len(test_cases) > 2, "Less than 2 testcases in the test suite!")

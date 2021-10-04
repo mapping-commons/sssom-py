@@ -1,17 +1,18 @@
+"""Tests for conversion utilities."""
+
 import os
 import unittest
 
 from sssom.parsers import read_sssom_table
 from sssom.writers import to_owl_graph, to_rdf_graph
-
-# from pandasql import sqldf
-
-cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, "data")
+from tests.constants import cwd, data_dir
 
 
 class TestConvert(unittest.TestCase):
+    """A test case for conversion utilities."""
+
     def setUp(self) -> None:
+        """Set up the test case with two tables."""
         self.msdf = read_sssom_table(f"{data_dir}/basic.tsv")
         self.cob = read_sssom_table(f"{data_dir}/cob-to-external.tsv")
 

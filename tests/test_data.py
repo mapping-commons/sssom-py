@@ -1,14 +1,13 @@
+"""Tests for loading and processing data."""
+
 import os
 from typing import Any, List, Mapping
 
 import yaml
 
 from sssom.util import PREFIX_MAP_KEY
+from tests.constants import cwd, data_dir, test_out_dir
 
-cwd = os.path.abspath(os.path.dirname(__file__))
-test_data_dir = os.path.join(cwd, "data")
-test_out_dir = os.path.join(cwd, "tmp")
-os.makedirs(test_out_dir, exist_ok=True)
 test_validate_dir = os.path.join(cwd, "validate_data")
 schema_dir = os.path.join(cwd, os.pardir, "schema")
 DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
@@ -19,10 +18,12 @@ with open(TEST_CONFIG_PATH) as file:
 
 def get_test_file(filename: str) -> str:
     """Get a test file path inside the test data directory."""
-    return os.path.join(test_data_dir, filename)
+    return os.path.join(data_dir, filename)
 
 
 class SSSOMTestCase:
+    """A dynamic test case for data tests."""
+
     def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]):
         """Initialize the SSSOM test case.
 

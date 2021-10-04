@@ -1,17 +1,17 @@
+"""Tests for reconcilation utilities."""
+
 import os
 import unittest
 
 from sssom import filter_redundant_rows
 from sssom.parsers import read_sssom_table
 from sssom.util import deal_with_negation, merge_msdf
-
-# from pandasql import sqldf
-
-cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, "data")
+from tests.constants import cwd, data_dir
 
 
 class TestReconcile(unittest.TestCase):
+    """A test case for reconcilation utilities."""
+
     def setUp(self) -> None:
         self.msdf = read_sssom_table(f"{data_dir}/basic3.tsv")
 

@@ -1,15 +1,15 @@
+"""Test case for splitting strongly connected components."""
+
 import os
 import unittest
 
 from sssom.cliques import split_into_cliques, summarize_cliques
 from sssom.parsers import read_sssom_table
-
-cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, "data")
+from tests.constants import data_dir
 
 
 class TestSCC(unittest.TestCase):
-    """Tests strongly connected components."""
+    """Test case for splitting strongly connected components."""
 
     def setUp(self) -> None:
         self.mset = read_sssom_table(f"{data_dir}/basic.tsv")

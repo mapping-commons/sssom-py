@@ -13,9 +13,7 @@ from sssom import (
     group_mappings,
     parse,
 )
-
-cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, "data")
+from tests.constants import cwd, data_dir
 
 
 class TestCollapse(unittest.TestCase):

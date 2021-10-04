@@ -1,3 +1,5 @@
+"""Tests for rewiring utilities."""
+
 import os
 import unittest
 
@@ -12,7 +14,7 @@ test_out_dir = os.path.join(cwd, "tmp")
 
 
 class TestRewire(unittest.TestCase):
-    """Tests rewiring."""
+    """Test case for rewiring utilities."""
 
     def setUp(self) -> None:
         self.mset = read_sssom_table(f"{data_dir}/cob-to-external.tsv")

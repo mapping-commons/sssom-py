@@ -3,7 +3,8 @@ import unittest
 
 from sssom.parsers import read_sssom_json, read_sssom_rdf, read_sssom_table
 from sssom.writers import write_json, write_owl, write_rdf, write_table
-from tests.test_data import test_data_dir, test_out_dir
+from tests.constants import data_dir as test_data_dir
+from tests.constants import test_out_dir
 
 
 class TestWrite(unittest.TestCase):

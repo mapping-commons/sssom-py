@@ -1,3 +1,5 @@
+"""Tests for the command line interface."""
+
 import unittest
 from typing import Dict
 
@@ -25,6 +27,8 @@ from tests.test_data import (
 
 
 class SSSOMCLITestSuite(unittest.TestCase):
+    """A test case for the dynamic CLI tests."""
+
     def test_cli_single_input(self):
         runner = CliRunner()
         test_cases = (
