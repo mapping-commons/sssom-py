@@ -3,7 +3,7 @@ import logging
 import re
 import typing
 from collections import Counter
-from typing import Any, Dict, List, Optional, Set, TextIO, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -224,11 +224,11 @@ def from_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
 
-    Args:
-        g: the Graph (rdflib)
-        prefix_map: A dictionary containing the prefix map
-        meta: Potentially additional metadata
-        mapping_predicates: A set of predicates that should be extracted from the RDF graph
+    :param g: the Graph (rdflib)
+    :param prefix_map: A dictionary containing the prefix map, defaults to None
+    :param meta: Potentially additional metadata, defaults to None
+    :param mapping_predicates: A set of predicates that should be extracted from the RDF graph, defaults to None
+    :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
 
@@ -294,6 +294,13 @@ def from_sssom_json(
     prefix_map: Dict[str, str],
     meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
+    """Load a mapping set dataframe from a JSON object.
+
+    :param jsondoc: JSON document
+    :param prefix_map: Prefix map
+    :param meta: metadata
+    :return: MappingSetDataFrame object
+    """
     prefix_map = _ensure_prefix_map(prefix_map)
     mapping_set = cast(
         MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
@@ -365,14 +372,11 @@ def from_obographs(
 ) -> MappingSetDataFrame:
     """Convert a obographs json object to an SSSOM data frame.
 
-    Args:
-        jsondoc: The JSON object representing the ontology in obographs format
-        prefix_map: The prefix map to be used
-        meta: Any additional metadata that needs to be added to the resulting SSSOM data frame
-
-    Returns:
-        An SSSOM data frame (MappingSetDataFrame)
-
+    :param jsondoc: The JSON object representing the ontology in obographs format
+    :param prefix_map: The prefix map to be used
+    :param meta: Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None
+    :raises Exception: When there is no CURIE
+    :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
 
@@ -452,7 +456,14 @@ def from_obographs(
 # All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-def get_parsing_function(input_format, filename):
+def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
+    """Return appropriate parser function based on input format of file.
+
+    :param input_format: File format
+    :param filename: Filename
+    :raises Exception: Unknown file format
+    :return: Appropriate 'read' function
+    """
     if input_format is None:
         input_format = get_file_extension(filename)
     if input_format == "tsv":
@@ -632,7 +643,13 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 
 def split_dataframe(
     msdf: MappingSetDataFrame,
-) -> typing.Mapping[str, MappingSetDataFrame]:
+) -> Dict[str, MappingSetDataFrame]:
+    """Group the mapping set dataframe into several subdataframes by prefix.
+
+    :param msdf: MappingSetDataFrame object
+    :raises RuntimeError: DataFrame object within MappingSetDataFrame is None
+    :return: Mapping object
+    """
     if msdf.df is None:
         raise RuntimeError
     subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
@@ -648,7 +665,7 @@ def split_dataframe(
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
-) -> typing.Mapping[str, MappingSetDataFrame]:
+) -> Dict[str, MappingSetDataFrame]:
     """Split a mapping set dataframe by prefix.
 
     :param msdf: An SSSOM MappingSetDataFrame

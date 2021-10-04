@@ -19,12 +19,11 @@ from sssom.writers import (
     write_table,
 )
 
-from .test_data import SSSOMTestCase, ensure_test_dir_exists, get_all_test_cases
+from .test_data import SSSOMTestCase, get_all_test_cases
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
     def test(self):
-        ensure_test_dir_exists()
         test_cases = get_all_test_cases()
         self.assertTrue(len(test_cases) > 2, "Less than 2 testcases in the test suite!")
         for test in test_cases:
