@@ -40,9 +40,7 @@ NEURONAME = CurieNamespace(
     "neuroname",
     "http://braininfo.rprc.washington.edu/centraldirectory.aspx?ID=",
 )
-OBOINOWL = CurieNamespace(
-    "oboInOwl", "http://www.geneontology.org/formats/oboInOwl#"
-)
+OBOINOWL = CurieNamespace("oboInOwl", "http://www.geneontology.org/formats/oboInOwl#")
 OIO = CurieNamespace("oio", "http://www.geneontology.org/formats/oboInOwl#")
 OWL = CurieNamespace("owl", "http://www.w3.org/2002/07/owl#")
 RDF = CurieNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -98,9 +96,7 @@ class MappingSet(YAMLRoot):
 
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
         if not isinstance(self.mappings, list):
-            self.mappings = (
-                [self.mappings] if self.mappings is not None else []
-            )
+            self.mappings = [self.mappings] if self.mappings is not None else []
         self.mappings = [
             v if isinstance(v, Mapping) else Mapping(**as_dict(v))
             for v in self.mappings
@@ -121,22 +117,16 @@ class MappingSet(YAMLRoot):
         ):
             self.mapping_set_description = str(self.mapping_set_description)
 
-        if self.creator_id is not None and not isinstance(
-            self.creator_id, EntityId
-        ):
+        if self.creator_id is not None and not isinstance(self.creator_id, EntityId):
             self.creator_id = EntityId(self.creator_id)
 
-        if self.creator_label is not None and not isinstance(
-            self.creator_label, str
-        ):
+        if self.creator_label is not None and not isinstance(self.creator_label, str):
             self.creator_label = str(self.creator_label)
 
         if self.license is not None and not isinstance(self.license, str):
             self.license = str(self.license)
 
-        if self.subject_source is not None and not isinstance(
-            self.subject_source, str
-        ):
+        if self.subject_source is not None and not isinstance(self.subject_source, str):
             self.subject_source = str(self.subject_source)
 
         if self.subject_source_version is not None and not isinstance(
@@ -144,9 +134,7 @@ class MappingSet(YAMLRoot):
         ):
             self.subject_source_version = str(self.subject_source_version)
 
-        if self.object_source is not None and not isinstance(
-            self.object_source, str
-        ):
+        if self.object_source is not None and not isinstance(self.object_source, str):
             self.object_source = str(self.object_source)
 
         if self.object_source_version is not None and not isinstance(
@@ -159,14 +147,10 @@ class MappingSet(YAMLRoot):
         ):
             self.mapping_provider = str(self.mapping_provider)
 
-        if self.mapping_tool is not None and not isinstance(
-            self.mapping_tool, str
-        ):
+        if self.mapping_tool is not None and not isinstance(self.mapping_tool, str):
             self.mapping_tool = str(self.mapping_tool)
 
-        if self.mapping_date is not None and not isinstance(
-            self.mapping_date, str
-        ):
+        if self.mapping_date is not None and not isinstance(self.mapping_date, str):
             self.mapping_date = str(self.mapping_date)
 
         if self.subject_match_field is not None and not isinstance(
@@ -253,14 +237,10 @@ class Mapping(YAMLRoot):
     comment: Optional[str] = None
 
     def __post_init__(self, *_: List[str], **kwargs: Dict[str, Any]):
-        if self.subject_id is not None and not isinstance(
-            self.subject_id, EntityId
-        ):
+        if self.subject_id is not None and not isinstance(self.subject_id, EntityId):
             self.subject_id = EntityId(self.subject_id)
 
-        if self.subject_label is not None and not isinstance(
-            self.subject_label, str
-        ):
+        if self.subject_label is not None and not isinstance(self.subject_label, str):
             self.subject_label = str(self.subject_label)
 
         if self.subject_category is not None and not isinstance(
@@ -278,14 +258,10 @@ class Mapping(YAMLRoot):
         ):
             self.predicate_label = str(self.predicate_label)
 
-        if self.object_id is not None and not isinstance(
-            self.object_id, EntityId
-        ):
+        if self.object_id is not None and not isinstance(self.object_id, EntityId):
             self.object_id = EntityId(self.object_id)
 
-        if self.object_label is not None and not isinstance(
-            self.object_label, str
-        ):
+        if self.object_label is not None and not isinstance(self.object_label, str):
             self.object_label = str(self.object_label)
 
         if self.object_category is not None and not isinstance(
@@ -293,27 +269,19 @@ class Mapping(YAMLRoot):
         ):
             self.object_category = str(self.object_category)
 
-        if self.match_type is not None and not isinstance(
-            self.match_type, str
-        ):
+        if self.match_type is not None and not isinstance(self.match_type, str):
             self.match_type = str(self.match_type)
 
-        if self.creator_id is not None and not isinstance(
-            self.creator_id, EntityId
-        ):
+        if self.creator_id is not None and not isinstance(self.creator_id, EntityId):
             self.creator_id = EntityId(self.creator_id)
 
-        if self.creator_label is not None and not isinstance(
-            self.creator_label, str
-        ):
+        if self.creator_label is not None and not isinstance(self.creator_label, str):
             self.creator_label = str(self.creator_label)
 
         if self.license is not None and not isinstance(self.license, str):
             self.license = str(self.license)
 
-        if self.subject_source is not None and not isinstance(
-            self.subject_source, str
-        ):
+        if self.subject_source is not None and not isinstance(self.subject_source, str):
             self.subject_source = str(self.subject_source)
 
         if self.subject_source_version is not None and not isinstance(
@@ -321,9 +289,7 @@ class Mapping(YAMLRoot):
         ):
             self.subject_source_version = str(self.subject_source_version)
 
-        if self.object_source is not None and not isinstance(
-            self.object_source, str
-        ):
+        if self.object_source is not None and not isinstance(self.object_source, str):
             self.object_source = str(self.object_source)
 
         if self.object_source_version is not None and not isinstance(
@@ -339,23 +305,15 @@ class Mapping(YAMLRoot):
         if self.mapping_cardinality is not None and not isinstance(
             self.mapping_cardinality, MappingCardinalityEnum
         ):
-            self.mapping_cardinality = MappingCardinalityEnum(
-                self.mapping_cardinality
-            )
+            self.mapping_cardinality = MappingCardinalityEnum(self.mapping_cardinality)
 
-        if self.mapping_tool is not None and not isinstance(
-            self.mapping_tool, str
-        ):
+        if self.mapping_tool is not None and not isinstance(self.mapping_tool, str):
             self.mapping_tool = str(self.mapping_tool)
 
-        if self.mapping_date is not None and not isinstance(
-            self.mapping_date, str
-        ):
+        if self.mapping_date is not None and not isinstance(self.mapping_date, str):
             self.mapping_date = str(self.mapping_date)
 
-        if self.confidence is not None and not isinstance(
-            self.confidence, float
-        ):
+        if self.confidence is not None and not isinstance(self.confidence, float):
             self.confidence = float(self.confidence)
 
         if self.subject_match_field is not None and not isinstance(
@@ -368,9 +326,7 @@ class Mapping(YAMLRoot):
         ):
             self.object_match_field = EntityId(self.object_match_field)
 
-        if self.match_string is not None and not isinstance(
-            self.match_string, str
-        ):
+        if self.match_string is not None and not isinstance(self.match_string, str):
             self.match_string = str(self.match_string)
 
         if self.subject_preprocessing is not None and not isinstance(
@@ -391,9 +347,7 @@ class Mapping(YAMLRoot):
         if self.semantic_similarity_score is not None and not isinstance(
             self.semantic_similarity_score, float
         ):
-            self.semantic_similarity_score = float(
-                self.semantic_similarity_score
-            )
+            self.semantic_similarity_score = float(self.semantic_similarity_score)
 
         if self.information_content_mica_score is not None and not isinstance(
             self.information_content_mica_score, float
