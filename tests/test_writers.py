@@ -1,3 +1,5 @@
+"""Tests for SSSOM writers."""
+
 import os
 import unittest
 

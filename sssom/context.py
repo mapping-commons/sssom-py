@@ -1,3 +1,5 @@
+"""Utilities for loading JSON-LD contexts."""
+
 import json
 import logging
 from typing import Optional

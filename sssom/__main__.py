@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Entrypoint module, in case you use `python -m term_expando`.
+"""Entrypoint module, in case you use `python -m sssom`.
 
 Why does this file exist, and why __main__? For more info, read:
 
