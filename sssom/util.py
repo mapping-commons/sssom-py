@@ -116,6 +116,7 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self) -> None:
+        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []

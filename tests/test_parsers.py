@@ -1,3 +1,5 @@
+"""Tests for parsers."""
+
 import json
 import os
 import unittest
@@ -24,7 +26,10 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 
 
 class TestParse(unittest.TestCase):
+    """A test case for parser functionality."""
+
     def setUp(self) -> None:
+        """Set up the test case."""
         if not os.path.exists(test_out_dir):
             os.mkdir(test_out_dir)
 
