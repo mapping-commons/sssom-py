@@ -46,17 +46,20 @@ class SSSOMTestCase:
         )
         self.prefix_map = config.get(PREFIX_MAP_KEY)
 
-    def _query_tuple(self, config, tuple_id, queries_dict):
+    @staticmethod
+    def _query_tuple(config, tuple_id, queries_dict):
         queries = []
         for t in config[tuple_id]:
             query = queries_dict[t]
             queries.append((query, config[tuple_id][t]))
         return queries
 
-    def get_out_file(self, extension):
+    def get_out_file(self, extension: str) -> str:
+        """Get the output file path."""
         return os.path.join(test_out_dir, f"{self.filename}.{extension}")
 
-    def get_validate_file(self, extension):
+    def get_validate_file(self, extension: str) -> str:
+        """Get the validation file path."""
         return os.path.join(test_validate_dir, f"{self.filename}.{extension}")
 
     def __str__(self) -> str:  # noqa:D105
