@@ -19,6 +19,7 @@ class TestWrite(unittest.TestCase):
         self.mapping_count = 141  # 141 for basic.tsv
 
     def test_write_sssom_dataframe(self):
+        """Test writing as a dataframe."""
         tmp_path = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
         with open(tmp_path, "w") as tmp_file:
             write_table(self.msdf, tmp_file)
@@ -30,6 +31,7 @@ class TestWrite(unittest.TestCase):
         )
 
     def test_write_sssom_rdf(self):
+        """Test writing as RDF."""
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         with open(path_1, "w") as file:
             write_rdf(self.msdf, file)
@@ -46,6 +48,7 @@ class TestWrite(unittest.TestCase):
             write_table(self.msdf, file)
 
     def test_write_sssom_json(self):
+        """Test writing as JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_json.json")
         with open(path, "w") as file:
             write_json(self.msdf, file)
@@ -57,6 +60,7 @@ class TestWrite(unittest.TestCase):
         )
 
     def test_write_sssom_owl(self):
+        """Test writing as OWL."""
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_owl.owl")
         with open(tmp_file, "w") as file:
             write_owl(self.msdf, file)
