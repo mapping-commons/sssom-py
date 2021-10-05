@@ -250,7 +250,9 @@ def filter_redundant_rows(
     return return_df
 
 
-def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def assign_default_confidence(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Assign :data:`numpy.nan` to confidence that are blank.
 
     :param df: SSSOM DataFrame
@@ -483,7 +485,9 @@ def merge_msdf(
         merged_msdf.df = msdf1.df
     # merge the non DataFrame elements
     merged_msdf.prefix_map = dict_merge(
-        source=msdf2.prefix_map, target=msdf1.prefix_map, dict_name="prefix_map"
+        source=msdf2.prefix_map,
+        target=msdf1.prefix_map,
+        dict_name="prefix_map",
     )
     # After a Slack convo with @matentzn, commented out below.
     # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
@@ -551,7 +555,13 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     positive_df = df.drop(condition.index)
     positive_df = positive_df.reset_index().drop(["index"], axis=1)
 
-    columns_of_interest = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, CONFIDENCE, MATCH_TYPE]
+    columns_of_interest = [
+        SUBJECT_ID,
+        PREDICATE_ID,
+        OBJECT_ID,
+        CONFIDENCE,
+        MATCH_TYPE,
+    ]
     negation_subset = normalized_negation_df[columns_of_interest]
     positive_subset = positive_df[columns_of_interest]
 
@@ -885,7 +895,9 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
         )
 
 
-def prepare_context(prefix_map: Optional[PrefixMap] = None) -> Mapping[str, Any]:
+def prepare_context(
+    prefix_map: Optional[PrefixMap] = None,
+) -> Mapping[str, Any]:
     """Prepare a JSON-LD context from a prefix map."""
     context = get_jsonld_context()
     if prefix_map is None:
@@ -934,7 +946,4 @@ def is_multivalued_slot(slot: str) -> bool:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
 
-    if slot not in multivalued_slots:
-        return False
-
-    return True
+    return slot in multivalued_slots
