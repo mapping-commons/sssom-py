@@ -177,9 +177,9 @@ def from_sssom_dataframe(
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
 
-    :param df:
-    :param prefix_map:
-    :param meta:
+    :param df: A mappings dataframe
+    :param prefix_map: A prefix map
+    :param meta: A metadata dictionary
     :return: MappingSetDataFrame
     """
     prefix_map = _ensure_prefix_map(prefix_map)
@@ -320,9 +320,10 @@ def from_alignment_minidom(
     """Read a minidom Document object.
 
     :param dom: XML (minidom) object
-    :param prefix_map:
+    :param prefix_map: A prefix map
     :param meta: Optional meta data
     :return: MappingSetDocument
+    :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
     """
     # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
     _ensure_prefix_map(prefix_map)
@@ -351,7 +352,7 @@ def from_alignment_minidom(
 
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
-                        raise Exception(
+                        raise ValueError(
                             "Alignment format: xml element said, but not set to yes. Only XML is supported!"
                         )
                 elif node_name == "onto1":

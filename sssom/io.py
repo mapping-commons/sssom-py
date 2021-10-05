@@ -18,10 +18,9 @@ def convert_file(
 ) -> None:
     """Convert a file.
 
-    Args:
-        input_path: The path to the input SSSOM tsv file
-        output: The path to the output file. If none is given, will default to using stdout.
-        output_format: The format to which the the SSSOM TSV should be converted.
+    :param input_path: The path to the input SSSOM tsv file
+    :param output: The path to the output file. If none is given, will default to using stdout.
+    :param output_format: The format to which the the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
     doc = read_sssom_table(input_path)
@@ -42,15 +41,14 @@ def parse_file(
 ) -> None:
     """Parse an SSSOM metadata file and write to a table.
 
-    Args:
-        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-        output: The path to the output file.
-        input_format: The string denoting the input format.
-        metadata_path: The path to a file containing the sssom metadata (including prefix_map)
-            to be used during parse.
-        prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
-            the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
-        clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
+    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :param output: The path to the output file.
+    :param input_format: The string denoting the input format.
+    :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
+        to be used during parse.
+    :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
+        the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
+    :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     """
     raise_for_bad_path(input_path)
     metadata = get_metadata_and_prefix_map(
@@ -67,14 +65,10 @@ def parse_file(
 
 
 def validate_file(input_path: str) -> bool:
-    """
-    Validate the incoming SSSOM TSV according to the SSSOM specification.
+    """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
-    Args:
-        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-
-    Returns:
-        Boolean. True if valid SSSOM, false otherwise.
+    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :returns: True if valid SSSOM, false otherwise.
     """
     try:
         read_sssom_table(file_path=input_path)
@@ -85,12 +79,10 @@ def validate_file(input_path: str) -> bool:
 
 
 def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
-    """
-    Split an SSSOM TSV by prefixes and relations.
+    """Split an SSSOM TSV by prefixes and relations.
 
-    Args:
-        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-        output_directory: The directory to which the split file should be exported.
+    :param  input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :param output_directory: The directory to which the split file should be exported.
     """
     raise_for_bad_path(input_path)
     msdf = read_sssom_table(input_path)
