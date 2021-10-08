@@ -8,6 +8,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from io import StringIO
+from pathlib import Path
 from typing import (
     Any,
     DefaultDict,
@@ -665,7 +666,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: Union[str, TextIO]) -> str:
+def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     """Get file extension.
 
     :param file: File path
@@ -674,6 +675,8 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
     """
     if isinstance(file, str):
         filename = file
+    elif isinstance(file, Path):
+        return file.suffix
     else:
         filename = file.name
     parts = filename.split(".")
@@ -685,7 +688,7 @@ def get_file_extension(file: Union[str, TextIO]) -> str:
 
 
 def read_csv(
-    filename: Union[str, TextIO], comment: str = "#", sep: str = ","
+    filename: Union[str, Path, TextIO], comment: str = "#", sep: str = ","
 ) -> pd.DataFrame:
     """Read a CSV that contains frontmatter commented by a specific character.
 
@@ -699,7 +702,10 @@ def read_csv(
     """
     if isinstance(filename, TextIO):
         return pd.read_csv(filename, sep=sep)
-    if validators.url(filename):
+    if isinstance(filename, Path) or not validators.url(filename):
+        with open(filename, "r") as f:
+            lines = "".join([line for line in f if not line.startswith(comment)])
+    else:
         response = urlopen(filename)
         lines = "".join(
             [
@@ -708,9 +714,6 @@ def read_csv(
                 if not line.decode("utf-8").startswith(comment)
             ]
         )
-    else:
-        with open(filename, "r") as f:
-            lines = "".join([line for line in f if not line.startswith(comment)])
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
@@ -724,7 +727,9 @@ def read_metadata(filename: str) -> Metadata:
     return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
-def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
+def read_pandas(
+    file: Union[str, Path, TextIO], sep: Optional[str] = None
+) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file: The file to read. If no separator is given, this file should be named.
@@ -920,11 +925,14 @@ def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str
     return json.dumps(prepare_context(prefix_map), **kwargs)
 
 
-def raise_for_bad_path(file_path: str) -> None:
+def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     """Raise exception if file path is invalid.
 
     :param file_path: File path
-    :raises ValueError: Invalid file path
+    :raises FileNotFoundError: Invalid file path
     """
-    if not validators.url(file_path) and not os.path.exists(file_path):
-        raise ValueError(f"{file_path} is not a valid file path or url.")
+    if isinstance(file_path, Path):
+        if not file_path.is_file():
+            raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
+    elif not validators.url(file_path) and not os.path.exists(file_path):
+        raise FileNotFoundError(f"{file_path} is not a valid file path or url.")

@@ -29,9 +29,6 @@ class TestParse(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case."""
-        if not os.path.exists(test_out_dir):
-            os.mkdir(test_out_dir)
-
         self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
 
         self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"

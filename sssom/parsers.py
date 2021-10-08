@@ -5,6 +5,7 @@ import logging
 import re
 import typing
 from collections import Counter
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
@@ -38,7 +39,7 @@ from .util import (
 
 
 def read_sssom_table(
-    file_path: str,
+    file_path: Union[str, Path],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
@@ -528,8 +529,16 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
     return mapping
 
 
-def _read_metadata_from_table(path: str) -> Dict[str, Any]:
-    if validators.url(path):
+def _read_metadata_from_table(path: Union[str, Path]) -> Dict[str, Any]:
+    if isinstance(path, Path) or not validators.url(path):
+        with open(path) as file:
+            yamlstr = ""
+            for line in file:
+                if line.startswith("#"):
+                    yamlstr += re.sub("^#", "", line)
+                else:
+                    break
+    else:
         response = urlopen(path)
         yamlstr = ""
         for lin in response:
@@ -538,14 +547,7 @@ def _read_metadata_from_table(path: str) -> Dict[str, Any]:
                 yamlstr += re.sub("^#", "", line)
             else:
                 break
-    else:
-        with open(path) as file:
-            yamlstr = ""
-            for line in file:
-                if line.startswith("#"):
-                    yamlstr += re.sub("^#", "", line)
-                else:
-                    break
+
     if yamlstr:
         meta = yaml.safe_load(yamlstr)
         logging.info(f"Meta={meta}")
