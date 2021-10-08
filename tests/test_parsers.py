@@ -1,3 +1,5 @@
+"""Tests for parsers."""
+
 import json
 import os
 import unittest
@@ -18,13 +20,15 @@ from sssom.parsers import (
 )
 from sssom.util import PREFIX_MAP_KEY
 from sssom.writers import write_table
-from tests.test_data import test_data_dir, test_out_dir
-
-cwd = os.path.abspath(os.path.dirname(__file__))
+from tests.test_data import data_dir as test_data_dir
+from tests.test_data import test_out_dir
 
 
 class TestParse(unittest.TestCase):
+    """A test case for parser functionality."""
+
     def setUp(self) -> None:
+        """Set up the test case."""
         if not os.path.exists(test_out_dir):
             os.mkdir(test_out_dir)
 
@@ -55,6 +59,7 @@ class TestParse(unittest.TestCase):
         self.prefix_map, self.metadata = get_default_metadata()
 
     def test_parse_sssom_dataframe(self):
+        """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
         msdf = read_sssom_table(input_path)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv")
@@ -67,6 +72,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_sssom_dataframe_url(self):
+        """Test parsing a TSV from a URL."""
         msdf = read_sssom_table(self.df_url)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
         with open(output_path, "w") as file:
@@ -78,6 +84,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_obographs(self):
+        """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs, prefix_map=self.prefix_map, meta=self.metadata
         )
@@ -91,6 +98,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_tsv(self):
+        """Test parsing TSV."""
         msdf = from_sssom_dataframe(
             df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta
         )
@@ -104,6 +112,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_alignment_minidom(self):
+        """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml, prefix_map=self.prefix_map, meta=self.metadata
         )
@@ -117,6 +126,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_sssom_rdf(self):
+        """Test parsing RDF."""
         msdf = from_sssom_rdf(
             g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata
         )
@@ -130,6 +140,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_sssom_json(self):
+        """Test parsing JSON."""
         msdf = from_sssom_json(
             jsondoc=self.json, prefix_map=self.df_prefix_map, meta=self.metadata
         )

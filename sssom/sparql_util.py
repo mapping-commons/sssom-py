@@ -1,3 +1,5 @@
+"""Utilities for querying mappings with SPARQL."""
+
 import logging
 from dataclasses import dataclass
 from typing import Dict, List, Mapping, Optional
@@ -9,9 +11,16 @@ from SPARQLWrapper import JSON, SPARQLWrapper
 
 from .util import MappingSetDataFrame
 
+__all__ = [
+    "EndpointConfig",
+    "query_mappings",
+]
+
 
 @dataclass
 class EndpointConfig:
+    """A container for a SPARQL endpoint's configuration."""
+
     url: str
     graph: URIRef
     predmap: Dict[str, str]

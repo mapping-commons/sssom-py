@@ -1,3 +1,5 @@
+"""Tests for conversion utilities."""
+
 import filecmp
 import json
 import logging
@@ -23,11 +25,14 @@ from .test_data import SSSOMTestCase, get_all_test_cases
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
-    def test(self):
+    """A test case for conversion utilities."""
+
+    def test_conversion(self):
+        """Run all conversion tests."""
         test_cases = get_all_test_cases()
         self.assertTrue(len(test_cases) > 2, "Less than 2 testcases in the test suite!")
         for test in test_cases:
-            with self.subTest():
+            with self.subTest(test=test.id):
                 read_func = get_parsing_function(test.inputformat, test.filepath)
                 msdf = read_func(test.filepath, prefix_map=test.prefix_map)
                 mdoc = to_mapping_set_document(msdf)
@@ -45,6 +50,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 self._test_to_dataframe(mdoc, test)
                 logging.info("Testing JSON export")
                 self._test_to_json_dict(mdoc, test)
+                self._test_to_json(mdoc, test)
 
     def _test_to_owl_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -65,7 +71,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         msdf = to_mapping_set_dataframe(mdoc)
         jsonob = to_json(msdf)
         self.assertEqual(len(jsonob), test.ct_json_elements)
-        write_json(msdf, test.get_out_file("json"), serialisation="json")
+        with open(test.get_out_file("json"), "w") as file:
+            write_json(msdf, file, serialisation="json")
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -176,7 +183,3 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_json_elements,
             f"The exported JSON file has less elements than the orginal one for {test.filename}",
         )
-
-
-if __name__ == "__main__":
-    unittest.main()
