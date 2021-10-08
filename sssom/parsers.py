@@ -108,7 +108,7 @@ def read_sssom_json(
 
 def read_obographs_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
+    prefix_map: Optional[Dict[str, str]] = None,
     meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
@@ -374,10 +374,7 @@ def from_alignment_minidom(
 
 
 def from_obographs(
-    jsondoc: Dict,
-    *,
-    prefix_map: PrefixMap,
-    meta: Optional[MetadataType] = None,
+    jsondoc: Dict, *, prefix_map: PrefixMap, meta: Optional[MetadataType] = None
 ) -> MappingSetDataFrame:
     """Convert a obographs json object to an SSSOM data frame.
 

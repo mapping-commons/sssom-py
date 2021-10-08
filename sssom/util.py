@@ -488,9 +488,7 @@ def merge_msdf(
         merged_msdf.df = msdf1.df
     # merge the non DataFrame elements
     merged_msdf.prefix_map = dict_merge(
-        source=msdf2.prefix_map,
-        target=msdf1.prefix_map,
-        dict_name="prefix_map",
+        source=msdf2.prefix_map, target=msdf1.prefix_map, dict_name="prefix_map"
     )
     # After a Slack convo with @matentzn, commented out below.
     # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
@@ -893,9 +891,7 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
         )
 
 
-def prepare_context(
-    prefix_map: Optional[PrefixMap] = None,
-) -> Mapping[str, Any]:
+def prepare_context(prefix_map: Optional[PrefixMap] = None) -> Mapping[str, Any]:
     """Prepare a JSON-LD context from a prefix map."""
     context = get_jsonld_context()
     if prefix_map is None:
