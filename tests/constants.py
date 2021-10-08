@@ -1,8 +1,9 @@
 """Constants for test cases."""
 
 import os
+import pathlib
 
-cwd = os.path.abspath(os.path.dirname(__file__))
+cwd = pathlib.Path(__file__).parent.resolve()
 data_dir = os.path.join(cwd, "data")
 
 test_out_dir = os.path.join(cwd, "tmp")
