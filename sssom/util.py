@@ -1,3 +1,5 @@
+"""Utilities for SSSOM."""
+
 import hashlib
 import json
 import logging
@@ -117,6 +119,7 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self) -> None:
+        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
@@ -319,7 +322,11 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
 def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     """Perform a diff between two SSSOM dataframes.
 
-    Currently does not discriminate between mappings with different predicates
+    :param df1: A mapping dataframe
+    :param df2: A mapping dataframe
+    :returns: A mapping set diff
+
+    .. warning:: currently does not discriminate between mappings with different predicates
     """
     mappings1 = group_mappings(df1.copy())
     mappings2 = group_mappings(df2.copy())
@@ -468,9 +475,7 @@ def merge_msdf(
         then remove lower confidence positive one. If confidence is the same,
         prefer HumanCurated. If both HumanCurated, prefer negative mapping).
         Defaults to True.
-
-    Returns:
-        MappingSetDataFrame: Merged MappingSetDataFrame.
+    :returns: Merged MappingSetDataFrame.
     """
     # Inject metadata of msdf into df
     msdf1 = inject_metadata_into_df(msdf=msdf1)
@@ -511,6 +516,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     :param df: Merged Pandas DataFrame
     :return: Pandas DataFrame with negations addressed
+    :raises ValueError: If the dataframe is none after assigning default confidence
     """
     """
             1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
@@ -532,7 +538,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     df, nan_df = assign_default_confidence(df)
 
     if df is None:
-        raise Exception(
+        raise ValueError(
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation"
         )
 
@@ -794,7 +800,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 
 
 class NoCURIEException(ValueError):
-    pass
+    """An exception raised when a CURIE can not be parsed with a given prefix map."""
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
@@ -921,6 +927,7 @@ def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str
     """Prepare a JSON-LD context and dump to a string.
 
     :param prefix_map: Prefix map, defaults to None
+    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
     :return: Context in str format
     """
     return json.dumps(prepare_context(prefix_map), **kwargs)

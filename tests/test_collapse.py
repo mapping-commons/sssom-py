@@ -1,4 +1,5 @@
-import os
+"""Test various grouping functionalities."""
+
 import unittest
 
 from pandasql import sqldf
@@ -11,16 +12,18 @@ from sssom import (
     group_mappings,
     parse,
 )
-
-cwd = os.path.abspath(os.path.dirname(__file__))
-data_dir = os.path.join(cwd, "data")
+from tests.constants import data_dir
 
 
 class TestCollapse(unittest.TestCase):
+    """Test various grouping functionalities."""
+
     def setUp(self) -> None:
+        """Set up the test case."""
         self.df = parse(f"{data_dir}/basic.tsv")
 
-    def test_df(self):
+    def test_row_count(self):
+        """Test the dataframe has the correct number of rows."""
         df = self.df
         self.assertEqual(
             len(df),
@@ -29,26 +32,29 @@ class TestCollapse(unittest.TestCase):
         )
 
     def test_collapse(self):
+        """Test the row count after collapsing the dataframe."""
         df = collapse(self.df)
         self.assertEqual(
             len(df), 91, f"Dataframe should have a different {df.head(10)}"
         )
 
     def test_filter(self):
+        """Test the row count after filtering redundant rows."""
         df = filter_redundant_rows(self.df)
         self.assertEqual(len(df.index), 92)
 
     def test_ptable(self):
+        """Test the row count of the ptable export."""
         rows = dataframe_to_ptable(self.df)
-        for row in rows[0:10]:
-            print("\t".join(row))
         self.assertEqual(91, len(rows))
 
     def test_groupings(self):
+        """Test the row count after grouping mappings."""
         mappings = group_mappings(self.df)
         self.assertEqual(len(mappings), 91)
 
     def test_diff(self):
+        """Test the comparison between two dataframes."""
         diff = compare_dataframes(self.df, self.df)
         self.assertEqual(0, len(diff.unique_tuples1))
         self.assertEqual(0, len(diff.unique_tuples2))

@@ -1,3 +1,16 @@
+"""Command line interface for SSSOM.
+
+Why does this file exist, and why not put this in ``__main__``? You might be tempted to import things from ``__main__``
+later, but that will cause problems--the code will get executed twice:
+
+- When you run ``python3 -m sssom`` python will execute``__main__.py`` as a script. That means there won't be any
+  ``sssom.__main__`` in ``sys.modules``.
+- When you import __main__ it will get executed again (as a module) because
+  there's no ``sssom.__main__`` in ``sys.modules``.
+
+.. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
+"""
+
 import logging
 import re
 import sys
@@ -96,7 +109,7 @@ def convert(input: str, output: TextIO, output_format: str):
 
     Example:
         sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
-    """
+    """  # noqa: DAR101
     convert_file(input_path=input, output=output, output_format=output_format)
 
 
@@ -134,16 +147,7 @@ def parse(
     clean_prefixes: bool,
     output: TextIO,
 ):
-    """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file.
-
-    Args:
-        input: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-        input_format: The string denoting the input format.
-        metadata: The path to a file containing the sssom metadata (including prefix_map) to be used during parse.
-        prefix_map_mode: prefix map mode.
-        clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
-        output: The path to the SSSOM TSV output file.
-    """
+    """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     parse_file(
         input_path=input,
         output=output,
@@ -221,7 +225,7 @@ def dosql(query: str, inputs: List[str], output: TextIO):
     Example:
         `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
-    """
+    """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
     n = 1
     while len(inputs) >= n:
@@ -288,7 +292,7 @@ def diff(inputs: Tuple[str, str], output: TextIO):
 
     The output is a new SSSOM file with the union of all mappings, and
     injected comments indicating uniqueness to set1 or set2.
-    """
+    """  # noqa: DAR101,DAR401
     input1, input2 = inputs
     msdf1 = read_sssom_table(input1)
     msdf2 = read_sssom_table(input2)
@@ -424,7 +428,7 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
         reconcile (if msdf contains a higher confidence _negative_ mapping,
         then remove lower confidence positive one. If confidence is the same,
         prefer HumanCurated. If both HumanCurated, prefer negative mapping).
-    """
+    """  # noqa: DAR101
     (input1, input2) = inputs[:2]
     msdf1 = read_sssom_table(input1)
     msdf2 = read_sssom_table(input2)
@@ -463,6 +467,8 @@ def rewire(
 
     Example:
         sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+
+    # noqa: DAR101
     """
     msdf = read_sssom_table(mapping_file)
     g = Graph()

@@ -1,3 +1,5 @@
+"""Utilities for identifying and working with cliques/SCCs in mappings graphs."""
+
 import hashlib
 import statistics
 from collections import defaultdict
