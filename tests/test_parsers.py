@@ -156,7 +156,7 @@ class TestParse(unittest.TestCase):
 
     def test_piped_element_to_list(self):
         """Test for multi-valued element (piped in SSSOM tables) to list."""
-        input_path = f"{test_data_dir}/basic.tsv"
+        input_path = os.path.join(test_data_dir, "basic.tsv")
         msdf = read_sssom_table(input_path)
         df = msdf.df
         msdf.df = df[df["match_type"].str.contains("\\|")].reset_index()
