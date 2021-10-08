@@ -253,9 +253,7 @@ def filter_redundant_rows(
     return return_df
 
 
-def assign_default_confidence(
-    df: pd.DataFrame,
-) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Assign :data:`numpy.nan` to confidence that are blank.
 
     :param df: SSSOM DataFrame
@@ -561,13 +559,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     positive_df = df.drop(condition.index)
     positive_df = positive_df.reset_index().drop(["index"], axis=1)
 
-    columns_of_interest = [
-        SUBJECT_ID,
-        PREDICATE_ID,
-        OBJECT_ID,
-        CONFIDENCE,
-        MATCH_TYPE,
-    ]
+    columns_of_interest = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, CONFIDENCE, MATCH_TYPE]
     negation_subset = normalized_negation_df[columns_of_interest]
     positive_subset = positive_df[columns_of_interest]
 

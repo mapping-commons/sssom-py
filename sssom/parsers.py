@@ -89,9 +89,7 @@ def read_sssom_rdf(
 
 
 def read_sssom_json(
-    file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    file_path: str, prefix_map: Dict[str, str] = None, meta: Dict[str, str] = None
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
