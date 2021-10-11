@@ -20,18 +20,16 @@ from typing import (
     Tuple,
     Union,
 )
-
 from urllib.request import urlopen
-from linkml_runtime.linkml_model.types import Uriorcurie
 
 import numpy as np
 import pandas as pd
 import validators
 import yaml
 
-from sssom.sssom_datamodel import Mapping as sssom_Mapping, MappingSet
-
 from .context import get_default_metadata, get_jsonld_context
+from .internal_context import multivalued_slots
+from .sssom_datamodel import Entity, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -148,14 +146,14 @@ class EntityPair:
     Note that (e1,e2) == (e2,e1)
     """
 
-    subject_entity: Uriorcurie
-    object_entity: Uriorcurie
+    subject_entity: Entity
+    object_entity: Entity
 
     def __hash__(self) -> int:  # noqa:D105
-        if self.subject_entity <= self.object_entity:
-            t = self.subject_entity, self.object_entity
+        if self.subject_entity.id <= self.object_entity.id:
+            t = self.subject_entity.id, self.object_entity.id
         else:
-            t = self.object_entity, self.subject_entity
+            t = self.object_entity.id, self.subject_entity.id
         return hash(t)
 
 
@@ -290,7 +288,7 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(identifier: str, mappings: Dict[str, Any]) -> Uriorcurie:
+def create_entity(identifier: str, mappings: Dict[str, Any]) -> Entity:
     """Create an Entity object.
 
     :param identifier: Entity Id
@@ -530,21 +528,21 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     :raises ValueError: If the dataframe is none after assigning default confidence
     """
     """
-            1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
-               the one in mapping1 is preserved).
-            2. Reconciling means two things
-                [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
-                    only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
-                [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
-                     If same confidence prefer "HumanCurated" .If same again prefer negative.
-            3. Prefixes:
-                [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different,
-                throw an error and fail hard
-                    else just merge the two prefix maps
-            4. Metadata: same as rule 1.
+        1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
+            the one in mapping1 is preserved).
+        2. Reconciling means two things
+            [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
+                only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
+            [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
+                    If same confidence prefer "HumanCurated" .If same again prefer negative.
+        3. Prefixes:
+            [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different,
+            throw an error and fail hard
+                else just merge the two prefix maps
+        4. Metadata: same as rule 1.
 
-            #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
-        """
+        #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
+    """
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
 
@@ -786,17 +784,15 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     """
     meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
-    for clazz in list(sssom_Mapping, MappingSet):
-
-        for key in [
-            slot
-            for slot in dir(clazz)
-            if not callable(getattr(clazz, slot)) and not slot.startswith("__")
-        ]:
-            slot = getattr(clazz, key).name
-            if slot not in ["mappings"] and slot in ms_meta:
-                if ms_meta[slot]:
-                    meta[key] = ms_meta[slot]
+    for key in [
+        slot
+        for slot in dir(slots)
+        if not callable(getattr(slots, slot)) and not slot.startswith("__")
+    ]:
+        slot = getattr(slots, key).name
+        if slot not in ["mappings"] and slot in ms_meta:
+            if ms_meta[slot]:
+                meta[key] = ms_meta[slot]
     return meta
 
 
@@ -973,3 +969,16 @@ def raise_for_bad_path(file_path: str) -> None:
     """
     if not validators.url(file_path) and not os.path.exists(file_path):
         raise ValueError(f"{file_path} is not a valid file path or url.")
+
+
+def is_multivalued_slot(slot: str) -> bool:
+    """Check whether the slot is multivalued according to the SSSOM specification.
+
+    :param slot: Slot name
+    :return: Slot is multivalued or no
+    """
+    # Ideally:
+    # view = SchemaView('schema/sssom.yaml')
+    # return view.get_slot(slot).multivalued
+
+    return slot in multivalued_slots
