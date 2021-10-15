@@ -14,126 +14,126 @@
 #  c: "http://example.org/c/"
 #  d: "http://example.org/d/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	match_type	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
-x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	Lexical|Stemming	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	Lexical|HumanCurated	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	Lexical|HumanCurated	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	Lexical	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendage	.
 x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
-x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical|Stemming	x	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical|Stemming	x	y	rdf_matcher	0.696730455	rdfs:label	oio:hasRelatedSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone el	.
+x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical|HumanCurated	x	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical|HumanCurated	x	y	rdf_matcher	0.696730455	rdfs:label	oio:hasRelatedSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone el	.
 x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical	x	y	rdf_matcher	0.764651037	rdfs:label	oio:hasRelatedSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone element	.
 x:bone_element	bone element	owl:equivalentClass		z:bone_element		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
 x:bone_element	bone element	owl:equivalentClass		z:bone_element		Lexical	x	z	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_element	bone element	owl:equivalentClass		z:bone_element		Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_element	bone element	owl:equivalentClass		z:bone_element		Lexical|Complex	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_element	bone element	owl:equivalentClass		z:bone_tissue		Lexical	x	z	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_element	bone element	owl:equivalentClass		z:bone_tissue		Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_tissue	bone tissue	owl:equivalentClass		y:bone	bones	Lexical|Stemming	x	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_element	bone element	owl:equivalentClass		z:bone_tissue		Lexical|Complex	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_tissue	bone tissue	owl:equivalentClass		y:bone	bones	Lexical|Complex	x	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_element		Lexical	x	z	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_element		Lexical|Stemming	x	z	rdf_matcher		oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_element		Lexical|Complex	x	z	rdf_matcher		oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002481	.
 x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical	x	z	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical|Stemming	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x:bone_tissue	bone tissue	owl:equivalentClass		z:bone_tissue		Lexical|Complex	x	z	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 x:eye	eye	owl:equivalentClass		y:eye	eyes	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
-x:eye	eye	owl:equivalentClass		y:eye	eyes	Lexical|Stemming	x	y	rdf_matcher	0.568874072	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	ey	.
+x:eye	eye	owl:equivalentClass		y:eye	eyes	Lexical|Complex	x	y	rdf_matcher	0.568874072	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	ey	.
 x:eye	eye	owl:equivalentClass		z:eye		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
 x:eyeball	eyeball	owl:equivalentClass		z:eyeball		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0010230	.
 x:foot	pes	owl:equivalentClass		y:foot	feet	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
 x:foot	pes	owl:equivalentClass		z:foot		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
 x:foot	pes	owl:equivalentClass		z:foot		Lexical	x	z	rdf_matcher	0.849778895	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foot	.
-x:foot	pes	owl:equivalentClass		z:foot		Lexical|Stemming	x	z	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foot	.
+x:foot	pes	owl:equivalentClass		z:foot		Lexical|Logical	x	z	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foot	.
 x:hand	manus	owl:equivalentClass		y:hand	hands	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
-x:hand	manus	owl:equivalentClass		y:hand	hands	Lexical|Stemming	x	y	rdf_matcher	0.821262391	oio:hasExactSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
+x:hand	manus	owl:equivalentClass		y:hand	hands	Lexical|Logical	x	y	rdf_matcher	0.821262391	oio:hasExactSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
 x:hand	manus	owl:equivalentClass		z:hand		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
 x:hand	manus	owl:equivalentClass		z:hand		Lexical	x	z	rdf_matcher	0.849778895	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
-x:hand	manus	owl:equivalentClass		z:hand		Lexical|Stemming	x	z	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
+x:hand	manus	owl:equivalentClass		z:hand		Lexical|Logical	x	z	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
 x:heart	heart	owl:equivalentClass		y:heart	hearts	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
-x:heart	heart	owl:equivalentClass		y:heart	hearts	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	heart	.
+x:heart	heart	owl:equivalentClass		y:heart	hearts	Lexical|Logical	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	heart	.
 x:heart	heart	owl:equivalentClass		z:heart		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
 x:heart	heart	owl:equivalentClass		z:organ	ORGAN	Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAD:ORGAN	.
 x:hindlimb	hindlimb	owl:equivalentClass		z:hindlimb	hindlimb	Lexical	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
-x:hindlimb	hindlimb	owl:equivalentClass		z:hindlimb	hindlimb	Lexical|Stemming	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
+x:hindlimb	hindlimb	owl:equivalentClass		z:hindlimb	hindlimb	Lexical|Logical	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
 x:liver	liver	owl:equivalentClass		y:liver	livers	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
-x:liver	liver	owl:equivalentClass		y:liver	livers	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	liver	.
+x:liver	liver	owl:equivalentClass		y:liver	livers	Lexical|Unspecified	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	liver	.
 x:liver	liver	owl:equivalentClass		z:liver		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
 x:liver	liver	owl:equivalentClass		z:organ	ORGAN	Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAD:ORGAN	.
 x:lung	lung	owl:equivalentClass		y:lung	lungs	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
-x:lung	lung	owl:equivalentClass		y:lung	lungs	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	lung	.
+x:lung	lung	owl:equivalentClass		y:lung	lungs	Lexical|Unspecified	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	lung	.
 x:lung	lung	owl:equivalentClass		z:lung		Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
 x:lung	lung	owl:equivalentClass		z:organ	ORGAN	Lexical	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAD:ORGAN	.
-x:organ	organ	owl:equivalentClass		y:organ	organs	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+x:organ	organ	owl:equivalentClass		y:organ	organs	Lexical|Unspecified	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 x:organ	organ	owl:equivalentClass		z:organ	ORGAN	Lexical	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-x:organ	organ	owl:equivalentClass		z:organ	ORGAN	Lexical|Stemming	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-x:region	region	owl:equivalentClass		y:region	regions	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+x:organ	organ	owl:equivalentClass		z:organ	ORGAN	Lexical|Unspecified	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+x:region	region	owl:equivalentClass		y:region	regions	Lexical|Unspecified	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
 x:region	region	owl:equivalentClass		z:region	REGION	Lexical	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-x:region	region	owl:equivalentClass		z:region	REGION	Lexical|Stemming	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-x:tissue	tissue	owl:equivalentClass		y:tissue	tissues	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-x:tissue	tissue	owl:equivalentClass		z:tissue	TISSUE	Lexical|Stemming	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+x:region	region	owl:equivalentClass		z:region	REGION	Lexical|Unspecified	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+x:tissue	tissue	owl:equivalentClass		y:tissue	tissues	Lexical|Unspecified	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+x:tissue	tissue	owl:equivalentClass		z:tissue	TISSUE	Lexical|SemanticSimilarity	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 x:tissue	tissue	owl:equivalentClass		z:tissue	TISSUE	Lexical	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
-y:appendage	appendages	owl:equivalentClass		x:appendage	appendage	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-y:appendage	appendages	owl:equivalentClass		z:appendage	APPENDAGE	Lexical|Stemming	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+y:appendage	appendages	owl:equivalentClass		x:appendage	appendage	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+y:appendage	appendages	owl:equivalentClass		z:appendage	APPENDAGE	Lexical|SemanticSimilarity	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 y:bone	bones	owl:equivalentClass		x:bone_element	bone element	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
-y:bone	bones	owl:equivalentClass		x:bone_element	bone element	Lexical|Stemming	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-y:bone	bones	owl:equivalentClass		x:bone_element	bone element	Lexical|Stemming	y	x	rdf_matcher	0.696730455	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone el	.
+y:bone	bones	owl:equivalentClass		x:bone_element	bone element	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+y:bone	bones	owl:equivalentClass		x:bone_element	bone element	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.696730455	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone el	.
 y:bone	bones	owl:equivalentClass		x:bone_element	bone element	Lexical	y	x	rdf_matcher	0.764651037	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone element	.
-y:bone	bones	owl:equivalentClass		x:bone_tissue	bone tissue	Lexical|Stemming	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+y:bone	bones	owl:equivalentClass		x:bone_tissue	bone tissue	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 y:bone	bones	owl:equivalentClass		z:bone_element		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
-y:bone	bones	owl:equivalentClass		z:bone_element		Lexical|Stemming	y	z	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-y:bone	bones	owl:equivalentClass		z:bone_tissue		Lexical|Stemming	y	z	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+y:bone	bones	owl:equivalentClass		z:bone_element		Lexical|SemanticSimilarity	y	z	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+y:bone	bones	owl:equivalentClass		z:bone_tissue		Lexical|SemanticSimilarity	y	z	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 y:eye	eyes	owl:equivalentClass		x:eye	eye	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
-y:eye	eyes	owl:equivalentClass		x:eye	eye	Lexical|Stemming	y	x	rdf_matcher	0.568874072	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	ey	.
+y:eye	eyes	owl:equivalentClass		x:eye	eye	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.568874072	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	ey	.
 y:eye	eyes	owl:equivalentClass		z:eye		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
 y:foot	feet	owl:equivalentClass		x:foot	pes	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
 y:foot	feet	owl:equivalentClass		z:foot		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
 y:hand	hands	owl:equivalentClass		x:hand	manus	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
-y:hand	hands	owl:equivalentClass		x:hand	manus	Lexical|Stemming	y	x	rdf_matcher	0.821262391	rdfs:label	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
+y:hand	hands	owl:equivalentClass		x:hand	manus	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.821262391	rdfs:label	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
 y:hand	hands	owl:equivalentClass		z:hand		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
-y:hand	hands	owl:equivalentClass		z:hand		Lexical|Stemming	y	z	rdf_matcher	0.821262391	rdfs:label	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
+y:hand	hands	owl:equivalentClass		z:hand		Lexical|SemanticSimilarity	y	z	rdf_matcher	0.821262391	rdfs:label	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
 y:heart	hearts	owl:equivalentClass		x:heart	heart	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
-y:heart	hearts	owl:equivalentClass		x:heart	heart	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	heart	.
+y:heart	hearts	owl:equivalentClass		x:heart	heart	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	heart	.
 y:heart	hearts	owl:equivalentClass		z:heart		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
 y:liver	livers	owl:equivalentClass		x:liver	liver	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
-y:liver	livers	owl:equivalentClass		x:liver	liver	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	liver	.
+y:liver	livers	owl:equivalentClass		x:liver	liver	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	liver	.
 y:liver	livers	owl:equivalentClass		z:liver		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
 y:lung	lungs	owl:equivalentClass		x:lung	lung	Lexical	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
-y:lung	lungs	owl:equivalentClass		x:lung	lung	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	lung	.
+y:lung	lungs	owl:equivalentClass		x:lung	lung	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	lung	.
 y:lung	lungs	owl:equivalentClass		z:lung		Lexical	y	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
-y:organ	organs	owl:equivalentClass		x:organ	organ	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-y:organ	organs	owl:equivalentClass		z:organ	ORGAN	Lexical|Stemming	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-y:region	regions	owl:equivalentClass		x:region	region	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-y:region	regions	owl:equivalentClass		z:region	REGION	Lexical|Stemming	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-y:tissue	tissues	owl:equivalentClass		x:tissue	tissue	Lexical|Stemming	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-y:tissue	tissues	owl:equivalentClass		z:tissue	TISSUE	Lexical|Stemming	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-z:appendage	APPENDAGE	owl:equivalentClass		x:appendage	appendage	Lexical|Stemming	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+y:organ	organs	owl:equivalentClass		x:organ	organ	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+y:organ	organs	owl:equivalentClass		z:organ	ORGAN	Lexical|SemanticSimilarity	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+y:region	regions	owl:equivalentClass		x:region	region	Lexical|SemanticSimilarity	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+y:region	regions	owl:equivalentClass		z:region	REGION	Lexical|Logical	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+y:tissue	tissues	owl:equivalentClass		x:tissue	tissue	Lexical|Logical	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+y:tissue	tissues	owl:equivalentClass		z:tissue	TISSUE	Lexical|Logical	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+z:appendage	APPENDAGE	owl:equivalentClass		x:appendage	appendage	Lexical|Logical	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 z:appendage	APPENDAGE	owl:equivalentClass		x:appendage	appendage	Lexical	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendage	.
-z:appendage	APPENDAGE	owl:equivalentClass		y:appendage	appendages	Lexical|Stemming	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+z:appendage	APPENDAGE	owl:equivalentClass		y:appendage	appendages	Lexical|Logical	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 z:bone_element		owl:equivalentClass		x:bone_element	bone element	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
 z:bone_element		owl:equivalentClass		x:bone_element	bone element	Lexical	z	x	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-z:bone_element		owl:equivalentClass		x:bone_element	bone element	Lexical|Stemming	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+z:bone_element		owl:equivalentClass		x:bone_element	bone element	Lexical|Logical	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 z:bone_element		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical	z	x	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-z:bone_element		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical|Stemming	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+z:bone_element		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical|Logical	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 z:bone_element		owl:equivalentClass		y:bone	bones	Lexical	z	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
-z:bone_element		owl:equivalentClass		y:bone	bones	Lexical|Stemming	z	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+z:bone_element		owl:equivalentClass		y:bone	bones	Lexical|Logical	z	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 z:bone_tissue		owl:equivalentClass		x:bone_element	bone element	Lexical	z	x	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-z:bone_tissue		owl:equivalentClass		x:bone_element	bone element	Lexical|Stemming	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+z:bone_tissue		owl:equivalentClass		x:bone_element	bone element	Lexical|Logical	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 z:bone_tissue		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002481	.
 z:bone_tissue		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical	z	x	rdf_matcher	0.261203875	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-z:bone_tissue		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical|Stemming	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-z:bone_tissue		owl:equivalentClass		y:bone	bones	Lexical|Stemming	z	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+z:bone_tissue		owl:equivalentClass		x:bone_tissue	bone tissue	Lexical|Logical	z	x	rdf_matcher	0.2	oio:hasBroadSynonym	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+z:bone_tissue		owl:equivalentClass		y:bone	bones	Lexical|Logical	z	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
 z:eye		owl:equivalentClass		x:eye	eye	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
 z:eye		owl:equivalentClass		y:eye	eyes	Lexical	z	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
 z:eyeball		owl:equivalentClass		x:eyeball	eyeball	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0010230	.
 z:foot		owl:equivalentClass		x:foot	pes	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
 z:foot		owl:equivalentClass		x:foot	pes	Lexical	z	x	rdf_matcher	0.849778895	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foot	.
-z:foot		owl:equivalentClass		x:foot	pes	Lexical|Stemming	z	x	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foot	.
+z:foot		owl:equivalentClass		x:foot	pes	Lexical|Logical	z	x	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	foot	.
 z:foot		owl:equivalentClass		y:foot	feet	Lexical	z	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
 z:hand		owl:equivalentClass		x:hand	manus	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
 z:hand		owl:equivalentClass		x:hand	manus	Lexical	z	x	rdf_matcher	0.849778895	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
-z:hand		owl:equivalentClass		x:hand	manus	Lexical|Stemming	z	x	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
+z:hand		owl:equivalentClass		x:hand	manus	Lexical|HumanCurated	z	x	rdf_matcher	0.8	oio:hasExactSynonym	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
 z:hand		owl:equivalentClass		y:hand	hands	Lexical	z	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
-z:hand		owl:equivalentClass		y:hand	hands	Lexical|Stemming	z	y	rdf_matcher	0.821262391	oio:hasExactSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
+z:hand		owl:equivalentClass		y:hand	hands	Lexical|HumanCurated	z	y	rdf_matcher	0.821262391	oio:hasExactSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
 z:heart		owl:equivalentClass		x:heart	heart	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
 z:heart		owl:equivalentClass		y:heart	hearts	Lexical	z	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
 z:hindlimb	hindlimb	owl:equivalentClass		x:hindlimb	hindlimb	Lexical	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
-z:hindlimb	hindlimb	owl:equivalentClass		x:hindlimb	hindlimb	Lexical|Stemming	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
+z:hindlimb	hindlimb	owl:equivalentClass		x:hindlimb	hindlimb	Lexical|HumanCurated	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
 z:liver		owl:equivalentClass		x:liver	liver	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
 z:liver		owl:equivalentClass		y:liver	livers	Lexical	z	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
 z:lung		owl:equivalentClass		x:lung	lung	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
@@ -142,14 +142,14 @@ z:organ	ORGAN	owl:equivalentClass		x:heart	heart	Lexical	z	x	rdf_matcher	0.73879
 z:organ	ORGAN	owl:equivalentClass		x:liver	liver	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAD:ORGAN	.
 z:organ	ORGAN	owl:equivalentClass		x:lung	lung	Lexical	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAD:ORGAN	.
 z:organ	ORGAN	owl:equivalentClass		x:organ	organ	Lexical	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-z:organ	ORGAN	owl:equivalentClass		x:organ	organ	Lexical|Stemming	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-z:organ	ORGAN	owl:equivalentClass		y:organ	organs	Lexical|Stemming	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+z:organ	ORGAN	owl:equivalentClass		x:organ	organ	Lexical|HumanCurated	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+z:organ	ORGAN	owl:equivalentClass		y:organ	organs	Lexical|HumanCurated	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 z:region	REGION	owl:equivalentClass		x:region	region	Lexical	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-z:region	REGION	owl:equivalentClass		x:region	region	Lexical|Stemming	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-z:region	REGION	owl:equivalentClass		y:region	regions	Lexical|Stemming	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-z:tissue	TISSUE	owl:equivalentClass		x:tissue	tissue	Lexical|Stemming	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+z:region	REGION	owl:equivalentClass		x:region	region	Lexical|HumanCurated	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+z:region	REGION	owl:equivalentClass		y:region	regions	Lexical|HumanCurated	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+z:tissue	TISSUE	owl:equivalentClass		x:tissue	tissue	Lexical|HumanCurated	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 z:tissue	TISSUE	owl:equivalentClass		x:tissue	tissue	Lexical	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
-z:tissue	TISSUE	owl:equivalentClass		y:tissue	tissues	Lexical|Stemming	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+z:tissue	TISSUE	owl:equivalentClass		y:tissue	tissues	Lexical|HumanCurated	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 a:something	XXXXX	owl:subClassOf		b:something	xxxxxx	Lexical	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 c:something	YYYYY	owl:equivalentClass		d:something	yyyyyy	Lexical	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 d:something	YYYYY	owl:equivalentClass	NOT	a:something	yyyyyy	Lexical	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data

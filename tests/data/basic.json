@@ -2541,6 +2541,7 @@
   ],
   "creator_id": "cjm",
   "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "mapping_set_id": "http://w3id.org/sssom/mapping/tests/data/basic.json",
   "subject_source": "c",
   "object_source": "b",
   "mapping_tool": "https://github.com/cmungall/rdf_matcher",
