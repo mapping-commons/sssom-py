@@ -42,7 +42,9 @@ SSSOM_NS = SSSOM_URI_PREFIX
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
-def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
+def write_table(
+    msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv"
+) -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
         raise TypeError
@@ -85,7 +87,9 @@ def write_rdf(
     print(t.decode("utf-8"), file=file)
 
 
-def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+def write_json(
+    msdf: MappingSetDataFrame, output: TextIO, serialisation="json"
+) -> None:
     """Write a mapping set dataframe to the file as JSON."""
     if serialisation == "json":
         data = to_json(msdf)
@@ -266,8 +270,12 @@ def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
 
     for axiom in graph.subjects(RDF.type, OWL.Axiom):
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+            for s in graph.objects(
+                subject=axiom, predicate=OWL.annotatedSource
+            ):
+                for o in graph.objects(
+                    subject=axiom, predicate=OWL.annotatedTarget
+                ):
                     graph.add((s, p, o))
     return graph
 

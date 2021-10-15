@@ -21,15 +21,15 @@ from typing import (
     Union,
 )
 from urllib.request import urlopen
-
+from .internal_context import multivalued_slots
 import numpy as np
 import pandas as pd
 import validators
 import yaml
+from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .context import get_default_metadata, get_jsonld_context
-from .internal_context import multivalued_slots
-from .sssom_datamodel import Entity, slots
+from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
+from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -48,7 +48,6 @@ SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
-SSSOM_URI_PREFIX = "http://w3id.org/sssom/"
 
 # TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = "subject_id"
@@ -66,7 +65,6 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 MAPPING_SET_ID = "mapping_set_id"
-DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/default"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
@@ -79,7 +77,7 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    #: maps CURIE prefixes to URI bases
+    # maps CURIE prefixes to URI bases
     prefix_map: PrefixMap = field(default_factory=dict)
     metadata: Optional[
         MetadataType
@@ -146,14 +144,14 @@ class EntityPair:
     Note that (e1,e2) == (e2,e1)
     """
 
-    subject_entity: Entity
-    object_entity: Entity
+    subject_entity: Uriorcurie
+    object_entity: Uriorcurie
 
     def __hash__(self) -> int:  # noqa:D105
-        if self.subject_entity.id <= self.object_entity.id:
-            t = self.subject_entity.id, self.object_entity.id
+        if self.subject_entity <= self.object_entity:
+            t = self.subject_entity, self.object_entity
         else:
-            t = self.object_entity.id, self.subject_entity.id
+            t = self.object_entity, self.subject_entity
         return hash(t)
 
 
@@ -288,14 +286,15 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(identifier: str, mappings: Dict[str, Any]) -> Entity:
+def create_entity(identifier: str, mappings: Dict[str, Any]) -> Uriorcurie:
     """Create an Entity object.
 
     :param identifier: Entity Id
     :param mappings: Mapping dictionary
     :return: An Entity object
     """
-    entity = Entity(id=identifier)
+
+    entity = Uriorcurie(identifier)  # Entity(id=identifier)
     for key, value in mappings.items():
         if key in entity:
             entity[key] = value
@@ -346,7 +345,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     all_tuples = tuples1.union(tuples2)
     all_ids = set()
     for t in all_tuples:
-        all_ids.update({t.subject_entity.id, t.object_entity.id})
+        all_ids.update({t.subject_entity, t.object_entity})
     rows = []
     for t in d.unique_tuples1:
         for r in mappings1[t]:

@@ -30,10 +30,14 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
     def test_conversion(self):
         """Run all conversion tests."""
         test_cases = get_all_test_cases()
-        self.assertTrue(len(test_cases) > 2, "Less than 2 testcases in the test suite!")
+        self.assertTrue(
+            len(test_cases) > 2, "Less than 2 testcases in the test suite!"
+        )
         for test in test_cases:
             with self.subTest(test=test.id):
-                read_func = get_parsing_function(test.inputformat, test.filepath)
+                read_func = get_parsing_function(
+                    test.inputformat, test.filepath
+                )
                 msdf = read_func(test.filepath, prefix_map=test.prefix_map)
                 mdoc = to_mapping_set_document(msdf)
                 logging.info(f"Testing {test.filepath}")
@@ -89,7 +93,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
-    def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str):
+    def _test_graph_roundtrip(
+        self, g: Graph, test: SSSOMTestCase, file_format: str
+    ):
         self._test_graph_size(
             g, getattr(test, f"ct_graph_queries_{file_format}"), test.filename
         )
@@ -102,9 +108,13 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
 
     def _test_files_equal(self, f1, f2):
-        self.assertTrue(filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!")
+        self.assertTrue(
+            filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!"
+        )
 
-    def _test_load_graph_size(self, file: str, graph_serialisation: str, queries: list):
+    def _test_load_graph_size(
+        self, file: str, graph_serialisation: str, queries: list
+    ):
         g = Graph()
         g.parse(file, format=graph_serialisation)
         self._test_graph_size(g, queries, file)
@@ -144,7 +154,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             f"The exported pandas data frame has less elements than the orginal one for {test.filename}",
         )
 
-    def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase):
+    def _test_to_json_dict(
+        self, mdoc: MappingSetDocument, test: SSSOMTestCase
+    ):
         msdf = to_mapping_set_dataframe(mdoc)
         json_dict = to_json(msdf)
         self.assertTrue("mappings" in json_dict)
@@ -161,7 +173,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             f"JSON document has less mappings than the orginal ({test.filename}). Json: {json.dumps(json_dict)}",
         )
 
-        with open(test.get_out_file("roundtrip.json"), "w", encoding="utf-8") as f:
+        with open(
+            test.get_out_file("roundtrip.json"), "w", encoding="utf-8"
+        ) as f:
             json.dump(json_dict, f, ensure_ascii=False, indent=4)
 
         with open(test.get_out_file("roundtrip.json")) as json_file:
