@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-10-18 09:40
+# Generation date: 2021-10-18 10:16
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -103,10 +103,10 @@ class MappingSet(YAMLRoot):
     mapping_tool: Optional[str] = None
     mapping_date: Optional[Union[str, XSDDate]] = None
     subject_match_field: Optional[
-        Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]
+        Union[Union[str, URIorCURIE], List[Union[str, URIorCURIE]]]
     ] = empty_list()
     object_match_field: Optional[
-        Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]
+        Union[Union[str, URIorCURIE], List[Union[str, URIorCURIE]]]
     ] = empty_list()
     subject_preprocessing: Optional[
         Union[
@@ -225,7 +225,7 @@ class MappingSet(YAMLRoot):
                 else []
             )
         self.subject_match_field = [
-            v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v)
+            v if isinstance(v, URIorCURIE) else URIorCURIE(v)
             for v in self.subject_match_field
         ]
 
@@ -236,7 +236,7 @@ class MappingSet(YAMLRoot):
                 else []
             )
         self.object_match_field = [
-            v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v)
+            v if isinstance(v, URIorCURIE) else URIorCURIE(v)
             for v in self.object_match_field
         ]
 
@@ -336,10 +336,10 @@ class Mapping(YAMLRoot):
     mapping_date: Optional[Union[str, XSDDate]] = None
     confidence: Optional[float] = None
     subject_match_field: Optional[
-        Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]
+        Union[Union[str, URIorCURIE], List[Union[str, URIorCURIE]]]
     ] = empty_list()
     object_match_field: Optional[
-        Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]
+        Union[Union[str, URIorCURIE], List[Union[str, URIorCURIE]]]
     ] = empty_list()
     match_string: Optional[Union[str, List[str]]] = empty_list()
     subject_preprocessing: Optional[
@@ -532,7 +532,7 @@ class Mapping(YAMLRoot):
                 else []
             )
         self.subject_match_field = [
-            v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v)
+            v if isinstance(v, URIorCURIE) else URIorCURIE(v)
             for v in self.subject_match_field
         ]
 
@@ -543,7 +543,7 @@ class Mapping(YAMLRoot):
                 else []
             )
         self.object_match_field = [
-            v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v)
+            v if isinstance(v, URIorCURIE) else URIorCURIE(v)
             for v in self.object_match_field
         ]
 
@@ -730,6 +730,7 @@ class MatchFieldEnum(EnumDefinitionImpl):
     BroadSynonym = PermissibleValue(text="BroadSynonym")
     NarrowSynonm = PermissibleValue(text="NarrowSynonm")
     Definition = PermissibleValue(text="Definition")
+    CrossReference = PermissibleValue(text="CrossReference")
 
     _defn = EnumDefinition(
         name="MatchFieldEnum",
@@ -1046,7 +1047,7 @@ slots.subject_match_field = Slot(
     model_uri=SSSOM.subject_match_field,
     domain=None,
     range=Optional[
-        Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]
+        Union[Union[str, URIorCURIE], List[Union[str, URIorCURIE]]]
     ],
 )
 
@@ -1057,7 +1058,7 @@ slots.object_match_field = Slot(
     model_uri=SSSOM.object_match_field,
     domain=None,
     range=Optional[
-        Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]
+        Union[Union[str, URIorCURIE], List[Union[str, URIorCURIE]]]
     ],
 )
 
