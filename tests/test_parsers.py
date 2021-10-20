@@ -41,13 +41,13 @@ class TestParse(unittest.TestCase):
         self.rdf_graph.parse(self.rdf_graph_file, format="ttl")
 
         self.df_file = f"{test_data_dir}/basic-meta-external.tsv"
-        self.df = pd.read_csv(self.df_file)
+        self.df = pd.read_csv(self.df_file, sep="\t", low_memory=False)
 
         self.obographs_file = f"{test_data_dir}/pato.json"
         with open(self.obographs_file) as json_file:
             self.obographs = json.load(json_file)
 
-        self.json_file = f"{test_data_dir}/basic.json"
+        self.json_file = f"{test_data_dir}/basic_subset.json"
         with open(self.json_file) as json_file:
             self.json = json.load(json_file)
 
@@ -161,6 +161,6 @@ class TestParse(unittest.TestCase):
             write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
-            141,
+            42,
             f"{self.json_file} has the wrong number of mappings.",
         )
