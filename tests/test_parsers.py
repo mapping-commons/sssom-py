@@ -47,7 +47,7 @@ class TestParse(unittest.TestCase):
         with open(self.obographs_file) as json_file:
             self.obographs = json.load(json_file)
 
-        self.json_file = f"{test_data_dir}/basic_subset.json"
+        self.json_file = f"{test_data_dir}/basic.json"
         with open(self.json_file) as json_file:
             self.json = json.load(json_file)
 
