@@ -807,8 +807,13 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
             mdict = mapping.__dict__
             m = {}
             for key in mdict:
-                if mdict[key]:
-                    m[key] = mdict[key]
+                # if mdict[key]:
+                # Crude way of populating data. May need to revisit.
+                if key == "match_type":
+                    mdict[key] = [
+                        enum_value.code.text for enum_value in mdict[key]
+                    ]
+                m[key] = mdict[key]
             data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
