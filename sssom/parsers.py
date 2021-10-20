@@ -294,8 +294,15 @@ def from_sssom_rdf(
                         v = curie_from_uri(o, prefix_map)
                     else:
                         v = o.toPython()
-
                     if k:
+                        if (
+                            is_multivalued_slot(k)
+                            and v is not None
+                            and isinstance(v, str)
+                            and "|" in v
+                        ):
+                            # IF k is multivalued, then v = List[values]
+                            v = [s.strip() for s in v.split("|")]
                         mdict[k] = v
 
                 except NoCURIEException as e:
@@ -338,6 +345,11 @@ def from_sssom_json(
     mapping_set = cast(
         MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
     )
+    # ** Will need to remove this line
+    # ** once linkml-runtime fixes JSONLoader.load()
+    mapping_set.mappings = [val for val in mapping_set.mappings.values()]
+    # ** *******************************************
+
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
     mapping_set_document = MappingSetDocument(
         mapping_set=mapping_set, prefix_map=prefix_map
