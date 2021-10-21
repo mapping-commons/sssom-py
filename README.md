@@ -1,5 +1,23 @@
 # Python Utilities for SSSOM
 
+<p align="center">
+    <a href="https://github.com/mapping-commons/sssom-py/actions/workflows/qc.yml">
+        <img alt="Tests" src="https://github.com/mapping-commons/sssom-py/actions/workflows/qc.yml/badge.svg" />
+    </a>
+    <a href="https://pypi.org/project/sssom">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/sssom" />
+    </a>
+    <a href="https://pypi.org/project/sssom">
+        <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/sssom" />
+    </a>
+    <a href="https://github.com/mapping-commons/sssom-py/blob/main/LICENSE">
+        <img alt="PyPI - License" src="https://img.shields.io/pypi/l/sssom" />
+    </a>
+    <a href="https://github.com/psf/black">
+        <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
+    </a>
+</p>
+
 SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings
 
 See https://github.com/OBOFoundry/SSSOM
