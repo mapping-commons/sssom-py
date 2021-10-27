@@ -114,6 +114,11 @@ def get_default_metadata() -> Metadata:
 
 
 def set_default_mapping_set_id(meta: Metadata) -> Metadata:
+    """Provide a default mapping_set_id if absent in the MappingSetDataFrame.
+
+    :param meta: Metadata without mapping_set_id
+    :return: Metadata with a default mapping_set_id
+    """
     if ("mapping_set_id" not in meta.metadata) or (
         meta.metadata["mapping_set_id"] is None
     ):
@@ -122,6 +127,11 @@ def set_default_mapping_set_id(meta: Metadata) -> Metadata:
 
 
 def set_default_license(meta: Metadata) -> Metadata:
+    """Provide a default license if absent in the MappingSetDataFrame.
+
+    :param meta: Metadata without license
+    :return: Metadata with a default license
+    """
     if ("license" not in meta.metadata) or (meta.metadata["license"] is None):
         meta.metadata["license"] = DEFAULT_LICENSE
         logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
