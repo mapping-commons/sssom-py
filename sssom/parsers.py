@@ -453,7 +453,9 @@ def from_obographs(
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
                                 try:
-                                    mdict["subject_id"] = curie_from_uri(nid, prefix_map)
+                                    mdict["subject_id"] = curie_from_uri(
+                                        nid, prefix_map
+                                    )
                                     mdict["object_id"] = curie_from_uri(
                                         xref_id, prefix_map
                                     )
