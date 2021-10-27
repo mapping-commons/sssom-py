@@ -40,9 +40,7 @@ SSSOM_NS = SSSOM_URI_PREFIX
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
-def write_table(
-    msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv"
-) -> None:
+def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
         raise TypeError
@@ -85,9 +83,7 @@ def write_rdf(
     print(t.decode("utf-8"), file=file)
 
 
-def write_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation="json"
-) -> None:
+def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
     """Write a mapping set dataframe to the file as JSON."""
     if serialisation == "json":
         data = to_json(msdf)
