@@ -5,7 +5,17 @@ import logging
 import re
 import typing
 from collections import Counter
-from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Set,
+    TextIO,
+    Union,
+    cast,
+)
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -17,7 +27,13 @@ import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-from .context import add_built_in_prefixes_to_prefix_map, get_default_metadata
+from .context import (
+    DEFAULT_LICENSE,
+    DEFAULT_MAPPING_SET_ID,
+    add_built_in_prefixes_to_prefix_map,
+    get_default_metadata,
+    set_default_mapping_set_id,
+)
 from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -66,7 +82,9 @@ def read_sssom_table(
                     sssom_metadata[k] = v
         meta = sssom_metadata
 
-    prefix_map, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    prefix_map, meta = _get_prefix_map_and_metadata(
+        prefix_map=prefix_map, meta=meta
+    )
 
     msdf = from_sssom_dataframe(df, prefix_map=prefix_map, meta=meta)
     return msdf
@@ -84,7 +102,9 @@ def read_sssom_rdf(
 
     g = Graph()
     g.load(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_rdf(
+        g, prefix_map=metadata.prefix_map, meta=metadata.metadata
+    )
     return msdf
 
 
@@ -193,7 +213,14 @@ def from_sssom_dataframe(
         df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
 
     mlist: List[Mapping] = []
-    ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
+    if meta is not None:
+        ms = MappingSet(
+            mapping_set_id=meta["mapping_set_id"], license=meta["license"]
+        )
+    else:
+        ms = MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
     bad_attrs: typing.Counter[str] = Counter()
     for _, row in df.iterrows():
         mdict = {}
@@ -250,8 +277,14 @@ def from_sssom_rdf(
     if mapping_predicates is None:
         # FIXME unused
         mapping_predicates = _get_default_mapping_predicates()
-
-    ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
+    if meta is not None:
+        ms = MappingSet(
+            mapping_set_id=meta["mapping_set_id"], license=meta["license"]
+        )
+    else:
+        ms = MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
     mlist: List[Mapping] = []
 
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
@@ -273,6 +306,7 @@ def from_sssom_rdf(
                         k = "subject_id"
 
                     if isinstance(o, URIRef):
+                        v: Any
                         v = curie_from_uri(o, prefix_map)
                     else:
                         v = o.toPython()
@@ -329,7 +363,8 @@ def from_sssom_json(
     )
     # ** Will need to remove this line
     # ** once linkml-runtime fixes JSONLoader.load()
-    mapping_set.mappings = [val for val in mapping_set.mappings.values()]
+    if type(mapping_set.mappings) is dict:
+        mapping_set.mappings = [val for val in mapping_set.mappings.values()]
     # ** *******************************************
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
@@ -353,7 +388,9 @@ def from_alignment_minidom(
     # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
     _ensure_prefix_map(prefix_map)
 
-    ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
+    ms = MappingSet(
+        mapping_set_id=meta["mapping_set_id"], license=meta["license"]
+    )
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
@@ -391,7 +428,9 @@ def from_alignment_minidom(
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(
+        mapping_set=ms, prefix_map=prefix_map
+    )
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -410,8 +449,14 @@ def from_obographs(
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
-
-    ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
+    if meta is not None:
+        ms = MappingSet(
+            mapping_set_id=meta["mapping_set_id"], license=meta["license"]
+        )
+    else:
+        ms = MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
@@ -446,7 +491,9 @@ def from_obographs(
                                         xref_id, prefix_map
                                     )
                                     mdict["subject_label"] = label
-                                    mdict["predicate_id"] = "oboInOwl:hasDbXref"
+                                    mdict[
+                                        "predicate_id"
+                                    ] = "oboInOwl:hasDbXref"
                                     mdict["match_type"] = "Unspecified"
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
@@ -487,7 +534,9 @@ def from_obographs(
 # All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
+def get_parsing_function(
+    input_format: Optional[str], filename: str
+) -> Callable:
     """Return appropriate parser function based on input format of file.
 
     :param input_format: File format
@@ -596,7 +645,9 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
+def _cell_element_values(
+    cell_node, prefix_map: PrefixMap
+) -> Optional[Mapping]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -616,7 +667,9 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
                     if relation == "=":
                         mdict["predicate_id"] = "owl:equivalentClass"
                     else:
-                        logging.warning(f"{relation} not a recognised relation type.")
+                        logging.warning(
+                            f"{relation} not a recognised relation type."
+                        )
                 else:
                     logging.warning(
                         f"Unsupported alignment api element: {child.nodeName}"
@@ -642,10 +695,15 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         raise Exception("No valid prefix_map provided")
 
     mlist: List[Mapping] = []
-    ms = MappingSet(
-        mapping_set_id=msdf.metadata["mapping_set_id"],
-        license=msdf.metadata["license"],
-    )
+    if msdf.metadata is not None:
+        ms = MappingSet(
+            mapping_set_id=msdf.metadata["mapping_set_id"],
+            license=msdf.metadata["license"],
+        )
+    else:
+        ms = MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
     bad_attrs = {}
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
@@ -696,8 +754,12 @@ def split_dataframe(
     """
     if msdf.df is None:
         raise RuntimeError
-    subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(msdf.df["object_id"].str.split(":", 1, expand=True)[0])
+    subject_prefixes = set(
+        msdf.df["subject_id"].str.split(":", 1, expand=True)[0]
+    )
+    object_prefixes = set(
+        msdf.df["object_id"].str.split(":", 1, expand=True)[0]
+    )
     relations = set(msdf.df["predicate_id"])
     return split_dataframe_by_prefix(
         msdf=msdf,
@@ -727,14 +789,20 @@ def split_dataframe_by_prefix(
             for rel in relations:
                 relpre = rel.split(":")[0]
                 relppost = rel.split(":")[1]
-                split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
+                split_name = (
+                    f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
+                )
                 if df is not None:
                     dfs = df[
                         (df["subject_id"].str.startswith(pre_subj + ":"))
                         & (df["predicate_id"] == rel)
                         & (df["object_id"].str.startswith(pre_obj + ":"))
                     ]
-                if pre_subj in prefix_map and pre_obj in prefix_map and len(dfs) > 0:
+                if (
+                    pre_subj in prefix_map
+                    and pre_obj in prefix_map
+                    and len(dfs) > 0
+                ):
                     cm = {
                         pre_subj: prefix_map[pre_subj],
                         pre_obj: prefix_map[pre_obj],
