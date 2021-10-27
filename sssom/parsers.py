@@ -22,7 +22,6 @@ from .context import (
     DEFAULT_MAPPING_SET_ID,
     add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
-    set_default_mapping_set_id,
 )
 from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
@@ -454,9 +453,7 @@ def from_obographs(
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
                                 try:
-                                    mdict["subject_id"] = curie_from_uri(
-                                        nid, prefix_map
-                                    )
+                                    mdict["subject_id"] = curie_from_uri(nid, prefix_map)
                                     mdict["object_id"] = curie_from_uri(
                                         xref_id, prefix_map
                                     )
