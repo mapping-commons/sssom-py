@@ -2,8 +2,8 @@
 
 import logging
 from typing import Any, Dict, List, Optional
-from linkml_runtime.utils.metamodelcore import URIorCURIE
 
+from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 
 from .parsers import to_mapping_set_document
@@ -40,9 +40,7 @@ def rewire_graph(
                 src, tgt = m.subject_id, m.object_id
             else:
                 src, tgt = m.object_id, m.subject_id
-            if not isinstance(src, URIorCURIE) or not isinstance(
-                tgt, URIorCURIE
-            ):
+            if not isinstance(src, URIorCURIE) or not isinstance(tgt, URIorCURIE):
                 raise TypeError
             if src in rewire_map:
                 curr_tgt = rewire_map[src]
@@ -55,13 +53,9 @@ def rewire_graph(
                             tgt_pfx
                         ) < precedence.index(curr_pfx):
                             rewire_map[src] = tgt
-                            logging.info(
-                                f"{tgt} has precedence, due to {precedence}"
-                            )
+                            logging.info(f"{tgt} has precedence, due to {precedence}")
                 else:
-                    raise ValueError(
-                        f"Ambiguous: {src} -> {tgt} vs {curr_tgt}"
-                    )
+                    raise ValueError(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
             else:
                 rewire_map[src] = tgt
 
