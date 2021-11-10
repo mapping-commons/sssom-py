@@ -16,7 +16,8 @@ class TestWrite(unittest.TestCase):
         """Set up the test case with a basic SSSOM example."""
         self.msdf = read_sssom_table(f"{test_data_dir}/basic.tsv")
         # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
-        self.mapping_count = 42  # 141 for basic.tsv and 42 for basic.json
+        self.mapping_count_tsv = 141  # 141 for basic.tsv and 42 for basic.json
+        self.mapping_count_json = 42
 
     def test_write_sssom_dataframe(self):
         """Test writing as a dataframe."""
@@ -26,7 +27,7 @@ class TestWrite(unittest.TestCase):
         msdf = read_sssom_table(tmp_path)
         self.assertEqual(
             len(msdf.df),
-            self.mapping_count,
+            self.mapping_count_tsv,
             f"{tmp_file} has the wrong number of mappings.",
         )
 
@@ -38,7 +39,7 @@ class TestWrite(unittest.TestCase):
         msdf = read_sssom_rdf(path_1, self.msdf.prefix_map)
         self.assertEqual(
             len(msdf.df),
-            self.mapping_count,
+            self.mapping_count_tsv,
             f"{path_1} has the wrong number of mappings.",
         )
 
@@ -55,7 +56,7 @@ class TestWrite(unittest.TestCase):
         msdf = read_sssom_json(path)
         self.assertEqual(
             len(msdf.df),
-            self.mapping_count,
+            self.mapping_count_json,
             f"{path} has the wrong number of mappings.",
         )
 
