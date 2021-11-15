@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-11-08T09:31:11
+# Generation date: 2021-11-15T09:45:53
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -87,8 +87,8 @@ class MappingSet(YAMLRoot):
     mapping_provider: Optional[Union[str, URI]] = None
     mapping_tool: Optional[str] = None
     mapping_date: Optional[Union[str, XSDDate]] = None
-    subject_match_field: Optional[Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]] = empty_list()
-    object_match_field: Optional[Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]] = empty_list()
+    subject_match_field: Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]] = empty_list()
+    object_match_field: Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]] = empty_list()
     subject_preprocessing: Optional[Union[Union[str, "PreprocessingMethodEnum"], List[Union[str, "PreprocessingMethodEnum"]]]] = empty_list()
     object_preprocessing: Optional[Union[Union[str, "PreprocessingMethodEnum"], List[Union[str, "PreprocessingMethodEnum"]]]] = empty_list()
     match_term_type: Optional[Union[str, "MatchTermTypeEnum"]] = None
@@ -150,11 +150,11 @@ class MappingSet(YAMLRoot):
 
         if not isinstance(self.subject_match_field, list):
             self.subject_match_field = [self.subject_match_field] if self.subject_match_field is not None else []
-        self.subject_match_field = [v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v) for v in self.subject_match_field]
+        self.subject_match_field = [v if isinstance(v, EntityReference) else EntityReference(v) for v in self.subject_match_field]
 
         if not isinstance(self.object_match_field, list):
             self.object_match_field = [self.object_match_field] if self.object_match_field is not None else []
-        self.object_match_field = [v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v) for v in self.object_match_field]
+        self.object_match_field = [v if isinstance(v, EntityReference) else EntityReference(v) for v in self.object_match_field]
 
         if not isinstance(self.subject_preprocessing, list):
             self.subject_preprocessing = [self.subject_preprocessing] if self.subject_preprocessing is not None else []
@@ -218,8 +218,8 @@ class Mapping(YAMLRoot):
     mapping_tool_version: Optional[str] = None
     mapping_date: Optional[Union[str, XSDDate]] = None
     confidence: Optional[float] = None
-    subject_match_field: Optional[Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]] = empty_list()
-    object_match_field: Optional[Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]] = empty_list()
+    subject_match_field: Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]] = empty_list()
+    object_match_field: Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]] = empty_list()
     match_string: Optional[Union[str, List[str]]] = empty_list()
     subject_preprocessing: Optional[Union[Union[str, "PreprocessingMethodEnum"], List[Union[str, "PreprocessingMethodEnum"]]]] = empty_list()
     object_preprocessing: Optional[Union[Union[str, "PreprocessingMethodEnum"], List[Union[str, "PreprocessingMethodEnum"]]]] = empty_list()
@@ -326,11 +326,11 @@ class Mapping(YAMLRoot):
 
         if not isinstance(self.subject_match_field, list):
             self.subject_match_field = [self.subject_match_field] if self.subject_match_field is not None else []
-        self.subject_match_field = [v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v) for v in self.subject_match_field]
+        self.subject_match_field = [v if isinstance(v, EntityReference) else EntityReference(v) for v in self.subject_match_field]
 
         if not isinstance(self.object_match_field, list):
             self.object_match_field = [self.object_match_field] if self.object_match_field is not None else []
-        self.object_match_field = [v if isinstance(v, MatchFieldEnum) else MatchFieldEnum(v) for v in self.object_match_field]
+        self.object_match_field = [v if isinstance(v, EntityReference) else EntityReference(v) for v in self.object_match_field]
 
         if not isinstance(self.match_string, list):
             self.match_string = [self.match_string] if self.match_string is not None else []
@@ -441,20 +441,6 @@ class PreprocessingMethodEnum(EnumDefinitionImpl):
         name="PreprocessingMethodEnum",
     )
 
-class MatchFieldEnum(EnumDefinitionImpl):
-
-    ExactSynonym = PermissibleValue(text="ExactSynonym")
-    Label = PermissibleValue(text="Label")
-    RelatedSynonym = PermissibleValue(text="RelatedSynonym")
-    CloseSyonym = PermissibleValue(text="CloseSyonym")
-    BroadSynonym = PermissibleValue(text="BroadSynonym")
-    NarrowSynonm = PermissibleValue(text="NarrowSynonm")
-    Definition = PermissibleValue(text="Definition")
-
-    _defn = EnumDefinition(
-        name="MatchFieldEnum",
-    )
-
 # Slots
 class slots:
     pass
@@ -556,10 +542,10 @@ slots.confidence = Slot(uri=SSSOM.confidence, name="confidence", curie=SSSOM.cur
                    model_uri=SSSOM.confidence, domain=None, range=Optional[float])
 
 slots.subject_match_field = Slot(uri=SSSOM.subject_match_field, name="subject_match_field", curie=SSSOM.curie('subject_match_field'),
-                   model_uri=SSSOM.subject_match_field, domain=None, range=Optional[Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]])
+                   model_uri=SSSOM.subject_match_field, domain=None, range=Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]])
 
 slots.object_match_field = Slot(uri=SSSOM.object_match_field, name="object_match_field", curie=SSSOM.curie('object_match_field'),
-                   model_uri=SSSOM.object_match_field, domain=None, range=Optional[Union[Union[str, "MatchFieldEnum"], List[Union[str, "MatchFieldEnum"]]]])
+                   model_uri=SSSOM.object_match_field, domain=None, range=Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]])
 
 slots.match_string = Slot(uri=SSSOM.match_string, name="match_string", curie=SSSOM.curie('match_string'),
                    model_uri=SSSOM.match_string, domain=None, range=Optional[Union[str, List[str]]])

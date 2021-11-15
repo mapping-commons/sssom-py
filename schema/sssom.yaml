@@ -50,15 +50,6 @@ enums:
     permissible_values:
       Stemming:
       TaxonRestrictionRemoval:
-  match_field_enum:
-    permissible_values:
-      ExactSynonym:
-      Label:
-      RelatedSynonym:
-      CloseSyonym:
-      BroadSynonym:
-      NarrowSynonm:
-      Definition:
 
 types:
  EntityReference:
@@ -306,12 +297,12 @@ slots:
   subject_match_field:
     description: A tuple of fields (term annotations on the subject) that was used
       for the match.
-    range: match_field_enum
+    range: EntityReference
     multivalued: true
   object_match_field:
     description: A tuple of fields (term annotations on the object) that was used
       for the match.
-    range: match_field_enum
+    range: EntityReference
     multivalued: true
   match_string:
     description: Strings that are shared by subj/obj. It is recommended to indicate the 
