@@ -64,7 +64,10 @@ output_format_option = click.option(
     help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}',
 )
 output_directory_option = click.option(
-    "-d", "--output-directory", type=click.Path(), help="Output directory path."
+    "-d",
+    "--output-directory",
+    type=click.Path(),
+    help="Output directory path.",
 )
 metadata_option = click.option(
     "-m",
@@ -73,7 +76,9 @@ metadata_option = click.option(
     type=click.Path(),
     help="The path to a file containing the sssom metadata (including prefix_map) to be used.",
 )
-transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
+transpose_option = click.option(
+    "-t", "--transpose/--no-transpose", default=False
+)
 fields_option = click.option(
     "-F",
     "--fields",
@@ -449,10 +454,16 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
 @main.command()
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
-@click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
-@click.option("-O", "--output-format", default="turtle", help="Ontology output format.")
 @click.option(
-    "--precedence", multiple=True, help="List of prefixes in order of precedence."
+    "-I", "--input-format", default="turtle", help="Ontology input format."
+)
+@click.option(
+    "-O", "--output-format", default="turtle", help="Ontology output format."
+)
+@click.option(
+    "--precedence",
+    multiple=True,
+    help="List of prefixes in order of precedence.",
 )
 @output_option
 def rewire(
