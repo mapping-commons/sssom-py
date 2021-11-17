@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-11-15T09:45:53
+# Generation date: 2021-11-16T08:36:49
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -199,6 +199,7 @@ class Mapping(YAMLRoot):
     subject_label: Optional[str] = None
     subject_category: Optional[str] = None
     predicate_label: Optional[str] = None
+    predicate_modifier: Optional[Union[str, "PredicateModifierEnum"]] = None
     object_label: Optional[str] = None
     object_category: Optional[str] = None
     author_id: Optional[Union[Union[str, EntityReference], List[Union[str, EntityReference]]]] = empty_list()
@@ -260,6 +261,9 @@ class Mapping(YAMLRoot):
 
         if self.predicate_label is not None and not isinstance(self.predicate_label, str):
             self.predicate_label = str(self.predicate_label)
+
+        if self.predicate_modifier is not None and not isinstance(self.predicate_modifier, PredicateModifierEnum):
+            self.predicate_modifier = PredicateModifierEnum(self.predicate_modifier)
 
         if self.object_label is not None and not isinstance(self.object_label, str):
             self.object_label = str(self.object_label)
@@ -367,6 +371,15 @@ class Mapping(YAMLRoot):
 
 
 # Enumerations
+class PredicateModifierEnum(EnumDefinitionImpl):
+
+    Not = PermissibleValue(text="Not",
+                             description="Negating the mapping predicate. The meaning of the triple becomes subject_id is not a predicate_id match to object_id.")
+
+    _defn = EnumDefinition(
+        name="PredicateModifierEnum",
+    )
+
 class MappingCardinalityEnum(EnumDefinitionImpl):
 
     _defn = EnumDefinition(
@@ -459,6 +472,9 @@ slots.subject_category = Slot(uri=SSSOM.subject_category, name="subject_category
 
 slots.predicate_id = Slot(uri=OWL.annotatedProperty, name="predicate_id", curie=OWL.curie('annotatedProperty'),
                    model_uri=SSSOM.predicate_id, domain=None, range=Union[str, EntityReference])
+
+slots.predicate_modifier = Slot(uri=SSSOM.predicate_modifier, name="predicate_modifier", curie=SSSOM.curie('predicate_modifier'),
+                   model_uri=SSSOM.predicate_modifier, domain=None, range=Optional[Union[str, "PredicateModifierEnum"]])
 
 slots.predicate_label = Slot(uri=SSSOM.predicate_label, name="predicate_label", curie=SSSOM.curie('predicate_label'),
                    model_uri=SSSOM.predicate_label, domain=None, range=Optional[str])
