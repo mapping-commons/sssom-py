@@ -22,6 +22,9 @@ default_curi_maps:
 default_prefix: sssom
 
 enums:
+  predicate_modifier_enum:
+    permissible_values:
+      Not: Negating the mapping predicate. The meaning of the triple becomes subject_id is not a predicate_id match to object_id.
   mapping_cardinality_enum:
     permissible_values:
       "1:1": One-to-one mapping
@@ -97,6 +100,12 @@ slots:
     slot_uri: owl:annotatedProperty
     examples:
       - value: skos:exactMatch
+  predicate_modifier:
+    description: A modifier for negating the prediate. See https://github.com/mapping-commons/sssom/issues/40 for discussion
+    range: predicate_modifier_enum
+    examples:
+      - value: Not
+        description: Negates the predicate, see documentation of predicate_modifier_enum
   predicate_label:
     description: The label of the predicate/relation of the mapping
     range: string
@@ -412,6 +421,7 @@ classes:
     - subject_category
     - predicate_id
     - predicate_label
+    - predicate_modifier
     - object_id
     - object_label
     - object_category
