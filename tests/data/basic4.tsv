@@ -64,6 +64,6 @@ z2:tissue	TISSUE	owl:equivalentClass		x2:tissue	tissue	Lexical|Logical	y	x	rdf_m
 z2:tissue	TISSUE	owl:equivalentClass		y2:tissue	tissues	Lexical|Logical	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 a2:something	XXXXX	owl:subClassOf		b2:something	xxxxxx	Lexical|Complex	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 c2:something	YYYYY	owl:equivalentClass		d2:something	yyyyyy	Lexical|Complex	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-d2:something	YYYYY	owl:equivalentClass	NOT	a2:something	yyyyyy	Lexical|Complex	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-a2:something	XYXYX	owl:equivalentClass	INDIRECT	c2:something	xyxyxy	Lexical|Complex	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+d2:something	YYYYY	owl:equivalentClass	Not	a2:something	yyyyyy	Lexical|Complex	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+a2:something	XYXYX	owl:equivalentClass		c2:something	xyxyxy	Lexical|Complex	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 c2:something	YXYXY	owl:equivalentClass		b2:something	yxyxyx	Lexical|Complex	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.

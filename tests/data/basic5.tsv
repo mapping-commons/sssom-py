@@ -64,6 +64,6 @@ z1:tissue	TISSUE	owl:equivalentClass		x1:tissue	tissue	Lexical	z	x	rdf_matcher	0
 z1:tissue	TISSUE	owl:equivalentClass		y1:tissue	tissues	Lexical|Logical	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 a1:something	XXXXX	owl:subClassOf		b1:something	xxxxxx	Lexical	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 c1:something	YYYYY	owl:equivalentClass		d1:something	yyyyyy	Lexical	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-d1:something	YYYYY	owl:equivalentClass	NOT	a1:something	yyyyyy	Lexical	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-a1:something	XYXYX	owl:equivalentClass	INDIRECT	c1:something	xyxyxy	Lexical	a	c	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+d1:something	YYYYY	owl:equivalentClass	Not	a1:something	yyyyyy	Lexical	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a1:something	XYXYX	owl:equivalentClass		c1:something	xyxyxy	Lexical	a	c	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 c1:something	YXYXY	owl:equivalentClass		b1:something	yxyxyx	Lexical	c	b	rdf_matcher	0.84	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
