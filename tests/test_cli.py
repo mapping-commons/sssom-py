@@ -66,10 +66,14 @@ class SSSOMCLITestSuite(unittest.TestCase):
         """Check the test result is successful."""
         # self.assertTrue(result.exit_code == 0, f"Run failed with message {result.exception}")
         self.assertEqual(
-            result.exit_code, 0, f"{test_case} did not as expected: {result.exception}"
+            result.exit_code,
+            0,
+            f"{test_case} did not perform as expected: {result.exception}",
         )
 
-    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_convert(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the convert test."""
         params = [
             test_case.filepath,
@@ -82,7 +86,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_validate(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_validate(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the validate test."""
         result = runner.invoke(validate, [test_case.filepath])
         self.run_successful(result, test_case)
@@ -117,14 +123,18 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     # Added by H2
 
-    def run_ptable(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_ptable(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the ptable test."""
         params = [test_case.filepath]
         result = runner.invoke(ptable, params)
         self.run_successful(result, test_case)
         return result
 
-    def run_dedupe(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_dedupe(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the deduplication test."""
         params = [
             test_case.filepath,
@@ -174,7 +184,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, primary_test_case)
         return result
 
-    def run_cliquesummary(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_cliquesummary(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the clique summary test."""
         params = [
             test_case.filepath,
@@ -185,7 +197,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_crosstab(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_crosstab(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the cross-tabulation test."""
         params = [
             test_case.filepath,
@@ -196,7 +210,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_correlations(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_correlations(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Run the correlations test."""
         params = [
             test_case.filepath,
