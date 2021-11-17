@@ -76,9 +76,7 @@ metadata_option = click.option(
     type=click.Path(),
     help="The path to a file containing the sssom metadata (including prefix_map) to be used.",
 )
-transpose_option = click.option(
-    "-t", "--transpose/--no-transpose", default=False
-)
+transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
 fields_option = click.option(
     "-F",
     "--fields",
@@ -454,12 +452,8 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
 @main.command()
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
-@click.option(
-    "-I", "--input-format", default="turtle", help="Ontology input format."
-)
-@click.option(
-    "-O", "--output-format", default="turtle", help="Ontology output format."
-)
+@click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
+@click.option("-O", "--output-format", default="turtle", help="Ontology output format.")
 @click.option(
     "--precedence",
     multiple=True,
