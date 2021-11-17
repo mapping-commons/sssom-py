@@ -30,7 +30,7 @@ from linkml_runtime.linkml_model.types import Uriorcurie
 
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
-from .sssom_datamodel import slots
+from .sssom_datamodel import PredicateModifierEnum, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -56,6 +56,8 @@ SUBJECT_LABEL = "subject_label"
 OBJECT_ID = "object_id"
 OBJECT_LABEL = "object_label"
 PREDICATE_ID = "predicate_id"
+PREDICATE_MODIFIER = "predicate_modifier"
+PREDICATE_MODIFIER_NOT = "Not"
 CONFIDENCE = "confidence"
 SUBJECT_CATEGORY = "subject_category"
 OBJECT_CATEGORY = "object_category"
@@ -80,7 +82,9 @@ class MappingSetDataFrame:
     df: Optional[pd.DataFrame] = None  # Mappings
     # maps CURIE prefixes to URI bases
     prefix_map: PrefixMap = field(default_factory=dict)
-    metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
+    metadata: Optional[
+        MetadataType
+    ] = None  # header metadata excluding prefixes
 
     def merge(
         self, msdf2: "MappingSetDataFrame", inplace: bool = True
@@ -212,6 +216,8 @@ def filter_redundant_rows(
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
     :return: Filtered pandas DataFrame
     """
+    # enum text extraction
+    df = extract_enum_text(df)
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
@@ -222,19 +228,24 @@ def filter_redundant_rows(
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
-    dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
+    dfmax = (
+        df.groupby(key, as_index=False)[CONFIDENCE]
+        .apply(max)
+        .drop_duplicates()
+    )
     max_conf: Dict[Tuple[str, ...], float] = {}
     for _, row in dfmax.iterrows():
         if ignore_predicate:
             max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
         else:
-            max_conf[(row[SUBJECT_ID], row[OBJECT_ID], row[PREDICATE_ID])] = row[
-                CONFIDENCE
-            ]
+            max_conf[
+                (row[SUBJECT_ID], row[OBJECT_ID], row[PREDICATE_ID])
+            ] = row[CONFIDENCE]
     if ignore_predicate:
         df = df[
             df.apply(
-                lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
+                lambda x: x[CONFIDENCE]
+                >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
                 axis=1,
             )
         ]
@@ -461,6 +472,23 @@ def sha256sum(path: str) -> str:
     return h.hexdigest()
 
 
+def extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
+    # Enums are of the form: (text: "xxx", description: "yyy").
+    # In this case only the value of 'text' as a str is needed.
+    # For starters only addressing PREDICATE_MODIFIER column
+
+    enum_resolved_df = pd.DataFrame(columns=df.columns)
+
+    for row in df.iterrows():
+        if isinstance(row[1][PREDICATE_MODIFIER], PredicateModifierEnum):
+            row[1][PREDICATE_MODIFIER] = row[1][PREDICATE_MODIFIER].code.text
+        else:
+            row[1][PREDICATE_MODIFIER] = ""
+
+        enum_resolved_df = pd.concat([enum_resolved_df, row[1].to_frame().T])
+    return enum_resolved_df
+
+
 def merge_msdf(
     msdf1: MappingSetDataFrame,
     msdf2: MappingSetDataFrame,
@@ -481,6 +509,9 @@ def merge_msdf(
     msdf1 = inject_metadata_into_df(msdf=msdf1)
     msdf2 = inject_metadata_into_df(msdf=msdf2)
 
+    msdf1.df = extract_enum_text(msdf1.df)
+    msdf2.df = extract_enum_text(msdf2.df)
+
     merged_msdf = MappingSetDataFrame()
     # If msdf2 has a DataFrame
     if msdf1.df is not None and msdf2.df is not None:
@@ -488,6 +519,7 @@ def merge_msdf(
         merged_msdf.df = msdf1.df.merge(msdf2.df, how="outer")
     else:
         merged_msdf.df = msdf1.df
+
     # merge the non DataFrame elements
     merged_msdf.prefix_map = dict_merge(
         source=msdf2.prefix_map,
@@ -504,7 +536,10 @@ def merge_msdf(
 
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-        merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
+        if PREDICATE_MODIFIER in merged_msdf.df.columns:
+            merged_msdf.df = deal_with_negation(
+                merged_msdf.df
+            )  # deals with negation
 
     return merged_msdf
 
@@ -534,6 +569,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
         #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
     """
+    df = extract_enum_text(df)
+
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
 
@@ -544,15 +581,13 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
-    negation_df = df.loc[
-        df[PREDICATE_ID].str.startswith("!")
-    ]  # or df.loc[df['predicate_modifier'] == 'NOT']
+    negation_df = df.loc[df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT]
+    normalized_negation_df = negation_df.reset_index()
 
     # This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
-    normalized_negation_df = negation_df.reset_index()
-    normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
-        PREDICATE_ID
-    ].str.replace("!", "")
+    # normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
+    #     PREDICATE_ID
+    # ].str.replace("!", "")
     ########################################################
     normalized_negation_df = normalized_negation_df.drop(["index"], axis=1)
 
@@ -564,6 +599,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     columns_of_interest = [
         SUBJECT_ID,
         PREDICATE_ID,
+        PREDICATE_MODIFIER,
         OBJECT_ID,
         CONFIDENCE,
         MATCH_TYPE,
@@ -582,7 +618,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
-    reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
+    reconciled_df_subset = pd.DataFrame(
+        columns=combined_normalized_subset.columns
+    )
     for _, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
             (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
@@ -597,11 +635,16 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
                 & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
-                & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+                & (
+                    combined_normalized_subset[MATCH_TYPE]
+                    == HUMAN_CURATED_MATCH_TYPE
+                )
             )
             # In spite of this, if match_condition_1 is returning multiple rows, pick any random row from above.
             if len(match_condition_1[match_condition_1].index) > 1:
-                match_condition_1 = match_condition_1[match_condition_1].sample()
+                match_condition_1 = match_condition_1[
+                    match_condition_1
+                ].sample()
 
         reconciled_df_subset = reconciled_df_subset.append(
             combined_normalized_subset.loc[
@@ -609,7 +652,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             ]
         )
 
-    # Add negations (NOT symbol) back to the PREDICATE_ID
+    # Add negations (PREDICATE_MODIFIER) back to DataFrame
     # NOTE: negative TRUMPS positive if negative and positive with same
     # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
     for _, row_2 in negation_df.iterrows():
@@ -618,9 +661,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
             & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
+
         reconciled_df_subset.loc[
-            match_condition_2[match_condition_2].index, PREDICATE_ID
-        ] = row_2[PREDICATE_ID]
+            match_condition_2[match_condition_2].index, PREDICATE_MODIFIER
+        ] = row_2[PREDICATE_MODIFIER]
 
     reconciled_df = pd.DataFrame(columns=df.columns)
     for _, row_3 in reconciled_df_subset.iterrows():
@@ -629,6 +673,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (df[OBJECT_ID] == row_3[OBJECT_ID])
             & (df[CONFIDENCE] == row_3[CONFIDENCE])
             & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
+            & (df[PREDICATE_MODIFIER] == row_3[PREDICATE_MODIFIER])
         )
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
@@ -721,7 +766,9 @@ def read_csv(
         )
     else:
         with open(filename, "r") as f:
-            lines = "".join([line for line in f if not line.startswith(comment)])
+            lines = "".join(
+                [line for line in f if not line.startswith(comment)]
+            )
     return pd.read_csv(StringIO(lines), sep=sep)
 
 
@@ -735,7 +782,9 @@ def read_metadata(filename: str) -> Metadata:
     return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
-def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
+def read_pandas(
+    file: Union[str, TextIO], sep: Optional[str] = None
+) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file: The file to read. If no separator is given, this file should be named.
@@ -750,7 +799,9 @@ def read_pandas(file: Union[str, TextIO], sep: Optional[str] = None) -> pd.DataF
             sep = ","
         else:
             sep = "\t"
-            logging.warning("Cannot automatically determine table format, trying tsv.")
+            logging.warning(
+                "Cannot automatically determine table format, trying tsv."
+            )
     return read_csv(file, comment="#", sep=sep).fillna("")
 
 
@@ -789,9 +840,11 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
                 if mdict[key]:
                     # Crude way of populating data. May need to revisit.
                     if key == "match_type":
-                        mdict[key] = "|".join(
-                            enum_value.code.text for enum_value in mdict[key]
-                        )
+                        if not isinstance(mdict[key], str):
+                            mdict[key] = "|".join(
+                                enum_value.code.text
+                                for enum_value in mdict[key]
+                            )
                     m[key] = mdict[key]
             data.append(m)
     df = pd.DataFrame(data=data)
@@ -864,7 +917,9 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     return list(set(prefixes))
 
 
-def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.DataFrame:
+def filter_out_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str]
+) -> pd.DataFrame:
     """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
 
     :param df: Pandas DataFrame
@@ -876,7 +931,9 @@ def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.Data
 
     for _, row in df.iterrows():
         # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
-        prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
+        prefixes = {
+            get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]
+        }
         # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
         if not any(prefix in prefixes for prefix in filter_prefix_set):
@@ -928,7 +985,9 @@ def prepare_context(
     return context
 
 
-def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
+def prepare_context_str(
+    prefix_map: Optional[PrefixMap] = None, **kwargs
+) -> str:
     """Prepare a JSON-LD context and dump to a string.
 
     :param prefix_map: Prefix map, defaults to None
