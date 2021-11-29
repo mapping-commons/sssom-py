@@ -42,7 +42,9 @@ SSSOM_NS = SSSOM_URI_PREFIX
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
-def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
+def write_table(
+    msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv"
+) -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
         raise TypeError
@@ -85,7 +87,9 @@ def write_rdf(
     print(t.decode("utf-8"), file=file)
 
 
-def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+def write_json(
+    msdf: MappingSetDataFrame, output: TextIO, serialisation="json"
+) -> None:
     """Write a mapping set dataframe to the file as JSON."""
     if serialisation == "json":
         data = to_json(msdf)
@@ -145,8 +149,12 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
 
     for axiom in graph.subjects(RDF.type, OWL.Axiom):
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+            for s in graph.objects(
+                subject=axiom, predicate=OWL.annotatedSource
+            ):
+                for o in graph.objects(
+                    subject=axiom, predicate=OWL.annotatedTarget
+                ):
                     graph.add((s, p, o))
 
     # if MAPPING_SET_ID in msdf.metadata:
@@ -243,16 +251,21 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     doc = to_mapping_set_document(msdf)
     # cntxt = prepare_context(doc.prefix_map)
 
-    rdflib_dumper.dump(
+    # rdflib_dumper.dump(
+    #     element=doc.mapping_set,
+    #     schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
+    #     prefix_map=msdf.prefix_map,
+    #     to_file="sssom.ttl",
+    # )
+    # graph = Graph()
+    # graph = graph.parse("sssom.ttl", format="ttl")
+
+    # os.remove("sssom.ttl")  # remove the intermediate file.
+    graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
         prefix_map=msdf.prefix_map,
-        to_file="sssom.ttl",
     )
-    graph = Graph()
-    graph = graph.parse("sssom.ttl", format="ttl")
-
-    os.remove("sssom.ttl")  # remove the intermediate file.
     return graph
 
 
