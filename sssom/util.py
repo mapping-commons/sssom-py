@@ -215,7 +215,7 @@ def filter_redundant_rows(
     :return: Filtered pandas DataFrame
     """
     # enum text extraction
-    df = extract_enum_text(df)
+    df = _extract_enum_text(df)
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
@@ -465,7 +465,7 @@ def sha256sum(path: str) -> str:
     return h.hexdigest()
 
 
-def extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
+def _extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
     # Enums are of the form: (text: "xxx", description: "yyy").
     # In this case only the value of 'text' as a str is needed.
     # For starters only addressing PREDICATE_MODIFIER column
@@ -502,8 +502,8 @@ def merge_msdf(
     msdf1 = inject_metadata_into_df(msdf=msdf1)
     msdf2 = inject_metadata_into_df(msdf=msdf2)
 
-    msdf1.df = extract_enum_text(msdf1.df)
-    msdf2.df = extract_enum_text(msdf2.df)
+    msdf1.df = _extract_enum_text(msdf1.df)
+    msdf2.df = _extract_enum_text(msdf2.df)
 
     merged_msdf = MappingSetDataFrame()
     # If msdf2 has a DataFrame
@@ -560,7 +560,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
         #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
     """
-    df = extract_enum_text(df)
+    df = _extract_enum_text(df)
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)

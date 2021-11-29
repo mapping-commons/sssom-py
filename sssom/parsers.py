@@ -15,7 +15,6 @@ import pandas as pd
 import validators
 import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
-from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 
 from .context import (

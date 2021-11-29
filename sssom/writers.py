@@ -12,6 +12,7 @@ from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
+from rdflib.namespace import OWL, RDF
 
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
@@ -20,6 +21,7 @@ from .util import (
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     SSSOM_URI_PREFIX,
+    URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
     prepare_context_str,
@@ -138,6 +140,15 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to OWL in an RDF graph."""
     graph = to_rdf_graph(msdf=msdf)
 
+    for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
+        graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
+
+    for axiom in graph.subjects(RDF.type, OWL.Axiom):
+        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
+            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+                    graph.add((s, p, o))
+
     # if MAPPING_SET_ID in msdf.metadata:
     #    mapping_set_id = msdf.metadata[MAPPING_SET_ID]
     # else:
@@ -230,24 +241,18 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
-    # cntxt = prepare_context_str(doc.prefix_map)
+    # cntxt = prepare_context(doc.prefix_map)
 
     rdflib_dumper.dump(
         element=doc.mapping_set,
         schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
-        prefix_map=doc.prefix_map,
+        prefix_map=msdf.prefix_map,
         to_file="sssom.ttl",
     )
     graph = Graph()
-    graph.parse("sssom.ttl", format="ttl")
-    # graph.bind("pav", Namespace("http://purl.org/pav/"))
-    # graph.bind("dc", Namespace("http://purl.org/dc/terms/"))
-    # import pdb
+    graph = graph.parse("sssom.ttl", format="ttl")
 
-    # pdb.set_trace()
-    # graph.update("SELECT * WHERE {?x ?y ?z .}")
-
-    # graph.serialize(destination="sssom2.ttl", format="ttl")
+    os.remove("sssom.ttl")  # remove the intermediate file.
     return graph
 
 
