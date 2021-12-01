@@ -157,6 +157,6 @@ class TestParse(unittest.TestCase):
             write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
-            42,
+            141,
             f"{self.json_file} has the wrong number of mappings.",
         )
