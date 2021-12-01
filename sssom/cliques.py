@@ -1,7 +1,6 @@
 """Utilities for identifying and working with cliques/SCCs in mappings graphs."""
 
 import hashlib
-import logging
 import statistics
 from collections import defaultdict
 from typing import DefaultDict, Dict, List, Optional, Set
@@ -82,18 +81,6 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
         MappingSetDocument.empty(prefix_map=doc.prefix_map)
         for _ in range(len(components))
     ]
-
-    # ** THIS BLOCK IS A BAND-AID SOLUTION **********************************************
-    #   DEPENDENT ON A LINKML BUG FIX REPORTED AT
-    #   https://github.com/linkml/linkml/issues/477
-
-    for item in documents:
-        if item.mapping_set.mappings == {}:
-            item.mapping_set.mappings = []
-        logging.warning(
-            "****** MAPPINGS IS FORCED TO BE AN EMPTY LIST.[cliques.py -> def split_into_cliques()] *****"
-        )
-    # **********************************************************************************
 
     if not isinstance(doc.mapping_set.mappings, list):
         raise TypeError
