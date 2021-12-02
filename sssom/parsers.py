@@ -184,7 +184,7 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
 
 def _get_mdict_ms_and_bad_attrs(
     row: pd.Series, ms: MappingSet, bad_attrs: Counter
-) -> Tuple[dict, MappingSet, dict]:
+) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
     for k, v in row.items():
@@ -658,7 +658,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 
     mlist: List[Mapping] = []
     ms = _init_mapping_set(msdf.metadata)
-    bad_attrs = {}
+    bad_attrs: Counter = Counter()
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
             mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
