@@ -55,13 +55,9 @@ def rewire_graph(
                             tgt_pfx
                         ) < precedence.index(curr_pfx):
                             rewire_map[src] = tgt
-                            logging.info(
-                                f"{tgt} has precedence, due to {precedence}"
-                            )
+                            logging.info(f"{tgt} has precedence, due to {precedence}")
                 else:
-                    raise ValueError(
-                        f"Ambiguous: {src} -> {tgt} vs {curr_tgt}"
-                    )
+                    raise ValueError(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
             else:
                 rewire_map[src] = tgt
 
