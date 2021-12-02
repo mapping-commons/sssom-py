@@ -5,7 +5,18 @@ import logging
 import re
 import typing
 from collections import Counter
-from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -40,6 +51,9 @@ from .util import (
     to_mapping_set_dataframe,
 )
 
+# Constants
+MATCH_TYPE_UNSPECIFIED = "Unspecified"
+
 # Readers (from file)
 
 
@@ -70,7 +84,9 @@ def read_sssom_table(
                     sssom_metadata[k] = v
         meta = sssom_metadata
 
-    prefix_map, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    prefix_map, meta = _get_prefix_map_and_metadata(
+        prefix_map=prefix_map, meta=meta
+    )
 
     msdf = from_sssom_dataframe(df, prefix_map=prefix_map, meta=meta)
     return msdf
@@ -88,7 +104,9 @@ def read_sssom_rdf(
 
     g = Graph()
     g.load(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_rdf(
+        g, prefix_map=metadata.prefix_map, meta=metadata.metadata
+    )
     return msdf
 
 
@@ -160,6 +178,53 @@ def _get_prefix_map_and_metadata(
     return Metadata(prefix_map=prefix_map, metadata=meta)
 
 
+def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
+    if (
+        is_multivalued_slot(k)
+        and v is not None
+        and isinstance(v, str)
+        and "|" in v
+    ):
+        # IF k is multivalued, then v = List[values]
+        return [s.strip() for s in v.split("|")]
+    else:
+        return v
+
+
+def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
+    if meta is not None:
+        return MappingSet(
+            mapping_set_id=meta["mapping_set_id"], license=meta["license"]
+        )
+    else:
+        return MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
+
+
+def _get_mdict_ms_and_bad_attrs(
+    row: pd.Series, ms: MappingSet, bad_attrs: Counter
+) -> Tuple[dict, MappingSet, dict]:
+
+    mdict = {}
+    for k, v in row.items():
+        if v and v == v:
+            ok = False
+            if k:
+                k = str(k)
+            v = _address_multivalued_slot(k, v)
+            if hasattr(Mapping, k):
+                mdict[k] = v
+                ok = True
+            if hasattr(MappingSet, k):
+                ms[k] = v
+                ok = True
+            if not ok:
+                bad_attrs[k] += 1
+
+    return (mdict, ms, bad_attrs)
+
+
 def read_alignment_xml(
     file_path: str, prefix_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
@@ -197,37 +262,10 @@ def from_sssom_dataframe(
         df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
 
     mlist: List[Mapping] = []
-    if meta is not None:
-        ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
-    else:
-        ms = MappingSet(mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE)
+    ms = _init_mapping_set(meta)
     bad_attrs: typing.Counter[str] = Counter()
     for _, row in df.iterrows():
-        mdict = {}
-        for k, v in row.items():
-            if v and v == v:
-                ok = False
-                if k:
-                    k = str(k)
-                # if k.endswith('_id'): # TODO: introspect
-                #    v = Entity(id=v)
-                if (
-                    is_multivalued_slot(k)
-                    and v is not None
-                    and isinstance(v, str)
-                    and "|" in v
-                ):
-                    # IF k is multivalued, then v = List[values]
-                    v = [s.strip() for s in v.split("|")]
-                if hasattr(Mapping, k):
-                    mdict[k] = v
-                    ok = True
-                if hasattr(MappingSet, k):
-                    ms[k] = v
-                    ok = True
-                if not ok:
-                    bad_attrs[k] += 1
-
+        mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
         mlist.append(_prepare_mapping(Mapping(**mdict)))
 
     for k, v in bad_attrs.most_common():
@@ -259,10 +297,8 @@ def from_sssom_rdf(
     if mapping_predicates is None:
         # FIXME unused
         mapping_predicates = _get_default_mapping_predicates()
-    if meta is not None:
-        ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
-    else:
-        ms = MappingSet(mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE)
+
+    ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
 
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
@@ -289,14 +325,7 @@ def from_sssom_rdf(
                     else:
                         v = o.toPython()
                     if k:
-                        if (
-                            is_multivalued_slot(k)
-                            and v is not None
-                            and isinstance(v, str)
-                            and "|" in v
-                        ):
-                            # IF k is multivalued, then v = List[values]
-                            v = [s.strip() for s in v.split("|")]
+                        v = _address_multivalued_slot(k, v)
                         mdict[k] = v
 
                 except NoCURIEException as e:
@@ -339,11 +368,6 @@ def from_sssom_json(
     mapping_set = cast(
         MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
     )
-    # ** Will need to remove this line
-    # ** once linkml-runtime fixes JSONLoader.load()
-    if type(mapping_set.mappings) is dict:
-        mapping_set.mappings = [val for val in mapping_set.mappings.values()]
-    # ** *******************************************
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
     mapping_set_document = MappingSetDocument(
@@ -365,8 +389,7 @@ def from_alignment_minidom(
     """
     # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
     _ensure_prefix_map(prefix_map)
-
-    ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
+    ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
@@ -404,7 +427,9 @@ def from_alignment_minidom(
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(
+        mapping_set=ms, prefix_map=prefix_map
+    )
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -423,10 +448,7 @@ def from_obographs(
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
-    if meta is not None:
-        ms = MappingSet(mapping_set_id=meta["mapping_set_id"], license=meta["license"])
-    else:
-        ms = MappingSet(mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE)
+    ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
@@ -461,8 +483,12 @@ def from_obographs(
                                         xref_id, prefix_map
                                     )
                                     mdict["subject_label"] = label
-                                    mdict["predicate_id"] = "oboInOwl:hasDbXref"
-                                    mdict["match_type"] = "Unspecified"
+                                    mdict[
+                                        "predicate_id"
+                                    ] = "oboInOwl:hasDbXref"
+                                    mdict[
+                                        "match_type"
+                                    ] = MATCH_TYPE_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     # FIXME this will cause all sorts of ragged Mappings
@@ -484,7 +510,9 @@ def from_obographs(
                                         mdict["predicate_id"] = curie_from_uri(
                                             pred, prefix_map
                                         )
-                                        mdict["match_type"] = "Unspecified"
+                                        mdict[
+                                            "match_type"
+                                        ] = MATCH_TYPE_UNSPECIFIED
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
@@ -502,7 +530,9 @@ def from_obographs(
 # All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
+def get_parsing_function(
+    input_format: Optional[str], filename: str
+) -> Callable:
     """Return appropriate parser function based on input format of file.
 
     :param input_format: File format
@@ -611,7 +641,9 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
+def _cell_element_values(
+    cell_node, prefix_map: PrefixMap
+) -> Optional[Mapping]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -631,7 +663,9 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
                     if relation == "=":
                         mdict["predicate_id"] = "owl:equivalentClass"
                     else:
-                        logging.warning(f"{relation} not a recognised relation type.")
+                        logging.warning(
+                            f"{relation} not a recognised relation type."
+                        )
                 else:
                     logging.warning(
                         f"Unsupported alignment api element: {child.nodeName}"
@@ -639,7 +673,7 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
             except NoCURIEException as e:
                 logging.warning(e)
 
-    mdict["match_type"] = "Unspecified"
+    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
 
     m = Mapping(**mdict)
     if _is_valid_mapping(m):
@@ -657,42 +691,13 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         raise Exception("No valid prefix_map provided")
 
     mlist: List[Mapping] = []
-    if msdf.metadata is not None:
-        ms = MappingSet(
-            mapping_set_id=msdf.metadata["mapping_set_id"],
-            license=msdf.metadata["license"],
-        )
-    else:
-        ms = MappingSet(mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE)
+    ms = _init_mapping_set(msdf.metadata)
     bad_attrs = {}
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
-            mdict = {}
-            for k, v in row.items():
-                # Check if v exists AND v is not nan
-                if v and v == v:
-                    ok = False
-                    if k:
-                        k = str(k)
-                    if (
-                        is_multivalued_slot(k)
-                        and v is not None
-                        and isinstance(v, str)
-                        and "|" in v
-                    ):
-                        # IF k is multivalued, then v = List[values]
-                        v = [s.strip() for s in v.split("|")]
-                    if hasattr(Mapping, k):
-                        mdict[k] = v
-                        ok = True
-                    if hasattr(MappingSet, k):
-                        ms[k] = v
-                        ok = True
-                    if not ok:
-                        if k not in bad_attrs:
-                            bad_attrs[k] = 1
-                        else:
-                            bad_attrs[k] += 1
+            mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(
+                row, ms, bad_attrs
+            )
 
             m = _prepare_mapping(Mapping(**mdict))
             mlist.append(m)
@@ -717,8 +722,12 @@ def split_dataframe(
     """
     if msdf.df is None:
         raise RuntimeError
-    subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(msdf.df["object_id"].str.split(":", 1, expand=True)[0])
+    subject_prefixes = set(
+        msdf.df["subject_id"].str.split(":", 1, expand=True)[0]
+    )
+    object_prefixes = set(
+        msdf.df["object_id"].str.split(":", 1, expand=True)[0]
+    )
     relations = set(msdf.df["predicate_id"])
     return split_dataframe_by_prefix(
         msdf=msdf,
@@ -748,14 +757,20 @@ def split_dataframe_by_prefix(
             for rel in relations:
                 relpre = rel.split(":")[0]
                 relppost = rel.split(":")[1]
-                split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
+                split_name = (
+                    f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
+                )
                 if df is not None:
                     dfs = df[
                         (df["subject_id"].str.startswith(pre_subj + ":"))
                         & (df["predicate_id"] == rel)
                         & (df["object_id"].str.startswith(pre_obj + ":"))
                     ]
-                if pre_subj in prefix_map and pre_obj in prefix_map and len(dfs) > 0:
+                if (
+                    pre_subj in prefix_map
+                    and pre_obj in prefix_map
+                    and len(dfs) > 0
+                ):
                     cm = {
                         pre_subj: prefix_map[pre_subj],
                         pre_obj: prefix_map[pre_obj],
