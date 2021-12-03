@@ -1,4 +1,5 @@
 #license: "https://creativecommons.org/publicdomain/zero/1.0/"
+#mapping_set_id: http://w3id.org/sssom/mapping/tests/data/basic-small.tsv
 #mapping_tool: "https://github.com/cmungall/rdf_matcher"
 #creator_id: "cjm"
 #mapping_date: "2020-05-30"
@@ -13,7 +14,7 @@
 #  c: "http://example.org/c/"
 #  d: "http://example.org/d/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	match_type	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
-x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	Lexical|Stemming	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	Lexical|Stemming	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	Lexical|Complex	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	Lexical|HumanCurated	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	Lexical	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendage	.
 x:bone_element	bone element	owl:equivalentClass		y:bone	bones	Lexical	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.

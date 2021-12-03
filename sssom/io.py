@@ -4,7 +4,11 @@ import logging
 from pathlib import Path
 from typing import Optional, TextIO, Union
 
-from .context import get_default_metadata
+from .context import (
+    get_default_metadata,
+    set_default_license,
+    set_default_mapping_set_id,
+)
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import raise_for_bad_path, read_metadata
@@ -54,6 +58,8 @@ def parse_file(
     metadata = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
+    metadata = set_default_mapping_set_id(metadata)
+    metadata = set_default_license(metadata)
     parse_func = get_parsing_function(input_format, input_path)
     doc = parse_func(
         input_path, prefix_map=metadata.prefix_map, meta=metadata.prefix_map
