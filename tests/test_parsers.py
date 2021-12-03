@@ -61,9 +61,7 @@ class TestParse(unittest.TestCase):
         """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
         msdf = read_sssom_table(input_path)
-        output_path = os.path.join(
-            test_out_dir, "test_parse_sssom_dataframe.tsv"
-        )
+        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv")
         with open(output_path, "w") as file:
             write_table(msdf, file)
         self.assertEqual(
@@ -75,9 +73,7 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_dataframe_url(self):
         """Test parsing a TSV from a URL."""
         msdf = read_sssom_table(self.df_url)
-        output_path = os.path.join(
-            test_out_dir, "test_parse_sssom_dataframe_url.tsv"
-        )
+        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
         with open(output_path, "w") as file:
             write_table(msdf, file)
         self.assertEqual(
