@@ -32,10 +32,7 @@ class TestParse(unittest.TestCase):
         if not os.path.exists(test_out_dir):
             os.mkdir(test_out_dir)
 
-        # self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
-        # ** TEMPORARY EDIT. NEEDS TO ROLL BACK TO PREV LINE***
-        self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/update-sssom/tests/data/basic.tsv"
-
+        self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
         self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"
         self.rdf_graph = Graph()
         self.rdf_graph.parse(self.rdf_graph_file, format="ttl")
@@ -64,7 +61,9 @@ class TestParse(unittest.TestCase):
         """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
         msdf = read_sssom_table(input_path)
-        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv")
+        output_path = os.path.join(
+            test_out_dir, "test_parse_sssom_dataframe.tsv"
+        )
         with open(output_path, "w") as file:
             write_table(msdf, file)
         self.assertEqual(
@@ -76,7 +75,9 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_dataframe_url(self):
         """Test parsing a TSV from a URL."""
         msdf = read_sssom_table(self.df_url)
-        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
+        output_path = os.path.join(
+            test_out_dir, "test_parse_sssom_dataframe_url.tsv"
+        )
         with open(output_path, "w") as file:
             write_table(msdf, file)
         self.assertEqual(
