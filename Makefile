@@ -26,6 +26,7 @@ schema/%.context.jsonld: .FORCE
 schema/%.yaml: .FORCE
 	wget $(SSSOM_YAML) -O $@
 
+
 test:
 	tox
 	sh tests/tests.sh
@@ -51,6 +52,7 @@ deploy-dm: sssom/external_context.py sssom/internal_context.py
 	cp schema/sssom_datamodel.py sssom/
 	cp schema/sssom.context.jsonld sssom/
 	cp schema/sssom.external.context.jsonld sssom/
+	cp schema/sssom.yaml sssom/
 	
 
 install:
