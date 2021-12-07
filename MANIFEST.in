@@ -1,40 +1,25 @@
-include *.bat *.md *.sh Makefile
+# Include everything in these directories
+graft sssom
+graft tests
 
-recursive-include sssom *.yaml
-recursive-include schema *.json
-recursive-include schema *.jsonld
-recursive-include schema *.py
-recursive-include schema *.yaml
+# Don't include anything in these directories
+prune docs
+prune schema
 
+# TODO these should use the tmpfile harness
+prune tests/tmp
+prune tests/data
+
+recursive-include sphinx *.py
+recursive-include sphinx *.rst
+recursive-include sphinx Makefile
+recursive-include sphinx make.bat
+
+# Files to always exclude
 global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
 
-exclude tox.ini
+# Specific files to exclude
+exclude odk.bat environment.sh cli.md Makefile tox.ini
 
-recursive-exclude docs *.css
-recursive-exclude docs *.eot
-recursive-exclude docs *.html
-recursive-exclude docs *.inv
-recursive-exclude docs *.js
-recursive-exclude docs *.nojekyll
-recursive-exclude docs *.png
-recursive-exclude docs *.svg
-recursive-exclude docs *.ttf
-recursive-exclude docs *.txt
-recursive-exclude docs *.woff
-recursive-exclude docs *.woff2
-recursive-exclude sphinx *.rst
-recursive-exclude sphinx *.bat
-recursive-exclude sphinx *.py
-recursive-exclude sphinx Makefile
-recursive-exclude tests *.json
-recursive-exclude tests *.jsonld
-recursive-exclude tests *.md
-recursive-exclude tests *.omn
-recursive-exclude tests *.owl
-recursive-exclude tests *.rdf
-recursive-exclude tests *.sh
-recursive-exclude tests *.tsv
-recursive-exclude tests *.ttl
-recursive-exclude tests *.xml
-recursive-exclude tests *.yaml
-recursive-exclude tests *.yml
+# Specific files to include
+include LICENSE sssom/sssom.yaml
