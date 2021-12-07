@@ -3,5 +3,5 @@
 import os
 import pathlib
 
-CWD = pathlib.Path(__file__).parent.resolve()
-SCHEMA_YAML = os.path.join(CWD, "sssom.yaml")
+HERE = pathlib.Path(__file__).parent.resolve()
+SCHEMA_YAML = os.path.join(HERE, "sssom.yaml")

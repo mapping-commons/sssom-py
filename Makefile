@@ -23,7 +23,7 @@ schema/sssom.external.context.jsonld:
 	wget $(DEFAULT_PREFIX_MAP) -O $@
 schema/%.context.jsonld: .FORCE
 	wget $(SSSOM_JSONLD_CONTEXT) -O $@
-schema/%.yaml: .FORCE
+schema/%.yaml sssom/%.yaml: .FORCE
 	wget $(SSSOM_YAML) -O $@
 
 
@@ -52,7 +52,6 @@ deploy-dm: sssom/external_context.py sssom/internal_context.py
 	cp schema/sssom_datamodel.py sssom/
 	cp schema/sssom.context.jsonld sssom/
 	cp schema/sssom.external.context.jsonld sssom/
-	cp schema/sssom.yaml sssom/
 	
 
 install:
