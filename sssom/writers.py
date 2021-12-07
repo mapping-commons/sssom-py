@@ -2,7 +2,6 @@
 
 import json
 import logging
-import os
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, TextIO, Tuple, Union
 
@@ -14,6 +13,7 @@ from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
+from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
 from .util import (
@@ -255,7 +255,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     # os.remove("sssom.ttl")  # remove the intermediate file.
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
-        schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
+        schemaview=SchemaView(SCHEMA_YAML),
         prefix_map=msdf.prefix_map,
     )
     return graph

@@ -23,7 +23,7 @@ schema/sssom.external.context.jsonld:
 	wget $(DEFAULT_PREFIX_MAP) -O $@
 schema/%.context.jsonld: .FORCE
 	wget $(SSSOM_JSONLD_CONTEXT) -O $@
-schema/%.yaml: .FORCE
+schema/%.yaml sssom/%.yaml: .FORCE
 	wget $(SSSOM_YAML) -O $@
 
 test:
