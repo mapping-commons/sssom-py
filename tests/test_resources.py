@@ -5,7 +5,7 @@
 import os
 import unittest
 
-from sssom import SCHEMA_YAML
+from sssom.constants import SCHEMA_YAML
 
 
 class TestResources(unittest.TestCase):

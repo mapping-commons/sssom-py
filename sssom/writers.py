@@ -13,8 +13,7 @@ from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
-from sssom.constants import SCHEMA_YAML
-
+from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
 from .util import (
