@@ -1,1 +1,12 @@
+
+graft sssom
+graft tests
+prune docs
+
+recursive-include sphinx *.py
+recursive-include sphinx *.rst
+recursive-include sphinx Makefile
+
+global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
+
 include sssom/sssom.yaml
