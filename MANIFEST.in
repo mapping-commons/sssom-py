@@ -10,10 +10,10 @@ prune schema
 prune tests/tmp
 prune tests/data
 
-recursive-include sphinx *.py
-recursive-include sphinx *.rst
-recursive-include sphinx Makefile
-recursive-include sphinx make.bat
+recursive-exclude sphinx *.py
+recursive-exclude sphinx *.rst
+recursive-exclude sphinx Makefile
+recursive-exclude sphinx make.bat
 
 # Files to always exclude
 global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
