@@ -26,7 +26,6 @@ schema/%.context.jsonld: .FORCE
 schema/%.yaml sssom/%.yaml: .FORCE
 	wget $(SSSOM_YAML) -O $@
 
-
 test:
 	tox
 	sh tests/tests.sh

@@ -253,7 +253,6 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     # graph = graph.parse("sssom.ttl", format="ttl")
 
     # os.remove("sssom.ttl")  # remove the intermediate file.
-
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
