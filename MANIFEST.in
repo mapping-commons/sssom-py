@@ -1,12 +1,20 @@
-
 graft sssom
 graft tests
 prune docs
+prune schema
+
+# TODO these should use the tmpfile harness
+prune tests/tmp
+prune tests/data
 
 recursive-include sphinx *.py
 recursive-include sphinx *.rst
 recursive-include sphinx Makefile
+recursive-include sphinx make.bat
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
 
 include sssom/sssom.yaml
+
+exclude odk.bat environment.sh cli.md Makefile tox.ini
+include LICENSE
