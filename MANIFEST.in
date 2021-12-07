@@ -1,5 +1,8 @@
+# Include everything in these directories
 graft sssom
 graft tests
+
+# Don't include anything in these directories
 prune docs
 prune schema
 
@@ -12,9 +15,11 @@ recursive-include sphinx *.rst
 recursive-include sphinx Makefile
 recursive-include sphinx make.bat
 
+# Files to always exclude
 global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
 
-include sssom/sssom.yaml
-
+# Specific files to exclude
 exclude odk.bat environment.sh cli.md Makefile tox.ini
-include LICENSE
+
+# Specific files to include
+include LICENSE sssom/sssom.yaml
