@@ -73,12 +73,13 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the convert test."""
+        fmt = "owl"
         params = [
             test_case.filepath,
             "--output",
-            test_case.get_out_file("tsv"),
+            test_case.get_out_file(fmt),
             "--output-format",
-            "owl",
+            fmt,
         ]
         result = runner.invoke(convert, params)
         self.run_successful(result, test_case)
