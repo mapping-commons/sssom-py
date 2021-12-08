@@ -5,4 +5,6 @@
 import setuptools
 
 if __name__ == "__main__":
-    setuptools.setup()
+    setuptools.setup(
+        include_package_data=True
+    )
