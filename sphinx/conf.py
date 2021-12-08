@@ -22,7 +22,7 @@ copyright = '2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde'
 author = 'Chris Mungall; Nicolas Matentzoglu; Harshad Hegde'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3.4-dev'
+release = '0.3.6-dev'
 
 # -- General configuration ---------------------------------------------------
 
