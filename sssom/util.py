@@ -1,3 +1,5 @@
+"""Utilities for SSSOM."""
+
 import hashlib
 import json
 import logging
@@ -24,9 +26,11 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .context import get_default_metadata, get_jsonld_context
-from .sssom_datamodel import Entity, slots
+from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
+from .internal_context import multivalued_slots
+from .sssom_datamodel import PredicateModifierEnum, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -45,7 +49,6 @@ SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
-SSSOM_URI_PREFIX = "http://w3id.org/sssom/"
 
 # TODO: use sssom_datamodel (Mapping Class)
 SUBJECT_ID = "subject_id"
@@ -53,6 +56,8 @@ SUBJECT_LABEL = "subject_label"
 OBJECT_ID = "object_id"
 OBJECT_LABEL = "object_label"
 PREDICATE_ID = "predicate_id"
+PREDICATE_MODIFIER = "predicate_modifier"
+PREDICATE_MODIFIER_NOT = "Not"
 CONFIDENCE = "confidence"
 SUBJECT_CATEGORY = "subject_category"
 OBJECT_CATEGORY = "object_category"
@@ -63,7 +68,6 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 MAPPING_SET_ID = "mapping_set_id"
-DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/default"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
@@ -76,7 +80,7 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    #: maps CURIE prefixes to URI bases
+    # maps CURIE prefixes to URI bases
     prefix_map: PrefixMap = field(default_factory=dict)
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
@@ -116,6 +120,7 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self) -> None:
+        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
@@ -140,14 +145,14 @@ class EntityPair:
     Note that (e1,e2) == (e2,e1)
     """
 
-    subject_entity: Entity
-    object_entity: Entity
+    subject_entity: Uriorcurie
+    object_entity: Uriorcurie
 
     def __hash__(self) -> int:  # noqa:D105
-        if self.subject_entity.id <= self.object_entity.id:
-            t = self.subject_entity.id, self.object_entity.id
+        if self.subject_entity <= self.object_entity:
+            t = self.subject_entity, self.object_entity
         else:
-            t = self.object_entity.id, self.subject_entity.id
+            t = self.object_entity, self.subject_entity
         return hash(t)
 
 
@@ -209,6 +214,8 @@ def filter_redundant_rows(
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
     :return: Filtered pandas DataFrame
     """
+    # enum text extraction
+    df = _extract_enum_text(df)
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
@@ -249,7 +256,9 @@ def filter_redundant_rows(
     return return_df
 
 
-def assign_default_confidence(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def assign_default_confidence(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Assign :data:`numpy.nan` to confidence that are blank.
 
     :param df: SSSOM DataFrame
@@ -275,14 +284,15 @@ def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
-def create_entity(identifier: str, mappings: Dict[str, Any]) -> Entity:
-    """Create an Entity object.
+def create_entity(identifier: str, mappings: Dict[str, Any]) -> Uriorcurie:
+    """
+    Create an Entity object.
 
     :param identifier: Entity Id
     :param mappings: Mapping dictionary
     :return: An Entity object
     """
-    entity = Entity(id=identifier)
+    entity = Uriorcurie(identifier)  # Entity(id=identifier)
     for key, value in mappings.items():
         if key in entity:
             entity[key] = value
@@ -316,7 +326,11 @@ def group_mappings(df: pd.DataFrame) -> Dict[EntityPair, List[pd.Series]]:
 def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     """Perform a diff between two SSSOM dataframes.
 
-    Currently does not discriminate between mappings with different predicates
+    :param df1: A mapping dataframe
+    :param df2: A mapping dataframe
+    :returns: A mapping set diff
+
+    .. warning:: currently does not discriminate between mappings with different predicates
     """
     mappings1 = group_mappings(df1.copy())
     mappings2 = group_mappings(df2.copy())
@@ -329,7 +343,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     all_tuples = tuples1.union(tuples2)
     all_ids = set()
     for t in all_tuples:
-        all_ids.update({t.subject_entity.id, t.object_entity.id})
+        all_ids.update({t.subject_entity, t.object_entity})
     rows = []
     for t in d.unique_tuples1:
         for r in mappings1[t]:
@@ -451,6 +465,23 @@ def sha256sum(path: str) -> str:
     return h.hexdigest()
 
 
+def _extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
+    # Enums are of the form: (text: "xxx", description: "yyy").
+    # In this case only the value of 'text' as a str is needed.
+    # For starters only addressing PREDICATE_MODIFIER column
+
+    enum_resolved_df = pd.DataFrame(columns=df.columns)
+
+    for row in df.iterrows():
+        if isinstance(row[1][PREDICATE_MODIFIER], PredicateModifierEnum):
+            row[1][PREDICATE_MODIFIER] = row[1][PREDICATE_MODIFIER].code.text
+        else:
+            row[1][PREDICATE_MODIFIER] = ""
+
+        enum_resolved_df = pd.concat([enum_resolved_df, row[1].to_frame().T])
+    return enum_resolved_df
+
+
 def merge_msdf(
     msdf1: MappingSetDataFrame,
     msdf2: MappingSetDataFrame,
@@ -465,13 +496,14 @@ def merge_msdf(
         then remove lower confidence positive one. If confidence is the same,
         prefer HumanCurated. If both HumanCurated, prefer negative mapping).
         Defaults to True.
-
-    Returns:
-        MappingSetDataFrame: Merged MappingSetDataFrame.
+    :returns: Merged MappingSetDataFrame.
     """
     # Inject metadata of msdf into df
     msdf1 = inject_metadata_into_df(msdf=msdf1)
     msdf2 = inject_metadata_into_df(msdf=msdf2)
+
+    msdf1.df = _extract_enum_text(msdf1.df)
+    msdf2.df = _extract_enum_text(msdf2.df)
 
     merged_msdf = MappingSetDataFrame()
     # If msdf2 has a DataFrame
@@ -480,9 +512,12 @@ def merge_msdf(
         merged_msdf.df = msdf1.df.merge(msdf2.df, how="outer")
     else:
         merged_msdf.df = msdf1.df
+
     # merge the non DataFrame elements
     merged_msdf.prefix_map = dict_merge(
-        source=msdf2.prefix_map, target=msdf1.prefix_map, dict_name="prefix_map"
+        source=msdf2.prefix_map,
+        target=msdf1.prefix_map,
+        dict_name="prefix_map",
     )
     # After a Slack convo with @matentzn, commented out below.
     # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
@@ -494,7 +529,8 @@ def merge_msdf(
 
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-        merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
+        if PREDICATE_MODIFIER in merged_msdf.df.columns:
+            merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
     return merged_msdf
 
@@ -506,42 +542,43 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     :param df: Merged Pandas DataFrame
     :return: Pandas DataFrame with negations addressed
+    :raises ValueError: If the dataframe is none after assigning default confidence
     """
     """
-            1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
-               the one in mapping1 is preserved).
-            2. Reconciling means two things
-                [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
-                    only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
-                [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
-                     If same confidence prefer "HumanCurated" .If same again prefer negative.
-            3. Prefixes:
-                [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different,
-                throw an error and fail hard
-                    else just merge the two prefix maps
-            4. Metadata: same as rule 1.
+        1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
+            the one in mapping1 is preserved).
+        2. Reconciling means two things
+            [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
+                only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
+            [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
+                    If same confidence prefer "HumanCurated" .If same again prefer negative.
+        3. Prefixes:
+            [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different,
+            throw an error and fail hard
+                else just merge the two prefix maps
+        4. Metadata: same as rule 1.
 
-            #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
-        """
+        #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
+    """
+    df = _extract_enum_text(df)
+
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
 
     if df is None:
-        raise Exception(
+        raise ValueError(
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation"
         )
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
-    negation_df = df.loc[
-        df[PREDICATE_ID].str.startswith("!")
-    ]  # or df.loc[df['predicate_modifier'] == 'NOT']
+    negation_df = df.loc[df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT]
+    normalized_negation_df = negation_df.reset_index()
 
     # This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
-    normalized_negation_df = negation_df.reset_index()
-    normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
-        PREDICATE_ID
-    ].str.replace("!", "")
+    # normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
+    #     PREDICATE_ID
+    # ].str.replace("!", "")
     ########################################################
     normalized_negation_df = normalized_negation_df.drop(["index"], axis=1)
 
@@ -550,7 +587,13 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     positive_df = df.drop(condition.index)
     positive_df = positive_df.reset_index().drop(["index"], axis=1)
 
-    columns_of_interest = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, CONFIDENCE, MATCH_TYPE]
+    columns_of_interest = [
+        SUBJECT_ID,
+        PREDICATE_ID,
+        OBJECT_ID,
+        CONFIDENCE,
+        MATCH_TYPE,
+    ]
     negation_subset = normalized_negation_df[columns_of_interest]
     positive_subset = positive_df[columns_of_interest]
 
@@ -592,7 +635,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             ]
         )
 
-    # Add negations (NOT symbol) back to the PREDICATE_ID
+    # Add negations (PREDICATE_MODIFIER) back to DataFrame
     # NOTE: negative TRUMPS positive if negative and positive with same
     # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
     for _, row_2 in negation_df.iterrows():
@@ -601,18 +644,35 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
             & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
+
         reconciled_df_subset.loc[
-            match_condition_2[match_condition_2].index, PREDICATE_ID
-        ] = row_2[PREDICATE_ID]
+            match_condition_2[match_condition_2].index, PREDICATE_MODIFIER
+        ] = row_2[PREDICATE_MODIFIER]
+
+    if PREDICATE_MODIFIER in reconciled_df_subset.columns:
+        reconciled_df_subset[PREDICATE_MODIFIER] = reconciled_df_subset[
+            PREDICATE_MODIFIER
+        ].fillna("")
 
     reconciled_df = pd.DataFrame(columns=df.columns)
+
     for _, row_3 in reconciled_df_subset.iterrows():
-        match_condition_3 = (
-            (df[SUBJECT_ID] == row_3[SUBJECT_ID])
-            & (df[OBJECT_ID] == row_3[OBJECT_ID])
-            & (df[CONFIDENCE] == row_3[CONFIDENCE])
-            & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
-        )
+        if PREDICATE_MODIFIER in reconciled_df_subset.columns:
+            match_condition_3 = (
+                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
+                & (df[OBJECT_ID] == row_3[OBJECT_ID])
+                & (df[CONFIDENCE] == row_3[CONFIDENCE])
+                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
+                & (df[PREDICATE_MODIFIER] == row_3[PREDICATE_MODIFIER])
+            )
+        else:
+            match_condition_3 = (
+                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
+                & (df[OBJECT_ID] == row_3[OBJECT_ID])
+                & (df[CONFIDENCE] == row_3[CONFIDENCE])
+                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
+            )
+
         reconciled_df = reconciled_df.append(
             df.loc[match_condition_3[match_condition_3].index, :]
         )
@@ -770,6 +830,12 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
             m = {}
             for key in mdict:
                 if mdict[key]:
+                    # Crude way of populating data. May need to revisit.
+                    if key == "match_type":
+                        if not isinstance(mdict[key], str):
+                            mdict[key] = "|".join(
+                                enum_value.code.text for enum_value in mdict[key]
+                            )
                     m[key] = mdict[key]
             data.append(m)
     df = pd.DataFrame(data=data)
@@ -783,7 +849,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
 
 
 class NoCURIEException(ValueError):
-    pass
+    """An exception raised when a CURIE can not be parsed with a given prefix map."""
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
@@ -884,7 +950,9 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
         )
 
 
-def prepare_context(prefix_map: Optional[PrefixMap] = None) -> Mapping[str, Any]:
+def prepare_context(
+    prefix_map: Optional[PrefixMap] = None,
+) -> Mapping[str, Any]:
     """Prepare a JSON-LD context from a prefix map."""
     context = get_jsonld_context()
     if prefix_map is None:
@@ -908,6 +976,7 @@ def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str
     """Prepare a JSON-LD context and dump to a string.
 
     :param prefix_map: Prefix map, defaults to None
+    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
     :return: Context in str format
     """
     return json.dumps(prepare_context(prefix_map), **kwargs)
@@ -921,3 +990,16 @@ def raise_for_bad_path(file_path: str) -> None:
     """
     if not validators.url(file_path) and not os.path.exists(file_path):
         raise ValueError(f"{file_path} is not a valid file path or url.")
+
+
+def is_multivalued_slot(slot: str) -> bool:
+    """Check whether the slot is multivalued according to the SSSOM specification.
+
+    :param slot: Slot name
+    :return: Slot is multivalued or no
+    """
+    # Ideally:
+    # view = SchemaView('schema/sssom.yaml')
+    # return view.get_slot(slot).multivalued
+
+    return slot in multivalued_slots

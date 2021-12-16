@@ -1,4 +1,5 @@
 #license: "https://creativecommons.org/publicdomain/zero/1.0/"
+#mapping_set_id: http://w3id.org/sssom/mapping/tests/data/cob-to-external.tsv
 #curie_map:
 #  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
 #  skos: "http://www.w3.org/2004/02/skos/core#"
@@ -28,110 +29,110 @@
 #  SEPIO: "http://purl.obolibrary.org/obo/SEPIO_"
 #  STATO: "http://purl.obolibrary.org/obo/STATO_"
 #  DRON: "http://purl.obolibrary.org/obo/DRON_"
-subject_id	subject_label	predicate_id	object_id	object_label	notes
-COB:0000001	quality	owl:equivalentClass	BFO:0000019	quality	.
-COB:0000003	mass	owl:equivalentClass	PATO:0000125	mass	.
-COB:0000004	charge	owl:equivalentClass	PATO:0002193	electric	.
-COB:0000005	elementary charge	rdfs:subClassOf	owl:Thing	owl:Thing	Making ticket in PATO tracker
-COB:0000006	material entity	owl:equivalentClass	BFO:0000040	material entity	.
-COB:0000006	material entity	sssom:superClassOf	SO:0000110	sequence_feature	.
-COB:0000006	material entity	sssom:superClassOf	SO:0001060	sequence_variant	.
-COB:0000006	material entity	sssom:superClassOf	SO:0001260	sequence_collection	.
-COB:0000007	subatomic particle	owl:equivalentClass	CHEBI:36342	subatomic particle	.
-COB:0000008	proton	owl:equivalentClass	CHEBI:24636	proton	.
-COB:0000009	neutron	owl:equivalentClass	CHEBI:30222	neutron	.
-COB:0000010	electron	owl:equivalentClass	CHEBI:10545	electron	.
-COB:0000011	atom	skos:closeMatch	CHEBI:33250	atom	.
-COB:0000012	atomic nucleus	owl:equivalentClass	CHEBI:33252	atomic nucleus	.
-COB:0000013	molecular entity	skos:closeMatch	CHEBI:23367	molecular entity	No exact match in CHEBI
-COB:0000013	molecular entity	skos:closeMatch	CHEBI:25367	molecule	This is electrically neutral in CHEBI but in COB it is generic. We should make it union of molecule and polyatomic ion
-COB:0000015	protein	owl:equivalentClass	CHEBI:16541	protein polypeptide chain	.
-COB:0000015	protein	owl:equivalentClass	PR:000000001	protein	.
-COB:0000017	cell	owl:equivalentClass	CL:0000000	cell	.
-COB:0000017	cell	sssom:superClassOf	PO:0009002	plant cell	.
-COB:0000018	native cell	owl:equivalentClass	CL:0000003	native cell	.
-COB:0000018	native cell	sssom:superClassOf	XAO:0003012	xenopus cell	.
-COB:0000018	native cell	sssom:superClassOf	ZFA:0009000	zebrafish cell	.
-COB:0000018	native cell	sssom:superClassOf	PO:0025606	native plant cell	.
-COB:0000019	cell in vitro	owl:equivalentClass	CL:0001034	cell in vitro	.
-COB:0000020	subcellular structure	rdfs:subClassOf	owl:Thing	owl:Thing	Chris will follow up
-COB:0000021	gross anatomical part	owl:equivalentClass	CARO:0001008	gross anatomical part	.
-COB:0000021	gross anatomical part	sssom:superClassOf	UBERON:0010000	multicellular anatomical structure	.
-COB:0000022	organism	owl:equivalentClass	NCBITaxon:1	root	.
-COB:0000022	organism	owl:equivalentClass	OBI:0100026	organism	.
-COB:0000022	organism	owl:equivalentClass	CARO:0001010	organism or virus or viroid	.
-COB:0000025	organization	owl:equivalentClass	OBI:0000245	organization	.
-COB:0000026	processed material entity	owl:equivalentClass	OBI:0000047	processed material	.
-COB:0000031	immaterial entity	owl:equivalentClass	BFO:0000041	immaterial entity	.
-COB:0000032	geographical location	rdfs:subClassOf	owl:Thing	owl:Thing	
-COB:0000033	realizable	owl:equivalentClass	BFO:0000017	realizable entity	.
-COB:0000034	process	owl:equivalentClass	BFO:0000015	process	.
-COB:0000035	planned process	owl:equivalentClass	OBI:0000011	planned process	.
-COB:0000037	biological process	owl:equivalentClass	GO:0008150	biological process	.
-COB:0000038	gene product or complex activity	owl:equivalentClass	GO:0003674	molecular function	.
-COB:0000042	monoatomic ion	owl:equivalentClass	CHEBI:24867	monoatomic ion	.
-COB:0000043	uncharged atom	owl:equivalentClass	CHEBI:33250	atom	"we think our uncharged atom is actually chebi:atom, to be discussed with CHEBI people"
-COB:0000049	nucleic acid polymer	owl:equivalentClass	CHEBI:10545	nucleic acid	follow up with CHEBI on nomenclature
-COB:0000055	collection of organisms	owl:equivalentClass	PCO:0000000	collection of organisms	.
-COB:0000056	immaterial anatomical entity	sssom:superClassOf	UBERON:0000466	immaterial anatomical entity	.
-COB:0000056	immaterial anatomical entity	sssom:superClassOf	PO:0025117	plant anatomical space	.
-COB:0000057	site	owl:equivalentClass	BFO:0000029	site	.
-COB:0000058	conclusion based on data	owl:equivalentClass	OBI:0001909	conclusion based on data	.
-COB:0000061	information	owl:equivalentClass	IAO:0000030	information content entity	.
-COB:0000062	disease diagnosis	owl:equivalentClass	OGMS:0000073	diagnosis	.
-COB:0000063	phenotypic finding	owl:equivalentClass	OGMS:0000014	clinical finding	.
-COB:0000064	disease course	owl:equivalentClass	OGMS:0000063	disease course	.
-COB:0000065	environmental process	owl:equivalentClass	ENVO:02500000	environmental system process	.
-COB:0000066	physico-chemical process	owl:equivalentClass	MOP:0000543	molecular process	"we are not sure if these are equivalent, or if we even want to retain this. Follow up with Colin"
-COB:0000067	ecosystem	owl:equivalentClass	ENVO:01001110	ecosystem	.
-COB:0000068	geophysical entity	owl:equivalentClass	ENVO:01000813	astronomical body part	.
-COB:0000068	geophysical entity	sssom:superClassOf	GEO:000000370	geographical entity	See https://github.com/OBOFoundry/COB/issues/91
-COB:0000069	directive information entity	owl:equivalentClass	IAO:0000033	directive information entity	.
-COB:0000073	gene product	rdfs:subClassOf	owl:Thing	owl:Thing	
-COB:0000075	protein-containing macromolecular complex	owl:equivalentClass	GO:0032991	protein-containing complex	.
-COB:0000076	objective specification	owl:equivalentClass	IAO:0000005	objective specification	.
-COB:0000079	plan specification	owl:equivalentClass	IAO:0000104	plan specification	.
-COB:0000080	complex of molecular entities	rdfs:subClassOf	owl:Thing	owl:Thing	
-COB:0000088	drug product	owl:equivalentClass	DRON:0000005	drug product	we currently use a different text definition but we believe they do not contradict
-COB:0000101	document	owl:equivalentClass	IAO:0000310	document	.
-COB:0000102	data item	owl:equivalentClass	IAO:0000027	data item	.
-COB:0000103	cell nucleus	owl:equivalentClass	GO:0005634	nucleus	.
-COB:0000107	assay	owl:equivalentClass	OBI:0000070	assay	.
-COB:0000108	data transformation	owl:equivalentClass	OBI:0200000	data transformation	.
-COB:0000109	investigation	owl:equivalentClass	OBI:0000066	investigation	.
-COB:0000110	material processing	owl:equivalentClass	OBI:0000094	material processing	.
-COB:0000111	disposition	owl:equivalentClass	BFO:0000016	disposition	.
-COB:0000112	function	owl:equivalentClass	BFO:0000034	function	.
-COB:0000113	plan	owl:equivalentClass	OBI:0000260	plan	.
-COB:0000114	role	owl:equivalentClass	BFO:0000023	role	.
-COB:0000116	cellular membrane	rdfs:subClassOf	owl:Thing	owl:Thing	
-COB:0000118	cellular organism	owl:equivalentClass	NCBITaxon:131567	cellular organisms	.
-COB:0000118	cellular organism	owl:equivalentClass	CARO:0010004	cellular organism	.
-COB:0000118	cellular organism	sssom:superClassOf	UBERON:0000468	multicellular organism	.
-COB:0000118	cellular organism	sssom:superClassOf	PO:0000003	whole plant	.
-COB:0000036	contains process	owl:equivalentProperty	BFO:0000067	contains process	.
-COB:0000041	has quality	owl:equivalentProperty	RO:0000086	has quality	.
-COB:0000047	has part	owl:equivalentProperty	BFO:0000051	has part	.
-COB:0000070	has participant	owl:equivalentProperty	RO:0000057	has participant	.
-COB:0000071	occurs in	owl:equivalentProperty	BFO:0000066	occurs in	.
-COB:0000072	part of	owl:equivalentProperty	BFO:0000050	part of	.
-COB:0000074	enabled by	owl:equivalentProperty	RO:0002333	enabled by	.
-COB:0000502	characteristic	owl:equivalentClass	PATO:0000001	quality	https://github.com/OBOFoundry/COB/issues/124
-COB:0000502	characteristic	owl:equivalentClass	BFO:0000020	specifically dependent continuant	may be revised to be narrower
-COB:0000502	characteristic	sssom:superClassOf	SO:0000400	sequence_attribute	.
-COB:0000511	has quantity	rdfs:subPropertyOf	owl:topObjectProperty	topObjectProperty	.
-COB:0000512	has characteristic	owl:equivalentProperty	RO:0000053	bearer of	.
-COB:0000002	is concretized as	owl:equivalentProperty	RO:0000058	is concretized as	.
-COB:0000086	executes	owl:equivalentProperty	STATO:0000102	executes	.
-COB:0000016	executed by	rdfs:subPropertyOf	owl:topObjectProperty	topObjectProperty	"There is no inverse for 'executes' STATO, only in COB."
-COB:0000023	characteristic of	owl:equivalentProperty	RO:0000052	inheres in	"In RO, 'inheres in' is the inverse of 'bearer of'."
-COB:0000024	participates in	owl:equivalentProperty	RO:0000056	participates in	.
-COB:0000027	is specified input of	owl:equivalentProperty	OBI:0000295	is_specified_input_of	.
-COB:0000028	is specified output of	owl:equivalentProperty	OBI:0000312	is_specified_output_of	.
-COB:0000039	has specified input	owl:equivalentProperty	OBI:0000293	has_specified_input	.
-COB:0000040	has specified output	owl:equivalentProperty	OBI:0000299	has_specified_output	.
-COB:0000029	realized in	owl:equivalentProperty	BFO:0000054	realized in	.
-COB:0000030	quality of	owl:equivalentProperty	RO:0000080	quality of	.
-COB:0000513	is about	owl:equivalentProperty	IAO:0000136	is about	There is no inverse for 'is about' in IAO.
-COB:0000123	agent role	owl:equivalentClass	SEPIO:0000048	agent role	
-COB:0000123	agent role	sssom:superClassOf	OBI:0000202	investigation agent role	
+subject_id	subject_label	predicate_id	object_id	object_label	match_type	notes
+COB:0000001	quality	owl:equivalentClass	BFO:0000019	quality	Lexical|HumanCurated	.
+COB:0000003	mass	owl:equivalentClass	PATO:0000125	mass	Lexical|HumanCurated	.
+COB:0000004	charge	owl:equivalentClass	PATO:0002193	electric	Lexical	.
+COB:0000005	elementary charge	rdfs:subClassOf	owl:Thing	owl:Thing	Lexical	Making ticket in PATO tracker
+COB:0000006	material entity	owl:equivalentClass	BFO:0000040	material entity	Lexical|HumanCurated	.
+COB:0000006	material entity	sssom:superClassOf	SO:0000110	sequence_feature	Lexical|HumanCurated	.
+COB:0000006	material entity	sssom:superClassOf	SO:0001060	sequence_variant	Lexical	.
+COB:0000006	material entity	sssom:superClassOf	SO:0001260	sequence_collection	Lexical	.
+COB:0000007	subatomic particle	owl:equivalentClass	CHEBI:36342	subatomic particle	Lexical	.
+COB:0000008	proton	owl:equivalentClass	CHEBI:24636	proton	Lexical|Complex	.
+COB:0000009	neutron	owl:equivalentClass	CHEBI:30222	neutron	Lexical	.
+COB:0000010	electron	owl:equivalentClass	CHEBI:10545	electron	Lexical|Complex	.
+COB:0000011	atom	skos:closeMatch	CHEBI:33250	atom	Lexical|Complex	.
+COB:0000012	atomic nucleus	owl:equivalentClass	CHEBI:33252	atomic nucleus	Lexical	.
+COB:0000013	molecular entity	skos:closeMatch	CHEBI:23367	molecular entity	Lexical|Complex	No exact match in CHEBI
+COB:0000013	molecular entity	skos:closeMatch	CHEBI:25367	molecule	Lexical	This is electrically neutral in CHEBI but in COB it is generic. We should make it union of molecule and polyatomic ion
+COB:0000015	protein	owl:equivalentClass	CHEBI:16541	protein polypeptide chain	Lexical	.
+COB:0000015	protein	owl:equivalentClass	PR:000000001	protein	Lexical|Complex	.
+COB:0000017	cell	owl:equivalentClass	CL:0000000	cell	Lexical	.
+COB:0000017	cell	sssom:superClassOf	PO:0009002	plant cell	Lexical|Complex	.
+COB:0000018	native cell	owl:equivalentClass	CL:0000003	native cell	Lexical	.
+COB:0000018	native cell	sssom:superClassOf	XAO:0003012	xenopus cell	Lexical	.
+COB:0000018	native cell	sssom:superClassOf	ZFA:0009000	zebrafish cell	Lexical	.
+COB:0000018	native cell	sssom:superClassOf	PO:0025606	native plant cell	Lexical	.
+COB:0000019	cell in vitro	owl:equivalentClass	CL:0001034	cell in vitro	Lexical	.
+COB:0000020	subcellular structure	rdfs:subClassOf	owl:Thing	owl:Thing	Lexical|Logical	Chris will follow up
+COB:0000021	gross anatomical part	owl:equivalentClass	CARO:0001008	gross anatomical part	Lexical	.
+COB:0000021	gross anatomical part	sssom:superClassOf	UBERON:0010000	multicellular anatomical structure	Lexical|Logical	.
+COB:0000022	organism	owl:equivalentClass	NCBITaxon:1	root	Lexical	.
+COB:0000022	organism	owl:equivalentClass	OBI:0100026	organism	Lexical	.
+COB:0000022	organism	owl:equivalentClass	CARO:0001010	organism or virus or viroid	Lexical|Logical	.
+COB:0000025	organization	owl:equivalentClass	OBI:0000245	organization	Lexical	.
+COB:0000026	processed material entity	owl:equivalentClass	OBI:0000047	processed material	Lexical|Logical	.
+COB:0000031	immaterial entity	owl:equivalentClass	BFO:0000041	immaterial entity	Lexical	.
+COB:0000032	geographical location	rdfs:subClassOf	owl:Thing	owl:Thing	Lexical
+COB:0000033	realizable	owl:equivalentClass	BFO:0000017	realizable entity	Lexical	.
+COB:0000034	process	owl:equivalentClass	BFO:0000015	process	Lexical|Logical	.
+COB:0000035	planned process	owl:equivalentClass	OBI:0000011	planned process	Lexical	.
+COB:0000037	biological process	owl:equivalentClass	GO:0008150	biological process	Lexical|Unspecified	.
+COB:0000038	gene product or complex activity	owl:equivalentClass	GO:0003674	molecular function	Lexical	.
+COB:0000042	monoatomic ion	owl:equivalentClass	CHEBI:24867	monoatomic ion	Lexical	.
+COB:0000043	uncharged atom	owl:equivalentClass	CHEBI:33250	atom	Lexical	"we think our uncharged atom is actually chebi:atom, to be discussed with CHEBI people"
+COB:0000049	nucleic acid polymer	owl:equivalentClass	CHEBI:10545	nucleic acid	Lexical|Unspecified	follow up with CHEBI on nomenclature
+COB:0000055	collection of organisms	owl:equivalentClass	PCO:0000000	collection of organisms	Lexical	.
+COB:0000056	immaterial anatomical entity	sssom:superClassOf	UBERON:0000466	immaterial anatomical entity	Lexical	.
+COB:0000056	immaterial anatomical entity	sssom:superClassOf	PO:0025117	plant anatomical space	Lexical|Unspecified	.
+COB:0000057	site	owl:equivalentClass	BFO:0000029	site	Lexical	.
+COB:0000058	conclusion based on data	owl:equivalentClass	OBI:0001909	conclusion based on data	Lexical|Unspecified	.
+COB:0000061	information	owl:equivalentClass	IAO:0000030	information content entity	Lexical|Unspecified	.
+COB:0000062	disease diagnosis	owl:equivalentClass	OGMS:0000073	diagnosis	Lexical	.
+COB:0000063	phenotypic finding	owl:equivalentClass	OGMS:0000014	clinical finding	Lexical|Unspecified	.
+COB:0000064	disease course	owl:equivalentClass	OGMS:0000063	disease course	Lexical|Unspecified	.
+COB:0000065	environmental process	owl:equivalentClass	ENVO:02500000	environmental system process	Lexical|SemanticSimilarity	.
+COB:0000066	physico-chemical process	owl:equivalentClass	MOP:0000543	molecular process	Lexical	"we are not sure if these are equivalent, or if we even want to retain this. Follow up with Colin"
+COB:0000067	ecosystem	owl:equivalentClass	ENVO:01001110	ecosystem	Lexical|SemanticSimilarity	.
+COB:0000068	geophysical entity	owl:equivalentClass	ENVO:01000813	astronomical body part	Lexical|SemanticSimilarity	.
+COB:0000068	geophysical entity	sssom:superClassOf	GEO:000000370	geographical entity	Lexical	See https://github.com/OBOFoundry/COB/issues/91
+COB:0000069	directive information entity	owl:equivalentClass	IAO:0000033	directive information entity	Lexical|SemanticSimilarity	.
+COB:0000073	gene product	rdfs:subClassOf	owl:Thing	owl:Thing	Lexical|SemanticSimilarity
+COB:0000075	protein-containing macromolecular complex	owl:equivalentClass	GO:0032991	protein-containing complex	Lexical	.
+COB:0000076	objective specification	owl:equivalentClass	IAO:0000005	objective specification	Lexical|SemanticSimilarity	.
+COB:0000079	plan specification	owl:equivalentClass	IAO:0000104	plan specification	Lexical	.
+COB:0000080	complex of molecular entities	rdfs:subClassOf	owl:Thing	owl:Thing	Lexical|SemanticSimilarity
+COB:0000088	drug product	owl:equivalentClass	DRON:0000005	drug product	Lexical|SemanticSimilarity	we currently use a different text definition but we believe they do not contradict
+COB:0000101	document	owl:equivalentClass	IAO:0000310	document	Lexical	.
+COB:0000102	data item	owl:equivalentClass	IAO:0000027	data item	Lexical|SemanticSimilarity	.
+COB:0000103	cell nucleus	owl:equivalentClass	GO:0005634	nucleus	Lexical	.
+COB:0000107	assay	owl:equivalentClass	OBI:0000070	assay	Lexical	.
+COB:0000108	data transformation	owl:equivalentClass	OBI:0200000	data transformation	Lexical	.
+COB:0000109	investigation	owl:equivalentClass	OBI:0000066	investigation	Lexical	.
+COB:0000110	material processing	owl:equivalentClass	OBI:0000094	material processing	Lexical|SemanticSimilarity	.
+COB:0000111	disposition	owl:equivalentClass	BFO:0000016	disposition	Lexical	.
+COB:0000112	function	owl:equivalentClass	BFO:0000034	function	Lexical|SemanticSimilarity	.
+COB:0000113	plan	owl:equivalentClass	OBI:0000260	plan	Lexical	.
+COB:0000114	role	owl:equivalentClass	BFO:0000023	role	Lexical|SemanticSimilarity	.
+COB:0000116	cellular membrane	rdfs:subClassOf	owl:Thing	owl:Thing	Lexical
+COB:0000118	cellular organism	owl:equivalentClass	NCBITaxon:131567	cellular organisms	Lexical	.
+COB:0000118	cellular organism	owl:equivalentClass	CARO:0010004	cellular organism	Lexical|SemanticSimilarity	.
+COB:0000118	cellular organism	sssom:superClassOf	UBERON:0000468	multicellular organism	Lexical	.
+COB:0000118	cellular organism	sssom:superClassOf	PO:0000003	whole plant	Lexical	.
+COB:0000036	contains process	owl:equivalentProperty	BFO:0000067	contains process	Lexical|SemanticSimilarity	.
+COB:0000041	has quality	owl:equivalentProperty	RO:0000086	has quality	Lexical	.
+COB:0000047	has part	owl:equivalentProperty	BFO:0000051	has part	Lexical|SemanticSimilarity	.
+COB:0000070	has participant	owl:equivalentProperty	RO:0000057	has participant	Lexical|SemanticSimilarity	.
+COB:0000071	occurs in	owl:equivalentProperty	BFO:0000066	occurs in	Lexical|SemanticSimilarity	.
+COB:0000072	part of	owl:equivalentProperty	BFO:0000050	part of	Lexical|Logical	.
+COB:0000074	enabled by	owl:equivalentProperty	RO:0002333	enabled by	Lexical|Logical	.
+COB:0000502	characteristic	owl:equivalentClass	PATO:0000001	quality	Lexical|Logical	https://github.com/OBOFoundry/COB/issues/124
+COB:0000502	characteristic	owl:equivalentClass	BFO:0000020	specifically dependent continuant	Lexical|Logical	may be revised to be narrower
+COB:0000502	characteristic	sssom:superClassOf	SO:0000400	sequence_attribute	Lexical	.
+COB:0000511	has quantity	rdfs:subPropertyOf	owl:topObjectProperty	topObjectProperty	Lexical|Logical	.
+COB:0000512	has characteristic	owl:equivalentProperty	RO:0000053	bearer of	Lexical	.
+COB:0000002	is concretized as	owl:equivalentProperty	RO:0000058	is concretized as	Lexical	.
+COB:0000086	executes	owl:equivalentProperty	STATO:0000102	executes	Lexical|Logical	.
+COB:0000016	executed by	rdfs:subPropertyOf	owl:topObjectProperty	topObjectProperty	Lexical	"There is no inverse for 'executes' STATO, only in COB."
+COB:0000023	characteristic of	owl:equivalentProperty	RO:0000052	inheres in	Lexical|Logical	"In RO, 'inheres in' is the inverse of 'bearer of'."
+COB:0000024	participates in	owl:equivalentProperty	RO:0000056	participates in	Lexical	.
+COB:0000027	is specified input of	owl:equivalentProperty	OBI:0000295	is_specified_input_of	Lexical|Logical	.
+COB:0000028	is specified output of	owl:equivalentProperty	OBI:0000312	is_specified_output_of	Lexical	.
+COB:0000039	has specified input	owl:equivalentProperty	OBI:0000293	has_specified_input	Lexical|Logical	.
+COB:0000040	has specified output	owl:equivalentProperty	OBI:0000299	has_specified_output	Lexical	.
+COB:0000029	realized in	owl:equivalentProperty	BFO:0000054	realized in	Lexical	.
+COB:0000030	quality of	owl:equivalentProperty	RO:0000080	quality of	Lexical|Logical	.
+COB:0000513	is about	owl:equivalentProperty	IAO:0000136	is about	Lexical|Logical	There is no inverse for 'is about' in IAO.
+COB:0000123	agent role	owl:equivalentClass	SEPIO:0000048	agent role	Lexical
+COB:0000123	agent role	sssom:superClassOf	OBI:0000202	investigation agent role	Lexical

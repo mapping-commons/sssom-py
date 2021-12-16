@@ -1,14 +1,13 @@
+"""Tests for loading and processing data."""
+
 import os
 from typing import Any, List, Mapping
 
 import yaml
 
 from sssom.util import PREFIX_MAP_KEY
+from tests.constants import cwd, data_dir, test_out_dir
 
-cwd = os.path.abspath(os.path.dirname(__file__))
-test_data_dir = os.path.join(cwd, "data")
-test_out_dir = os.path.join(cwd, "tmp")
-os.makedirs(test_out_dir, exist_ok=True)
 test_validate_dir = os.path.join(cwd, "validate_data")
 schema_dir = os.path.join(cwd, os.pardir, "schema")
 DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
@@ -19,10 +18,12 @@ with open(TEST_CONFIG_PATH) as file:
 
 def get_test_file(filename: str) -> str:
     """Get a test file path inside the test data directory."""
-    return os.path.join(test_data_dir, filename)
+    return os.path.join(data_dir, filename)
 
 
 class SSSOMTestCase:
+    """A dynamic test case for data tests."""
+
     def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]):
         """Initialize the SSSOM test case.
 
@@ -45,17 +46,20 @@ class SSSOMTestCase:
         )
         self.prefix_map = config.get(PREFIX_MAP_KEY)
 
-    def _query_tuple(self, config, tuple_id, queries_dict):
+    @staticmethod
+    def _query_tuple(config, tuple_id, queries_dict):
         queries = []
         for t in config[tuple_id]:
             query = queries_dict[t]
             queries.append((query, config[tuple_id][t]))
         return queries
 
-    def get_out_file(self, extension):
+    def get_out_file(self, extension: str) -> str:
+        """Get the output file path."""
         return os.path.join(test_out_dir, f"{self.filename}.{extension}")
 
-    def get_validate_file(self, extension):
+    def get_validate_file(self, extension: str) -> str:
+        """Get the validation file path."""
         return os.path.join(test_validate_dir, f"{self.filename}.{extension}")
 
     def __str__(self) -> str:  # noqa:D105
