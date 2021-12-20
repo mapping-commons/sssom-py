@@ -166,7 +166,6 @@ class TestParse(unittest.TestCase):
         df = msdf.df
         msdf.df = df[df["match_type"].str.contains("\\|")].reset_index()
         old_match_type = msdf.df["match_type"]
-        old_match_type = old_match_type.str.split("\\|").astype(str)
         msdoc = to_mapping_set_document(msdf)
         new_msdf = to_mapping_set_dataframe(msdoc)
         new_match_type = new_msdf.df["match_type"]
