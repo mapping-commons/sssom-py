@@ -64,7 +64,10 @@ output_format_option = click.option(
     help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}',
 )
 output_directory_option = click.option(
-    "-d", "--output-directory", type=click.Path(), help="Output directory path."
+    "-d",
+    "--output-directory",
+    type=click.Path(),
+    help="Output directory path.",
 )
 metadata_option = click.option(
     "-m",
@@ -452,7 +455,9 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
 @click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
 @click.option("-O", "--output-format", default="turtle", help="Ontology output format.")
 @click.option(
-    "--precedence", multiple=True, help="List of prefixes in order of precedence."
+    "--precedence",
+    multiple=True,
+    help="List of prefixes in order of precedence.",
 )
 @output_option
 def rewire(
