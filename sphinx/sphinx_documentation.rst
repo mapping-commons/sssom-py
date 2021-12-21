@@ -3,7 +3,7 @@ Documentation Update and Redeployment
 
 Using your terminal, ``cd`` to the 'sphinx' directory within the project.
 ::
-    cd sphinx
+cd sphinx
 
 New page
 --------
