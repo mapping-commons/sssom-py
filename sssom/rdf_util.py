@@ -1,11 +1,18 @@
+"""Rewriting functionality for RDFlib graphs."""
+
 import logging
 from typing import Any, Dict, List, Optional
 
+from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 
 from .parsers import to_mapping_set_document
-from .sssom_datamodel import EntityId, Mapping
+from .sssom_datamodel import EntityReference, Mapping
 from .util import MappingSetDataFrame
+
+__all__ = [
+    "rewire_graph",
+]
 
 
 def rewire_graph(
@@ -17,7 +24,7 @@ def rewire_graph(
     """Rewire an RDF Graph replacing using equivalence mappings."""
     pm = mset.prefix_map
     mdoc = to_mapping_set_document(mset)
-    rewire_map: Dict[EntityId, EntityId] = {}
+    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
 
     def expand_curie(curie: str) -> URIRef:
         pfx, local = curie.split(":")
@@ -33,7 +40,9 @@ def rewire_graph(
                 src, tgt = m.subject_id, m.object_id
             else:
                 src, tgt = m.object_id, m.subject_id
-            if not isinstance(src, EntityId) or not isinstance(tgt, EntityId):
+            if not isinstance(src, EntityReference) or not isinstance(
+                tgt, EntityReference
+            ):
                 raise TypeError
             if src in rewire_map:
                 curr_tgt = rewire_map[src]

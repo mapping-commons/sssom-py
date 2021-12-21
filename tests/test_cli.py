@@ -1,7 +1,9 @@
-import unittest
-from typing import Dict
+"""Tests for the command line interface."""
 
-from click.testing import CliRunner
+import unittest
+from typing import Mapping
+
+from click.testing import CliRunner, Result
 
 from sssom.cli import (
     cliquesummary,
@@ -25,13 +27,14 @@ from tests.test_data import (
 
 
 class SSSOMCLITestSuite(unittest.TestCase):
+    """A test case for the dynamic CLI tests."""
+
     def test_cli_single_input(self):
+        """Run all test cases on a single input file."""
         runner = CliRunner()
-        test_cases = (
-            get_all_test_cases()
-        )  # Initially returned 2 tsv and 1 rdf. The RDF failed test
+        # Initially returned 2 tsv and 1 rdf. The RDF failed test
+        test_cases = get_all_test_cases()
         for test in test_cases:
-            test: SSSOMTestCase
             self.run_convert(runner, test)
             if test.inputformat == "tsv":
                 # These test only run on TSV inputs
@@ -51,6 +54,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.assertTrue(len(test_cases) > 2)
 
     def test_cli_multiple_input(self):
+        """Run test cases that require multiple files."""
         runner = CliRunner()
         test_cases = get_multiple_input_test_cases()
         self.run_diff(runner, test_cases)
@@ -58,30 +62,37 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
         self.assertTrue(len(test_cases) >= 2)
 
-    def run_successful(self, result, test_case: SSSOMTestCase):
+    def run_successful(self, result: Result, test_case: SSSOMTestCase) -> None:
+        """Check the test result is successful."""
         # self.assertTrue(result.exit_code == 0, f"Run failed with message {result.exception}")
         self.assertEqual(
-            result.exit_code, 0, f"{test_case} did not as expected: {result.exception}"
+            result.exit_code,
+            0,
+            f"{test_case} did not perform as expected: {result.exception}",
         )
 
-    def run_convert(self, runner, test_case: SSSOMTestCase):
+    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the convert test."""
+        fmt = "owl"
         params = [
             test_case.filepath,
             "--output",
-            test_case.get_out_file("tsv"),
+            test_case.get_out_file(fmt),
             "--output-format",
-            "owl",
+            fmt,
         ]
         result = runner.invoke(convert, params)
         self.run_successful(result, test_case)
         return result
 
-    def run_validate(self, runner, test_case: SSSOMTestCase):
+    def run_validate(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the validate test."""
         result = runner.invoke(validate, [test_case.filepath])
         self.run_successful(result, test_case)
         return result
 
-    def run_parse(self, runner, test_case: SSSOMTestCase):
+    def run_parse(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the parse test."""
         params = [
             test_case.filepath,
             "--output",
@@ -99,7 +110,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_split(self, runner, test_case: SSSOMTestCase):
+    def run_split(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the split test."""
         result = runner.invoke(
             split, [test_case.filepath, "--output-directory", test_out_dir]
         )
@@ -108,13 +120,15 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     # Added by H2
 
-    def run_ptable(self, runner, test_case: SSSOMTestCase):
+    def run_ptable(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the ptable test."""
         params = [test_case.filepath]
         result = runner.invoke(ptable, params)
         self.run_successful(result, test_case)
         return result
 
-    def run_dedupe(self, runner, test_case: SSSOMTestCase):
+    def run_dedupe(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the deduplication test."""
         params = [
             test_case.filepath,
             "--output",
@@ -131,7 +145,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
     """def run_sparql(self, runner, test_case: SSSOMTestCase):
         prams = []"""
 
-    def run_diff(self, runner, test_cases: Dict[str, SSSOMTestCase]):
+    def run_diff(
+        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
+    ) -> Result:
+        """Run the diff test."""
         params = []
         out_file = None
         for t in test_cases.values():
@@ -145,21 +162,23 @@ class SSSOMCLITestSuite(unittest.TestCase):
         else:
             self.fail("No test to run.")
 
-    def run_partition(self, runner, test_cases: dict):
+    def run_partition(
+        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
+    ) -> Result:
+        """Run the partition test."""
         params = []
         primary_test_case = None
-        for tid in test_cases:
-            t = test_cases[tid]
+        for t in test_cases.values():
             if not primary_test_case:
                 primary_test_case = t
-            t: SSSOMTestCase
             params.append(t.filepath)
         params.extend(["--output-directory", test_out_dir])
         result = runner.invoke(partition, params)
         self.run_successful(result, primary_test_case)
         return result
 
-    def run_cliquesummary(self, runner, test_case: SSSOMTestCase):
+    def run_cliquesummary(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the clique summary test."""
         params = [
             test_case.filepath,
             "--output",
@@ -169,7 +188,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_crosstab(self, runner, test_case: SSSOMTestCase):
+    def run_crosstab(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the cross-tabulation test."""
         params = [
             test_case.filepath,
             "--output",
@@ -179,7 +199,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_correlations(self, runner, test_case: SSSOMTestCase):
+    def run_correlations(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Run the correlations test."""
         params = [
             test_case.filepath,
             "--output",

@@ -1,0 +1,26 @@
+# Include everything in these directories
+graft sssom
+graft tests
+
+# Don't include anything in these directories
+prune docs
+prune schema
+
+# TODO these should use the tmpfile harness
+prune tests/tmp
+prune tests/data
+
+recursive-exclude sphinx *.py
+recursive-exclude sphinx *.rst
+recursive-exclude sphinx Makefile
+recursive-exclude sphinx make.bat
+recursive-exclude tests *
+
+# Files to always exclude
+global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
+
+# Specific files to exclude
+exclude odk.bat environment.sh cli.md Makefile tox.ini
+
+# Specific files to include
+include LICENSE sssom/sssom.yaml

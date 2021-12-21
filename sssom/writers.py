@@ -1,3 +1,5 @@
+"""Serialization functions for SSSOM."""
+
 import json
 import logging
 from pathlib import Path
@@ -5,13 +7,13 @@ from typing import Any, Callable, Dict, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
-from jsonasobj import as_json_obj
 from jsonasobj2 import JsonObj
-from linkml_runtime.dumpers import JSONDumper
-from linkml_runtime.utils.yamlutils import as_json_object as yaml_to_json
+from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
+from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
+from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
 from .sssom_datamodel import slots
 from .util import (
@@ -80,7 +82,7 @@ def write_rdf(
 
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode("utf-8"), file=file)
+    print(t.decode(), file=file)
 
 
 def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
@@ -110,7 +112,7 @@ def write_owl(
 
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode("utf-8"), file=file)
+    print(t.decode(), file=file)
 
 
 # Converters
@@ -137,6 +139,15 @@ def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to OWL in an RDF graph."""
     graph = to_rdf_graph(msdf=msdf)
+
+    for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
+        graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
+
+    for axiom in graph.subjects(RDF.type, OWL.Axiom):
+        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
+            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+                    graph.add((s, p, o))
 
     # if MAPPING_SET_ID in msdf.metadata:
     #    mapping_set_id = msdf.metadata[MAPPING_SET_ID]
@@ -230,51 +241,24 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
-    cntxt = prepare_context_str(doc.prefix_map)
+    # cntxt = prepare_context(doc.prefix_map)
 
-    # json_obj = to_json(msdf)
-    # g = Graph()
-    # g.load(json_obj, format="json-ld")
-    # print(g.serialize(format="xml"))
+    # rdflib_dumper.dump(
+    #     element=doc.mapping_set,
+    #     schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
+    #     prefix_map=msdf.prefix_map,
+    #     to_file="sssom.ttl",
+    # )
+    # graph = Graph()
+    # graph = graph.parse("sssom.ttl", format="ttl")
 
-    graph = _temporary_as_rdf_graph(
-        element=doc.mapping_set, contexts=cntxt, namespaces=doc.prefix_map
+    # os.remove("sssom.ttl")  # remove the intermediate file.
+    graph = rdflib_dumper.as_rdf_graph(
+        element=doc.mapping_set,
+        schemaview=SchemaView(SCHEMA_YAML),
+        prefix_map=msdf.prefix_map,
     )
-    # print(graph.serialize(format="turtle").decode())
     return graph
-
-
-def _temporary_as_rdf_graph(element, contexts, namespaces=None) -> Graph:
-    # TODO needs to be replaced by RDFDumper().as_rdf_graph(element=doc.mapping_set, contexts=cntxt)
-    # graph = RDFDumper().as_rdf_graph(element=element, contexts=contexts)
-
-    graph = Graph()
-    jsonld = json.dumps(as_json_obj(yaml_to_json(element, contexts)))
-    graph.parse(data=jsonld, format="json-ld")
-
-    # Adding some stuff that the default RDF serialisation does not do:
-    # Direct triples
-
-    for k, v in namespaces.items():
-        graph.bind(k, v)
-
-    # TODO replace with graph.objects()
-    for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
-        graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
-
-    for axiom in graph.subjects(RDF.type, OWL.Axiom):
-        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-                    graph.add((s, p, o))
-    return graph
-
-
-def _tmp_as_rdf_graph(graph, jsonobj):
-    return graph
-
-    # for m in doc.mapping_set.mappings:
-    #    graph.add( (URIRef(m.subject_id), URIRef(m.predicate_id), URIRef(m.object_id)))
 
 
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
