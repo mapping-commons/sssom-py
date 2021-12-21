@@ -82,7 +82,7 @@ def write_rdf(
 
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode("utf-8"), file=file)
+    print(t.decode(), file=file)
 
 
 def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
@@ -112,7 +112,7 @@ def write_owl(
 
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode("utf-8"), file=file)
+    print(t.decode(), file=file)
 
 
 # Converters
