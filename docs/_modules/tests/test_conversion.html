@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tests.test_conversion &mdash; sssom-py 0.0.1 documentation</title>
+  <title>tests.test_conversion &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,7 +69,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tests.test_conversion</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">filecmp</span>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for conversion utilities.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">filecmp</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
@@ -94,11 +96,14 @@
 
 
 <div class="viewcode-block" id="SSSOMReadWriteTestSuite"><a class="viewcode-back" href="../../tests.html#tests.test_conversion.SSSOMReadWriteTestSuite">[docs]</a><span class="k">class</span> <span class="nc">SSSOMReadWriteTestSuite</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
-<div class="viewcode-block" id="SSSOMReadWriteTestSuite.test"><a class="viewcode-back" href="../../tests.html#tests.test_conversion.SSSOMReadWriteTestSuite.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A test case for conversion utilities.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SSSOMReadWriteTestSuite.test_conversion"><a class="viewcode-back" href="../../tests.html#tests.test_conversion.SSSOMReadWriteTestSuite.test_conversion">[docs]</a>    <span class="k">def</span> <span class="nf">test_conversion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run all conversion tests.&quot;&quot;&quot;</span>
         <span class="n">test_cases</span> <span class="o">=</span> <span class="n">get_all_test_cases</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">test_cases</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Less than 2 testcases in the test suite!&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">subTest</span><span class="p">():</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">subTest</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
                 <span class="n">read_func</span> <span class="o">=</span> <span class="n">get_parsing_function</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">inputformat</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
                 <span class="n">msdf</span> <span class="o">=</span> <span class="n">read_func</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">test</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
                 <span class="n">mdoc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
@@ -115,7 +120,8 @@
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Testing CSV export&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_test_to_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Testing JSON export&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_test_to_json_dict</span><span class="p">(</span><span class="n">mdoc</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_test_to_json_dict</span><span class="p">(</span><span class="n">mdoc</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_test_to_json</span><span class="p">(</span><span class="n">mdoc</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_test_to_owl_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdoc</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
         <span class="n">msdf</span> <span class="o">=</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">)</span>
@@ -136,7 +142,8 @@
         <span class="n">msdf</span> <span class="o">=</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">)</span>
         <span class="n">jsonob</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jsonob</span><span class="p">),</span> <span class="n">test</span><span class="o">.</span><span class="n">ct_json_elements</span><span class="p">)</span>
-        <span class="n">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">get_out_file</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">),</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">get_out_file</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_test_to_rdf_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdoc</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
         <span class="n">msdf</span> <span class="o">=</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">)</span>
@@ -247,10 +254,6 @@
             <span class="n">test</span><span class="o">.</span><span class="n">ct_json_elements</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;The exported JSON file has less elements than the orginal one for </span><span class="si">{</span><span class="n">test</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">)</span></div>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
 
            </div>

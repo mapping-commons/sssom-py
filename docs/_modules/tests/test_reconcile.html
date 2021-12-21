@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tests.test_reconcile &mdash; sssom-py 0.0.1 documentation</title>
+  <title>tests.test_reconcile &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,46 +69,44 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tests.test_reconcile</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for reconcilation utilities.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">unittest</span>
 
 <span class="kn">from</span> <span class="nn">sssom</span> <span class="kn">import</span> <span class="n">filter_redundant_rows</span>
 <span class="kn">from</span> <span class="nn">sssom.parsers</span> <span class="kn">import</span> <span class="n">read_sssom_table</span>
 <span class="kn">from</span> <span class="nn">sssom.util</span> <span class="kn">import</span> <span class="n">deal_with_negation</span><span class="p">,</span> <span class="n">merge_msdf</span>
-
-<span class="c1"># from pandasql import sqldf</span>
-
-<span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">data_dir</span>
 
 
 <div class="viewcode-block" id="TestReconcile"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile">[docs]</a><span class="k">class</span> <span class="nc">TestReconcile</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A test case for reconcilation utilities.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="TestReconcile.setUp"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Test up the test case with the third basic example.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msdf</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic3.tsv&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TestReconcile.test_df"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile.test_df">[docs]</a>    <span class="k">def</span> <span class="nf">test_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">20</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="TestReconcile.test_filter"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile.test_filter">[docs]</a>    <span class="k">def</span> <span class="nf">test_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test filtering returns the right number of rows.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">20</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestReconcile.test_deal_with_negation"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile.test_deal_with_negation">[docs]</a>    <span class="k">def</span> <span class="nf">test_deal_with_negation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test handling negating returns the right number of rows.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">deal_with_negation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestReconcile.test_merge"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile.test_merge">[docs]</a>    <span class="k">def</span> <span class="nf">test_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test merging two tables.&quot;&quot;&quot;</span>
         <span class="n">msdf1</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic.tsv&quot;</span><span class="p">)</span>
         <span class="n">msdf2</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic2.tsv&quot;</span><span class="p">)</span>
 
         <span class="n">merged_msdf</span> <span class="o">=</span> <span class="n">merge_msdf</span><span class="p">(</span><span class="n">msdf1</span><span class="o">=</span><span class="n">msdf1</span><span class="p">,</span> <span class="n">msdf2</span><span class="o">=</span><span class="n">msdf2</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestReconcile.test_merge_no_reconcile"><a class="viewcode-back" href="../../tests.html#tests.test_reconcile.TestReconcile.test_merge_no_reconcile">[docs]</a>    <span class="k">def</span> <span class="nf">test_merge_no_reconcile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test merging two tables without reconciliation.&quot;&quot;&quot;</span>
         <span class="n">msdf1</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic4.tsv&quot;</span><span class="p">)</span>
         <span class="n">msdf2</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic5.tsv&quot;</span><span class="p">)</span>
 

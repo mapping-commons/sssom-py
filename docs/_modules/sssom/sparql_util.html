@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sssom.sparql_util &mdash; sssom-py 0.0.1 documentation</title>
+  <title>sssom.sparql_util &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,7 +69,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for sssom.sparql_util</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="sd">&quot;&quot;&quot;Utilities for querying mappings with SPARQL.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 
@@ -80,9 +82,16 @@
 
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;EndpointConfig&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;query_mappings&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
 
 <div class="viewcode-block" id="EndpointConfig"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.EndpointConfig">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">EndpointConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A container for a SPARQL endpoint&#39;s configuration.&quot;&quot;&quot;</span>
+
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">graph</span><span class="p">:</span> <span class="n">URIRef</span>
     <span class="n">predmap</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
@@ -154,17 +163,17 @@
     <span class="k">return</span> <span class="n">MappingSetDataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="curiefy_values"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.curiefy_values">[docs]</a><span class="k">def</span> <span class="nf">curiefy_values</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">curiefy_values</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Convert all values in the dict from URIs to CURIEs.</span>
 
 <span class="sd">    :param row: A dictionary of string keys to URIs</span>
 <span class="sd">    :param config: Configuration</span>
 <span class="sd">    :return: A dictionary of string keys to CURIEs</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">contract_uri</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">contract_uri</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 
-<div class="viewcode-block" id="contract_uri"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.contract_uri">[docs]</a><span class="k">def</span> <span class="nf">contract_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">contract_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Replace the URI with a CURIE based on the prefix map in the given configuration.</span>
 
 <span class="sd">    :param uri: A uniform resource identifier</span>
@@ -176,10 +185,10 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">uri</span></div>
+    <span class="k">return</span> <span class="n">uri</span>
 
 
-<div class="viewcode-block" id="expand_curie"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.expand_curie">[docs]</a><span class="k">def</span> <span class="nf">expand_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">expand_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Expand a CURIE to a URI.</span>
 
 <span class="sd">    :param curie: CURIE</span>
@@ -192,7 +201,7 @@
         <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span>
         <span class="k">if</span> <span class="n">curie</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span>
 </pre></div>
 
            </div>

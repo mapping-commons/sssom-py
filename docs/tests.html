@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tests package &mdash; sssom-py 0.0.1 documentation</title>
+  <title>tests package &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -95,151 +95,180 @@
 </section>
 <section id="module-tests.test_cli">
 <span id="tests-test-cli-module"></span><h2>tests.test_cli module<a class="headerlink" href="#module-tests.test_cli" title="Permalink to this headline"></a></h2>
+<p>Tests for the command line interface.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.test_cli.</span></span><span class="sig-name descname"><span class="pre">SSSOMCLITestSuite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_cli.</span></span><span class="sig-name descname"><span class="pre">SSSOMCLITestSuite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>A test case for the dynamic CLI tests.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_cliquesummary">
-<span class="sig-name descname"><span class="pre">run_cliquesummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_cliquesummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_cliquesummary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_cliquesummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_cliquesummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_cliquesummary" title="Permalink to this definition"></a></dt>
+<dd><p>Run the clique summary test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_convert">
-<span class="sig-name descname"><span class="pre">run_convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_convert" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_convert" title="Permalink to this definition"></a></dt>
+<dd><p>Run the convert test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_correlations">
-<span class="sig-name descname"><span class="pre">run_correlations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_correlations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_correlations" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_correlations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_correlations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_correlations" title="Permalink to this definition"></a></dt>
+<dd><p>Run the correlations test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_crosstab">
-<span class="sig-name descname"><span class="pre">run_crosstab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_crosstab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_crosstab" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_crosstab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_crosstab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_crosstab" title="Permalink to this definition"></a></dt>
+<dd><p>Run the cross-tabulation test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_dedupe">
-<span class="sig-name descname"><span class="pre">run_dedupe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_dedupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_dedupe" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_dedupe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_dedupe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_dedupe" title="Permalink to this definition"></a></dt>
+<dd><p>Run the deduplication test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_diff">
-<span class="sig-name descname"><span class="pre">run_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_cases</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_diff" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_cases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_diff" title="Permalink to this definition"></a></dt>
+<dd><p>Run the diff test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_parse">
-<span class="sig-name descname"><span class="pre">run_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_parse" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_parse" title="Permalink to this definition"></a></dt>
+<dd><p>Run the parse test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_partition">
-<span class="sig-name descname"><span class="pre">run_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_cases</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_partition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_partition" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_cases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_partition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_partition" title="Permalink to this definition"></a></dt>
+<dd><p>Run the partition test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_ptable">
-<span class="sig-name descname"><span class="pre">run_ptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_ptable" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_ptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_ptable" title="Permalink to this definition"></a></dt>
+<dd><p>Run the ptable test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_split">
-<span class="sig-name descname"><span class="pre">run_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_split" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_split" title="Permalink to this definition"></a></dt>
+<dd><p>Run the split test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_successful">
-<span class="sig-name descname"><span class="pre">run_successful</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_successful"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_successful" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_successful</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.Result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_successful"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_successful" title="Permalink to this definition"></a></dt>
+<dd><p>Check the test result is successful.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.run_validate">
-<span class="sig-name descname"><span class="pre">run_validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_validate" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run_validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.testing.CliRunner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.testing.Result</span></span></span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.run_validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.run_validate" title="Permalink to this definition"></a></dt>
+<dd><p>Run the validate test.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.test_cli_multiple_input">
 <span class="sig-name descname"><span class="pre">test_cli_multiple_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.test_cli_multiple_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.test_cli_multiple_input" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Run test cases that require multiple files.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_cli.SSSOMCLITestSuite.test_cli_single_input">
 <span class="sig-name descname"><span class="pre">test_cli_single_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_cli.html#SSSOMCLITestSuite.test_cli_single_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_cli.SSSOMCLITestSuite.test_cli_single_input" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Run all test cases on a single input file.</p>
+</dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-tests.test_collapse">
 <span id="tests-test-collapse-module"></span><h2>tests.test_collapse module<a class="headerlink" href="#module-tests.test_collapse" title="Permalink to this headline"></a></h2>
+<p>Test various grouping functionalities.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.test_collapse.</span></span><span class="sig-name descname"><span class="pre">TestCollapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_collapse.</span></span><span class="sig-name descname"><span class="pre">TestCollapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>Test various grouping functionalities.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.setUp">
 <span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.setUp" title="Permalink to this definition"></a></dt>
-<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+<dd><p>Set up the test case.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_collapse">
 <span class="sig-name descname"><span class="pre">test_collapse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_collapse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_collapse" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_df">
-<span class="sig-name descname"><span class="pre">test_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_df" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test the row count after collapsing the dataframe.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_diff">
 <span class="sig-name descname"><span class="pre">test_diff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_diff" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test the comparison between two dataframes.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_filter">
 <span class="sig-name descname"><span class="pre">test_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_filter" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test the row count after filtering redundant rows.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_groupings">
 <span class="sig-name descname"><span class="pre">test_groupings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_groupings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_groupings" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test the row count after grouping mappings.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_ptable">
 <span class="sig-name descname"><span class="pre">test_ptable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_ptable" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test the row count of the ptable export.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_collapse.TestCollapse.test_row_count">
+<span class="sig-name descname"><span class="pre">test_row_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_collapse.html#TestCollapse.test_row_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_collapse.TestCollapse.test_row_count" title="Permalink to this definition"></a></dt>
+<dd><p>Test the dataframe has the correct number of rows.</p>
+</dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-tests.test_conversion">
 <span id="tests-test-conversion-module"></span><h2>tests.test_conversion module<a class="headerlink" href="#module-tests.test_conversion" title="Permalink to this headline"></a></h2>
+<p>Tests for conversion utilities.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.test_conversion.SSSOMReadWriteTestSuite">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.test_conversion.</span></span><span class="sig-name descname"><span class="pre">SSSOMReadWriteTestSuite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_conversion.html#SSSOMReadWriteTestSuite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_conversion.SSSOMReadWriteTestSuite" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_conversion.</span></span><span class="sig-name descname"><span class="pre">SSSOMReadWriteTestSuite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_conversion.html#SSSOMReadWriteTestSuite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_conversion.SSSOMReadWriteTestSuite" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>A test case for conversion utilities.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="tests.test_conversion.SSSOMReadWriteTestSuite.test">
-<span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_conversion.html#SSSOMReadWriteTestSuite.test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_conversion.SSSOMReadWriteTestSuite.test" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="tests.test_conversion.SSSOMReadWriteTestSuite.test_conversion">
+<span class="sig-name descname"><span class="pre">test_conversion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_conversion.html#SSSOMReadWriteTestSuite.test_conversion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_conversion.SSSOMReadWriteTestSuite.test_conversion" title="Permalink to this definition"></a></dt>
+<dd><p>Run all conversion tests.</p>
+</dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-tests.test_data">
 <span id="tests-test-data-module"></span><h2>tests.test_data module<a class="headerlink" href="#module-tests.test_data" title="Permalink to this headline"></a></h2>
+<p>Tests for loading and processing data.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.test_data.SSSOMTestCase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.test_data.</span></span><span class="sig-name descname"><span class="pre">SSSOMTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_data.</span></span><span class="sig-name descname"><span class="pre">SSSOMTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A dynamic test case for data tests.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_data.SSSOMTestCase.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize the SSSOM test case.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -253,13 +282,15 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_data.SSSOMTestCase.get_out_file">
-<span class="sig-name descname"><span class="pre">get_out_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase.get_out_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase.get_out_file" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_out_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase.get_out_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase.get_out_file" title="Permalink to this definition"></a></dt>
+<dd><p>Get the output file path.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_data.SSSOMTestCase.get_validate_file">
-<span class="sig-name descname"><span class="pre">get_validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase.get_validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase.get_validate_file" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tests/test_data.html#SSSOMTestCase.get_validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.SSSOMTestCase.get_validate_file" title="Permalink to this definition"></a></dt>
+<dd><p>Get the validation file path.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -271,13 +302,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tests.test_data.get_multiple_input_test_cases">
-<span class="sig-prename descclassname"><span class="pre">tests.test_data.</span></span><span class="sig-name descname"><span class="pre">get_multiple_input_test_cases</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tests/test_data.html#get_multiple_input_test_cases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.get_multiple_input_test_cases" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tests.test_data.</span></span><span class="sig-name descname"><span class="pre">get_multiple_input_test_cases</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tests.test_data.SSSOMTestCase" title="tests.test_data.SSSOMTestCase"><span class="pre">tests.test_data.SSSOMTestCase</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tests/test_data.html#get_multiple_input_test_cases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.get_multiple_input_test_cases" title="Permalink to this definition"></a></dt>
 <dd><p>Get a mapping from identifiers to test cases that require multiple parameters.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tests.test_data.get_test_file">
-<span class="sig-prename descclassname"><span class="pre">tests.test_data.</span></span><span class="sig-name descname"><span class="pre">get_test_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tests/test_data.html#get_test_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.get_test_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tests.test_data.</span></span><span class="sig-name descname"><span class="pre">get_test_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tests/test_data.html#get_test_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_data.get_test_file" title="Permalink to this definition"></a></dt>
 <dd><p>Get a test file path inside the test data directory.</p>
 </dd></dl>
 
@@ -287,66 +318,70 @@
 </section>
 <section id="module-tests.test_reconcile">
 <span id="tests-test-reconcile-module"></span><h2>tests.test_reconcile module<a class="headerlink" href="#module-tests.test_reconcile" title="Permalink to this headline"></a></h2>
+<p>Tests for reconcilation utilities.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.test_reconcile.</span></span><span class="sig-name descname"><span class="pre">TestReconcile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_reconcile.</span></span><span class="sig-name descname"><span class="pre">TestReconcile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>A test case for reconcilation utilities.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile.setUp">
 <span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile.setUp" title="Permalink to this definition"></a></dt>
-<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+<dd><p>Test up the test case with the third basic example.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile.test_deal_with_negation">
 <span class="sig-name descname"><span class="pre">test_deal_with_negation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile.test_deal_with_negation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile.test_deal_with_negation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile.test_df">
-<span class="sig-name descname"><span class="pre">test_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile.test_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile.test_df" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test handling negating returns the right number of rows.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile.test_filter">
 <span class="sig-name descname"><span class="pre">test_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile.test_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile.test_filter" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test filtering returns the right number of rows.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile.test_merge">
 <span class="sig-name descname"><span class="pre">test_merge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile.test_merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile.test_merge" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test merging two tables.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_reconcile.TestReconcile.test_merge_no_reconcile">
 <span class="sig-name descname"><span class="pre">test_merge_no_reconcile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_reconcile.html#TestReconcile.test_merge_no_reconcile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_reconcile.TestReconcile.test_merge_no_reconcile" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test merging two tables without reconciliation.</p>
+</dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-tests.test_scc">
 <span id="tests-test-scc-module"></span><h2>tests.test_scc module<a class="headerlink" href="#module-tests.test_scc" title="Permalink to this headline"></a></h2>
+<p>Test case for splitting strongly connected components.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.test_scc.TestSCC">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tests.test_scc.</span></span><span class="sig-name descname"><span class="pre">TestSCC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_scc.html#TestSCC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_scc.TestSCC" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_scc.</span></span><span class="sig-name descname"><span class="pre">TestSCC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_scc.html#TestSCC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_scc.TestSCC" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
-<p>Tests strongly connected components.</p>
+<p>Test case for splitting strongly connected components.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_scc.TestSCC.setUp">
 <span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tests/test_scc.html#TestSCC.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_scc.TestSCC.setUp" title="Permalink to this definition"></a></dt>
-<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+<dd><p>Set up the test case by reading the basic SSSOM example.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_scc.TestSCC.test_cliquesummary">
 <span class="sig-name descname"><span class="pre">test_cliquesummary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_scc.html#TestSCC.test_cliquesummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_scc.TestSCC.test_cliquesummary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test summarizing cliques.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.test_scc.TestSCC.test_scc">
 <span class="sig-name descname"><span class="pre">test_scc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_scc.html#TestSCC.test_scc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_scc.TestSCC.test_scc" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Test splitting into cliques.</p>
+</dd></dl>
 
 </dd></dl>
 

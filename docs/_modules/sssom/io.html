@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sssom.io &mdash; sssom-py 0.0.1 documentation</title>
+  <title>sssom.io &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,11 +69,17 @@
            <div itemprop="articleBody">
              
   <h1>Source code for sssom.io</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="sd">&quot;&quot;&quot;I/O utilities for SSSOM.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">get_default_metadata</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_default_metadata</span><span class="p">,</span>
+    <span class="n">set_default_license</span><span class="p">,</span>
+    <span class="n">set_default_mapping_set_id</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parsing_function</span><span class="p">,</span> <span class="n">read_sssom_table</span><span class="p">,</span> <span class="n">split_dataframe</span>
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">raise_for_bad_path</span><span class="p">,</span> <span class="n">read_metadata</span>
@@ -87,10 +93,9 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert a file.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        input_path: The path to the input SSSOM tsv file</span>
-<span class="sd">        output: The path to the output file. If none is given, will default to using stdout.</span>
-<span class="sd">        output_format: The format to which the the SSSOM TSV should be converted.</span>
+<span class="sd">    :param input_path: The path to the input SSSOM tsv file</span>
+<span class="sd">    :param output: The path to the output file. If none is given, will default to using stdout.</span>
+<span class="sd">    :param output_format: The format to which the the SSSOM TSV should be converted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
@@ -111,20 +116,21 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Parse an SSSOM metadata file and write to a table.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
-<span class="sd">        output: The path to the output file.</span>
-<span class="sd">        input_format: The string denoting the input format.</span>
-<span class="sd">        metadata_path: The path to a file containing the sssom metadata (including prefix_map)</span>
-<span class="sd">            to be used during parse.</span>
-<span class="sd">        prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with</span>
-<span class="sd">            the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged</span>
-<span class="sd">        clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.</span>
+<span class="sd">    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
+<span class="sd">    :param output: The path to the output file.</span>
+<span class="sd">    :param input_format: The string denoting the input format.</span>
+<span class="sd">    :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)</span>
+<span class="sd">        to be used during parse.</span>
+<span class="sd">    :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with</span>
+<span class="sd">        the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged</span>
+<span class="sd">    :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_metadata_and_prefix_map</span><span class="p">(</span>
         <span class="n">metadata_path</span><span class="o">=</span><span class="n">metadata_path</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="o">=</span><span class="n">prefix_map_mode</span>
     <span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">set_default_mapping_set_id</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">set_default_license</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
     <span class="n">parse_func</span> <span class="o">=</span> <span class="n">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">,</span> <span class="n">input_path</span><span class="p">)</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">parse_func</span><span class="p">(</span>
         <span class="n">input_path</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">prefix_map</span>
@@ -136,14 +142,10 @@
 
 
 <div class="viewcode-block" id="validate_file"><a class="viewcode-back" href="../../sssom.html#sssom.io.validate_file">[docs]</a><span class="k">def</span> <span class="nf">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validate the incoming SSSOM TSV according to the SSSOM specification.</span>
+    <span class="sd">&quot;&quot;&quot;Validate the incoming SSSOM TSV according to the SSSOM specification.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Boolean. True if valid SSSOM, false otherwise.</span>
+<span class="sd">    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
+<span class="sd">    :returns: True if valid SSSOM, false otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">read_sssom_table</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">input_path</span><span class="p">)</span>
@@ -154,12 +156,10 @@
 
 
 <div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../sssom.html#sssom.io.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Split an SSSOM TSV by prefixes and relations.</span>
+    <span class="sd">&quot;&quot;&quot;Split an SSSOM TSV by prefixes and relations.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
-<span class="sd">        output_directory: The directory to which the split file should be exported.</span>
+<span class="sd">    :param  input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
+<span class="sd">    :param output_directory: The directory to which the split file should be exported.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
