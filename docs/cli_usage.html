@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SSSOM CLI usage &mdash; sssom-py 0.0.1 documentation</title>
+  <title>SSSOM CLI usage &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -362,15 +362,6 @@ prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
 <section id="sssom-py-parse">
 <h3>parse<a class="headerlink" href="#sssom-py-parse" title="Permalink to this headline"></a></h3>
 <p>Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>input: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-input_format: The string denoting the input format.
-metadata: The path to a file containing the sssom metadata (including prefix_map) to be used during parse.
-prefix_map_mode: prefix map mode.
-clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
-output: The path to the SSSOM TSV output file.</p>
-</dd>
-</dl>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py parse <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
 </pre></div>
 </div>
@@ -476,6 +467,7 @@ output: The path to the SSSOM TSV output file.</p>
 <dt>Example:</dt><dd><p>sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv –precedence PR</p>
 </dd>
 </dl>
+<p># noqa: DAR101</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py rewire <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
 </pre></div>
 </div>

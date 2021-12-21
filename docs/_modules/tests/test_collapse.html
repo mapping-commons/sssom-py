@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tests.test_collapse &mdash; sssom-py 0.0.1 documentation</title>
+  <title>tests.test_collapse &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,7 +69,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tests.test_collapse</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;Test various grouping functionalities.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">unittest</span>
 
 <span class="kn">from</span> <span class="nn">pandasql</span> <span class="kn">import</span> <span class="n">sqldf</span>
@@ -82,16 +83,18 @@
     <span class="n">group_mappings</span><span class="p">,</span>
     <span class="n">parse</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">data_dir</span>
 
 
 <div class="viewcode-block" id="TestCollapse"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse">[docs]</a><span class="k">class</span> <span class="nc">TestCollapse</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test various grouping functionalities.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="TestCollapse.setUp"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set up the test case.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic.tsv&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TestCollapse.test_df"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_df">[docs]</a>    <span class="k">def</span> <span class="nf">test_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCollapse.test_row_count"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_row_count">[docs]</a>    <span class="k">def</span> <span class="nf">test_row_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the dataframe has the correct number of rows.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
@@ -100,26 +103,29 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_collapse"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_collapse">[docs]</a>    <span class="k">def</span> <span class="nf">test_collapse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the row count after collapsing the dataframe.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">collapse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="mi">91</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Dataframe should have a different </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_filter"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_filter">[docs]</a>    <span class="k">def</span> <span class="nf">test_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the row count after filtering redundant rows.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="mi">92</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_ptable"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_ptable">[docs]</a>    <span class="k">def</span> <span class="nf">test_ptable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the row count of the ptable export.&quot;&quot;&quot;</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="n">dataframe_to_ptable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_groupings"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_groupings">[docs]</a>    <span class="k">def</span> <span class="nf">test_groupings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the row count after grouping mappings.&quot;&quot;&quot;</span>
         <span class="n">mappings</span> <span class="o">=</span> <span class="n">group_mappings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mappings</span><span class="p">),</span> <span class="mi">91</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_diff"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_diff">[docs]</a>    <span class="k">def</span> <span class="nf">test_diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the comparison between two dataframes.&quot;&quot;&quot;</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">compare_dataframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">unique_tuples1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">unique_tuples2</span><span class="p">))</span>

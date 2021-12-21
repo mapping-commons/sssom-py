@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tests.test_data &mdash; sssom-py 0.0.1 documentation</title>
+  <title>tests.test_data &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,17 +69,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tests.test_data</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for loading and processing data.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">from</span> <span class="nn">sssom.util</span> <span class="kn">import</span> <span class="n">PREFIX_MAP_KEY</span>
+<span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">cwd</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">test_out_dir</span>
 
-<span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">test_data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
-<span class="n">test_out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
-<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">test_validate_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;validate_data&quot;</span><span class="p">)</span>
 <span class="n">schema_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s2">&quot;schema&quot;</span><span class="p">)</span>
 <span class="n">DEFAULT_CONTEXT_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">,</span> <span class="s2">&quot;sssom.context.jsonld&quot;</span><span class="p">)</span>
@@ -90,10 +89,12 @@
 
 <div class="viewcode-block" id="get_test_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_test_file">[docs]</a><span class="k">def</span> <span class="nf">get_test_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get a test file path inside the test data directory.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_data_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SSSOMTestCase"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase">[docs]</a><span class="k">class</span> <span class="nc">SSSOMTestCase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A dynamic test case for data tests.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="SSSOMTestCase.__init__"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">queries</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the SSSOM test case.</span>
 
@@ -116,17 +117,20 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_query_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">tuple_id</span><span class="p">,</span> <span class="n">queries_dict</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_query_tuple</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">tuple_id</span><span class="p">,</span> <span class="n">queries_dict</span><span class="p">):</span>
         <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">tuple_id</span><span class="p">]:</span>
             <span class="n">query</span> <span class="o">=</span> <span class="n">queries_dict</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
             <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">query</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">tuple_id</span><span class="p">][</span><span class="n">t</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">queries</span>
 
-<div class="viewcode-block" id="SSSOMTestCase.get_out_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_out_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+<div class="viewcode-block" id="SSSOMTestCase.get_out_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_out_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the output file path.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SSSOMTestCase.get_validate_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_validate_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_validate_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+<div class="viewcode-block" id="SSSOMTestCase.get_validate_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_validate_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_validate_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the validation file path.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_validate_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
