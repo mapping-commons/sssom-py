@@ -1,20 +1,25 @@
+"""Tests for SSSOM writers."""
+
 import os
 import unittest
 
 from sssom.parsers import read_sssom_json, read_sssom_rdf, read_sssom_table
 from sssom.writers import write_json, write_owl, write_rdf, write_table
-from tests.test_data import test_data_dir, test_out_dir
+from tests.constants import data_dir as test_data_dir
+from tests.constants import test_out_dir
 
 
 class TestWrite(unittest.TestCase):
+    """A test case for SSSOM writers."""
+
     def setUp(self) -> None:
-        if not os.path.exists(test_out_dir):
-            os.mkdir(test_out_dir)
+        """Set up the test case with a basic SSSOM example."""
         self.msdf = read_sssom_table(f"{test_data_dir}/basic.tsv")
         # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
         self.mapping_count = 141  # 141 for basic.tsv
 
     def test_write_sssom_dataframe(self):
+        """Test writing as a dataframe."""
         tmp_path = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
         with open(tmp_path, "w") as tmp_file:
             write_table(self.msdf, tmp_file)
@@ -26,6 +31,7 @@ class TestWrite(unittest.TestCase):
         )
 
     def test_write_sssom_rdf(self):
+        """Test writing as RDF."""
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         with open(path_1, "w") as file:
             write_rdf(self.msdf, file)
@@ -42,6 +48,7 @@ class TestWrite(unittest.TestCase):
             write_table(self.msdf, file)
 
     def test_write_sssom_json(self):
+        """Test writing as JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_json.json")
         with open(path, "w") as file:
             write_json(self.msdf, file)
@@ -53,6 +60,7 @@ class TestWrite(unittest.TestCase):
         )
 
     def test_write_sssom_owl(self):
+        """Test writing as OWL."""
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_owl.owl")
         with open(tmp_file, "w") as file:
             write_owl(self.msdf, file)

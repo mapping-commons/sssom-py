@@ -1,9 +1,11 @@
+"""SSSOM parsers."""
+
 import json
 import logging
 import re
 import typing
 from collections import Counter
-from typing import Any, Dict, List, Optional, Set, TextIO, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Tuple, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -15,7 +17,12 @@ import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-from .context import add_built_in_prefixes_to_prefix_map, get_default_metadata
+from .context import (
+    DEFAULT_LICENSE,
+    DEFAULT_MAPPING_SET_ID,
+    add_built_in_prefixes_to_prefix_map,
+    get_default_metadata,
+)
 from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -27,10 +34,14 @@ from .util import (
     NoCURIEException,
     curie_from_uri,
     get_file_extension,
+    is_multivalued_slot,
     raise_for_bad_path,
     read_pandas,
     to_mapping_set_dataframe,
 )
+
+# Constants
+MATCH_TYPE_UNSPECIFIED = "Unspecified"
 
 # Readers (from file)
 
@@ -43,7 +54,6 @@ def read_sssom_table(
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     df = read_pandas(file_path)
-
     # If SSSOM external metadata is provided, merge it with the internal metadata
     sssom_metadata = _read_metadata_from_table(file_path)
 
@@ -86,7 +96,9 @@ def read_sssom_rdf(
 
 
 def read_sssom_json(
-    file_path: str, prefix_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -104,7 +116,9 @@ def read_sssom_json(
 
 
 def read_obographs_json(
-    file_path: str, prefix_map: Dict[str, str] = None, meta: Dict[str, str] = None
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
 
@@ -149,6 +163,48 @@ def _get_prefix_map_and_metadata(
     return Metadata(prefix_map=prefix_map, metadata=meta)
 
 
+def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
+    if is_multivalued_slot(k) and v is not None and isinstance(v, str) and "|" in v:
+        # IF k is multivalued, then v = List[values]
+        return [s.strip() for s in v.split("|")]
+    else:
+        return v
+
+
+def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
+    if meta is not None:
+        return MappingSet(
+            mapping_set_id=meta["mapping_set_id"], license=meta["license"]
+        )
+    else:
+        return MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
+
+
+def _get_mdict_ms_and_bad_attrs(
+    row: pd.Series, ms: MappingSet, bad_attrs: Counter
+) -> Tuple[dict, MappingSet, Counter]:
+
+    mdict = {}
+    for k, v in row.items():
+        if v and v == v:
+            ok = False
+            if k:
+                k = str(k)
+            v = _address_multivalued_slot(k, v)
+            if hasattr(Mapping, k):
+                mdict[k] = v
+                ok = True
+            if hasattr(MappingSet, k):
+                ms[k] = v
+                ok = True
+            if not ok:
+                bad_attrs[k] += 1
+
+    return (mdict, ms, bad_attrs)
+
+
 def read_alignment_xml(
     file_path: str, prefix_map: Dict[str, str], meta: Dict[str, str]
 ) -> MappingSetDataFrame:
@@ -175,9 +231,9 @@ def from_sssom_dataframe(
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
 
-    :param df:
-    :param prefix_map:
-    :param meta:
+    :param df: A mappings dataframe
+    :param prefix_map: A prefix map
+    :param meta: A metadata dictionary
     :return: MappingSetDataFrame
     """
     prefix_map = _ensure_prefix_map(prefix_map)
@@ -186,24 +242,10 @@ def from_sssom_dataframe(
         df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
 
     mlist: List[Mapping] = []
-    ms = MappingSet()
+    ms = _init_mapping_set(meta)
     bad_attrs: typing.Counter[str] = Counter()
     for _, row in df.iterrows():
-        mdict = {}
-        for k, v in row.items():
-            ok = False
-            if k:
-                k = str(k)
-            # if k.endswith('_id'): # TODO: introspect
-            #    v = Entity(id=v)
-            if hasattr(Mapping, k):
-                mdict[k] = v
-                ok = True
-            if hasattr(MappingSet, k):
-                ms[k] = v
-                ok = True
-            if not ok:
-                bad_attrs[k] += 1
+        mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
         mlist.append(_prepare_mapping(Mapping(**mdict)))
 
     for k, v in bad_attrs.most_common():
@@ -224,11 +266,11 @@ def from_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
 
-    Args:
-        g: the Graph (rdflib)
-        prefix_map: A dictionary containing the prefix map
-        meta: Potentially additional metadata
-        mapping_predicates: A set of predicates that should be extracted from the RDF graph
+    :param g: the Graph (rdflib)
+    :param prefix_map: A dictionary containing the prefix map, defaults to None
+    :param meta: Potentially additional metadata, defaults to None
+    :param mapping_predicates: A set of predicates that should be extracted from the RDF graph, defaults to None
+    :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
 
@@ -236,7 +278,7 @@ def from_sssom_rdf(
         # FIXME unused
         mapping_predicates = _get_default_mapping_predicates()
 
-    ms = MappingSet()
+    ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
 
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
@@ -258,11 +300,12 @@ def from_sssom_rdf(
                         k = "subject_id"
 
                     if isinstance(o, URIRef):
+                        v: Any
                         v = curie_from_uri(o, prefix_map)
                     else:
                         v = o.toPython()
-
                     if k:
+                        v = _address_multivalued_slot(k, v)
                         mdict[k] = v
 
                 except NoCURIEException as e:
@@ -294,10 +337,18 @@ def from_sssom_json(
     prefix_map: Dict[str, str],
     meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
+    """Load a mapping set dataframe from a JSON object.
+
+    :param jsondoc: JSON document
+    :param prefix_map: Prefix map
+    :param meta: metadata
+    :return: MappingSetDataFrame object
+    """
     prefix_map = _ensure_prefix_map(prefix_map)
     mapping_set = cast(
         MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
     )
+
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
     mapping_set_document = MappingSetDocument(
         mapping_set=mapping_set, prefix_map=prefix_map
@@ -311,14 +362,14 @@ def from_alignment_minidom(
     """Read a minidom Document object.
 
     :param dom: XML (minidom) object
-    :param prefix_map:
+    :param prefix_map: A prefix map
     :param meta: Optional meta data
     :return: MappingSetDocument
+    :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
     """
     # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
     _ensure_prefix_map(prefix_map)
-
-    ms = MappingSet()
+    ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
@@ -342,7 +393,7 @@ def from_alignment_minidom(
 
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
-                        raise Exception(
+                        raise ValueError(
                             "Alignment format: xml element said, but not set to yes. Only XML is supported!"
                         )
                 elif node_name == "onto1":
@@ -361,22 +412,21 @@ def from_alignment_minidom(
 
 
 def from_obographs(
-    jsondoc: Dict, *, prefix_map: PrefixMap, meta: Optional[MetadataType] = None
+    jsondoc: Dict,
+    *,
+    prefix_map: PrefixMap,
+    meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a obographs json object to an SSSOM data frame.
 
-    Args:
-        jsondoc: The JSON object representing the ontology in obographs format
-        prefix_map: The prefix map to be used
-        meta: Any additional metadata that needs to be added to the resulting SSSOM data frame
-
-    Returns:
-        An SSSOM data frame (MappingSetDataFrame)
-
+    :param jsondoc: The JSON object representing the ontology in obographs format
+    :param prefix_map: The prefix map to be used
+    :param meta: Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None
+    :raises Exception: When there is no CURIE
+    :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
-
-    ms = MappingSet()
+    ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
@@ -412,7 +462,7 @@ def from_obographs(
                                     )
                                     mdict["subject_label"] = label
                                     mdict["predicate_id"] = "oboInOwl:hasDbXref"
-                                    mdict["match_type"] = "Unspecified"
+                                    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     # FIXME this will cause all sorts of ragged Mappings
@@ -434,7 +484,7 @@ def from_obographs(
                                         mdict["predicate_id"] = curie_from_uri(
                                             pred, prefix_map
                                         )
-                                        mdict["match_type"] = "Unspecified"
+                                        mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
@@ -452,7 +502,14 @@ def from_obographs(
 # All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-def get_parsing_function(input_format, filename):
+def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
+    """Return appropriate parser function based on input format of file.
+
+    :param input_format: File format
+    :param filename: Filename
+    :raises Exception: Unknown file format
+    :return: Appropriate 'read' function
+    """
     if input_format is None:
         input_format = get_file_extension(filename)
     if input_format == "tsv":
@@ -582,6 +639,8 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
             except NoCURIEException as e:
                 logging.warning(e)
 
+    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+
     m = Mapping(**mdict)
     if _is_valid_mapping(m):
         return m
@@ -598,26 +657,12 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         raise Exception("No valid prefix_map provided")
 
     mlist: List[Mapping] = []
-    ms = MappingSet()
-    bad_attrs = {}
+    ms = _init_mapping_set(msdf.metadata)
+    bad_attrs: Counter = Counter()
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
-            mdict = {}
-            for k, v in row.items():
-                ok = False
-                if k:
-                    k = str(k)
-                if hasattr(Mapping, k):
-                    mdict[k] = v
-                    ok = True
-                if hasattr(MappingSet, k):
-                    ms[k] = v
-                    ok = True
-                if not ok:
-                    if k not in bad_attrs:
-                        bad_attrs[k] = 1
-                    else:
-                        bad_attrs[k] += 1
+            mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
+
             m = _prepare_mapping(Mapping(**mdict))
             mlist.append(m)
     for k, v in bad_attrs.items():
@@ -632,7 +677,13 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 
 def split_dataframe(
     msdf: MappingSetDataFrame,
-) -> typing.Mapping[str, MappingSetDataFrame]:
+) -> Dict[str, MappingSetDataFrame]:
+    """Group the mapping set dataframe into several subdataframes by prefix.
+
+    :param msdf: MappingSetDataFrame object
+    :raises RuntimeError: DataFrame object within MappingSetDataFrame is None
+    :return: Mapping object
+    """
     if msdf.df is None:
         raise RuntimeError
     subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
@@ -648,7 +699,7 @@ def split_dataframe(
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
-) -> typing.Mapping[str, MappingSetDataFrame]:
+) -> Dict[str, MappingSetDataFrame]:
     """Split a mapping set dataframe by prefix.
 
     :param msdf: An SSSOM MappingSetDataFrame

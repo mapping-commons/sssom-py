@@ -1,6 +1,9 @@
+"""Utilities for identifying and working with cliques/SCCs in mappings graphs."""
+
 import hashlib
 import statistics
-from typing import Any, Dict
+from collections import defaultdict
+from typing import DefaultDict, Dict, List, Optional, Set
 
 import networkx as nx
 import pandas as pd
@@ -11,13 +14,10 @@ from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
 
 
-def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
-    """Convert a MappingSetDocument to a networkx DiGraph."""
+def to_digraph(msdf: MappingSetDataFrame) -> nx.DiGraph:
+    """Convert to a graph where the nodes are entities' CURIEs and edges are their mappings."""
     doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
-    # m = {
-    #    "owl:subClassOf",
-    # }
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
             if not isinstance(mapping, Mapping):
@@ -59,45 +59,58 @@ def to_networkx(msdf: MappingSetDataFrame) -> nx.DiGraph:
     return g
 
 
-def split_into_cliques(msdf: MappingSetDataFrame):
-    doc = to_mapping_set_document(msdf)
-    g = to_networkx(msdf)
-    gen = nx.algorithms.components.strongly_connected_components(g)
+def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
+    """Split a MappingSetDataFrames documents corresponding to a strongly connected components of the associated graph.
 
-    node_to_comp = {}
-    comp_id = 0
-    newdocs = []
-    for comp in sorted(gen, key=len, reverse=True):
-        for n in comp:
-            node_to_comp[n] = comp_id
-        comp_id += 1
-        newdocs.append(MappingSetDocument.empty(prefix_map=doc.prefix_map))
+    :param msdf: MappingSetDataFrame object
+    :raises TypeError: If Mappings is not of type List
+    :raises TypeError: If each mapping is not of type Mapping
+    :raises TypeError: If Mappings is not of type List
+    :return: List of MappingSetDocument objects
+    """
+    doc = to_mapping_set_document(msdf)
+    graph = to_digraph(msdf)
+    components_it = nx.algorithms.components.strongly_connected_components(graph)
+    components = sorted(components_it, key=len, reverse=True)
+
+    curie_to_component = {}
+    for i, component in enumerate(components):
+        for curie in component:
+            curie_to_component[curie] = i
+    documents = [
+        MappingSetDocument.empty(prefix_map=doc.prefix_map)
+        for _ in range(len(components))
+    ]
 
     if not isinstance(doc.mapping_set.mappings, list):
         raise TypeError
-    for m in doc.mapping_set.mappings:
-        if not isinstance(m, Mapping):
+    for mapping in doc.mapping_set.mappings:
+        if not isinstance(mapping, Mapping):
             raise TypeError
-        comp_id = node_to_comp[m.subject_id]
-        subdoc = newdocs[comp_id]
-        if not isinstance(subdoc.mapping_set.mappings, list):
+        subject_document = documents[curie_to_component[mapping.subject_id]]
+        if not isinstance(subject_document.mapping_set.mappings, list):
             raise TypeError
-        subdoc.mapping_set.mappings.append(m)
-    return newdocs
+        subject_document.mapping_set.mappings.append(mapping)
+    return documents
 
 
-def invert_dict(d: Dict[str, str]) -> Dict[str, str]:
-    invdict: Dict[str, Any] = {}
+def group_values(d: Dict[str, str]) -> Dict[str, List[str]]:
+    """Group all keys in the dictionary that share the same value."""
+    rv: DefaultDict[str, List[str]] = defaultdict(list)
     for k, v in d.items():
-        if v not in invdict:
-            invdict[v] = []
-        invdict[v].append(k)
-    return invdict
+        rv[v].append(k)
+    return dict(rv)
 
 
-def get_src(src, cid):
+def get_src(src: Optional[str], curie: str):
+    """Get prefix of subject/object in the MappingSetDataFrame.
+
+    :param src: Source
+    :param curie: CURIE
+    :return: Source
+    """
     if src is None:
-        return cid.split(":")[0]
+        return curie.split(":")[0]
     else:
         return src
 
@@ -107,29 +120,32 @@ def summarize_cliques(doc: MappingSetDataFrame):
     cliquedocs = split_into_cliques(doc)
     items = []
     for cdoc in cliquedocs:
-        ms = cdoc.mapping_set.mappings
-        members = set()
-        members_names = set()
-        confs = []
-        id2src = {}
-        for m in ms:
-            sub = m.subject_id
-            obj = m.object_id
-            subsrc = get_src(m.subject_source, sub)
-            objsrc = get_src(m.object_source, obj)
-            id2src[sub] = subsrc
-            id2src[obj] = objsrc
+        mappings = cdoc.mapping_set.mappings
+        if mappings is None:
+            continue
+        members: Set[str] = set()
+        members_names: Set[str] = set()
+        confs: List[float] = []
+        id2src: Dict[str, str] = {}
+        for mapping in mappings:
+            if not isinstance(mapping, Mapping):
+                raise TypeError
+            sub = str(mapping.subject_id)
+            obj = str(mapping.object_id)
+            id2src[sub] = get_src(mapping.subject_source, sub)
+            id2src[obj] = get_src(mapping.object_source, obj)
             members.add(sub)
             members.add(obj)
-            members_names.add(str(m.subject_label))
-            members_names.add(str(m.object_label))
-            confs.append(m.confidence)
-        src2ids = invert_dict(id2src)
+            members_names.add(str(mapping.subject_label))
+            members_names.add(str(mapping.object_label))
+            if mapping.confidence is not None:
+                confs.append(mapping.confidence)
+        src2ids = group_values(id2src)
         mstr = "|".join(members)
         md5 = hashlib.md5(mstr.encode("utf-8")).hexdigest()  # noqa:S303
         item = {
             "id": md5,
-            "num_mappings": len(ms),
+            "num_mappings": len(mappings),
             "num_members": len(members),
             "members": mstr,
             "members_labels": "|".join(members_names),

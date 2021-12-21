@@ -1,7 +1,15 @@
+"""Additional SSSOM object models."""
+
 from dataclasses import dataclass
+
+from sssom.context import DEFAULT_LICENSE, DEFAULT_MAPPING_SET_ID
 
 from .sssom_datamodel import MappingSet
 from .typehints import PrefixMap
+
+__all__ = [
+    "MappingSetDocument",
+]
 
 
 @dataclass()
@@ -27,4 +35,10 @@ class MappingSetDocument:
     @classmethod
     def empty(cls, prefix_map: PrefixMap) -> "MappingSetDocument":
         """Get an empty mapping set document with the given prefix map."""
-        return cls(prefix_map=prefix_map, mapping_set=MappingSet(mappings=[]))
+        mapping_set = MappingSet(
+            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
+        )
+        return cls(
+            prefix_map=prefix_map,
+            mapping_set=mapping_set,
+        )

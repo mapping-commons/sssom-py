@@ -34,8 +34,8 @@ sssom ptable $INPUT_URL_1
 sssom dedupe $INPUT_FILE_1 --output $OUTPUT_DIR/deduped_basic_file.tsv
 sssom dedupe $INPUT_URL_1 --output $OUTPUT_DIR/deduped_basic_url.tsv
 
-sssom dosql -q "$QUERY_1" $INPUT_FILE_1 -o $OUTPUT_DIR/dosql_output_file.tsv
-sssom dosql -q "$QUERY_1" $INPUT_URL_1 -o $OUTPUT_DIR/dosql_output_url.tsv
+# sssom dosql -q "$QUERY_1" $INPUT_FILE_1 -o $OUTPUT_DIR/dosql_output_file.tsv
+# sssom dosql -q "$QUERY_1" $INPUT_URL_1 -o $OUTPUT_DIR/dosql_output_url.tsv
 
 # sssom sparql 
 
