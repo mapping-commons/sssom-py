@@ -26,6 +26,8 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install --upgrade tox
+    - name: Check manifest
+      run: tox -e manifest
     - name: Lint with flake8
       run: tox -e flake8
     - name: Test with MyPy

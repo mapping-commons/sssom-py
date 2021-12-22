@@ -2,7 +2,7 @@ tests:
   - filename: "basic.tsv"
     inputformat: "tsv"
     multiple_input: True
-    ct_json_elements: 12
+    ct_json_elements: 11
     ct_data_frame_rows: 141
     ct_graph_queries_owl:
       query_count_equivalent_classes: 90
@@ -11,7 +11,7 @@ tests:
   - filename: "basic2.tsv"
     inputformat: "tsv"
     multiple_input: True
-    ct_json_elements: 12
+    ct_json_elements: 11
     ct_data_frame_rows: 126
     ct_graph_queries_owl:
       query_count_equivalent_classes: 79
@@ -20,7 +20,7 @@ tests:
   - filename: "cob-to-external.tsv"
     inputformat: "tsv"
     multiple_input: False
-    ct_json_elements: 4
+    ct_json_elements: 5
     ct_data_frame_rows: 106
     ct_graph_queries_owl:
       query_count_equivalent_classes: 61
@@ -52,12 +52,16 @@ tests:
   #     oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
 queries:
   query_count_equivalent_classes: >
-    SELECT DISTINCT ?e1 ?e2
-    WHERE {
-      ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
+    SELECT DISTINCT ?e1 ?e2 WHERE {
+    ?ax a owl:Axiom ;
+              owl:annotatedSource ?e1 ;
+              owl:annotatedProperty owl:equivalentClass ;
+              owl:annotatedTarget ?e2 .
     }
   query_count_xrefs: >
-    SELECT DISTINCT ?e1 ?e2
-    WHERE {
-      ?e1 <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?e2 .
+    SELECT DISTINCT ?e1 ?e2 WHERE {
+    ?ax a owl:Axiom ;
+              owl:annotatedSource ?e1 ;
+              owl:annotatedProperty <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ;
+              owl:annotatedTarget ?e2 .
     }

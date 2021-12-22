@@ -53,9 +53,11 @@ class TestConvert(unittest.TestCase):
         """Test converting the basic example to a basic RDF graph."""
         g = to_rdf_graph(self.msdf)
         results = g.query(
-            """SELECT DISTINCT ?e1 ?e2
-                WHERE {
-                  ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
+            """SELECT DISTINCT ?e1 ?e2 WHERE {
+                ?ax a owl:Axiom ;
+                        owl:annotatedSource ?e1 ;
+                        owl:annotatedProperty owl:equivalentClass ;
+                        owl:annotatedTarget ?e2 .
                 }"""
         )
         size = len(results)

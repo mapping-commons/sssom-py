@@ -12,8 +12,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))
 
+sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
@@ -22,8 +22,7 @@ copyright = '2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde'
 author = 'Chris Mungall; Nicolas Matentzoglu; Harshad Hegde'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
-
+release = '0.3.6-dev'
 
 # -- General configuration ---------------------------------------------------
 
@@ -63,7 +62,6 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'setup.cfg']
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -81,9 +79,9 @@ html_theme_options = {
 }
 
 html_context = {
-# "github_url": "https://github.com", # or your GitHub Enterprise interprise
-"github_user": "mapping-commons",
-"github_repo": "sssom-py",
-"github_version": "sphinx_docs/sphinx/",
-"display_github": True, # Add 'Edit on Github' link instead of 'View page source'
+    # "github_url": "https://github.com", # or your GitHub Enterprise interprise
+    "github_user": "mapping-commons",
+    "github_repo": "sssom-py",
+    "github_version": "sphinx_docs/sphinx/",
+    "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
 }
