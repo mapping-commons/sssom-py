@@ -993,14 +993,13 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     :param file_path: File path
     :raises FileNotFoundError: Invalid file path
     """
-
     if isinstance(file_path, Path):
         if not file_path.is_file():
             raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
     elif not validators.url(file_path) and not os.path.exists(file_path):
         raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
 
-        
+
 def is_multivalued_slot(slot: str) -> bool:
     """Check whether the slot is multivalued according to the SSSOM specification.
 
@@ -1012,4 +1011,3 @@ def is_multivalued_slot(slot: str) -> bool:
     # return view.get_slot(slot).multivalued
 
     return slot in multivalued_slots
-

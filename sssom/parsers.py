@@ -6,8 +6,7 @@ import re
 import typing
 from collections import Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Union, cast
-
+from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Tuple, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
