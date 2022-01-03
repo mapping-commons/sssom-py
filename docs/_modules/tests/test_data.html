@@ -1,65 +1,31 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.test_data &mdash; sssom-py 0.3.6-dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>tests.test_data &mdash; sssom-py 0.0.1 documentation</title>
-  
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> sssom-py
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -67,18 +33,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">SSSOM-PY</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
@@ -88,188 +44,142 @@
 <li class="toctree-l1"><a class="reference internal" href="../../sphinx_documentation.html">Documentation Update and Redeployment</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">sssom-py</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
       <li>tests.test_data</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for tests.test_data</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;Tests for loading and processing data.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span>
+
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">test_data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
-<span class="n">test_out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sssom.util</span> <span class="kn">import</span> <span class="n">PREFIX_MAP_KEY</span>
+<span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">cwd</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">test_out_dir</span>
+
 <span class="n">test_validate_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;validate_data&quot;</span><span class="p">)</span>
-<span class="n">schema_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;../schema&quot;</span><span class="p">)</span>
-<span class="n">TEST_CONFIG</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;test_config.yaml&quot;</span><span class="p">)</span>
+<span class="n">schema_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s2">&quot;schema&quot;</span><span class="p">)</span>
 <span class="n">DEFAULT_CONTEXT_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">,</span> <span class="s2">&quot;sssom.context.jsonld&quot;</span><span class="p">)</span>
+<span class="n">TEST_CONFIG_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s2">&quot;test_config.yaml&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TEST_CONFIG_PATH</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">TEST_CONFIG</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_test_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_test_file">[docs]</a><span class="k">def</span> <span class="nf">get_test_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_data_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ensure_test_dir_exists"><a class="viewcode-back" href="../../tests.html#tests.test_data.ensure_test_dir_exists">[docs]</a><span class="k">def</span> <span class="nf">ensure_test_dir_exists</span><span class="p">():</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../../tests.html#tests.test_data.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">():</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TEST_CONFIG</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">config</span></div>
-
-
-<div class="viewcode-block" id="get_all_test_cases"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_all_test_cases">[docs]</a><span class="k">def</span> <span class="nf">get_all_test_cases</span><span class="p">():</span>
-    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]:</span>
-        <span class="n">test_cases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SSSOMTestCase</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;queries&quot;</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">test_cases</span></div>
-
-
-<div class="viewcode-block" id="get_multiple_input_test_cases"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_multiple_input_test_cases">[docs]</a><span class="k">def</span> <span class="nf">get_multiple_input_test_cases</span><span class="p">():</span>
-    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;multiple_input&quot;</span><span class="p">]:</span>
-            <span class="n">test_cases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SSSOMTestCase</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;queries&quot;</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">test_cases</span></div>
+<div class="viewcode-block" id="get_test_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_test_file">[docs]</a><span class="k">def</span> <span class="nf">get_test_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get a test file path inside the test data directory.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SSSOMTestCase"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase">[docs]</a><span class="k">class</span> <span class="nc">SSSOMTestCase</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">queries</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A dynamic test case for data tests.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SSSOMTestCase.__init__"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">queries</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the SSSOM test case.</span>
+
+<span class="sd">        :param config: A dictionary of configuration values</span>
+<span class="sd">        :param queries: A mapping from query name to SPARQL query strings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">get_test_file</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;metadata_file&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">metadata_file</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata_file&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">metadata_file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata_file&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graph_serialisation</span> <span class="o">=</span> <span class="s2">&quot;turtle&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ct_json_elements</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ct_json_elements&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ct_data_frame_rows</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ct_data_frame_rows&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;inputformat&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputformat</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;inputformat&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inputformat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputformat</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;inputformat&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ct_graph_queries_owl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_tuple</span><span class="p">(</span>
             <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;ct_graph_queries_owl&quot;</span><span class="p">,</span> <span class="n">queries</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ct_graph_queries_rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_tuple</span><span class="p">(</span>
             <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;ct_graph_queries_rdf&quot;</span><span class="p">,</span> <span class="n">queries</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;curie_map&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">curie_map</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;curie_map&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">curie_map</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_query_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">tuple_id</span><span class="p">,</span> <span class="n">queries_dict</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_query_tuple</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">tuple_id</span><span class="p">,</span> <span class="n">queries_dict</span><span class="p">):</span>
         <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">tuple_id</span><span class="p">]:</span>
             <span class="n">query</span> <span class="o">=</span> <span class="n">queries_dict</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
             <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">query</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">tuple_id</span><span class="p">][</span><span class="n">t</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">queries</span>
 
-<div class="viewcode-block" id="SSSOMTestCase.get_out_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_out_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+<div class="viewcode-block" id="SSSOMTestCase.get_out_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_out_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_out_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the output file path.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SSSOMTestCase.get_validate_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_validate_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_validate_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_validate_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="SSSOMTestCase.get_validate_file"><a class="viewcode-back" href="../../tests.html#tests.test_data.SSSOMTestCase.get_validate_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_validate_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the validation file path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_validate_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Testcase </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> (Filepath: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_all_test_cases"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_all_test_cases">[docs]</a><span class="k">def</span> <span class="nf">get_all_test_cases</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SSSOMTestCase</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get a list of all test cases.&quot;&quot;&quot;</span>
+    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">TEST_CONFIG</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]:</span>
+        <span class="n">test_cases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SSSOMTestCase</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">TEST_CONFIG</span><span class="p">[</span><span class="s2">&quot;queries&quot;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">test_cases</span></div>
+
+
+<div class="viewcode-block" id="get_multiple_input_test_cases"><a class="viewcode-back" href="../../tests.html#tests.test_data.get_multiple_input_test_cases">[docs]</a><span class="k">def</span> <span class="nf">get_multiple_input_test_cases</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SSSOMTestCase</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get a mapping from identifiers to test cases that require multiple parameters.&quot;&quot;&quot;</span>
+    <span class="n">test_cases</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">TEST_CONFIG</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;multiple_input&quot;</span><span class="p">]:</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">SSSOMTestCase</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">TEST_CONFIG</span><span class="p">[</span><span class="s2">&quot;queries&quot;</span><span class="p">])</span>
+            <span class="n">test_cases</span><span class="p">[</span><span class="n">test</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+    <span class="k">return</span> <span class="n">test_cases</span></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
-
-    </p>
+    <p>&#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

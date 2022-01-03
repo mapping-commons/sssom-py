@@ -1,65 +1,31 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sssom.context &mdash; sssom-py 0.3.6-dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>sssom.context &mdash; sssom-py 0.0.1 documentation</title>
-  
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> sssom-py
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -67,18 +33,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">SSSOM-PY</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
@@ -88,152 +44,196 @@
 <li class="toctree-l1"><a class="reference internal" href="../../sphinx_documentation.html">Documentation Update and Redeployment</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">sssom-py</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
       <li>sssom.context</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for sssom.context</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span></span><span class="sd">&quot;&quot;&quot;Utilities for loading JSON-LD contexts.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">importlib.resources</span> <span class="k">as</span> <span class="nn">pkg_resources</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="c1"># Try backported to PY&lt;37 `importlib_resources`.</span>
-    <span class="kn">import</span> <span class="nn">importlib_resources</span> <span class="k">as</span> <span class="nn">pkg_resources</span>
+<span class="kn">from</span> <span class="nn">.external_context</span> <span class="kn">import</span> <span class="n">sssom_external_context</span>
+<span class="kn">from</span> <span class="nn">.internal_context</span> <span class="kn">import</span> <span class="n">sssom_context</span>
+<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span>
 
-<span class="c1"># cwd = os.path.abspath(os.path.dirname(__file__))</span>
-<span class="n">DEFAULT_CONTEXT_PATH</span> <span class="o">=</span> <span class="s2">&quot;sssom.context.jsonld&quot;</span>
-<span class="n">EXTERNAL_CONTEXT_PATH</span> <span class="o">=</span> <span class="s2">&quot;sssom.external.context.jsonld&quot;</span>
+<span class="c1"># HERE = pathlib.Path(__file__).parent.resolve()</span>
+<span class="c1"># DEFAULT_CONTEXT_PATH = HERE / &quot;sssom.context.jsonld&quot;</span>
+<span class="c1"># EXTERNAL_CONTEXT_PATH = HERE / &quot;sssom.external.context.jsonld&quot;</span>
+
+<span class="n">SSSOM_URI_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;http://w3id.org/sssom/&quot;</span>
+<span class="n">SSSOM_BUILT_IN_PREFIXES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sssom&quot;</span><span class="p">,</span> <span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;rdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">]</span>
+<span class="n">DEFAULT_MAPPING_SET_ID</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings/default&quot;</span>
+<span class="n">DEFAULT_LICENSE</span> <span class="o">=</span> <span class="s2">&quot;https://creativecommons.org/publicdomain/zero/1.0/&quot;</span>
 
 
 <div class="viewcode-block" id="get_jsonld_context"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_jsonld_context</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">open_text</span><span class="p">(</span><span class="n">__package__</span><span class="p">,</span> <span class="n">DEFAULT_CONTEXT_PATH</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-        <span class="n">contxt</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">contxt</span></div>
+    <span class="sd">&quot;&quot;&quot;Get JSON-LD form of sssom_context variable from auto-generated &#39;internal_context.py&#39; file.</span>
+
+<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
+
+<span class="sd">    :return: JSON-LD context</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sssom_context</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_external_jsonld_context"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_external_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_external_jsonld_context</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">open_text</span><span class="p">(</span><span class="n">__package__</span><span class="p">,</span> <span class="n">EXTERNAL_CONTEXT_PATH</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-        <span class="n">contxt</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">contxt</span></div>
+    <span class="sd">&quot;&quot;&quot;Get JSON-LD form of sssom_external_context variable from auto-generated &#39;external_context.py&#39; file.</span>
+
+<span class="sd">    :return: JSON-LD context</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sssom_external_context</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_default_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_default_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">():</span>
+<div class="viewcode-block" id="get_built_in_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_built_in_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_built_in_prefix_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get built-in prefix map from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
+
+<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
+
+<span class="sd">    :return: Prefix map</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">contxt</span> <span class="o">=</span> <span class="n">get_jsonld_context</span><span class="p">()</span>
+    <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">prefix_map</span></div>
+
+
+<div class="viewcode-block" id="add_built_in_prefixes_to_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.add_built_in_prefixes_to_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span>
+    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Add built-in prefix map from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
+
+<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
+
+<span class="sd">    :param prefix_map: A custom prefix map</span>
+<span class="sd">    :return: A prefix map</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">builtinmap</span> <span class="o">=</span> <span class="n">get_built_in_prefix_map</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">prefix_map</span><span class="p">:</span>
+        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">builtinmap</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">builtinmap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">:</span>
+                <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">elif</span> <span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Built-in prefix </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is specified (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) but differs from default (</span><span class="si">{</span><span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="p">)</span>
+    <span class="k">return</span> <span class="n">prefix_map</span></div>
+
+
+<div class="viewcode-block" id="get_default_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_default_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get @context property value from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
+
+<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
+
+<span class="sd">    :return: Metadata</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">contxt</span> <span class="o">=</span> <span class="n">get_jsonld_context</span><span class="p">()</span>
     <span class="n">contxt_external</span> <span class="o">=</span> <span class="n">get_external_jsonld_context</span><span class="p">()</span>
-    <span class="n">curie_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">metadata_dict</span><span class="p">:</span> <span class="n">MetadataType</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">curie_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;@id&quot;</span> <span class="ow">in</span> <span class="n">v</span> <span class="ow">and</span> <span class="s2">&quot;@prefix&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;@prefix&quot;</span><span class="p">]:</span>
+                    <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">contxt_external</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">contxt_external</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">curie_map</span><span class="p">:</span>
-                <span class="n">curie_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">:</span>
+                <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">curie_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
                     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is already in curie map (</span><span class="si">{</span><span class="n">curie_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">, but with a different value than </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is already in prefix map (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">, but with a different value than </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">meta</span><span class="p">,</span> <span class="n">curie_map</span></div>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">Metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata_dict</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">set_default_mapping_set_id</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">set_default_license</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">metadata</span></div>
+
+
+<div class="viewcode-block" id="set_default_mapping_set_id"><a class="viewcode-back" href="../../sssom.html#sssom.context.set_default_mapping_set_id">[docs]</a><span class="k">def</span> <span class="nf">set_default_mapping_set_id</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provide a default mapping_set_id if absent in the MappingSetDataFrame.</span>
+
+<span class="sd">    :param meta: Metadata without mapping_set_id</span>
+<span class="sd">    :return: Metadata with a default mapping_set_id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_MAPPING_SET_ID</span>
+    <span class="k">return</span> <span class="n">meta</span></div>
+
+
+<div class="viewcode-block" id="set_default_license"><a class="viewcode-back" href="../../sssom.html#sssom.context.set_default_license">[docs]</a><span class="k">def</span> <span class="nf">set_default_license</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provide a default license if absent in the MappingSetDataFrame.</span>
+
+<span class="sd">    :param meta: Metadata without license</span>
+<span class="sd">    :return: Metadata with a default license</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;license&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_LICENSE</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No License provided, using </span><span class="si">{</span><span class="n">DEFAULT_LICENSE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">meta</span></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde
-
-    </p>
+    <p>&#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

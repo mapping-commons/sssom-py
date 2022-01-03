@@ -20,7 +20,7 @@ def convert_file(
     output: TextIO,
     output_format: Optional[str] = None,
 ) -> None:
-    """Convert a file.
+    """Convert a file from one format to another.
 
     :param input_path: The path to the input SSSOM tsv file
     :param output: The path to the output file. If none is given, will default to using stdout.

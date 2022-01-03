@@ -35,6 +35,7 @@ sssom.io module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 sssom.parsers module
 --------------------
@@ -51,6 +52,7 @@ sssom.sparql\_util module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 sssom.sssom\_datamodel module
 -----------------------------
@@ -59,6 +61,7 @@ sssom.sssom\_datamodel module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 sssom.sssom\_document module
 ----------------------------
@@ -67,6 +70,7 @@ sssom.sssom\_document module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 sssom.util module
 -----------------
@@ -75,6 +79,7 @@ sssom.util module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 sssom.writers module
 --------------------
