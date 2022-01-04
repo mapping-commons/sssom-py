@@ -30,9 +30,7 @@ This is a python library and command line toolkit for working with SSSOM. It als
 
 ## Documentation
 
-See 
-* [old](https://sssom-py.readthedocs.io/) or
-* [new](https://mapping-commons.github.io/sssom-py/index.html#)
+See [documentation](https://mapping-commons.github.io/sssom-py/index.html#)
 
 ### Deploy documentation
 ```shell
