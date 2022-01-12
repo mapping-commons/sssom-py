@@ -91,7 +91,7 @@ class MappingSetDataFrame:
     ) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
 
-        :param msdfs: Multiple/Single MappingSetDataFrame(s) to merge into self
+        :param msdfs: Multiple/Single MappingSetDataFrame(s) to merge with self
         :param inplace: If true, msdf2 is merged into the calling MappingSetDataFrame,
                         if false, it simply return the merged data frame.
         :return: Merged MappingSetDataFrame
