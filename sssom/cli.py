@@ -15,7 +15,7 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Sequence, TextIO, Tuple
+from typing import Dict, List, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -76,9 +76,7 @@ metadata_option = click.option(
     type=click.Path(),
     help="The path to a file containing the sssom metadata (including prefix_map) to be used.",
 )
-transpose_option = click.option(
-    "-t", "--transpose/--no-transpose", default=False
-)
+transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
 fields_option = click.option(
     "-F",
     "--fields",
@@ -426,16 +424,16 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
-    """Merge msdf2 into msdf1.
+def merge(inputs: str, output: TextIO, reconcile: bool = True):
+    """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
-        reconcile (if msdf contains a higher confidence _negative_ mapping,
-        then remove lower confidence positive one. If confidence is the same,
-        prefer HumanCurated. If both HumanCurated, prefer negative mapping).
+    reconcile (if msdf contains a higher confidence _negative_ mapping,
+    then remove lower confidence positive one. If confidence is the same,
+    prefer HumanCurated. If both HumanCurated, prefer negative mapping).
     """  # noqa: DAR101
     msdfs = [read_sssom_table(i) for i in inputs]
-    merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
+    merged_msdf = merge_msdf(msdfs, reconcile=reconcile)
     # Export MappingSetDataFrame into a TSV
     write_table(merged_msdf, output)
 
@@ -443,12 +441,8 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
 @main.command()
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
-@click.option(
-    "-I", "--input-format", default="turtle", help="Ontology input format."
-)
-@click.option(
-    "-O", "--output-format", default="turtle", help="Ontology output format."
-)
+@click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
+@click.option("-O", "--output-format", default="turtle", help="Ontology output format.")
 @click.option(
     "--precedence",
     multiple=True,
