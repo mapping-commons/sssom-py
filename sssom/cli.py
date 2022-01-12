@@ -76,7 +76,9 @@ metadata_option = click.option(
     type=click.Path(),
     help="The path to a file containing the sssom metadata (including prefix_map) to be used.",
 )
-transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
+transpose_option = click.option(
+    "-t", "--transpose/--no-transpose", default=False
+)
 fields_option = click.option(
     "-F",
     "--fields",
@@ -432,19 +434,8 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
         then remove lower confidence positive one. If confidence is the same,
         prefer HumanCurated. If both HumanCurated, prefer negative mapping).
     """  # noqa: DAR101
-    (input1, input2) = inputs[:2]
-    msdf1 = read_sssom_table(input1)
-    msdf2 = read_sssom_table(input2)
-    merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
-
-    # If > 2 input files, iterate through each one
-    # and merge them into the merged file above
-    if len(inputs) > 2:
-        for input_file in inputs[2:]:
-            msdf1 = merged_msdf
-            msdf2 = read_sssom_table(input_file)
-            merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
-
+    msdfs = [read_sssom_table(i) for i in inputs]
+    merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
     # Export MappingSetDataFrame into a TSV
     write_table(merged_msdf, output)
 
@@ -452,8 +443,12 @@ def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
 @main.command()
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
-@click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
-@click.option("-O", "--output-format", default="turtle", help="Ontology output format.")
+@click.option(
+    "-I", "--input-format", default="turtle", help="Ontology input format."
+)
+@click.option(
+    "-O", "--output-format", default="turtle", help="Ontology output format."
+)
 @click.option(
     "--precedence",
     multiple=True,
