@@ -433,7 +433,7 @@ def merge(inputs: str, output: TextIO, reconcile: bool = True):
     prefer HumanCurated. If both HumanCurated, prefer negative mapping).
     """  # noqa: DAR101
     msdfs = [read_sssom_table(i) for i in inputs]
-    merged_msdf = merge_msdf(msdfs, reconcile=reconcile)
+    merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
     # Export MappingSetDataFrame into a TSV
     write_table(merged_msdf, output)
 

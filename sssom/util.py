@@ -97,7 +97,7 @@ class MappingSetDataFrame:
         :return: Merged MappingSetDataFrame
         """
         list(msdfs).append(self)
-        msdf = merge_msdf(list(msdfs))
+        msdf = merge_msdf(*msdfs)
         if inplace:
             self.df = msdf.df
             self.prefix_map = msdf.prefix_map
@@ -487,7 +487,7 @@ def _extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def merge_msdf(
-    msdfs: List[MappingSetDataFrame],
+    *msdfs: MappingSetDataFrame,
     reconcile: bool = True,
 ) -> MappingSetDataFrame:
     """Merge multiple MappingSetDataFrames into one.
