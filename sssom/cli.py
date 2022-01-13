@@ -111,7 +111,7 @@ def convert(input: str, output: TextIO, output_format: str):
     .. warning:: currently only supports conversion to RDF)
 
     Example:
-        sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
+        sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl
     """  # noqa: DAR101
     convert_file(input_path=input, output=output, output_format=output_format)
 
