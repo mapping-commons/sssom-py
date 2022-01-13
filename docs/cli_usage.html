@@ -155,7 +155,7 @@
 <p>currently only supports conversion to RDF)</p>
 </div>
 <dl class="simple">
-<dt>Example:</dt><dd><p>sssom covert –input my.sssom.tsv –output-format rdfxml –output my.sssom.owl</p>
+<dt>Example:</dt><dd><p>sssom convert my.sssom.tsv –output-format rdfxml –output my.sssom.owl</p>
 </dd>
 </dl>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py convert <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
@@ -328,13 +328,11 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 </section>
 <section id="sssom-py-merge">
 <h3>merge<a class="headerlink" href="#sssom-py-merge" title="Permalink to this headline"></a></h3>
-<p>Merge msdf2 into msdf1.</p>
-<dl class="simple">
-<dt>if reconcile=True, then dedupe(remove redundant lower confidence mappings) and</dt><dd><p>reconcile (if msdf contains a higher confidence _negative_ mapping,
+<p>Merge multiple MappingSetDataFrames into one .</p>
+<p>if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
+reconcile (if msdf contains a higher confidence _negative_ mapping,
 then remove lower confidence positive one. If confidence is the same,
 prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
-</dd>
-</dl>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom-py merge <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
 </pre></div>
 </div>
