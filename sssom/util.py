@@ -96,8 +96,7 @@ class MappingSetDataFrame:
                         if false, it simply return the merged data frame.
         :return: Merged MappingSetDataFrame
         """
-        list(msdfs).append(self)
-        msdf = merge_msdf(*msdfs)
+        msdf = merge_msdf(self, *msdfs)
         if inplace:
             self.df = msdf.df
             self.prefix_map = msdf.prefix_map
