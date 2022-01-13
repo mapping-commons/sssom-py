@@ -12,6 +12,7 @@ from sssom.cli import (
     crosstab,
     dedupe,
     diff,
+    merge,
     parse,
     partition,
     ptable,
@@ -59,6 +60,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         test_cases = get_multiple_input_test_cases()
         self.run_diff(runner, test_cases)
         self.run_partition(runner, test_cases)
+        self.run_merge(runner, test_cases)
 
         self.assertTrue(len(test_cases) >= 2)
 
@@ -208,4 +210,20 @@ class SSSOMCLITestSuite(unittest.TestCase):
         ]
         result = runner.invoke(correlations, params)
         self.run_successful(result, test_case)
+        return result
+
+    def run_merge(
+        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
+    ) -> Result:
+        """Run the merge test."""
+        params = []
+        out_file = None
+        for t in test_cases.values():
+            params.append(t.filepath)
+            out_file = t
+        if out_file:
+            params.extend(["--output", out_file.get_out_file("tsv")])
+
+        result = runner.invoke(merge, params)
+        self.run_successful(result, test_cases)
         return result
