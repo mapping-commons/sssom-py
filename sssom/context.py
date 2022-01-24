@@ -2,6 +2,7 @@
 
 import json
 import logging
+import uuid
 from typing import Optional
 
 from .external_context import sssom_external_context
@@ -14,8 +15,8 @@ from .typehints import Metadata, MetadataType, PrefixMap
 
 SSSOM_URI_PREFIX = "http://w3id.org/sssom/"
 SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
-DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/default"
-DEFAULT_LICENSE = "https://creativecommons.org/publicdomain/zero/1.0/"
+DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
+DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 
 
 def get_jsonld_context():
