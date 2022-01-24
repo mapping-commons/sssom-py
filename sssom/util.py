@@ -830,6 +830,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
             for key in mdict:
                 if mdict[key]:
                     # Crude way of populating data. May need to revisit.
+                    # TODO make this generic & not just 'match_type'.
                     if key == "match_type":
                         if not isinstance(mdict[key], str):
                             mdict[key] = "|".join(
