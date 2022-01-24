@@ -713,7 +713,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
         for k, v in msdf.metadata.items():
             if k not in msdf.df.columns and k != license:
                 if k == mapping_set_id:
-                    k = 'mapping_set_source'
+                    k = "mapping_set_source"
                 msdf.df[k] = v
     return msdf
 
