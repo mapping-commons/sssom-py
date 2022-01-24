@@ -524,6 +524,8 @@ def merge_msdf(
         if PREDICATE_MODIFIER in merged_msdf.df.columns:
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
+    # TODO: Add default values for license and mapping_set_id.
+
     return merged_msdf
 
 
@@ -704,9 +706,14 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
     :return: MappingSetDataFrame with metadata as columns
     """
+    # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
+    license = "license"
+    mapping_set_id = "mapping_set_id"
     if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
-            if k not in msdf.df.columns:
+            if k not in msdf.df.columns and k != license:
+                if k == mapping_set_id:
+                    k = 'mapping_set_source'
                 msdf.df[k] = v
     return msdf
 
