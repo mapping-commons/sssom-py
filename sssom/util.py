@@ -30,9 +30,13 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
+from build.lib.sssom.sssom_datamodel import MatchTypeEnum, PredicateModifierEnum
+
+from .constants import SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
-from .sssom_datamodel import PredicateModifierEnum, slots
+from .sssom_datamodel import Mapping as SSSOM_Mapping
+from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -217,8 +221,6 @@ def filter_redundant_rows(
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
     :return: Filtered pandas DataFrame
     """
-    # enum text extraction
-    df = _extract_enum_text(df)
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
@@ -468,23 +470,6 @@ def sha256sum(path: str) -> str:
     return h.hexdigest()
 
 
-def _extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
-    # Enums are of the form: (text: "xxx", description: "yyy").
-    # In this case only the value of 'text' as a str is needed.
-    # For starters only addressing PREDICATE_MODIFIER column
-
-    enum_resolved_df = pd.DataFrame(columns=df.columns)
-
-    for row in df.iterrows():
-        if isinstance(row[1][PREDICATE_MODIFIER], PredicateModifierEnum):
-            row[1][PREDICATE_MODIFIER] = row[1][PREDICATE_MODIFIER].code.text
-        else:
-            row[1][PREDICATE_MODIFIER] = ""
-
-        enum_resolved_df = pd.concat([enum_resolved_df, row[1].to_frame().T])
-    return enum_resolved_df
-
-
 def merge_msdf(
     *msdfs: MappingSetDataFrame,
     reconcile: bool = True,
@@ -510,7 +495,7 @@ def merge_msdf(
             right,
             how="outer",
         ),
-        [_extract_enum_text(msdf.df) for msdf in msdf_with_meta],
+        [msdf.df for msdf in msdf_with_meta],
     )
     merged_msdf.df = df_merged
 
@@ -554,7 +539,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
         #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
     """
-    df = _extract_enum_text(df)
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
@@ -707,12 +691,14 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     :return: MappingSetDataFrame with metadata as columns
     """
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    license = "license"
-    mapping_set_id = "mapping_set_id"
+    with open(SCHEMA_YAML) as file:
+        schema = yaml.safe_load(file)
+    slots = schema["classes"]["mapping"]["slots"]
+
     if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
-            if k not in msdf.df.columns and k != license:
-                if k == mapping_set_id:
+            if k not in msdf.df.columns and k in slots:
+                if k == "mapping_set_id":
                     k = "mapping_set_source"
                 msdf.df[k] = v
     return msdf
@@ -816,6 +802,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     return meta
 
 
+# to_mapping_set_document is in parser.py in order to avoid circular import errors
 def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     """Convert MappingSetDocument into MappingSetDataFrame.
 
@@ -825,18 +812,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     data = []
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
-            mdict = mapping.__dict__
-            m = {}
-            for key in mdict:
-                if mdict[key]:
-                    # Crude way of populating data. May need to revisit.
-                    # TODO make this generic & not just 'match_type'.
-                    if key == "match_type":
-                        if not isinstance(mdict[key], str):
-                            mdict[key] = "|".join(
-                                enum_value.code.text for enum_value in mdict[key]
-                            )
-                    m[key] = mdict[key]
+            m = get_dict_from_mapping(mapping)
             data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
@@ -845,7 +821,27 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return msdf
 
 
-# to_mapping_set_document is in parser.py in order to avoid circular import errors
+def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
+    """
+    Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
+
+    :param map_obj: Mapping object
+    :return: Dictionary
+    """
+    map_dict = {}
+    for property in map_obj:
+        if isinstance(map_obj[property], list):
+            print(map_obj[property])
+            map_dict[property] = "|".join(
+                enum_value.code.text
+                for enum_value in map_obj[property]
+                if type(enum_value).__name__ == MatchTypeEnum._defn.name
+            )
+        elif type(map_obj[property]).__name__ == PredicateModifierEnum._defn.name:
+            map_dict[property] = map_obj[property].code.text
+        else:
+            map_dict[property] = map_obj[property]
+    return map_dict
 
 
 class NoCURIEException(ValueError):
