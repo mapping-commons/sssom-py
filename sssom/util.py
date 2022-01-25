@@ -493,7 +493,7 @@ def merge_msdf(
             right,
             how="outer",
         ),
-        [msdf.df for msdf in msdf_with_meta],
+        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
     )
     merged_msdf.df = df_merged
 
