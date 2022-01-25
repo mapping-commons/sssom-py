@@ -30,13 +30,11 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from build.lib.sssom.sssom_datamodel import MatchTypeEnum, PredicateModifierEnum
-
 from .constants import SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
-from .sssom_datamodel import slots
+from .sssom_datamodel import MatchTypeEnum, PredicateModifierEnum, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
