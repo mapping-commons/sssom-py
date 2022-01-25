@@ -829,7 +829,6 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     map_dict = {}
     for property in map_obj:
         if isinstance(map_obj[property], list):
-            print(map_obj[property])
             map_dict[property] = "|".join(
                 enum_value.code.text
                 for enum_value in map_obj[property]
