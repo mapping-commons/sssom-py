@@ -627,7 +627,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
-    reconciled_df = df.merge(reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)).fillna("")
+    reconciled_df = df.merge(
+        reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
+    ).fillna("")
 
     if nan_df.empty:
         return_df = reconciled_df
