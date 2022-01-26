@@ -501,7 +501,6 @@ def merge_msdf(
     # prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}
     merged_msdf.prefix_map = dict(ChainMap(*prefix_map_list))
     merged_msdf.df = df_merged
-
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         if PREDICATE_MODIFIER in merged_msdf.df.columns:
@@ -539,10 +538,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
-
     if df is None:
         raise ValueError(
-            "The dataframe, after assigning default confidence, appears empty (deal_with_negation"
+            "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
         )
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
@@ -629,29 +627,13 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
-    reconciled_df = pd.DataFrame(columns=df.columns)
+    reconciled_df = df.merge(reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)).fillna("")
 
-    for _, row_3 in reconciled_df_subset.iterrows():
-        if PREDICATE_MODIFIER in reconciled_df_subset.columns:
-            match_condition_3 = (
-                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
-                & (df[OBJECT_ID] == row_3[OBJECT_ID])
-                & (df[CONFIDENCE] == row_3[CONFIDENCE])
-                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
-                & (df[PREDICATE_MODIFIER] == row_3[PREDICATE_MODIFIER])
-            )
-        else:
-            match_condition_3 = (
-                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
-                & (df[OBJECT_ID] == row_3[OBJECT_ID])
-                & (df[CONFIDENCE] == row_3[CONFIDENCE])
-                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
-            )
+    if nan_df.empty:
+        return_df = reconciled_df
+    else:
+        return_df = reconciled_df.append(nan_df).drop_duplicates()
 
-        reconciled_df = reconciled_df.append(
-            df.loc[match_condition_3[match_condition_3].index, :]
-        )
-    return_df = reconciled_df.append(nan_df).drop_duplicates()
     return return_df
 
 
