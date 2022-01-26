@@ -489,10 +489,7 @@ def merge_msdf(
 
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
     df_merged = reduce(
-        lambda left, right: left.merge(
-            right,
-            how="outer",
-        ),
+        lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
         [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
     )
     merged_msdf.df = df_merged
