@@ -488,7 +488,7 @@ def merge_msdf(
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
-    key_columns = ["subject_id", "predicate_id", "object_id"]
+    key_columns = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
     df_merged = reduce(
         lambda left, right: left.merge(right, how="outer", on=key_columns),
         [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
