@@ -269,12 +269,12 @@ def assign_default_confidence(
     """
     # Get rows having numpy.NaN as confidence
     if df is not None:
-        if "confidence" not in df.columns:
-            df["confidence"] = np.NaN
+        if CONFIDENCE not in df.columns:
+            df[CONFIDENCE] = np.NaN
             nan_df = pd.DataFrame(columns=df.columns)
         else:
-            df = df[~df["confidence"].isna()]
-            nan_df = df[df["confidence"].isna()]
+            df = df[~df[CONFIDENCE].isna()]
+            nan_df = df[df[CONFIDENCE].isna()]
     else:
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
     return df, nan_df
