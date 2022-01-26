@@ -268,12 +268,15 @@ def assign_default_confidence(
     :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
     """
     # Get rows having numpy.NaN as confidence
-    if df is not None and "confidence" not in df.columns:
-        df["confidence"] = np.NaN
-
-    nan_df = df[df["confidence"].isna()]
-    if nan_df is None:
-        nan_df = pd.DataFrame(columns=df.columns)
+    if df is not None:
+        if "confidence" not in df.columns:
+            df["confidence"] = np.NaN
+            nan_df = pd.DataFrame(columns=df.columns)
+        else:
+            df = df[~df["confidence"].isna()]
+            nan_df = df[df["confidence"].isna()]
+    else:
+        ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
     return df, nan_df
 
 
@@ -488,17 +491,16 @@ def merge_msdf(
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
-    key_columns = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
     df_merged = reduce(
-        lambda left, right: left.merge(right, how="outer", on=key_columns),
+        lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
         [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
     )
-    merged_msdf.df = df_merged
 
     # merge the non DataFrame elements
     prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
     # prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}
     merged_msdf.prefix_map = dict(ChainMap(*prefix_map_list))
+    merged_msdf.df = df_merged
 
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
@@ -506,7 +508,6 @@ def merge_msdf(
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
     # TODO: Add default values for license and mapping_set_id.
-
     return merged_msdf
 
 
