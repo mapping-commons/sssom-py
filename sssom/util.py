@@ -639,31 +639,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     return return_df
 
 
-# def dict_merge(
-#     *,
-#     source: Optional[Dict[str, Any]] = None,
-#     target: Dict[str, Any],
-#     dict_name: str,
-# ) -> Dict[str, Any]:
-#     """Merge two dictionaries with a certain structure."""
-#     if source is None:
-#         return target
-#     for k, v in source.items():
-#         if k not in target:
-#             if v not in list(target.values()):
-#                 target[k] = v
-#             else:
-#                 common_values = [i for i, val in target.items() if val == v]
-#                 raise ValueError(
-#                     f"Value [{v}] is present in {dict_name} for multiple keys [{common_values}]."
-#                 )
-#         elif target[k] != v:
-#             raise ValueError(
-#                 f"{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different."
-#             )
-#     return target
-
-
 def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     """Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.
 
