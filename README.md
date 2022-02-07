@@ -26,7 +26,7 @@ WARNING: the export formats (json, rdf) of sssom-py are not yet finalised! Pleas
 
 See https://github.com/OBOFoundry/SSSOM
 
-This is a python library and command line toolkit for working with SSSOM. It also defines a schema for SSSOM
+This is a python library and command line toolkit for working with SSSOM. It also defines a schema for SSSOM.
 
 ## Documentation
 
