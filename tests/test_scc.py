@@ -12,7 +12,7 @@ class TestSCC(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case by reading the basic SSSOM example."""
-        self.mset = read_sssom_table(f"{data_dir}/basic.tsv")
+        self.mset = read_sssom_table(data_dir / "basic.tsv")
 
     def test_scc(self):
         """Test splitting into cliques."""
@@ -23,7 +23,7 @@ class TestSCC(unittest.TestCase):
     def test_cliquesummary(self):
         """Test summarizing cliques."""
         df = summarize_cliques(self.mset)
-        df.to_csv(f"{data_dir}/basic-cliquesummary.tsv", sep="\t")
+        df.to_csv(data_dir / "basic-cliquesummary.tsv", sep="\t")
         df.describe().transpose().to_csv(
-            f"{data_dir}/basic-cliquesummary-stats.tsv", sep="\t"
+            data_dir / "basic-cliquesummary-stats.tsv", sep="\t"
         )

@@ -12,8 +12,8 @@ class TestConvert(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case with two tables."""
-        self.msdf = read_sssom_table(f"{data_dir}/basic.tsv")
-        self.cob = read_sssom_table(f"{data_dir}/cob-to-external.tsv")
+        self.msdf = read_sssom_table(data_dir / "basic.tsv")
+        self.cob = read_sssom_table(data_dir / "cob-to-external.tsv")
 
     def test_df(self):
         """Test the dataframe has the right number of mappings."""

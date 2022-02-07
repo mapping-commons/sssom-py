@@ -20,7 +20,7 @@ class TestCollapse(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case."""
-        self.df = parse(f"{data_dir}/basic.tsv")
+        self.df = parse(data_dir / "basic.tsv")
 
     def test_row_count(self):
         """Test the dataframe has the correct number of rows."""
@@ -69,7 +69,7 @@ class TestCollapse(unittest.TestCase):
         print(output)
         # print(diff)
 
-        df2 = parse(f"{data_dir}/basic2.tsv")
+        df2 = parse(data_dir / "basic2.tsv")
         diff = compare_dataframes(self.df, df2)
         # print(len(diff.unique_tuples1))
         # print(len(diff.unique_tuples2))

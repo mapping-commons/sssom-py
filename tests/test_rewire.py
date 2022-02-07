@@ -1,5 +1,6 @@
 """Tests for rewiring utilities."""
 
+import os
 import unittest
 
 from rdflib import Graph
@@ -14,9 +15,9 @@ class TestRewire(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case with the COB mappings et and OWL graph."""
-        self.mset = read_sssom_table(f"{data_dir}/cob-to-external.tsv")
+        self.mset = read_sssom_table(data_dir / "cob-to-external.tsv")
         g = Graph()
-        g.parse(f"{data_dir}/cob.owl", format="xml")
+        g.parse(os.path.join(data_dir, "cob.owl"), format="xml")
         self.graph = g
 
     def test_rewire(self):
@@ -27,5 +28,5 @@ class TestRewire(unittest.TestCase):
 
         n = rewire_graph(self.graph, self.mset, precedence=["PR"])
         print(f"Num changed = {n}")
-        with open(f"{test_out_dir}/rewired-cob.ttl", "w") as stream:
+        with open(test_out_dir / "rewired-cob.ttl", "w") as stream:
             stream.write(self.graph.serialize(format="turtle").decode())
