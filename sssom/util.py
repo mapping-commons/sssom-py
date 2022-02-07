@@ -73,6 +73,7 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 MAPPING_SET_ID = "mapping_set_id"
+MAPPING_SET_SOURCE = "mapping_set_source"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
@@ -655,8 +656,8 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
             if k not in msdf.df.columns and k in slots:
-                if k == "mapping_set_id":
-                    k = "mapping_set_source"
+                if k == MAPPING_SET_ID:
+                    k = MAPPING_SET_SOURCE
                 msdf.df[k] = v
     return msdf
 
