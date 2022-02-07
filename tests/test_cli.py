@@ -113,7 +113,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def run_split(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the split test."""
         result = runner.invoke(
-            split, [test_case.filepath, "--output-directory", test_out_dir]
+            split, [test_case.filepath, "--output-directory", test_out_dir.as_posix()]
         )
         self.run_successful(result, test_case)
         return result
@@ -172,7 +172,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             if not primary_test_case:
                 primary_test_case = t
             params.append(t.filepath)
-        params.extend(["--output-directory", test_out_dir])
+        params.extend(["--output-directory", test_out_dir.as_posix()])
         result = runner.invoke(partition, params)
         self.run_successful(result, primary_test_case)
         return result
