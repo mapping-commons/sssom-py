@@ -258,6 +258,8 @@ def filter_redundant_rows(
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
     return_df = df.append(nan_df).drop_duplicates()
+    if return_df[CONFIDENCE].isnull().all():
+        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
 
 
