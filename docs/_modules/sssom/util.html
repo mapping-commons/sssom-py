@@ -78,9 +78,11 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
+    <span class="n">ChainMap</span><span class="p">,</span>
     <span class="n">DefaultDict</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
@@ -156,22 +158,23 @@
     <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># header metadata excluding prefixes</span>
 
 <div class="viewcode-block" id="MappingSetDataFrame.merge"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">msdf2</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Merge two MappingSetDataframes.</span>
 
-<span class="sd">        :param msdf2: Secondary MappingSetDataFrame (self =&gt; primary)</span>
+<span class="sd">        :param msdfs: Multiple/Single MappingSetDataFrame(s) to merge with self</span>
 <span class="sd">        :param inplace: If true, msdf2 is merged into the calling MappingSetDataFrame,</span>
 <span class="sd">                        if false, it simply return the merged data frame.</span>
 <span class="sd">        :return: Merged MappingSetDataFrame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">msdf</span> <span class="o">=</span> <span class="n">merge_msdf</span><span class="p">(</span><span class="n">msdf1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf2</span><span class="o">=</span><span class="n">msdf2</span><span class="p">)</span>
+        <span class="n">msdf</span> <span class="o">=</span> <span class="n">merge_msdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
-            <span class="c1"># FIXME should return self if inplace</span>
-        <span class="k">return</span> <span class="n">msdf</span></div>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">msdf</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
         <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;SSSOM data table </span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -554,14 +557,12 @@
 
 
 <div class="viewcode-block" id="merge_msdf"><a class="viewcode-back" href="../../sssom.html#sssom.util.merge_msdf">[docs]</a><span class="k">def</span> <span class="nf">merge_msdf</span><span class="p">(</span>
-    <span class="n">msdf1</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
-    <span class="n">msdf2</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Merge msdf2 into msdf1.</span>
+    <span class="sd">&quot;&quot;&quot;Merge multiple MappingSetDataFrames into one.</span>
 
-<span class="sd">    :param msdf1: The primary MappingSetDataFrame</span>
-<span class="sd">    :param msdf2: The secondary MappingSetDataFrame</span>
+<span class="sd">    :param msdfs: A Tuple of MappingSetDataFrames to be merged</span>
 <span class="sd">    :param reconcile: If reconcile=True, then dedupe(remove redundant lower confidence mappings)</span>
 <span class="sd">        and reconcile (if msdf contains a higher confidence _negative_ mapping,</span>
 <span class="sd">        then remove lower confidence positive one. If confidence is the same,</span>
@@ -569,34 +570,25 @@
 <span class="sd">        Defaults to True.</span>
 <span class="sd">    :returns: Merged MappingSetDataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Inject metadata of msdf into df</span>
-    <span class="n">msdf1</span> <span class="o">=</span> <span class="n">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf1</span><span class="p">)</span>
-    <span class="n">msdf2</span> <span class="o">=</span> <span class="n">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf2</span><span class="p">)</span>
-
-    <span class="n">msdf1</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">_extract_enum_text</span><span class="p">(</span><span class="n">msdf1</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-    <span class="n">msdf2</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">_extract_enum_text</span><span class="p">(</span><span class="n">msdf2</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-
     <span class="n">merged_msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="p">()</span>
-    <span class="c1"># If msdf2 has a DataFrame</span>
-    <span class="k">if</span> <span class="n">msdf1</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">msdf2</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># &#39;outer&#39; join in pandas == FULL JOIN in SQL</span>
-        <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">msdf1</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">msdf2</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">msdf1</span><span class="o">.</span><span class="n">df</span>
+
+    <span class="c1"># Inject metadata of msdf into df</span>
+    <span class="n">msdf_with_meta</span> <span class="o">=</span> <span class="p">[</span><span class="n">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdfs</span><span class="p">]</span>
+
+    <span class="c1"># merge df [# &#39;outer&#39; join in pandas == FULL JOIN in SQL]</span>
+    <span class="n">df_merged</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">left</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">right</span><span class="p">,</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="n">_extract_enum_text</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df_merged</span>
 
     <span class="c1"># merge the non DataFrame elements</span>
-    <span class="n">merged_msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">dict_merge</span><span class="p">(</span>
-        <span class="n">source</span><span class="o">=</span><span class="n">msdf2</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span>
-        <span class="n">target</span><span class="o">=</span><span class="n">msdf1</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span>
-        <span class="n">dict_name</span><span class="o">=</span><span class="s2">&quot;prefix_map&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># After a Slack convo with @matentzn, commented out below.</span>
-    <span class="c1"># merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, &#39;metadata&#39;)</span>
-
-    <span class="sd">&quot;&quot;&quot;if inplace:</span>
-<span class="sd">            msdf1.prefix_map = merged_msdf.prefix_map</span>
-<span class="sd">            msdf1.metadata = merged_msdf.metadata</span>
-<span class="sd">            msdf1.df = merged_msdf.df&quot;&quot;&quot;</span>
+    <span class="n">prefix_map_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span><span class="p">]</span>
+    <span class="c1"># prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}</span>
+    <span class="n">merged_msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ChainMap</span><span class="p">(</span><span class="o">*</span><span class="n">prefix_map_list</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">reconcile</span><span class="p">:</span>
         <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
@@ -751,29 +743,29 @@
     <span class="k">return</span> <span class="n">return_df</span></div>
 
 
-<div class="viewcode-block" id="dict_merge"><a class="viewcode-back" href="../../sssom.html#sssom.util.dict_merge">[docs]</a><span class="k">def</span> <span class="nf">dict_merge</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">source</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">target</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">dict_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Merge two dictionaries with a certain structure.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">target</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-                <span class="n">target</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">common_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="n">v</span><span class="p">]</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Value [</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">] is present in </span><span class="si">{</span><span class="n">dict_name</span><span class="si">}</span><span class="s2"> for multiple keys [</span><span class="si">{</span><span class="n">common_values</span><span class="si">}</span><span class="s2">].&quot;</span>
-                <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">target</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dict_name</span><span class="si">}</span><span class="s2"> values in both MappingSetDataFrames for the same key [</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">] are different.&quot;</span>
-            <span class="p">)</span>
-    <span class="k">return</span> <span class="n">target</span></div>
+<span class="c1"># def dict_merge(</span>
+<span class="c1">#     *,</span>
+<span class="c1">#     source: Optional[Dict[str, Any]] = None,</span>
+<span class="c1">#     target: Dict[str, Any],</span>
+<span class="c1">#     dict_name: str,</span>
+<span class="c1"># ) -&gt; Dict[str, Any]:</span>
+<span class="c1">#     &quot;&quot;&quot;Merge two dictionaries with a certain structure.&quot;&quot;&quot;</span>
+<span class="c1">#     if source is None:</span>
+<span class="c1">#         return target</span>
+<span class="c1">#     for k, v in source.items():</span>
+<span class="c1">#         if k not in target:</span>
+<span class="c1">#             if v not in list(target.values()):</span>
+<span class="c1">#                 target[k] = v</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 common_values = [i for i, val in target.items() if val == v]</span>
+<span class="c1">#                 raise ValueError(</span>
+<span class="c1">#                     f&quot;Value [{v}] is present in {dict_name} for multiple keys [{common_values}].&quot;</span>
+<span class="c1">#                 )</span>
+<span class="c1">#         elif target[k] != v:</span>
+<span class="c1">#             raise ValueError(</span>
+<span class="c1">#                 f&quot;{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different.&quot;</span>
+<span class="c1">#             )</span>
+<span class="c1">#     return target</span>
 
 
 <div class="viewcode-block" id="inject_metadata_into_df"><a class="viewcode-back" href="../../sssom.html#sssom.util.inject_metadata_into_df">[docs]</a><span class="k">def</span> <span class="nf">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>

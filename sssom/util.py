@@ -7,10 +7,12 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
+from functools import reduce
 from io import StringIO
 from pathlib import Path
 from typing import (
     Any,
+    ChainMap,
     DefaultDict,
     Dict,
     List,
@@ -29,9 +31,11 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
+from .constants import SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
-from .sssom_datamodel import PredicateModifierEnum, slots
+from .sssom_datamodel import Mapping as SSSOM_Mapping
+from .sssom_datamodel import MatchTypeEnum, PredicateModifierEnum, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -69,6 +73,7 @@ MAPPING_PROVIDER = "mapping_provider"
 MATCH_TYPE = "match_type"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 MAPPING_SET_ID = "mapping_set_id"
+MAPPING_SET_SOURCE = "mapping_set_source"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
@@ -86,22 +91,23 @@ class MappingSetDataFrame:
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
     def merge(
-        self, msdf2: "MappingSetDataFrame", inplace: bool = True
+        self, *msdfs: "MappingSetDataFrame", inplace: bool = True
     ) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
 
-        :param msdf2: Secondary MappingSetDataFrame (self => primary)
+        :param msdfs: Multiple/Single MappingSetDataFrame(s) to merge with self
         :param inplace: If true, msdf2 is merged into the calling MappingSetDataFrame,
                         if false, it simply return the merged data frame.
         :return: Merged MappingSetDataFrame
         """
-        msdf = merge_msdf(msdf1=self, msdf2=msdf2)
+        msdf = merge_msdf(self, *msdfs)
         if inplace:
             self.df = msdf.df
             self.prefix_map = msdf.prefix_map
             self.metadata = msdf.metadata
-            # FIXME should return self if inplace
-        return msdf
+            return self
+        else:
+            return msdf
 
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
@@ -215,8 +221,6 @@ def filter_redundant_rows(
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
     :return: Filtered pandas DataFrame
     """
-    # enum text extraction
-    df = _extract_enum_text(df)
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
@@ -254,6 +258,8 @@ def filter_redundant_rows(
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
     return_df = df.append(nan_df).drop_duplicates()
+    if return_df[CONFIDENCE].isnull().all():
+        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
 
 
@@ -266,12 +272,15 @@ def assign_default_confidence(
     :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
     """
     # Get rows having numpy.NaN as confidence
-    if df is not None and "confidence" not in df.columns:
-        df["confidence"] = np.NaN
-
-    nan_df = df[df["confidence"].isna()]
-    if nan_df is None:
-        nan_df = pd.DataFrame(columns=df.columns)
+    if df is not None:
+        if CONFIDENCE not in df.columns:
+            df[CONFIDENCE] = np.NaN
+            nan_df = pd.DataFrame(columns=df.columns)
+        else:
+            df = df[~df[CONFIDENCE].isna()]
+            nan_df = df[df[CONFIDENCE].isna()]
+    else:
+        ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
     return df, nan_df
 
 
@@ -466,32 +475,13 @@ def sha256sum(path: str) -> str:
     return h.hexdigest()
 
 
-def _extract_enum_text(df: pd.DataFrame) -> pd.DataFrame:
-    # Enums are of the form: (text: "xxx", description: "yyy").
-    # In this case only the value of 'text' as a str is needed.
-    # For starters only addressing PREDICATE_MODIFIER column
-
-    enum_resolved_df = pd.DataFrame(columns=df.columns)
-
-    for row in df.iterrows():
-        if isinstance(row[1][PREDICATE_MODIFIER], PredicateModifierEnum):
-            row[1][PREDICATE_MODIFIER] = row[1][PREDICATE_MODIFIER].code.text
-        else:
-            row[1][PREDICATE_MODIFIER] = ""
-
-        enum_resolved_df = pd.concat([enum_resolved_df, row[1].to_frame().T])
-    return enum_resolved_df
-
-
 def merge_msdf(
-    msdf1: MappingSetDataFrame,
-    msdf2: MappingSetDataFrame,
+    *msdfs: MappingSetDataFrame,
     reconcile: bool = True,
 ) -> MappingSetDataFrame:
-    """Merge msdf2 into msdf1.
+    """Merge multiple MappingSetDataFrames into one.
 
-    :param msdf1: The primary MappingSetDataFrame
-    :param msdf2: The secondary MappingSetDataFrame
+    :param msdfs: A Tuple of MappingSetDataFrames to be merged
     :param reconcile: If reconcile=True, then dedupe(remove redundant lower confidence mappings)
         and reconcile (if msdf contains a higher confidence _negative_ mapping,
         then remove lower confidence positive one. If confidence is the same,
@@ -499,40 +489,28 @@ def merge_msdf(
         Defaults to True.
     :returns: Merged MappingSetDataFrame.
     """
-    # Inject metadata of msdf into df
-    msdf1 = inject_metadata_into_df(msdf=msdf1)
-    msdf2 = inject_metadata_into_df(msdf=msdf2)
-
-    msdf1.df = _extract_enum_text(msdf1.df)
-    msdf2.df = _extract_enum_text(msdf2.df)
-
     merged_msdf = MappingSetDataFrame()
-    # If msdf2 has a DataFrame
-    if msdf1.df is not None and msdf2.df is not None:
-        # 'outer' join in pandas == FULL JOIN in SQL
-        merged_msdf.df = msdf1.df.merge(msdf2.df, how="outer")
-    else:
-        merged_msdf.df = msdf1.df
+
+    # Inject metadata of msdf into df
+    msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
+
+    # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
+    df_merged = reduce(
+        lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
+        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    )
 
     # merge the non DataFrame elements
-    merged_msdf.prefix_map = dict_merge(
-        source=msdf2.prefix_map,
-        target=msdf1.prefix_map,
-        dict_name="prefix_map",
-    )
-    # After a Slack convo with @matentzn, commented out below.
-    # merged_msdf.metadata = dict_merge(msdf2.metadata, msdf1.metadata, 'metadata')
-
-    """if inplace:
-            msdf1.prefix_map = merged_msdf.prefix_map
-            msdf1.metadata = merged_msdf.metadata
-            msdf1.df = merged_msdf.df"""
-
+    prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
+    # prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}
+    merged_msdf.prefix_map = dict(ChainMap(*prefix_map_list))
+    merged_msdf.df = df_merged
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         if PREDICATE_MODIFIER in merged_msdf.df.columns:
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
+    # TODO: Add default values for license and mapping_set_id.
     return merged_msdf
 
 
@@ -561,14 +539,12 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
         #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
     """
-    df = _extract_enum_text(df)
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     df, nan_df = assign_default_confidence(df)
-
     if df is None:
         raise ValueError(
-            "The dataframe, after assigning default confidence, appears empty (deal_with_negation"
+            "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
         )
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
@@ -655,55 +631,16 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
-    reconciled_df = pd.DataFrame(columns=df.columns)
+    reconciled_df = df.merge(
+        reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
+    ).fillna("")
 
-    for _, row_3 in reconciled_df_subset.iterrows():
-        if PREDICATE_MODIFIER in reconciled_df_subset.columns:
-            match_condition_3 = (
-                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
-                & (df[OBJECT_ID] == row_3[OBJECT_ID])
-                & (df[CONFIDENCE] == row_3[CONFIDENCE])
-                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
-                & (df[PREDICATE_MODIFIER] == row_3[PREDICATE_MODIFIER])
-            )
-        else:
-            match_condition_3 = (
-                (df[SUBJECT_ID] == row_3[SUBJECT_ID])
-                & (df[OBJECT_ID] == row_3[OBJECT_ID])
-                & (df[CONFIDENCE] == row_3[CONFIDENCE])
-                & (df[PREDICATE_ID] == row_3[PREDICATE_ID])
-            )
+    if nan_df.empty:
+        return_df = reconciled_df
+    else:
+        return_df = reconciled_df.append(nan_df).drop_duplicates()
 
-        reconciled_df = reconciled_df.append(
-            df.loc[match_condition_3[match_condition_3].index, :]
-        )
-    return_df = reconciled_df.append(nan_df).drop_duplicates()
     return return_df
-
-
-def dict_merge(
-    *,
-    source: Optional[Dict[str, Any]] = None,
-    target: Dict[str, Any],
-    dict_name: str,
-) -> Dict[str, Any]:
-    """Merge two dictionaries with a certain structure."""
-    if source is None:
-        return target
-    for k, v in source.items():
-        if k not in target:
-            if v not in list(target.values()):
-                target[k] = v
-            else:
-                common_values = [i for i, val in target.items() if val == v]
-                raise ValueError(
-                    f"Value [{v}] is present in {dict_name} for multiple keys [{common_values}]."
-                )
-        elif target[k] != v:
-            raise ValueError(
-                f"{dict_name} values in both MappingSetDataFrames for the same key [{k}] are different."
-            )
-    return target
 
 
 def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
@@ -713,9 +650,16 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
     :return: MappingSetDataFrame with metadata as columns
     """
+    # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
+    with open(SCHEMA_YAML) as file:
+        schema = yaml.safe_load(file)
+    slots = schema["classes"]["mapping"]["slots"]
+
     if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
-            if k not in msdf.df.columns:
+            if k not in msdf.df.columns and k in slots:
+                if k == MAPPING_SET_ID:
+                    k = MAPPING_SET_SOURCE
                 msdf.df[k] = v
     return msdf
 
@@ -822,6 +766,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     return meta
 
 
+# to_mapping_set_document is in parser.py in order to avoid circular import errors
 def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     """Convert MappingSetDocument into MappingSetDataFrame.
 
@@ -831,17 +776,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     data = []
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
-            mdict = mapping.__dict__
-            m = {}
-            for key in mdict:
-                if mdict[key]:
-                    # Crude way of populating data. May need to revisit.
-                    if key == "match_type":
-                        if not isinstance(mdict[key], str):
-                            mdict[key] = "|".join(
-                                enum_value.code.text for enum_value in mdict[key]
-                            )
-                    m[key] = mdict[key]
+            m = get_dict_from_mapping(mapping)
             data.append(m)
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
@@ -850,7 +785,26 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return msdf
 
 
-# to_mapping_set_document is in parser.py in order to avoid circular import errors
+def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
+    """
+    Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
+
+    :param map_obj: Mapping object
+    :return: Dictionary
+    """
+    map_dict = {}
+    for property in map_obj:
+        if isinstance(map_obj[property], list):
+            map_dict[property] = "|".join(
+                enum_value.code.text
+                for enum_value in map_obj[property]
+                if type(enum_value).__name__ == MatchTypeEnum._defn.name
+            )
+        elif type(map_obj[property]).__name__ == PredicateModifierEnum._defn.name:
+            map_dict[property] = map_obj[property].code.text
+        else:
+            map_dict[property] = map_obj[property]
+    return map_dict
 
 
 class NoCURIEException(ValueError):

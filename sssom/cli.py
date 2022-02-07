@@ -15,7 +15,7 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Sequence, TextIO, Tuple
+from typing import Dict, List, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -111,7 +111,7 @@ def convert(input: str, output: TextIO, output_format: str):
     .. warning:: currently only supports conversion to RDF)
 
     Example:
-        sssom covert --input my.sssom.tsv --output-format rdfxml --output my.sssom.owl
+        sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl
     """  # noqa: DAR101
     convert_file(input_path=input, output=output, output_format=output_format)
 
@@ -424,27 +424,16 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: Sequence[str], output: TextIO, reconcile: bool = True):
-    """Merge msdf2 into msdf1.
+def merge(inputs: str, output: TextIO, reconcile: bool = True):
+    """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
-        reconcile (if msdf contains a higher confidence _negative_ mapping,
-        then remove lower confidence positive one. If confidence is the same,
-        prefer HumanCurated. If both HumanCurated, prefer negative mapping).
+    reconcile (if msdf contains a higher confidence _negative_ mapping,
+    then remove lower confidence positive one. If confidence is the same,
+    prefer HumanCurated. If both HumanCurated, prefer negative mapping).
     """  # noqa: DAR101
-    (input1, input2) = inputs[:2]
-    msdf1 = read_sssom_table(input1)
-    msdf2 = read_sssom_table(input2)
-    merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
-
-    # If > 2 input files, iterate through each one
-    # and merge them into the merged file above
-    if len(inputs) > 2:
-        for input_file in inputs[2:]:
-            msdf1 = merged_msdf
-            msdf2 = read_sssom_table(input_file)
-            merged_msdf = merge_msdf(msdf1, msdf2, reconcile)
-
+    msdfs = [read_sssom_table(i) for i in inputs]
+    merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
     # Export MappingSetDataFrame into a TSV
     write_table(merged_msdf, output)
 
