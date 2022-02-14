@@ -1,5 +1,5 @@
 # Auto generated from sssom.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-12-01T14:30:38
+# Generation date: 2022-02-14T15:33:42
 # Schema: sssom
 #
 # id: http://w3id.org/sssom/schema/
@@ -43,6 +43,7 @@ from linkml_runtime.utils.yamlutils import (
 from rdflib import Namespace, URIRef
 
 metamodel_version = "1.7.0"
+version = None
 
 # Overwrite dataclasses _init_fn to add **kwargs in __init__
 dataclasses._init_fn = dataclasses_init_fn_with_kwargs
@@ -147,9 +148,12 @@ class MappingSet(YAMLRoot):
         if not isinstance(self.license, URI):
             self.license = URI(self.license)
 
-        self._normalize_inlined_as_list(
-            slot_name="mappings", slot_type=Mapping, key_name="subject_id", keyed=False
-        )
+        if not isinstance(self.mappings, list):
+            self.mappings = [self.mappings] if self.mappings is not None else []
+        self.mappings = [
+            v if isinstance(v, Mapping) else Mapping(**as_dict(v))
+            for v in self.mappings
+        ]
 
         if self.mapping_set_version is not None and not isinstance(
             self.mapping_set_version, str
@@ -921,6 +925,15 @@ slots.mapping_set_source = Slot(
     ],
 )
 
+slots.mapping_source = Slot(
+    uri=SSSOM.mapping_source,
+    name="mapping_source",
+    curie=SSSOM.curie("mapping_source"),
+    model_uri=SSSOM.mapping_source,
+    domain=None,
+    range=Optional[Union[str, EntityReference]],
+)
+
 slots.mapping_cardinality = Slot(
     uri=SSSOM.mapping_cardinality,
     name="mapping_cardinality",
@@ -1084,15 +1097,6 @@ slots.comment = Slot(
     name="comment",
     curie=RDFS.curie("comment"),
     model_uri=SSSOM.comment,
-    domain=None,
-    range=Optional[str],
-)
-
-slots.required = Slot(
-    uri=SSSOM.required,
-    name="required",
-    curie=SSSOM.curie("required"),
-    model_uri=SSSOM.required,
     domain=None,
     range=Optional[str],
 )
