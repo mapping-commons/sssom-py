@@ -62,7 +62,7 @@ def parse_file(
     metadata = set_default_license(metadata)
     parse_func = get_parsing_function(input_format, input_path)
     doc = parse_func(
-        input_path, prefix_map=metadata.prefix_map, meta=metadata.prefix_map
+        input_path, prefix_map=metadata.prefix_map, meta=metadata.metadata
     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
