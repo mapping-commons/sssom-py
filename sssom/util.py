@@ -69,12 +69,13 @@ from .typehints import Metadata, MetadataType, PrefixMap
 PREFIX_MAP_KEY = "curie_map"
 
 SSSOM_READ_FORMATS = [
-    "tsv",
-    "rdf",
+    "json",
     "owl",
+    "rdf",
+    "tsv",
     "alignment-api-xml",
     "obographs-json",
-    "json",
+    "snomed-icd10cm-map-tsv"
 ]
 SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir"]
 
