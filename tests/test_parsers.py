@@ -102,6 +102,7 @@ class TestParse(unittest.TestCase):
 
     def test_broken_obographs(self):
         """Test parsing OBO Graph JSON."""
+        self.prefix_map["OMIM"] = "http://omim.org/entry/"
         with self.assertRaises(ValueError):
             from_obographs(
                 jsondoc=self.broken_obographs,
