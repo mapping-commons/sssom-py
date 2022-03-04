@@ -854,7 +854,10 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
         uri_prefix = prefix_map[prefix]
         if uri.startswith(uri_prefix):
             remainder = uri.replace(uri_prefix, "")
-            return f"{prefix}:{remainder}"
+            curie = f"{prefix}:{remainder}"
+            if is_curie(curie):
+                return f"{prefix}:{remainder}"
+            # return f"{prefix}:{remainder}"
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 

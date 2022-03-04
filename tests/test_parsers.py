@@ -41,6 +41,10 @@ class TestParse(unittest.TestCase):
         self.obographs_file = f"{test_data_dir}/pato.json"
         with open(self.obographs_file) as json_file:
             self.obographs = json.load(json_file)
+        
+        self.broken_obograph_file = f"{test_data_dir}/omim.json"
+        with open(self.broken_obograph_file) as json_file:
+            self.broken_obographs = json.load(json_file)
 
         self.json_file = f"{test_data_dir}/basic.json"
         with open(self.json_file) as json_file:
@@ -94,6 +98,16 @@ class TestParse(unittest.TestCase):
             len(msdf.df),
             9878,
             f"{self.obographs_file} has the wrong number of mappings.",
+        )
+    
+    def test_broken_obographs(self):
+        """Test parsing OBO Graph JSON."""
+        
+        with self.assertRaises(ValueError):
+            msdf = from_obographs(
+            jsondoc=self.broken_obographs,
+            prefix_map=self.prefix_map,
+            meta=self.metadata,
         )
 
     def test_parse_tsv(self):
