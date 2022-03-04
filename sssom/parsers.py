@@ -20,8 +20,6 @@ from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-# TODO: PR comment: where matchtypeenum? can't find sssomschema, Mapping, or MappingSet. only MappingSetDataFrame
-# from .sssom_datamodel import Mapping, MappingSet, MatchTypeEnum
 from sssom_schema import Mapping, MappingSet
 
 
@@ -268,17 +266,21 @@ def parse_snomed_complex_map_tsv(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
+    filter_by_confident_mappings=True
 ) -> MappingSetDataFrame:
     """Parse special SNOMED ICD10CM mapping file and translates it into a MappingSetDataFrame.
 
-    :param file_path: The path to the obographs file
+    :param file_path: The path to the source file
     :param prefix_map: an optional prefix map
     :param meta: an optional dictionary of metadata elements
+    :param filter_by_confident_mappings: Will only include mapping rows where the `mapAdvice` field includes an 'ALWAYS
+      <code>' pattern.
     :return: A SSSOM MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
     df = read_pandas(file_path)
-    df2 = from_snomed_complex_map_tsv(df, prefix_map=prefix_map, meta=meta)
+    df2 = from_snomed_complex_map_tsv(
+        df, prefix_map=prefix_map, meta=meta, filter_by_confident_mappings=filter_by_confident_mappings)
     return df2
 
 
@@ -691,12 +693,15 @@ def from_snomed_complex_map_tsv(
     df: pd.DataFrame,
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
+    filter_by_confident_mappings=True
 ) -> MappingSetDataFrame:
     """Convert a snomed_icd10cm_map dataframe to a MappingSetDataFrame.
 
     :param df: A mappings dataframe
     :param prefix_map: A prefix map
     :param meta: A metadata dictionary
+    :param filter_by_confident_mappings: Will only include mapping rows where the `mapAdvice` field includes an 'ALWAYS
+      <code>' pattern.
     :return: MappingSetDataFrame
 
     # Field descriptions
@@ -730,11 +735,23 @@ def from_snomed_complex_map_tsv(
     - mapCategoryId,SctId,Identifies the SNOMED CT concept in the metadata hierarchy which is the MapCategory for the
     associated map record. This is a subtype of 447634004 |ICD-10 Map Category value|.,
     """
+    # Local variables
     # https://www.findacode.com/snomed/447561005--snomed-ct-source-code-to-target-map-correlation-not-specified.html
-    match_type_snomed_unspecified_id = 447561005
+    mapping_justification_snomed_unspecified_id = 447561005
+    # - Note: joeflack4: I used this info as a reference for this pattern.
+    # https://www.medicalbillingandcoding.org/icd-10-cm/#:~:text=ICD%2D10%2DCM%20is%20a,decimal%20point%20and%20the%20subcategory.
+    always_confidence_pattern = 'ALWAYS [A-Z]{1}[0-9]{1,2}\.[0-9A-Z]{1,4}'
+    always_confidence_antipattern = always_confidence_pattern + '\?'
     prefix_map = _ensure_prefix_map(prefix_map)
     ms = _init_mapping_set(meta)
 
+    # Filtering
+    if filter_by_confident_mappings:
+        df = df[
+            (df['mapAdvice'].str.contains(always_confidence_pattern, regex=True, na=False)) &
+            (~df['mapAdvice'].str.contains(always_confidence_antipattern, regex=True, na=False))]
+
+    # Map mappings
     mlist: List[Mapping] = []
     for _, row in df.iterrows():
         mdict = {
@@ -766,16 +783,20 @@ def from_snomed_complex_map_tsv(
             'object_id': f'ICD10CM:{row["mapTarget"]}',
             'object_label': row['mapTargetName'],
 
-            # match_type <- mapRule?
+            # mapping_justification <- mapRule?
             #   ex: TRUE: when "ALWAYS <code>" is in pipe-delimited list in mapAdvice, this always shows TRUE. Does this
             #       mean I could use skos:exactMatch in these cases?
-            # match_type <- correlationId?: This may look redundant, but I want to be explicit. In officially downloaded
+            # mapping_justification <- correlationId?: This may look redundant, but I want to be explicit. In officially downloaded
             #   SNOMED mappings, all of them had correlationId of 447561005, which also happens to be 'unspecified'.
             #   If correlationId is indeed more appropriate for predicate_id, then I don't think there is a representative
-            #   field for 'match_type'.
-            'match_type': MatchTypeEnum('Unspecified') if row['correlationId'] == match_type_snomed_unspecified_id \
-                else  MatchTypeEnum('Unspecified'),
-
+            #   field for 'mapping_justification'.
+            # TODO: How to properly get mapping_justification?
+            # I think I need to use sssom_schema.slots.mapping_justification, but not sure how to use.
+            # slots.mapping_justification = Slot(uri=SSSOM.mapping_justification, name="mapping_justification", curie=SSSOM.curie('mapping_justification'),
+            #                    model_uri=SSSOM.mapping_justification, domain=None, range=Union[str, EntityReference],
+            #                    pattern=re.compile(r'^semapv:(MappingReview|ManualMappingCuration|LogicalReasoning|LexicalMatching|CompositeMatching|UnspecifiedMatching|SemanticSimilarityThresholdMatching|LexicalSimilarityThresholdMatching|MappingChaining)$'))
+            'mapping_justification':
+                'Unspecified' if row['correlationId'] == mapping_justification_snomed_unspecified_id else 'Unspecified',
             'mapping_date': date_parser.parse(str(row['effectiveTime'])).date(),
             'other': '|'.join([f'{k}={str(row[k])}' for k in [
                 'id',
