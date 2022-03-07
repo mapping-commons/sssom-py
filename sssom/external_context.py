@@ -298,7 +298,7 @@ sssom_external_context = """
         "OHMI": "http://purl.obolibrary.org/obo/OHMI_",
         "OHPI": "http://purl.obolibrary.org/obo/OHPI_",
         "OMIABIS": "http://purl.obolibrary.org/obo/OMIABIS_",
-        "OMIM": "http://omim.org/entry/",
+        "OMIM": "https://omim.org/entry/",
         "OMIMPS": "https://omim.org/phenotypicSeries/",
         "OMIT": "http://purl.obolibrary.org/obo/OMIT_",
         "OMO": "http://purl.obolibrary.org/obo/OMO_",
