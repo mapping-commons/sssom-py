@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
@@ -24,7 +25,6 @@ from typing import (
     Union,
 )
 from urllib.request import urlopen
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -783,7 +783,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     # The following 3 lines are to remove columns
     # where all values are blank.
     df = df.replace("", np.nan)
-    df.dropna(axis=1, how='all', inplace=True)
+    df.dropna(axis=1, how="all", inplace=True)
     df = df.replace(np.nan, "")
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
