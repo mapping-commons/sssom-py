@@ -24,6 +24,7 @@ from typing import (
     Union,
 )
 from urllib.request import urlopen
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -779,6 +780,11 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
             m = get_dict_from_mapping(mapping)
             data.append(m)
     df = pd.DataFrame(data=data)
+    # The following 3 lines are to remove columns
+    # where all values are blank.
+    df = df.replace("", np.nan)
+    df.dropna(axis=1, how='all', inplace=True)
+    df = df.replace(np.nan, "")
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
@@ -794,7 +800,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     """
     map_dict = {}
     for property in map_obj:
-        if isinstance(map_obj[property], list) and len(map_obj[property]) > 0:
+        if isinstance(map_obj[property], list):
             map_dict[property] = "|".join(
                 enum_value.code.text
                 for enum_value in map_obj[property]
@@ -857,6 +863,9 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
             curie = f"{prefix}:{remainder}"
             if is_curie(curie):
                 return f"{prefix}:{remainder}"
+            else:
+                warnings.warn(f"{prefix}:{remainder} is not a CURIE ... skipping")
+                break
             # return f"{prefix}:{remainder}"
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
