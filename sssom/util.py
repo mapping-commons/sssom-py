@@ -24,8 +24,6 @@ from typing import (
     Union,
 )
 from urllib.request import urlopen
-import warnings
-
 import numpy as np
 import pandas as pd
 import validators
@@ -863,9 +861,8 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
             if is_curie(curie):
                 return f"{prefix}:{remainder}"
             else:
-                warnings.warn(f"{prefix}:{remainder} is not a CURIE ... skipping")
+                logging.warning(f"{prefix}:{remainder} is not a CURIE ... skipping")
                 break
-            # return f"{prefix}:{remainder}"
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
