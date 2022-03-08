@@ -862,7 +862,7 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
                 return f"{prefix}:{remainder}"
             else:
                 logging.warning(f"{prefix}:{remainder} is not a CURIE ... skipping")
-                break
+                continue
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
