@@ -61,8 +61,9 @@ def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") ->
     lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep=sep, index=False)
     lines = lines + [s]
-    for line in lines:
-        print(line, file=file)
+    with open(file, 'w') as f:
+        for line in lines:
+            print(line, file=f)
 
 
 def write_rdf(
