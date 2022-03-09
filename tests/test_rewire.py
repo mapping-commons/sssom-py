@@ -29,4 +29,4 @@ class TestRewire(unittest.TestCase):
         n = rewire_graph(self.graph, self.mset, precedence=["PR"])
         print(f"Num changed = {n}")
         with open(test_out_dir / "rewired-cob.ttl", "w") as stream:
-            stream.write(self.graph.serialize(format="turtle").decode())
+            stream.write(self.graph.serialize(format="turtle"))
