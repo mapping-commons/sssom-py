@@ -414,6 +414,12 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
             predicate_type = PREDICATE_SIBLING
         elif predicate == "dbpedia-owl:different":
             predicate_type = PREDICATE_SIBLING
+        # * Added by H2 ############################
+        elif predicate == "oboInOwl:hasDbXref":
+            predicate_type = PREDICATE_HAS_DBXREF
+        elif predicate == "skos:relatedMatch":
+            predicate_type = PREDICATE_RELATED_MATCH
+        # * ########################################
         else:
             raise ValueError(f"Unhandled predicate: {predicate}")
 
@@ -445,6 +451,22 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
                 inverse_confidence,
                 confidence,
             )
+        # * Added by H2 ############################
+        elif predicate_type == PREDICATE_HAS_DBXREF:
+            ps = (
+                residual_confidence,
+                residual_confidence,
+                inverse_confidence,
+                confidence,
+            )
+        elif predicate_type == PREDICATE_RELATED_MATCH:
+            ps = (
+                residual_confidence,
+                residual_confidence,
+                inverse_confidence,
+                confidence,
+            )
+        # * #########################################
         else:
             raise ValueError(f"predicate: {predicate_type}")
         row = [subject_id, object_id] + [str(p) for p in ps]
@@ -456,6 +478,10 @@ PREDICATE_SUBCLASS = 0
 PREDICATE_SUPERCLASS = 1
 PREDICATE_EQUIVALENT = 2
 PREDICATE_SIBLING = 3
+# * Added by H2 ############################
+PREDICATE_HAS_DBXREF = 4
+PREDICATE_RELATED_MATCH = 5
+# * ########################################
 
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
