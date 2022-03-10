@@ -191,7 +191,7 @@ def ptable(input, output: TextIO, inverse_factor):
     df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
-    for row in rows:
+    for row in rows.iterrows():
         print(row, sep="\t", file=output)
 
 
