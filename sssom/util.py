@@ -384,7 +384,7 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
     :return: List of rows
     """
     df = collapse(df)
-    rows = pd.DataFrame()
+    rows = []
     for _, row in df.iterrows():
         subject_id = row[SUBJECT_ID]
         object_id = row[OBJECT_ID]
@@ -469,10 +469,8 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
         # * #########################################
         else:
             raise ValueError(f"predicate: {predicate_type}")
-        row = pd.DataFrame(
-            data=[subject_id, object_id] + [str(p) for p in ps]
-        ).transpose()
-        rows = pd.concat([rows, row], axis=0, ignore_index=True)
+        row = [subject_id, object_id] + [str(p) for p in ps]
+        rows.append(row)
     return rows
 
 
