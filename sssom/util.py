@@ -469,7 +469,9 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
         # * #########################################
         else:
             raise ValueError(f"predicate: {predicate_type}")
-        row = pd.DataFrame(data=[subject_id, object_id] + [str(p) for p in ps]).transpose()
+        row = pd.DataFrame(
+            data=[subject_id, object_id] + [str(p) for p in ps]
+        ).transpose()
         rows = pd.concat([rows, row], axis=0, ignore_index=True)
     return rows
 
