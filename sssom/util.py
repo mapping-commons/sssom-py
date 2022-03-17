@@ -1075,7 +1075,8 @@ def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict 
             df[update_columns] = df[update_columns]\
                                 .replace(k+":", v+":", regex=True)
 
-        msdf.df = df
+    msdf.df = df
+    msdf.prefix_map = prefix_map
     
     #TODO: When expansion of 2 prefixes in the prefix_map are the same.
     return msdf
