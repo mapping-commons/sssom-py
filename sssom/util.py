@@ -1023,13 +1023,24 @@ def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict 
     prefix_synonyms = prefix_reconciliation['prefix_synonyms']
     prefix_expansion = prefix_reconciliation['prefix_expansion_reconciliation']
 
+    # The prefix exists but the expansion needs to be updated.
     expansion_replace = {
                             k:v for k, v in prefix_expansion.items() 
                             if k in prefix_map.keys() 
                             and v != prefix_map[k]
                         }
+
     # Updates expansions in prefix_map
     prefix_map.update(expansion_replace)
+
+    # Prefixes that need to be replaced
+    # IF condition:
+    #   1. Key and Value in prefix_synonyms are NOT keys in prefix_map
+    #       e.g.: ICD10: ICD10CM - both should not be present within 
+    #           the prefix_map.
+    #   AND
+    #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
+    #      In other words, the existing expansion do not match the YAML.
     prefix_replace = [
                         k for k,v in prefix_synonyms.items() \
                         if not (k in prefix_map.keys() 
@@ -1065,6 +1076,6 @@ def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict 
                                 .replace(k+":", v+":", regex=True)
 
         msdf.df = df
-
+    
     #TODO: When expansion of 2 prefixes in the prefix_map are the same.
     return msdf
