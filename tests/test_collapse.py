@@ -1,7 +1,7 @@
 """Test various grouping functionalities."""
 
 import unittest
-
+import yaml
 from pandasql import sqldf
 
 from sssom import (
@@ -91,4 +91,13 @@ class TestCollapse(unittest.TestCase):
         msdf = read_sssom_table(data_dir / "basic3.tsv")
 
         recon_msdf = reconcile_prefix_and_data(msdf, prefix_recon_yaml)
-        import pdb; pdb.set_trace()
+
+        with open(prefix_recon_yaml, "r") as pref_rec:
+            prefix_reconciliation = yaml.safe_load(pref_rec)
+            
+        prefix_expansion = prefix_reconciliation['prefix_expansion_reconciliation']
+        
+        for pfx, exp in prefix_expansion.items():
+            if pfx in recon_msdf.prefix_map.keys():
+                self.assertEqual(recon_msdf.prefix_map[pfx], exp)
+
