@@ -31,10 +31,10 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import SCHEMA_YAML, PREFIX_RECON_YAML
+from .constants import PREFIX_RECON_YAML, SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
-from .sssom_datamodel import EntityReference, Mapping as SSSOM_Mapping
+from .sssom_datamodel import Mapping as SSSOM_Mapping
 from .sssom_datamodel import MatchTypeEnum, PredicateModifierEnum, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -1001,7 +1001,10 @@ def is_multivalued_slot(slot: str) -> bool:
 
     return slot in multivalued_slots
 
-def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict = PREFIX_RECON_YAML)->MappingSetDataFrame:
+
+def reconcile_prefix_and_data(
+    msdf: MappingSetDataFrame, prefix_recon_yaml: str = PREFIX_RECON_YAML
+) -> MappingSetDataFrame:
     """Reconciles prefix_map and translates CURIE switch in dataframe.
 
     :param msdf: Mapping Set DataFrame.
@@ -1011,24 +1014,23 @@ def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict 
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
 
-    
     prefix_map = msdf.prefix_map
-    df = msdf.df
+    df:pd.DataFrame = msdf.df
     data_switch_dict = dict()
-    
+
     # Read recon file
-    with open(prefix_recon_yaml, "r") as pref_rec:
+    with open(prefix_recon_yaml) as pref_rec:
         prefix_reconciliation = yaml.safe_load(pref_rec)
-        
-    prefix_synonyms = prefix_reconciliation['prefix_synonyms']
-    prefix_expansion = prefix_reconciliation['prefix_expansion_reconciliation']
+
+    prefix_synonyms = prefix_reconciliation["prefix_synonyms"]
+    prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
 
     # The prefix exists but the expansion needs to be updated.
     expansion_replace = {
-                            k:v for k, v in prefix_expansion.items() 
-                            if k in prefix_map.keys() 
-                            and v != prefix_map[k]
-                        }
+        k: v
+        for k, v in prefix_expansion.items()
+        if k in prefix_map.keys() and v != prefix_map[k]
+    }
 
     # Updates expansions in prefix_map
     prefix_map.update(expansion_replace)
@@ -1036,18 +1038,18 @@ def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict 
     # Prefixes that need to be replaced
     # IF condition:
     #   1. Key and Value in prefix_synonyms are NOT keys in prefix_map
-    #       e.g.: ICD10: ICD10CM - both should not be present within 
+    #       e.g.: ICD10: ICD10CM - both should not be present within
     #           the prefix_map.
     #   AND
     #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
     #      In other words, the existing expansion do not match the YAML.
     prefix_replace = [
-                        k for k,v in prefix_synonyms.items() \
-                        if not (k in prefix_map.keys() 
-                        and v in prefix_map.keys()) and 
-                        v not in expansion_replace.keys()
-                    ]
-    
+        k
+        for k, v in prefix_synonyms.items()
+        if not (k in prefix_map.keys() and v in prefix_map.keys())
+        and v not in expansion_replace.keys()
+    ]
+
     if len(prefix_replace) > 0:
         for pr in prefix_replace:
             correct_prefix = prefix_synonyms[pr]
@@ -1067,16 +1069,16 @@ def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict 
             schema = yaml.safe_load(file)
         slots = schema["slots"]
         entity_reference_columns = [
-            k for k, v in slots.items() 
-            if v['range'] == "EntityReference" 
+            k for k, v in slots.items() if v["range"] == "EntityReference"
         ]
         update_columns = [c for c in df.columns if c in entity_reference_columns]
         for k, v in data_switch_dict.items():
-            df[update_columns] = df[update_columns]\
-                                .replace(k+":", v+":", regex=True)
+            df[update_columns] = df[update_columns].replace(
+                k + ":", v + ":", regex=True
+            )
 
     msdf.df = df
     msdf.prefix_map = prefix_map
-    
-    #TODO: When expansion of 2 prefixes in the prefix_map are the same.
+
+    # TODO: When expansion of 2 prefixes in the prefix_map are the same.
     return msdf
