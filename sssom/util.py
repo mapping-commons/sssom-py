@@ -1015,7 +1015,7 @@ def reconcile_prefix_and_data(
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
 
     prefix_map = msdf.prefix_map
-    df:pd.DataFrame = msdf.df
+    df: pd.DataFrame = msdf.df
     data_switch_dict = dict()
 
     # Read recon file
