@@ -31,10 +31,10 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import SCHEMA_YAML
+from .constants import SCHEMA_YAML, PREFIX_RECON_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
-from .sssom_datamodel import Mapping as SSSOM_Mapping
+from .sssom_datamodel import EntityReference, Mapping as SSSOM_Mapping
 from .sssom_datamodel import MatchTypeEnum, PredicateModifierEnum, slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -456,15 +456,15 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
             ps = (
                 residual_confidence,
                 residual_confidence,
-                inverse_confidence,
                 confidence,
+                inverse_confidence,
             )
         elif predicate_type == PREDICATE_RELATED_MATCH:
             ps = (
                 residual_confidence,
                 residual_confidence,
-                inverse_confidence,
                 confidence,
+                inverse_confidence,
             )
         # * #########################################
         else:
@@ -1000,3 +1000,71 @@ def is_multivalued_slot(slot: str) -> bool:
     # return view.get_slot(slot).multivalued
 
     return slot in multivalued_slots
+
+def reconcile_prefix_and_data(msdf: MappingSetDataFrame, prefix_recon_yaml:dict = PREFIX_RECON_YAML)->MappingSetDataFrame:
+    """Reconciles prefix_map and translates CURIE switch in dataframe.
+
+    :param msdf: Mapping Set DataFrame.
+    :param prefix_recon_yaml: Prefix reconcilation YAML file
+    :return: Mapping Set DataFrame with reconciled prefix_map and data.
+    """
+    # Discussion about this found here:
+    # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
+
+    
+    prefix_map = msdf.prefix_map
+    df = msdf.df
+    data_switch_dict = dict()
+    
+    # Read recon file
+    with open(prefix_recon_yaml, "r") as pref_rec:
+        prefix_reconciliation = yaml.safe_load(pref_rec)
+        
+    prefix_synonyms = prefix_reconciliation['prefix_synonyms']
+    prefix_expansion = prefix_reconciliation['prefix_expansion_reconciliation']
+
+    expansion_replace = {
+                            k:v for k, v in prefix_expansion.items() 
+                            if k in prefix_map.keys() 
+                            and v != prefix_map[k]
+                        }
+    # Updates expansions in prefix_map
+    prefix_map.update(expansion_replace)
+    prefix_replace = [
+                        k for k,v in prefix_synonyms.items() \
+                        if not (k in prefix_map.keys() 
+                        and v in prefix_map.keys()) and 
+                        v not in expansion_replace.keys()
+                    ]
+    
+    if len(prefix_replace) > 0:
+        for pr in prefix_replace:
+            correct_prefix = prefix_synonyms[pr]
+            correct_expansion = prefix_expansion[correct_prefix]
+            prefix_map[correct_prefix] = correct_expansion
+            logging.info(f"Adding prefix_map {correct_prefix}: {correct_expansion}")
+            if pr in prefix_map.keys():
+                prefix_map.pop(pr, None)
+                data_switch_dict[pr] = correct_prefix
+
+                logging.warning(f"Replacing prefix {pr} with {correct_prefix}")
+
+    # Data editing
+    if len(data_switch_dict) > 0:
+        # Read schema file
+        with open(SCHEMA_YAML) as file:
+            schema = yaml.safe_load(file)
+        slots = schema["slots"]
+        entity_reference_columns = [
+            k for k, v in slots.items() 
+            if v['range'] == "EntityReference" 
+        ]
+        update_columns = [c for c in df.columns if c in entity_reference_columns]
+        for k, v in data_switch_dict.items():
+            df[update_columns] = df[update_columns]\
+                                .replace(k+":", v+":", regex=True)
+
+        msdf.df = df
+
+    #TODO: When expansion of 2 prefixes in the prefix_map are the same.
+    return msdf

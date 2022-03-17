@@ -11,8 +11,10 @@ from sssom import (
     filter_redundant_rows,
     group_mappings,
     parse,
+    reconcile_prefix_and_data
 )
-from tests.constants import data_dir
+from sssom.parsers import read_sssom_table
+from tests.constants import data_dir, prefix_recon_yaml
 
 
 class TestCollapse(unittest.TestCase):
@@ -82,3 +84,11 @@ class TestCollapse(unittest.TestCase):
         diff_df = diff.combined_dataframe
         print(len(diff_df.index))
         # print(diff_df[0:10])
+
+    def test_reconcile_prefix(self):
+        """Test curie reconciliation is performing as expected"""
+
+        msdf = read_sssom_table(data_dir / "basic3.tsv")
+
+        recon_msdf = reconcile_prefix_and_data(msdf, prefix_recon_yaml)
+        import pdb; pdb.set_trace()

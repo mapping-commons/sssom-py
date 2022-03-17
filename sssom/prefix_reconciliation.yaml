@@ -1,0 +1,4 @@
+prefix_synonyms:
+    ICD10: ICD10CM
+prefix_expansion_reconciliation:
+    ICD10CM: http://test.owl/
