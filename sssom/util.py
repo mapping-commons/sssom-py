@@ -1039,7 +1039,7 @@ def reconcile_prefix_and_data(
     #   AND
     #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
     #      In other words, the existing expansion do not match the YAML.
-    
+
     prefix_replace = [
         k
         for k, v in prefix_synonyms.items()
