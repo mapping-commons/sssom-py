@@ -1003,7 +1003,7 @@ def is_multivalued_slot(slot: str) -> bool:
 
 
 def reconcile_prefix_and_data(
-    msdf: MappingSetDataFrame, prefix_reconciliation: dict()
+    msdf: MappingSetDataFrame, prefix_reconciliation: dict
 ) -> MappingSetDataFrame:
     """Reconciles prefix_map and translates CURIE switch in dataframe.
 

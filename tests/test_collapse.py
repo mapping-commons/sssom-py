@@ -92,7 +92,7 @@ class TestCollapse(unittest.TestCase):
 
         with open(prefix_recon_yaml) as pref_rec:
             prefix_reconciliation = yaml.safe_load(pref_rec)
-        
+
         recon_msdf = reconcile_prefix_and_data(msdf, prefix_reconciliation)
 
         prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
