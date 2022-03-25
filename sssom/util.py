@@ -1033,16 +1033,17 @@ def reconcile_prefix_and_data(
 
     # Prefixes that need to be replaced
     # IF condition:
-    #   1. Key and Value in prefix_synonyms are NOT keys in prefix_map
-    #       e.g.: ICD10: ICD10CM - both should not be present within
+    #   1. Key OR Value in prefix_synonyms are keys in prefix_map
+    #       e.g.: ICD10: ICD10CM - either should be present within
     #           the prefix_map.
     #   AND
     #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
     #      In other words, the existing expansion do not match the YAML.
+    
     prefix_replace = [
         k
         for k, v in prefix_synonyms.items()
-        if not (k in prefix_map.keys() and v in prefix_map.keys())
+        if (k in prefix_map.keys() or v in prefix_map.keys())
         and v not in expansion_replace.keys()
     ]
 
