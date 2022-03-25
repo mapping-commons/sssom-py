@@ -31,7 +31,7 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import PREFIX_RECON_YAML, SCHEMA_YAML
+from .constants import SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
@@ -1003,12 +1003,12 @@ def is_multivalued_slot(slot: str) -> bool:
 
 
 def reconcile_prefix_and_data(
-    msdf: MappingSetDataFrame, prefix_recon_yaml: str = PREFIX_RECON_YAML
+    msdf: MappingSetDataFrame, prefix_reconciliation: dict()
 ) -> MappingSetDataFrame:
     """Reconciles prefix_map and translates CURIE switch in dataframe.
 
     :param msdf: Mapping Set DataFrame.
-    :param prefix_recon_yaml: Prefix reconcilation YAML file
+    :param prefix_reconciliation: Prefix reconcilation dictionary from a YAML file
     :return: Mapping Set DataFrame with reconciled prefix_map and data.
     """
     # Discussion about this found here:
@@ -1017,10 +1017,6 @@ def reconcile_prefix_and_data(
     prefix_map = msdf.prefix_map
     df: pd.DataFrame = msdf.df
     data_switch_dict = dict()
-
-    # Read recon file
-    with open(prefix_recon_yaml) as pref_rec:
-        prefix_reconciliation = yaml.safe_load(pref_rec)
 
     prefix_synonyms = prefix_reconciliation["prefix_synonyms"]
     prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
