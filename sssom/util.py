@@ -500,6 +500,7 @@ def merge_msdf(
     # )
     df_list = [msdf.df for msdf in msdf_with_meta if msdf.df is not None]
     df_merged = pd.concat(df_list, axis=0, ignore_index=True)
+    df_merged = df_merged.drop_duplicates()
 
     # merge the non DataFrame elements
     prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
