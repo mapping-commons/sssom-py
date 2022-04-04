@@ -194,6 +194,8 @@ def parse(filename: str) -> pd.DataFrame:
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """Collapse rows with same S/P/O and combines confidence."""
+    df[CONFIDENCE] = df[CONFIDENCE].replace('', np.nan)
+    df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     df2 = (
         df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE]
         .apply(max)
@@ -208,7 +210,7 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     :param df: SSSOM DataFrame to be sorted.
     :return: Sorted SSSOM DataFrame
     """
-    df.sort_values(by=sorted(df.columns), ascending=False, inplace=True)
+    df.astype(str).sort_values(by=sorted(df.columns), ascending=False, inplace=True)
     return df
 
 
@@ -231,6 +233,8 @@ def filter_redundant_rows(
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
+    df[CONFIDENCE] = df[CONFIDENCE].replace('', np.nan)
+    df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
     max_conf: Dict[Tuple[str, ...], float] = {}
     for _, row in dfmax.iterrows():
@@ -257,7 +261,7 @@ def filter_redundant_rows(
         ]
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
-    return_df = df.append(nan_df).drop_duplicates()
+    return_df = df.astype(str).append(nan_df).drop_duplicates()
     if return_df[CONFIDENCE].isnull().all():
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
@@ -497,7 +501,7 @@ def merge_msdf(
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
     df_merged = reduce(
         lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+        [msdf.df.astype(str) for msdf in msdf_with_meta if msdf.df is not None],
     )
 
     # merge the non DataFrame elements
@@ -571,8 +575,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         CONFIDENCE,
         MATCH_TYPE,
     ]
-    negation_subset = normalized_negation_df[columns_of_interest]
-    positive_subset = positive_df[columns_of_interest]
+    negation_subset = normalized_negation_df[columns_of_interest].astype(str)
+    positive_subset = positive_df[columns_of_interest].astype(str)
 
     combined_normalized_subset = pd.concat(
         [positive_subset, negation_subset]
@@ -631,7 +635,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
-    reconciled_df = df.merge(
+    reconciled_df = df.astype(str).merge(
         reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
     ).fillna("")
 
@@ -782,8 +786,8 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
     df.replace("", np.nan, inplace=True)
-    df= df.dropna(axis=1, how='all') # remove columns with all row = 'None'-s.
-    df.replace(np.nan,"", inplace=True)
+    df = df.dropna(axis=1, how="all")  # remove columns with all row = 'None'-s.
+    df.replace(np.nan, "", inplace=True)
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     return msdf
 
@@ -805,7 +809,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
                     if type(enum_value).__name__ == MatchTypeEnum._defn.name
                 )
             else:
-                map_dict[property] = map_obj[property]
+                map_dict[property] = map_obj[property][0]
         elif type(map_obj[property]).__name__ == PredicateModifierEnum._defn.name:
             map_dict[property] = map_obj[property].code.text
         else:

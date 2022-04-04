@@ -162,7 +162,7 @@ class TestParse(unittest.TestCase):
         input_path = os.path.join(test_data_dir, "basic.tsv")
         msdf = read_sssom_table(input_path)
         df = msdf.df
-        msdf.df = df[df["match_type"].str.contains("\\|")].reset_index()
+        msdf.df = df[df["match_type"].str.contains("\\|", na=False)].reset_index()
         old_match_type = msdf.df["match_type"]
         msdoc = to_mapping_set_document(msdf)
         new_msdf = to_mapping_set_dataframe(msdoc)
@@ -170,12 +170,17 @@ class TestParse(unittest.TestCase):
         self.assertTrue(old_match_type.equals(new_match_type))
 
     def test_read_sssom_table(self):
-        """Test read SSSOM method to validate import of all columns"""
-        input_path = os.path.join(test_data_dir, "basic3.tsv")
+        """Test read SSSOM method to validate import of all columns."""
+        input_path = os.path.join(test_data_dir, "basic.tsv")
         msdf = read_sssom_table(input_path)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t")
         self.assertEqual(set(imported_df.columns), set(msdf.df.columns))
-        list_cols = ["subject_match_field", "object_match_field", "match_string", "match_type"]
+        list_cols = [
+            "subject_match_field",
+            "object_match_field",
+            "match_string",
+            "match_type",
+        ]
         for idx, row in msdf.df.iterrows():
             for k, v in row.iteritems():
                 if v == "":
@@ -184,10 +189,9 @@ class TestParse(unittest.TestCase):
                     if k not in list_cols:
                         self.assertEqual(imported_df.iloc[idx][k], v)
                     elif k == "match_type":
-                        self.assertEqual(imported_df.iloc[idx][k],v[0].code.text)
+                        if "|" in v:
+                            self.assertEqual(imported_df.iloc[idx][k], v)
+                        else:
+                            self.assertEqual(imported_df.iloc[idx][k], v.code.text)
                     else:
-                        self.assertEqual(imported_df.iloc[idx][k],v[0])
-
-            
-
-        
+                        self.assertEqual(imported_df.iloc[idx][k], v)
