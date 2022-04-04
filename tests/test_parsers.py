@@ -1,6 +1,7 @@
 """Tests for parsers."""
 
 import json
+import math
 import os
 import unittest
 from xml.dom import minidom
@@ -167,3 +168,26 @@ class TestParse(unittest.TestCase):
         new_msdf = to_mapping_set_dataframe(msdoc)
         new_match_type = new_msdf.df["match_type"]
         self.assertTrue(old_match_type.equals(new_match_type))
+
+    def test_read_sssom_table(self):
+        """Test read SSSOM method to validate import of all columns"""
+        input_path = os.path.join(test_data_dir, "basic3.tsv")
+        msdf = read_sssom_table(input_path)
+        imported_df = pd.read_csv(input_path, comment="#", sep="\t")
+        self.assertEqual(set(imported_df.columns), set(msdf.df.columns))
+        list_cols = ["subject_match_field", "object_match_field", "match_string", "match_type"]
+        for idx, row in msdf.df.iterrows():
+            for k, v in row.iteritems():
+                if v == "":
+                    self.assertTrue(math.isnan(imported_df.iloc[idx][k]))
+                else:
+                    if k not in list_cols:
+                        self.assertEqual(imported_df.iloc[idx][k], v)
+                    elif k == "match_type":
+                        self.assertEqual(imported_df.iloc[idx][k],v[0].code.text)
+                    else:
+                        self.assertEqual(imported_df.iloc[idx][k],v[0])
+
+            
+
+        

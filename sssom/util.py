@@ -781,6 +781,9 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
+    df.replace("", np.nan, inplace=True)
+    df= df.dropna(axis=1, how='all') # remove columns with all row = 'None'-s.
+    df.replace(np.nan,"", inplace=True)
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     return msdf
 
@@ -795,11 +798,14 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     map_dict = {}
     for property in map_obj:
         if isinstance(map_obj[property], list):
-            map_dict[property] = "|".join(
-                enum_value.code.text
-                for enum_value in map_obj[property]
-                if type(enum_value).__name__ == MatchTypeEnum._defn.name
-            )
+            if len(map_obj[property]) != 1:
+                map_dict[property] = "|".join(
+                    enum_value.code.text
+                    for enum_value in map_obj[property]
+                    if type(enum_value).__name__ == MatchTypeEnum._defn.name
+                )
+            else:
+                map_dict[property] = map_obj[property]
         elif type(map_obj[property]).__name__ == PredicateModifierEnum._defn.name:
             map_dict[property] = map_obj[property].code.text
         else:
