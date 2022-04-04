@@ -193,8 +193,6 @@ def parse(filename: str) -> pd.DataFrame:
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """Collapse rows with same S/P/O and combines confidence."""
-    # df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
-    # df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     df2 = (
         df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE]
         .apply(max)
@@ -232,8 +230,6 @@ def filter_redundant_rows(
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
-    # df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
-    # df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
     max_conf: Dict[Tuple[str, ...], float] = {}
     for _, row in dfmax.iterrows():
@@ -717,8 +713,7 @@ def read_csv(
                 if not line.decode("utf-8").startswith(comment)
             ]
         )
-    df = pd.read_csv(StringIO(lines), sep=sep)
-    return df
+    return pd.read_csv(StringIO(lines), sep=sep)
 
 
 def read_metadata(filename: str) -> Metadata:

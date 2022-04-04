@@ -18,7 +18,7 @@ import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-from sssom.constants import SCHEMA_DICT
+from sssom.constants import MAPPING_SET_SLOTS, MAPPING_SLOTS, SCHEMA_DICT
 
 from .context import (
     DEFAULT_LICENSE,
@@ -188,8 +188,6 @@ def _get_mdict_ms_and_bad_attrs(
     row: pd.Series, ms: MappingSet, bad_attrs: Counter
 ) -> Tuple[dict, MappingSet, Counter]:
 
-    mapping_slots = SCHEMA_DICT["classes"]["mapping"]["slots"]
-    mapping_set_slots = SCHEMA_DICT["classes"]["mapping set"]["slots"]
     mdict = {}
 
     for k, v in row.items():
@@ -199,11 +197,11 @@ def _get_mdict_ms_and_bad_attrs(
                 k = str(k)
             v = _address_multivalued_slot(k, v)
             # if hasattr(Mapping, k):
-            if k in mapping_slots:
+            if k in MAPPING_SLOTS:
                 mdict[k] = v
                 ok = True
             # if hasattr(MappingSet, k):
-            if k in mapping_set_slots:
+            if k in MAPPING_SET_SLOTS:
                 ms[k] = v
                 ok = True
             if not ok:
