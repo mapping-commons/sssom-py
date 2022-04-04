@@ -6,6 +6,7 @@ import os
 import unittest
 from xml.dom import minidom
 
+import numpy as np
 import pandas as pd
 import yaml
 from rdflib import Graph
@@ -171,7 +172,7 @@ class TestParse(unittest.TestCase):
 
     def test_read_sssom_table(self):
         """Test read SSSOM method to validate import of all columns."""
-        input_path = os.path.join(test_data_dir, "basic.tsv")
+        input_path = os.path.join(test_data_dir, "basic3.tsv")
         msdf = read_sssom_table(input_path)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t")
         self.assertEqual(set(imported_df.columns), set(msdf.df.columns))
@@ -187,11 +188,11 @@ class TestParse(unittest.TestCase):
                     self.assertTrue(math.isnan(imported_df.iloc[idx][k]))
                 else:
                     if k not in list_cols:
-                        self.assertEqual(imported_df.iloc[idx][k], v)
-                    elif k == "match_type":
-                        if "|" in v:
-                            self.assertEqual(imported_df.iloc[idx][k], v)
+                        if v is np.nan:
+                            self.assertTrue(imported_df.iloc[idx][k] is v)
                         else:
-                            self.assertEqual(imported_df.iloc[idx][k], v.code.text)
+                            self.assertEqual(imported_df.iloc[idx][k], v)
+                    elif k == "match_type":
+                        self.assertEqual(imported_df.iloc[idx][k], v)
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)

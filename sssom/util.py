@@ -7,7 +7,6 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from functools import reduce
 from io import StringIO
 from pathlib import Path
 from typing import (
@@ -31,11 +30,11 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import SCHEMA_YAML
+from .constants import SCHEMA_DICT, SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
-from .sssom_datamodel import MatchTypeEnum, PredicateModifierEnum, slots
+from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -194,8 +193,8 @@ def parse(filename: str) -> pd.DataFrame:
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """Collapse rows with same S/P/O and combines confidence."""
-    df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
-    df[CONFIDENCE] = df[CONFIDENCE].astype(float)
+    # df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
+    # df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     df2 = (
         df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE]
         .apply(max)
@@ -210,7 +209,7 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     :param df: SSSOM DataFrame to be sorted.
     :return: Sorted SSSOM DataFrame
     """
-    df.astype(str).sort_values(by=sorted(df.columns), ascending=False, inplace=True)
+    df.sort_values(by=sorted(df.columns), ascending=False, inplace=True)
     return df
 
 
@@ -233,8 +232,8 @@ def filter_redundant_rows(
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
-    df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
-    df[CONFIDENCE] = df[CONFIDENCE].astype(float)
+    # df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
+    # df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
     max_conf: Dict[Tuple[str, ...], float] = {}
     for _, row in dfmax.iterrows():
@@ -261,7 +260,7 @@ def filter_redundant_rows(
         ]
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
-    return_df = df.astype(str).append(nan_df).drop_duplicates()
+    return_df = df.append(nan_df).drop_duplicates()
     if return_df[CONFIDENCE].isnull().all():
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
@@ -499,10 +498,12 @@ def merge_msdf(
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
-    df_merged = reduce(
-        lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-        [msdf.df.astype(str) for msdf in msdf_with_meta if msdf.df is not None],
-    )
+    # df_merged = reduce(
+    #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
+    #     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    # )
+    df_list = [msdf.df for msdf in msdf_with_meta if msdf.df is not None]
+    df_merged = pd.concat(df_list, axis=0, ignore_index=True)
 
     # merge the non DataFrame elements
     prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
@@ -575,8 +576,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         CONFIDENCE,
         MATCH_TYPE,
     ]
-    negation_subset = normalized_negation_df[columns_of_interest].astype(str)
-    positive_subset = positive_df[columns_of_interest].astype(str)
+    negation_subset = normalized_negation_df[columns_of_interest]
+    positive_subset = positive_df[columns_of_interest]
 
     combined_normalized_subset = pd.concat(
         [positive_subset, negation_subset]
@@ -635,11 +636,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
-    reconciled_df = (
-        df.astype(str)
-        .merge(reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns))
-        .fillna("")
-    )
+    reconciled_df = df.merge(
+        reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
+    ).fillna("")
 
     if nan_df.empty:
         return_df = reconciled_df
@@ -718,7 +717,8 @@ def read_csv(
                 if not line.decode("utf-8").startswith(comment)
             ]
         )
-    return pd.read_csv(StringIO(lines), sep=sep)
+    df = pd.read_csv(StringIO(lines), sep=sep)
+    return df
 
 
 def read_metadata(filename: str) -> Metadata:
@@ -789,7 +789,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     meta.pop(PREFIX_MAP_KEY, None)
     df.replace("", np.nan, inplace=True)
     df = df.dropna(axis=1, how="all")  # remove columns with all row = 'None'-s.
-    df.replace(np.nan, "", inplace=True)
+    df.loc[:, df.columns != CONFIDENCE].replace(np.nan, "", inplace=True)
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     return msdf
 
@@ -801,21 +801,43 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :param map_obj: Mapping object
     :return: Dictionary
     """
+    # TODO: Change logic
     map_dict = {}
     for property in map_obj:
-        if isinstance(map_obj[property], list):
-            if len(map_obj[property]) != 1:
-                map_dict[property] = "|".join(
-                    enum_value.code.text
-                    for enum_value in map_obj[property]
-                    if type(enum_value).__name__ == MatchTypeEnum._defn.name
-                )
+        if map_obj[property] is not None:
+            if isinstance(map_obj[property], list):
+                # IF object is an enum
+                if (
+                    SCHEMA_DICT["slots"][property]["range"]
+                    in SCHEMA_DICT["enums"].keys()
+                ):
+                    # IF object is a multivalued enum
+                    if SCHEMA_DICT["slots"][property]["multivalued"]:
+                        map_dict[property] = "|".join(
+                            enum_value.code.text for enum_value in map_obj[property]
+                        )
+                    # If object is NOT multivalued BUT an enum.
+                    else:
+                        map_dict[property] = map_obj[property].code.text
+                # IF object is NOT an enum but a list
+                else:
+                    map_dict[property] = "|".join(
+                        enum_value for enum_value in map_obj[property]
+                    )
+            # IF object NOT a list
             else:
-                map_dict[property] = map_obj[property][0]
-        elif type(map_obj[property]).__name__ == PredicateModifierEnum._defn.name:
-            map_dict[property] = map_obj[property].code.text
+                # IF object is an enum
+                if (
+                    SCHEMA_DICT["slots"][property]["range"]
+                    in SCHEMA_DICT["enums"].keys()
+                ):
+                    map_dict[property] = map_obj[property].code.text
+                else:
+                    map_dict[property] = map_obj[property]
         else:
-            map_dict[property] = map_obj[property]
+            # IF map_obj[property] is None:
+            map_dict[property] = ""
+
     return map_dict
 
 
