@@ -32,7 +32,7 @@ class TestReconcile(unittest.TestCase):
 
         merged_msdf = merge_msdf(msdf1, msdf2)
 
-        self.assertEqual(71, len(merged_msdf.df))
+        self.assertEqual(70, len(merged_msdf.df))
 
     def test_merge_no_reconcile(self):
         """Test merging two tables without reconciliation."""
