@@ -18,7 +18,7 @@ import yaml
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-from sssom.constants import MAPPING_SET_SLOTS, MAPPING_SLOTS, SCHEMA_DICT
+from sssom.constants import MAPPING_SET_SLOTS, MAPPING_SLOTS
 
 from .context import (
     DEFAULT_LICENSE,
