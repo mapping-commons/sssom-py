@@ -194,7 +194,7 @@ def parse(filename: str) -> pd.DataFrame:
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """Collapse rows with same S/P/O and combines confidence."""
-    df[CONFIDENCE] = df[CONFIDENCE].replace('', np.nan)
+    df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
     df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     df2 = (
         df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE]
@@ -233,7 +233,7 @@ def filter_redundant_rows(
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
-    df[CONFIDENCE] = df[CONFIDENCE].replace('', np.nan)
+    df[CONFIDENCE] = df[CONFIDENCE].replace("", np.nan)
     df[CONFIDENCE] = df[CONFIDENCE].astype(float)
     dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
     max_conf: Dict[Tuple[str, ...], float] = {}
@@ -635,9 +635,11 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
-    reconciled_df = df.astype(str).merge(
-        reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
-    ).fillna("")
+    reconciled_df = (
+        df.astype(str)
+        .merge(reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns))
+        .fillna("")
+    )
 
     if nan_df.empty:
         return_df = reconciled_df
