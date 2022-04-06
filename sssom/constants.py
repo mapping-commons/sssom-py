@@ -8,7 +8,6 @@ from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 SCHEMA_YAML = os.path.join(HERE, "sssom.yaml")
-PREFIX_RECON_YAML = os.path.join(HERE, "prefix_reconciliation.yaml")
 
 SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
 SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
