@@ -7,6 +7,7 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
+from functools import reduce
 from io import StringIO
 from pathlib import Path
 from typing import (
@@ -494,13 +495,10 @@ def merge_msdf(
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
-    # df_merged = reduce(
-    #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-    #     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
-    # )
-    df_list = [msdf.df for msdf in msdf_with_meta if msdf.df is not None]
-    df_merged = pd.concat(df_list, axis=0, ignore_index=True)
-    df_merged = df_merged.drop_duplicates()
+    df_merged = reduce(
+        lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
+        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    )
 
     # merge the non DataFrame elements
     prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
