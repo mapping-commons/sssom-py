@@ -31,7 +31,7 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import SCHEMA_YAML
+from .constants import SCHEMA_DICT, SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
@@ -809,6 +809,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     # where all values are blank.
     df = df.replace("", np.nan)
     df = df.dropna(axis=1, how="all")
+    df.loc[:, df.columns != CONFIDENCE].replace(np.nan, "", inplace=True)
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
@@ -1062,9 +1063,7 @@ def reconcile_prefix_and_data(
     # Data editing
     if len(data_switch_dict) > 0:
         # Read schema file
-        with open(SCHEMA_YAML) as file:
-            schema = yaml.safe_load(file)
-        slots = schema["slots"]
+        slots = SCHEMA_DICT["slots"]
         entity_reference_columns = [
             k for k, v in slots.items() if v["range"] == "EntityReference"
         ]
