@@ -19,6 +19,7 @@ from sssom.cli import (
     split,
     validate,
 )
+from tests.constants import prefix_recon_yaml
 from tests.test_data import (
     SSSOMTestCase,
     get_all_test_cases,
@@ -61,6 +62,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_diff(runner, test_cases)
         self.run_partition(runner, test_cases)
         self.run_merge(runner, test_cases)
+        self.run_merge_reconcile_prefix(runner, test_cases)
 
         self.assertTrue(len(test_cases) >= 2)
 
@@ -224,6 +226,22 @@ class SSSOMCLITestSuite(unittest.TestCase):
         if out_file:
             params.extend(["--output", out_file.get_out_file("tsv")])
 
+        result = runner.invoke(merge, params)
+        self.run_successful(result, test_cases)
+        return result
+
+    def run_merge_reconcile_prefix(
+        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
+    ) -> Result:
+        """Run the merge test with reconcile prefixes."""
+        params = []
+        out_file = None
+        for t in test_cases.values():
+            params.append(t.filepath)
+            out_file = t
+        if out_file:
+            params.extend(["--output", out_file.get_out_file("tsv")])
+        params.extend(["--reconcile-prefixes", prefix_recon_yaml])
         result = runner.invoke(merge, params)
         self.run_successful(result, test_cases)
         return result

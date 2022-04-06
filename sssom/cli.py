@@ -38,6 +38,7 @@ from .util import (
     dataframe_to_ptable,
     filter_redundant_rows,
     merge_msdf,
+    reconcile_prefix_and_data,
     remove_unmatched,
     to_mapping_set_dataframe,
 )
@@ -423,8 +424,15 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     default=True,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
+@click.option(
+    "-rp",
+    "--reconcile-prefixes",
+    help="Provide YAML file with prefix reconciliation information.",
+)
 @output_option
-def merge(inputs: str, output: TextIO, reconcile: bool = True):
+def merge(
+    inputs: str, output: TextIO, reconcile_prefixes: Path, reconcile: bool = True
+):
     """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -434,8 +442,19 @@ def merge(inputs: str, output: TextIO, reconcile: bool = True):
     """  # noqa: DAR101
     msdfs = [read_sssom_table(i) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
-    # Export MappingSetDataFrame into a TSV
-    write_table(merged_msdf, output)
+    # Reconcile prefixes if needed.
+    if reconcile_prefixes:
+        with open(reconcile_prefixes, "rb") as rp_file:
+            rp_yaml = yaml.safe_load(rp_file)
+
+        merged_with_recon_prefixes_msdf = reconcile_prefix_and_data(
+            merged_msdf, rp_yaml
+        )
+        # Export MappingSetDataFrame into a TSV
+        write_table(merged_with_recon_prefixes_msdf, output)
+    else:
+        # Export MappingSetDataFrame into a TSV
+        write_table(merged_msdf, output)
 
 
 @main.command()

@@ -1,5 +1,0 @@
-custom_prefix_map:
-    prefix_synonyms:
-        ICD10: ICD10CM
-    prefix_expansion_reconciliation:
-        ICD10CM: http://purl.bioontology.org/ontology/ICD10CM/
