@@ -38,6 +38,7 @@ from .util import (
     dataframe_to_ptable,
     filter_redundant_rows,
     merge_msdf,
+    reconcile_prefix_and_data,
     remove_unmatched,
     to_mapping_set_dataframe,
 )
@@ -192,7 +193,7 @@ def ptable(input, output: TextIO, inverse_factor):
     # , priors=list(priors)
     rows = dataframe_to_ptable(df)
     for row in rows:
-        print(row, sep="\t", file=output)
+        print(*row, sep="\t", file=output)
 
 
 @main.command()
@@ -434,7 +435,6 @@ def merge(inputs: str, output: TextIO, reconcile: bool = True):
     """  # noqa: DAR101
     msdfs = [read_sssom_table(i) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
-    # Export MappingSetDataFrame into a TSV
     write_table(merged_msdf, output)
 
 
@@ -470,6 +470,29 @@ def rewire(
     rewire_graph(g, msdf, precedence=precedence)
     rdfstr = g.serialize(format=output_format).decode()
     print(rdfstr, file=output)
+
+
+@main.command()
+@input_argument
+@click.option(
+    "-p",
+    "--reconcile-prefix-file",
+    help="Provide YAML file with prefix reconciliation information.",
+)
+@output_option
+def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
+    """
+    Reconcile prefix_map based on provided YAML file.
+
+    :param input: MappingSetDataFrame filename
+    :param reconcile_prefix_file: YAML file containing the prefix reconcilation rules.
+    :param output: Target file path.
+    """
+    msdf = read_sssom_table(input)
+    with open(reconcile_prefix_file, "rb") as rp_file:
+        rp_dict = yaml.safe_load(rp_file)
+    recon_msdf = reconcile_prefix_and_data(msdf, rp_dict)
+    write_table(recon_msdf, output)
 
 
 if __name__ == "__main__":

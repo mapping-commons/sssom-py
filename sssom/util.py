@@ -31,7 +31,7 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import SCHEMA_YAML
+from .constants import SCHEMA_DICT, SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
@@ -414,6 +414,12 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
             predicate_type = PREDICATE_SIBLING
         elif predicate == "dbpedia-owl:different":
             predicate_type = PREDICATE_SIBLING
+        # * Added by H2 ############################
+        elif predicate == "oboInOwl:hasDbXref":
+            predicate_type = PREDICATE_HAS_DBXREF
+        elif predicate == "skos:relatedMatch":
+            predicate_type = PREDICATE_RELATED_MATCH
+        # * ########################################
         else:
             raise ValueError(f"Unhandled predicate: {predicate}")
 
@@ -445,6 +451,22 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
                 inverse_confidence,
                 confidence,
             )
+        # * Added by H2 ############################
+        elif predicate_type == PREDICATE_HAS_DBXREF:
+            ps = (
+                residual_confidence,
+                residual_confidence,
+                confidence,
+                inverse_confidence,
+            )
+        elif predicate_type == PREDICATE_RELATED_MATCH:
+            ps = (
+                residual_confidence,
+                residual_confidence,
+                confidence,
+                inverse_confidence,
+            )
+        # * #########################################
         else:
             raise ValueError(f"predicate: {predicate_type}")
         row = [subject_id, object_id] + [str(p) for p in ps]
@@ -456,6 +478,10 @@ PREDICATE_SUBCLASS = 0
 PREDICATE_SUPERCLASS = 1
 PREDICATE_EQUIVALENT = 2
 PREDICATE_SIBLING = 3
+# * Added by H2 ############################
+PREDICATE_HAS_DBXREF = 4
+PREDICATE_RELATED_MATCH = 5
+# * ########################################
 
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
@@ -774,6 +800,11 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     :return: MappingSetDataFrame object
     """
     data = []
+    slots_with_double_as_range = [
+        s
+        for s in SCHEMA_DICT["slots"].keys()
+        if SCHEMA_DICT["slots"][s]["range"] == "double"
+    ]
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
             m = get_dict_from_mapping(mapping)
@@ -781,6 +812,13 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     df = pd.DataFrame(data=data)
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
+    # The following 3 lines are to remove columns
+    # where all values are blank.
+    df.replace("", np.nan, inplace=True)
+    df = df.dropna(axis=1, how="all")  # remove columns with all row = 'None'-s.
+    df.loc[:, ~df.columns.isin(slots_with_double_as_range)].replace(
+        np.nan, "", inplace=True
+    )
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     return msdf
 
@@ -854,7 +892,12 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
         uri_prefix = prefix_map[prefix]
         if uri.startswith(uri_prefix):
             remainder = uri.replace(uri_prefix, "")
-            return f"{prefix}:{remainder}"
+            curie = f"{prefix}:{remainder}"
+            if is_curie(curie):
+                return f"{prefix}:{remainder}"
+            else:
+                logging.warning(f"{prefix}:{remainder} is not a CURIE ... skipping")
+                continue
     raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
@@ -965,3 +1008,80 @@ def is_multivalued_slot(slot: str) -> bool:
     # return view.get_slot(slot).multivalued
 
     return slot in multivalued_slots
+
+
+def reconcile_prefix_and_data(
+    msdf: MappingSetDataFrame, prefix_reconciliation: dict
+) -> MappingSetDataFrame:
+    """Reconciles prefix_map and translates CURIE switch in dataframe.
+
+    :param msdf: Mapping Set DataFrame.
+    :param prefix_reconciliation: Prefix reconcilation dictionary from a YAML file
+    :return: Mapping Set DataFrame with reconciled prefix_map and data.
+    """
+    # Discussion about this found here:
+    # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
+
+    prefix_map = msdf.prefix_map
+    df: pd.DataFrame = msdf.df
+    data_switch_dict = dict()
+
+    prefix_synonyms = prefix_reconciliation["prefix_synonyms"]
+    prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
+
+    # The prefix exists but the expansion needs to be updated.
+    expansion_replace = {
+        k: v
+        for k, v in prefix_expansion.items()
+        if k in prefix_map.keys() and v != prefix_map[k]
+    }
+
+    # Updates expansions in prefix_map
+    prefix_map.update(expansion_replace)
+
+    # Prefixes that need to be replaced
+    # IF condition:
+    #   1. Key OR Value in prefix_synonyms are keys in prefix_map
+    #       e.g.: ICD10: ICD10CM - either should be present within
+    #           the prefix_map.
+    #   AND
+    #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
+    #      In other words, the existing expansion do not match the YAML.
+
+    prefix_replace = [
+        k
+        for k, v in prefix_synonyms.items()
+        if (k in prefix_map.keys() or v in prefix_map.keys())
+        and v not in expansion_replace.keys()
+    ]
+
+    if len(prefix_replace) > 0:
+        for pr in prefix_replace:
+            correct_prefix = prefix_synonyms[pr]
+            correct_expansion = prefix_expansion[correct_prefix]
+            prefix_map[correct_prefix] = correct_expansion
+            logging.info(f"Adding prefix_map {correct_prefix}: {correct_expansion}")
+            if pr in prefix_map.keys():
+                prefix_map.pop(pr, None)
+                data_switch_dict[pr] = correct_prefix
+
+                logging.warning(f"Replacing prefix {pr} with {correct_prefix}")
+
+    # Data editing
+    if len(data_switch_dict) > 0:
+        # Read schema file
+        slots = SCHEMA_DICT["slots"]
+        entity_reference_columns = [
+            k for k, v in slots.items() if v["range"] == "EntityReference"
+        ]
+        update_columns = [c for c in df.columns if c in entity_reference_columns]
+        for k, v in data_switch_dict.items():
+            df[update_columns] = df[update_columns].replace(
+                k + ":", v + ":", regex=True
+            )
+
+    msdf.df = df
+    msdf.prefix_map = prefix_map
+
+    # TODO: When expansion of 2 prefixes in the prefix_map are the same.
+    return msdf
