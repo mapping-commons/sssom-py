@@ -2,6 +2,7 @@
 
 import unittest
 
+import yaml
 from pandasql import sqldf
 
 from sssom import (
@@ -11,8 +12,10 @@ from sssom import (
     filter_redundant_rows,
     group_mappings,
     parse,
+    reconcile_prefix_and_data,
 )
-from tests.constants import data_dir
+from sssom.parsers import read_sssom_table
+from tests.constants import data_dir, prefix_recon_yaml
 
 
 class TestCollapse(unittest.TestCase):
@@ -82,3 +85,18 @@ class TestCollapse(unittest.TestCase):
         diff_df = diff.combined_dataframe
         print(len(diff_df.index))
         # print(diff_df[0:10])
+
+    def test_reconcile_prefix(self):
+        """Test curie reconciliation is performing as expected."""
+        msdf = read_sssom_table(data_dir / "basic3.tsv")
+
+        with open(prefix_recon_yaml) as pref_rec:
+            prefix_reconciliation = yaml.safe_load(pref_rec)
+
+        recon_msdf = reconcile_prefix_and_data(msdf, prefix_reconciliation)
+
+        prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
+
+        for pfx, exp in prefix_expansion.items():
+            if pfx in recon_msdf.prefix_map.keys():
+                self.assertEqual(recon_msdf.prefix_map[pfx], exp)

@@ -7,3 +7,5 @@ data_dir = cwd / "data"
 
 test_out_dir = cwd / "tmp"
 test_out_dir.mkdir(parents=True, exist_ok=True)
+
+prefix_recon_yaml = data_dir / "prefix_reconciliation.yaml"

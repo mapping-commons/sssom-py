@@ -14,6 +14,7 @@ DEFAULT_CONTEXT_PATH = os.path.join(schema_dir, "sssom.context.jsonld")
 TEST_CONFIG_PATH = os.path.join(cwd, "test_config.yaml")
 with open(TEST_CONFIG_PATH) as file:
     TEST_CONFIG = yaml.safe_load(file)
+RECON_YAML = os.path.join(cwd, "data", "prefix_reconciliation.yaml")
 
 
 def get_test_file(filename: str) -> str:

@@ -1,0 +1,124 @@
+{
+  "graphs" : [ {
+    "nodes" : [ {
+      "id" : "http://omim.org/entry/602070",
+      "meta" : {
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "NRP2",
+          "xrefs" : [ ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/11891274"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "npn2"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/14586460"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/10707970"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/10707971"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/30057110"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/11486090"
+        }, {
+          "pred" : "https://w3id.org/biolink/vocab/category",
+          "val" : "https://w3id.org/biolink/vocab/Gene"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/8895455"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "neuropilin 2"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/11112349"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/9288754"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/10329017"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/27026195"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "vascular endothelial growth factor-165 receptor 2"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/20010807"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "NRP2"
+    }, {
+      "id" : "http://omim.org/entry/602074",
+      "meta" : {
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "DAP3",
+          "xrefs" : [ ]
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/15179560"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/11279123"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "death-associated protein 3"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/9284927"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/7499268"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "mitochondrial ribosomal protein s29"
+        }, {
+          "pred" : "https://w3id.org/biolink/vocab/category",
+          "val" : "https://w3id.org/biolink/vocab/Gene"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "DAP3"
+    },{
+      "id" : "http://omim.org/entry/136100",
+      "meta" : {
+        "basicPropertyValues" : [ {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/13869998"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "2d:4d finger-length ratio"
+        }, {
+          "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+          "val" : "fingers, relative length of"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/14943709"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/20982098"
+        }, {
+          "pred" : "http://purl.obolibrary.org/obo/IAO_0000142",
+          "val" : "http://www.ncbi.nlm.nih.gov/pubmed/20303062"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "fingers, relative length of"
+    }
+  ]
+}]
+}
