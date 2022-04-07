@@ -35,7 +35,7 @@ from .constants import SCHEMA_DICT, SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
-from .sssom_datamodel import MatchTypeEnum, PredicateModifierEnum, slots
+from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -831,17 +831,49 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :return: Dictionary
     """
     map_dict = {}
+    slots_with_double_as_range = [
+        s
+        for s in SCHEMA_DICT["slots"].keys()
+        if SCHEMA_DICT["slots"][s]["range"] == "double"
+    ]
     for property in map_obj:
-        if isinstance(map_obj[property], list):
-            map_dict[property] = "|".join(
-                enum_value.code.text
-                for enum_value in map_obj[property]
-                if type(enum_value).__name__ == MatchTypeEnum._defn.name
-            )
-        elif type(map_obj[property]).__name__ == PredicateModifierEnum._defn.name:
-            map_dict[property] = map_obj[property].code.text
+        if map_obj[property] is not None:
+            if isinstance(map_obj[property], list):
+                # IF object is an enum
+                if (
+                    SCHEMA_DICT["slots"][property]["range"]
+                    in SCHEMA_DICT["enums"].keys()
+                ):
+                    # IF object is a multivalued enum
+                    if SCHEMA_DICT["slots"][property]["multivalued"]:
+                        map_dict[property] = "|".join(
+                            enum_value.code.text for enum_value in map_obj[property]
+                        )
+                    # If object is NOT multivalued BUT an enum.
+                    else:
+                        map_dict[property] = map_obj[property].code.text
+                # IF object is NOT an enum but a list
+                else:
+                    map_dict[property] = "|".join(
+                        enum_value for enum_value in map_obj[property]
+                    )
+            # IF object NOT a list
+            else:
+                # IF object is an enum
+                if (
+                    SCHEMA_DICT["slots"][property]["range"]
+                    in SCHEMA_DICT["enums"].keys()
+                ):
+                    map_dict[property] = map_obj[property].code.text
+                else:
+                    map_dict[property] = map_obj[property]
         else:
-            map_dict[property] = map_obj[property]
+            # IF map_obj[property] is None:
+            if property in slots_with_double_as_range:
+                map_dict[property] = np.nan
+            else:
+                map_dict[property] = ""
+
     return map_dict
 
 

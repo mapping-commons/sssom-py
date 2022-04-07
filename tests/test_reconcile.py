@@ -29,7 +29,6 @@ class TestReconcile(unittest.TestCase):
         """Test merging two tables."""
         msdf1 = read_sssom_table(data_dir / "basic.tsv")
         msdf2 = read_sssom_table(data_dir / "basic2.tsv")
-
         merged_msdf = merge_msdf(msdf1, msdf2)
 
         self.assertEqual(71, len(merged_msdf.df))
