@@ -425,7 +425,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @click.option(
-    "-rp",
+    "-p",
     "--reconcile-prefixes",
     help="Provide YAML file with prefix reconciliation information.",
 )
