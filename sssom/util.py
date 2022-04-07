@@ -802,8 +802,12 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :param map_obj: Mapping object
     :return: Dictionary
     """
-    # TODO: Change logic
     map_dict = {}
+    slots_with_double_as_range = [
+         s
+         for s in SCHEMA_DICT["slots"].keys()
+         if SCHEMA_DICT["slots"][s]["range"] == "double"
+     ]
     for property in map_obj:
         if map_obj[property] is not None:
             if isinstance(map_obj[property], list):
@@ -837,7 +841,10 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
                     map_dict[property] = map_obj[property]
         else:
             # IF map_obj[property] is None:
-            map_dict[property] = ""
+            if property in slots_with_double_as_range:
+                map_dict[property] = np.nan
+            else:
+                map_dict[property] = ""
 
     return map_dict
 
