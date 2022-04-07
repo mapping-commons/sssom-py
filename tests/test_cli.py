@@ -1,5 +1,6 @@
 """Tests for the command line interface."""
 
+import os
 import unittest
 from typing import Mapping
 
@@ -16,11 +17,13 @@ from sssom.cli import (
     parse,
     partition,
     ptable,
+    reconcile_prefixes,
     split,
     validate,
 )
 from tests.constants import prefix_recon_yaml
 from tests.test_data import (
+    RECON_YAML,
     SSSOMTestCase,
     get_all_test_cases,
     get_multiple_input_test_cases,
@@ -53,6 +56,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_cliquesummary(runner, test)
                     self.run_crosstab(runner, test)
                     self.run_correlations(runner, test)
+                    self.run_reconcile_prefix(runner, test)
         self.assertTrue(len(test_cases) > 2)
 
     def test_cli_multiple_input(self):
@@ -62,7 +66,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_diff(runner, test_cases)
         self.run_partition(runner, test_cases)
         self.run_merge(runner, test_cases)
-        self.run_merge_reconcile_prefix(runner, test_cases)
 
         self.assertTrue(len(test_cases) >= 2)
 
@@ -230,18 +233,20 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_cases)
         return result
 
-    def run_merge_reconcile_prefix(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
+    def run_reconcile_prefix(
+        self, runner: CliRunner, test_case: SSSOMTestCase
     ) -> Result:
         """Run the merge test with reconcile prefixes."""
-        params = []
-        out_file = None
-        for t in test_cases.values():
-            params.append(t.filepath)
-            out_file = t
-        if out_file:
-            params.extend(["--output", out_file.get_out_file("tsv")])
-        params.extend(["--reconcile-prefixes", prefix_recon_yaml])
-        result = runner.invoke(merge, params)
-        self.run_successful(result, test_cases)
+        out_file = os.path.join(test_out_dir, "reconciled_prefix.tsv")
+        result = runner.invoke(
+            reconcile_prefixes,
+            [
+                test_case.filepath,
+                "--output",
+                out_file,
+                "--reconcile-prefix-file",
+                RECON_YAML,
+            ],
+        )
+        self.run_successful(result, test_case)
         return result

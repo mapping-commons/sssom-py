@@ -424,15 +424,8 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     default=True,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
-@click.option(
-    "-p",
-    "--reconcile-prefixes",
-    help="Provide YAML file with prefix reconciliation information.",
-)
 @output_option
-def merge(
-    inputs: str, output: TextIO, reconcile_prefixes: Path, reconcile: bool = True
-):
+def merge(inputs: str, output: TextIO, reconcile: bool = True):
     """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -442,19 +435,7 @@ def merge(
     """  # noqa: DAR101
     msdfs = [read_sssom_table(i) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
-    # Reconcile prefixes if needed.
-    if reconcile_prefixes:
-        with open(reconcile_prefixes, "rb") as rp_file:
-            rp_yaml = yaml.safe_load(rp_file)
-
-        merged_with_recon_prefixes_msdf = reconcile_prefix_and_data(
-            merged_msdf, rp_yaml
-        )
-        # Export MappingSetDataFrame into a TSV
-        write_table(merged_with_recon_prefixes_msdf, output)
-    else:
-        # Export MappingSetDataFrame into a TSV
-        write_table(merged_msdf, output)
+    write_table(merged_msdf, output)
 
 
 @main.command()
@@ -489,6 +470,32 @@ def rewire(
     rewire_graph(g, msdf, precedence=precedence)
     rdfstr = g.serialize(format=output_format).decode()
     print(rdfstr, file=output)
+
+
+@main.command()
+@input_argument
+@click.option(
+    "-p",
+    "--reconcile-prefix-file",
+    help="Provide YAML file with prefix reconciliation information.",
+)
+@output_option
+def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
+    """
+    Reconcile prefix_map based on provided YAML file.
+
+    :param input: _description_
+    :type input: _type_
+    :param reconcile_prefix_file: _description_
+    :type reconcile_prefix_file: _type_
+    :param output: _description_
+    :type output: _type_
+    """
+    msdf = read_sssom_table(input)
+    with open(reconcile_prefix_file, "rb") as rp_file:
+        rp_dict = yaml.safe_load(rp_file)
+    recon_msdf = reconcile_prefix_and_data(msdf, rp_dict)
+    write_table(recon_msdf, output)
 
 
 if __name__ == "__main__":
