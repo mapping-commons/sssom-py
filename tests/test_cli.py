@@ -21,7 +21,6 @@ from sssom.cli import (
     split,
     validate,
 )
-from tests.constants import prefix_recon_yaml
 from tests.test_data import (
     RECON_YAML,
     SSSOMTestCase,

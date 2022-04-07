@@ -484,12 +484,9 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
     """
     Reconcile prefix_map based on provided YAML file.
 
-    :param input: _description_
-    :type input: _type_
-    :param reconcile_prefix_file: _description_
-    :type reconcile_prefix_file: _type_
-    :param output: _description_
-    :type output: _type_
+    :param input: MappingSetDataFrame filename
+    :param reconcile_prefix_file: YAML file containing the prefix reconcilation rules.
+    :param output: Target file path.
     """
     msdf = read_sssom_table(input)
     with open(reconcile_prefix_file, "rb") as rp_file:
