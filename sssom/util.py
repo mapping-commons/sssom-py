@@ -800,18 +800,25 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     :return: MappingSetDataFrame object
     """
     data = []
+    slots_with_double_as_range = [
+        s
+        for s in SCHEMA_DICT["slots"].keys()
+        if SCHEMA_DICT["slots"][s]["range"] == "double"
+    ]
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
             m = get_dict_from_mapping(mapping)
             data.append(m)
     df = pd.DataFrame(data=data)
-    # The following 3 lines are to remove columns
-    # where all values are blank.
-    df = df.replace("", np.nan)
-    df = df.dropna(axis=1, how="all")
-    df.loc[:, df.columns != CONFIDENCE].replace(np.nan, "", inplace=True)
     meta = extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
+    # The following 3 lines are to remove columns
+    # where all values are blank.
+    df.replace("", np.nan, inplace=True)
+    df = df.dropna(axis=1, how="all")  # remove columns with all row = 'None'-s.
+    df.loc[:, ~df.columns.isin(slots_with_double_as_range)].replace(
+        np.nan, "", inplace=True
+    )
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     return msdf
 
