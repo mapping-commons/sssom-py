@@ -13,6 +13,7 @@ from sssom.cli import (
     crosstab,
     dedupe,
     diff,
+    dosql,
     merge,
     parse,
     partition,
@@ -56,6 +57,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_crosstab(runner, test)
                     self.run_correlations(runner, test)
                     self.run_reconcile_prefix(runner, test)
+                    self.run_dosql(runner, test)
+
         self.assertTrue(len(test_cases) > 2)
 
     def test_cli_multiple_input(self):
@@ -70,7 +73,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_successful(self, result: Result, test_case: SSSOMTestCase) -> None:
         """Check the test result is successful."""
-        # self.assertTrue(result.exit_code == 0, f"Run failed with message {result.exception}")
         self.assertEqual(
             result.exit_code,
             0,
@@ -245,6 +247,22 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 out_file,
                 "--reconcile-prefix-file",
                 RECON_YAML,
+            ],
+        )
+        self.run_successful(result, test_case)
+        return result
+
+    def run_dosql(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Test a simple dosql command."""
+        out_file = os.path.join(test_out_dir, "dosql_test.tsv")
+        result = runner.invoke(
+            dosql,
+            [
+                "-q",
+                "SELECT * FROM df WHERE subject_label = 'heart'",
+                test_case.filepath,
+                "-o",
+                os.path.join(test_out_dir, out_file),
             ],
         )
         self.run_successful(result, test_case)
