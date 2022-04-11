@@ -232,16 +232,22 @@ def dosql(query: str, inputs: List[str], output: TextIO):
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
     n = 1
+    new_msdf = MappingSetDataFrame()
     while len(inputs) >= n:
         fn = inputs[n - 1]
-        df = read_sssom_table(fn).df
+        msdf = read_sssom_table(fn)
+        df = msdf.df
         # df = parse(fn)
         globals()[f"df{n}"] = df
         tn = re.sub("[.].*", "", Path(fn).stem).lower()
         globals()[tn] = df
         n += 1
-    df = sqldf(query)
-    df.to_csv(output, sep="\t", index=False)
+
+    new_df = sqldf(query)
+    new_msdf.df = new_df
+    new_msdf.prefix_map = msdf.prefix_map
+    new_msdf.metadata = msdf.metadata
+    write_table(new_msdf, output)
 
 
 @main.command()
