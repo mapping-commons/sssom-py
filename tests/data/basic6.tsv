@@ -1,0 +1,24 @@
+#license: "https://creativecommons.org/publicdomain/zero/1.0/"
+#mapping_set_id: http://w3id.org/sssom/mapping/tests/data/basic3.tsv
+#mapping_tool: "https://github.com/cmungall/rdf_matcher"
+#creator_id: "cjm"
+#mapping_date: "2020-05-30"
+#curie_map:
+#  a: "http://example.org/a/"
+#  b: "http://example.org/b/"
+#  c: "http://example.org/c/"
+#  d: "http://example.org/d/"
+#  rdfs: "http://example.org/rdfs/"
+#  owl: "http://example.org/owl/"
+comment	mapping_tool	subject_label	confidence	object_id	match_type	subject_source	object_source	subject_id	subject_match_field	object_match_field	object_label	subject_category	predicate_modifier	object_category	match_string	predicate_id
+mock data	rdf_matcher	YYYYY	0.81	b:something	Lexical	c	d	c:something	rdfs:label	rdfs:label	yyyyyy	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	YYYYY	0.82	a:something	Lexical	d	a	d:something	rdfs:label	rdfs:label	yyyyyy	biolink:AnatomicalEntity	Not	biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	XYXYX	0.83	c:something	Lexical	a	c	a:something	rdfs:label	rdfs:label	xyxyxy	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	YXYXY	0.845	b:something	HumanCurated	c	b	c:something	rdfs:label	rdfs:label	yxyxyx	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	XXXXX	0.8	a:something	Lexical	b	a	b:something	rdfs:label	rdfs:label	xxxxxx	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	YYYYY	0.81	d:something	Lexical	c	d	c:something	rdfs:label	rdfs:label	yyyyyy	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	YXYXY	0.845	b:something	HumanCurated	c	b	c:something	rdfs:label	rdfs:label	yxyxyx	biolink:AnatomicalEntity	Not	biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	XYXYX	0.83	b:something	Lexical	d	b	d:something	rdfs:label	rdfs:label	xyxyxy	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	XXXXX	0.8	b:something	Lexical	a	b	a:something	rdfs:label	rdfs:label	xxxxxx	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:subClassOf
+mock data	rdf_matcher	YYYYY	0.82	a:something	HumanCurated	d	a	d:something	rdfs:label	rdfs:label	yyyyyy	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
+mock data	rdf_matcher	XXXXX	0.8	b:something	Lexical	a	b	a:something	rdfs:label	rdfs:label	xxxxxx	biolink:AnatomicalEntity	Not	biolink:AnatomicalEntity	xxxxx	owl:subClassOf

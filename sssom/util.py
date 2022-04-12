@@ -769,7 +769,8 @@ def read_pandas(
         else:
             sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-    return read_csv(file, comment="#", sep=sep).fillna("")
+        df = read_csv(file, comment="#", sep=sep).fillna("")
+    return sort_df_columns(df)
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
@@ -1117,3 +1118,14 @@ def reconcile_prefix_and_data(
 
     # TODO: When expansion of 2 prefixes in the prefix_map are the same.
     return msdf
+
+
+def sort_df_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Canonical sorting of DataFrame columns.
+
+    :param df: Pandas DataFrame with random column sequence.
+    :return: Pandas DataFrame columns sorted canonically.
+    """
+    column_sequence = [col for col in SCHEMA_DICT["slots"].keys() if col in df.columns]
+    return df.reindex(column_sequence, axis=1)
