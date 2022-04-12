@@ -635,7 +635,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         reconciled_df_subset = reconciled_df_subset.append(
             combined_normalized_subset.loc[
                 match_condition_1[match_condition_1].index, :
-            ]
+            ],
+            ignore_index=True,
         )
 
     # Add negations (PREDICATE_MODIFIER) back to DataFrame
@@ -657,9 +658,14 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             PREDICATE_MODIFIER
         ].fillna("")
 
+    # .fillna(df) towards the end fills an empty value
+    # with a corresponding value from df.
+    # This needs to happen because the columns in df
+    # not in reconciled_df_subset will be NaN otherwise
+    # which is incorrect.
     reconciled_df = df.merge(
         reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
-    ).fillna("")
+    ).fillna(df)
 
     if nan_df.empty:
         return_df = reconciled_df
@@ -1129,4 +1135,6 @@ def sort_df_columns(df: pd.DataFrame) -> pd.DataFrame:
     :return: Pandas DataFrame columns sorted canonically.
     """
     column_sequence = [col for col in SCHEMA_DICT["slots"].keys() if col in df.columns]
-    return df.reindex(column_sequence, axis=1)
+    df = df.reindex(column_sequence, axis=1)
+    df = df.sort_values(by=df.columns[0], ignore_index=True)
+    return df
