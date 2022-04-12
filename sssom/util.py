@@ -821,6 +821,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
         np.nan, "", inplace=True
     )
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
+    msdf.df = sort_df_columns(msdf.df)
     return msdf
 
 
