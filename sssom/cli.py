@@ -40,7 +40,7 @@ from .util import (
     merge_msdf,
     reconcile_prefix_and_data,
     remove_unmatched,
-    sort_df_columns,
+    sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
 from .writers import write_table
@@ -505,15 +505,29 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
 @main.command()
 @input_argument
 @output_option
-def sort_columns(input: str, output: TextIO):
+@click.option(
+    "-c",
+    "--by-columns",
+    default=True,
+    help="Sort columns of DataFrame canonically.",
+)
+@click.option(
+    "-r",
+    "--by-rows",
+    default=True,
+    help="Sort rows by DataFrame column #1 (ascending).",
+)
+def sort_rows_columns(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     """
     Sort DataFrame columns canonically.
 
     :param input: SSSOM TSV file.
+    :param by_columns: Boolean flag to sort columns canonically.
+    :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
     :param output: SSSOM TSV file with columns sorted.
     """
     msdf = read_sssom_table(input)
-    msdf.df = sort_df_columns(msdf.df)
+    msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
 
 

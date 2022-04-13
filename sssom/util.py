@@ -776,7 +776,7 @@ def read_pandas(
             sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
         df = read_csv(file, comment="#", sep=sep).fillna("")
-    return sort_df_columns(df)
+    return sort_df_rows_columns(df)
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
@@ -827,7 +827,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
         np.nan, "", inplace=True
     )
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
-    msdf.df = sort_df_columns(msdf.df)
+    msdf.df = sort_df_rows_columns(msdf.df)
     return msdf
 
 
@@ -1127,14 +1127,22 @@ def reconcile_prefix_and_data(
     return msdf
 
 
-def sort_df_columns(df: pd.DataFrame) -> pd.DataFrame:
+def sort_df_rows_columns(
+    df: pd.DataFrame, by_columns: bool = True, by_rows: bool = True
+) -> pd.DataFrame:
     """
     Canonical sorting of DataFrame columns.
 
     :param df: Pandas DataFrame with random column sequence.
+    :param by_columns: Boolean flag to sort columns canonically.
+    :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
     :return: Pandas DataFrame columns sorted canonically.
     """
-    column_sequence = [col for col in SCHEMA_DICT["slots"].keys() if col in df.columns]
-    df = df.reindex(column_sequence, axis=1)
-    df = df.sort_values(by=df.columns[0], ignore_index=True)
+    if by_columns:
+        column_sequence = [
+            col for col in SCHEMA_DICT["slots"].keys() if col in df.columns
+        ]
+        df = df.reindex(column_sequence, axis=1)
+    if by_rows:
+        df = df.sort_values(by=df.columns[0], ignore_index=True)
     return df

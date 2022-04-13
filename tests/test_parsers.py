@@ -21,7 +21,7 @@ from sssom.parsers import (
     read_sssom_table,
     to_mapping_set_document,
 )
-from sssom.util import PREFIX_MAP_KEY, sort_df_columns, to_mapping_set_dataframe
+from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns, to_mapping_set_dataframe
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
@@ -190,7 +190,7 @@ class TestParse(unittest.TestCase):
         input_path = os.path.join(test_data_dir, "basic3.tsv")
         msdf = read_sssom_table(input_path)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t")
-        imported_df = sort_df_columns(imported_df)
+        imported_df = sort_df_rows_columns(imported_df)
         self.assertEqual(set(imported_df.columns), set(msdf.df.columns))
         list_cols = [
             "subject_match_field",

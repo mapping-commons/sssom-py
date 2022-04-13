@@ -19,7 +19,7 @@ from sssom.cli import (
     partition,
     ptable,
     reconcile_prefixes,
-    sort_columns,
+    sort_rows_columns,
     split,
     validate,
 )
@@ -59,7 +59,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_correlations(runner, test)
                     self.run_reconcile_prefix(runner, test)
                     self.run_dosql(runner, test)
-                    self.run_sort_columns(runner, test)
+                    self.run_sort_rows_columns(runner, test)
 
         self.assertTrue(len(test_cases) > 2)
 
@@ -270,12 +270,23 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_sort_columns(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_sort_rows_columns(
+        self, runner: CliRunner, test_case: SSSOMTestCase
+    ) -> Result:
         """Test sorting of DataFrame columns."""
         out_file = os.path.join(test_out_dir, "sort_column_test.tsv")
         in_file = test_case.filepath.replace("basic", "basic6")
         result = runner.invoke(
-            sort_columns, [in_file, "-o", os.path.join(test_out_dir, out_file)]
+            sort_rows_columns,
+            [
+                in_file,
+                "-o",
+                os.path.join(test_out_dir, out_file),
+                "-c",
+                True,
+                "-r",
+                True,
+            ],
         )
         self.run_successful(result, test_case)
         return result
