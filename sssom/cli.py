@@ -517,7 +517,7 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
     default=True,
     help="Sort rows by DataFrame column #1 (ascending).",
 )
-def sort_rows_columns(input: str, output: TextIO, by_columns: bool, by_rows: bool):
+def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     """
     Sort DataFrame columns canonically.
 

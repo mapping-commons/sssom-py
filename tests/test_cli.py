@@ -19,7 +19,7 @@ from sssom.cli import (
     partition,
     ptable,
     reconcile_prefixes,
-    sort_rows_columns,
+    sort,
     split,
     validate,
 )
@@ -277,7 +277,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         out_file = os.path.join(test_out_dir, "sort_column_test.tsv")
         in_file = test_case.filepath.replace("basic", "basic6")
         result = runner.invoke(
-            sort_rows_columns,
+            sort,
             [
                 in_file,
                 "-o",
