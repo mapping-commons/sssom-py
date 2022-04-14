@@ -260,7 +260,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         result = runner.invoke(
             dosql,
             [
-                "-q",
+                "-Q",
                 "SELECT * FROM df WHERE subject_label = 'heart'",
                 test_case.filepath,
                 "-o",
@@ -282,7 +282,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 in_file,
                 "-o",
                 os.path.join(test_out_dir, out_file),
-                "-c",
+                "-k",
                 True,
                 "-r",
                 True,
