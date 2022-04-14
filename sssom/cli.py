@@ -40,6 +40,7 @@ from .util import (
     merge_msdf,
     reconcile_prefix_and_data,
     remove_unmatched,
+    sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
 from .writers import write_table
@@ -77,9 +78,9 @@ metadata_option = click.option(
     type=click.Path(),
     help="The path to a file containing the sssom metadata (including prefix_map) to be used.",
 )
-transpose_option = click.option("-t", "--transpose/--no-transpose", default=False)
+transpose_option = click.option("-t", "--transpose", default=False)
 fields_option = click.option(
-    "-F",
+    "-f",
     "--fields",
     nargs=2,
     default=("subject_category", "object_category"),
@@ -212,7 +213,7 @@ def dedupe(input: str, output: TextIO):
 
 
 @main.command()
-@click.option("-q", "--query", help='SQL query. Use "df" as table name.')
+@click.option("-Q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
 def dosql(query: str, inputs: List[str], output: TextIO):
@@ -425,7 +426,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @main.command()
 @click.argument("inputs", nargs=-1)
 @click.option(
-    "-r",
+    "-R",
     "--reconcile",
     default=True,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
@@ -499,6 +500,35 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
         rp_dict = yaml.safe_load(rp_file)
     recon_msdf = reconcile_prefix_and_data(msdf, rp_dict)
     write_table(recon_msdf, output)
+
+
+@main.command()
+@input_argument
+@output_option
+@click.option(
+    "-k",
+    "--by-columns",
+    default=True,
+    help="Sort columns of DataFrame canonically.",
+)
+@click.option(
+    "-r",
+    "--by-rows",
+    default=True,
+    help="Sort rows by DataFrame column #1 (ascending).",
+)
+def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
+    """
+    Sort DataFrame columns canonically.
+
+    :param input: SSSOM TSV file.
+    :param by_columns: Boolean flag to sort columns canonically.
+    :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
+    :param output: SSSOM TSV file with columns sorted.
+    """
+    msdf = read_sssom_table(input)
+    msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
+    write_table(msdf, output)
 
 
 if __name__ == "__main__":

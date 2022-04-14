@@ -23,7 +23,7 @@ class TestReconcile(unittest.TestCase):
     def test_deal_with_negation(self):
         """Test handling negating returns the right number of rows."""
         df = deal_with_negation(self.msdf.df)
-        self.assertEqual(7, len(df.index))
+        self.assertEqual(8, len(df.index))
 
     def test_merge(self):
         """Test merging two tables."""
