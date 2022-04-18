@@ -178,7 +178,7 @@ def validate(input: str):
     "--output-directory",
     type=click.Path(),
     help="Output directory path.",
-    default=os.getcwd()
+    default=os.getcwd(),
 )
 def split(input: str, output_directory: str):
     """Split input file into multiple output broken down by prefixes."""
