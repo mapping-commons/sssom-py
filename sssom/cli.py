@@ -11,7 +11,6 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
-from email.policy import default
 import logging
 import os
 import re
@@ -183,7 +182,6 @@ def validate(input: str):
 )
 def split(input: str, output_directory: str):
     """Split input file into multiple output broken down by prefixes."""
-    import pdb; pdb.set_trace()
     split_file(input_path=input, output_directory=output_directory)
 
 
