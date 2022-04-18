@@ -11,7 +11,9 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
+from email.policy import default
 import logging
+import os
 import re
 import sys
 from pathlib import Path
@@ -172,9 +174,16 @@ def validate(input: str):
 
 @main.command()
 @input_argument
-@output_directory_option
+@click.option(
+    "-d",
+    "--output-directory",
+    type=click.Path(),
+    help="Output directory path.",
+    default=os.getcwd()
+)
 def split(input: str, output_directory: str):
     """Split input file into multiple output broken down by prefixes."""
+    import pdb; pdb.set_trace()
     split_file(input_path=input, output_directory=output_directory)
 
 
