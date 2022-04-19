@@ -12,6 +12,7 @@ later, but that will cause problems--the code will get executed twice:
 """
 
 import logging
+import os
 import re
 import sys
 from pathlib import Path
@@ -70,6 +71,7 @@ output_directory_option = click.option(
     "--output-directory",
     type=click.Path(),
     help="Output directory path.",
+    default=os.getcwd(),
 )
 metadata_option = click.option(
     "-m",
