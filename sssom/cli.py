@@ -71,6 +71,7 @@ output_directory_option = click.option(
     "--output-directory",
     type=click.Path(),
     help="Output directory path.",
+    default=os.getcwd(),
 )
 metadata_option = click.option(
     "-m",
@@ -173,13 +174,7 @@ def validate(input: str):
 
 @main.command()
 @input_argument
-@click.option(
-    "-d",
-    "--output-directory",
-    type=click.Path(),
-    help="Output directory path.",
-    default=os.getcwd(),
-)
+@output_directory_option
 def split(input: str, output_directory: str):
     """Split input file into multiple output broken down by prefixes."""
     split_file(input_path=input, output_directory=output_directory)
