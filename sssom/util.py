@@ -1138,11 +1138,11 @@ def sort_df_rows_columns(
     :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
     :return: Pandas DataFrame columns sorted canonically.
     """
-    if by_columns:
+    if by_columns and len(df.columns) > 0:
         column_sequence = [
             col for col in SCHEMA_DICT["slots"].keys() if col in df.columns
         ]
         df = df.reindex(column_sequence, axis=1)
-    if by_rows:
+    if by_rows and len(df) > 0:
         df = df.sort_values(by=df.columns[0], ignore_index=True)
     return df
