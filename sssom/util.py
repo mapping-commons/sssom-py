@@ -944,9 +944,10 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = []
-    for col in KEY_FEATURES:
-        for v in df[col].values:
-            prefixes.append(get_prefix_from_curie(v))
+    if not df.empty:
+        for col in KEY_FEATURES:
+            for v in df[col].values:
+                prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
 
 
