@@ -521,10 +521,15 @@ def merge_msdf(
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
+    # df_merged = reduce(
+    #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
+    #     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    # )
+    # Concat is an alternative to merge when columns are not the same.
     df_merged = reduce(
-        lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
+        lambda left, right: pd.concat([left, right], axis=0, ignore_index=True),
         [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
-    )
+    ).drop_duplicates(ignore_index=True)
 
     # merge the non DataFrame elements
     prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
