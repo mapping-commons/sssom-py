@@ -15,6 +15,7 @@ MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
 MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
+RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
 
 DEFAULT_MAPPING_PROPERTIES = [
     "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
