@@ -188,15 +188,24 @@ def parse(
     # Get list of predicates of interest.
     if mapping_predicate_filter:
         mapping_predicates = _get_list_of_predicate_iri(mapping_predicate_filter)
-    parse_file(
-        input_path=input,
-        output=output,
-        input_format=input_format,
-        metadata_path=metadata,
-        prefix_map_mode=prefix_map_mode,
-        clean_prefixes=clean_prefixes,
-        mapping_predicates=mapping_predicates,
-    )
+        parse_file(
+            input_path=input,
+            output=output,
+            input_format=input_format,
+            metadata_path=metadata,
+            prefix_map_mode=prefix_map_mode,
+            clean_prefixes=clean_prefixes,
+            mapping_predicates=mapping_predicates,
+        )
+    else:
+        parse_file(
+            input_path=input,
+            output=output,
+            input_format=input_format,
+            metadata_path=metadata,
+            prefix_map_mode=prefix_map_mode,
+            clean_prefixes=clean_prefixes,
+        )
 
 
 @main.command()
