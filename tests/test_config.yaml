@@ -21,11 +21,11 @@ tests:
     inputformat: "tsv"
     multiple_input: False
     ct_json_elements: 5
-    ct_data_frame_rows: 106
+    ct_data_frame_rows: 105
     ct_graph_queries_owl:
-      query_count_equivalent_classes: 61
+      query_count_equivalent_classes: 60
     ct_graph_queries_rdf:
-      query_count_equivalent_classes: 61
+      query_count_equivalent_classes: 60
 #  - filename: "hp-base.json"
 #    ct_json_elements: 32150
 #    ct_data_frame_rows: 20485

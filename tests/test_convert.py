@@ -47,7 +47,7 @@ class TestConvert(unittest.TestCase):
         )
         # g.serialize(destination="tmp/cob-external-test.owl", format="turtle")
         size = len(results)
-        self.assertEqual(size, 61)
+        self.assertEqual(size, 60)
 
     def test_to_rdf(self):
         """Test converting the basic example to a basic RDF graph."""
