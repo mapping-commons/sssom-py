@@ -23,6 +23,7 @@ from sssom.constants import (
     MAPPING_SET_SLOTS,
     MAPPING_SLOTS,
     OWL_EQUIV_CLASS,
+    RDFS_SUBCLASS_OF,
 )
 
 from .context import (
@@ -280,21 +281,15 @@ def from_sssom_rdf(
     g: Graph,
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
 
     :param g: the Graph (rdflib)
     :param prefix_map: A dictionary containing the prefix map, defaults to None
     :param meta: Potentially additional metadata, defaults to None
-    :param mapping_predicates: A set of predicates that should be extracted from the RDF graph, defaults to None
     :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
-
-    if mapping_predicates is None:
-        # FIXME unused
-        mapping_predicates = DEFAULT_MAPPING_PROPERTIES
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
@@ -437,6 +432,12 @@ def from_alignment_minidom(
     return to_mapping_set_dataframe(mapping_set_document)
 
 
+def _get_obographs_predicate_id(obographs_predicate: str):
+    if obographs_predicate == "is_a":
+        return RDFS_SUBCLASS_OF
+    return obographs_predicate
+
+
 def from_obographs(
     jsondoc: Dict,
     prefix_map: PrefixMap,
@@ -514,6 +515,34 @@ def from_obographs(
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
+            elif "edges" in g:
+                for edge in g["edges"]:
+                    mdict = {}
+                    subject_id = edge["sub"]
+                    predicate_id = _get_obographs_predicate_id(edge["pred"])
+                    object_id = edge["obj"]
+                    if predicate_id in mapping_predicates:
+                        mdict["subject_id"] = curie_from_uri(subject_id, prefix_map)
+                        mdict["object_id"] = curie_from_uri(object_id, prefix_map)
+                        mdict["predicate_id"] = curie_from_uri(predicate_id, prefix_map)
+                        mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                        mlist.append(Mapping(**mdict))
+            elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
+                for equivalents in g["equivalentNodesSets"]:
+                    if "nodeIds" in equivalents:
+                        for ec1 in equivalents["nodeIds"]:
+                            for ec2 in equivalents["nodeIds"]:
+                                if ec1 != ec2:
+                                    mdict = {}
+                                    mdict["subject_id"] = curie_from_uri(
+                                        ec1, prefix_map
+                                    )
+                                    mdict["object_id"] = curie_from_uri(ec2, prefix_map)
+                                    mdict["predicate_id"] = curie_from_uri(
+                                        OWL_EQUIV_CLASS, prefix_map
+                                    )
+                                    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                                    mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
 
