@@ -98,17 +98,21 @@ predicate_filter_option = click.option(
 
 
 def _get_list_of_predicates(predicate_filter: tuple) -> list:
-    
+
     if all(":" in pred for pred in list(predicate_filter)):
         mapping_predicates = list(predicate_filter)
-        # TODO: Cross-check if the predicate is a valid one 
+        # TODO: Cross-check if the predicate is a valid one
         # For e.g. check for typos etc.
     elif os.path.isfile(predicate_filter[0]):
         with open(predicate_filter[0], "r") as f:
             mapping_predicates = f.read().splitlines()
     else:
-        raise(ValueError(f"{predicate_filter} is not a valid value for a list of predicates."))
-        
+        raise (
+            ValueError(
+                f"{predicate_filter} is not a valid value for a list of predicates."
+            )
+        )
+
     return mapping_predicates
 
 
@@ -176,7 +180,7 @@ def parse(
     prefix_map_mode: str,
     clean_prefixes: bool,
     output: TextIO,
-    mapping_predicate_filter:tuple,
+    mapping_predicate_filter: tuple,
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     # Get list of predicates of interest.
