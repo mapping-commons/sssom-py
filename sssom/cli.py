@@ -11,6 +11,8 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
+from importlib.resources import read_text
+import itertools
 import logging
 import os
 import re
@@ -19,12 +21,13 @@ from pathlib import Path
 from typing import Dict, List, TextIO, Tuple
 
 import click
+from importlib_metadata import files
 import pandas as pd
 import yaml
 from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
-
+from bioregistry import get_iri
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import read_sssom_table
@@ -97,23 +100,39 @@ predicate_filter_option = click.option(
 )
 
 
-def _get_list_of_predicates(predicate_filter: tuple) -> list:
+def _get_list_of_predicate_iri(predicate_filter: tuple) -> list:
+    pred_filter_list = list(predicate_filter)
+    preds = [p for p in pred_filter_list if ":" in p]
+    preds_iri = [get_iri(p) for p in preds]
 
-    if all(":" in pred for pred in list(predicate_filter)):
-        mapping_predicates = list(predicate_filter)
-        # TODO: Cross-check if the predicate is a valid one
-        # For e.g. check for typos etc.
-    elif os.path.isfile(predicate_filter[0]):
-        with open(predicate_filter[0], "r") as f:
-            mapping_predicates = f.read().splitlines()
-    else:
-        raise (
-            ValueError(
-                f"{predicate_filter} is not a valid value for a list of predicates."
+    if len(preds) != len(pred_filter_list) and len(preds) > 0:
+        # The user passed file paths too.
+        pred_fps = [p for p in pred_filter_list if p not in preds]
+        if all(os.path.isfile(p) for p in pred_fps):
+            pred_list = list(itertools.chain(*[Path(f).read_text().splitlines() for f in pred_fps]))
+            preds_iri.extend([get_iri(p) for p in pred_list])
+            
+        else:
+            raise(
+                ValueError(
+                    f"{pred_fps} does not contain a valid file path."
+                )
             )
-        )
+    return list(set(preds_iri))
 
-    return mapping_predicates
+
+        
+    # elif os.path.isfile(predicate_filter[0]):
+    #     with open(predicate_filter[0], "r") as f:
+    #         mapping_predicates = 
+
+        # raise (
+        #     ValueError(
+        #         f"{predicate_filter} is not a valid value for a list of predicates."
+        #     )
+        # )
+    
+    return None
 
 
 @click.group()
@@ -184,8 +203,8 @@ def parse(
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     # Get list of predicates of interest.
-    mapping_predicates = _get_list_of_predicates(mapping_predicate_filter)
-
+    if mapping_predicate_filter:
+        mapping_predicates = _get_list_of_predicate_iri(mapping_predicate_filter)
     parse_file(
         input_path=input,
         output=output,
