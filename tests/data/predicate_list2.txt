@@ -1,0 +1,2 @@
+skos:narrowMatch
+skos:broadMatch
