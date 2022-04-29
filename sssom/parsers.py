@@ -174,14 +174,14 @@ def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
 
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
+    license = DEFAULT_LICENSE
+    mapping_set_id = DEFAULT_MAPPING_SET_ID
     if meta is not None:
-        return MappingSet(
-            mapping_set_id=meta["mapping_set_id"], license=meta["license"]
-        )
-    else:
-        return MappingSet(
-            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
-        )
+        if "mapping_set_id" in meta.keys():
+            mapping_set_id = meta["mapping_set_id"]
+        if "license" in meta.keys():
+            license = meta["license"]
+    return MappingSet(mapping_set_id=mapping_set_id, license=license)
 
 
 def _get_mdict_ms_and_bad_attrs(
