@@ -11,23 +11,24 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
-from importlib.resources import read_text
 import itertools
 import logging
 import os
 import re
 import sys
+from importlib.resources import read_text
 from pathlib import Path
 from typing import Dict, List, TextIO, Tuple
 
 import click
-from importlib_metadata import files
 import pandas as pd
 import yaml
+from bioregistry import get_iri
+from importlib_metadata import files
 from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
-from bioregistry import get_iri
+
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import read_sssom_table
@@ -109,29 +110,25 @@ def _get_list_of_predicate_iri(predicate_filter: tuple) -> list:
         # The user passed file paths too.
         pred_fps = [p for p in pred_filter_list if p not in preds]
         if all(os.path.isfile(p) for p in pred_fps):
-            pred_list = list(itertools.chain(*[Path(f).read_text().splitlines() for f in pred_fps]))
-            preds_iri.extend([get_iri(p) for p in pred_list])
-            
-        else:
-            raise(
-                ValueError(
-                    f"{pred_fps} does not contain a valid file path."
-                )
+            pred_list = list(
+                itertools.chain(*[Path(f).read_text().splitlines() for f in pred_fps])
             )
+            preds_iri.extend([get_iri(p) for p in pred_list])
+
+        else:
+            raise (ValueError(f"{pred_fps} does not contain a valid file path."))
     return list(set(preds_iri))
 
-
-        
     # elif os.path.isfile(predicate_filter[0]):
     #     with open(predicate_filter[0], "r") as f:
-    #         mapping_predicates = 
+    #         mapping_predicates =
 
-        # raise (
-        #     ValueError(
-        #         f"{predicate_filter} is not a valid value for a list of predicates."
-        #     )
-        # )
-    
+    # raise (
+    #     ValueError(
+    #         f"{predicate_filter} is not a valid value for a list of predicates."
+    #     )
+    # )
+
     return None
 
 
