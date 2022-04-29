@@ -13,3 +13,15 @@ SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
 SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
 MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
 MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
+
+OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
+
+DEFAULT_MAPPING_PROPERTIES = [
+    "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
+    "http://www.w3.org/2004/02/skos/core#exactMatch",
+    "http://www.w3.org/2004/02/skos/core#broadMatch",
+    "http://www.w3.org/2004/02/skos/core#closeMatch",
+    "http://www.w3.org/2004/02/skos/core#narrowMatch",
+    "http://www.w3.org/2004/02/skos/core#relatedMatch",
+    OWL_EQUIV_CLASS,
+]

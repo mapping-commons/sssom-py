@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union
 
 from .context import (
     get_default_metadata,
@@ -42,6 +42,7 @@ def parse_file(
     metadata_path: Optional[str] = None,
     prefix_map_mode: Optional[str] = None,
     clean_prefixes: bool = True,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> None:
     """Parse an SSSOM metadata file and write to a table.
 
@@ -53,6 +54,7 @@ def parse_file(
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
         the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
+    :param mapping_predicates: Optional list of mapping predicates
     """
     raise_for_bad_path(input_path)
     metadata = get_metadata_and_prefix_map(
@@ -61,7 +63,19 @@ def parse_file(
     metadata = set_default_mapping_set_id(metadata)
     metadata = set_default_license(metadata)
     parse_func = get_parsing_function(input_format, input_path)
-    doc = parse_func(input_path, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    if mapping_predicates:
+        doc = parse_func(
+            input_path,
+            prefix_map=metadata.prefix_map,
+            meta=metadata.metadata,
+            mapping_predicates=mapping_predicates,
+        )
+    else:
+        doc = parse_func(
+            input_path,
+            prefix_map=metadata.prefix_map,
+            meta=metadata.metadata,
+        )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map()
