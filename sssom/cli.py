@@ -89,6 +89,28 @@ fields_option = click.option(
     help="Fields.",
 )
 
+predicate_filter_option = click.option(
+    "-F",
+    "--mapping-predicate-filter",
+    multiple=True,
+    help="A list of predicates or a file path containing the list of predicates to be considered.",
+)
+
+
+def _get_list_of_predicates(predicate_filter: tuple) -> list:
+    
+    if all(":" in pred for pred in list(predicate_filter)):
+        mapping_predicates = list(predicate_filter)
+        # TODO: Cross-check if the predicate is a valid one 
+        # For e.g. check for typos etc.
+    elif os.path.isfile(predicate_filter[0]):
+        with open(predicate_filter[0], "r") as f:
+            mapping_predicates = f.read().splitlines()
+    else:
+        raise(ValueError(f"{predicate_filter} is not a valid value for a list of predicates."))
+        
+    return mapping_predicates
+
 
 @click.group()
 @click.option("-v", "--verbose", count=True)
@@ -145,6 +167,7 @@ def convert(input: str, output: TextIO, output_format: str):
     required=True,
     help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
 )
+@predicate_filter_option
 @output_option
 def parse(
     input: str,
@@ -153,8 +176,12 @@ def parse(
     prefix_map_mode: str,
     clean_prefixes: bool,
     output: TextIO,
+    mapping_predicate_filter:tuple,
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
+    # Get list of predicates of interest.
+    mapping_predicates = _get_list_of_predicates(mapping_predicate_filter)
+
     parse_file(
         input_path=input,
         output=output,
@@ -162,6 +189,7 @@ def parse(
         metadata_path=metadata,
         prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
+        mapping_predicates=mapping_predicates,
     )
 
 
