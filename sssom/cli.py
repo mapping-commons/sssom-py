@@ -477,7 +477,7 @@ def rewire(
     g = Graph()
     g.parse(input, format=input_format)
     rewire_graph(g, msdf, precedence=precedence)
-    rdfstr = g.serialize(format=output_format).decode()
+    rdfstr = g.serialize(format=output_format)
     print(rdfstr, file=output)
 
 
