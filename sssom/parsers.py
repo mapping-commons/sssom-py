@@ -59,7 +59,7 @@ def read_sssom_table(
     file_path: Union[str, Path],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    mapping_predicates: Optional[list] = None,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -97,7 +97,7 @@ def read_sssom_rdf(
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
-    mapping_predicates: Optional[list] = None,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -106,8 +106,9 @@ def read_sssom_rdf(
     g = Graph()
     g.load(file_path, format=serialisation)
     msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
-    if mapping_predicates:
-        msdf.df = msdf.df[msdf.df["predicate_id"].isin(mapping_predicates)]
+    df: pd.DataFrame = msdf.df
+    if mapping_predicates and not df.empty():
+        msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
@@ -115,7 +116,7 @@ def read_sssom_json(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
-    mapping_predicates: Optional[list] = None,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -126,8 +127,9 @@ def read_sssom_json(
     msdf = from_sssom_json(
         jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata
     )
-    if mapping_predicates:
-        msdf.df = msdf.df[msdf.df["predicate_id"].isin(mapping_predicates)]
+    df: pd.DataFrame = msdf.df
+    if mapping_predicates and not df.empty():
+        msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
