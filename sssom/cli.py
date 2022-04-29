@@ -16,7 +16,6 @@ import logging
 import os
 import re
 import sys
-from importlib.resources import read_text
 from pathlib import Path
 from typing import Dict, List, TextIO, Tuple
 
@@ -24,7 +23,6 @@ import click
 import pandas as pd
 import yaml
 from bioregistry import get_iri
-from importlib_metadata import files
 from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
@@ -118,18 +116,6 @@ def _get_list_of_predicate_iri(predicate_filter: tuple) -> list:
         else:
             raise (ValueError(f"{pred_fps} does not contain a valid file path."))
     return list(set(preds_iri))
-
-    # elif os.path.isfile(predicate_filter[0]):
-    #     with open(predicate_filter[0], "r") as f:
-    #         mapping_predicates =
-
-    # raise (
-    #     ValueError(
-    #         f"{predicate_filter} is not a valid value for a list of predicates."
-    #     )
-    # )
-
-    return None
 
 
 @click.group()
