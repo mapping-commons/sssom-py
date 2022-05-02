@@ -5,7 +5,7 @@ import unittest
 
 from rdflib import Graph
 
-from sssom.parsers import read_sssom_table
+from sssom.parsers import parse_sssom_table
 from sssom.rdf_util import rewire_graph
 from tests.constants import data_dir, test_out_dir
 
@@ -15,7 +15,7 @@ class TestRewire(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case with the COB mappings et and OWL graph."""
-        self.mset = read_sssom_table(data_dir / "cob-to-external.tsv")
+        self.mset = parse_sssom_table(data_dir / "cob-to-external.tsv")
         g = Graph()
         g.parse(os.path.join(data_dir, "cob.owl"), format="xml")
         self.graph = g

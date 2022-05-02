@@ -18,7 +18,7 @@ from sssom.parsers import (
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
-    read_sssom_table,
+    parse_sssom_table,
     to_mapping_set_document,
 )
 from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns, to_mapping_set_dataframe
@@ -64,7 +64,7 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_dataframe(self):
         """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
-        msdf = read_sssom_table(input_path)
+        msdf = parse_sssom_table(input_path)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe.tsv")
         with open(output_path, "w") as file:
             write_table(msdf, file)
@@ -76,7 +76,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_sssom_dataframe_url(self):
         """Test parsing a TSV from a URL."""
-        msdf = read_sssom_table(self.df_url)
+        msdf = parse_sssom_table(self.df_url)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
         with open(output_path, "w") as file:
             write_table(msdf, file)
@@ -176,7 +176,7 @@ class TestParse(unittest.TestCase):
     def test_piped_element_to_list(self):
         """Test for multi-valued element (piped in SSSOM tables) to list."""
         input_path = os.path.join(test_data_dir, "basic.tsv")
-        msdf = read_sssom_table(input_path)
+        msdf = parse_sssom_table(input_path)
         df = msdf.df
         msdf.df = df[df["match_type"].str.contains("\\|", na=False)].reset_index()
         old_match_type = msdf.df["match_type"]
@@ -188,7 +188,7 @@ class TestParse(unittest.TestCase):
     def test_read_sssom_table(self):
         """Test read SSSOM method to validate import of all columns."""
         input_path = os.path.join(test_data_dir, "basic3.tsv")
-        msdf = read_sssom_table(input_path)
+        msdf = parse_sssom_table(input_path)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t")
         imported_df = sort_df_rows_columns(imported_df)
         self.assertEqual(set(imported_df.columns), set(msdf.df.columns))

@@ -3,7 +3,7 @@
 import os
 import unittest
 
-from sssom.parsers import read_sssom_json, read_sssom_rdf, read_sssom_table
+from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import write_json, write_owl, write_rdf, write_table
 from tests.constants import data_dir as test_data_dir
 from tests.constants import test_out_dir
@@ -14,7 +14,7 @@ class TestWrite(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case with a basic SSSOM example."""
-        self.msdf = read_sssom_table(f"{test_data_dir}/basic.tsv")
+        self.msdf = parse_sssom_table(f"{test_data_dir}/basic.tsv")
         # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
         self.mapping_count = 141  # 141 for basic.tsv
 
@@ -23,7 +23,7 @@ class TestWrite(unittest.TestCase):
         tmp_path = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
         with open(tmp_path, "w") as tmp_file:
             write_table(self.msdf, tmp_file)
-        msdf = read_sssom_table(tmp_path)
+        msdf = parse_sssom_table(tmp_path)
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,
@@ -35,7 +35,7 @@ class TestWrite(unittest.TestCase):
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         with open(path_1, "w") as file:
             write_rdf(self.msdf, file)
-        msdf = read_sssom_rdf(path_1, self.msdf.prefix_map)
+        msdf = parse_sssom_rdf(path_1, self.msdf.prefix_map)
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,
@@ -52,7 +52,7 @@ class TestWrite(unittest.TestCase):
         path = os.path.join(test_out_dir, "test_write_sssom_json.json")
         with open(path, "w") as file:
             write_json(self.msdf, file)
-        msdf = read_sssom_json(path)
+        msdf = parse_sssom_json(path)
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,

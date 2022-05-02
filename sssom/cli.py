@@ -33,7 +33,7 @@ from .io import (
     split_file,
     validate_file,
 )
-from .parsers import read_sssom_table
+from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
@@ -209,7 +209,7 @@ def ptable(input, output: TextIO, inverse_factor):
     logging.warning(
         f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
     )
-    msdf = read_sssom_table(input)
+    msdf = parse_sssom_table(input)
     # df = parse(input)
     df = collapse(msdf.df)
     # , priors=list(priors)
@@ -224,7 +224,7 @@ def ptable(input, output: TextIO, inverse_factor):
 def dedupe(input: str, output: TextIO):
     """Remove lower confidence duplicate lines from an SSSOM file."""
     # df = parse(input)
-    msdf = read_sssom_table(input)
+    msdf = parse_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
     msdf_out = MappingSetDataFrame(
         df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata
@@ -257,7 +257,7 @@ def dosql(query: str, inputs: List[str], output: TextIO):
     new_msdf = MappingSetDataFrame()
     while len(inputs) >= n:
         fn = inputs[n - 1]
-        msdf = read_sssom_table(fn)
+        msdf = parse_sssom_table(fn)
         df = msdf.df
         # df = parse(fn)
         globals()[f"df{n}"] = df
@@ -326,8 +326,8 @@ def diff(inputs: Tuple[str, str], output: TextIO):
     injected comments indicating uniqueness to set1 or set2.
     """  # noqa: DAR101,DAR401
     input1, input2 = inputs
-    msdf1 = read_sssom_table(input1)
-    msdf2 = read_sssom_table(input2)
+    msdf1 = parse_sssom_table(input1)
+    msdf2 = parse_sssom_table(input2)
     d = compare_dataframes(msdf1.df, msdf2.df)
     if d.combined_dataframe is None:
         raise RuntimeError
@@ -347,7 +347,7 @@ def diff(inputs: Tuple[str, str], output: TextIO):
 @click.argument("inputs", nargs=-1)
 def partition(inputs: List[str], output_directory: str):
     """Partition an SSSOM into one file for each strongly connected component."""
-    docs = [read_sssom_table(input) for input in inputs]
+    docs = [parse_sssom_table(input) for input in inputs]
     doc = docs.pop()
     """for d2 in docs:
         doc.mapping_set.mappings += d2.mapping_set.mappings"""
@@ -373,10 +373,10 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
     import yaml
 
     if metadata is None:
-        doc = read_sssom_table(input)
+        doc = parse_sssom_table(input)
     else:
         meta_obj = yaml.safe_load(open(metadata))
-        doc = read_sssom_table(input, meta=meta_obj)
+        doc = parse_sssom_table(input, meta=meta_obj)
     df = summarize_cliques(doc)
     df.to_csv(output, sep="\t")
     if statsfile is None:
@@ -392,7 +392,7 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
 @fields_option
 def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
     """Write sssom summary cross-tabulated by categories."""
-    df = remove_unmatched(read_sssom_table(input).df)
+    df = remove_unmatched(parse_sssom_table(input).df)
     # df = parse(input)
     logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
@@ -409,7 +409,7 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @input_argument
 def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     """Calculate correlations."""
-    msdf = read_sssom_table(input)
+    msdf = parse_sssom_table(input)
     df = remove_unmatched(msdf.df)
     # df = remove_unmatched(parse(input))
     if len(df) == 0:
@@ -461,7 +461,7 @@ def merge(inputs: str, output: TextIO, reconcile: bool = True):
     then remove lower confidence positive one. If confidence is the same,
     prefer HumanCurated. If both HumanCurated, prefer negative mapping).
     """  # noqa: DAR101
-    msdfs = [read_sssom_table(i) for i in inputs]
+    msdfs = [parse_sssom_table(i) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
     write_table(merged_msdf, output)
 
@@ -492,7 +492,7 @@ def rewire(
 
     # noqa: DAR101
     """
-    msdf = read_sssom_table(mapping_file)
+    msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
     rewire_graph(g, msdf, precedence=precedence)
@@ -516,7 +516,7 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
     :param reconcile_prefix_file: YAML file containing the prefix reconcilation rules.
     :param output: Target file path.
     """
-    msdf = read_sssom_table(input)
+    msdf = parse_sssom_table(input)
     with open(reconcile_prefix_file, "rb") as rp_file:
         rp_dict = yaml.safe_load(rp_file)
     recon_msdf = reconcile_prefix_and_data(msdf, rp_dict)
@@ -547,7 +547,7 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
     :param output: SSSOM TSV file with columns sorted.
     """
-    msdf = read_sssom_table(input)
+    msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
 

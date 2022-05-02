@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
@@ -52,13 +53,76 @@ from .util import (
 # Constants
 MATCH_TYPE_UNSPECIFIED = "Unspecified"
 
-# Readers (from file)
+
+# * DEPRECATED methods *****************************************
 
 
+@deprecated(
+    deprecated_in="0.3.10",
+    removed_in="0.3.11",
+    details="Use 'parse_sssom_table' instead.",
+)
 def read_sssom_table(
     file_path: Union[str, Path],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
+    **kwargs,
+) -> MappingSetDataFrame:
+    """DEPRECATE."""
+    return parse_sssom_table(
+        file_path=file_path, prefix_map=prefix_map, meta=meta, kwargs=kwargs
+    )
+
+
+@deprecated(
+    deprecated_in="0.3.10",
+    removed_in="0.3.11",
+    details="Use 'parse_sssom_rdf' instead.",
+)
+def read_sssom_rdf(
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
+    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    **kwargs,
+) -> MappingSetDataFrame:
+    """DEPRECATE."""
+    return parse_sssom_rdf(
+        file_path=file_path,
+        prefix_map=prefix_map,
+        meta=meta,
+        serialisation=serialisation,
+        kwargs=kwargs,
+    )
+
+
+@deprecated(
+    deprecated_in="0.3.10",
+    removed_in="0.3.11",
+    details="Use 'parse_sssom_json' instead.",
+)
+def read_sssom_json(
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
+) -> MappingSetDataFrame:
+    """DEPRECATE."""
+    return parse_sssom_json(
+        file_path=file_path, prefix_map=prefix_map, meta=meta, kwarg=kwargs
+    )
+
+
+# * *******************************************************
+# Parsers (from file)
+
+
+def parse_sssom_table(
+    file_path: Union[str, Path],
+    prefix_map: Optional[PrefixMap] = None,
+    meta: Optional[MetadataType] = None,
+    **kwargs
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
@@ -92,12 +156,13 @@ def read_sssom_table(
     return msdf
 
 
-def read_sssom_rdf(
+def parse_sssom_rdf(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
-    mapping_predicates: Optional[List[str]] = None,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -106,17 +171,18 @@ def read_sssom_rdf(
     g = Graph()
     g.load(file_path, format=serialisation)
     msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
-    df: pd.DataFrame = msdf.df
-    if mapping_predicates and not df.empty():
-        msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
+    # df: pd.DataFrame = msdf.df
+    # if mapping_predicates and not df.empty():
+    #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
-def read_sssom_json(
+def parse_sssom_json(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
-    mapping_predicates: Optional[List[str]] = None,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -127,9 +193,9 @@ def read_sssom_json(
     msdf = from_sssom_json(
         jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata
     )
-    df: pd.DataFrame = msdf.df
-    if mapping_predicates and not df.empty():
-        msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
+    # df: pd.DataFrame = msdf.df
+    # if mapping_predicates and not df.empty():
+    #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
@@ -580,11 +646,11 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
     if input_format is None:
         input_format = get_file_extension(filename)
     if input_format == "tsv":
-        return read_sssom_table
+        return parse_sssom_table
     elif input_format == "rdf":
-        return read_sssom_rdf
+        return parse_sssom_rdf
     elif input_format == "json":
-        return read_sssom_json
+        return parse_sssom_json
     elif input_format == "alignment-api-xml":
         return parse_alignment_xml
     elif input_format == "obographs-json":

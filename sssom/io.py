@@ -13,7 +13,7 @@ from .context import (
     set_default_license,
     set_default_mapping_set_id,
 )
-from .parsers import get_parsing_function, read_sssom_table, split_dataframe
+from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import is_curie, raise_for_bad_path, read_metadata
 from .writers import get_writer_function, write_table, write_tables
@@ -31,7 +31,7 @@ def convert_file(
     :param output_format: The format to which the the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
-    doc = read_sssom_table(input_path)
+    doc = parse_sssom_table(input_path)
     write_func, fileformat = get_writer_function(
         output_format=output_format, output=output
     )
@@ -67,19 +67,19 @@ def parse_file(
     metadata = set_default_mapping_set_id(metadata)
     metadata = set_default_license(metadata)
     parse_func = get_parsing_function(input_format, input_path)
-    if mapping_predicates:
-        doc = parse_func(
-            input_path,
-            prefix_map=metadata.prefix_map,
-            meta=metadata.metadata,
-            mapping_predicates=mapping_predicates,
-        )
-    else:
-        doc = parse_func(
-            input_path,
-            prefix_map=metadata.prefix_map,
-            meta=metadata.metadata,
-        )
+    # if mapping_predicates:
+    doc = parse_func(
+        input_path,
+        prefix_map=metadata.prefix_map,
+        meta=metadata.metadata,
+        mapping_predicates=mapping_predicates,
+    )
+    # else:
+    #     doc = parse_func(
+    #         input_path,
+    #         prefix_map=metadata.prefix_map,
+    #         meta=metadata.metadata,
+    #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map()
@@ -93,7 +93,7 @@ def validate_file(input_path: str) -> bool:
     :returns: True if valid SSSOM, false otherwise.
     """
     try:
-        read_sssom_table(file_path=input_path)
+        parse_sssom_table(file_path=input_path)
         return True
     except Exception as e:
         logging.exception("The file is invalid", e)
@@ -107,7 +107,7 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     :param output_directory: The directory to which the split file should be exported.
     """
     raise_for_bad_path(input_path)
-    msdf = read_sssom_table(input_path)
+    msdf = parse_sssom_table(input_path)
     splitted = split_dataframe(msdf)
     write_tables(splitted, output_directory)
 
