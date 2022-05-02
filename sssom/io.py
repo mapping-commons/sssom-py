@@ -4,7 +4,7 @@ import itertools
 import logging
 import os
 from pathlib import Path
-from typing import List, Optional, TextIO, Union
+from typing import Optional, TextIO, Union
 
 from bioregistry import get_iri
 
@@ -46,7 +46,7 @@ def parse_file(
     metadata_path: Optional[str] = None,
     prefix_map_mode: Optional[str] = None,
     clean_prefixes: bool = True,
-    mapping_predicates: Optional[List[str]] = None,
+    mapping_predicate_filter: tuple = None,
 ) -> None:
     """Parse an SSSOM metadata file and write to a table.
 
@@ -58,7 +58,7 @@ def parse_file(
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
         the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
-    :param mapping_predicates: Optional list of mapping predicates
+    :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
     metadata = get_metadata_and_prefix_map(
@@ -67,6 +67,13 @@ def parse_file(
     metadata = set_default_mapping_set_id(metadata)
     metadata = set_default_license(metadata)
     parse_func = get_parsing_function(input_format, input_path)
+    mapping_predicates = None
+    # Get list of predicates of interest.
+    if mapping_predicate_filter:
+        mapping_predicates = get_list_of_predicate_iri(
+            mapping_predicate_filter, metadata.prefix_map
+        )
+
     # if mapping_predicates:
     doc = parse_func(
         input_path,
@@ -140,15 +147,22 @@ def get_metadata_and_prefix_map(
     return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple) -> list:
+def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
+    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
     pred_filter_list = list(predicate_filter)
     preds = [p for p in pred_filter_list if is_curie(p)]
     preds_iri = [get_iri(p) for p in preds]
+    non_bioreg_preds = [p for p in preds if get_iri(p) is None]
+    non_bioreg_pred_iri = [
+        get_iri(p, prefix_map=prefix_map, use_bioregistry_io=False)
+        for p in non_bioreg_preds
+    ]
+    preds_iri.extend(non_bioreg_pred_iri)
 
     if len(preds) != len(pred_filter_list) and len(preds) > 0:
         # The user passed file paths too.

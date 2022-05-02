@@ -16,7 +16,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, TextIO, Tuple
+from typing import Dict, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -26,13 +26,7 @@ from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from .cliques import split_into_cliques, summarize_cliques
-from .io import (
-    convert_file,
-    get_list_of_predicate_iri,
-    parse_file,
-    split_file,
-    validate_file,
-)
+from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -167,12 +161,9 @@ def parse(
     prefix_map_mode: str,
     clean_prefixes: bool,
     output: TextIO,
-    mapping_predicate_filter: tuple,
+    mapping_predicate_filter: Optional[tuple],
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
-    # Get list of predicates of interest.
-    mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter)
-
     parse_file(
         input_path=input,
         output=output,
@@ -180,7 +171,7 @@ def parse(
         metadata_path=metadata,
         prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
-        mapping_predicates=mapping_predicates,
+        mapping_predicate_filter=mapping_predicate_filter,
     )
 
 
