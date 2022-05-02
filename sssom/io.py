@@ -112,11 +112,11 @@ def get_metadata_and_prefix_map(
     # TODO reduce complexity by flipping conditionals
     #  and returning eagerly (it's fine if there are multiple returns)
     if prefix_map_mode != "metadata_only":
-        metadata: Metadata= get_default_metadata()
+        default_metadata: Metadata = get_default_metadata()
         if prefix_map_mode == "sssom_default_only":
-            prefix_map = metadata.prefix_map
+            prefix_map = default_metadata.prefix_map
         elif prefix_map_mode == "merged":
-            for prefix, uri_prefix in metadata.prefix_map.items():
+            for prefix, uri_prefix in default_metadata.prefix_map.items():
                 if prefix not in prefix_map:
                     prefix_map[prefix] = uri_prefix
     return Metadata(prefix_map=prefix_map, metadata=metadata)
