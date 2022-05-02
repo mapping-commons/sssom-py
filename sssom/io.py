@@ -1,8 +1,12 @@
 """I/O utilities for SSSOM."""
 
+import itertools
 import logging
+import os
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
+
+from bioregistry import get_iri
 
 from .context import (
     get_default_metadata,
@@ -11,7 +15,7 @@ from .context import (
 )
 from .parsers import get_parsing_function, read_sssom_table, split_dataframe
 from .typehints import Metadata
-from .util import raise_for_bad_path, read_metadata
+from .util import is_curie, raise_for_bad_path, read_metadata
 from .writers import get_writer_function, write_table, write_tables
 
 
@@ -134,3 +138,27 @@ def get_metadata_and_prefix_map(
                 if prefix not in prefix_map:
                     prefix_map[prefix] = uri_prefix
     return Metadata(prefix_map=prefix_map, metadata=metadata)
+
+
+def get_list_of_predicate_iri(predicate_filter: tuple) -> list:
+    """Return a list of IRIs for predicate CURIEs passed.
+
+    :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
+    :return: A list of IRIs.
+    """
+    pred_filter_list = list(predicate_filter)
+    preds = [p for p in pred_filter_list if is_curie(p)]
+    preds_iri = [get_iri(p) for p in preds]
+
+    if len(preds) != len(pred_filter_list) and len(preds) > 0:
+        # The user passed file paths too.
+        pred_fps = [p for p in pred_filter_list if p not in preds]
+        if all(os.path.isfile(p) for p in pred_fps):
+            pred_list = list(
+                itertools.chain(*[Path(f).read_text().splitlines() for f in pred_fps])
+            )
+            preds_iri.extend([get_iri(p) for p in pred_list])
+
+        else:
+            logging.warn(f"{pred_fps} does not contain a valid file path.")
+    return list(set(preds_iri))

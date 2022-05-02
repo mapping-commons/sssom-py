@@ -11,7 +11,6 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
-import itertools
 import logging
 import os
 import re
@@ -22,13 +21,18 @@ from typing import Dict, List, TextIO, Tuple
 import click
 import pandas as pd
 import yaml
-from bioregistry import get_iri
 from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, split_file, validate_file
+from .io import (
+    convert_file,
+    get_list_of_predicate_iri,
+    parse_file,
+    split_file,
+    validate_file,
+)
 from .parsers import read_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -99,25 +103,6 @@ predicate_filter_option = click.option(
 )
 
 
-def _get_list_of_predicate_iri(predicate_filter: tuple) -> list:
-    pred_filter_list = list(predicate_filter)
-    preds = [p for p in pred_filter_list if ":" in p]
-    preds_iri = [get_iri(p) for p in preds]
-
-    if len(preds) != len(pred_filter_list) and len(preds) > 0:
-        # The user passed file paths too.
-        pred_fps = [p for p in pred_filter_list if p not in preds]
-        if all(os.path.isfile(p) for p in pred_fps):
-            pred_list = list(
-                itertools.chain(*[Path(f).read_text().splitlines() for f in pred_fps])
-            )
-            preds_iri.extend([get_iri(p) for p in pred_list])
-
-        else:
-            raise (ValueError(f"{pred_fps} does not contain a valid file path."))
-    return list(set(preds_iri))
-
-
 @click.group()
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
@@ -186,26 +171,17 @@ def parse(
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     # Get list of predicates of interest.
-    if mapping_predicate_filter:
-        mapping_predicates = _get_list_of_predicate_iri(mapping_predicate_filter)
-        parse_file(
-            input_path=input,
-            output=output,
-            input_format=input_format,
-            metadata_path=metadata,
-            prefix_map_mode=prefix_map_mode,
-            clean_prefixes=clean_prefixes,
-            mapping_predicates=mapping_predicates,
-        )
-    else:
-        parse_file(
-            input_path=input,
-            output=output,
-            input_format=input_format,
-            metadata_path=metadata,
-            prefix_map_mode=prefix_map_mode,
-            clean_prefixes=clean_prefixes,
-        )
+    mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter)
+
+    parse_file(
+        input_path=input,
+        output=output,
+        input_format=input_format,
+        metadata_path=metadata,
+        prefix_map_mode=prefix_map_mode,
+        clean_prefixes=clean_prefixes,
+        mapping_predicates=mapping_predicates,
+    )
 
 
 @main.command()
