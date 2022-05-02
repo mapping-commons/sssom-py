@@ -59,14 +59,14 @@ def read_sssom_table(
     file_path: Union[str, Path],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    mapping_predicates: Optional[List[str]] = None,
+    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     df = read_pandas(file_path)
-    if mapping_predicates:
-        # Filter rows based on presence of predicate_id list provided.
-        df = df[df["predicate_id"].isin(mapping_predicates)]
+    # if mapping_predicates:
+    #     # Filter rows based on presence of predicate_id list provided.
+    #     df = df[df["predicate_id"].isin(mapping_predicates)]
 
     # If SSSOM external metadata is provided, merge it with the internal metadata
     sssom_metadata = _read_metadata_from_table(file_path)
