@@ -1,6 +1,5 @@
 """I/O utilities for SSSOM."""
 
-import itertools
 import logging
 import os
 from pathlib import Path
@@ -15,7 +14,7 @@ from .context import (
 )
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
-from .util import is_curie, raise_for_bad_path, read_metadata
+from .util import is_curie, is_iri, raise_for_bad_path, read_metadata
 from .writers import get_writer_function, write_table, write_tables
 
 
@@ -155,24 +154,48 @@ def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list
     :return: A list of IRIs.
     """
     pred_filter_list = list(predicate_filter)
-    preds = [p for p in pred_filter_list if is_curie(p)]
-    preds_iri = [get_iri(p) for p in preds]
-    non_bioreg_preds = [p for p in preds if get_iri(p) is None]
-    non_bioreg_pred_iri = [
-        get_iri(p, prefix_map=prefix_map, use_bioregistry_io=False)
-        for p in non_bioreg_preds
-    ]
-    preds_iri.extend(non_bioreg_pred_iri)
+    iri_list = []
+    for p in pred_filter_list:
+        p_iri = extract_iri(p, prefix_map)
+        if p_iri:
+            iri_list.extend(p_iri)
+    return list(set(iri_list))
 
-    if len(preds) != len(pred_filter_list) and len(preds) > 0:
-        # The user passed file paths too.
-        pred_fps = [p for p in pred_filter_list if p not in preds]
-        if all(os.path.isfile(p) for p in pred_fps):
-            pred_list = list(
-                itertools.chain(*[Path(f).read_text().splitlines() for f in pred_fps])
-            )
-            preds_iri.extend([get_iri(p) for p in pred_list])
 
+def extract_iri(input, prefix_map) -> list:
+    """
+    Recursively extracts a list of IRIs from a string or file.
+
+    :param input: CURIE OR list of CURIEs OR file path containing the same.
+    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :return: A list of IRIs.
+    :rtype: list
+    """
+    if is_iri(input):
+        return [input]
+    elif is_curie(input):
+        p_iri = get_iri(input, prefix_map=prefix_map, use_bioregistry_io=False)
+        if not p_iri:
+            p_iri = get_iri(input)
+        if p_iri:
+            return [p_iri]
         else:
-            logging.warn(f"{pred_fps} does not contain a valid file path.")
-    return list(set(preds_iri))
+            logging.warning(
+                f"{input} is a curie but could not be resolved to an IRI, "
+                f"neither with the provided prefix map nor with bioregistry."
+            )
+    elif os.path.isfile(input):
+        pred_list = Path(input).read_text().splitlines()
+        iri_list = []
+        for p in pred_list:
+            p_iri = extract_iri(p, prefix_map)
+            if p_iri:
+                iri_list.extend(p_iri)
+        return iri_list
+
+    else:
+        logging.warning(
+            f"{input} is neither a valid curie, nor an IRI, nor a local file path, "
+            f"skipped from processing."
+        )
+    return []

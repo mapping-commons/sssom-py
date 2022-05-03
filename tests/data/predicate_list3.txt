@@ -1,0 +1,4 @@
+skos:narrowMatch
+skos2:broadMatch
+http://aa
+http://aa.org

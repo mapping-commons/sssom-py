@@ -59,7 +59,7 @@ class TestParse(unittest.TestCase):
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
-        self.prefix_map, self.metadata = get_default_metadata()
+        self.metadata = get_default_metadata()
 
     def test_parse_sssom_dataframe(self):
         """Test parsing a TSV."""
@@ -90,8 +90,8 @@ class TestParse(unittest.TestCase):
         """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs,
-            prefix_map=self.prefix_map,
-            meta=self.metadata,
+            prefix_map=self.metadata.prefix_map,
+            meta=self.metadata.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
         with open(path, "w") as file:
@@ -104,13 +104,13 @@ class TestParse(unittest.TestCase):
 
     def test_broken_obographs(self):
         """Test parsing OBO Graph JSON."""
-        prefix_map = self.prefix_map
+        prefix_map = self.metadata.prefix_map
         prefix_map["OMIM"] = "http://omim.org/entry/"
         with self.assertRaises(ValueError):
             from_obographs(
                 jsondoc=self.broken_obographs,
                 prefix_map=prefix_map,
-                meta=self.metadata,
+                meta=self.metadata.metadata,
             )
 
     def test_parse_tsv(self):
@@ -131,8 +131,8 @@ class TestParse(unittest.TestCase):
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml,
-            prefix_map=self.prefix_map,
-            meta=self.metadata,
+            prefix_map=self.metadata.prefix_map,
+            meta=self.metadata.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
         with open(path, "w") as file:
@@ -146,7 +146,7 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
         msdf = from_sssom_rdf(
-            g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata
+            g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata.metadata
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
         with open(path, "w") as file:
@@ -162,7 +162,7 @@ class TestParse(unittest.TestCase):
         msdf = from_sssom_json(
             jsondoc=self.json,
             prefix_map=self.df_prefix_map,
-            meta=self.metadata,
+            meta=self.metadata.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")
         with open(path, "w") as file:

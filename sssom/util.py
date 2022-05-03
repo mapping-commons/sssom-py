@@ -902,6 +902,11 @@ def is_curie(string: str) -> bool:
     return bool(CURIE_RE.match(string))
 
 
+def is_iri(string: str) -> bool:
+    """Check if the string is an IRI."""
+    return validators.url(string)
+
+
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
     if is_curie(curie):
