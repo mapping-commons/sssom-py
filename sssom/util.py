@@ -827,7 +827,9 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     # The following 3 lines are to remove columns
     # where all values are blank.
     df.replace("", np.nan, inplace=True)
-    df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
+    df.dropna(
+        axis=1, how="all", inplace=True
+    )  # remove columns with all row = 'None'-s.
     df = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
     df.replace(np.nan, "", inplace=True)
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
