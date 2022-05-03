@@ -257,7 +257,12 @@ def filter_redundant_rows(
         ]
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
-    return_df = df.append(nan_df).drop_duplicates()
+    # FutureWarning: The frame.append method is deprecated and
+    # will be removed from pandas in a future version.
+    # Use pandas.concat instead.
+    # return_df = df.append(nan_df).drop_duplicates()
+    return_df = pd.concat([df, nan_df]).drop_duplicates()
+
     if return_df[CONFIDENCE].isnull().all():
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
@@ -633,13 +638,25 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
                 & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
             )
-            # In spite of this, if match_condition_1 is returning multiple rows, pick any random row from above.
+            # In spite of this, if match_condition_1
+            # is returning multiple rows, pick any random row from above.
             if len(match_condition_1[match_condition_1].index) > 1:
                 match_condition_1 = match_condition_1[match_condition_1].sample()
 
-        reconciled_df_subset = reconciled_df_subset.append(
-            combined_normalized_subset.loc[
-                match_condition_1[match_condition_1].index, :
+        # FutureWarning: The frame.append method is deprecated and will be removed
+        # from pandas in a future version. Use pandas.concat instead.
+        # reconciled_df_subset = reconciled_df_subset.append(
+        #     combined_normalized_subset.loc[
+        #         match_condition_1[match_condition_1].index, :
+        #     ],
+        #     ignore_index=True,
+        # )
+        reconciled_df_subset = pd.concat(
+            [
+                reconciled_df_subset,
+                combined_normalized_subset.loc[
+                    match_condition_1[match_condition_1].index, :
+                ],
             ],
             ignore_index=True,
         )
@@ -827,10 +844,12 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     # The following 3 lines are to remove columns
     # where all values are blank.
     df.replace("", np.nan, inplace=True)
-    df = df.dropna(axis=1, how="all")  # remove columns with all row = 'None'-s.
-    df.loc[:, ~df.columns.isin(slots_with_double_as_range)].replace(
-        np.nan, "", inplace=True
-    )
+    df.dropna(
+        axis=1, how="all", inplace=True
+    )  # remove columns with all row = 'None'-s.
+    non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
+    non_double_cols = non_double_cols.replace(np.nan, "")
+    df[non_double_cols.columns] = non_double_cols
     msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
     msdf.df = sort_df_rows_columns(msdf.df)
     return msdf

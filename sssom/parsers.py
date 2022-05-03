@@ -337,8 +337,12 @@ def from_sssom_dataframe(
     """
     prefix_map = _ensure_prefix_map(prefix_map)
 
+    # Need to revisit this solution. 
+    # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
     if "confidence" in df.columns:
-        df["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
+        df2 = df.copy()
+        df2["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
+        df = df2
 
     mlist: List[Mapping] = []
     ms = _init_mapping_set(meta)
