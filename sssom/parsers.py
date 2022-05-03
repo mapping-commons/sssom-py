@@ -337,7 +337,7 @@ def from_sssom_dataframe(
     """
     prefix_map = _ensure_prefix_map(prefix_map)
 
-    # Need to revisit this solution. 
+    # Need to revisit this solution.
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
     if "confidence" in df.columns:
         df2 = df.copy()
