@@ -2,7 +2,7 @@
 
 import unittest
 
-from sssom.parsers import read_sssom_table
+from sssom.parsers import parse_sssom_table
 from sssom.util import merge_msdf
 from tests.constants import data_dir
 
@@ -12,9 +12,9 @@ class TestMerge(unittest.TestCase):
 
     def setUp(self) -> None:
         """Test up the test cases with the third basic example."""
-        msdf1 = read_sssom_table(f"{data_dir}/basic.tsv")
-        msdf2 = read_sssom_table(f"{data_dir}/basic2.tsv")
-        msdf3 = read_sssom_table(f"{data_dir}/basic3.tsv")
+        msdf1 = parse_sssom_table(f"{data_dir}/basic.tsv")
+        msdf2 = parse_sssom_table(f"{data_dir}/basic2.tsv")
+        msdf3 = parse_sssom_table(f"{data_dir}/basic3.tsv")
         self.msdf = msdf1
         self.msdfs = [msdf1, msdf2, msdf3]
 

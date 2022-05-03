@@ -3,7 +3,7 @@
 import unittest
 
 from sssom.cliques import split_into_cliques, summarize_cliques
-from sssom.parsers import read_sssom_table
+from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir
 
 
@@ -12,7 +12,7 @@ class TestSCC(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case by reading the basic SSSOM example."""
-        self.mset = read_sssom_table(data_dir / "basic.tsv")
+        self.mset = parse_sssom_table(data_dir / "basic.tsv")
 
     def test_scc(self):
         """Test splitting into cliques."""

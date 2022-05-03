@@ -6,7 +6,7 @@ import re
 import typing
 from collections import Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, TextIO, Tuple, Union, cast
+from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union, cast
 from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
@@ -15,10 +15,17 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
-from sssom.constants import MAPPING_SET_SLOTS, MAPPING_SLOTS
+from sssom.constants import (
+    DEFAULT_MAPPING_PROPERTIES,
+    MAPPING_SET_SLOTS,
+    MAPPING_SLOTS,
+    OWL_EQUIV_CLASS,
+    RDFS_SUBCLASS_OF,
+)
 
 from .context import (
     DEFAULT_LICENSE,
@@ -46,17 +53,85 @@ from .util import (
 # Constants
 MATCH_TYPE_UNSPECIFIED = "Unspecified"
 
-# Readers (from file)
+
+# * DEPRECATED methods *****************************************
 
 
+@deprecated(
+    deprecated_in="0.3.10",
+    removed_in="0.3.11",
+    details="Use 'parse_sssom_table' instead.",
+)
 def read_sssom_table(
     file_path: Union[str, Path],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
+    **kwargs,
+) -> MappingSetDataFrame:
+    """DEPRECATE."""
+    return parse_sssom_table(
+        file_path=file_path, prefix_map=prefix_map, meta=meta, kwargs=kwargs
+    )
+
+
+@deprecated(
+    deprecated_in="0.3.10",
+    removed_in="0.3.11",
+    details="Use 'parse_sssom_rdf' instead.",
+)
+def read_sssom_rdf(
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
+    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    **kwargs,
+) -> MappingSetDataFrame:
+    """DEPRECATE."""
+    return parse_sssom_rdf(
+        file_path=file_path,
+        prefix_map=prefix_map,
+        meta=meta,
+        serialisation=serialisation,
+        kwargs=kwargs,
+    )
+
+
+@deprecated(
+    deprecated_in="0.3.10",
+    removed_in="0.3.11",
+    details="Use 'parse_sssom_json' instead.",
+)
+def read_sssom_json(
+    file_path: str,
+    prefix_map: Dict[str, str] = None,
+    meta: Dict[str, str] = None,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
+) -> MappingSetDataFrame:
+    """DEPRECATE."""
+    return parse_sssom_json(
+        file_path=file_path, prefix_map=prefix_map, meta=meta, kwarg=kwargs
+    )
+
+
+# * *******************************************************
+# Parsers (from file)
+
+
+def parse_sssom_table(
+    file_path: Union[str, Path],
+    prefix_map: Optional[PrefixMap] = None,
+    meta: Optional[MetadataType] = None,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     df = read_pandas(file_path)
+    # if mapping_predicates:
+    #     # Filter rows based on presence of predicate_id list provided.
+    #     df = df[df["predicate_id"].isin(mapping_predicates)]
+
     # If SSSOM external metadata is provided, merge it with the internal metadata
     sssom_metadata = _read_metadata_from_table(file_path)
 
@@ -81,11 +156,13 @@ def read_sssom_table(
     return msdf
 
 
-def read_sssom_rdf(
+def parse_sssom_rdf(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -94,13 +171,18 @@ def read_sssom_rdf(
     g = Graph()
     g.load(file_path, format=serialisation)
     msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    # df: pd.DataFrame = msdf.df
+    # if mapping_predicates and not df.empty():
+    #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
-def read_sssom_json(
+def parse_sssom_json(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
+    **kwargs
+    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -111,22 +193,27 @@ def read_sssom_json(
     msdf = from_sssom_json(
         jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata
     )
+    # df: pd.DataFrame = msdf.df
+    # if mapping_predicates and not df.empty():
+    #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
 # Import methods from external file formats
 
 
-def read_obographs_json(
+def parse_obographs_json(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
 
     :param file_path: The path to the obographs file
     :param prefix_map: an optional prefix map
     :param meta: an optional dictionary of metadata elements
+    :param mapping_predicates: an optional list of mapping predicates that should be extracted
     :return: A SSSOM MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
@@ -137,7 +224,10 @@ def read_obographs_json(
         jsondoc = json.load(json_file)
 
     return from_obographs(
-        jsondoc, prefix_map=_xmetadata.prefix_map, meta=_xmetadata.metadata
+        jsondoc,
+        prefix_map=_xmetadata.prefix_map,
+        meta=_xmetadata.metadata,
+        mapping_predicates=mapping_predicates,
     )
 
 
@@ -209,8 +299,11 @@ def _get_mdict_ms_and_bad_attrs(
     return (mdict, ms, bad_attrs)
 
 
-def read_alignment_xml(
-    file_path: str, prefix_map: Dict[str, str], meta: Dict[str, str]
+def parse_alignment_xml(
+    file_path: str,
+    prefix_map: Dict[str, str],
+    meta: Dict[str, str],
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
     raise_for_bad_path(file_path)
@@ -219,7 +312,10 @@ def read_alignment_xml(
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(file_path)
     msdf = from_alignment_minidom(
-        xmldoc, prefix_map=metadata.prefix_map, meta=metadata.metadata
+        xmldoc,
+        prefix_map=metadata.prefix_map,
+        meta=metadata.metadata,
+        mapping_predicates=mapping_predicates,
     )
     return msdf
 
@@ -229,7 +325,6 @@ def read_alignment_xml(
 
 def from_sssom_dataframe(
     df: pd.DataFrame,
-    *,
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
@@ -265,21 +360,15 @@ def from_sssom_rdf(
     g: Graph,
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    mapping_predicates: Optional[Set[str]] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
 
     :param g: the Graph (rdflib)
     :param prefix_map: A dictionary containing the prefix map, defaults to None
     :param meta: Potentially additional metadata, defaults to None
-    :param mapping_predicates: A set of predicates that should be extracted from the RDF graph, defaults to None
     :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
-
-    if mapping_predicates is None:
-        # FIXME unused
-        mapping_predicates = _get_default_mapping_predicates()
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
@@ -336,7 +425,6 @@ def from_sssom_rdf(
 
 def from_sssom_json(
     jsondoc: Union[str, dict, TextIO],
-    *,
     prefix_map: Dict[str, str],
     meta: Dict[str, str] = None,
 ) -> MappingSetDataFrame:
@@ -360,13 +448,17 @@ def from_sssom_json(
 
 
 def from_alignment_minidom(
-    dom: Document, *, prefix_map: PrefixMap, meta: MetadataType
+    dom: Document,
+    prefix_map: PrefixMap,
+    meta: MetadataType,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Read a minidom Document object.
 
     :param dom: XML (minidom) object
     :param prefix_map: A prefix map
     :param meta: Optional meta data
+    :param mapping_predicates: Optional list of mapping predicates to extract
     :return: MappingSetDocument
     :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
     """
@@ -376,6 +468,9 @@ def from_alignment_minidom(
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
+    if not mapping_predicates:
+        mapping_predicates = DEFAULT_MAPPING_PROPERTIES
+
     alignments = dom.getElementsByTagName("Alignment")
     for n in alignments:
         for e in n.childNodes:
@@ -384,7 +479,9 @@ def from_alignment_minidom(
                 if node_name == "map":
                     cell = e.getElementsByTagName("Cell")
                     for c_node in cell:
-                        mdict = _cell_element_values(c_node, prefix_map)
+                        mdict = _cell_element_values(
+                            c_node, prefix_map, mapping_predicates=mapping_predicates
+                        )
                         if mdict:
                             m = _prepare_mapping(mdict)
                             mlist.append(m)
@@ -414,17 +511,24 @@ def from_alignment_minidom(
     return to_mapping_set_dataframe(mapping_set_document)
 
 
+def _get_obographs_predicate_id(obographs_predicate: str):
+    if obographs_predicate == "is_a":
+        return RDFS_SUBCLASS_OF
+    return obographs_predicate
+
+
 def from_obographs(
     jsondoc: Dict,
-    *,
     prefix_map: PrefixMap,
     meta: Optional[MetadataType] = None,
+    mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Convert a obographs json object to an SSSOM data frame.
 
     :param jsondoc: The JSON object representing the ontology in obographs format
     :param prefix_map: The prefix map to be used
     :param meta: Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None
+    :param mapping_predicates: Optional list of mapping predicates to extract
     :raises Exception: When there is no CURIE
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
@@ -433,14 +537,8 @@ def from_obographs(
     mlist: List[Mapping] = []
     # bad_attrs = {}
 
-    allowed_properties = [
-        "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
-        "http://www.w3.org/2004/02/skos/core#exactMatch",
-        "http://www.w3.org/2004/02/skos/core#broadMatch",
-        "http://www.w3.org/2004/02/skos/core#closeMatch",
-        "http://www.w3.org/2004/02/skos/core#narrowMatch",
-        "http://www.w3.org/2004/02/skos/core#relatedMatch",
-    ]
+    if not mapping_predicates:
+        mapping_predicates = DEFAULT_MAPPING_PROPERTIES
 
     if "graphs" in jsondoc:
         for g in jsondoc["graphs"]:
@@ -452,7 +550,11 @@ def from_obographs(
                     else:
                         label = ""
                     if "meta" in n:
-                        if "xrefs" in n["meta"]:
+                        if (
+                            "xrefs" in n["meta"]
+                            and "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
+                            in mapping_predicates
+                        ):
                             for xref in n["meta"]["xrefs"]:
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
@@ -473,7 +575,7 @@ def from_obographs(
                         if "basicPropertyValues" in n["meta"]:
                             for value in n["meta"]["basicPropertyValues"]:
                                 pred = value["pred"]
-                                if pred in allowed_properties:
+                                if pred in mapping_predicates:
                                     xref_id = value["val"]
                                     mdict = {}
                                     try:
@@ -492,6 +594,34 @@ def from_obographs(
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
+            elif "edges" in g:
+                for edge in g["edges"]:
+                    mdict = {}
+                    subject_id = edge["sub"]
+                    predicate_id = _get_obographs_predicate_id(edge["pred"])
+                    object_id = edge["obj"]
+                    if predicate_id in mapping_predicates:
+                        mdict["subject_id"] = curie_from_uri(subject_id, prefix_map)
+                        mdict["object_id"] = curie_from_uri(object_id, prefix_map)
+                        mdict["predicate_id"] = curie_from_uri(predicate_id, prefix_map)
+                        mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                        mlist.append(Mapping(**mdict))
+            elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
+                for equivalents in g["equivalentNodesSets"]:
+                    if "nodeIds" in equivalents:
+                        for ec1 in equivalents["nodeIds"]:
+                            for ec2 in equivalents["nodeIds"]:
+                                if ec1 != ec2:
+                                    mdict = {}
+                                    mdict["subject_id"] = curie_from_uri(
+                                        ec1, prefix_map
+                                    )
+                                    mdict["object_id"] = curie_from_uri(ec2, prefix_map)
+                                    mdict["predicate_id"] = curie_from_uri(
+                                        OWL_EQUIV_CLASS, prefix_map
+                                    )
+                                    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                                    mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
 
@@ -516,15 +646,15 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
     if input_format is None:
         input_format = get_file_extension(filename)
     if input_format == "tsv":
-        return read_sssom_table
+        return parse_sssom_table
     elif input_format == "rdf":
-        return read_sssom_rdf
+        return parse_sssom_rdf
     elif input_format == "json":
-        return read_sssom_json
+        return parse_sssom_json
     elif input_format == "alignment-api-xml":
-        return read_alignment_xml
+        return parse_alignment_xml
     elif input_format == "obographs-json":
-        return read_obographs_json
+        return parse_obographs_json
     else:
         raise Exception(f"Unknown input format: {input_format}")
 
@@ -534,20 +664,6 @@ def _ensure_prefix_map(prefix_map: Optional[PrefixMap] = None) -> PrefixMap:
         raise Exception("No valid prefix_map provided")
     else:
         return add_built_in_prefixes_to_prefix_map(prefix_map)
-
-
-def _get_default_mapping_predicates():
-    return {
-        "oio:hasDbXref",
-        "skos:exactMatch",
-        "skos:narrowMatch",
-        "skos:broadMatch",
-        "skos:exactMatch",
-        "skos:closeMatch",
-        "owl:sameAs",
-        "owl:equivalentClass",
-        "owl:equivalentProperty",
-    }
 
 
 def _prepare_mapping(mapping: Mapping) -> Mapping:
@@ -615,7 +731,9 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
+def _cell_element_values(
+    cell_node, prefix_map: PrefixMap, mapping_predicates
+) -> Optional[Mapping]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -632,7 +750,7 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap) -> Optional[Mapping]:
                     mdict["confidence"] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
                     relation = child.firstChild.nodeValue
-                    if relation == "=":
+                    if (relation == "=") and (OWL_EQUIV_CLASS in mapping_predicates):
                         mdict["predicate_id"] = "owl:equivalentClass"
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")

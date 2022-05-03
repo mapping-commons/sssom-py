@@ -3,7 +3,7 @@
 import unittest
 
 from sssom.constants import SCHEMA_DICT
-from sssom.parsers import read_sssom_table
+from sssom.parsers import parse_sssom_table
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
 
@@ -13,7 +13,7 @@ class TestSort(unittest.TestCase):
 
     def setUp(self) -> None:
         """Test up the test cases with the third basic example."""
-        self.msdf = read_sssom_table(f"{data_dir}/basic6.tsv")
+        self.msdf = parse_sssom_table(f"{data_dir}/basic6.tsv")
 
     def test_sort(self):
         """Test sorting of columns."""

@@ -3,7 +3,7 @@
 import unittest
 
 from sssom import filter_redundant_rows
-from sssom.parsers import read_sssom_table
+from sssom.parsers import parse_sssom_table
 from sssom.util import deal_with_negation, merge_msdf
 from tests.constants import data_dir
 
@@ -13,7 +13,7 @@ class TestReconcile(unittest.TestCase):
 
     def setUp(self) -> None:
         """Test up the test case with the third basic example."""
-        self.msdf = read_sssom_table(data_dir / "basic3.tsv")
+        self.msdf = parse_sssom_table(data_dir / "basic3.tsv")
 
     def test_filter(self):
         """Test filtering returns the right number of rows."""
@@ -27,16 +27,16 @@ class TestReconcile(unittest.TestCase):
 
     def test_merge(self):
         """Test merging two tables."""
-        msdf1 = read_sssom_table(data_dir / "basic.tsv")
-        msdf2 = read_sssom_table(data_dir / "basic2.tsv")
+        msdf1 = parse_sssom_table(data_dir / "basic.tsv")
+        msdf2 = parse_sssom_table(data_dir / "basic2.tsv")
         merged_msdf = merge_msdf(msdf1, msdf2)
 
         self.assertEqual(71, len(merged_msdf.df))
 
     def test_merge_no_reconcile(self):
         """Test merging two tables without reconciliation."""
-        msdf1 = read_sssom_table(data_dir / "basic4.tsv")
-        msdf2 = read_sssom_table(data_dir / "basic5.tsv")
+        msdf1 = parse_sssom_table(data_dir / "basic4.tsv")
+        msdf2 = parse_sssom_table(data_dir / "basic5.tsv")
 
         merged_msdf = merge_msdf(msdf1, msdf2, reconcile=False)
 

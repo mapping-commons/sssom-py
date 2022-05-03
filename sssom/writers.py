@@ -33,7 +33,6 @@ RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 OWL_OBJECT_PROPERTY = "http://www.w3.org/2002/07/owl#ObjectProperty"
 OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
 OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
-OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
 

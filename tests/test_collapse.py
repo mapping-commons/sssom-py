@@ -14,7 +14,7 @@ from sssom import (
     parse,
     reconcile_prefix_and_data,
 )
-from sssom.parsers import read_sssom_table
+from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir, prefix_recon_yaml
 
 
@@ -88,7 +88,7 @@ class TestCollapse(unittest.TestCase):
 
     def test_reconcile_prefix(self):
         """Test curie reconciliation is performing as expected."""
-        msdf = read_sssom_table(data_dir / "basic3.tsv")
+        msdf = parse_sssom_table(data_dir / "basic3.tsv")
 
         with open(prefix_recon_yaml) as pref_rec:
             prefix_reconciliation = yaml.safe_load(pref_rec)
