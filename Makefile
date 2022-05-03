@@ -27,6 +27,8 @@ schema/%.yaml sssom/%.yaml: .FORCE
 	wget $(SSSOM_YAML) -O $@
 
 test:
+	pip install --upgrade pip
+	pip install --upgrade tox
 	tox
 	sh tests/tests.sh
 
