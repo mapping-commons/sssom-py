@@ -16,7 +16,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, TextIO, Tuple, ChainMap
+from typing import ChainMap, Dict, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -25,6 +25,7 @@ from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
+from sssom.context import get_default_metadata
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import parse_sssom_table
