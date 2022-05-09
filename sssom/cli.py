@@ -16,7 +16,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, TextIO, Tuple
+from typing import Dict, List, Optional, TextIO, Tuple, ChainMap
 
 import click
 import pandas as pd
@@ -330,7 +330,16 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         logging.info(
             f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
         )
-    d.combined_dataframe.to_csv(output, sep="\t", index=False)
+    msdf = MappingSetDataFrame()
+    meta = get_default_metadata()
+    msdf.df = d.combined_dataframe.drop_duplicates()
+    prefix_map_list = [msdf1.prefix_map, msdf2.prefix_map]
+    msdf.prefix_map = dict(ChainMap(*prefix_map_list))
+    msdf.metadata = meta.metadata
+    msdf.metadata[
+        "comment"
+    ] = f"Diff between {input1} and {input2}. See comment column for information."
+    write_table(msdf, output)
 
 
 @main.command()

@@ -375,7 +375,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
         rows += new_rows
     # for r in rows:
     #    r['other'] = 'synthesized sssom file'
-    d.combined_dataframe = pd.DataFrame(rows)
+    d.combined_dataframe = pd.DataFrame(rows).drop_duplicates()
     return d
 
 
