@@ -151,8 +151,26 @@ def parse_sssom_table(
                     sssom_metadata[k] = v
         meta = sssom_metadata
 
-    prefix_map, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    msdf = from_sssom_dataframe(df, prefix_map=prefix_map, meta=meta)
+        if "curie_map" in sssom_metadata:
+            if prefix_map:
+                for k, v in prefix_map.items():
+                    if k in sssom_metadata["curie_map"]:
+                        if sssom_metadata["curie_map"][k] != v:
+                            logging.warning(
+                                f"SSSOM prefix map {k} ({sssom_metadata['curie_map'][k]}) "
+                                f"conflicts with provided ({prefix_map[k]})."
+                            )
+                    else:
+                        logging.info(
+                            f"Externally provided metadata {k}:{v} is added to metadata set."
+                        )
+                        sssom_metadata["curie_map"][k] = v
+            prefix_map = sssom_metadata["curie_map"]
+
+    meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    msdf = from_sssom_dataframe(
+        df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata
+    )
     return msdf
 
 
