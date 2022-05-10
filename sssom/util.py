@@ -31,7 +31,7 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import SCHEMA_DICT, SCHEMA_YAML
+from .constants import PREFIX_MAP_MODES, SCHEMA_DICT, SCHEMA_YAML
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .internal_context import multivalued_slots
 from .sssom_datamodel import Mapping as SSSOM_Mapping
@@ -1052,6 +1052,19 @@ def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str
     :return: Context in str format
     """
     return json.dumps(prepare_context(prefix_map), **kwargs)
+
+
+def raise_for_bad_prefix_map_mode(prefix_map_mode: str = None):
+    """Raise exception if prefix map mode is invalid.
+
+    :param prefix_map_mode: The prefix map mode
+    :raises ValueError: Invalid prefix map mode
+    """
+    if prefix_map_mode not in PREFIX_MAP_MODES:
+        raise ValueError(
+            f"{prefix_map_mode} is not a valid prefix map mode, "
+            f"must be one of {' '.join(PREFIX_MAP_MODES)}"
+        )
 
 
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:

@@ -109,8 +109,8 @@ def get_default_metadata() -> Metadata:
                     )
 
     metadata = Metadata(prefix_map=prefix_map, metadata=metadata_dict)
-    metadata = set_default_mapping_set_id(metadata)
-    metadata = set_default_license(metadata)
+    metadata.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
+    metadata.metadata["license"] = DEFAULT_LICENSE
     return metadata
 
 
