@@ -25,6 +25,7 @@ from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
+from sssom.constants import PREFIX_MAP_MODES
 from sssom.context import get_default_metadata
 
 from .cliques import split_into_cliques, summarize_cliques
