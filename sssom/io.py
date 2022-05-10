@@ -7,6 +7,11 @@ from typing import Optional, TextIO, Union
 
 from bioregistry import get_iri
 
+from .constants import (
+    PREFIX_MAP_MODE_MERGED,
+    PREFIX_MAP_MODE_METADATA_ONLY,
+    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+)
 from .context import (
     get_default_metadata,
     set_default_license,
@@ -14,7 +19,13 @@ from .context import (
 )
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
-from .util import is_curie, is_iri, raise_for_bad_path, read_metadata
+from .util import (
+    is_curie,
+    is_iri,
+    raise_for_bad_path,
+    raise_for_bad_prefix_map_mode,
+    read_metadata,
+)
 from .writers import get_writer_function, write_table, write_tables
 
 
@@ -63,8 +74,6 @@ def parse_file(
     metadata = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
-    metadata = set_default_mapping_set_id(metadata)
-    metadata = set_default_license(metadata)
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
@@ -118,6 +127,26 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
+def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
+
+    if prefix_map_mode is None:
+        prefix_map_mode = PREFIX_MAP_MODE_METADATA_ONLY
+
+    raise_for_bad_prefix_map_mode(prefix_map_mode=prefix_map_mode)
+
+    prefix_map = metadata.prefix_map
+
+    if prefix_map_mode != PREFIX_MAP_MODE_METADATA_ONLY:
+        default_metadata: Metadata = get_default_metadata()
+        if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+            prefix_map = default_metadata.prefix_map
+        elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+            for prefix, uri_prefix in default_metadata.prefix_map.items():
+                if prefix not in prefix_map:
+                    prefix_map[prefix] = uri_prefix
+    return prefix_map
+
+
 def get_metadata_and_prefix_map(
     metadata_path: Optional[str] = None, prefix_map_mode: Optional[str] = None
 ) -> Metadata:
@@ -130,20 +159,14 @@ def get_metadata_and_prefix_map(
     """
     if metadata_path is None:
         return get_default_metadata()
-    if prefix_map_mode is None:
-        prefix_map_mode = "metadata_only"
-    prefix_map, metadata = read_metadata(metadata_path)
-    # TODO reduce complexity by flipping conditionals
-    #  and returning eagerly (it's fine if there are multiple returns)
-    if prefix_map_mode != "metadata_only":
-        default_metadata: Metadata = get_default_metadata()
-        if prefix_map_mode == "sssom_default_only":
-            prefix_map = default_metadata.prefix_map
-        elif prefix_map_mode == "merged":
-            for prefix, uri_prefix in default_metadata.prefix_map.items():
-                if prefix not in prefix_map:
-                    prefix_map[prefix] = uri_prefix
-    return Metadata(prefix_map=prefix_map, metadata=metadata)
+
+    metadata = read_metadata(metadata_path)
+    prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
+
+    m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
+    m = set_default_mapping_set_id(m)
+    m = set_default_license(m)
+    return m
 
 
 def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list:

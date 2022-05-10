@@ -140,9 +140,7 @@ def convert(input: str, output: TextIO, output_format: str):
     default="metadata_only",
     show_default=True,
     required=True,
-    type=click.Choice(
-        ["metadata_only", "sssom_default_only", "merged"], case_sensitive=False
-    ),
+    type=click.Choice(PREFIX_MAP_MODES, case_sensitive=False),
     help="Defines whether the prefix map in the metadata should be extended or replaced with "
     "the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged",
 )
