@@ -25,7 +25,7 @@ Contents
    :caption: Contents:
 
    
-   installation
+   install/installation
    documentation
    examples
    cli_usage
