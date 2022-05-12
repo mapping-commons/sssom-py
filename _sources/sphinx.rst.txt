@@ -17,6 +17,3 @@ Update and page deployment
 
 This is done automatically by GitHub Actions through a workflow as soon as a 
 pull request is merged to the ``master`` branch.
-
-
-
