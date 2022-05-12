@@ -74,9 +74,9 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_theme_options = {
-    "use_edit_page_button": True,
-}
+# html_theme_options = {
+#     "use_edit_page_button": True,
+# }
 
 # html_context = {
 #     # "github_url": "https://github.com", # or your GitHub Enterprise interprise
