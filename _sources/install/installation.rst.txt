@@ -17,7 +17,7 @@ You can verify that Python is installed by typing ``python`` from your shell; yo
 
 The installation for requires Python 3.7 or greater.
 
-Installation for users
+Install SSSOM-Py for users
 ----------------------
 
 Install using ``pip``
@@ -27,7 +27,7 @@ Install using ``pip``
     pip install sssom
 
 
-Installation for developers
+Install SSSOM-Py for developers
 ---------------------------
 
 
