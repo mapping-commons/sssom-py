@@ -78,10 +78,10 @@ html_theme_options = {
     "use_edit_page_button": True,
 }
 
-html_context = {
-    # "github_url": "https://github.com", # or your GitHub Enterprise interprise
-    "github_user": "mapping-commons",
-    "github_repo": "sssom-py",
-    # "github_version": "sphinx_docs/sphinx/",
-    "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
-}
+# html_context = {
+#     # "github_url": "https://github.com", # or your GitHub Enterprise interprise
+#     "github_user": "mapping-commons",
+#     "github_repo": "sssom-py",
+#     # "github_version": "sphinx_docs/sphinx/",
+#     "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
+# }
