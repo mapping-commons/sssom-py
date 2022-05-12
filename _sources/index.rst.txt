@@ -26,10 +26,10 @@ Contents
 
    
    install/installation
-   documentation
-   examples
    cli_usage
+   examples
    sphinx
+   documentation
    modules
 
 

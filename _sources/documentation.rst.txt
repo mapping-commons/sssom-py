@@ -1,8 +1,8 @@
 Python API
-=============
+==========
 
 Datamodel
-------------------
+---------
 
 Top-level Document object
 
