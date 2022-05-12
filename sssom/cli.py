@@ -196,7 +196,7 @@ def split(input: str, output_directory: str):
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
 def ptable(input, output: TextIO, inverse_factor):
-    """Convert an SSSOM file to a ptable for kboom/[boomer](https://github.com/INCATools/boomer)."""
+    """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     logging.warning(
         f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
