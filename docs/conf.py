@@ -82,6 +82,6 @@ html_context = {
     # "github_url": "https://github.com", # or your GitHub Enterprise interprise
     "github_user": "mapping-commons",
     "github_repo": "sssom-py",
-    "github_version": "/docs/",
+    "github_version": "tree/docs/",
     "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
 }
