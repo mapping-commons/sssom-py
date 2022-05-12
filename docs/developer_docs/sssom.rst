@@ -1,5 +1,5 @@
-sssom package
-=============
+SSSOM Submodules
+================
 
 Submodules
 ----------
