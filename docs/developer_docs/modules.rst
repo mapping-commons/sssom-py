@@ -6,3 +6,4 @@ Technical Documentation
 
    setup
    sssom
+   sphinx
