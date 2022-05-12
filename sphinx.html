@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sssom-py 0.3.6-dev documentation</title>
+  <title>Documentation Update and Redeployment &mdash; sssom-py 0.3.6-dev documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Python API" href="documentation.html" />
-    <link rel="prev" title="SSSOM Mapping Format Python Utilities" href="index.html" /> 
+    <link rel="next" title="Technical Documentation" href="modules.html" />
+    <link rel="prev" title="SSSOM CLI usage" href="cli_usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,15 +39,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation-for-users">Installation for users</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-for-developers">Installation for developers</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_usage.html">SSSOM CLI usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sphinx.html">Documentation Update and Redeployment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation Update and Redeployment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#new-page">New page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-and-page-deployment">Update and page deployment</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Technical Documentation</a></li>
 </ul>
 
@@ -65,9 +65,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Installation</li>
+      <li>Documentation Update and Redeployment</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/installation.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/mapping-commons/sssom-py/blob/sphinx_docs/sphinx/sphinx.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -75,33 +75,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
-<p>The installation for requires Python 3.6 or greater.</p>
-<section id="installation-for-users">
-<h2>Installation for users<a class="headerlink" href="#installation-for-users" title="Permalink to this headline"></a></h2>
-<p>Install using <code class="docutils literal notranslate"><span class="pre">pip</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install sssom
-</pre></div>
-</div>
+  <section id="documentation-update-and-redeployment">
+<h1>Documentation Update and Redeployment<a class="headerlink" href="#documentation-update-and-redeployment" title="Permalink to this headline"></a></h1>
+<p>Using your terminal, <code class="docutils literal notranslate"><span class="pre">cd</span></code> to the ‘sphinx’ directory within the project.
+::
+cd sphinx</p>
+<section id="new-page">
+<h2>New page<a class="headerlink" href="#new-page" title="Permalink to this headline"></a></h2>
+<p>If you need to add a new page create a new file under the sphinx directory (sphinx/<em>filename</em>.rst). Update the content
+within <em>filename</em>.rst to the documentation you wish to add using the guidance provided by the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/contents.html">Sphinx</a> web page.</p>
 </section>
-<section id="installation-for-developers">
-<h2>Installation for developers<a class="headerlink" href="#installation-for-developers" title="Permalink to this headline"></a></h2>
-<p>To build directly from source, first clone the GitHub repository,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/mapping-commons/sssom-py
-<span class="nb">cd</span> sssom-py
-</pre></div>
-</div>
-<p>Then install the necessary dependencies listed in <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install -r requirements.txt
-</pre></div>
-</div>
-<p>For convenience, make use of the <code class="docutils literal notranslate"><span class="pre">venv</span></code> module in Python 3 to create a lightweight virtual environment:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>. environment.sh
-
-pip install -r requirements.txt
-</pre></div>
-</div>
+<section id="update-and-page-deployment">
+<h2>Update and page deployment<a class="headerlink" href="#update-and-page-deployment" title="Permalink to this headline"></a></h2>
+<p>This is done automatically by GitHub Actions through a workflow as soon as a
+pull request is merged to the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.</p>
 </section>
 </section>
 
@@ -109,8 +97,8 @@ pip install -r requirements.txt
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="SSSOM Mapping Format Python Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="documentation.html" class="btn btn-neutral float-right" title="Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cli_usage.html" class="btn btn-neutral float-left" title="SSSOM CLI usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Technical Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
