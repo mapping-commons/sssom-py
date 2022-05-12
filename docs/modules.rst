@@ -1,4 +1,4 @@
-SSSOM-PY
+Technical Documentation
 ========
 
 .. toctree::
