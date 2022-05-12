@@ -1,9 +1,11 @@
-Doc Update and Deploy
-=====================
+Update Documentation
+====================
 
-Using your terminal, ``cd`` to the 'sphinx' directory within the project.
-::
-cd sphinx
+Using your terminal, ``cd`` to the 'docs' directory within the project.
+
+.. code-block:: bash
+
+    cd docs
 
 New page
 --------

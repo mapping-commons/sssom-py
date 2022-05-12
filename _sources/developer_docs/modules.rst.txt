@@ -6,4 +6,3 @@ Technical Documentation
 
    setup
    sssom
-   tests

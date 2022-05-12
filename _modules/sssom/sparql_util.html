@@ -39,9 +39,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Doc Update and Deploy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Update Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
         </div>
@@ -88,7 +88,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="EndpointConfig"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.EndpointConfig">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="EndpointConfig"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sparql_util.EndpointConfig">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">EndpointConfig</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A container for a SPARQL endpoint&#39;s configuration.&quot;&quot;&quot;</span>
 
@@ -101,7 +101,7 @@
     <span class="n">include_object_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="query_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.query_mappings">[docs]</a><span class="k">def</span> <span class="nf">query_mappings</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="query_mappings"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sparql_util.query_mappings">[docs]</a><span class="k">def</span> <span class="nf">query_mappings</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Query a SPARQL endpoint to obtain a set of mappings.&quot;&quot;&quot;</span>
     <span class="n">sparql</span> <span class="o">=</span> <span class="n">SPARQLWrapper</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">graph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

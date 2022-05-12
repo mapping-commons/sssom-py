@@ -39,9 +39,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Doc Update and Deploy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Update Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
         </div>
@@ -90,7 +90,7 @@
 <span class="n">DEFAULT_LICENSE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">license/unspecified&quot;</span>
 
 
-<div class="viewcode-block" id="get_jsonld_context"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_jsonld_context</span><span class="p">():</span>
+<div class="viewcode-block" id="get_jsonld_context"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.get_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_jsonld_context</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Get JSON-LD form of sssom_context variable from auto-generated &#39;internal_context.py&#39; file.</span>
 
 <span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
@@ -100,7 +100,7 @@
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sssom_context</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_external_jsonld_context"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_external_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_external_jsonld_context</span><span class="p">():</span>
+<div class="viewcode-block" id="get_external_jsonld_context"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.get_external_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_external_jsonld_context</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Get JSON-LD form of sssom_external_context variable from auto-generated &#39;external_context.py&#39; file.</span>
 
 <span class="sd">    :return: JSON-LD context</span>
@@ -108,7 +108,7 @@
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sssom_external_context</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_built_in_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_built_in_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_built_in_prefix_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
+<div class="viewcode-block" id="get_built_in_prefix_map"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.get_built_in_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_built_in_prefix_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get built-in prefix map from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
 
 <span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
@@ -125,7 +125,7 @@
     <span class="k">return</span> <span class="n">prefix_map</span></div>
 
 
-<div class="viewcode-block" id="add_built_in_prefixes_to_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.add_built_in_prefixes_to_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span>
+<div class="viewcode-block" id="add_built_in_prefixes_to_prefix_map"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.add_built_in_prefixes_to_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add built-in prefix map from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
@@ -149,7 +149,7 @@
     <span class="k">return</span> <span class="n">prefix_map</span></div>
 
 
-<div class="viewcode-block" id="get_default_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_default_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
+<div class="viewcode-block" id="get_default_metadata"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.get_default_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get @context property value from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
 
 <span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
@@ -185,7 +185,7 @@
     <span class="k">return</span> <span class="n">metadata</span></div>
 
 
-<div class="viewcode-block" id="set_default_mapping_set_id"><a class="viewcode-back" href="../../sssom.html#sssom.context.set_default_mapping_set_id">[docs]</a><span class="k">def</span> <span class="nf">set_default_mapping_set_id</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
+<div class="viewcode-block" id="set_default_mapping_set_id"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.set_default_mapping_set_id">[docs]</a><span class="k">def</span> <span class="nf">set_default_mapping_set_id</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide a default mapping_set_id if absent in the MappingSetDataFrame.</span>
 
 <span class="sd">    :param meta: Metadata without mapping_set_id</span>
@@ -198,7 +198,7 @@
     <span class="k">return</span> <span class="n">meta</span></div>
 
 
-<div class="viewcode-block" id="set_default_license"><a class="viewcode-back" href="../../sssom.html#sssom.context.set_default_license">[docs]</a><span class="k">def</span> <span class="nf">set_default_license</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
+<div class="viewcode-block" id="set_default_license"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.context.set_default_license">[docs]</a><span class="k">def</span> <span class="nf">set_default_license</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide a default license if absent in the MappingSetDataFrame.</span>
 
 <span class="sd">    :param meta: Metadata without license</span>

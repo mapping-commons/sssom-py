@@ -39,9 +39,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Doc Update and Deploy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Update Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
         </div>
@@ -85,7 +85,7 @@
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span>
 
 
-<div class="viewcode-block" id="to_digraph"><a class="viewcode-back" href="../../sssom.html#sssom.cliques.to_digraph">[docs]</a><span class="k">def</span> <span class="nf">to_digraph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
+<div class="viewcode-block" id="to_digraph"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.cliques.to_digraph">[docs]</a><span class="k">def</span> <span class="nf">to_digraph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert to a graph where the nodes are entities&#39; CURIEs and edges are their mappings.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
@@ -130,7 +130,7 @@
     <span class="k">return</span> <span class="n">g</span></div>
 
 
-<div class="viewcode-block" id="split_into_cliques"><a class="viewcode-back" href="../../sssom.html#sssom.cliques.split_into_cliques">[docs]</a><span class="k">def</span> <span class="nf">split_into_cliques</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MappingSetDocument</span><span class="p">]:</span>
+<div class="viewcode-block" id="split_into_cliques"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.cliques.split_into_cliques">[docs]</a><span class="k">def</span> <span class="nf">split_into_cliques</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MappingSetDocument</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Split a MappingSetDataFrames documents corresponding to a strongly connected components of the associated graph.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame object</span>
@@ -165,7 +165,7 @@
     <span class="k">return</span> <span class="n">documents</span></div>
 
 
-<div class="viewcode-block" id="group_values"><a class="viewcode-back" href="../../sssom.html#sssom.cliques.group_values">[docs]</a><span class="k">def</span> <span class="nf">group_values</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<div class="viewcode-block" id="group_values"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.cliques.group_values">[docs]</a><span class="k">def</span> <span class="nf">group_values</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Group all keys in the dictionary that share the same value.&quot;&quot;&quot;</span>
     <span class="n">rv</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -173,7 +173,7 @@
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">rv</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_src"><a class="viewcode-back" href="../../sssom.html#sssom.cliques.get_src">[docs]</a><span class="k">def</span> <span class="nf">get_src</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="get_src"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.cliques.get_src">[docs]</a><span class="k">def</span> <span class="nf">get_src</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get prefix of subject/object in the MappingSetDataFrame.</span>
 
 <span class="sd">    :param src: Source</span>
@@ -186,7 +186,7 @@
         <span class="k">return</span> <span class="n">src</span></div>
 
 
-<div class="viewcode-block" id="summarize_cliques"><a class="viewcode-back" href="../../sssom.html#sssom.cliques.summarize_cliques">[docs]</a><span class="k">def</span> <span class="nf">summarize_cliques</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">):</span>
+<div class="viewcode-block" id="summarize_cliques"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.cliques.summarize_cliques">[docs]</a><span class="k">def</span> <span class="nf">summarize_cliques</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Summarize stats on a clique doc.&quot;&quot;&quot;</span>
     <span class="n">cliquedocs</span> <span class="o">=</span> <span class="n">split_into_cliques</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
     <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>

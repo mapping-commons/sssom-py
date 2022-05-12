@@ -39,9 +39,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Doc Update and Deploy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Update Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
         </div>
@@ -128,7 +128,7 @@
 <span class="c1"># * DEPRECATED methods *****************************************</span>
 
 
-<div class="viewcode-block" id="read_sssom_table"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.read_sssom_table">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
+<div class="viewcode-block" id="read_sssom_table"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.read_sssom_table">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
     <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.3.10&quot;</span><span class="p">,</span>
     <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.3.11&quot;</span><span class="p">,</span>
     <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use &#39;parse_sssom_table&#39; instead.&quot;</span><span class="p">,</span>
@@ -145,7 +145,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_sssom_rdf"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.read_sssom_rdf">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
+<div class="viewcode-block" id="read_sssom_rdf"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.read_sssom_rdf">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
     <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.3.10&quot;</span><span class="p">,</span>
     <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.3.11&quot;</span><span class="p">,</span>
     <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use &#39;parse_sssom_rdf&#39; instead.&quot;</span><span class="p">,</span>
@@ -167,7 +167,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_sssom_json"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.read_sssom_json">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
+<div class="viewcode-block" id="read_sssom_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.read_sssom_json">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
     <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.3.10&quot;</span><span class="p">,</span>
     <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.3.11&quot;</span><span class="p">,</span>
     <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use &#39;parse_sssom_json&#39; instead.&quot;</span><span class="p">,</span>
@@ -189,7 +189,7 @@
 <span class="c1"># Parsers (from file)</span>
 
 
-<div class="viewcode-block" id="parse_sssom_table"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_table">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_table</span><span class="p">(</span>
+<div class="viewcode-block" id="parse_sssom_table"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.parse_sssom_table">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_table</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -245,7 +245,7 @@
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
-<div class="viewcode-block" id="parse_sssom_rdf"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_rdf">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_rdf</span><span class="p">(</span>
+<div class="viewcode-block" id="parse_sssom_rdf"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.parse_sssom_rdf">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_rdf</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -266,7 +266,7 @@
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
-<div class="viewcode-block" id="parse_sssom_json"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_json">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_json</span><span class="p">(</span>
+<div class="viewcode-block" id="parse_sssom_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.parse_sssom_json">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_json</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -291,7 +291,7 @@
 <span class="c1"># Import methods from external file formats</span>
 
 
-<div class="viewcode-block" id="parse_obographs_json"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_obographs_json">[docs]</a><span class="k">def</span> <span class="nf">parse_obographs_json</span><span class="p">(</span>
+<div class="viewcode-block" id="parse_obographs_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.parse_obographs_json">[docs]</a><span class="k">def</span> <span class="nf">parse_obographs_json</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -388,7 +388,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="parse_alignment_xml"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_alignment_xml">[docs]</a><span class="k">def</span> <span class="nf">parse_alignment_xml</span><span class="p">(</span>
+<div class="viewcode-block" id="parse_alignment_xml"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.parse_alignment_xml">[docs]</a><span class="k">def</span> <span class="nf">parse_alignment_xml</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
@@ -412,7 +412,7 @@
 <span class="c1"># Readers (from object)</span>
 
 
-<div class="viewcode-block" id="from_sssom_dataframe"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_sssom_dataframe">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_dataframe</span><span class="p">(</span>
+<div class="viewcode-block" id="from_sssom_dataframe"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.from_sssom_dataframe">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_dataframe</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -449,7 +449,7 @@
     <span class="k">return</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="from_sssom_rdf"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_sssom_rdf">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_rdf</span><span class="p">(</span>
+<div class="viewcode-block" id="from_sssom_rdf"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.from_sssom_rdf">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_rdf</span><span class="p">(</span>
     <span class="n">g</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -516,7 +516,7 @@
     <span class="k">return</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="from_sssom_json"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_sssom_json">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_json</span><span class="p">(</span>
+<div class="viewcode-block" id="from_sssom_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.from_sssom_json">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_json</span><span class="p">(</span>
     <span class="n">jsondoc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -540,7 +540,7 @@
     <span class="k">return</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mapping_set_document</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="from_alignment_minidom"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_alignment_minidom">[docs]</a><span class="k">def</span> <span class="nf">from_alignment_minidom</span><span class="p">(</span>
+<div class="viewcode-block" id="from_alignment_minidom"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.from_alignment_minidom">[docs]</a><span class="k">def</span> <span class="nf">from_alignment_minidom</span><span class="p">(</span>
     <span class="n">dom</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">PrefixMap</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">MetadataType</span><span class="p">,</span>
@@ -610,7 +610,7 @@
     <span class="k">return</span> <span class="n">obographs_predicate</span>
 
 
-<div class="viewcode-block" id="from_obographs"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_obographs">[docs]</a><span class="k">def</span> <span class="nf">from_obographs</span><span class="p">(</span>
+<div class="viewcode-block" id="from_obographs"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.from_obographs">[docs]</a><span class="k">def</span> <span class="nf">from_obographs</span><span class="p">(</span>
     <span class="n">jsondoc</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">PrefixMap</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -728,7 +728,7 @@
 <span class="c1"># All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)</span>
 
 
-<div class="viewcode-block" id="get_parsing_function"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.get_parsing_function">[docs]</a><span class="k">def</span> <span class="nf">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="get_parsing_function"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.get_parsing_function">[docs]</a><span class="k">def</span> <span class="nf">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return appropriate parser function based on input format of file.</span>
 
 <span class="sd">    :param input_format: File format</span>
@@ -866,7 +866,7 @@
 <span class="c1"># The following methods dont really belong in the parser package..</span>
 
 
-<div class="viewcode-block" id="to_mapping_set_document"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.to_mapping_set_document">[docs]</a><span class="k">def</span> <span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDocument</span><span class="p">:</span>
+<div class="viewcode-block" id="to_mapping_set_document"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.to_mapping_set_document">[docs]</a><span class="k">def</span> <span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDocument</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert a MappingSetDataFrame to a MappingSetDocument.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No valid prefix_map provided&quot;</span><span class="p">)</span>
@@ -890,7 +890,7 @@
     <span class="k">return</span> <span class="n">MappingSetDocument</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="split_dataframe"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.split_dataframe">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe</span><span class="p">(</span>
+<div class="viewcode-block" id="split_dataframe"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.split_dataframe">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Group the mapping set dataframe into several subdataframes by prefix.</span>
@@ -912,7 +912,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="split_dataframe_by_prefix"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.split_dataframe_by_prefix">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe_by_prefix</span><span class="p">(</span>
+<div class="viewcode-block" id="split_dataframe_by_prefix"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.split_dataframe_by_prefix">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe_by_prefix</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">subject_prefixes</span><span class="p">,</span> <span class="n">object_prefixes</span><span class="p">,</span> <span class="n">relations</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Split a mapping set dataframe by prefix.</span>
