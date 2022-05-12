@@ -39,11 +39,11 @@ To build directly from source, first clone the GitHub repository,
     cd sssom-py
 
 
-Then install the necessary dependencies listed in ``requirements.txt``.
+Then install the necessary dependencies listed in ``setup.cfg``.
 
 .. code-block:: bash
 
-    pip3 install -r requirements.txt
+    python setup.py install
 
 
 
@@ -53,4 +53,4 @@ For convenience, make use of the ``venv`` module in Python 3 to create a lightwe
 
    . environment.sh
 
-   pip install -r requirements.txt
+   python setup.py install
