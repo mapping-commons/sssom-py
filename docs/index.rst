@@ -30,7 +30,7 @@ Contents
    examples
    sphinx
    documentation
-   modules
+   developer_docs/modules
 
 
 Indices and tables
