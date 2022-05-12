@@ -71,6 +71,7 @@
   <h1>Source code for tests.test_cli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Tests for the command line interface.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span>
 
@@ -83,14 +84,18 @@
     <span class="n">crosstab</span><span class="p">,</span>
     <span class="n">dedupe</span><span class="p">,</span>
     <span class="n">diff</span><span class="p">,</span>
+    <span class="n">dosql</span><span class="p">,</span>
     <span class="n">merge</span><span class="p">,</span>
     <span class="n">parse</span><span class="p">,</span>
     <span class="n">partition</span><span class="p">,</span>
     <span class="n">ptable</span><span class="p">,</span>
+    <span class="n">reconcile_prefixes</span><span class="p">,</span>
+    <span class="n">sort</span><span class="p">,</span>
     <span class="n">split</span><span class="p">,</span>
     <span class="n">validate</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tests.test_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RECON_YAML</span><span class="p">,</span>
     <span class="n">SSSOMTestCase</span><span class="p">,</span>
     <span class="n">get_all_test_cases</span><span class="p">,</span>
     <span class="n">get_multiple_input_test_cases</span><span class="p">,</span>
@@ -123,6 +128,10 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">run_cliquesummary</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">run_crosstab</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">run_correlations</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">run_reconcile_prefix</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">run_dosql</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">run_sort_rows_columns</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">test_cases</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SSSOMCLITestSuite.test_cli_multiple_input"><a class="viewcode-back" href="../../tests.html#tests.test_cli.SSSOMCLITestSuite.test_cli_multiple_input">[docs]</a>    <span class="k">def</span> <span class="nf">test_cli_multiple_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -137,7 +146,6 @@
 
 <div class="viewcode-block" id="SSSOMCLITestSuite.run_successful"><a class="viewcode-back" href="../../tests.html#tests.test_cli.SSSOMCLITestSuite.run_successful">[docs]</a>    <span class="k">def</span> <span class="nf">run_successful</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">,</span> <span class="n">test_case</span><span class="p">:</span> <span class="n">SSSOMTestCase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Check the test result is successful.&quot;&quot;&quot;</span>
-        <span class="c1"># self.assertTrue(result.exit_code == 0, f&quot;Run failed with message {result.exception}&quot;)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
             <span class="n">result</span><span class="o">.</span><span class="n">exit_code</span><span class="p">,</span>
             <span class="mi">0</span><span class="p">,</span>
@@ -186,7 +194,7 @@
 <div class="viewcode-block" id="SSSOMCLITestSuite.run_split"><a class="viewcode-back" href="../../tests.html#tests.test_cli.SSSOMCLITestSuite.run_split">[docs]</a>    <span class="k">def</span> <span class="nf">run_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runner</span><span class="p">:</span> <span class="n">CliRunner</span><span class="p">,</span> <span class="n">test_case</span><span class="p">:</span> <span class="n">SSSOMTestCase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Run the split test.&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
-            <span class="n">split</span><span class="p">,</span> <span class="p">[</span><span class="n">test_case</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;--output-directory&quot;</span><span class="p">,</span> <span class="n">test_out_dir</span><span class="p">]</span>
+            <span class="n">split</span><span class="p">,</span> <span class="p">[</span><span class="n">test_case</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;--output-directory&quot;</span><span class="p">,</span> <span class="n">test_out_dir</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()]</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run_successful</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test_case</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
@@ -245,7 +253,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">primary_test_case</span><span class="p">:</span>
                 <span class="n">primary_test_case</span> <span class="o">=</span> <span class="n">t</span>
             <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--output-directory&quot;</span><span class="p">,</span> <span class="n">test_out_dir</span><span class="p">])</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--output-directory&quot;</span><span class="p">,</span> <span class="n">test_out_dir</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()])</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run_successful</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">primary_test_case</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
@@ -297,6 +305,61 @@
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">merge</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run_successful</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test_cases</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SSSOMCLITestSuite.run_reconcile_prefix"><a class="viewcode-back" href="../../tests.html#tests.test_cli.SSSOMCLITestSuite.run_reconcile_prefix">[docs]</a>    <span class="k">def</span> <span class="nf">run_reconcile_prefix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">runner</span><span class="p">:</span> <span class="n">CliRunner</span><span class="p">,</span> <span class="n">test_case</span><span class="p">:</span> <span class="n">SSSOMTestCase</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the merge test with reconcile prefixes.&quot;&quot;&quot;</span>
+        <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="s2">&quot;reconciled_prefix.tsv&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+            <span class="n">reconcile_prefixes</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="n">test_case</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span>
+                <span class="s2">&quot;--output&quot;</span><span class="p">,</span>
+                <span class="n">out_file</span><span class="p">,</span>
+                <span class="s2">&quot;--reconcile-prefix-file&quot;</span><span class="p">,</span>
+                <span class="n">RECON_YAML</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_successful</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test_case</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SSSOMCLITestSuite.run_dosql"><a class="viewcode-back" href="../../tests.html#tests.test_cli.SSSOMCLITestSuite.run_dosql">[docs]</a>    <span class="k">def</span> <span class="nf">run_dosql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runner</span><span class="p">:</span> <span class="n">CliRunner</span><span class="p">,</span> <span class="n">test_case</span><span class="p">:</span> <span class="n">SSSOMTestCase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Test a simple dosql command.&quot;&quot;&quot;</span>
+        <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="s2">&quot;dosql_test.tsv&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+            <span class="n">dosql</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;-Q&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;SELECT * FROM df WHERE subject_label = &#39;heart&#39;&quot;</span><span class="p">,</span>
+                <span class="n">test_case</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span>
+                <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="n">out_file</span><span class="p">),</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_successful</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test_case</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SSSOMCLITestSuite.run_sort_rows_columns"><a class="viewcode-back" href="../../tests.html#tests.test_cli.SSSOMCLITestSuite.run_sort_rows_columns">[docs]</a>    <span class="k">def</span> <span class="nf">run_sort_rows_columns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">runner</span><span class="p">:</span> <span class="n">CliRunner</span><span class="p">,</span> <span class="n">test_case</span><span class="p">:</span> <span class="n">SSSOMTestCase</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Test sorting of DataFrame columns.&quot;&quot;&quot;</span>
+        <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="s2">&quot;sort_column_test.tsv&quot;</span><span class="p">)</span>
+        <span class="n">in_file</span> <span class="o">=</span> <span class="n">test_case</span><span class="o">.</span><span class="n">filepath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span> <span class="s2">&quot;basic6&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+            <span class="n">sort</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="n">in_file</span><span class="p">,</span>
+                <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_out_dir</span><span class="p">,</span> <span class="n">out_file</span><span class="p">),</span>
+                <span class="s2">&quot;-k&quot;</span><span class="p">,</span>
+                <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
+                <span class="kc">True</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_successful</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test_case</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div></div>
 </pre></div>
 

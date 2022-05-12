@@ -74,7 +74,7 @@
 <span class="kn">import</span> <span class="nn">unittest</span>
 
 <span class="kn">from</span> <span class="nn">sssom.cliques</span> <span class="kn">import</span> <span class="n">split_into_cliques</span><span class="p">,</span> <span class="n">summarize_cliques</span>
-<span class="kn">from</span> <span class="nn">sssom.parsers</span> <span class="kn">import</span> <span class="n">read_sssom_table</span>
+<span class="kn">from</span> <span class="nn">sssom.parsers</span> <span class="kn">import</span> <span class="n">parse_sssom_table</span>
 <span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">data_dir</span>
 
 
@@ -83,7 +83,7 @@
 
 <div class="viewcode-block" id="TestSCC.setUp"><a class="viewcode-back" href="../../tests.html#tests.test_scc.TestSCC.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Set up the test case by reading the basic SSSOM example.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mset</span> <span class="o">=</span> <span class="n">read_sssom_table</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic.tsv&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mset</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;basic.tsv&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestSCC.test_scc"><a class="viewcode-back" href="../../tests.html#tests.test_scc.TestSCC.test_scc">[docs]</a>    <span class="k">def</span> <span class="nf">test_scc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test splitting into cliques.&quot;&quot;&quot;</span>
@@ -94,9 +94,9 @@
 <div class="viewcode-block" id="TestSCC.test_cliquesummary"><a class="viewcode-back" href="../../tests.html#tests.test_scc.TestSCC.test_cliquesummary">[docs]</a>    <span class="k">def</span> <span class="nf">test_cliquesummary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test summarizing cliques.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">summarize_cliques</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mset</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic-cliquesummary.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;basic-cliquesummary.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic-cliquesummary-stats.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+            <span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;basic-cliquesummary-stats.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
         <span class="p">)</span></div></div>
 </pre></div>
 

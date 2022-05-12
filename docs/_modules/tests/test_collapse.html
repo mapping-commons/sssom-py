@@ -73,6 +73,7 @@
 
 <span class="kn">import</span> <span class="nn">unittest</span>
 
+<span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">pandasql</span> <span class="kn">import</span> <span class="n">sqldf</span>
 
 <span class="kn">from</span> <span class="nn">sssom</span> <span class="kn">import</span> <span class="p">(</span>
@@ -82,8 +83,10 @@
     <span class="n">filter_redundant_rows</span><span class="p">,</span>
     <span class="n">group_mappings</span><span class="p">,</span>
     <span class="n">parse</span><span class="p">,</span>
+    <span class="n">reconcile_prefix_and_data</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">data_dir</span>
+<span class="kn">from</span> <span class="nn">sssom.parsers</span> <span class="kn">import</span> <span class="n">parse_sssom_table</span>
+<span class="kn">from</span> <span class="nn">tests.constants</span> <span class="kn">import</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">prefix_recon_yaml</span>
 
 
 <div class="viewcode-block" id="TestCollapse"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse">[docs]</a><span class="k">class</span> <span class="nc">TestCollapse</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
@@ -91,7 +94,7 @@
 
 <div class="viewcode-block" id="TestCollapse.setUp"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Set up the test case.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic.tsv&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;basic.tsv&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_row_count"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_row_count">[docs]</a>    <span class="k">def</span> <span class="nf">test_row_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test the dataframe has the correct number of rows.&quot;&quot;&quot;</span>
@@ -112,7 +115,7 @@
 <div class="viewcode-block" id="TestCollapse.test_filter"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_filter">[docs]</a>    <span class="k">def</span> <span class="nf">test_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test the row count after filtering redundant rows.&quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="mi">92</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="mi">91</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestCollapse.test_ptable"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_ptable">[docs]</a>    <span class="k">def</span> <span class="nf">test_ptable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test the row count of the ptable export.&quot;&quot;&quot;</span>
@@ -140,7 +143,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
         <span class="c1"># print(diff)</span>
 
-        <span class="n">df2</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/basic2.tsv&quot;</span><span class="p">)</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;basic2.tsv&quot;</span><span class="p">)</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">compare_dataframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">df2</span><span class="p">)</span>
         <span class="c1"># print(len(diff.unique_tuples1))</span>
         <span class="c1"># print(len(diff.unique_tuples2))</span>
@@ -151,8 +154,23 @@
         <span class="c1"># totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)</span>
         <span class="c1"># self.assertEqual(totlen, len(self.df.index) + len(df2.index))</span>
         <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">combined_dataframe</span>
-        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">diff_df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span></div></div>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">diff_df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span></div>
         <span class="c1"># print(diff_df[0:10])</span>
+
+<div class="viewcode-block" id="TestCollapse.test_reconcile_prefix"><a class="viewcode-back" href="../../tests.html#tests.test_collapse.TestCollapse.test_reconcile_prefix">[docs]</a>    <span class="k">def</span> <span class="nf">test_reconcile_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test curie reconciliation is performing as expected.&quot;&quot;&quot;</span>
+        <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;basic3.tsv&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix_recon_yaml</span><span class="p">)</span> <span class="k">as</span> <span class="n">pref_rec</span><span class="p">:</span>
+            <span class="n">prefix_reconciliation</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">pref_rec</span><span class="p">)</span>
+
+        <span class="n">recon_msdf</span> <span class="o">=</span> <span class="n">reconcile_prefix_and_data</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">prefix_reconciliation</span><span class="p">)</span>
+
+        <span class="n">prefix_expansion</span> <span class="o">=</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_expansion_reconciliation&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">pfx</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">prefix_expansion</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">pfx</span> <span class="ow">in</span> <span class="n">recon_msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">recon_msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">pfx</span><span class="p">],</span> <span class="n">exp</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
