@@ -122,8 +122,6 @@ def main(verbose: int, quiet: bool):
 def convert(input: str, output: TextIO, output_format: str):
     """Convert a file.
 
-    .. warning:: currently only supports conversion to RDF)
-
     Example:
         sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl
     """  # noqa: DAR101
