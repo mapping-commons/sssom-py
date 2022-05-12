@@ -39,7 +39,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
@@ -99,7 +98,7 @@
 <span class="kn">from</span> <span class="nn">.writers</span> <span class="kn">import</span> <span class="n">get_writer_function</span><span class="p">,</span> <span class="n">write_table</span><span class="p">,</span> <span class="n">write_tables</span>
 
 
-<div class="viewcode-block" id="convert_file"><a class="viewcode-back" href="../../documentation.html#sssom.io.convert_file">[docs]</a><span class="k">def</span> <span class="nf">convert_file</span><span class="p">(</span>
+<div class="viewcode-block" id="convert_file"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.convert_file">[docs]</a><span class="k">def</span> <span class="nf">convert_file</span><span class="p">(</span>
     <span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">output_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -119,7 +118,7 @@
     <span class="n">write_func</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="n">fileformat</span><span class="p">)</span>  <span class="c1"># type:ignore</span></div>
 
 
-<div class="viewcode-block" id="parse_file"><a class="viewcode-back" href="../../documentation.html#sssom.io.parse_file">[docs]</a><span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span>
+<div class="viewcode-block" id="parse_file"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.parse_file">[docs]</a><span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span>
     <span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">input_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -171,7 +170,7 @@
     <span class="n">write_table</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_file"><a class="viewcode-back" href="../../documentation.html#sssom.io.validate_file">[docs]</a><span class="k">def</span> <span class="nf">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="validate_file"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.validate_file">[docs]</a><span class="k">def</span> <span class="nf">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Validate the incoming SSSOM TSV according to the SSSOM specification.</span>
 
 <span class="sd">    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
@@ -185,7 +184,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../documentation.html#sssom.io.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Split an SSSOM TSV by prefixes and relations.</span>
 
 <span class="sd">    :param  input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
@@ -217,7 +216,7 @@
     <span class="k">return</span> <span class="n">prefix_map</span>
 
 
-<div class="viewcode-block" id="get_metadata_and_prefix_map"><a class="viewcode-back" href="../../documentation.html#sssom.io.get_metadata_and_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_metadata_and_prefix_map</span><span class="p">(</span>
+<div class="viewcode-block" id="get_metadata_and_prefix_map"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.get_metadata_and_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_metadata_and_prefix_map</span><span class="p">(</span>
     <span class="n">metadata_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -239,7 +238,7 @@
     <span class="k">return</span> <span class="n">m</span></div>
 
 
-<div class="viewcode-block" id="get_list_of_predicate_iri"><a class="viewcode-back" href="../../documentation.html#sssom.io.get_list_of_predicate_iri">[docs]</a><span class="k">def</span> <span class="nf">get_list_of_predicate_iri</span><span class="p">(</span><span class="n">predicate_filter</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="get_list_of_predicate_iri"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.get_list_of_predicate_iri">[docs]</a><span class="k">def</span> <span class="nf">get_list_of_predicate_iri</span><span class="p">(</span><span class="n">predicate_filter</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return a list of IRIs for predicate CURIEs passed.</span>
 
 <span class="sd">    :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.</span>
@@ -255,7 +254,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">iri_list</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="extract_iri"><a class="viewcode-back" href="../../documentation.html#sssom.io.extract_iri">[docs]</a><span class="k">def</span> <span class="nf">extract_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="extract_iri"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.extract_iri">[docs]</a><span class="k">def</span> <span class="nf">extract_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recursively extracts a list of IRIs from a string or file.</span>
 

@@ -39,7 +39,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
@@ -138,7 +137,7 @@
 
 
 <span class="c1"># Types</span>
-<div class="viewcode-block" id="EntityReference"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.EntityReference">[docs]</a><span class="k">class</span> <span class="nc">EntityReference</span><span class="p">(</span><span class="n">Uriorcurie</span><span class="p">):</span>
+<div class="viewcode-block" id="EntityReference"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.EntityReference">[docs]</a><span class="k">class</span> <span class="nc">EntityReference</span><span class="p">(</span><span class="n">Uriorcurie</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A reference to a mapped entity. This is represented internally as a string, and as a resource in RDF&quot;&quot;&quot;</span>
 
     <span class="n">type_class_uri</span> <span class="o">=</span> <span class="n">RDFS</span><span class="o">.</span><span class="n">Resource</span>
@@ -150,7 +149,7 @@
 <span class="c1"># Class references</span>
 
 
-<div class="viewcode-block" id="MappingSet"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.MappingSet">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="MappingSet"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.MappingSet">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MappingSet</span><span class="p">(</span><span class="n">YAMLRoot</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a set of mappings</span>
@@ -346,7 +345,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Mapping"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.Mapping">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="Mapping"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.Mapping">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Mapping</span><span class="p">(</span><span class="n">YAMLRoot</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents an individual mapping between a pair of entities</span>
@@ -640,7 +639,7 @@
 
 
 <span class="c1"># Enumerations</span>
-<div class="viewcode-block" id="PredicateModifierEnum"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.PredicateModifierEnum">[docs]</a><span class="k">class</span> <span class="nc">PredicateModifierEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
+<div class="viewcode-block" id="PredicateModifierEnum"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.PredicateModifierEnum">[docs]</a><span class="k">class</span> <span class="nc">PredicateModifierEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
 
     <span class="n">Not</span> <span class="o">=</span> <span class="n">PermissibleValue</span><span class="p">(</span>
         <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Not&quot;</span><span class="p">,</span>
@@ -652,7 +651,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MappingCardinalityEnum"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.MappingCardinalityEnum">[docs]</a><span class="k">class</span> <span class="nc">MappingCardinalityEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
+<div class="viewcode-block" id="MappingCardinalityEnum"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.MappingCardinalityEnum">[docs]</a><span class="k">class</span> <span class="nc">MappingCardinalityEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
 
     <span class="n">_defn</span> <span class="o">=</span> <span class="n">EnumDefinition</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MappingCardinalityEnum&quot;</span><span class="p">,</span>
@@ -680,7 +679,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MatchTypeEnum"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.MatchTypeEnum">[docs]</a><span class="k">class</span> <span class="nc">MatchTypeEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
+<div class="viewcode-block" id="MatchTypeEnum"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.MatchTypeEnum">[docs]</a><span class="k">class</span> <span class="nc">MatchTypeEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
 
     <span class="n">Lexical</span> <span class="o">=</span> <span class="n">PermissibleValue</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Lexical&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Lexical match&quot;</span><span class="p">)</span>
     <span class="n">Logical</span> <span class="o">=</span> <span class="n">PermissibleValue</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Logical&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Logical match&quot;</span><span class="p">)</span>
@@ -701,7 +700,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MatchTermTypeEnum"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.MatchTermTypeEnum">[docs]</a><span class="k">class</span> <span class="nc">MatchTermTypeEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
+<div class="viewcode-block" id="MatchTermTypeEnum"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.MatchTermTypeEnum">[docs]</a><span class="k">class</span> <span class="nc">MatchTermTypeEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
 
     <span class="n">TermMatch</span> <span class="o">=</span> <span class="n">PermissibleValue</span><span class="p">(</span>
         <span class="n">text</span><span class="o">=</span><span class="s2">&quot;TermMatch&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A match between two terms&quot;</span>
@@ -729,7 +728,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PreprocessingMethodEnum"><a class="viewcode-back" href="../../documentation.html#sssom.sssom_datamodel.PreprocessingMethodEnum">[docs]</a><span class="k">class</span> <span class="nc">PreprocessingMethodEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
+<div class="viewcode-block" id="PreprocessingMethodEnum"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.sssom_datamodel.PreprocessingMethodEnum">[docs]</a><span class="k">class</span> <span class="nc">PreprocessingMethodEnum</span><span class="p">(</span><span class="n">EnumDefinitionImpl</span><span class="p">):</span>
 
     <span class="n">Stemming</span> <span class="o">=</span> <span class="n">PermissibleValue</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Stemming&quot;</span><span class="p">)</span>
     <span class="n">TaxonRestrictionRemoval</span> <span class="o">=</span> <span class="n">PermissibleValue</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;TaxonRestrictionRemoval&quot;</span><span class="p">)</span>

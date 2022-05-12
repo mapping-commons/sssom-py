@@ -29,7 +29,6 @@ Contents
    cli_usage
    examples
    sphinx
-   documentation
    developer_docs/modules
 
 
