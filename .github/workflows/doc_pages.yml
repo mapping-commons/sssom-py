@@ -26,7 +26,7 @@ jobs:
         touch gh-pages/.nojekyll
         cd docs/
         make clean html
-        cp -r _build/* ../gh-pages/
+        cp -r _build/html/* ../gh-pages/
     
     - name: Deploy documentation.
       if: ${{ github.event_name == 'pull_request' }}
