@@ -84,4 +84,5 @@ html_context = {
     "github_repo": "sssom-py",
     "github_version": "master/docs/",
     "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
+    "conf_py_path": "/master/docs/", # Path in the checkout to the docs root
 }
