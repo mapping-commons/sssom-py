@@ -15,7 +15,7 @@ https://github.com/OBOFoundry/SSSOM
 sssom-py is a Python library and command line toolkit for working with
 SSSOM:
 
-https://github.com/cmungall/sssom-py
+https://github.com/mapping-commons/sssom-py
 
 Contents
 --------

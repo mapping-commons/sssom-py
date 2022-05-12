@@ -6,13 +6,11 @@ The installation for requires Python 3.6 or greater.
 Installation for users
 ----------------------
 
-First clone the GitHub repository and then install,
+Install using `pip`
 
 .. code-block:: bash
 
-    git clone https://github.com/cmungall/sssom-py
-    cd sssom-py
-    python setup.py install
+    pip install sssom
 
 
 Installation for developers
@@ -23,7 +21,7 @@ To build directly from source, first clone the GitHub repository,
 
 .. code-block:: bash
 
-    git clone https://github.com/cmungall/sssom-py
+    git clone https://github.com/mapping-commons/sssom-py
     cd sssom-py
 
 
