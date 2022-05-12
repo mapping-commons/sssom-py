@@ -1,9 +1,6 @@
 SSSOM Submodules
 ================
 
-Submodules
-----------
-
 sssom.cli module
 ----------------
 
