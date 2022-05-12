@@ -74,14 +74,14 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# html_theme_options = {
-#     "use_edit_page_button": True,
-# }
+html_theme_options = {
+    "use_edit_page_button": True,
+}
 
-# html_context = {
-#     # "github_url": "https://github.com", # or your GitHub Enterprise interprise
-#     "github_user": "mapping-commons",
-#     "github_repo": "sssom-py",
-#     # "github_version": "sphinx_docs/sphinx/",
-#     "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
-# }
+html_context = {
+    # "github_url": "https://github.com", # or your GitHub Enterprise interprise
+    "github_user": "mapping-commons",
+    "github_repo": "sssom-py",
+    "github_version": "/gh-pages/",
+    "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
+}
