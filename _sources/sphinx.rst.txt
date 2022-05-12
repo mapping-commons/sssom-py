@@ -1,5 +1,5 @@
-Documentation Update and Redeployment
-=====================================
+Doc Update and Deploy
+=====================
 
 Using your terminal, ``cd`` to the 'sphinx' directory within the project.
 ::
