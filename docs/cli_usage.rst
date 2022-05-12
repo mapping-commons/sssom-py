@@ -1,5 +1,5 @@
-SSSOM CLI usage
-===============
+CLI
+===
 
 The `sssom` script is a wrapper for multiple sub-commands
 
