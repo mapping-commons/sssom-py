@@ -25,7 +25,7 @@ Contents
    :caption: Contents:
 
    
-   install/installation
+   installation
    cli_usage
    examples
    sphinx
