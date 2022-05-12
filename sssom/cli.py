@@ -283,20 +283,7 @@ def sparql(
     prefix: List[Dict[str, str]],
     output: TextIO,
 ):
-    """
-    Run a SPARQL query.
-
-    Example: 
-    Query to get a count of equivalent classes:
-
-    SELECT DISTINCT ?e1 ?e2 WHERE {
-    ?ax a owl:Axiom ;
-              owl:annotatedSource ?e1 ;
-              owl:annotatedProperty owl:equivalentClass ;
-              owl:annotatedTarget ?e2 .
-    }
-    
-    """
+    """Run a SPARQL query."""
     # FIXME this usage needs _serious_ refactoring
     endpoint = EndpointConfig()  # type: ignore
     if config is not None:
