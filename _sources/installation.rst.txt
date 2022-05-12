@@ -6,7 +6,7 @@ The installation for requires Python 3.6 or greater.
 Installation for users
 ----------------------
 
-Install using `pip`
+Install using ``pip``
 
 .. code-block:: bash
 
