@@ -10,5 +10,5 @@ The main one is `convert`
     sssom convert -i tests/data/basic.tsv -o basic.ttl
     
 .. click:: sssom.cli:main
-    :prog: sssom-py
+    :prog: sssom
     :nested: full
