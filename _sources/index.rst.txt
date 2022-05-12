@@ -24,12 +24,13 @@ Contents
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   
    installation
    documentation
    examples
    cli_usage
    sphinx_documentation
+   modules
 
 
 Indices and tables
