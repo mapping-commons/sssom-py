@@ -29,7 +29,7 @@ Contents
    documentation
    examples
    cli_usage
-   sphinx_documentation
+   sphinx
    modules
 
 
