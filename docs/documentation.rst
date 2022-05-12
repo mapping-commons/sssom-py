@@ -1,4 +1,4 @@
-Documentation
+Python API
 =============
 
 Datamodel
