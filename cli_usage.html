@@ -600,6 +600,16 @@ prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
 <section id="sssom-sparql">
 <h3>sparql<a class="headerlink" href="#sssom-sparql" title="Permalink to this headline"></a></h3>
 <p>Run a SPARQL query.</p>
+<p>Example:
+Query to get a count of equivalent classes:</p>
+<p>SELECT DISTINCT ?e1 ?e2 WHERE {
+?ax a owl:Axiom ;</p>
+<blockquote>
+<div><p>owl:annotatedSource ?e1 ;
+owl:annotatedProperty owl:equivalentClass ;
+owl:annotatedTarget ?e2 .</p>
+</div></blockquote>
+<p>}</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom sparql <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
