@@ -61,14 +61,14 @@ input_format_option = click.option(
 output_option = click.option(
     "-o",
     "--output",
-    help="Output file, e.g. a SSSOM tsv file.",
+    help="Path of SSSOM output file.",
     type=click.File(mode="w"),
     default=sys.stdout,
 )
 output_format_option = click.option(
     "-O",
     "--output-format",
-    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}',
+    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS + ["fhir"])}',
 )
 output_directory_option = click.option(
     "-d",
