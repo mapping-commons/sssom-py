@@ -1,0 +1,574 @@
+# curie_map:
+#   OMOP: https://athena.ohdsi.org/search-terms/terms/
+# license: https://github.com/callahantiff/OMOP2OBO/blob/master/LICENSE
+# mapping_set_id: https://w3id.org/sssom/commons/disease/omop2obo
+subject_id	subject_label	predicate_id	object_id	object_label	match_type
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	HP:0100605	neoplasm of the larynx	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0002354	benign laryngeal neoplasm	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0021071	laryngeal neoplasm	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0021351	neoplasm of neck	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0020641	respiratory tract neoplasm	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0005398	upper aerodigestive tract neoplasm	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0004867	upper respiratory tract disease	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0005087	respiratory system disease	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0005586	head and neck neoplasm	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0024623	otorhinolaryngologic disease	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:22274	Neoplasm of uncertain behavior of larynx	rdfs:subClassOf	MONDO:0004382	laryngeal disease	Unspecified
+OMOP:22281	Hb SS disease	rdfs:subClassOf	HP:0001871	abnormality of blood and blood-forming tissues	Unspecified
+OMOP:22281	Hb SS disease	rdfs:subClassOf	HP:0001877	abnormal erythrocyte morphology	Unspecified
+OMOP:22281	Hb SS disease	rdfs:subClassOf	HP:0010566	hamartoma	Unspecified
+OMOP:22281	Hb SS disease	rdfs:subClassOf	HP:0001903	anemia	Unspecified
+OMOP:22281	Hb SS disease	rdfs:subClassOf	MONDO:0011382	sickle cell anemia	Unspecified
+OMOP:22281	Hb SS disease	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:22288	Hereditary elliptocytosis	rdfs:subClassOf	MONDO:0008165	southeast asian ovalocytosis	Unspecified
+OMOP:22288	Hereditary elliptocytosis	rdfs:subClassOf	MONDO:0017319	hereditary elliptocytosis	Unspecified
+OMOP:22288	Hereditary elliptocytosis	rdfs:subClassOf	HP:0004445	elliptocytosis	Unspecified
+OMOP:22340	Esophageal varices without bleeding	rdfs:subClassOf	MONDO:0021644	esophageal varices without bleeding	Unspecified
+OMOP:22340	Esophageal varices without bleeding	rdfs:subClassOf	HP:0002040	esophageal varix	Unspecified
+OMOP:22340	Esophageal varices without bleeding	rdfs:subClassOf	HP:0001892	abnormal bleeding	Unspecified
+OMOP:22350	Edema of larynx	rdfs:subClassOf	MONDO:0004382	laryngeal disease	Unspecified
+OMOP:22350	Edema of larynx	rdfs:subClassOf	HP:0012027	laryngeal edema	Unspecified
+OMOP:22426	Congenital macrostomia	rdfs:subClassOf	MONDO:0013300	commissural facial cleft	Unspecified
+OMOP:22426	Congenital macrostomia	rdfs:subClassOf	HP:0000154	wide mouth	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0012290	mouth neoplasm	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0100606	neoplasm of the respiratory system	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0010286	abnormal salivary gland morphology	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0100684	salivary gland neoplasm	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0100649	neoplasm of the oral cavity	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0012288	neoplasm of head and neck	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:22557	Malignant tumor of submandibular gland	rdfs:subClassOf	MONDO:0004724	submandibular gland cancer	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	HP:0002584	intestinal bleeding	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	HP:0002239	gastrointestinal hemorrhage	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0004260	peptic ulcer perforation	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0004242	active peptic ulcer disease	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:22665	Chronic peptic ulcer with hemorrhage AND with perforation but without obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:22722	Accessory salivary gland	rdfs:subClassOf	MONDO:0001142	salivary gland disease	Unspecified
+OMOP:22722	Accessory salivary gland	rdfs:subClassOf	HP:0010286	abnormal salivary gland morphology	Unspecified
+OMOP:22820	Tuberculosis of esophagus	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:22820	Tuberculosis of esophagus	rdfs:subClassOf	HP:0032271	extrapulmonary tuberculosis	Unspecified
+OMOP:22820	Tuberculosis of esophagus	rdfs:subClassOf	HP:0100633	esophagitis	Unspecified
+OMOP:22820	Tuberculosis of esophagus	rdfs:subClassOf	MONDO:0004189	esophageal tuberculosis	Unspecified
+OMOP:22820	Tuberculosis of esophagus	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:22820	Tuberculosis of esophagus	rdfs:subClassOf	HP:0004798	recurrent infection of the gastrointestinal tract	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0002354	benign laryngeal neoplasm	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0002358	laryngeal carcinoma	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0012288	neoplasm of head and neck	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0100606	neoplasm of the respiratory system	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0002795	functional respiratory abnormality	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0002094	dyspnea	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0002098	respiratory distress	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0100526	neoplasm of the lung	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0012118	laryngeal carcinoma	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005627	head and neck cancer	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	HP:0100605	neoplasm of the larynx	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0002352	larynx cancer	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0024623	otorhinolaryngologic disease	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021351	neoplasm of neck	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021071	laryngeal neoplasm	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005087	respiratory system disease	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005398	upper aerodigestive tract neoplasm	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0004992	cancer	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0004867	upper respiratory tract disease	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0004382	laryngeal disease	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0020641	respiratory tract neoplasm	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0000376	respiratory system cancer	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021310	malignant tumor of neck	Unspecified
+OMOP:22839	Overlapping malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005586	head and neck neoplasm	Unspecified
+OMOP:22856	Polyglandular dysfunction	rdfs:subClassOf	MONDO:0005151	endocrine system disease	Unspecified
+OMOP:22856	Polyglandular dysfunction	rdfs:subClassOf	HP:0000818	abnormality of the endocrine system	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	HP:0030693	supratentorial neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021211	brain neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005872	nervous system cancer	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021232	pineal body neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0002731	cerebral hemisphere cancer	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0001657	brain cancer	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0024890	pineal parenchymal cell neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0006130	central nervous system neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021069	malignant endocrine neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0002959	radiculopathy	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021248	nervous system neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0002082	endocrine gland neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0002602	central nervous system disease	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005071	nervous system disorder	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005042	head disease	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005586	head and neck neoplasm	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005560	brain disease	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0005151	endocrine system disease	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0002714	central nervous system cancer	Unspecified
+OMOP:22871	Neoplasm of uncertain behavior of pineal gland	rdfs:subClassOf	MONDO:0021374	neoplasm of cerebral hemisphere	Unspecified
+OMOP:22945	Horizontal overbite	rdfs:subClassOf	MONDO:0006858	mouth disease	Unspecified
+OMOP:22945	Horizontal overbite	rdfs:subClassOf	HP:0011095	overjet	Unspecified
+OMOP:22955	Perforation of esophagus	rdfs:subClassOf	HP:0002031	abnormal esophagus morphology	Unspecified
+OMOP:22955	Perforation of esophagus	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:23034	Neonatal hypoglycemia	rdfs:subClassOf	HP:0001998	neonatal hypoglycemia	Unspecified
+OMOP:23034	Neonatal hypoglycemia	rdfs:subClassOf	MONDO:0004946	hypoglycemia	Unspecified
+OMOP:23137	Chlamydial pharyngitis	rdfs:subClassOf	MONDO:0002258	pharyngitis	Unspecified
+OMOP:23137	Chlamydial pharyngitis	rdfs:subClassOf	MONDO:0005701	chlamydia trachomatis infectious disease	Unspecified
+OMOP:23137	Chlamydial pharyngitis	rdfs:subClassOf	HP:0025439	pharyngitis	Unspecified
+OMOP:23137	Chlamydial pharyngitis	rdfs:subClassOf	HP:0032101	unusual infection	Unspecified
+OMOP:23164	Disorder of anterior pituitary	rdfs:subClassOf	MONDO:0024468	anterior pituitary gland disease	Unspecified
+OMOP:23164	Disorder of anterior pituitary	rdfs:subClassOf	HP:0011747	abnormality of the anterior pituitary	Unspecified
+OMOP:23220	Chronic tonsillitis	rdfs:subClassOf	MONDO:0001039	tonsillitis	Unspecified
+OMOP:23220	Chronic tonsillitis	rdfs:subClassOf	HP:0011010	chronic	Unspecified
+OMOP:23220	Chronic tonsillitis	rdfs:subClassOf	HP:0011110	tonsillitis	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0002584	intestinal bleeding	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0002239	gastrointestinal hemorrhage	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0004796	gastrointestinal obstruction	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0004242	active peptic ulcer disease	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0020683	acute disease	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:23237	Acute peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:23245	Esophageal bleeding	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:23245	Esophageal bleeding	rdfs:subClassOf	HP:0001892	abnormal bleeding	Unspecified
+OMOP:23245	Esophageal bleeding	rdfs:subClassOf	HP:0002031	abnormal esophagus morphology	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0004260	peptic ulcer perforation	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:23247	Chronic peptic ulcer with perforation but without obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:23304	Neck webbing	rdfs:subClassOf	MONDO:0005093	skin disease	Unspecified
+OMOP:23304	Neck webbing	rdfs:subClassOf	HP:0000465	webbed neck	Unspecified
+OMOP:23325	Heartburn	rdfs:subClassOf	HP:0002020	gastroesophageal reflux	Unspecified
+OMOP:23567	Branchial cleft cyst	rdfs:subClassOf	MONDO:0007233	second branchial cleft anomaly	Unspecified
+OMOP:23567	Branchial cleft cyst	rdfs:subClassOf	HP:0009796	branchial cyst	Unspecified
+OMOP:23731	Benign neoplasm of larynx	rdfs:subClassOf	HP:0100605	neoplasm of the larynx	Unspecified
+OMOP:23731	Benign neoplasm of larynx	rdfs:subClassOf	MONDO:0002354	benign laryngeal neoplasm	Unspecified
+OMOP:23789	Pharynx or nasopharynx cyst	rdfs:subClassOf	MONDO:0002258	pharyngitis	Unspecified
+OMOP:23789	Pharynx or nasopharynx cyst	rdfs:subClassOf	HP:0025439	pharyngitis	Unspecified
+OMOP:23789	Pharynx or nasopharynx cyst	rdfs:subClassOf	HP:0001739	abnormality of the nasopharynx	Unspecified
+OMOP:23798	Acute laryngopharyngitis	rdfs:subClassOf	MONDO:0001218	acute laryngopharyngitis	Unspecified
+OMOP:23798	Acute laryngopharyngitis	rdfs:subClassOf	HP:0011009	acute	Unspecified
+OMOP:23798	Acute laryngopharyngitis	rdfs:subClassOf	HP:0000600	abnormality of the pharynx	Unspecified
+OMOP:23798	Acute laryngopharyngitis	rdfs:subClassOf	HP:0001600	abnormality of the larynx	Unspecified
+OMOP:23799	Pharynx or nasopharynx edema	rdfs:subClassOf	HP:0000969	edema	Unspecified
+OMOP:23799	Pharynx or nasopharynx edema	rdfs:subClassOf	HP:0001739	abnormality of the nasopharynx	Unspecified
+OMOP:23799	Pharynx or nasopharynx edema	rdfs:subClassOf	HP:0011855	pharyngeal edema	Unspecified
+OMOP:23799	Pharynx or nasopharynx edema	rdfs:subClassOf	MONDO:0004867	upper respiratory tract disease	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0024236	degenerative disorder	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0005042	head disease	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0006858	mouth disease	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0001142	salivary gland disease	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:23806	Atrophy of salivary gland	rdfs:subClassOf	HP:0010286	abnormal salivary gland morphology	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	HP:0002239	gastrointestinal hemorrhage	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	HP:0004796	gastrointestinal obstruction	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	HP:0031368	intestinal perforation	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	HP:0011010	chronic	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:23808	Chronic peptic ulcer without hemorrhage, without perforation AND without obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0006499	hamartoma (disease)	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0020592	disease of pharynx	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	HP:0003577	congenital onset	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0002258	pharyngitis	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	HP:0000600	abnormality of the pharynx	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0004867	upper respiratory tract disease	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0024623	otorhinolaryngologic disease	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0000839	congenital abnormality	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:23865	Congenital anomaly of pharynx	rdfs:subClassOf	MONDO:0005087	respiratory system disease	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0006499	hamartoma (disease)	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0000839	congenital abnormality	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	HP:0002031	abnormal esophagus morphology	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:23868	Congenital anomaly of esophagus	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:23986	Disorder of pituitary gland	rdfs:subClassOf	HP:0012503	abnormality of the pituitary gland	Unspecified
+OMOP:23986	Disorder of pituitary gland	rdfs:subClassOf	HP:0011747	abnormality of the anterior pituitary	Unspecified
+OMOP:23986	Disorder of pituitary gland	rdfs:subClassOf	MONDO:0003381	pituitary gland disease	Unspecified
+OMOP:23988	Hemolytic anemia due to glutathione metabolism disorder	rdfs:subClassOf	MONDO:0003689	familial hemolytic anemia	Unspecified
+OMOP:23988	Hemolytic anemia due to glutathione metabolism disorder	rdfs:subClassOf	MONDO:0006025	autosomal recessive disease	Unspecified
+OMOP:23988	Hemolytic anemia due to glutathione metabolism disorder	rdfs:subClassOf	MONDO:0004736	inherited amino acid metabolic disorder	Unspecified
+OMOP:23988	Hemolytic anemia due to glutathione metabolism disorder	rdfs:subClassOf	HP:0003343	reduced glutathione synthetase level	Unspecified
+OMOP:23988	Hemolytic anemia due to glutathione metabolism disorder	rdfs:subClassOf	HP:0012379	abnormal enzyme/coenzyme activity	Unspecified
+OMOP:23988	Hemolytic anemia due to glutathione metabolism disorder	rdfs:subClassOf	HP:0000007	autosomal recessive inheritance	Unspecified
+OMOP:24006	Sickle cell-hemoglobin C disease	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:24006	Sickle cell-hemoglobin C disease	rdfs:subClassOf	MONDO:0011382	sickle cell anemia	Unspecified
+OMOP:24006	Sickle cell-hemoglobin C disease	rdfs:subClassOf	MONDO:0016669	sickle cell-hemoglobin c disease syndrome	Unspecified
+OMOP:24006	Sickle cell-hemoglobin C disease	rdfs:subClassOf	HP:0010566	hamartoma	Unspecified
+OMOP:24006	Sickle cell-hemoglobin C disease	rdfs:subClassOf	HP:0001871	abnormality of blood and blood-forming tissues	Unspecified
+OMOP:24006	Sickle cell-hemoglobin C disease	rdfs:subClassOf	HP:0001877	abnormal erythrocyte morphology	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0002584	intestinal bleeding	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0004796	gastrointestinal obstruction	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0002239	gastrointestinal hemorrhage	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0004242	active peptic ulcer disease	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:24076	Chronic peptic ulcer with hemorrhage AND obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:24134	Neck pain	rdfs:subClassOf	HP:0030833	neck pain	Unspecified
+OMOP:24148	Congenital diverticulum of pharynx	rdfs:subClassOf	HP:0000600	abnormality of the pharynx	Unspecified
+OMOP:24148	Congenital diverticulum of pharynx	rdfs:subClassOf	HP:0003577	congenital onset	Unspecified
+OMOP:24148	Congenital diverticulum of pharynx	rdfs:subClassOf	MONDO:0002258	pharyngitis	Unspecified
+OMOP:24148	Congenital diverticulum of pharynx	rdfs:subClassOf	MONDO:0021140	congenital	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0012288	neoplasm of head and neck	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0006130	central nervous system neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0021211	brain neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0021248	nervous system neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0021069	malignant endocrine neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0002011	morphological central nervous system abnormality	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0012503	abnormality of the pituitary gland	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0004375	neoplasm of the nervous system	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0000818	abnormality of the endocrine system	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0030692	brain neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0100006	neoplasm of the central nervous system	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0100568	neoplasm of the endocrine system	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0100836	malignant neoplasm of the central nervous system	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0011747	abnormality of the anterior pituitary	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0002181	cerebral edema	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005627	head and neck cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	HP:0001298	encephalopathy	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002959	radiculopathy	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0017611	pituitary tumor	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0001657	brain cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005042	head disease	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005071	nervous system disorder	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0004992	cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005586	head and neck neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002602	central nervous system disease	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005560	brain disease	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005151	endocrine system disease	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0005872	nervous system cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002731	cerebral hemisphere cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002082	endocrine gland neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002150	hypothalamic disease	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002109	pituitary cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0021374	neoplasm of cerebral hemisphere	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0002714	central nervous system cancer	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0006799	hypothalamic neoplasm	Unspecified
+OMOP:24296	Primary malignant neoplasm of pituitary gland	rdfs:subClassOf	MONDO:0003381	pituitary gland disease	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0004260	peptic ulcer perforation	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	HP:0002239	gastrointestinal hemorrhage	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	HP:0004796	gastrointestinal obstruction	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0004242	active peptic ulcer disease	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	HP:0002584	intestinal bleeding	Unspecified
+OMOP:24397	Chronic peptic ulcer with hemorrhage, with perforation AND with obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:24602	Benign neoplasm of esophagus	rdfs:subClassOf	HP:0100751	esophageal neoplasm	Unspecified
+OMOP:24602	Benign neoplasm of esophagus	rdfs:subClassOf	MONDO:0021459	benign neoplasm of esophagus	Unspecified
+OMOP:24609	Hypoglycemia	rdfs:subClassOf	MONDO:0004946	hypoglycemia	Unspecified
+OMOP:24609	Hypoglycemia	rdfs:subClassOf	HP:0001943	hypoglycemia	Unspecified
+OMOP:24612	Multiple endocrine neoplasia, type 2	rdfs:subClassOf	MONDO:0019003	multiple endocrine neoplasia type 2	Unspecified
+OMOP:24612	Multiple endocrine neoplasia, type 2	rdfs:subClassOf	MONDO:0008234	multiple endocrine neoplasia type 2a	Unspecified
+OMOP:24612	Multiple endocrine neoplasia, type 2	rdfs:subClassOf	HP:0100568	neoplasm of the endocrine system	Unspecified
+OMOP:24612	Multiple endocrine neoplasia, type 2	rdfs:subClassOf	HP:0000006	autosomal dominant inheritance	Unspecified
+OMOP:24660	Acute tonsillitis	rdfs:subClassOf	MONDO:0020686	acute adenoiditis	Unspecified
+OMOP:24660	Acute tonsillitis	rdfs:subClassOf	HP:0011009	acute	Unspecified
+OMOP:24660	Acute tonsillitis	rdfs:subClassOf	HP:0011110	tonsillitis	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	HP:0030074	chemodectoma	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0021069	malignant endocrine neoplasm	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0021455	benign neoplasm of neck	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0000448	paraganglioma	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0021351	neoplasm of neck	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0005586	head and neck neoplasm	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0005165	benign neoplasm	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:24884	Benign neoplasm of carotid body	rdfs:subClassOf	MONDO:0005151	endocrine system disease	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0008069	neoplasm of the skin	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0002098	respiratory distress	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0002094	dyspnea	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0002795	functional respiratory abnormality	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0100606	neoplasm of the respiratory system	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0100605	neoplasm of the larynx	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0012288	neoplasm of head and neck	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	MONDO:0004696	larynx carcinoma in situ	Unspecified
+OMOP:24897	Carcinoma in situ of larynx	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:24909	Hereditary spherocytosis	rdfs:subClassOf	HP:0004446	stomatocytosis	Unspecified
+OMOP:24909	Hereditary spherocytosis	rdfs:subClassOf	MONDO:0019350	hereditary spherocytosis	Unspecified
+OMOP:24909	Hereditary spherocytosis	rdfs:subClassOf	HP:0000006	autosomal dominant inheritance	Unspecified
+OMOP:24966	Esophageal varices	rdfs:subClassOf	HP:0002040	esophageal varix	Unspecified
+OMOP:24966	Esophageal varices	rdfs:subClassOf	MONDO:0001221	esophageal varices	Unspecified
+OMOP:24969	Laryngitis	rdfs:subClassOf	MONDO:0002647	laryngitis	Unspecified
+OMOP:24969	Laryngitis	rdfs:subClassOf	MONDO:0004777	acute laryngitis	Unspecified
+OMOP:24969	Laryngitis	rdfs:subClassOf	HP:0033000	subglottic laryngitis	Unspecified
+OMOP:24970	Chronic laryngitis	rdfs:subClassOf	MONDO:0001369	chronic laryngitis	Unspecified
+OMOP:24970	Chronic laryngitis	rdfs:subClassOf	HP:0011010	chronic	Unspecified
+OMOP:24970	Chronic laryngitis	rdfs:subClassOf	HP:0001600	abnormality of the larynx	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	HP:0004796	gastrointestinal obstruction	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:24973	Chronic peptic ulcer without hemorrhage AND without perforation but with obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:24974	Stenosis of larynx	rdfs:subClassOf	MONDO:0001305	laryngostenosis	Unspecified
+OMOP:24974	Stenosis of larynx	rdfs:subClassOf	HP:0001602	laryngeal stenosis	Unspecified
+OMOP:24977	Mucocele of salivary gland	rdfs:subClassOf	MONDO:0001600	mucocele of salivary gland	Unspecified
+OMOP:24977	Mucocele of salivary gland	rdfs:subClassOf	HP:0030706	ranula	Unspecified
+OMOP:24978	Chronic adenotonsillitis	rdfs:subClassOf	HP:0031458	adenoiditis	Unspecified
+OMOP:24978	Chronic adenotonsillitis	rdfs:subClassOf	HP:0011110	tonsillitis	Unspecified
+OMOP:24978	Chronic adenotonsillitis	rdfs:subClassOf	MONDO:0001039	tonsillitis	Unspecified
+OMOP:24978	Chronic adenotonsillitis	rdfs:subClassOf	MONDO:0000261	adenoiditis	Unspecified
+OMOP:24978	Chronic adenotonsillitis	rdfs:subClassOf	HP:0011010	chronic	Unspecified
+OMOP:25056	Congenital anomaly of neck	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:25056	Congenital anomaly of neck	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:25056	Congenital anomaly of neck	rdfs:subClassOf	MONDO:0000839	congenital abnormality	Unspecified
+OMOP:25056	Congenital anomaly of neck	rdfs:subClassOf	MONDO:0006499	hamartoma (disease)	Unspecified
+OMOP:25056	Congenital anomaly of neck	rdfs:subClassOf	HP:0000464	abnormality of the neck	Unspecified
+OMOP:25068	Branchial cleft sinus and fistula	rdfs:subClassOf	MONDO:0006499	hamartoma (disease)	Unspecified
+OMOP:25068	Branchial cleft sinus and fistula	rdfs:subClassOf	MONDO:0000839	congenital abnormality	Unspecified
+OMOP:25068	Branchial cleft sinus and fistula	rdfs:subClassOf	HP:0100272	branchial sinus	Unspecified
+OMOP:25068	Branchial cleft sinus and fistula	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:25068	Branchial cleft sinus and fistula	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	MONDO:0005515	oral cavity cancer	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	HP:0012288	neoplasm of head and neck	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	HP:0012290	mouth neoplasm	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	HP:0100649	neoplasm of the oral cavity	Unspecified
+OMOP:25189	Malignant tumor of oral cavity	rdfs:subClassOf	HP:0100606	neoplasm of the respiratory system	Unspecified
+OMOP:25211	Iatrogenic pituitary disorder	rdfs:subClassOf	MONDO:0003381	pituitary gland disease	Unspecified
+OMOP:25211	Iatrogenic pituitary disorder	rdfs:subClassOf	HP:0012503	abnormality of the pituitary gland	Unspecified
+OMOP:25297	Acute pharyngitis	rdfs:subClassOf	MONDO:0020600	acute pharyngitis	Unspecified
+OMOP:25297	Acute pharyngitis	rdfs:subClassOf	MONDO:0002258	pharyngitis	Unspecified
+OMOP:25297	Acute pharyngitis	rdfs:subClassOf	HP:0011009	acute	Unspecified
+OMOP:25297	Acute pharyngitis	rdfs:subClassOf	HP:0025439	pharyngitis	Unspecified
+OMOP:25486	Primary malignant neoplasm of islets of Langerhans	rdfs:subClassOf	HP:0030405	pancreatic endocrine tumor	Unspecified
+OMOP:25486	Primary malignant neoplasm of islets of Langerhans	rdfs:subClassOf	MONDO:0005893	pancreatic endocrine carcinoma	Unspecified
+OMOP:25518	Sickle cell trait	rdfs:subClassOf	HP:0045047	hbs hemoglobin	Unspecified
+OMOP:25518	Sickle cell trait	rdfs:subClassOf	HP:0000007	autosomal recessive inheritance	Unspecified
+OMOP:25518	Sickle cell trait	rdfs:subClassOf	MONDO:0011382	sickle cell anemia	Unspecified
+OMOP:25568	Dental restoration failure of marginal integrity	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:25568	Dental restoration failure of marginal integrity	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:25572	Disorder of salivary gland	rdfs:subClassOf	MONDO:0001142	salivary gland disease	Unspecified
+OMOP:25572	Disorder of salivary gland	rdfs:subClassOf	HP:0010286	abnormal salivary gland morphology	Unspecified
+OMOP:25582	Tracheoesophageal fistula	rdfs:subClassOf	MONDO:0008586	esophageal atresia/tracheoesophageal fistula	Unspecified
+OMOP:25582	Tracheoesophageal fistula	rdfs:subClassOf	MONDO:0018694	isolated tracheo-esophageal fistula	Unspecified
+OMOP:25582	Tracheoesophageal fistula	rdfs:subClassOf	HP:0002575	tracheoesophageal fistula	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021223	digestive system neoplasm	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0100751	esophageal neoplasm	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0007378	neoplasm of the gastrointestinal tract	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0006749	malignant gastrointestinal tract tumors	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	HP:0011459	esophageal carcinoma	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0002516	digestive system cancer	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021355	neoplasm of esophagus	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0019086	carcinoma of esophagus	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0007576	esophageal cancer	Unspecified
+OMOP:25748	Overlapping malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0004992	cancer	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	HP:0002668	paraganglioma	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	HP:0100568	neoplasm of the endocrine system	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	HP:0000818	abnormality of the endocrine system	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	HP:0002664	neoplasm	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0021389	neoplasm of aortic body	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0021069	malignant endocrine neoplasm	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0005151	endocrine system disease	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0004992	cancer	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0000448	paraganglioma	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:25757	Primary malignant neoplasm of aortic body	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:25780	Pituitary dwarfism	rdfs:subClassOf	MONDO:0006909	pituitary dwarfism	Unspecified
+OMOP:25780	Pituitary dwarfism	rdfs:subClassOf	HP:0000839	pituitary dwarfism	Unspecified
+OMOP:25844	Ulcer of esophagus	rdfs:subClassOf	MONDO:0044782	esophageal ulcer	Unspecified
+OMOP:25844	Ulcer of esophagus	rdfs:subClassOf	HP:0004791	esophageal ulceration	Unspecified
+OMOP:25844	Ulcer of esophagus	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021310	malignant tumor of neck	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	HP:0100605	neoplasm of the larynx	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0002358	laryngeal carcinoma	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0002354	benign laryngeal neoplasm	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005627	head and neck cancer	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0002352	larynx cancer	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021071	laryngeal neoplasm	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021351	neoplasm of neck	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0000376	respiratory system cancer	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005398	upper aerodigestive tract neoplasm	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0020641	respiratory tract neoplasm	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0004992	cancer	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005586	head and neck neoplasm	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0005087	respiratory system disease	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0004867	upper respiratory tract disease	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0004382	laryngeal disease	Unspecified
+OMOP:26052	Primary malignant neoplasm of larynx	rdfs:subClassOf	MONDO:0024623	otorhinolaryngologic disease	Unspecified
+OMOP:26060	Benign neoplasm of tonsil	rdfs:subClassOf	MONDO:0021513	benign neoplasm of tonsil	Unspecified
+OMOP:26060	Benign neoplasm of tonsil	rdfs:subClassOf	HP:0100630	neoplasia of the nasopharynx	Unspecified
+OMOP:26060	Benign neoplasm of tonsil	rdfs:subClassOf	HP:0100649	neoplasm of the oral cavity	Unspecified
+OMOP:26141	Barrett's esophagus with esophagitis	rdfs:subClassOf	MONDO:0013662	barrett esophagus	Unspecified
+OMOP:26141	Barrett's esophagus with esophagitis	rdfs:subClassOf	HP:0100580	barrett esophagus	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0001142	salivary gland disease	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	HP:0003577	congenital onset	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	HP:0010286	abnormal salivary gland morphology	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0006858	mouth disease	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0006499	hamartoma (disease)	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0000839	congenital abnormality	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:26213	Congenital salivary gland fistula	rdfs:subClassOf	MONDO:0005042	head disease	Unspecified
+OMOP:26361	Primary malignant neoplasm of pineal gland	rdfs:subClassOf	MONDO:0003249	pineal gland cancer	Unspecified
+OMOP:26361	Primary malignant neoplasm of pineal gland	rdfs:subClassOf	HP:0030693	supratentorial neoplasm	Unspecified
+OMOP:26378	Hyperpituitarism	rdfs:subClassOf	MONDO:0006793	hyperpituitarism	Unspecified
+OMOP:26378	Hyperpituitarism	rdfs:subClassOf	HP:0010514	hyperpituitarism	Unspecified
+OMOP:26441	Bleeding ulcer of esophagus	rdfs:subClassOf	HP:0004791	esophageal ulceration	Unspecified
+OMOP:26441	Bleeding ulcer of esophagus	rdfs:subClassOf	HP:0001892	abnormal bleeding	Unspecified
+OMOP:26441	Bleeding ulcer of esophagus	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:26441	Bleeding ulcer of esophagus	rdfs:subClassOf	MONDO:0002243	hemorrhagic disease	Unspecified
+OMOP:26459	Acute esophagitis	rdfs:subClassOf	MONDO:0001409	esophagitis (disease)	Unspecified
+OMOP:26459	Acute esophagitis	rdfs:subClassOf	HP:0011009	acute	Unspecified
+OMOP:26459	Acute esophagitis	rdfs:subClassOf	HP:0100633	esophagitis	Unspecified
+OMOP:26514	Laryngeal web	rdfs:subClassOf	MONDO:0007880	congenital laryngeal web	Unspecified
+OMOP:26514	Laryngeal web	rdfs:subClassOf	HP:0005950	laryngeal web	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0007576	esophageal cancer	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021223	digestive system neoplasm	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0002516	digestive system cancer	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0023370	neoplastic disease or syndrome	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021079	childhood neoplasm	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0019086	carcinoma of esophagus	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021355	neoplasm of esophagus	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	HP:0100751	esophageal neoplasm	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0003749	esophageal disease	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0004992	cancer	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:26638	Primary malignant neoplasm of esophagus	rdfs:subClassOf	MONDO:0005070	neoplasm (disease)	Unspecified
+OMOP:26662	Testicular hypofunction	rdfs:subClassOf	MONDO:0002329	testicular disease	Unspecified
+OMOP:26662	Testicular hypofunction	rdfs:subClassOf	HP:0008720	primary testicular failure	Unspecified
+OMOP:26662	Testicular hypofunction	rdfs:subClassOf	HP:0000026	male hypogonadism	Unspecified
+OMOP:26711	Chronic pharyngitis	rdfs:subClassOf	MONDO:0002258	pharyngitis	Unspecified
+OMOP:26711	Chronic pharyngitis	rdfs:subClassOf	HP:0011010	chronic	Unspecified
+OMOP:26711	Chronic pharyngitis	rdfs:subClassOf	HP:0025439	pharyngitis	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	HP:0002017	nausea and vomiting	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0004247	peptic ulcer disease	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	HP:0004398	peptic ulcer	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	HP:0011024	abnormality of the gastrointestinal tract	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0004260	peptic ulcer perforation	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0043839	ulcer disease	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0020683	acute disease	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0004335	digestive system disease	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0021199	disease by anatomical system	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0000001	disease or disorder	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0024505	disorder by anatomical region	Unspecified
+OMOP:26718	Acute peptic ulcer with perforation AND obstruction	rdfs:subClassOf	MONDO:0044991	upper digestive tract disease	Unspecified
+OMOP:26719	Chronic laryngotracheitis	rdfs:subClassOf	MONDO:0000263	laryngotracheitis	Unspecified
+OMOP:26719	Chronic laryngotracheitis	rdfs:subClassOf	HP:0001600	abnormality of the larynx	Unspecified
+OMOP:26719	Chronic laryngotracheitis	rdfs:subClassOf	HP:0002778	abnormal trachea morphology	Unspecified
+OMOP:26727	Hematemesis	rdfs:subClassOf	HP:0002248	hematemesis	Unspecified
+OMOP:26823	Oral phase dysphagia	rdfs:subClassOf	HP:0002015	dysphagia	Unspecified
+OMOP:26823	Oral phase dysphagia	rdfs:subClassOf	MONDO:0006858	mouth disease	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	MONDO:0005819	laryngeal tuberculosis	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0002795	functional respiratory abnormality	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0002094	dyspnea	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0002098	respiratory distress	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0011947	respiratory tract infection	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0032271	extrapulmonary tuberculosis	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0002788	recurrent upper respiratory tract infections	Unspecified
+OMOP:26899	Tuberculous laryngitis	rdfs:subClassOf	HP:0033000	subglottic laryngitis	Unspecified
+OMOP:26908	Vincent's angina	rdfs:subClassOf	MONDO:0006865	necrotizing ulcerative gingivitis	Unspecified
+OMOP:26908	Vincent's angina	rdfs:subClassOf	HP:0025439	pharyngitis	Unspecified
+
