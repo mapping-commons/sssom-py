@@ -30,5 +30,12 @@ we convert a tsv file into an owl format.
     sssom convert basic.tsv --output basic.owl --output-format owl
 
 
+``diff`` command
+-------------------
 
+Mapping files can be compared and differences highlighted using the ``diff`` command.
+
+.. code-block:: bash
+
+    sssom diff basic.tsv basic2.tsv -o diff_output.tsv
 
