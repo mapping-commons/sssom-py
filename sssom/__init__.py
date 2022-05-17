@@ -1,10 +1,12 @@
 """Initializing imports and constants."""
 
-try:
-    from importlib import metadata  # Python >=3.8
+import sys
 
-    __version__ = metadata.version(__name__)
-except ImportError:  # for Python<3.8
+if sys.version_info >= (3, 8):
+    import importlib.metadata
+
+    __version__ = importlib.metadata.version(__name__)
+elif sys.version_info < (3, 8):
     import importlib_metadata
 
     __version__ = importlib_metadata.version(__name__)
