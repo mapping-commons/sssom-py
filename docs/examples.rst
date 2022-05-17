@@ -8,5 +8,8 @@ The ``parse`` command is a way to import a mapping file. In this example, the fi
 will be parsed. The CLI command is as follows:
 
 .. code-block:: bash
-    sssom parse basic.tsv --output basic_parsed.tsv
+    sssom parse basic.tsv
+
+
+
 
