@@ -44,6 +44,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#parse-command"><code class="docutils literal notranslate"><span class="pre">parse</span></code> command</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#convert-command"><code class="docutils literal notranslate"><span class="pre">convert</span></code> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diff-command"><code class="docutils literal notranslate"><span class="pre">diff</span></code> command</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer_docs/modules.html">Technical Documentation</a></li>
@@ -94,6 +95,13 @@ parameter could be passed and the command will look like this:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">convert</span></code> command converts files from one format to another. In this example,
 we convert a tsv file into an owl format.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom convert basic.tsv --output basic.owl --output-format owl
+</pre></div>
+</div>
+</section>
+<section id="diff-command">
+<h2><code class="docutils literal notranslate"><span class="pre">diff</span></code> command<a class="headerlink" href="#diff-command" title="Permalink to this headline"></a></h2>
+<p>Mapping files can be compared and differences highlighted using the <code class="docutils literal notranslate"><span class="pre">diff</span></code> command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom diff basic.tsv basic2.tsv -o diff_output.tsv
 </pre></div>
 </div>
 </section>
