@@ -48,6 +48,7 @@ from .util import (
     to_mapping_set_dataframe,
 )
 from .writers import write_table
+import pkg_resources
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
@@ -103,6 +104,7 @@ predicate_filter_option = click.option(
 @click.group()
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
+@click.version_option(pkg_resources.require("sssom")[0].version)
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
     if verbose >= 2:
@@ -551,7 +553,6 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
-
 
 if __name__ == "__main__":
     main()
