@@ -1,6 +1,9 @@
 """Initializing imports and constants."""
 
-import importlib.metadata
+try:
+    from importlib import metadata # Python >=3.8
+except ImportError: # for Python<3.8
+    import importlib_metadata as metadata
 
 from .sssom_datamodel import slots  # noqa:401
 from .sssom_datamodel import Mapping, MappingSet  # noqa:401
@@ -14,4 +17,4 @@ from .util import (  # noqa:401
     reconcile_prefix_and_data,
 )
 
-__version__ = importlib.metadata.version(__name__)
+__version__ = metadata.version(__name__)
