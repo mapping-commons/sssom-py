@@ -10,6 +10,11 @@ will be parsed. The CLI command is as follows:
 .. code-block:: bash
     sssom parse basic.tsv
 
+This results in the contents of the file displayed on the terminal.
+If the result is needed to be exported into another tsv, an ``--output`` 
+parameter could be passed and the command will look like this:
 
+.. code-block:: bash
+    sssom parse basic.tsv --output parsed_basic.tsv
 
 
