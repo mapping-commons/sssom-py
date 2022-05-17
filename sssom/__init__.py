@@ -1,5 +1,7 @@
 """Initializing imports and constants."""
 
+import importlib.metadata
+
 from .sssom_datamodel import slots  # noqa:401
 from .sssom_datamodel import Mapping, MappingSet  # noqa:401
 from .util import (  # noqa:401
@@ -11,3 +13,5 @@ from .util import (  # noqa:401
     parse,
     reconcile_prefix_and_data,
 )
+
+__version__ = importlib.metadata.version("sssom")
