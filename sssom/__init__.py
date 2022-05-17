@@ -14,4 +14,4 @@ from .util import (  # noqa:401
     reconcile_prefix_and_data,
 )
 
-__version__ = importlib.metadata.version("sssom")
+__version__ = importlib.metadata.version(__name__)
