@@ -20,6 +20,7 @@ from typing import ChainMap, Dict, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
+import pkg_resources
 import yaml
 from pandasql import sqldf
 from rdflib import Graph
@@ -48,7 +49,6 @@ from .util import (
     to_mapping_set_dataframe,
 )
 from .writers import write_table
-import pkg_resources
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
@@ -553,6 +553,7 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
+
 
 if __name__ == "__main__":
     main()
