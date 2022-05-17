@@ -43,6 +43,7 @@
 <li class="toctree-l1"><a class="reference internal" href="cli_usage.html">CLI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#parse-command"><code class="docutils literal notranslate"><span class="pre">parse</span></code> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convert-command"><code class="docutils literal notranslate"><span class="pre">convert</span></code> command</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer_docs/modules.html">Technical Documentation</a></li>
@@ -78,9 +79,22 @@
 <h2><code class="docutils literal notranslate"><span class="pre">parse</span></code> command<a class="headerlink" href="#parse-command" title="Permalink to this headline"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">parse</span></code> command is a way to import a mapping file. In this example, the file <a class="reference external" href="https://github.com/mapping-commons/sssom-py/blob/master/tests/data/basic.tsv">basic.tsv</a>
 will be parsed. The CLI command is as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom parse basic.tsv
+</pre></div>
+</div>
 <p>This results in the contents of the file displayed on the terminal.
 If the result is needed to be exported into another tsv, an <code class="docutils literal notranslate"><span class="pre">--output</span></code>
 parameter could be passed and the command will look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom parse basic.tsv --output parsed_basic.tsv
+</pre></div>
+</div>
+</section>
+<section id="convert-command">
+<h2><code class="docutils literal notranslate"><span class="pre">convert</span></code> command<a class="headerlink" href="#convert-command" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">convert</span></code> command converts files from one format to another.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </section>
 </section>
 
