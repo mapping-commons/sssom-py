@@ -74,11 +74,11 @@ mypy:
 	pip install tox
 	tox -e mypy
 
-.PHONY: sphinx
-sphinx:
-	cd sphinx &&\
-	make clean html
+# .PHONY: sphinx
+# sphinx:
+# 	cd sphinx &&\
+# 	make clean html
 
-.PHONY: deploy-docs
-deploy-docs:
-	cp -r sphinx/_build/html/* docs/
+# .PHONY: deploy-docs
+# deploy-docs:
+# 	cp -r sphinx/_build/html/* docs/
