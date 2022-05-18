@@ -28,6 +28,7 @@ from scipy.stats import chi2_contingency
 from sssom.constants import PREFIX_MAP_MODES
 from sssom.context import get_default_metadata
 
+from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
 from .io import convert_file, parse_file, split_file, validate_file
 from .parsers import parse_sssom_table
@@ -103,6 +104,7 @@ predicate_filter_option = click.option(
 @click.group()
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
+@click.version_option(__version__)
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
     if verbose >= 2:
