@@ -340,9 +340,13 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> JsonObj:
                                 #  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html
                                 #  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones
                                 #  and then add the original SSSOM mapping CURIE fields somewhere else
-                                "equivalence": row['predicate_id'],
+                                "equivalence": row['predicate_id'],  # r4
                                 # "relationship": row['predicate_id'],  # r5
-                                "comment": '{\"match_type\": \"' + row['match_type'] + '\"}'  # todo: change to extension?
+                                # "comment": '',
+                                "extension": [{
+                                    "url": "http://example.org/fhir/StructureDefinition/mapping_justification",
+                                    "ValueString": row.get('mapping_justification', row.get('match_type', ''))
+                                }]
                             }
                         ]
                     }
