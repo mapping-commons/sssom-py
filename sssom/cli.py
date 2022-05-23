@@ -68,7 +68,7 @@ output_option = click.option(
 output_format_option = click.option(
     "-O",
     "--output-format",
-    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS + ["fhir"])}',
+    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}',
 )
 output_directory_option = click.option(
     "-d",
