@@ -2099,6 +2099,44 @@ works on the first charcter in the line</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.to_fhir_json">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_fhir_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">sssom.util.MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_fhir_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_fhir_json" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a mapping set dataframe to a JSON object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msdf</strong> – MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dict: A Dictionary serializable as JSON.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Resources:</dt><dd><ul class="simple">
+<li><p>ConcpetMap::SSSOM mapping spreadsheet: https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</p></li>
+</ul>
+</dd>
+</dl>
+<p>TODOs
+todo: when/how to conform to R5 instead of R4?: <a class="reference external" href="https://build.fhir.org/conceptmap.html">https://build.fhir.org/conceptmap.html</a>
+TODO: Add additional fields from both specs</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ConceptMap spec fields: <a class="reference external" href="https://www.hl7.org/fhir/r4/conceptmap.html">https://www.hl7.org/fhir/r4/conceptmap.html</a></p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Joe: Can also utilize: /Users/joeflack4/projects/hapi-fhir-jpaserver-starter/_archive/issues/sssom/example_json/minimal.json</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>SSSOM more fields:</p></li>
+<li><p>prefix_map</p></li>
+<li><p>SSSOM spec fields: <a class="reference external" href="https://mapping-commons.github.io/sssom/Mapping/">https://mapping-commons.github.io/sssom/Mapping/</a></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="sssom.writers.to_json">
 <span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">sssom.util.MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">jsonasobj2._jsonobj.JsonObj</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_json" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a mapping set dataframe to a JSON object.</p>
@@ -2114,6 +2152,12 @@ works on the first charcter in the line</p></li>
 <dt class="sig sig-object py" id="sssom.writers.to_rdf_graph">
 <span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_rdf_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">sssom.util.MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.graph.Graph</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_rdf_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_rdf_graph" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a mapping set dataframe to an RDF graph.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_fhir_json">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_fhir_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">sssom.util.MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fhir'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_fhir_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_fhir_json" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as FHIR ConceptMap JSON.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -72,7 +72,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
@@ -151,6 +151,15 @@
     <span class="n">graph</span> <span class="o">=</span> <span class="n">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">serialisation</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
+
+
+<span class="c1"># todo: not sure the need for serialization param here; seems superfluous for some of these funcs</span>
+<div class="viewcode-block" id="write_fhir_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">write_fhir_json</span><span class="p">(</span>
+    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;fhir&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as FHIR ConceptMap JSON.&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="write_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_json">[docs]</a><span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -329,6 +338,184 @@
     <span class="k">return</span> <span class="n">graph</span></div>
 
 
+<div class="viewcode-block" id="to_fhir_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.</span>
+
+<span class="sd">    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</span>
+<span class="sd">    :return: Dict: A Dictionary serializable as JSON.</span>
+
+<span class="sd">    Resources:</span>
+<span class="sd">      - ConcpetMap::SSSOM mapping spreadsheet: https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</span>
+
+<span class="sd">    TODOs</span>
+<span class="sd">    todo: when/how to conform to R5 instead of R4?: https://build.fhir.org/conceptmap.html</span>
+<span class="sd">    TODO: Add additional fields from both specs</span>
+<span class="sd">     - ConceptMap spec fields: https://www.hl7.org/fhir/r4/conceptmap.html</span>
+<span class="sd">      - Joe: Can also utilize: /Users/joeflack4/projects/hapi-fhir-jpaserver-starter/_archive/issues/sssom/example_json/minimal.json</span>
+<span class="sd">     - SSSOM more fields:</span>
+<span class="sd">     - prefix_map</span>
+<span class="sd">     - SSSOM spec fields: https://mapping-commons.github.io/sssom/Mapping/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
+    <span class="c1"># Intermediary variables</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">mapping_set_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mapping_set_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.sssom.tsv&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="c1"># Construct JSON</span>
+    <span class="c1"># TODO: Fix: sssom/writers.py:293: error: Item &quot;None&quot; of &quot;Optional[Dict[str, Any]]&quot; has no attribute &quot;get&quot;</span>
+    <span class="c1">#  ...a. Maybe remove the typing? b. remove the get? c. do outside of dict and add after?, d. Add &quot;None&quot;? maybe cant be done here</span>
+    <span class="c1">#  ...e. Probably assign metadata to new object and use that instead. so won&#39;t read as None</span>
+    <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;resourceType&quot;</span><span class="p">:</span> <span class="s2">&quot;ConceptMap&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">mapping_set_id</span><span class="p">,</span>
+        <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapping_set_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">mapping_set_id</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_version&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;draft&quot;</span><span class="p">,</span>  <span class="c1"># todo: when done: draft | active | retired | unknown</span>
+        <span class="s2">&quot;experimental&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># todo: False when converter finished</span>
+        <span class="c1"># todo: should this be date of last converted to FHIR json instead?</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="c1"># &quot;publisher&quot;: &quot;HL7, Inc&quot;,  # todo: conceptmap</span>
+        <span class="c1"># &quot;contact&quot;: [{  # todo: conceptmap</span>
+        <span class="c1">#     &quot;name&quot;: &quot;FHIR project team (example)&quot;,</span>
+        <span class="c1">#     &quot;telecom&quot;: [{</span>
+        <span class="c1">#         &quot;system&quot;: &quot;url&quot;,</span>
+        <span class="c1">#         &quot;value&quot;: &quot;http://hl7.org/fhir&quot;}]</span>
+        <span class="c1"># }],</span>
+        <span class="c1"># &quot;description&quot;: &quot;&quot;,  # todo: conceptmap</span>
+        <span class="c1"># &quot;useContext&quot;: [{  # todo: conceptmap</span>
+        <span class="c1">#     &quot;code&quot;: {</span>
+        <span class="c1">#         &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/usage-context-type&quot;,</span>
+        <span class="c1">#         &quot;code&quot;: &quot;venue&quot; },</span>
+        <span class="c1">#     &quot;valueCodeableConcept&quot;: {</span>
+        <span class="c1">#         &quot;text&quot;: &quot;for CCDA Usage&quot; }</span>
+        <span class="c1"># }],</span>
+        <span class="c1"># &quot;jurisdiction&quot;: [{  # todo: conceptmap</span>
+        <span class="c1">#     &quot;coding&quot;: [{</span>
+        <span class="c1">#         &quot;system&quot;: &quot;urn:iso:std:iso:3166&quot;,</span>
+        <span class="c1">#         &quot;code&quot;: &quot;US&quot; }]</span>
+        <span class="c1"># }],</span>
+        <span class="c1"># &quot;purpose&quot;: &quot;&quot;,  # todo: conceptmap</span>
+        <span class="s2">&quot;copyright&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;license&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;sourceUri&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: correct?</span>
+        <span class="s2">&quot;targetUri&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: correct?</span>
+        <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: correct?</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: correct?</span>
+                <span class="s2">&quot;element&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">[</span>
+                            <span class="p">{</span>
+                                <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">],</span>
+                                <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                                <span class="c1"># TODO: R4 (try this first)</span>
+                                <span class="c1">#  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint</span>
+                                <span class="c1">#  https://www.hl7.org/fhir/r4/conceptmap.html</span>
+                                <span class="c1"># todo: r4: if not found, eventually needs to be `null` or something. check docs to see if nullable, else ask on Zulip</span>
+                                <span class="c1"># TODO: R5 Needs to be one of:</span>
+                                <span class="c1">#  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to</span>
+                                <span class="c1">#  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html</span>
+                                <span class="c1">#  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones</span>
+                                <span class="c1">#  and then add the original SSSOM mapping CURIE fields somewhere else</span>
+                                <span class="c1"># https://www.hl7.org/fhir/valueset-concept-map-equivalence.html</span>
+                                <span class="c1"># https://github.com/mapping-commons/sssom-py/issues/258</span>
+                                <span class="s2">&quot;equivalence&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                    <span class="c1"># relateedto: The concepts are related to each other, and have at least some overlap</span>
+                                    <span class="c1"># in meaning, but the exact relationship is not known.</span>
+                                    <span class="s2">&quot;skos:related&quot;</span><span class="p">:</span> <span class="s2">&quot;relatedto&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;skos:relatedMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;relatedto&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
+                                    <span class="c1"># equivalent: The definitions of the concepts mean the same thing (including when</span>
+                                    <span class="c1"># structural implications of meaning are considered) (i.e. extensionally identical).</span>
+                                    <span class="s2">&quot;skos:exactMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;equivalent&quot;</span><span class="p">,</span>
+                                    <span class="c1"># equal: The definitions of the concepts are exactly the same (i.e. only grammatical</span>
+                                    <span class="c1"># differences) and structural implications of meaning are identical or irrelevant</span>
+                                    <span class="c1"># (i.e. intentionally identical).</span>
+                                    <span class="s2">&quot;equal&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">,</span>  <span class="c1"># todo what&#39;s difference between this and above? which to use?</span>
+                                    <span class="c1"># wider: The target mapping is wider in meaning than the source concept.</span>
+                                    <span class="s2">&quot;skos:broader&quot;</span><span class="p">:</span> <span class="s2">&quot;wider&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;skos:broadMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;wider&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
+                                    <span class="c1"># subsumes: The target mapping subsumes the meaning of the source concept (e.g. the</span>
+                                    <span class="c1"># source is-a target).</span>
+                                    <span class="s2">&quot;rdfs:subClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;subsumes&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;owl:subClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;subsumes&quot;</span><span class="p">,</span>
+                                    <span class="c1"># narrower: The target mapping is narrower in meaning than the source concept. The</span>
+                                    <span class="c1"># sense in which the mapping is narrower SHALL be described in the comments in this</span>
+                                    <span class="c1"># case, and applications should be careful when attempting to use these mappings</span>
+                                    <span class="c1"># operationally.</span>
+                                    <span class="s2">&quot;skos:narrower&quot;</span><span class="p">:</span> <span class="s2">&quot;narrower&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;skos:narrowMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;narrower&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
+                                    <span class="c1"># specializes: The target mapping specializes the meaning of the source concept</span>
+                                    <span class="c1"># (e.g. the target is-a source).</span>
+                                    <span class="s2">&quot;sssom:superClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;specializes&quot;</span><span class="p">,</span>
+                                    <span class="c1"># inexact: The target mapping overlaps with the source concept, but both source and</span>
+                                    <span class="c1"># target cover additional meaning, or the definitions are imprecise and it is</span>
+                                    <span class="c1"># uncertain whether they have the same boundaries to their meaning. The sense in</span>
+                                    <span class="c1"># which the mapping is inexact SHALL be described in the comments in this case, and</span>
+                                    <span class="c1"># applications should be careful when attempting to use these mappings operationally</span>
+                                    <span class="s2">&quot;skos:closeMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;inexact&quot;</span><span class="p">,</span>
+                                    <span class="c1"># unmatched: There is no match for this concept in the target code system.</span>
+                                    <span class="c1"># todo: unmatched: this is more complicated. This will be a combination of</span>
+                                    <span class="c1">#  predicate_id and predicate_modifier (if present). See:</span>
+                                    <span class="c1">#  https://github.com/mapping-commons/sssom/issues/185</span>
+                                    <span class="s2">&quot;unmatched&quot;</span><span class="p">:</span> <span class="s2">&quot;unmatched&quot;</span><span class="p">,</span>
+                                    <span class="c1"># disjoint: This is an explicit assertion that there is no mapping between the</span>
+                                    <span class="c1"># source and target concept.</span>
+                                    <span class="s2">&quot;owl:disjointWith&quot;</span><span class="p">:</span> <span class="s2">&quot;disjoint&quot;</span><span class="p">,</span>
+                                <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                    <span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span>
+                                <span class="p">),</span>  <span class="c1"># r4</span>
+                                <span class="c1"># &quot;relationship&quot;: row[&#39;predicate_id&#39;],  # r5</span>
+                                <span class="c1"># &quot;comment&quot;: &#39;&#39;,</span>
+                                <span class="s2">&quot;extension&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                    <span class="p">{</span>
+                                        <span class="c1"># todo: `mapping_justification` consider changing `ValueString` -&gt; `ValueCoding`</span>
+                                        <span class="c1">#  ...that is, if I happen to know the categories/codes for this categorical variable</span>
+                                        <span class="c1">#  ...if i do that, do i also need to upload that coding as a (i) `ValueSet` resource? (or (ii) codeable concept? prolly (i))</span>
+                                        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://example.org/fhir/StructureDefinition/mapping_justification&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;ValueString&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                            <span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span>
+                                            <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;match_type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                                        <span class="p">),</span>
+                                    <span class="p">}</span>
+                                <span class="p">],</span>
+                            <span class="p">}</span>
+                        <span class="p">],</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                <span class="p">],</span>
+                <span class="c1"># &quot;unmapped&quot;: {  # todo: conceptmap</span>
+                <span class="c1">#     &quot;mode&quot;: &quot;fixed&quot;,</span>
+                <span class="c1">#     &quot;code&quot;: &quot;temp&quot;,</span>
+                <span class="c1">#     &quot;display&quot;: &quot;temp&quot;</span>
+                <span class="c1"># }</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Delete empty fields</span>
+    <span class="c1"># todo: This should be recursive?</span>
+    <span class="n">keys_to_delete</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>  <span class="c1"># need to allow for `0`, `False`, and maybe some other cases</span>
+            <span class="n">keys_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_delete</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">json_obj</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">json_obj</span></div>
+
+
 <div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
@@ -362,6 +549,8 @@
         <span class="k">return</span> <span class="n">write_rdf</span><span class="p">,</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
     <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">write_json</span><span class="p">,</span> <span class="n">output_format</span>
+    <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;fhir_json&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">write_fhir_json</span><span class="p">,</span> <span class="n">output_format</span>
     <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;owl&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">write_owl</span><span class="p">,</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
     <span class="k">else</span><span class="p">:</span>
