@@ -61,7 +61,7 @@ input_format_option = click.option(
 output_option = click.option(
     "-o",
     "--output",
-    help="Output file, e.g. a SSSOM tsv file.",
+    help="Path of SSSOM output file.",
     type=click.File(mode="w"),
     default=sys.stdout,
 )

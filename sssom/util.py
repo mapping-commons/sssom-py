@@ -50,7 +50,7 @@ SSSOM_READ_FORMATS = [
     "obographs-json",
     "json",
 ]
-SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
+SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 

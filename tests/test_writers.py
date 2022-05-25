@@ -1,10 +1,12 @@
 """Tests for SSSOM writers."""
-
+import json
 import os
 import unittest
 
+from jsonasobj2 import JsonObj
+
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
-from sssom.writers import write_json, write_owl, write_rdf, write_table
+from sssom.writers import write_fhir_json, write_json, write_owl, write_rdf, write_table
 from tests.constants import data_dir as test_data_dir
 from tests.constants import test_out_dir
 
@@ -55,6 +57,21 @@ class TestWrite(unittest.TestCase):
         msdf = parse_sssom_json(path)
         self.assertEqual(
             len(msdf.df),
+            self.mapping_count,
+            f"{path} has the wrong number of mappings.",
+        )
+
+    def test_write_sssom_fhir(self):
+        """Test writing as FHIR ConceptMap JSON."""
+        path = os.path.join(test_out_dir, "test_write_sssom_fhir.json")
+        with open(path, "w") as file:
+            write_fhir_json(self.msdf, file)
+        # todo: @Joe: after implementing reader/importer, change this to `msdf = parse_sssom_fhir_json()`
+        with open(path, "r") as file:
+            d: JsonObj = json.load(file)
+        # todo: @Joe: What else is worth checking?
+        self.assertEqual(
+            len(d["group"][0]["element"]),
             self.mapping_count,
             f"{path} has the wrong number of mappings.",
         )
