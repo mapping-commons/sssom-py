@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -75,9 +76,9 @@
            <div itemprop="articleBody">
              
   <section id="examples">
-<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h1>
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h1>
 <section id="parse-command">
-<h2><code class="docutils literal notranslate"><span class="pre">parse</span></code> command<a class="headerlink" href="#parse-command" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">parse</span></code> command<a class="headerlink" href="#parse-command" title="Permalink to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">parse</span></code> command is a way to import a mapping file. In this example, the file <a class="reference external" href="https://github.com/mapping-commons/sssom-py/blob/master/tests/data/basic.tsv">basic.tsv</a>
 will be parsed. The CLI command is as follows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom parse basic.tsv
@@ -91,7 +92,7 @@ parameter could be passed and the command will look like this:</p>
 </div>
 </section>
 <section id="convert-command">
-<h2><code class="docutils literal notranslate"><span class="pre">convert</span></code> command<a class="headerlink" href="#convert-command" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">convert</span></code> command<a class="headerlink" href="#convert-command" title="Permalink to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">convert</span></code> command converts files from one format to another. In this example,
 we convert a tsv file into an owl format.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom convert basic.tsv --output basic.owl --output-format owl
@@ -99,7 +100,7 @@ we convert a tsv file into an owl format.</p>
 </div>
 </section>
 <section id="diff-command">
-<h2><code class="docutils literal notranslate"><span class="pre">diff</span></code> command<a class="headerlink" href="#diff-command" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">diff</span></code> command<a class="headerlink" href="#diff-command" title="Permalink to this heading"></a></h2>
 <p>Mapping files can be compared and differences highlighted using the <code class="docutils literal notranslate"><span class="pre">diff</span></code> command.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom diff basic.tsv basic2.tsv -o diff_output.tsv
 </pre></div>
