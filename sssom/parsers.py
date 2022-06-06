@@ -19,6 +19,9 @@ from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
 
+# from .sssom_datamodel import Mapping, MappingSet
+from sssom_schema import Mapping, MappingSet
+
 from sssom.constants import (
     DEFAULT_MAPPING_PROPERTIES,
     MAPPING_SET_SLOTS,
@@ -33,7 +36,6 @@ from .context import (
     add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
 )
-from .sssom_datamodel import Mapping, MappingSet
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 from .util import (
@@ -51,7 +53,7 @@ from .util import (
 )
 
 # Constants
-MATCH_TYPE_UNSPECIFIED = "Unspecified"
+MAPPING_JUSTFN_UNSPECIFIED = "Unspecified"
 
 
 # * DEPRECATED methods *****************************************
@@ -589,7 +591,7 @@ def from_obographs(
                                     )
                                     mdict["subject_label"] = label
                                     mdict["predicate_id"] = "oboInOwl:hasDbXref"
-                                    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                                    mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     # FIXME this will cause all sorts of ragged Mappings
@@ -611,7 +613,7 @@ def from_obographs(
                                         mdict["predicate_id"] = curie_from_uri(
                                             pred, prefix_map
                                         )
-                                        mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                                        mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
@@ -626,7 +628,7 @@ def from_obographs(
                         mdict["subject_id"] = curie_from_uri(subject_id, prefix_map)
                         mdict["object_id"] = curie_from_uri(object_id, prefix_map)
                         mdict["predicate_id"] = curie_from_uri(predicate_id, prefix_map)
-                        mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                        mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
             elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
@@ -642,7 +644,7 @@ def from_obographs(
                                     mdict["predicate_id"] = curie_from_uri(
                                         OWL_EQUIV_CLASS, prefix_map
                                     )
-                                    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+                                    mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
@@ -783,7 +785,7 @@ def _cell_element_values(
             except NoCURIEException as e:
                 logging.warning(e)
 
-    mdict["match_type"] = MATCH_TYPE_UNSPECIFIED
+    mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
 
     m = Mapping(**mdict)
     if _is_valid_mapping(m):

@@ -178,11 +178,11 @@ class TestParse(unittest.TestCase):
         input_path = os.path.join(test_data_dir, "basic.tsv")
         msdf = parse_sssom_table(input_path)
         df = msdf.df
-        msdf.df = df[df["match_type"].str.contains("\\|", na=False)].reset_index()
-        old_match_type = msdf.df["match_type"]
+        msdf.df = df[df["mapping_justification"].str.contains("\\|", na=False)].reset_index()
+        old_match_type = msdf.df["mapping_justification"]
         msdoc = to_mapping_set_document(msdf)
         new_msdf = to_mapping_set_dataframe(msdoc)
-        new_match_type = new_msdf.df["match_type"]
+        new_match_type = new_msdf.df["mapping_justification"]
         self.assertTrue(old_match_type.equals(new_match_type))
 
     def test_read_sssom_table(self):
@@ -196,7 +196,7 @@ class TestParse(unittest.TestCase):
             "subject_match_field",
             "object_match_field",
             "match_string",
-            "match_type",
+            "mapping_justification",
         ]
         for idx, row in msdf.df.iterrows():
             for k, v in row.iteritems():
@@ -208,7 +208,7 @@ class TestParse(unittest.TestCase):
                             self.assertTrue(imported_df.iloc[idx][k] is v)
                         else:
                             self.assertEqual(imported_df.iloc[idx][k], v)
-                    elif k == "match_type":
+                    elif k == "mapping_justification":
                         self.assertEqual(imported_df.iloc[idx][k], v)
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)

@@ -11,8 +11,10 @@ elif sys.version_info < (3, 8):
 
     __version__ = importlib_metadata.version(__name__)
 
-from .sssom_datamodel import slots  # noqa:401
-from .sssom_datamodel import Mapping, MappingSet  # noqa:401
+# from .sssom_datamodel import slots  # noqa:401
+# from .sssom_datamodel import Mapping, MappingSet  # noqa:401
+from sssom_schema import Mapping, MappingSet, slots  # noqa:401
+
 from .util import (  # noqa:401
     collapse,
     compare_dataframes,
