@@ -1,6 +1,5 @@
 """Constants."""
 
-import os
 import pathlib
 
 import pkg_resources

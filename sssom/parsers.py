@@ -396,7 +396,6 @@ def from_sssom_rdf(
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
-
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         mdict: Dict[str, Any] = {}
         # TODO replace with g.predicate_objects()
