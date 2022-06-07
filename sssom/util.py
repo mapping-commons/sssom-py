@@ -73,7 +73,7 @@ SUBJECT_SOURCE = "subject_source"
 OBJECT_SOURCE = "object_source"
 COMMENT = "comment"
 MAPPING_PROVIDER = "mapping_provider"
-MATCH_TYPE = "match_type"
+MAPPING_JUSTFCN = "mapping_justification"
 HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
 MAPPING_SET_ID = "mapping_set_id"
 MAPPING_SET_SOURCE = "mapping_set_source"
@@ -608,7 +608,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         PREDICATE_ID,
         OBJECT_ID,
         CONFIDENCE,
-        MATCH_TYPE,
+        MAPPING_JUSTFCN,
     ]
     negation_subset = normalized_negation_df[columns_of_interest]
     positive_subset = positive_df[columns_of_interest]
@@ -639,7 +639,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
                 & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
-                & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+                & (
+                    combined_normalized_subset[MAPPING_JUSTFCN]
+                    == HUMAN_CURATED_MATCH_TYPE
+                )
             )
             # In spite of this, if match_condition_1
             # is returning multiple rows, pick any random row from above.
