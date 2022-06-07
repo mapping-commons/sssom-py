@@ -591,7 +591,9 @@ def from_obographs(
                                     )
                                     mdict["subject_label"] = label
                                     mdict["predicate_id"] = "oboInOwl:hasDbXref"
-                                    mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
+                                    mdict[
+                                        "mapping_justification"
+                                    ] = MAPPING_JUSTFN_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     # FIXME this will cause all sorts of ragged Mappings
@@ -613,7 +615,9 @@ def from_obographs(
                                         mdict["predicate_id"] = curie_from_uri(
                                             pred, prefix_map
                                         )
-                                        mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
+                                        mdict[
+                                            "mapping_justification"
+                                        ] = MAPPING_JUSTFN_UNSPECIFIED
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
@@ -644,7 +648,9 @@ def from_obographs(
                                     mdict["predicate_id"] = curie_from_uri(
                                         OWL_EQUIV_CLASS, prefix_map
                                     )
-                                    mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
+                                    mdict[
+                                        "mapping_justification"
+                                    ] = MAPPING_JUSTFN_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
