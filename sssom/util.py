@@ -37,7 +37,27 @@ from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
-from .constants import CONFIDENCE, MAPPING_JUSTIFICATION, MAPPING_SET_ID, MAPPING_SET_SOURCE, OBJECT_CATEGORY, OBJECT_ID, OBJECT_LABEL, OBJECT_SOURCE, PREDICATE_ID, PREDICATE_MODIFIER, PREDICATE_MODIFIER_NOT, PREFIX_MAP_MODES, SCHEMA_DICT, SCHEMA_YAML, MULTIVALUED_SLOTS, SUBJECT_CATEGORY, SUBJECT_ID, SUBJECT_LABEL, SUBJECT_SOURCE
+from .constants import (
+    CONFIDENCE,
+    MAPPING_JUSTIFICATION,
+    MAPPING_SET_ID,
+    MAPPING_SET_SOURCE,
+    MULTIVALUED_SLOTS,
+    OBJECT_CATEGORY,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    OBJECT_SOURCE,
+    PREDICATE_ID,
+    PREDICATE_MODIFIER,
+    PREDICATE_MODIFIER_NOT,
+    PREFIX_MAP_MODES,
+    SCHEMA_DICT,
+    SCHEMA_YAML,
+    SUBJECT_CATEGORY,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+    SUBJECT_SOURCE,
+)
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap

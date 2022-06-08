@@ -21,6 +21,7 @@ from rdflib import Graph, URIRef
 
 # from .sssom_datamodel import Mapping, MappingSet
 from sssom_schema import Mapping, MappingSet
+
 from build.lib.sssom.util import OBJECT_ID, PREDICATE_ID, SUBJECT_ID, SUBJECT_LABEL
 from sssom.constants import (
     CONFIDENCE,
@@ -29,6 +30,7 @@ from sssom.constants import (
     LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
+    MAPPING_SET_ID,
     MAPPING_SET_SLOTS,
     MAPPING_SLOTS,
     OBJECT_SOURCE,
@@ -37,7 +39,6 @@ from sssom.constants import (
     RDFS_SUBCLASS_OF,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
-    MAPPING_SET_ID
 )
 
 from .context import (
@@ -61,7 +62,6 @@ from .util import (
     read_pandas,
     to_mapping_set_dataframe,
 )
-
 
 # * DEPRECATED methods *****************************************
 
@@ -589,9 +589,7 @@ def from_obographs(
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
                                 try:
-                                    mdict[SUBJECT_ID] = curie_from_uri(
-                                        nid, prefix_map
-                                    )
+                                    mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
                                     mdict[OBJECT_ID] = curie_from_uri(
                                         xref_id, prefix_map
                                     )
@@ -647,9 +645,7 @@ def from_obographs(
                             for ec2 in equivalents["nodeIds"]:
                                 if ec1 != ec2:
                                     mdict = {}
-                                    mdict[SUBJECT_ID] = curie_from_uri(
-                                        ec1, prefix_map
-                                    )
+                                    mdict[SUBJECT_ID] = curie_from_uri(ec1, prefix_map)
                                     mdict[OBJECT_ID] = curie_from_uri(ec2, prefix_map)
                                     mdict[PREDICATE_ID] = curie_from_uri(
                                         OWL_EQUIV_CLASS, prefix_map
