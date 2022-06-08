@@ -3,9 +3,10 @@
 import pathlib
 
 import pkg_resources
-# from linkml_runtime.utils.introspection import package_schemaview
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
+
+# from linkml_runtime.utils.introspection import package_schemaview
 
 HERE = pathlib.Path(__file__).parent.resolve()
 # SCHEMA_YAML = os.path.join(HERE, "sssom.yaml")
