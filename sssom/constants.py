@@ -43,14 +43,10 @@ PREFIX_MAP_MODES = [
     PREFIX_MAP_MODE_MERGED,
 ]
 
-MULTIVALUED_SLOTS = []
 
-for slot in SCHEMA_DICT["slots"]:
-    if (
-        "multivalued" in SCHEMA_DICT["slots"][slot].keys()
-        and SCHEMA_DICT["slots"][slot]["multivalued"]
-    ):
-        MULTIVALUED_SLOTS.append(slot)
+MULTIVALUED_SLOTS = [
+    c for c in SCHEMA_VIEW.all_slots() if SCHEMA_VIEW.get_slot(c).multivalued
+]
 
 # Slot Constants
 MIRROR_FROM = "mirror_from"
