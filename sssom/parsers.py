@@ -22,7 +22,6 @@ from rdflib import Graph, URIRef
 # from .sssom_datamodel import Mapping, MappingSet
 from sssom_schema import Mapping, MappingSet
 
-from build.lib.sssom.util import OBJECT_ID, PREDICATE_ID, SUBJECT_ID, SUBJECT_LABEL
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
@@ -33,10 +32,14 @@ from sssom.constants import (
     MAPPING_SET_ID,
     MAPPING_SET_SLOTS,
     MAPPING_SLOTS,
+    OBJECT_ID,
     OBJECT_SOURCE,
     OBJECT_SOURCE_ID,
     OWL_EQUIV_CLASS,
+    PREDICATE_ID,
     RDFS_SUBCLASS_OF,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
 )
