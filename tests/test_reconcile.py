@@ -23,7 +23,7 @@ class TestReconcile(unittest.TestCase):
     def test_deal_with_negation(self):
         """Test handling negating returns the right number of rows."""
         df = deal_with_negation(self.msdf.df)
-        self.assertEqual(8, len(df.index))
+        self.assertEqual(7, len(df.index))
 
     def test_merge(self):
         """Test merging two tables."""
@@ -31,7 +31,7 @@ class TestReconcile(unittest.TestCase):
         msdf2 = parse_sssom_table(data_dir / "basic2.tsv")
         merged_msdf = merge_msdf(msdf1, msdf2)
 
-        self.assertEqual(24, len(merged_msdf.df))
+        self.assertEqual(29, len(merged_msdf.df))
 
     def test_merge_no_reconcile(self):
         """Test merging two tables without reconciliation."""
