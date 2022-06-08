@@ -10,7 +10,6 @@ from dataclasses import dataclass, field
 from functools import reduce
 from io import StringIO
 from pathlib import Path
-from token import COMMENT
 from typing import (
     Any,
     ChainMap,
@@ -57,6 +56,7 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    COMMENT
 )
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .sssom_document import MappingSetDocument
