@@ -36,9 +36,8 @@ from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
-from .constants import PREFIX_MAP_MODES, SCHEMA_DICT, SCHEMA_YAML
+from .constants import PREFIX_MAP_MODES, SCHEMA_DICT, SCHEMA_YAML, multivalued_slots
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
-from .internal_context import multivalued_slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 

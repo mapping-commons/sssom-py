@@ -4,17 +4,19 @@ import pathlib
 
 import pkg_resources
 
-# from linkml_runtime.utils.schemaview import SchemaView
-from linkml_runtime.utils.introspection import package_schemaview
+from linkml_runtime.utils.schemaview import SchemaView
+# from linkml_runtime.utils.introspection import package_schemaview
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
+import pydantic
 
 HERE = pathlib.Path(__file__).parent.resolve()
 # SCHEMA_YAML = os.path.join(HERE, "sssom.yaml")
-# SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
+
 SCHEMA_YAML = pkg_resources.resource_filename(
     "sssom_schema", "schema/sssom_schema.yaml"
 )
-SCHEMA_VIEW = package_schemaview("sssom_schema")
+SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
+# SCHEMA_VIEW = package_schemaview("sssom_schema")
 SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
 MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
 MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
@@ -41,3 +43,8 @@ PREFIX_MAP_MODES = [
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     PREFIX_MAP_MODE_MERGED,
 ]
+
+multivalued_slots = []
+for slot in SCHEMA_DICT['slots']:
+    if 'multivalued' in SCHEMA_DICT['slots'][slot].keys() and SCHEMA_DICT['slots'][slot]["multivalued"]:
+        multivalued_slots.append(slot)
