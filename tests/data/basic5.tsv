@@ -14,30 +14,30 @@
 #  c1: "http://example.org/c1/"
 #  d1: "http://example.org/d1/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
-x1:appendage	appendage	owl:equivalentClass		y1:appendage	appendages	ssemapv:LexicalMatching	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-x1:appendage	appendage	owl:equivalentClass		z1:appendage	APPENDAGE	ssemapv:LexicalMatching	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-x1:bone_element	bone element	owl:equivalentClass		y1:bone	bones	ssemapv:LexicalMatching	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-x1:bone_tissue	bone tissue	owl:equivalentClass		y1:bone	bones	ssemapv:LexicalMatching	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
-x1:eye	eye	owl:equivalentClass		y1:eye	eyes	ssemapv:LexicalMatching	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-x1:foot	pes	owl:equivalentClass		y1:foot	feet	ssemapv:LexicalMatching	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-x1:hand	manus	owl:equivalentClass		y1:hand	hands	ssemapv:LexicalMatching	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
-x1:heart	heart	owl:equivalentClass		y1:heart	hearts	ssemapv:LexicalMatching	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-x1:heart	heart	owl:equivalentClass		z1:organ	ORGAN	ssemapv:LexicalMatching	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-x1:hindlimb	hindlimb	owl:equivalentClass		z1:hindlimb	hindlimb	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
-x1:liver	liver	owl:equivalentClass		y1:liver	livers	ssemapv:LexicalMatching	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x1:liver	liver	owl:equivalentClass		z1:organ	ORGAN	ssemapv:LexicalMatching	y	x	rdf_matcher	0.696730455	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone el	.
-x1:lung	lung	owl:equivalentClass		y1:lung	lungs	ssemapv:LexicalMatching	y	x	rdf_matcher	0.764651037	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone element	.
-x1:lung	lung	owl:equivalentClass		z1:organ	ORGAN	ssemapv:LexicalMatching	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
-x1:organ	organ	owl:equivalentClass		y1:organ	organs	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
+x1:appendage	appendage	owl:equivalentClass		y1:appendage	appendages	semapv:LexicalMatching	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+x1:appendage	appendage	owl:equivalentClass		z1:appendage	APPENDAGE	semapv:LexicalMatching	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+x1:bone_element	bone element	owl:equivalentClass		y1:bone	bones	semapv:LexicalMatching	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+x1:bone_tissue	bone tissue	owl:equivalentClass		y1:bone	bones	semapv:LexicalMatching	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+x1:eye	eye	owl:equivalentClass		y1:eye	eyes	semapv:LexicalMatching	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+x1:foot	pes	owl:equivalentClass		y1:foot	feet	semapv:LexicalMatching	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
+x1:hand	manus	owl:equivalentClass		y1:hand	hands	semapv:LexicalMatching	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
+x1:heart	heart	owl:equivalentClass		y1:heart	hearts	semapv:LexicalMatching	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+x1:heart	heart	owl:equivalentClass		z1:organ	ORGAN	semapv:LexicalMatching	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
+x1:hindlimb	hindlimb	owl:equivalentClass		z1:hindlimb	hindlimb	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0001474	.
+x1:liver	liver	owl:equivalentClass		y1:liver	livers	semapv:LexicalMatching	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x1:liver	liver	owl:equivalentClass		z1:organ	ORGAN	semapv:LexicalMatching	y	x	rdf_matcher	0.696730455	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone el	.
+x1:lung	lung	owl:equivalentClass		y1:lung	lungs	semapv:LexicalMatching	y	x	rdf_matcher	0.764651037	oio:hasRelatedSynonym	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone element	.
+x1:lung	lung	owl:equivalentClass		z1:organ	ORGAN	semapv:LexicalMatching	y	x	rdf_matcher	0.534601961	rdfs:label	oio:hasBroadSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	bone	.
+x1:organ	organ	owl:equivalentClass		y1:organ	organs	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000970	.
 x1:organ	organ	owl:equivalentClass		z1:organ	ORGAN	semapv:ManualMappingCuration	y	x	rdf_matcher	0.568874072	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	ey	.
-x1:region	region	owl:equivalentClass		y1:region	regions	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
-x1:region	region	owl:equivalentClass		z1:region	REGION	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
+x1:region	region	owl:equivalentClass		y1:region	regions	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002387	.
+x1:region	region	owl:equivalentClass		z1:region	REGION	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002398	.
 x1:tissue	tissue	owl:equivalentClass		y1:tissue	tissues	semapv:ManualMappingCuration	y	x	rdf_matcher	0.821262391	rdfs:label	oio:hasExactSynonym	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hand	.
-x1:tissue	tissue	owl:equivalentClass		z1:tissue	TISSUE	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
+x1:tissue	tissue	owl:equivalentClass		z1:tissue	TISSUE	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0000948	.
 y1:appendage	appendages	owl:equivalentClass		x1:appendage	appendage	semapv:ManualMappingCuration	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	heart	.
-y1:appendage	appendages	owl:equivalentClass		z1:appendage	APPENDAGE	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
+y1:appendage	appendages	owl:equivalentClass		z1:appendage	APPENDAGE	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002107	.
 y1:bone	bones	owl:equivalentClass		x1:bone_element	bone element	semapv:ManualMappingCuration	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	liver	.
-y1:bone	bones	owl:equivalentClass		x1:bone_tissue	bone tissue	ssemapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
+y1:bone	bones	owl:equivalentClass		x1:bone_tissue	bone tissue	semapv:LexicalMatching	y	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	UBERON:0002048	.
 y1:eye	eyes	owl:equivalentClass		x1:eye	eye	semapv:ManualMappingCuration	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	lung	.
 y1:foot	feet	owl:equivalentClass		x1:foot	pes	semapv:ManualMappingCuration	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 y1:hand	hands	owl:equivalentClass		x1:hand	manus	semapv:ManualMappingCuration	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
@@ -46,24 +46,24 @@ y1:liver	livers	owl:equivalentClass		x1:liver	liver	semapv:ManualMappingCuration
 y1:lung	lungs	owl:equivalentClass		x1:lung	lung	semapv:ManualMappingCuration	y	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 y1:organ	organs	owl:equivalentClass		x1:organ	organ	semapv:LogicalReasoning	y	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 y1:organ	organs	owl:equivalentClass		z1:organ	ORGAN	semapv:LogicalReasoning	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-y1:region	regions	owl:equivalentClass		x1:region	region	ssemapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendage	.
+y1:region	regions	owl:equivalentClass		x1:region	region	semapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendage	.
 y1:region	regions	owl:equivalentClass		z1:region	REGION	semapv:LogicalReasoning	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
-y1:tissue	tissues	owl:equivalentClass		x1:tissue	tissue	ssemapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
+y1:tissue	tissues	owl:equivalentClass		x1:tissue	tissue	semapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
 y1:tissue	tissues	owl:equivalentClass		z1:tissue	TISSUE	semapv:LogicalReasoning	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	hindlimb	.
-z1:appendage	APPENDAGE	owl:equivalentClass		x1:appendage	appendage	ssemapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAd1:ORGAN	.
-z1:appendage	APPENDAGE	owl:equivalentClass		y1:appendage	appendages	ssemapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAd1:ORGAN	.
-z1:hindlimb	hindlimb	owl:equivalentClass		x1:hindlimb	hindlimb	ssemapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAd1:ORGAN	.
-z1:organ	ORGAN	owl:equivalentClass		x1:heart	heart	ssemapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
+z1:appendage	APPENDAGE	owl:equivalentClass		x1:appendage	appendage	semapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAd1:ORGAN	.
+z1:appendage	APPENDAGE	owl:equivalentClass		y1:appendage	appendages	semapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAd1:ORGAN	.
+z1:hindlimb	hindlimb	owl:equivalentClass		x1:hindlimb	hindlimb	semapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	biolink:AnatomicalEntity	biolink:AnatomicalEntity	BAd1:ORGAN	.
+z1:organ	ORGAN	owl:equivalentClass		x1:heart	heart	semapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 z1:organ	ORGAN	owl:equivalentClass		x1:liver	liver	semapv:LogicalReasoning	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
 z1:organ	ORGAN	owl:equivalentClass		x1:lung	lung	semapv:LogicalReasoning	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	organ	.
-z1:organ	ORGAN	owl:equivalentClass		x1:organ	organ	ssemapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
+z1:organ	ORGAN	owl:equivalentClass		x1:organ	organ	semapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
 z1:organ	ORGAN	owl:equivalentClass		y1:organ	organs	semapv:LogicalReasoning	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
 z1:region	REGION	owl:equivalentClass		x1:region	region	semapv:LogicalReasoning	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	region	.
 z1:region	REGION	owl:equivalentClass		y1:region	regions	semapv:LogicalReasoning	z	x	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-z1:tissue	TISSUE	owl:equivalentClass		x1:tissue	tissue	ssemapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
+z1:tissue	TISSUE	owl:equivalentClass		x1:tissue	tissue	semapv:LexicalMatching	z	x	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
 z1:tissue	TISSUE	owl:equivalentClass		y1:tissue	tissues	semapv:LogicalReasoning	z	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-a1:something	XXXXX	owl:subClassOf		b1:something	xxxxxx	ssemapv:LexicalMatching	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-c1:something	YYYYY	owl:equivalentClass		d1:something	yyyyyy	ssemapv:LexicalMatching	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-d1:something	YYYYY	owl:equivalentClass	Not	a1:something	yyyyyy	ssemapv:LexicalMatching	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-a1:something	XYXYX	owl:equivalentClass		c1:something	xyxyxy	ssemapv:LexicalMatching	a	c	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-c1:something	YXYXY	owl:equivalentClass		b1:something	yxyxyx	ssemapv:LexicalMatching	c	b	rdf_matcher	0.84	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a1:something	XXXXX	owl:subClassOf		b1:something	xxxxxx	semapv:LexicalMatching	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+c1:something	YYYYY	owl:equivalentClass		d1:something	yyyyyy	semapv:LexicalMatching	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+d1:something	YYYYY	owl:equivalentClass	Not	a1:something	yyyyyy	semapv:LexicalMatching	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a1:something	XYXYX	owl:equivalentClass		c1:something	xyxyxy	semapv:LexicalMatching	a	c	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+c1:something	YXYXY	owl:equivalentClass		b1:something	yxyxyx	semapv:LexicalMatching	c	b	rdf_matcher	0.84	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data

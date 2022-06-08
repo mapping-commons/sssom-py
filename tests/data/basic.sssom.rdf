@@ -261,7 +261,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002481" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone tissue" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -278,7 +278,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002481" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -312,7 +312,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8497788951776651"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "foot" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "pes" ;
             sssom:object_match_field <oio:hasExactSynonym> ;
@@ -346,7 +346,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000970" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "eye" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -363,7 +363,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -380,7 +380,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000970" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "eye" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -397,7 +397,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone element" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -414,7 +414,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "region" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "REGION" ;
             sssom:object_match_field rdfs:label ;
@@ -431,7 +431,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000970" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -448,7 +448,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -465,7 +465,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002107" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -499,7 +499,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002048" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "lungs" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -533,7 +533,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "organ" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "organ" ;
             sssom:object_match_field rdfs:label ;
@@ -567,7 +567,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "hindlimb" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "hindlimb" ;
             sssom:object_match_field rdfs:label ;
@@ -584,7 +584,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000948" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "hearts" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -618,7 +618,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0001474" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone element" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -635,7 +635,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7646510369310004"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone element" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bones" ;
             sssom:object_match_field <oio:hasRelatedSynonym> ;
@@ -669,7 +669,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002107" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -703,7 +703,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8497788951776651"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "hand" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "manus" ;
             sssom:object_match_field <oio:hasExactSynonym> ;
@@ -720,7 +720,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7646510369310004"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone element" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone element" ;
             sssom:object_match_field rdfs:label ;
@@ -754,7 +754,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -771,7 +771,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "BAD:ORGAN" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "liver" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -788,7 +788,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0010230" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -805,7 +805,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "organ" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "ORGAN" ;
             sssom:object_match_field rdfs:label ;
@@ -822,7 +822,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002387" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "feet" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -839,7 +839,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "BAD:ORGAN" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "heart" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -856,7 +856,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000948" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -873,7 +873,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "tissue" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "tissue" ;
             sssom:object_match_field rdfs:label ;
@@ -890,7 +890,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002107" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "liver" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -924,7 +924,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0001474" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone element" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -975,7 +975,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002387" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "pes" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -992,7 +992,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002387" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1009,7 +1009,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0010230" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "eyeball" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1043,7 +1043,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "hindlimb" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "hindlimb" ;
             sssom:object_match_field rdfs:label ;
@@ -1060,7 +1060,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "appendage" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "appendage" ;
             sssom:object_match_field rdfs:label ;
@@ -1077,7 +1077,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002398" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "manus" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1111,7 +1111,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002048" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "lung" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1128,7 +1128,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0001474" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1162,7 +1162,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002048" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "lungs" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1196,7 +1196,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002048" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "lung" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1230,7 +1230,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002107" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "livers" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1281,7 +1281,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002398" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "hands" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1298,7 +1298,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone tissue" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -1315,7 +1315,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone tissue" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -1332,7 +1332,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0001474" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bones" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1383,7 +1383,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000948" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "hearts" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1417,7 +1417,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "region" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "region" ;
             sssom:object_match_field rdfs:label ;
@@ -1434,7 +1434,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000948" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "heart" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1468,7 +1468,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002398" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "manus" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1553,7 +1553,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "BAD:ORGAN" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "ORGAN" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1570,7 +1570,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002107" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "livers" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1587,7 +1587,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002048" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1638,7 +1638,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000948" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1655,7 +1655,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "appendage" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "APPENDAGE" ;
             sssom:object_match_field rdfs:label ;
@@ -1689,7 +1689,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "BAD:ORGAN" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "ORGAN" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1706,7 +1706,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002387" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "feet" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1757,7 +1757,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002387" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1774,7 +1774,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002048" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1859,7 +1859,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002398" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "hands" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1876,7 +1876,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8818562360532485"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "tissue" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "TISSUE" ;
             sssom:object_match_field rdfs:label ;
@@ -1961,7 +1961,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000970" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "eyes" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -1978,7 +1978,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000970" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "eyes" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2029,7 +2029,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000970" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2046,7 +2046,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bone element" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -2097,7 +2097,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002107" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "liver" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2131,7 +2131,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002387" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "pes" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2148,7 +2148,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0001474" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2165,7 +2165,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.2612038749637414"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "bone" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasBroadSynonym> ;
@@ -2199,7 +2199,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002398" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2250,7 +2250,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "BAD:ORGAN" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "ORGAN" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2301,7 +2301,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "BAD:ORGAN" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "lung" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2318,7 +2318,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8497788951776651"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "foot" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasExactSynonym> ;
@@ -2352,7 +2352,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.8497788951776651"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "hand" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasExactSynonym> ;
@@ -2369,7 +2369,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0001474" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "bones" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2386,7 +2386,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0000948" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "heart" ;
             sssom:object_match_field <oio:hasDbXref> ;
@@ -2420,7 +2420,7 @@ x:bone_element owl:equivalentClass y:bone,
             sssom:confidence "0.7387961250362586"^^<xsd:double> ;
             sssom:mapping_tool "rdf_matcher" ;
             sssom:match_string "UBERON:0002398" ;
-            sssom:mapping_justification "ssemapv:LexicalMatching" ;
+            sssom:mapping_justification "semapv:LexicalMatching" ;
             sssom:object_category "biolink:AnatomicalEntity" ;
             sssom:object_label "" ;
             sssom:object_match_field <oio:hasDbXref> ;
