@@ -21,13 +21,23 @@ from rdflib import Graph, URIRef
 
 # from .sssom_datamodel import Mapping, MappingSet
 from sssom_schema import Mapping, MappingSet
-
+from build.lib.sssom.util import OBJECT_ID, PREDICATE_ID, SUBJECT_ID, SUBJECT_LABEL
 from sssom.constants import (
+    CONFIDENCE,
+    CURIE_MAP,
     DEFAULT_MAPPING_PROPERTIES,
+    LICENSE,
+    MAPPING_JUSTIFICATION,
+    MAPPING_JUSTIFICATION_UNSPECIFIED,
     MAPPING_SET_SLOTS,
     MAPPING_SLOTS,
+    OBJECT_SOURCE,
+    OBJECT_SOURCE_ID,
     OWL_EQUIV_CLASS,
     RDFS_SUBCLASS_OF,
+    SUBJECT_SOURCE,
+    SUBJECT_SOURCE_ID,
+    MAPPING_SET_ID
 )
 
 from .context import (
@@ -51,9 +61,6 @@ from .util import (
     read_pandas,
     to_mapping_set_dataframe,
 )
-
-# Constants
-MAPPING_JUSTFN_UNSPECIFIED = "Unspecified"
 
 
 # * DEPRECATED methods *****************************************
@@ -156,18 +163,18 @@ def parse_sssom_table(
         if "curie_map" in sssom_metadata:
             if prefix_map:
                 for k, v in prefix_map.items():
-                    if k in sssom_metadata["curie_map"]:
-                        if sssom_metadata["curie_map"][k] != v:
+                    if k in sssom_metadata[CURIE_MAP]:
+                        if sssom_metadata[CURIE_MAP][k] != v:
                             logging.warning(
-                                f"SSSOM prefix map {k} ({sssom_metadata['curie_map'][k]}) "
+                                f"SSSOM prefix map {k} ({sssom_metadata[CURIE_MAP][k]}) "
                                 f"conflicts with provided ({prefix_map[k]})."
                             )
                     else:
                         logging.info(
                             f"Externally provided metadata {k}:{v} is added to metadata set."
                         )
-                        sssom_metadata["curie_map"][k] = v
-            prefix_map = sssom_metadata["curie_map"]
+                        sssom_metadata[CURIE_MAP][k] = v
+            prefix_map = sssom_metadata[CURIE_MAP]
 
     meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
     msdf = from_sssom_dataframe(
@@ -287,10 +294,10 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     license = DEFAULT_LICENSE
     mapping_set_id = DEFAULT_MAPPING_SET_ID
     if meta is not None:
-        if "mapping_set_id" in meta.keys():
-            mapping_set_id = meta["mapping_set_id"]
-        if "license" in meta.keys():
-            license = meta["license"]
+        if MAPPING_SET_ID in meta.keys():
+            mapping_set_id = meta[MAPPING_SET_ID]
+        if LICENSE in meta.keys():
+            license = meta[LICENSE]
     return MappingSet(mapping_set_id=mapping_set_id, license=license)
 
 
@@ -359,9 +366,9 @@ def from_sssom_dataframe(
 
     # Need to revisit this solution.
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
-    if "confidence" in df.columns:
+    if CONFIDENCE in df.columns:
         df2 = df.copy()
-        df2["confidence"].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
+        df2[CONFIDENCE].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
         df = df2
 
     mlist: List[Mapping] = []
@@ -520,13 +527,13 @@ def from_alignment_minidom(
                             "Alignment format: xml element said, but not set to yes. Only XML is supported!"
                         )
                 elif node_name == "onto1":
-                    ms["subject_source_id"] = e.firstChild.nodeValue
+                    ms[SUBJECT_SOURCE_ID] = e.firstChild.nodeValue
                 elif node_name == "onto2":
-                    ms["object_source_id"] = e.firstChild.nodeValue
+                    ms[OBJECT_SOURCE_ID] = e.firstChild.nodeValue
                 elif node_name == "uri1":
-                    ms["subject_source"] = e.firstChild.nodeValue
+                    ms[SUBJECT_SOURCE] = e.firstChild.nodeValue
                 elif node_name == "uri2":
-                    ms["object_source"] = e.firstChild.nodeValue
+                    ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
@@ -582,17 +589,17 @@ def from_obographs(
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
                                 try:
-                                    mdict["subject_id"] = curie_from_uri(
+                                    mdict[SUBJECT_ID] = curie_from_uri(
                                         nid, prefix_map
                                     )
-                                    mdict["object_id"] = curie_from_uri(
+                                    mdict[OBJECT_ID] = curie_from_uri(
                                         xref_id, prefix_map
                                     )
-                                    mdict["subject_label"] = label
-                                    mdict["predicate_id"] = "oboInOwl:hasDbXref"
+                                    mdict[SUBJECT_LABEL] = label
+                                    mdict[PREDICATE_ID] = "oboInOwl:hasDbXref"
                                     mdict[
-                                        "mapping_justification"
-                                    ] = MAPPING_JUSTFN_UNSPECIFIED
+                                        MAPPING_JUSTIFICATION
+                                    ] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     # FIXME this will cause all sorts of ragged Mappings
@@ -604,19 +611,19 @@ def from_obographs(
                                     xref_id = value["val"]
                                     mdict = {}
                                     try:
-                                        mdict["subject_id"] = curie_from_uri(
+                                        mdict[SUBJECT_ID] = curie_from_uri(
                                             nid, prefix_map
                                         )
-                                        mdict["object_id"] = curie_from_uri(
+                                        mdict[OBJECT_ID] = curie_from_uri(
                                             xref_id, prefix_map
                                         )
-                                        mdict["subject_label"] = label
-                                        mdict["predicate_id"] = curie_from_uri(
+                                        mdict[SUBJECT_LABEL] = label
+                                        mdict[PREDICATE_ID] = curie_from_uri(
                                             pred, prefix_map
                                         )
                                         mdict[
-                                            "mapping_justification"
-                                        ] = MAPPING_JUSTFN_UNSPECIFIED
+                                            MAPPING_JUSTIFICATION
+                                        ] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                         mlist.append(Mapping(**mdict))
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
@@ -628,10 +635,10 @@ def from_obographs(
                     predicate_id = _get_obographs_predicate_id(edge["pred"])
                     object_id = edge["obj"]
                     if predicate_id in mapping_predicates:
-                        mdict["subject_id"] = curie_from_uri(subject_id, prefix_map)
-                        mdict["object_id"] = curie_from_uri(object_id, prefix_map)
-                        mdict["predicate_id"] = curie_from_uri(predicate_id, prefix_map)
-                        mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
+                        mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
+                        mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
+                        mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
+                        mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
             elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
@@ -640,16 +647,16 @@ def from_obographs(
                             for ec2 in equivalents["nodeIds"]:
                                 if ec1 != ec2:
                                     mdict = {}
-                                    mdict["subject_id"] = curie_from_uri(
+                                    mdict[SUBJECT_ID] = curie_from_uri(
                                         ec1, prefix_map
                                     )
-                                    mdict["object_id"] = curie_from_uri(ec2, prefix_map)
-                                    mdict["predicate_id"] = curie_from_uri(
+                                    mdict[OBJECT_ID] = curie_from_uri(ec2, prefix_map)
+                                    mdict[PREDICATE_ID] = curie_from_uri(
                                         OWL_EQUIV_CLASS, prefix_map
                                     )
                                     mdict[
-                                        "mapping_justification"
-                                    ] = MAPPING_JUSTFN_UNSPECIFIED
+                                        MAPPING_JUSTIFICATION
+                                    ] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
@@ -768,19 +775,19 @@ def _cell_element_values(
         if child.nodeType == Node.ELEMENT_NODE:
             try:
                 if child.nodeName == "entity1":
-                    mdict["subject_id"] = curie_from_uri(
+                    mdict[SUBJECT_ID] = curie_from_uri(
                         child.getAttribute("rdf:resource"), prefix_map
                     )
                 elif child.nodeName == "entity2":
-                    mdict["object_id"] = curie_from_uri(
+                    mdict[OBJECT_ID] = curie_from_uri(
                         child.getAttribute("rdf:resource"), prefix_map
                     )
                 elif child.nodeName == "measure":
-                    mdict["confidence"] = child.firstChild.nodeValue
+                    mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
                     relation = child.firstChild.nodeValue
                     if (relation == "=") and (OWL_EQUIV_CLASS in mapping_predicates):
-                        mdict["predicate_id"] = "owl:equivalentClass"
+                        mdict[PREDICATE_ID] = "owl:equivalentClass"
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
@@ -790,7 +797,7 @@ def _cell_element_values(
             except NoCURIEException as e:
                 logging.warning(e)
 
-    mdict["mapping_justification"] = MAPPING_JUSTFN_UNSPECIFIED
+    mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
 
     m = Mapping(**mdict)
     if _is_valid_mapping(m):
@@ -837,9 +844,9 @@ def split_dataframe(
     """
     if msdf.df is None:
         raise RuntimeError
-    subject_prefixes = set(msdf.df["subject_id"].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(msdf.df["object_id"].str.split(":", 1, expand=True)[0])
-    relations = set(msdf.df["predicate_id"])
+    subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", 1, expand=True)[0])
+    object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", 1, expand=True)[0])
+    relations = set(msdf.df[PREDICATE_ID])
     return split_dataframe_by_prefix(
         msdf=msdf,
         subject_prefixes=subject_prefixes,
@@ -871,9 +878,9 @@ def split_dataframe_by_prefix(
                 split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
                 if df is not None:
                     dfs = df[
-                        (df["subject_id"].str.startswith(pre_subj + ":"))
-                        & (df["predicate_id"] == rel)
-                        & (df["object_id"].str.startswith(pre_obj + ":"))
+                        (df[SUBJECT_ID].str.startswith(pre_subj + ":"))
+                        & (df[PREDICATE_ID] == rel)
+                        & (df[OBJECT_ID].str.startswith(pre_obj + ":"))
                     ]
                 if pre_subj in prefix_map and pre_obj in prefix_map and len(dfs) > 0:
                     cm = {
