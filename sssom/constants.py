@@ -9,7 +9,6 @@ from linkml_runtime.utils.schemaview import SchemaView
 # from linkml_runtime.utils.introspection import package_schemaview
 
 HERE = pathlib.Path(__file__).parent.resolve()
-# SCHEMA_YAML = os.path.join(HERE, "sssom.yaml")
 
 SCHEMA_YAML = pkg_resources.resource_filename(
     "sssom_schema", "schema/sssom_schema.yaml"
