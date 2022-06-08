@@ -3,11 +3,11 @@
 import pathlib
 
 import pkg_resources
+import pydantic
 
-from linkml_runtime.utils.schemaview import SchemaView
 # from linkml_runtime.utils.introspection import package_schemaview
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
-import pydantic
+from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 # SCHEMA_YAML = os.path.join(HERE, "sssom.yaml")
@@ -45,6 +45,9 @@ PREFIX_MAP_MODES = [
 ]
 
 multivalued_slots = []
-for slot in SCHEMA_DICT['slots']:
-    if 'multivalued' in SCHEMA_DICT['slots'][slot].keys() and SCHEMA_DICT['slots'][slot]["multivalued"]:
+for slot in SCHEMA_DICT["slots"]:
+    if (
+        "multivalued" in SCHEMA_DICT["slots"][slot].keys()
+        and SCHEMA_DICT["slots"][slot]["multivalued"]
+    ):
         multivalued_slots.append(slot)
