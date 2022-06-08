@@ -3,8 +3,6 @@
 import pathlib
 
 import pkg_resources
-import pydantic
-
 # from linkml_runtime.utils.introspection import package_schemaview
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
