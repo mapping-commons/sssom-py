@@ -37,6 +37,7 @@ from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
 from .constants import (
+    COMMENT,
     CONFIDENCE,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
@@ -56,7 +57,6 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
-    COMMENT
 )
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
 from .sssom_document import MappingSetDocument
