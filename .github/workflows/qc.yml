@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,7 +25,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install --upgrade tox
     - name: Check manifest
       run: tox -e manifest
     - name: Lint with flake8
