@@ -416,7 +416,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
                                         "url": "http://example.org/fhir/StructureDefinition/mapping_justification",
                                         "ValueString": row.get(
                                             "mapping_justification",
-                                            row.get("match_type", ""),
+                                            row.get("mapping_justification", ""),
                                         ),
                                     }
                                 ],
