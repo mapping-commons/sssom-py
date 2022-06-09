@@ -652,9 +652,9 @@
                 "@value": "bone element"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -739,9 +739,9 @@
                 "@value": "UBERON:0002481"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -826,9 +826,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -913,9 +913,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1000,9 +1000,9 @@
                 "@value": "UBERON:0002398"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1087,9 +1087,9 @@
                 "@value": "UBERON:0000970"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1174,9 +1174,9 @@
                 "@value": "UBERON:0002107"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1261,9 +1261,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1348,9 +1348,9 @@
                 "@value": "ey"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1435,9 +1435,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1522,9 +1522,9 @@
                 "@value": "foot"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1609,9 +1609,9 @@
                 "@value": "bone element"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1696,9 +1696,9 @@
                 "@value": "UBERON:0002048"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1783,9 +1783,9 @@
                 "@value": "UBERON:0001474"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1870,9 +1870,9 @@
                 "@value": "bone el"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -1957,9 +1957,9 @@
                 "@value": "appendag"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2044,9 +2044,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2131,9 +2131,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2218,9 +2218,9 @@
                 "@value": "tissu"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2305,9 +2305,9 @@
                 "@value": "UBERON:0002387"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2392,9 +2392,9 @@
                 "@value": "UBERON:0001474"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2479,9 +2479,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2566,9 +2566,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2653,9 +2653,9 @@
                 "@value": "tissue"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2740,9 +2740,9 @@
                 "@value": "UBERON:0002107"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2827,9 +2827,9 @@
                 "@value": "tissu"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -2914,9 +2914,9 @@
                 "@value": "BAD:ORGAN"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3001,9 +3001,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3088,9 +3088,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3175,9 +3175,9 @@
                 "@value": "UBERON:0000948"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3262,9 +3262,9 @@
                 "@value": "UBERON:0002398"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3349,9 +3349,9 @@
                 "@value": "UBERON:0002048"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3436,9 +3436,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3523,9 +3523,9 @@
                 "@value": "appendag"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3610,9 +3610,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3697,9 +3697,9 @@
                 "@value": "foot"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3784,9 +3784,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3871,9 +3871,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -3958,9 +3958,9 @@
                 "@value": "UBERON:0002048"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4045,9 +4045,9 @@
                 "@value": "appendage"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4132,9 +4132,9 @@
                 "@value": "UBERON:0001474"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4219,9 +4219,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4306,9 +4306,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4393,9 +4393,9 @@
                 "@value": "UBERON:0002107"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4480,9 +4480,9 @@
                 "@value": "appendag"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4567,9 +4567,9 @@
                 "@value": "UBERON:0010230"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4654,9 +4654,9 @@
                 "@value": "UBERON:0002048"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4741,9 +4741,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4828,9 +4828,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -4915,9 +4915,9 @@
                 "@value": "UBERON:0002398"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5002,9 +5002,9 @@
                 "@value": "tissu"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5089,9 +5089,9 @@
                 "@value": "foot"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5176,9 +5176,9 @@
                 "@value": "ey"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5263,9 +5263,9 @@
                 "@value": "UBERON:0002398"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5350,9 +5350,9 @@
                 "@value": "UBERON:0000970"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5437,9 +5437,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5524,9 +5524,9 @@
                 "@value": "liver"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5611,9 +5611,9 @@
                 "@value": "appendag"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5698,9 +5698,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5785,9 +5785,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5872,9 +5872,9 @@
                 "@value": "UBERON:0002107"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -5959,9 +5959,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6046,9 +6046,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6133,9 +6133,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6220,9 +6220,9 @@
                 "@value": "lung"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6307,9 +6307,9 @@
                 "@value": "UBERON:0002387"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6394,9 +6394,9 @@
                 "@value": "UBERON:0000948"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6481,9 +6481,9 @@
                 "@value": "UBERON:0002398"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6568,9 +6568,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6655,9 +6655,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6742,9 +6742,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6829,9 +6829,9 @@
                 "@value": "tissu"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -6916,9 +6916,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7003,9 +7003,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7090,9 +7090,9 @@
                 "@value": "UBERON:0000970"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7177,9 +7177,9 @@
                 "@value": "UBERON:0002048"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7264,9 +7264,9 @@
                 "@value": "hindlimb"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7351,9 +7351,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7438,9 +7438,9 @@
                 "@value": "BAD:ORGAN"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7525,9 +7525,9 @@
                 "@value": "BAD:ORGAN"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7612,9 +7612,9 @@
                 "@value": "UBERON:0002107"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7699,9 +7699,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7786,9 +7786,9 @@
                 "@value": "heart"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7873,9 +7873,9 @@
                 "@value": "UBERON:0000948"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -7960,9 +7960,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8047,9 +8047,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8134,9 +8134,9 @@
                 "@value": "appendag"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8221,9 +8221,9 @@
                 "@value": "UBERON:0001474"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8308,9 +8308,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8395,9 +8395,9 @@
                 "@value": "hindlimb"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8482,9 +8482,9 @@
                 "@value": "hindlimb"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8569,9 +8569,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8656,9 +8656,9 @@
                 "@value": "UBERON:0000948"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8743,9 +8743,9 @@
                 "@value": "UBERON:0000970"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8830,9 +8830,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -8917,9 +8917,9 @@
                 "@value": "UBERON:0002387"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9004,9 +9004,9 @@
                 "@value": "UBERON:0010230"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9091,9 +9091,9 @@
                 "@value": "UBERON:0002387"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9178,9 +9178,9 @@
                 "@value": "UBERON:0002481"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9265,9 +9265,9 @@
                 "@value": "tissue"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9352,9 +9352,9 @@
                 "@value": "appendag"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9439,9 +9439,9 @@
                 "@value": "BAD:ORGAN"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9526,9 +9526,9 @@
                 "@value": "heart"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9613,9 +9613,9 @@
                 "@value": "UBERON:0002387"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9700,9 +9700,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9787,9 +9787,9 @@
                 "@value": "UBERON:0000970"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9874,9 +9874,9 @@
                 "@value": "UBERON:0001474"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -9961,9 +9961,9 @@
                 "@value": "BAD:ORGAN"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10048,9 +10048,9 @@
                 "@value": "tissu"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10135,9 +10135,9 @@
                 "@value": "liver"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10222,9 +10222,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10309,9 +10309,9 @@
                 "@value": "hand"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10396,9 +10396,9 @@
                 "@value": "tissu"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10483,9 +10483,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10570,9 +10570,9 @@
                 "@value": "foot"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10657,9 +10657,9 @@
                 "@value": "UBERON:0002387"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10744,9 +10744,9 @@
                 "@value": "bone el"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10831,9 +10831,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -10918,9 +10918,9 @@
                 "@value": "UBERON:0002398"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11005,9 +11005,9 @@
                 "@value": "lung"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11092,9 +11092,9 @@
                 "@value": "UBERON:0002107"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11179,9 +11179,9 @@
                 "@value": "hindlimb"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11266,9 +11266,9 @@
                 "@value": "BAD:ORGAN"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11353,9 +11353,9 @@
                 "@value": "UBERON:0002048"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11440,9 +11440,9 @@
                 "@value": "UBERON:0000970"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11527,9 +11527,9 @@
                 "@value": "UBERON:0000948"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11614,9 +11614,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11701,9 +11701,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11788,9 +11788,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11875,9 +11875,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -11962,9 +11962,9 @@
                 "@value": "UBERON:0000948"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -12049,9 +12049,9 @@
                 "@value": "organ"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -12136,9 +12136,9 @@
                 "@value": "bone"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -12223,9 +12223,9 @@
                 "@value": "UBERON:0001474"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -12310,9 +12310,9 @@
                 "@value": "appendage"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [
@@ -12397,9 +12397,9 @@
                 "@value": "region"
             }
         ],
-        "https://w3id.org/sssom/match_type": [
+        "https://w3id.org/sssom/mapping_justification": [
             {
-                "@value": "Lexical|Stemming"
+                "@value": "semapv:LexicalMatching"
             }
         ],
         "https://w3id.org/sssom/object_category": [

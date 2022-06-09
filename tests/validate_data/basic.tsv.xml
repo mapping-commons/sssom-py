@@ -168,7 +168,7 @@
     <sssom:comment>.</sssom:comment>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/x/bone_element"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nc7b6d2c39ec64a98abcae200e44cea2a">
@@ -183,7 +183,7 @@
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:subject_label></sssom:subject_label>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasExactSynonym"/>
     <sssom:object_source>y</sssom:object_source>
@@ -195,7 +195,7 @@
     <sssom:subject_label></sssom:subject_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:object_label>hearts</sssom:object_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedSource rdf:resource="http://example.org/z/heart"/>
     <sssom:comment>.</sssom:comment>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
@@ -217,7 +217,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:match_string>bone</sssom:match_string>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label>bones</sssom:object_label>
     <owl:annotatedSource rdf:resource="http://example.org/x/bone_element"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -232,7 +232,7 @@
     <sssom:subject_label>bone element</sssom:subject_label>
     <sssom:object_match_field rdf:resource="oio:hasDbXref"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
@@ -248,7 +248,7 @@
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N7b01e391eadb465db1dbcd982085c386">
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/bone"/>
@@ -272,7 +272,7 @@
     <sssom:subject_label>REGION</sssom:subject_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label>region</sssom:object_label>
     <owl:annotatedTarget rdf:resource="http://example.org/x/region"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -293,7 +293,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.2612038749637414</sssom:confidence>
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:subject_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -314,7 +314,7 @@
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_label>hearts</sssom:subject_label>
     <sssom:object_label>heart</sssom:object_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_source>x</sssom:object_source>
@@ -326,7 +326,7 @@
   <rdf:Description rdf:nodeID="N3bca3fcf385b4e98991709bda0637698">
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_label>eye</sssom:subject_label>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -358,11 +358,11 @@
     <sssom:subject_label>tissues</sssom:subject_label>
     <owl:annotatedSource rdf:resource="http://example.org/y/tissue"/>
     <sssom:comment>.</sssom:comment>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N6e0e8a8603804b78937d3537dce24898">
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <owl:annotatedSource rdf:resource="http://example.org/z/tissue"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
@@ -389,7 +389,7 @@
     <sssom:object_source>y</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>manus</sssom:subject_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:object_label>hands</sssom:object_label>
@@ -402,7 +402,7 @@
   <rdf:Description rdf:nodeID="N77b67895c09a44c19427b2984a390911">
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label>REGION</sssom:object_label>
     <owl:annotatedSource rdf:resource="http://example.org/y/region"/>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
@@ -430,7 +430,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedSource rdf:resource="http://example.org/y/appendage"/>
@@ -444,7 +444,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -469,14 +469,14 @@
     <owl:annotatedSource rdf:resource="http://example.org/z/bone_element"/>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/y/bone"/>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nd8d058445c6744208ed846f666495700">
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>hands</sssom:subject_label>
     <sssom:comment>.</sssom:comment>
     <sssom:object_label>manus</sssom:object_label>
@@ -505,7 +505,7 @@
     <sssom:match_string>UBERON:0002048</sssom:match_string>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:comment>.</sssom:comment>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/lung"/>
@@ -531,7 +531,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.2</sssom:confidence>
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedTarget rdf:resource="http://example.org/x/bone_tissue"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -542,7 +542,7 @@
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedTarget rdf:resource="http://example.org/y/bone"/>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -569,7 +569,7 @@
     <sssom:subject_label></sssom:subject_label>
     <owl:annotatedTarget rdf:resource="http://example.org/x/bone_tissue"/>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>z</sssom:subject_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:match_string>UBERON:0002481</sssom:match_string>
@@ -586,7 +586,7 @@
     <sssom:object_source>z</sssom:object_source>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -604,7 +604,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/z/bone_tissue"/>
     <sssom:object_label></sssom:object_label>
     <sssom:object_match_field rdf:resource="oio:hasDbXref"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>bone tissue</sssom:subject_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_source>x</sssom:subject_source>
@@ -630,7 +630,7 @@
     <owl:annotatedSource rdf:resource="http://example.org/y/appendage"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_label>appendage</sssom:object_label>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N6aad33a7c18b4e0c9013793a0b29891e">
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -648,7 +648,7 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
     <sssom:subject_label>hands</sssom:subject_label>
     <sssom:subject_source>y</sssom:subject_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N65a758d3e9334037a79b494333a45ecb">
@@ -659,7 +659,7 @@
     <sssom:object_source>z</sssom:object_source>
     <sssom:match_string>bone</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.2612038749637414</sssom:confidence>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -676,7 +676,7 @@
     <sssom:subject_label>livers</sssom:subject_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedTarget rdf:resource="http://example.org/x/liver"/>
@@ -700,7 +700,7 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
     <owl:annotatedTarget rdf:resource="http://example.org/x/hindlimb"/>
     <sssom:subject_label>hindlimb</sssom:subject_label>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:comment>.</sssom:comment>
@@ -719,7 +719,7 @@
   <rdf:Description rdf:nodeID="Nc71b01fba86a409a9ae66e77b2881d95">
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <sssom:subject_source>x</sssom:subject_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedSource rdf:resource="http://example.org/x/bone_tissue"/>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:confidence rdf:datatype="xsd:double">0.2</sssom:confidence>
@@ -743,7 +743,7 @@
     <sssom:subject_label></sssom:subject_label>
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedSource rdf:resource="http://example.org/z/bone_element"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -764,7 +764,7 @@
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:confidence rdf:datatype="xsd:double">0.8818562360532485</sssom:confidence>
@@ -784,7 +784,7 @@
     <sssom:object_label>ORGAN</sssom:object_label>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:match_string>organ</sssom:match_string>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/z/organ"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/organ"/>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
@@ -801,7 +801,7 @@
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedTarget rdf:resource="http://example.org/x/eyeball"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_label>eyeball</sssom:object_label>
     <sssom:object_source>x</sssom:object_source>
@@ -819,7 +819,7 @@
     <sssom:subject_label></sssom:subject_label>
     <sssom:object_label>bone tissue</sssom:object_label>
     <sssom:subject_source>z</sssom:subject_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:comment>.</sssom:comment>
     <sssom:match_string>bone</sssom:match_string>
@@ -835,7 +835,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/z/appendage"/>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -858,7 +858,7 @@
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.8497788951776651</sssom:confidence>
     <owl:annotatedTarget rdf:resource="http://example.org/z/hand"/>
     <sssom:subject_label>manus</sssom:subject_label>
@@ -871,7 +871,7 @@
   <rdf:Description rdf:nodeID="N12dc43073b0140e1813eaebb9a77adfe">
     <sssom:object_source>z</sssom:object_source>
     <sssom:object_match_field rdf:resource="oio:hasExactSynonym"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:confidence rdf:datatype="xsd:double">0.8</sssom:confidence>
@@ -894,7 +894,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/z/hindlimb"/>
     <owl:annotatedSource rdf:resource="http://example.org/x/hindlimb"/>
     <sssom:object_label>hindlimb</sssom:object_label>
@@ -918,7 +918,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.2612038749637414</sssom:confidence>
     <owl:annotatedSource rdf:resource="http://example.org/z/bone_element"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:comment>.</sssom:comment>
     <sssom:match_string>bone</sssom:match_string>
@@ -940,13 +940,13 @@
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedSource rdf:resource="http://example.org/z/hand"/>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nee4f3fb84059402dbf23d3c6a121c21f">
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_source>x</sssom:object_source>
     <owl:annotatedSource rdf:resource="http://example.org/z/organ"/>
     <sssom:subject_label>ORGAN</sssom:subject_label>
@@ -973,7 +973,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:subject_label>tissue</sssom:subject_label>
@@ -1002,7 +1002,7 @@
     <sssom:object_label>organ</sssom:object_label>
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:match_string>organ</sssom:match_string>
     <sssom:object_source>x</sssom:object_source>
@@ -1017,7 +1017,7 @@
     <sssom:subject_label>lung</sssom:subject_label>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_source>x</sssom:subject_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedTarget rdf:resource="http://example.org/y/lung"/>
     <owl:annotatedSource rdf:resource="http://example.org/x/lung"/>
@@ -1039,7 +1039,7 @@
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:confidence rdf:datatype="xsd:double">0.2</sssom:confidence>
     <sssom:subject_source>z</sssom:subject_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:comment>.</sssom:comment>
@@ -1054,7 +1054,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_label>manus</sssom:subject_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
@@ -1083,7 +1083,7 @@
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedSource rdf:resource="http://example.org/x/organ"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>organ</sssom:subject_label>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
   </rdf:Description>
@@ -1095,7 +1095,7 @@
     <sssom:match_string>UBERON:0000948</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_label></sssom:object_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <sssom:subject_label>heart</sssom:subject_label>
@@ -1107,7 +1107,7 @@
     <owl:annotatedSource rdf:resource="http://example.org/x/heart"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Na9e04afeb12342b7a01b97c5adc659eb">
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>bones</sssom:subject_label>
     <owl:annotatedSource rdf:resource="http://example.org/y/bone"/>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
@@ -1138,7 +1138,7 @@
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:subject_label>TISSUE</sssom:subject_label>
     <owl:annotatedSource rdf:resource="http://example.org/z/tissue"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:object_label>tissue</sssom:object_label>
@@ -1151,7 +1151,7 @@
     <sssom:object_label>tissue</sssom:object_label>
     <owl:annotatedSource rdf:resource="http://example.org/z/tissue"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:match_string>tissue</sssom:match_string>
     <sssom:object_source>x</sssom:object_source>
@@ -1165,7 +1165,7 @@
   </rdf:Description>
   <rdf:Description rdf:nodeID="N2b79d891cde34848af67eb3a304b9626">
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>APPENDAGE</sssom:subject_label>
     <sssom:match_string>appendage</sssom:match_string>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1186,7 +1186,7 @@
     <sssom:object_source>y</sssom:object_source>
     <sssom:match_string>UBERON:0002107</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
@@ -1213,7 +1213,7 @@
     <owl:annotatedSource rdf:resource="http://example.org/z/bone_element"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:object_label>bones</sssom:object_label>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
@@ -1221,7 +1221,7 @@
     <sssom:subject_label></sssom:subject_label>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N3239fe13c4664ca8bfff50b0fbb4b2ed">
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_source>x</sssom:object_source>
@@ -1242,7 +1242,7 @@
   <rdf:Description rdf:nodeID="N767f915db61644928fd692cd76632159">
     <sssom:subject_source>y</sssom:subject_source>
     <owl:annotatedTarget rdf:resource="http://example.org/z/bone_tissue"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:confidence rdf:datatype="xsd:double">0.5346019613807635</sssom:confidence>
     <owl:annotatedSource rdf:resource="http://example.org/y/bone"/>
@@ -1266,7 +1266,7 @@
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:confidence rdf:datatype="xsd:double">0.8</sssom:confidence>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_source>z</sssom:object_source>
     <sssom:object_label></sssom:object_label>
@@ -1281,7 +1281,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/z/organ"/>
     <sssom:object_source>z</sssom:object_source>
     <sssom:match_string>BAD:ORGAN</sssom:match_string>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_label>lung</sssom:subject_label>
@@ -1300,7 +1300,7 @@
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:subject_label></sssom:subject_label>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
@@ -1321,7 +1321,7 @@
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_label>ORGAN</sssom:subject_label>
     <owl:annotatedSource rdf:resource="http://example.org/z/organ"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_label>organs</sssom:object_label>
@@ -1348,7 +1348,7 @@
     <sssom:subject_label>hindlimb</sssom:subject_label>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:confidence rdf:datatype="xsd:double">0.8818562360532485</sssom:confidence>
     <owl:annotatedSource rdf:resource="http://example.org/z/hindlimb"/>
@@ -1366,7 +1366,7 @@
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:confidence rdf:datatype="xsd:double">0.8497788951776651</sssom:confidence>
     <sssom:subject_match_field rdf:resource="oio:hasExactSynonym"/>
@@ -1389,7 +1389,7 @@
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N4306002494fe447991b097930703c1e8">
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -1401,7 +1401,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.2</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_source>z</sssom:object_source>
     <sssom:object_label></sssom:object_label>
@@ -1415,7 +1415,7 @@
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedSource rdf:resource="http://example.org/x/eyeball"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/z/eyeball"/>
     <sssom:object_label></sssom:object_label>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -1432,7 +1432,7 @@
   <rdf:Description rdf:nodeID="Na4fa68e2f7094af98e679e681d317ffd">
     <sssom:object_source>z</sssom:object_source>
     <sssom:match_string>BAD:ORGAN</sssom:match_string>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_source>x</sssom:subject_source>
@@ -1460,7 +1460,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>y</sssom:object_source>
     <sssom:object_label>lungs</sssom:object_label>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:match_string>lung</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_label>lung</sssom:subject_label>
@@ -1474,7 +1474,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:match_string>organ</sssom:match_string>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1488,7 +1488,7 @@
   </rdf:Description>
   <rdf:Description rdf:nodeID="N378913480e6e4417b081f2b166c731f1">
     <sssom:match_string>appendag</sssom:match_string>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/y/appendage"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1511,7 +1511,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <owl:annotatedSource rdf:resource="http://example.org/y/tissue"/>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:match_string>tissu</sssom:match_string>
@@ -1535,7 +1535,7 @@
     <sssom:object_label>pes</sssom:object_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.8497788951776651</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasExactSynonym"/>
@@ -1554,7 +1554,7 @@
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedTarget rdf:resource="http://example.org/y/lung"/>
     <sssom:match_string>UBERON:0002048</sssom:match_string>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
@@ -1566,7 +1566,7 @@
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1583,7 +1583,7 @@
   </rdf:Description>
   <rdf:Description rdf:nodeID="N9d61a9533f174cd1a63f76517f437e24">
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>z</sssom:object_source>
@@ -1604,7 +1604,7 @@
     <sssom:match_string>UBERON:0002387</sssom:match_string>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_source>y</sssom:subject_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>feet</sssom:subject_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
@@ -1625,7 +1625,7 @@
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:subject_label>lungs</sssom:subject_label>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:match_string>lung</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -1639,7 +1639,7 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N8e68aac0717e4dc88b482083f8240c91">
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>y</sssom:object_source>
@@ -1669,7 +1669,7 @@
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_label></sssom:object_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
@@ -1687,7 +1687,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>tissue</sssom:subject_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -1698,7 +1698,7 @@
   <rdf:Description rdf:nodeID="N82bad2625ea743f4b60424babc6a53cf">
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:object_label></sssom:object_label>
@@ -1715,7 +1715,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/z/bone_element"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N06845de078844b8eb749d0265ab7a8d6">
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:confidence rdf:datatype="xsd:double">0.8</sssom:confidence>
@@ -1746,7 +1746,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:match_string>region</sssom:match_string>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:object_source>x</sssom:object_source>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -1767,7 +1767,7 @@
     <sssom:object_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <sssom:subject_label>hands</sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
   </rdf:Description>
@@ -1791,7 +1791,7 @@
     <sssom:comment>.</sssom:comment>
     <owl:annotatedSource rdf:resource="http://example.org/x/heart"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N90defe091445409ca59180908d62dcc4">
@@ -1809,7 +1809,7 @@
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_label>ORGAN</sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <owl:annotatedSource rdf:resource="http://example.org/z/organ"/>
   </rdf:Description>
@@ -1821,7 +1821,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/x/liver"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/liver"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_label>livers</sssom:subject_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1836,7 +1836,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/bone"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1864,7 +1864,7 @@
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:match_string>tissue</sssom:match_string>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedSource rdf:resource="http://example.org/x/tissue"/>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:confidence rdf:datatype="xsd:double">0.8818562360532485</sssom:confidence>
@@ -1872,7 +1872,7 @@
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nbd0678b21a2f441fadd7955fb7c62db8">
     <sssom:subject_label>eye</sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>y</sssom:object_source>
@@ -1894,7 +1894,7 @@
     <sssom:object_label>bone element</sssom:object_label>
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_label>bones</sssom:subject_label>
     <sssom:confidence rdf:datatype="xsd:double">0.7646510369310004</sssom:confidence>
@@ -1916,7 +1916,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.2</sssom:confidence>
     <sssom:object_source>x</sssom:object_source>
     <owl:annotatedSource rdf:resource="http://example.org/z/bone_element"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:match_string>bone</sssom:match_string>
     <sssom:object_label>bone tissue</sssom:object_label>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -1940,7 +1940,7 @@
     <sssom:object_source>z</sssom:object_source>
     <sssom:match_string>UBERON:0002107</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label></sssom:object_label>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -1948,7 +1948,7 @@
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nc2e61131a94e45aa97185312dc063008">
     <sssom:subject_label>eye</sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label></sssom:object_label>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -1976,7 +1976,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:match_string>ey</sssom:match_string>
@@ -1993,7 +1993,7 @@
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
@@ -2010,7 +2010,7 @@
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:object_source>y</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2043,7 +2043,7 @@
     <sssom:match_string>UBERON:0002107</sssom:match_string>
     <sssom:subject_label>livers</sssom:subject_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N177576e1f37347a0a00fd53eeee3942d">
     <sssom:object_source>x</sssom:object_source>
@@ -2056,7 +2056,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/x/region"/>
     <sssom:comment>.</sssom:comment>
     <sssom:subject_source>y</sssom:subject_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/region"/>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
@@ -2076,7 +2076,7 @@
     <sssom:object_label>bone element</sssom:object_label>
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:subject_label></sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.2612038749637414</sssom:confidence>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:comment>.</sssom:comment>
@@ -2090,7 +2090,7 @@
     <sssom:subject_source>y</sssom:subject_source>
     <sssom:subject_label>hearts</sssom:subject_label>
     <sssom:object_label>heart</sssom:object_label>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:match_string>heart</sssom:match_string>
@@ -2114,7 +2114,7 @@
     <sssom:object_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:match_string>UBERON:0002107</sssom:match_string>
     <sssom:subject_label></sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <owl:annotatedTarget rdf:resource="http://example.org/x/liver"/>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
@@ -2137,7 +2137,7 @@
     <owl:annotatedSource rdf:resource="http://example.org/x/liver"/>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nac1d23b3ad8e41e798914aa5a7941654">
@@ -2149,7 +2149,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_label>heart</sssom:object_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>x</sssom:object_source>
@@ -2173,7 +2173,7 @@
     <sssom:comment>.</sssom:comment>
     <owl:annotatedSource rdf:resource="http://example.org/z/lung"/>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_label></sssom:subject_label>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2190,7 +2190,7 @@
     <sssom:subject_label>APPENDAGE</sssom:subject_label>
     <sssom:subject_source>z</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:match_string>appendag</sssom:match_string>
@@ -2213,14 +2213,14 @@
     <sssom:match_string>bone</sssom:match_string>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nda0b7144776f477cbbd217c073035cfc">
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_label>manus</sssom:subject_label>
     <sssom:subject_match_field rdf:resource="oio:hasExactSynonym"/>
@@ -2241,7 +2241,7 @@
     <owl:annotatedSource rdf:resource="http://example.org/x/bone_tissue"/>
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:confidence rdf:datatype="xsd:double">0.2612038749637414</sssom:confidence>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2274,7 +2274,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/y/hand"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedSource rdf:resource="http://example.org/z/hand"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_label>hands</sssom:object_label>
@@ -2286,7 +2286,7 @@
     <sssom:object_label>pes</sssom:object_label>
     <sssom:confidence rdf:datatype="xsd:double">0.8</sssom:confidence>
     <sssom:subject_source>z</sssom:subject_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_match_field rdf:resource="oio:hasExactSynonym"/>
@@ -2311,7 +2311,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:match_string>region</sssom:match_string>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:confidence rdf:datatype="xsd:double">0.8407144059077161</sssom:confidence>
     <owl:annotatedTarget rdf:resource="http://example.org/z/region"/>
@@ -2335,7 +2335,7 @@
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <owl:annotatedTarget rdf:resource="http://example.org/z/lung"/>
     <sssom:subject_source>x</sssom:subject_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nfe18494a7eda4d9cafa4c8bd0db64feb">
@@ -2352,7 +2352,7 @@
     <sssom:object_label>bones</sssom:object_label>
     <sssom:subject_source>z</sssom:subject_source>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedSource rdf:resource="http://example.org/z/bone_tissue"/>
     <sssom:confidence rdf:datatype="xsd:double">0.5346019613807635</sssom:confidence>
     <sssom:subject_label></sssom:subject_label>
@@ -2372,7 +2372,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/z/heart"/>
     <owl:annotatedSource rdf:resource="http://example.org/y/heart"/>
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:comment>.</sssom:comment>
   </rdf:Description>
@@ -2392,7 +2392,7 @@
     <sssom:match_string>bone</sssom:match_string>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label></sssom:object_label>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Nee2a3e398aad41d5922b480c016b28ec">
@@ -2407,7 +2407,7 @@
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <owl:annotatedTarget rdf:resource="http://example.org/z/organ"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_label>liver</sssom:subject_label>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2421,7 +2421,7 @@
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <owl:annotatedTarget rdf:resource="http://example.org/z/organ"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
@@ -2440,7 +2440,7 @@
     <sssom:subject_match_field rdf:resource="oio:hasExactSynonym"/>
     <sssom:object_match_field rdf:resource="oio:hasExactSynonym"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_source>x</sssom:object_source>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2468,14 +2468,14 @@
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N9fa44315fea4405198b25b4f45b1403b">
     <sssom:object_source>z</sssom:object_source>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <owl:annotatedSource rdf:resource="http://example.org/x/bone_element"/>
@@ -2504,7 +2504,7 @@
     <sssom:match_string>UBERON:0002107</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
@@ -2524,7 +2524,7 @@
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>x</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:match_string>UBERON:0001474</sssom:match_string>
     <sssom:object_label>bone element</sssom:object_label>
   </rdf:Description>
@@ -2541,7 +2541,7 @@
     <owl:annotatedTarget rdf:resource="http://example.org/z/lung"/>
     <sssom:object_source>z</sssom:object_source>
     <sssom:subject_label>lungs</sssom:subject_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label></sssom:object_label>
     <owl:annotatedSource rdf:resource="http://example.org/y/lung"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2559,7 +2559,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <sssom:subject_label>feet</sssom:subject_label>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
@@ -2581,7 +2581,7 @@
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_label>regions</sssom:object_label>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedTarget rdf:resource="http://example.org/y/region"/>
     <sssom:match_string>region</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
@@ -2595,7 +2595,7 @@
   </rdf:Description>
   <rdf:Description rdf:nodeID="N1bd1f9fcb85e4e699b28fdcd46efd97f">
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:object_label></sssom:object_label>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -2624,7 +2624,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <sssom:object_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:subject_source>x</sssom:subject_source>
@@ -2656,7 +2656,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.7387961250362586</sssom:confidence>
     <sssom:comment>.</sssom:comment>
     <sssom:object_source>z</sssom:object_source>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N28e4161c0127485ebb09e0a531d96248">
@@ -2666,7 +2666,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:match_string>bone</sssom:match_string>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:confidence rdf:datatype="xsd:double">0.2612038749637414</sssom:confidence>
     <sssom:object_source>x</sssom:object_source>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -2687,7 +2687,7 @@
     <sssom:object_match_field rdf:resource="oio:hasBroadSynonym"/>
     <sssom:match_string>bone</sssom:match_string>
     <sssom:object_source>x</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label>bone tissue</sssom:object_label>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
     <sssom:confidence rdf:datatype="xsd:double">0.5346019613807635</sssom:confidence>
@@ -2701,7 +2701,7 @@
     <sssom:object_source>x</sssom:object_source>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
     <sssom:object_label>liver</sssom:object_label>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
@@ -2729,7 +2729,7 @@
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <sssom:subject_label>ORGAN</sssom:subject_label>
     <owl:annotatedSource rdf:resource="http://example.org/z/organ"/>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_match_field rdf:resource="oio:hasDbXref"/>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
@@ -2746,7 +2746,7 @@
     <sssom:subject_source>x</sssom:subject_source>
     <sssom:comment>.</sssom:comment>
     <sssom:confidence rdf:datatype="xsd:double">0.7646510369310004</sssom:confidence>
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:object_label>bones</sssom:object_label>
     <owl:annotatedSource rdf:resource="http://example.org/x/bone_element"/>
     <sssom:object_match_field rdf:resource="oio:hasRelatedSynonym"/>
@@ -2759,7 +2759,7 @@
     <sssom:object_source>y</sssom:object_source>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N991c2273d2b6473bb26fc6e3b5225557">
-    <sssom:match_type>Lexical</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="oio:hasDbXref"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>
@@ -2800,7 +2800,7 @@
     <sssom:comment>.</sssom:comment>
     <sssom:object_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_source>y</sssom:object_source>
-    <sssom:match_type>Lexical|Stemming</sssom:match_type>
+    <sssom:mapping_justification>semapv:LexicalMatching</sssom:mapping_justification>
     <sssom:subject_match_field rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
     <sssom:object_category>biolink:AnatomicalEntity</sssom:object_category>
     <sssom:mapping_tool>rdf_matcher</sssom:mapping_tool>

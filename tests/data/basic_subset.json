@@ -6,10 +6,7 @@
       "subject_id": "x:appendage",
       "predicate_id": "owl:equivalentClass",
       "object_id": "y:appendage",
-      "match_type": [
-        "Lexical",
-        "HumanCurated"
-      ],
+      "mapping_justification": "semapv:ManualMappingCuration",
       "subject_label": "appendage",
       "subject_category": "biolink:AnatomicalEntity",
       "object_label": "appendages",
@@ -24,10 +21,7 @@
       "subject_id": "x:appendage",
       "predicate_id": "owl:equivalentClass",
       "object_id": "z:appendage",
-      "match_type": [
-        "Lexical",
-        "HumanCurated"
-      ],
+      "mapping_justification": "semapv:ManualMappingCuration",
       "subject_label": "appendage",
       "subject_category": "biolink:AnatomicalEntity",
       "object_label": "APPENDAGE",
@@ -42,9 +36,7 @@
       "subject_id": "x:appendage",
       "predicate_id": "owl:equivalentClass",
       "object_id": "z:appendage",
-      "match_type": [
-        "Lexical"
-      ],
+      "mapping_justification": "semapv:LexicalMatching",
       "subject_label": "appendage",
       "subject_category": "biolink:AnatomicalEntity",
       "object_label": "APPENDAGE",
@@ -142,7 +134,7 @@
         "meaning": "@id"
       }
     },
-    "match_type": {
+    "mapping_justification": {
       "@context": {
         "@vocab": "@null",
         "text": "skos:notation",
