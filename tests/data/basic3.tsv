@@ -10,6 +10,7 @@
 #  d: "http://example.org/d/"
 #  rdfs: "http://example.org/rdfs/"
 #  owl: "http://example.org/owl/"
+#  semapv: "https://w3id.org/semapv/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
 c:something	YYYYY	owl:equivalentClass		b:something	yyyyyy	Lexical	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 d:something	YYYYY	owl:equivalentClass	Not	a:something	yyyyyy	Lexical	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
