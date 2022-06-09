@@ -2,7 +2,7 @@
 # Generation date: 2022-02-14T15:33:42
 # Schema: sssom
 #
-# id: http://w3id.org/sssom/schema/
+# id: https://w3id.org/sssom/schema/
 # description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)
 # license: https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -63,7 +63,7 @@ OWL = CurieNamespace("owl", "http://www.w3.org/2002/07/owl#")
 PAV = CurieNamespace("pav", "http://purl.org/pav/")
 PROV = CurieNamespace("prov", "http://www.w3.org/ns/prov#")
 RDFS = CurieNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
-SSSOM = CurieNamespace("sssom", "http://w3id.org/sssom/")
+SSSOM = CurieNamespace("sssom", "https://w3id.org/sssom/")
 DEFAULT_ = SSSOM
 
 

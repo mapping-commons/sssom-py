@@ -1,5 +1,5 @@
 #license: "https://creativecommons.org/publicdomain/zero/1.0/"
-#mapping_set_id: http://w3id.org/sssom/mapping/tests/data/basic4.tsv
+#mapping_set_id: https://w3id.org/sssom/mapping/tests/data/basic4.tsv
 #mapping_tool: "https://github.com/cmungall/rdf_matcher"
 #creator_id2: "cjm"
 #mapping_date: "2020-05-30"

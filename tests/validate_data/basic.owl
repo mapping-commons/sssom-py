@@ -2,7 +2,7 @@
 <rdf:RDF
    xmlns:owl="http://www.w3.org/2002/07/owl#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:sssom="http://w3id.org/sssom/"
+   xmlns:sssom="https://w3id.org/sssom/"
 >
   <rdf:Description rdf:nodeID="N6577e7b23bb04a1ca22d5a12f2ac2231">
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
@@ -189,7 +189,7 @@
     <sssom:mappings rdf:nodeID="N1ea992db43a44c25bef741f9c35f2ff0"/>
     <sssom:mappings rdf:nodeID="N915efb544d4d4fad87d3ffdf75a7a61f"/>
     <sssom:mappings rdf:nodeID="Ne46a02ea0a104d18baa7b61678c53b37"/>
-    <rdf:type rdf:resource="http://w3id.org/sssom/MappingSet"/>
+    <rdf:type rdf:resource="https://w3id.org/sssom/MappingSet"/>
     <sssom:mappings rdf:nodeID="N77202b04ff784e20a218e0c010e97f84"/>
     <sssom:mappings rdf:nodeID="N46d13597837248539419c149e0fa18ec"/>
     <sssom:mappings rdf:nodeID="Nde3fb141b1fe421ebe8f818a0c5bb8c1"/>

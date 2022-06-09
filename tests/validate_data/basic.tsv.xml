@@ -2,7 +2,7 @@
 <rdf:RDF
    xmlns:owl="http://www.w3.org/2002/07/owl#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:sssom="http://w3id.org/sssom/"
+   xmlns:sssom="https://w3id.org/sssom/"
 >
   <rdf:Description rdf:nodeID="N39c64f684f4a400c95f0ab21ba2cf19e">
     <sssom:mappings rdf:nodeID="Nccfe3bcaace14afe85c138d994c4a41f"/>
@@ -126,7 +126,7 @@
     <sssom:mappings rdf:nodeID="N4bd85e2bb77040b5a52c3f84e5c08c34"/>
     <sssom:mappings rdf:nodeID="Nc1a72e38cf9e47a88698496f00f7e50c"/>
     <sssom:mappings rdf:nodeID="N0cd0455309f24dc5a0a0837e3fd95f66"/>
-    <rdf:type rdf:resource="http://w3id.org/sssom/MappingSet"/>
+    <rdf:type rdf:resource="https://w3id.org/sssom/MappingSet"/>
     <sssom:mappings rdf:nodeID="N51fbe31f2a2a42e48c74eeab91f6067b"/>
     <sssom:mappings rdf:nodeID="N22a087b8d7cd4368aa9b0b5815d4d000"/>
     <sssom:mappings rdf:nodeID="N28c7519e3098421c93734f31a771b01e"/>

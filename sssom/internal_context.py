@@ -4,7 +4,7 @@
 
 sssom_context = """
 {
-   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\n    Generation date: 2022-02-14T15:33:37\n    Schema: sssom\n    metamodel version: 1.7.0\n    model version: None\n    \n    id: http://w3id.org/sssom/schema/\n    description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\n    license: https://creativecommons.org/publicdomain/zero/1.0/\n    ",
+   "_comments": "Auto generated from sssom.yaml by jsonldcontextgen.py version: 0.1.1\n    Generation date: 2022-02-14T15:33:37\n    Schema: sssom\n    metamodel version: 1.7.0\n    model version: None\n    \n    id: https://w3id.org/sssom/schema/\n    description: Datamodel for Simple Standard for Sharing Ontology Mappings (SSSOM)\n    license: https://creativecommons.org/publicdomain/zero/1.0/\n    ",
    "@context": {
       "Orphanet": {
          "@id": "http://www.orpha.net/ORDO/Orphanet_",
@@ -25,8 +25,8 @@ sssom_context = """
       "prov": "http://www.w3.org/ns/prov#",
       "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
       "skos": "http://www.w3.org/2004/02/skos/core#",
-      "sssom": "http://w3id.org/sssom/",
-      "@vocab": "http://w3id.org/sssom/",
+      "sssom": "https://w3id.org/sssom/",
+      "@vocab": "https://w3id.org/sssom/",
       "author_id": {
          "@type": "rdfs:Resource",
          "@id": "pav:authoredBy"

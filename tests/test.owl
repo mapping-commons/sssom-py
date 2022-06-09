@@ -2,7 +2,7 @@
 <rdf:RDF
    xmlns:owl="http://www.w3.org/2002/07/owl#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:sssom="http://w3id.org/sssom/"
+   xmlns:sssom="https://w3id.org/sssom/"
 >
   <rdf:Description rdf:nodeID="Nb812b5b595f24ebdb082353a7ed16707">
     <owl:annotatedTarget rdf:resource="http://example.org/x/bone_tissue"/>
@@ -524,7 +524,7 @@
     <sssom:mappings rdf:nodeID="N6cad51647c4b4ef18b38151bf0bb5f4c"/>
     <sssom:mappings rdf:nodeID="Nc0f3863c6b5f455c89a25099f8925e3b"/>
     <sssom:mappings rdf:nodeID="N13e47e1092d741bfba69f7271cc77062"/>
-    <rdf:type rdf:resource="http://w3id.org/sssom/MappingSet"/>
+    <rdf:type rdf:resource="https://w3id.org/sssom/MappingSet"/>
     <sssom:mappings rdf:nodeID="N0196e60e5b7b476886bd4086eb2aec84"/>
     <sssom:mappings rdf:nodeID="Nc49698d380ad4c3198e8924344c0a8ef"/>
     <sssom:mappings rdf:nodeID="Nb4212d6576b4420b8015d967290eede9"/>
@@ -2683,7 +2683,7 @@
     <sssom:confidence rdf:datatype="xsd:double">0.738796125</sssom:confidence>
     <sssom:subject_category>biolink:AnatomicalEntity</sssom:subject_category>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/mapping_tool">
+  <rdf:Description rdf:about="https://w3id.org/sssom/mapping_tool">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="N1fd265d8688b47398570a8479e519461">
@@ -3030,19 +3030,19 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
     <owl:equivalentClass rdf:resource="http://example.org/y/hand"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/object_match_field">
+  <rdf:Description rdf:about="https://w3id.org/sssom/object_match_field">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/match_type">
+  <rdf:Description rdf:about="https://w3id.org/sssom/match_type">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/subject_category">
+  <rdf:Description rdf:about="https://w3id.org/sssom/subject_category">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/object_label">
+  <rdf:Description rdf:about="https://w3id.org/sssom/object_label">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/object_category">
+  <rdf:Description rdf:about="https://w3id.org/sssom/object_category">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/y/foot">
@@ -3069,7 +3069,7 @@
     <owl:equivalentClass rdf:resource="http://example.org/a/something"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/match_string">
+  <rdf:Description rdf:about="https://w3id.org/sssom/match_string">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/z/region">
@@ -3077,22 +3077,22 @@
     <owl:equivalentClass rdf:resource="http://example.org/x/region"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/subject_source">
+  <rdf:Description rdf:about="https://w3id.org/sssom/subject_source">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/subject_match_field">
+  <rdf:Description rdf:about="https://w3id.org/sssom/subject_match_field">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/object_source">
+  <rdf:Description rdf:about="https://w3id.org/sssom/object_source">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/subject_label">
+  <rdf:Description rdf:about="https://w3id.org/sssom/subject_label">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/confidence">
+  <rdf:Description rdf:about="https://w3id.org/sssom/confidence">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/comment">
+  <rdf:Description rdf:about="https://w3id.org/sssom/comment">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
 </rdf:RDF>
