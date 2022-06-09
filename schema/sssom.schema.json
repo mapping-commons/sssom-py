@@ -76,7 +76,7 @@
                "$ref": "#/$defs/MatchTermTypeEnum",
                "description": "Specifies what type of terms are being matched (class, property, or individual)."
             },
-            "match_type": {
+            "mapping_justification": {
                "description": "The kind of match that led to the mapping, e.g. Logical or Lexical.",
                "items": {
                   "$ref": "#/$defs/MatchTypeEnum"
@@ -201,7 +201,7 @@
             "subject_id",
             "predicate_id",
             "object_id",
-            "match_type"
+            "mapping_justification"
          ],
          "title": "Mapping",
          "type": "object"

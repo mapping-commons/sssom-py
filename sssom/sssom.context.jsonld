@@ -82,7 +82,7 @@
             "meaning": "@id"
          }
       },
-      "match_type": {
+      "mapping_justification": {
          "@context": {
             "@vocab": "@null",
             "text": "skos:notation",
