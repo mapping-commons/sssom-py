@@ -24,7 +24,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install --upgrade pip
+        pip install sssom-schema
         pip install tox
     - name: Check manifest
       run: tox -e manifest
