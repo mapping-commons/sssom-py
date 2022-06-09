@@ -1,6 +1,7 @@
 """Constants."""
 
 import pathlib
+from enum import Enum
 
 import pkg_resources
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
@@ -111,3 +112,17 @@ COMMENT = "comment"
 CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
 OBJECT_SOURCE_ID = "object_source_id"
+
+
+class SEMAPV(Enum):
+    """SEMAPV Enum containing different mapping_justification."""
+
+    LexicalMatching = "semapv:LexicalMatching"
+    LogicalReasoning = "semapv:LogicalReasoning"
+    CompositeMatching = "semapv:CompositeMatching"
+    UnspecifiedMatching = "semapv:UnspecifiedMatching"
+    SemanticSimilarityThresholdMatching = "semapv:SemanticSimilarityThresholdMatching"
+    LexicalSimilarityThresholdMatching = "semapv:LexicalSimilarityThresholdMatching"
+    MappingChaining = "semapv:MappingChaining"
+    MappingReview = "semapv:MappingReview"
+    ManualMappingCuration = "semapv:ManualMappingCuration"

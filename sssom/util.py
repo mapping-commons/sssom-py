@@ -53,6 +53,7 @@ from .constants import (
     PREFIX_MAP_MODES,
     SCHEMA_DICT,
     SCHEMA_YAML,
+    SEMAPV,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
@@ -640,7 +641,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
                 & (
                     combined_normalized_subset[MAPPING_JUSTIFICATION]
-                    == "semapv:ManualMappingCuration"
+                    == SEMAPV.ManualMappingCuration
                 )
             )
             # In spite of this, if match_condition_1
