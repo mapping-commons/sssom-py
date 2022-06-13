@@ -2,7 +2,7 @@
 # Generation date: 2021-08-19 18:02
 # Schema: sssom-cliquesummary
 #
-# id: http://w3id.org/sssom/schema/cliquesummary/
+# id: https://w3id.org/sssom/schema/cliquesummary/
 # description: Data dictionary for clique summaries
 # license: https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -56,8 +56,8 @@ dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 # Namespaces
 BIOLINKML = CurieNamespace("biolinkml", "https://w3id.org/biolink/biolinkml/")
 SHEX = CurieNamespace("shex", "http://www.w3.org/ns/shex#")
-SSSOM = CurieNamespace("sssom", "http://w3id.org/sssom/")
-SSSOM_CS = CurieNamespace("sssom_cs", "http://w3id.org/sssom/cliquesummary")
+SSSOM = CurieNamespace("sssom", "https://w3id.org/sssom/")
+SSSOM_CS = CurieNamespace("sssom_cs", "https://w3id.org/sssom/cliquesummary")
 XSD = CurieNamespace("xsd", "http://www.w3.org/2001/XMLSchema#")
 DEFAULT_ = SSSOM.CS
 

@@ -23,4 +23,4 @@ global-exclude *.py[cod] __pycache__ *.so *.dylib .DS_Store *.gpickle
 exclude odk.bat environment.sh cli.md Makefile tox.ini
 
 # Specific files to include
-include LICENSE sssom/sssom.yaml
+include LICENSE

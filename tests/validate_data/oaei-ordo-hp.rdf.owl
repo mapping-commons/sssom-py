@@ -1,8 +1,8 @@
-@prefix : <http://w3id.org/sssom/> .
+@prefix : <https://w3id.org/sssom/> .
 @prefix HP: <http://purl.obolibrary.org/obo/HP_> .
 @prefix ORDO: <http://www.orpha.net/ORDO/Orphanet_> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix sssom: <http://w3id.org/sssom/> .
+@prefix sssom: <https://w3id.org/sssom/> .
 
 sssom:confidence a owl:AnnotationProperty .
 

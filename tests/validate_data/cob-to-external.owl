@@ -4,7 +4,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-   xmlns:sssom="http://w3id.org/sssom/"
+   xmlns:sssom="https://w3id.org/sssom/"
 >
   <rdf:Description rdf:nodeID="N6f3a5b72d11d45409e10c906c51c75b0">
     <sssom:object_label>conclusion based on data</sssom:object_label>
@@ -51,7 +51,7 @@
     <sssom:mappings rdf:nodeID="N52121068d0f445bfb7c55b71e5561ae7"/>
     <sssom:mappings rdf:nodeID="Nb09ab873275e4215a2084a126a06c901"/>
     <sssom:mappings rdf:nodeID="N317059b35d7c4cb58c3452d7013ac074"/>
-    <rdf:type rdf:resource="http://w3id.org/sssom/MappingSet"/>
+    <rdf:type rdf:resource="https://w3id.org/sssom/MappingSet"/>
     <sssom:mappings rdf:nodeID="N270bfda4b5104b71bc956c2c030c93b0"/>
     <sssom:mappings rdf:nodeID="Na5d47fb5f4ce4bbeb1939cc6d6ce18e8"/>
     <sssom:mappings rdf:nodeID="N8be5e33bda444e2c97ac2ef4e0c8ba7b"/>
@@ -230,7 +230,7 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
     <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/object_label">
+  <rdf:Description rdf:about="https://w3id.org/sssom/object_label">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://purl.obolibrary.org/obo/STATO_0000102">
@@ -1046,7 +1046,7 @@
     <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/COB_0000113"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Axiom"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://w3id.org/sssom/subject_label">
+  <rdf:Description rdf:about="https://w3id.org/sssom/subject_label">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="Na7f6894d67684897a7731f623fe7d09f">

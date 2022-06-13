@@ -1,6 +1,6 @@
 license: "https://creativecommons.org/publicdomain/zero/1.0/"
 mapping_tool: "https://github.com/cmungall/rdf_matcher"
-mapping_set_id: "http://w3id.org/sssom/sssompy/tests/basic-test"
+mapping_set_id: "https://w3id.org/sssom/sssompy/tests/basic-test"
 creator_id: "cjm"
 mapping_date: "2020-05-30"
 curie_map:

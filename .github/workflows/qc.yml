@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -17,15 +16,16 @@ jobs:
         os: [ ubuntu-latest, windows-latest ]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install --upgrade tox
+        pip install tox
     - name: Check manifest
       run: tox -e manifest
     - name: Lint with flake8

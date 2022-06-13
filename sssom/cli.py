@@ -238,10 +238,10 @@ def dosql(query: str, inputs: List[str], output: TextIO):
     E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
 
     Example:
-        sssom dosql -q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+        sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
 
     Example:
-        `sssom dosql -q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
+        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom

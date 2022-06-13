@@ -31,11 +31,35 @@ import validators
 import yaml
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import PREFIX_MAP_MODES, SCHEMA_DICT, SCHEMA_YAML
+# from .sssom_datamodel import Mapping as SSSOM_Mapping
+# from .sssom_datamodel import slots
+from sssom_schema import Mapping as SSSOM_Mapping
+from sssom_schema import slots
+
+from .constants import (
+    COMMENT,
+    CONFIDENCE,
+    MAPPING_JUSTIFICATION,
+    MAPPING_SET_ID,
+    MAPPING_SET_SOURCE,
+    MULTIVALUED_SLOTS,
+    OBJECT_CATEGORY,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    OBJECT_SOURCE,
+    PREDICATE_ID,
+    PREDICATE_MODIFIER,
+    PREDICATE_MODIFIER_NOT,
+    PREFIX_MAP_MODES,
+    SCHEMA_DICT,
+    SCHEMA_YAML,
+    SEMAPV,
+    SUBJECT_CATEGORY,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+    SUBJECT_SOURCE,
+)
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
-from .internal_context import multivalued_slots
-from .sssom_datamodel import Mapping as SSSOM_Mapping
-from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -53,27 +77,6 @@ SSSOM_READ_FORMATS = [
 SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
-
-
-# TODO: use sssom_datamodel (Mapping Class)
-SUBJECT_ID = "subject_id"
-SUBJECT_LABEL = "subject_label"
-OBJECT_ID = "object_id"
-OBJECT_LABEL = "object_label"
-PREDICATE_ID = "predicate_id"
-PREDICATE_MODIFIER = "predicate_modifier"
-PREDICATE_MODIFIER_NOT = "Not"
-CONFIDENCE = "confidence"
-SUBJECT_CATEGORY = "subject_category"
-OBJECT_CATEGORY = "object_category"
-SUBJECT_SOURCE = "subject_source"
-OBJECT_SOURCE = "object_source"
-COMMENT = "comment"
-MAPPING_PROVIDER = "mapping_provider"
-MATCH_TYPE = "match_type"
-HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
-MAPPING_SET_ID = "mapping_set_id"
-MAPPING_SET_SOURCE = "mapping_set_source"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
@@ -605,7 +608,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         PREDICATE_ID,
         OBJECT_ID,
         CONFIDENCE,
-        MATCH_TYPE,
+        MAPPING_JUSTIFICATION,
     ]
     negation_subset = normalized_negation_df[columns_of_interest]
     positive_subset = positive_df[columns_of_interest]
@@ -636,7 +639,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
                 & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
-                & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+                & (
+                    combined_normalized_subset[MAPPING_JUSTIFICATION]
+                    == SEMAPV.ManualMappingCuration
+                )
             )
             # In spite of this, if match_condition_1
             # is returning multiple rows, pick any random row from above.
@@ -1090,7 +1096,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
 
-    return slot in multivalued_slots
+    return slot in MULTIVALUED_SLOTS
 
 
 def reconcile_prefix_and_data(
