@@ -300,9 +300,9 @@ injected comments indicating uniqueness to set1 or set2.</p>
 <p>Alternatively, the filenames can be used as table names - these are first stemmed
 E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="simple">
-<dt>Example:</dt><dd><p>sssom dosql -q “SELECT * FROM df1 WHERE confidence&gt;0.5 ORDER BY confidence” my.sssom.tsv</p>
+<dt>Example:</dt><dd><p>sssom dosql -Q “SELECT * FROM df1 WHERE confidence&gt;0.5 ORDER BY confidence” my.sssom.tsv</p>
 </dd>
-<dt>Example:</dt><dd><p><cite>sssom dosql -q “SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id” FROM file1.sssom.tsv file2.sssom.tsv</cite></p>
+<dt>Example:</dt><dd><p><cite>sssom dosql -Q “SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id” FROM file1.sssom.tsv file2.sssom.tsv</cite></p>
 </dd>
 </dl>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom dosql <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...

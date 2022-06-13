@@ -83,9 +83,11 @@
 <span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">URIRef</span>
 <span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">OWL</span><span class="p">,</span> <span class="n">RDF</span>
 
+<span class="c1"># from .sssom_datamodel import slots</span>
+<span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">slots</span>
+
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">SCHEMA_YAML</span>
 <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
-<span class="kn">from</span> <span class="nn">.sssom_datamodel</span> <span class="kn">import</span> <span class="n">slots</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">PREFIX_MAP_KEY</span><span class="p">,</span>
     <span class="n">RDF_FORMATS</span><span class="p">,</span>
@@ -484,7 +486,7 @@
                                         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://example.org/fhir/StructureDefinition/mapping_justification&quot;</span><span class="p">,</span>
                                         <span class="s2">&quot;ValueString&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                                             <span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span>
-                                            <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;match_type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                                            <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
                                         <span class="p">),</span>
                                     <span class="p">}</span>
                                 <span class="p">],</span>

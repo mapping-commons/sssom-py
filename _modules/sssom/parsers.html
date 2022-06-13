@@ -89,12 +89,29 @@
 <span class="kn">from</span> <span class="nn">linkml_runtime.loaders.json_loader</span> <span class="kn">import</span> <span class="n">JSONLoader</span>
 <span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">URIRef</span>
 
+<span class="c1"># from .sssom_datamodel import Mapping, MappingSet</span>
+<span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MappingSet</span>
+
 <span class="kn">from</span> <span class="nn">sssom.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CONFIDENCE</span><span class="p">,</span>
+    <span class="n">CURIE_MAP</span><span class="p">,</span>
     <span class="n">DEFAULT_MAPPING_PROPERTIES</span><span class="p">,</span>
+    <span class="n">LICENSE</span><span class="p">,</span>
+    <span class="n">MAPPING_JUSTIFICATION</span><span class="p">,</span>
+    <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span><span class="p">,</span>
+    <span class="n">MAPPING_SET_ID</span><span class="p">,</span>
     <span class="n">MAPPING_SET_SLOTS</span><span class="p">,</span>
     <span class="n">MAPPING_SLOTS</span><span class="p">,</span>
+    <span class="n">OBJECT_ID</span><span class="p">,</span>
+    <span class="n">OBJECT_SOURCE</span><span class="p">,</span>
+    <span class="n">OBJECT_SOURCE_ID</span><span class="p">,</span>
     <span class="n">OWL_EQUIV_CLASS</span><span class="p">,</span>
+    <span class="n">PREDICATE_ID</span><span class="p">,</span>
     <span class="n">RDFS_SUBCLASS_OF</span><span class="p">,</span>
+    <span class="n">SUBJECT_ID</span><span class="p">,</span>
+    <span class="n">SUBJECT_LABEL</span><span class="p">,</span>
+    <span class="n">SUBJECT_SOURCE</span><span class="p">,</span>
+    <span class="n">SUBJECT_SOURCE_ID</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="p">(</span>
@@ -103,7 +120,6 @@
     <span class="n">add_built_in_prefixes_to_prefix_map</span><span class="p">,</span>
     <span class="n">get_default_metadata</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.sssom_datamodel</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MappingSet</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
@@ -119,10 +135,6 @@
     <span class="n">read_pandas</span><span class="p">,</span>
     <span class="n">to_mapping_set_dataframe</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="c1"># Constants</span>
-<span class="n">MATCH_TYPE_UNSPECIFIED</span> <span class="o">=</span> <span class="s2">&quot;Unspecified&quot;</span>
-
 
 <span class="c1"># * DEPRECATED methods *****************************************</span>
 
@@ -224,18 +236,18 @@
         <span class="k">if</span> <span class="s2">&quot;curie_map&quot;</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">prefix_map</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="s2">&quot;curie_map&quot;</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="s2">&quot;curie_map&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
                             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;SSSOM prefix map </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">sssom_metadata</span><span class="p">[</span><span class="s1">&#39;curie_map&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;SSSOM prefix map </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;conflicts with provided (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">).&quot;</span>
                             <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Externally provided metadata </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is added to metadata set.&quot;</span>
                         <span class="p">)</span>
-                        <span class="n">sssom_metadata</span><span class="p">[</span><span class="s2">&quot;curie_map&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="s2">&quot;curie_map&quot;</span><span class="p">]</span>
+                        <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]</span>
 
     <span class="n">meta_all</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_dataframe</span><span class="p">(</span>
@@ -355,10 +367,10 @@
     <span class="n">license</span> <span class="o">=</span> <span class="n">DEFAULT_LICENSE</span>
     <span class="n">mapping_set_id</span> <span class="o">=</span> <span class="n">DEFAULT_MAPPING_SET_ID</span>
     <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;mapping_set_id&quot;</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">mapping_set_id</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;license&quot;</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">license</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">MAPPING_SET_ID</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">mapping_set_id</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="n">MAPPING_SET_ID</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">LICENSE</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">license</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="n">LICENSE</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">MappingSet</span><span class="p">(</span><span class="n">mapping_set_id</span><span class="o">=</span><span class="n">mapping_set_id</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="n">license</span><span class="p">)</span>
 
 
@@ -427,9 +439,9 @@
 
     <span class="c1"># Need to revisit this solution.</span>
     <span class="c1"># This is to address: A value is trying to be set on a copy of a slice from a DataFrame</span>
-    <span class="k">if</span> <span class="s2">&quot;confidence&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">df2</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\s*$&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df2</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\s*$&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df2</span>
 
     <span class="n">mlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -464,7 +476,6 @@
 
     <span class="n">ms</span> <span class="o">=</span> <span class="n">_init_mapping_set</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">mlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
     <span class="k">for</span> <span class="n">sx</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">ox</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">URI_SSSOM_MAPPINGS</span><span class="p">),</span> <span class="kc">None</span><span class="p">)):</span>
         <span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># TODO replace with g.predicate_objects()</span>
@@ -589,13 +600,13 @@
                             <span class="s2">&quot;Alignment format: xml element said, but not set to yes. Only XML is supported!&quot;</span>
                         <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;onto1&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="s2">&quot;subject_source_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">SUBJECT_SOURCE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;onto2&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="s2">&quot;object_source_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">OBJECT_SOURCE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;uri1&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="s2">&quot;subject_source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">SUBJECT_SOURCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;uri2&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="s2">&quot;object_source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">OBJECT_SOURCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
 
     <span class="n">ms</span><span class="o">.</span><span class="n">mappings</span> <span class="o">=</span> <span class="n">mlist</span>  <span class="c1"># type: ignore</span>
     <span class="n">_set_metadata_in_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
@@ -651,15 +662,15 @@
                                 <span class="n">xref_id</span> <span class="o">=</span> <span class="n">xref</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span>
                                 <span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
                                 <span class="k">try</span><span class="p">:</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
-                                        <span class="n">nid</span><span class="p">,</span> <span class="n">prefix_map</span>
-                                    <span class="p">)</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">nid</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                                         <span class="n">xref_id</span><span class="p">,</span> <span class="n">prefix_map</span>
                                     <span class="p">)</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;oboInOwl:hasDbXref&quot;</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;match_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATCH_TYPE_UNSPECIFIED</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;oboInOwl:hasDbXref&quot;</span>
+                                    <span class="n">mdict</span><span class="p">[</span>
+                                        <span class="n">MAPPING_JUSTIFICATION</span>
+                                    <span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
                                     <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
                                 <span class="k">except</span> <span class="n">NoCURIEException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                                     <span class="c1"># FIXME this will cause all sorts of ragged Mappings</span>
@@ -671,17 +682,19 @@
                                     <span class="n">xref_id</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span>
                                     <span class="n">mdict</span> <span class="o">=</span> <span class="p">{}</span>
                                     <span class="k">try</span><span class="p">:</span>
-                                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                                        <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                                             <span class="n">nid</span><span class="p">,</span> <span class="n">prefix_map</span>
                                         <span class="p">)</span>
-                                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                                        <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                                             <span class="n">xref_id</span><span class="p">,</span> <span class="n">prefix_map</span>
                                         <span class="p">)</span>
-                                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
-                                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                                        <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+                                        <span class="n">mdict</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                                             <span class="n">pred</span><span class="p">,</span> <span class="n">prefix_map</span>
                                         <span class="p">)</span>
-                                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;match_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATCH_TYPE_UNSPECIFIED</span>
+                                        <span class="n">mdict</span><span class="p">[</span>
+                                            <span class="n">MAPPING_JUSTIFICATION</span>
+                                        <span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
                                         <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
                                     <span class="k">except</span> <span class="n">NoCURIEException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                                         <span class="c1"># FIXME this will cause ragged mappings</span>
@@ -693,10 +706,10 @@
                     <span class="n">predicate_id</span> <span class="o">=</span> <span class="n">_get_obographs_predicate_id</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="s2">&quot;pred&quot;</span><span class="p">])</span>
                     <span class="n">object_id</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;obj&quot;</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">predicate_id</span> <span class="ow">in</span> <span class="n">mapping_predicates</span><span class="p">:</span>
-                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">subject_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
-                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">object_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
-                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">predicate_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
-                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;match_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATCH_TYPE_UNSPECIFIED</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">subject_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">object_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">predicate_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">MAPPING_JUSTIFICATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
                         <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
             <span class="k">elif</span> <span class="s2">&quot;equivalentNodesSets&quot;</span> <span class="ow">in</span> <span class="n">g</span> <span class="ow">and</span> <span class="n">OWL_EQUIV_CLASS</span> <span class="ow">in</span> <span class="n">mapping_predicates</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">equivalents</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;equivalentNodesSets&quot;</span><span class="p">]:</span>
@@ -705,14 +718,14 @@
                             <span class="k">for</span> <span class="n">ec2</span> <span class="ow">in</span> <span class="n">equivalents</span><span class="p">[</span><span class="s2">&quot;nodeIds&quot;</span><span class="p">]:</span>
                                 <span class="k">if</span> <span class="n">ec1</span> <span class="o">!=</span> <span class="n">ec2</span><span class="p">:</span>
                                     <span class="n">mdict</span> <span class="o">=</span> <span class="p">{}</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
-                                        <span class="n">ec1</span><span class="p">,</span> <span class="n">prefix_map</span>
-                                    <span class="p">)</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">ec2</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">ec1</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">ec2</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                                         <span class="n">OWL_EQUIV_CLASS</span><span class="p">,</span> <span class="n">prefix_map</span>
                                     <span class="p">)</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;match_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATCH_TYPE_UNSPECIFIED</span>
+                                    <span class="n">mdict</span><span class="p">[</span>
+                                        <span class="n">MAPPING_JUSTIFICATION</span>
+                                    <span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
                                     <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No graphs element in obographs file, wrong format?&quot;</span><span class="p">)</span>
@@ -831,19 +844,19 @@
         <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">nodeType</span> <span class="o">==</span> <span class="n">Node</span><span class="o">.</span><span class="n">ELEMENT_NODE</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">nodeName</span> <span class="o">==</span> <span class="s2">&quot;entity1&quot;</span><span class="p">:</span>
-                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                         <span class="n">child</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s2">&quot;rdf:resource&quot;</span><span class="p">),</span> <span class="n">prefix_map</span>
                     <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">nodeName</span> <span class="o">==</span> <span class="s2">&quot;entity2&quot;</span><span class="p">:</span>
-                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
+                    <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span>
                         <span class="n">child</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s2">&quot;rdf:resource&quot;</span><span class="p">),</span> <span class="n">prefix_map</span>
                     <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">nodeName</span> <span class="o">==</span> <span class="s2">&quot;measure&quot;</span><span class="p">:</span>
-                    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">mdict</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
                 <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">nodeName</span> <span class="o">==</span> <span class="s2">&quot;relation&quot;</span><span class="p">:</span>
                     <span class="n">relation</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">relation</span> <span class="o">==</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">OWL_EQUIV_CLASS</span> <span class="ow">in</span> <span class="n">mapping_predicates</span><span class="p">):</span>
-                        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;owl:equivalentClass&quot;</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;owl:equivalentClass&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">relation</span><span class="si">}</span><span class="s2"> not a recognised relation type.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -853,7 +866,7 @@
             <span class="k">except</span> <span class="n">NoCURIEException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;match_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATCH_TYPE_UNSPECIFIED</span>
+    <span class="n">mdict</span><span class="p">[</span><span class="n">MAPPING_JUSTIFICATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
 
     <span class="n">m</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">_is_valid_mapping</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
@@ -900,9 +913,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span>
-    <span class="n">subject_prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">object_prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">relations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">])</span>
+    <span class="n">subject_prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">object_prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">relations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">split_dataframe_by_prefix</span><span class="p">(</span>
         <span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">,</span>
         <span class="n">subject_prefixes</span><span class="o">=</span><span class="n">subject_prefixes</span><span class="p">,</span>
@@ -934,9 +947,9 @@
                 <span class="n">split_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pre_subj</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">relppost</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">pre_obj</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">dfs</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
-                        <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pre_subj</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
-                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">rel</span><span class="p">)</span>
-                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pre_obj</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+                        <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pre_subj</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">==</span> <span class="n">rel</span><span class="p">)</span>
+                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pre_obj</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
                     <span class="p">]</span>
                 <span class="k">if</span> <span class="n">pre_subj</span> <span class="ow">in</span> <span class="n">prefix_map</span> <span class="ow">and</span> <span class="n">pre_obj</span> <span class="ow">in</span> <span class="n">prefix_map</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">cm</span> <span class="o">=</span> <span class="p">{</span>
