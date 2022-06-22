@@ -4,20 +4,22 @@ import logging
 import os
 from pathlib import Path
 from typing import Optional, TextIO, Union
-
+from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from bioregistry import get_iri
+from sssom_schema import MappingSet
 
 from .constants import (
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    SCHEMA_YAML,
 )
 from .context import (
     get_default_metadata,
     set_default_license,
     set_default_mapping_set_id,
 )
-from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
+from .parsers import get_parsing_function, parse_sssom_table, split_dataframe, to_mapping_set_document
 from .typehints import Metadata
 from .util import (
     is_curie,
@@ -108,10 +110,20 @@ def validate_file(input_path: str) -> bool:
     :returns: True if valid SSSOM, false otherwise.
     """
     try:
-        parse_sssom_table(file_path=input_path)
+        # Two things to check:
+        # 1. All prefixes in the DataFrame are define in prefix_map
+        # 2. All colunms in the DataFrame abide by sssom-schema.
+        msdf = parse_sssom_table(file_path=input_path)
+        # import pdb; pdb.set_trace()
+        msdf.df["object_match_field"] = msdf.df["object_match_field"].apply(lambda x: [x])
+        mapping_set = to_mapping_set_document(msdf).mapping_set
+        validator = JsonSchemaDataValidator(SCHEMA_YAML)
+        # import pdb; pdb.set_trace()
+        # validator.validate_object(mapping_set, MAPPING_SET_CLASS)
+        validator.validate_object(mapping_set, MappingSet)
         return True
     except Exception as e:
-        logging.exception("The file is invalid", e)
+        logging.exception(e)
         return False
 
 
