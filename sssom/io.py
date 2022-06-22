@@ -114,8 +114,8 @@ def validate_file(input_path: str) -> bool:
         # 1. All prefixes in the DataFrame are define in prefix_map
         # 2. All colunms in the DataFrame abide by sssom-schema.
         msdf = parse_sssom_table(file_path=input_path)
-        # import pdb; pdb.set_trace()
         msdf.df["object_match_field"] = msdf.df["object_match_field"].apply(lambda x: [x])
+        # import pdb; pdb.set_trace()
         mapping_set = to_mapping_set_document(msdf).mapping_set
         validator = JsonSchemaDataValidator(SCHEMA_YAML)
         # import pdb; pdb.set_trace()
