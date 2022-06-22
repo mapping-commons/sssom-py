@@ -61,13 +61,17 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
             if type(msdf.metadata[slot]) == list:
                 for s in msdf.metadata[slot]:
                     if get_prefix_from_curie(s) == "":
-                        print(f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}")
-                        # logging.warning(f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}")
+                        print(
+                            f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
+                        )
+                        # raise ValidationError(f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}")
                     prefix_list.append(get_prefix_from_curie(s))
             else:
                 if get_prefix_from_curie(msdf.metadata[slot]) == "":
-                    print(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
-                    # logging.warning(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
+                    print(
+                        f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
+                    )
+                    # raise ValidationError(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
                 prefix_list.append(get_prefix_from_curie(msdf.metadata[slot]))
         else:
             column_prefixes = list(
@@ -78,7 +82,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
                     ]
                 )
             )
-            prefix_list  = prefix_list + column_prefixes
+            prefix_list = prefix_list + column_prefixes
 
     prefix_list = list(set(prefix_list))
 
