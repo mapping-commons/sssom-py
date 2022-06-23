@@ -42,7 +42,7 @@ PREFIX_MAP_MODES = [
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     PREFIX_MAP_MODE_MERGED,
 ]
-
+ENTITY_REFERENCE = "EntityReference"
 
 MULTIVALUED_SLOTS = [
     c for c in SCHEMA_VIEW.all_slots() if SCHEMA_VIEW.get_slot(c).multivalued
@@ -50,7 +50,7 @@ MULTIVALUED_SLOTS = [
 ENTITY_REFERENCE_SLOTS = [
     c
     for c in SCHEMA_VIEW.all_slots()
-    if SCHEMA_VIEW.get_slot(c).range == "EntityReference"
+    if SCHEMA_VIEW.get_slot(c).range == ENTITY_REFERENCE
 ]
 
 # Slot Constants

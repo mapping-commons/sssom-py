@@ -11,7 +11,7 @@ from .constants import ENTITY_REFERENCE_SLOTS, SCHEMA_VIEW, SCHEMA_YAML
 
 
 def json_schema_validate(msdf: MappingSetDataFrame) -> bool:
-    """_summary_
+    """Validate SSSOM files against `sssom-schema` using linkML's validator function.
 
     :param msdf: MappingSetDataFrame.
     :return: Validation result (True/False).
@@ -61,17 +61,21 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
             if type(msdf.metadata[slot]) == list:
                 for s in msdf.metadata[slot]:
                     if get_prefix_from_curie(s) == "":
-                        print(
+                        # print(
+                        #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
+                        # )
+                        raise ValidationError(
                             f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
                         )
-                        # raise ValidationError(f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}")
                     prefix_list.append(get_prefix_from_curie(s))
             else:
                 if get_prefix_from_curie(msdf.metadata[slot]) == "":
-                    print(
+                    # print(
+                    #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
+                    # )
+                    raise ValidationError(
                         f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
                     )
-                    # raise ValidationError(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
                 prefix_list.append(get_prefix_from_curie(msdf.metadata[slot]))
         else:
             column_prefixes = list(
