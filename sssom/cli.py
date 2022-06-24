@@ -198,14 +198,11 @@ def split(input: str, output_directory: str):
 def ptable(input, output: TextIO, inverse_factor):
     """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`_."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
-    logging.warning(
-        f"inverse_factor ({inverse_factor}) ignored by this method, not implemented yet."
-    )
     msdf = parse_sssom_table(input)
     # df = parse(input)
     df = collapse(msdf.df)
     # , priors=list(priors)
-    rows = dataframe_to_ptable(df)
+    rows = dataframe_to_ptable(df, inverse_factor=inverse_factor)
     for row in rows:
         print(*row, sep="\t", file=output)
 
