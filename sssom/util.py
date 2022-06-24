@@ -382,7 +382,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
+def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float):
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
@@ -391,6 +391,8 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
     :raises ValueError: Predicate type value error
     :return: List of rows
     """
+    if not inverse_factor:
+        inverse_factor = 0.5
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
