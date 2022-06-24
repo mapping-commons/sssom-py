@@ -382,7 +382,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float):
+def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
