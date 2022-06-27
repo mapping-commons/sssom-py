@@ -25,7 +25,7 @@ from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
-from sssom.constants import PREFIX_MAP_MODES
+from sssom.constants import PREFIX_MAP_MODES, SchemaValidationType
 from sssom.context import get_default_metadata
 
 from . import __version__
@@ -165,6 +165,7 @@ def parse(
     mapping_predicate_filter: Optional[tuple],
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
+    # TODO: add "--embedded-mode" - boolean
     parse_file(
         input_path=input,
         output=output,
@@ -178,9 +179,13 @@ def parse(
 
 @main.command()
 @input_argument
-def validate(input: str):
+@click.option(
+    "--validation-types", "-V", type=click.Choice(SchemaValidationType), multiple=True
+)
+def validate(input: str, validation_types: tuple):
     """Produce an error report for an SSSOM file."""
-    validate_file(input_path=input)
+    validation_type_list = [t for t in validation_types]
+    validate_file(input_path=input, validation_types=validation_type_list)
 
 
 @main.command()

@@ -131,3 +131,17 @@ class SEMAPV(Enum):
     MappingChaining = "semapv:MappingChaining"
     MappingReview = "semapv:MappingReview"
     ManualMappingCuration = "semapv:ManualMappingCuration"
+
+
+class SchemaValidationType(str, Enum):
+    """Schema validation types."""
+
+    JsonSchema = "JsonSchema"
+    Shacl = "Shacl"
+    PrefixMapCompleteness = "PrefixMapCompleteness"
+
+
+DEFAULT_VALIDATION_TYPES = [
+    SchemaValidationType.JsonSchema,
+    SchemaValidationType.PrefixMapCompleteness,
+]
