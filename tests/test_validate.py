@@ -2,10 +2,11 @@
 
 import unittest
 
-from sssom.constants import SCHEMA_DICT
-from sssom.parsers import parse_sssom_table, to_mapping_set_document
-from sssom.util import sort_df_rows_columns
-from sssom.validators import json_schema_validate
+from jsonschema import ValidationError
+
+from sssom.constants import DEFAULT_VALIDATION_TYPES, SchemaValidationType
+from sssom.parsers import parse_sssom_table
+from sssom.validators import validate
 from tests.constants import data_dir
 
 
@@ -14,9 +15,35 @@ class TestValidate(unittest.TestCase):
 
     def setUp(self) -> None:
         """Test up the test cases with the third basic example."""
-        self.msdf = parse_sssom_table(f"{data_dir}/basic.tsv")
+        self.correct_msdf1 = parse_sssom_table(f"{data_dir}/basic.tsv")
+        self.bad_msdf1 = parse_sssom_table(f"{data_dir}/bad_basic.tsv")
+        self.validation_types = DEFAULT_VALIDATION_TYPES
+        self.shacl_validation_types = [SchemaValidationType.Shacl]
 
-    def test_validate(self):
-        """Test sorting of columns."""
-        valid = json_schema_validate(self.msdf)
-        self.assertTrue(valid)
+    def test_validate_json(self):
+        """Test JSONSchemaValidation."""
+        self.assertIsNone(validate(self.correct_msdf1, self.validation_types))
+
+    def test_validate_json_fail(self):
+        """Test if JSONSchemaValidation fail is as expected."""
+        self.assertRaises(
+            ValidationError, validate, self.bad_msdf1, self.validation_types
+        )
+
+    def test_validate_shacl(self):
+        """Test Shacl validation (Not implemented)."""
+        self.assertRaises(
+            NotImplementedError,
+            validate,
+            self.correct_msdf1,
+            self.shacl_validation_types,
+        )
+
+    def test_validate_sparql(self):
+        """Test Shacl validation (Not implemented)."""
+        self.assertRaises(
+            NotImplementedError,
+            validate,
+            self.correct_msdf1,
+            self.shacl_validation_types,
+        )
