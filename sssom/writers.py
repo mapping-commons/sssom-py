@@ -45,6 +45,8 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
     """Write a mapping set dataframe to the file as a table."""
+
+    # TODO: based on "--embedded-mode" parameter save file a certain way.
     if msdf.df is None:
         raise TypeError
 
