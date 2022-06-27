@@ -828,7 +828,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     if msdf.metadata is not None:
         for k, v in msdf.metadata.items():
             if k != PREFIX_MAP_KEY:
-                ms[k] = _address_multivalued_slot(k, v)
+                ms[k] = _address_multivalued_slot(k, str(v))
 
     return MappingSetDocument(mapping_set=ms, prefix_map=msdf.prefix_map)
 

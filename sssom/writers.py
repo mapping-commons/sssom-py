@@ -45,7 +45,6 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
     """Write a mapping set dataframe to the file as a table."""
-
     # TODO: based on "--embedded-mode" parameter save file a certain way.
     if msdf.df is None:
         raise TypeError
@@ -102,7 +101,6 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
     if serialisation == "json":
         data = to_json(msdf)
         json.dump(data, output, indent=2)
-
     else:
         raise ValueError(
             f"Unknown json format: {serialisation}, currently only json supported"
