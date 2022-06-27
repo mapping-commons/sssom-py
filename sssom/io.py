@@ -3,7 +3,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union
 
 from bioregistry import get_iri
 
@@ -106,7 +106,7 @@ def parse_file(
 
 
 def validate_file(
-    input_path: str, validation_types: list[SchemaValidationType]
+    input_path: str, validation_types: List[SchemaValidationType]
 ) -> None:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 

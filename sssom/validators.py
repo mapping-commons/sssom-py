@@ -1,5 +1,6 @@
 """Validators."""
 
+from typing import List
 from jsonschema import ValidationError
 from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
@@ -12,7 +13,7 @@ from .constants import ENTITY_REFERENCE_SLOTS, SCHEMA_YAML, SchemaValidationType
 
 
 def validate(
-    msdf: MappingSetDataFrame, validation_types: list[SchemaValidationType]
+    msdf: MappingSetDataFrame, validation_types: List[SchemaValidationType]
 ) -> None:
     """Validate SSSOM files against `sssom-schema` using linkML's validator function.
 
