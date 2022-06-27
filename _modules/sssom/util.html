@@ -452,7 +452,7 @@
     <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="dataframe_to_ptable"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.dataframe_to_ptable">[docs]</a><span class="k">def</span> <span class="nf">dataframe_to_ptable</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="dataframe_to_ptable"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.dataframe_to_ptable">[docs]</a><span class="k">def</span> <span class="nf">dataframe_to_ptable</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Export a KBOOM table.</span>
 
 <span class="sd">    :param df: Pandas DataFrame</span>
@@ -461,6 +461,8 @@
 <span class="sd">    :raises ValueError: Predicate type value error</span>
 <span class="sd">    :return: List of rows</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inverse_factor</span><span class="p">:</span>
+        <span class="n">inverse_factor</span> <span class="o">=</span> <span class="mf">0.5</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">collapse</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
