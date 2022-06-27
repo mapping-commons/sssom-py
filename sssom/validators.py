@@ -1,6 +1,7 @@
 """Validators."""
 
 from typing import List
+
 from jsonschema import ValidationError
 from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
