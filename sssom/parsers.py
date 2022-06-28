@@ -288,7 +288,7 @@ def _get_prefix_map_and_metadata(
 def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
     if is_multivalued_slot(k) and v is not None and isinstance(v, str):
         # IF k is multivalued, then v = List[values]
-        return ",".join([s.strip() for s in v.split("|")])
+        return [s.strip() for s in v.split("|")]
     else:
         return v
 
