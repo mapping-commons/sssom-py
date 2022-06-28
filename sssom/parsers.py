@@ -285,10 +285,10 @@ def _get_prefix_map_and_metadata(
     return Metadata(prefix_map=prefix_map, metadata=meta)
 
 
-def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
+def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
     if is_multivalued_slot(k) and v is not None and isinstance(v, str):
         # IF k is multivalued, then v = List[values]
-        return ",".join([s.strip() for s in v.split("|")])
+        return [s.strip() for s in v.split("|")]
     else:
         return v
 
@@ -831,7 +831,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     if msdf.metadata is not None:
         for k, v in msdf.metadata.items():
             if k != PREFIX_MAP_KEY:
-                ms[k] = _address_multivalued_slot(k, str(v))
+                ms[k] = _address_multivalued_slot(k, v)
     return MappingSetDocument(mapping_set=ms, prefix_map=msdf.prefix_map)
 
 

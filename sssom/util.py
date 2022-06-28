@@ -714,13 +714,12 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     with open(SCHEMA_YAML) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
-
     if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
             if k not in msdf.df.columns and k in slots:
                 if k == MAPPING_SET_ID:
                     k = MAPPING_SET_SOURCE
-                msdf.df[k] = v
+                msdf.df[k] = str(v)
     return msdf
 
 
