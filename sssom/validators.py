@@ -8,9 +8,9 @@ from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from sssom_schema import MappingSet
 
 from sssom.parsers import to_mapping_set_document
-from sssom.util import MappingSetDataFrame, get_prefix_from_curie
+from sssom.util import MappingSetDataFrame, get_all_prefixes
 
-from .constants import ENTITY_REFERENCE_SLOTS, SCHEMA_YAML, SchemaValidationType
+from .constants import SCHEMA_YAML, SchemaValidationType
 
 
 def validate(
@@ -78,55 +78,3 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
         raise ValidationError(
             f"The prefixes in {missing_prefixes} are missing from 'curie_map'."
         )
-
-
-def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
-    """Fetch all prefixes in the MappingSetDataFrame.
-
-    :param msdf: MappingSetDataFrame
-    :raises ValidationError: If slot is wrong.
-    :raises ValidationError: If slot is wrong.
-    :return:  List of all prefixes.
-    """
-    prefix_list = []
-    if msdf.metadata and not msdf.df.empty:  # type: ignore
-        metadata_keys = list(msdf.metadata.keys())
-        df_columns_list = msdf.df.columns.to_list()  # type: ignore
-        all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [s for s in all_keys if s in ENTITY_REFERENCE_SLOTS]
-
-        for slot in ent_ref_slots:
-            if slot in metadata_keys:
-                if type(msdf.metadata[slot]) == list:
-                    for s in msdf.metadata[slot]:
-                        if get_prefix_from_curie(s) == "":
-                            # print(
-                            #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
-                            # )
-                            raise ValidationError(
-                                f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
-                            )
-                        prefix_list.append(get_prefix_from_curie(s))
-                else:
-                    if get_prefix_from_curie(msdf.metadata[slot]) == "":
-                        # print(
-                        #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
-                        # )
-                        raise ValidationError(
-                            f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
-                        )
-                    prefix_list.append(get_prefix_from_curie(msdf.metadata[slot]))
-            else:
-                column_prefixes = list(
-                    set(
-                        [
-                            get_prefix_from_curie(s)
-                            for s in list(set(msdf.df[slot].to_list()))  # type: ignore
-                        ]
-                    )
-                )
-                prefix_list = prefix_list + column_prefixes
-
-        prefix_list = list(set(prefix_list))
-
-    return prefix_list
