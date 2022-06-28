@@ -311,10 +311,6 @@ def _get_mdict_ms_and_bad_attrs(
     mdict = {}
 
     for k, v in row.items():
-        if k == "creator_id":
-            import pdb
-
-            pdb.set_trace()
         if v and v == v:
             ok = False
             if k:
