@@ -43,7 +43,7 @@ class TestValidate(unittest.TestCase):
     def test_validate_shacl(self):
         """
         Test Shacl validation (Not implemented).
-        
+
         Validate shacl based on `sssom-schema`.
         """
         self.assertRaises(
