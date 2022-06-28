@@ -288,7 +288,7 @@ def _get_prefix_map_and_metadata(
 def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
     if is_multivalued_slot(k) and v is not None and isinstance(v, str):
         # IF k is multivalued, then v = List[values]
-        return [s.strip() for s in v.split("|")]
+        return ",".join([s.strip() for s in v.split("|")])
     else:
         return v
 
@@ -311,6 +311,10 @@ def _get_mdict_ms_and_bad_attrs(
     mdict = {}
 
     for k, v in row.items():
+        if k == "creator_id":
+            import pdb
+
+            pdb.set_trace()
         if v and v == v:
             ok = False
             if k:
@@ -819,7 +823,6 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
             mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
-
             m = _prepare_mapping(Mapping(**mdict))
             mlist.append(m)
     for k, v in bad_attrs.items():
@@ -829,7 +832,6 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         for k, v in msdf.metadata.items():
             if k != PREFIX_MAP_KEY:
                 ms[k] = _address_multivalued_slot(k, str(v))
-
     return MappingSetDocument(mapping_set=ms, prefix_map=msdf.prefix_map)
 
 
