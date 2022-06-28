@@ -25,7 +25,11 @@ from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
-from sssom.constants import PREFIX_MAP_MODES, SchemaValidationType
+from sssom.constants import (
+    DEFAULT_VALIDATION_TYPES,
+    PREFIX_MAP_MODES,
+    SchemaValidationType,
+)
 from sssom.context import get_default_metadata
 
 from . import __version__
@@ -180,7 +184,11 @@ def parse(
 @main.command()
 @input_argument
 @click.option(
-    "--validation-types", "-V", type=click.Choice(SchemaValidationType), multiple=True
+    "--validation-types",
+    "-V",
+    type=click.Choice(SchemaValidationType),
+    multiple=True,
+    default=DEFAULT_VALIDATION_TYPES,
 )
 def validate(input: str, validation_types: tuple):
     """Produce an error report for an SSSOM file."""
