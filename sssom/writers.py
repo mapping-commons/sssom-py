@@ -29,6 +29,9 @@ from .util import (
     prepare_context_str,
 )
 
+# from sssom.validators import check_all_prefixes_in_curie_map
+
+
 # noinspection PyProtectedMember
 
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
@@ -45,6 +48,7 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
     """Write a mapping set dataframe to the file as a table."""
+    # TODO: based on "--embedded-mode" parameter save file a certain way.
     if msdf.df is None:
         raise TypeError
 
@@ -81,6 +85,7 @@ def write_rdf(
         )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
+    # check_all_prefixes_in_curie_map(msdf)
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     print(t.decode(), file=file)
@@ -100,7 +105,6 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
     if serialisation == "json":
         data = to_json(msdf)
         json.dump(data, output, indent=2)
-
     else:
         raise ValueError(
             f"Unknown json format: {serialisation}, currently only json supported"

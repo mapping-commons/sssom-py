@@ -12,14 +12,14 @@
 #  owl: "http://example.org/owl/"
 #  semapv: "https://w3id.org/semapv/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
-c:something	YYYYY	owl:equivalentClass		b:something	yyyyyy	Lexical	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-d:something	YYYYY	owl:equivalentClass	Not	a:something	yyyyyy	Lexical	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-a:something	XYXYX	owl:equivalentClass		c:something	xyxyxy	Lexical	a	c	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-c:something	YXYXY	owl:equivalentClass		b:something	yxyxyx	HumanCurated	c	b	rdf_matcher	0.845	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-b:something	XXXXX	owl:equivalentClass		a:something	xxxxxx	Lexical	b	a	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-c:something	YYYYY	owl:equivalentClass		d:something	yyyyyy	Lexical	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-c:something	YXYXY	owl:equivalentClass	Not	b:something	yxyxyx	HumanCurated	c	b	rdf_matcher	0.845	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-d:something	XYXYX	owl:equivalentClass		b:something	xyxyxy	Lexical	d	b	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-a:something	XXXXX	owl:subClassOf		b:something	xxxxxx	Lexical	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-d:something	YYYYY	owl:equivalentClass		a:something	yyyyyy	HumanCurated	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
-a:something	XXXXX	owl:subClassOf	Not	b:something	xxxxxx	Lexical	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+c:something	YYYYY	owl:equivalentClass		b:something	yyyyyy	semapv:LexicalMatching	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+d:something	YYYYY	owl:equivalentClass	Not	a:something	yyyyyy	semapv:LexicalMatching	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a:something	XYXYX	owl:equivalentClass		c:something	xyxyxy	semapv:LexicalMatching	a	c	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+c:something	YXYXY	owl:equivalentClass		b:something	yxyxyx	semapv:ManualMappingCuration	c	b	rdf_matcher	0.845	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+b:something	XXXXX	owl:equivalentClass		a:something	xxxxxx	semapv:LexicalMatching	b	a	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+c:something	YYYYY	owl:equivalentClass		d:something	yyyyyy	semapv:LexicalMatching	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+c:something	YXYXY	owl:equivalentClass	Not	b:something	yxyxyx	semapv:ManualMappingCuration	c	b	rdf_matcher	0.845	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+d:something	XYXYX	owl:equivalentClass		b:something	xyxyxy	semapv:LexicalMatching	d	b	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a:something	XXXXX	owl:subClassOf		b:something	xxxxxx	semapv:LexicalMatching	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+d:something	YYYYY	owl:equivalentClass		a:something	yyyyyy	semapv:ManualMappingCuration	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a:something	XXXXX	owl:subClassOf	Not	b:something	xxxxxx	semapv:LexicalMatching	a	b	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data

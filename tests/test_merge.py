@@ -21,7 +21,7 @@ class TestMerge(unittest.TestCase):
     def test_merge_multiple_inputs(self):
         """Test merging of multiple msdfs."""
         merged_msdf = merge_msdf(*self.msdfs)
-        self.assertEqual(66, len(merged_msdf.df))
+        self.assertEqual(123, len(merged_msdf.df))
 
     def test_merge_single_input(self):
         """Test merging when a single msdf is provided."""

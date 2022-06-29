@@ -3,14 +3,17 @@
 import logging
 import os
 from pathlib import Path
-from typing import Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union
 
 from bioregistry import get_iri
+
+from sssom.validators import validate
 
 from .constants import (
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    SchemaValidationType,
 )
 from .context import (
     get_default_metadata,
@@ -99,20 +102,22 @@ def parse_file(
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map()
     write_table(doc, output)
+    # TODO: add "--embedded-mode" - boolean to write_table which is optional.
 
 
-def validate_file(input_path: str) -> bool:
+def validate_file(
+    input_path: str, validation_types: List[SchemaValidationType]
+) -> None:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
     :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
-    :returns: True if valid SSSOM, false otherwise.
+    :param validation_types: A list of validation types to run.
     """
-    try:
-        parse_sssom_table(file_path=input_path)
-        return True
-    except Exception as e:
-        logging.exception("The file is invalid", e)
-        return False
+    # Two things to check:
+    # 1. All prefixes in the DataFrame are define in prefix_map
+    # 2. All columns in the DataFrame abide by sssom-schema.
+    msdf = parse_sssom_table(file_path=input_path)
+    validate(msdf=msdf, validation_types=validation_types)
 
 
 def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
