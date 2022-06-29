@@ -1,0 +1,31 @@
+name: Publish Python Package
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+    
+jobs:
+  build-n-publish:
+    name: Build and publish Python 🐍 distributions 📦 to PyPI
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3.0.2
+
+    - name: Set up Python
+      uses: actions/setup-python@v3.1.2
+      with:
+        python-version: 3.9
+
+    - name: Install pip
+      run: | 
+        pip install --upgrade pip
+        pip install twine
+        python setup.py sdist
+
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.5.0
+      with:
+        user: __token__
+        password: ${{ secrets.SSSOM_TOKEN }}
