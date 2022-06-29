@@ -99,6 +99,9 @@
     <span class="n">prepare_context_str</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="c1"># from sssom.validators import check_all_prefixes_in_curie_map</span>
+
+
 <span class="c1"># noinspection PyProtectedMember</span>
 
 <span class="n">RDF_TYPE</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&quot;</span>
@@ -115,6 +118,7 @@
 
 <div class="viewcode-block" id="write_table"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_table">[docs]</a><span class="k">def</span> <span class="nf">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;tsv&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as a table.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: based on &quot;--embedded-mode&quot; parameter save file a certain way.</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span>
 
@@ -151,6 +155,7 @@
         <span class="p">)</span>
         <span class="n">serialisation</span> <span class="o">=</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
 
+    <span class="c1"># check_all_prefixes_in_curie_map(msdf)</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">serialisation</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
@@ -170,7 +175,6 @@
     <span class="k">if</span> <span class="n">serialisation</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Unknown json format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, currently only json supported&quot;</span>
