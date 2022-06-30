@@ -46,9 +46,13 @@ SSSOM_NS = SSSOM_URI_PREFIX
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
-def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") -> None:
+def write_table(
+    msdf: MappingSetDataFrame,
+    file: TextIO,
+    embedded_mode: bool = True,
+    serialisation="tsv"
+) -> None:
     """Write a mapping set dataframe to the file as a table."""
-    # TODO: based on "--embedded-mode" parameter save file a certain way.
     if msdf.df is None:
         raise TypeError
 
@@ -65,9 +69,18 @@ def write_table(msdf: MappingSetDataFrame, file: TextIO, serialisation="tsv") ->
     lines = yaml.safe_dump(meta).split("\n")
     lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep=sep, index=False)
-    lines = lines + [s]
-    for line in lines:
-        print(line, file=file)
+
+    if embedded_mode:
+        lines = lines + [s]
+        for line in lines:
+            print(line, file=file)
+    else:
+        # Export MSDF as tsv
+        msdf.df.to_csv(file, sep=sep, index=False)
+        # Export Metadata as yaml
+        yml_filepath = file.name.replace("tsv", "yaml")
+        with open(yml_filepath, "w") as y:
+            yaml.safe_dump(meta, y)
 
 
 def write_rdf(
