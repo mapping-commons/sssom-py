@@ -50,7 +50,7 @@ def write_table(
     msdf: MappingSetDataFrame,
     file: TextIO,
     embedded_mode: bool = True,
-    serialisation="tsv"
+    serialisation="tsv",
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
