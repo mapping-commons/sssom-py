@@ -40,3 +40,13 @@ Utils - currently boomer-specific
    :inherited-members:
    :show-inheritance:
       
+
+CLI
+---
+
+Command line Interface
+
+.. automodule:: sssom.cli
+   :members:
+   :inherited-members:
+   :show-inheritance:
