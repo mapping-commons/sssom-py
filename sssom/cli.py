@@ -157,6 +157,15 @@ def convert(input: str, output: TextIO, output_format: str):
     required=True,
     help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
 )
+@click.option(
+    "-E",
+    "--embedded-mode",
+    default=True,
+    is_flag=True,
+    help="If False, the resultant SSSOM file will be saved\
+        in the 'filename'.tsv provided by -o/--output option\
+        AND the metadata gets saved in the 'filename'.yml.",
+)
 @predicate_filter_option
 @output_option
 def parse(
@@ -166,10 +175,10 @@ def parse(
     prefix_map_mode: str,
     clean_prefixes: bool,
     output: TextIO,
+    embedded_mode: bool,
     mapping_predicate_filter: Optional[tuple],
 ):
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
-    # TODO: add "--embedded-mode" - boolean
     parse_file(
         input_path=input,
         output=output,
@@ -177,6 +186,7 @@ def parse(
         metadata_path=metadata,
         prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
+        embedded_mode=embedded_mode,
         mapping_predicate_filter=mapping_predicate_filter,
     )
 
