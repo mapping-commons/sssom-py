@@ -143,13 +143,16 @@ def write_owl(
     print(t.decode(), file=file)
 
 
-def write_ontoportal_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
-    if serialisation == "json":
+def write_ontoportal_json(
+    msdf: MappingSetDataFrame, output: TextIO, serialisation="ontoportal_json"
+) -> None:
+    """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
+    if serialisation == "ontoportal_json":
         data = to_ontoportal_json(msdf)
         json.dump(data, output, indent=2)
     else:
         raise ValueError(
-            f"Unknown json format: {serialisation}, currently only json supported"
+            f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
         )
 
 
