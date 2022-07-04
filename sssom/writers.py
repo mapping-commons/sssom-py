@@ -18,6 +18,7 @@ from sssom_schema import slots
 
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
+from .typehints import PrefixMap
 from .util import (
     PREFIX_MAP_KEY,
     RDF_FORMATS,
@@ -474,6 +475,30 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     json_obj = json.loads(data)
     return json_obj
 
+def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
+    """Convert a mapping set dataframe to a list of ontoportal mapping JSON nbjects."""
+    prefix_map = msdf.prefix_map
+    metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
+    mList = []
+    resolve = lambda x: _resolve_url(x, prefix_map)
+    for row_index, row in msdf.df.iterrows():
+        json_obj = {
+            "classes": [resolve(row["subject_id"]), resolve(row["object_id"])],
+            "subject_source_id": _resolve_prefix(row.get("subject_source", ""), prefix_map),
+            "object_source_id": _resolve_prefix(row.get("object_source", ""), prefix_map),
+            "source_name": metadata.get("mapping_set_id", ""),
+            "source_contact_info": ','.join(metadata.get("creator_id", "")),
+            "date": metadata.get('mapping_date', row.get("mapping_date", "")),
+            "process": {
+                "name": metadata.get("mapping_set_description", ""),
+                "source": resolve(row.get("mapping_justification", "")),
+                "comment": row.get("comment", ""),
+                "relation": [resolve(row["predicate_id"])],
+            }
+        }
+        mList.append(json_obj)
+
+    return mList
 
 # Support methods
 
@@ -554,3 +579,17 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
             f"Unknown table format: {serialisation}, should be one of tsv or csv"
         )
     return sep
+
+def _resolve_url(prefixed_url_str: str, prefix_map: PrefixMap) -> str:
+    if not prefixed_url_str:
+        return prefixed_url_str
+
+    prefix_url = prefixed_url_str.split(":")
+    if len(prefix_url) != 2:
+        return prefixed_url_str
+    else:
+        return _resolve_prefix(prefix_url[0], prefix_map) + prefix_url[1]
+
+
+def _resolve_prefix(prefix_str, prefix_map: PrefixMap) -> str:
+    return prefix_map.get(prefix_str, prefix_str + ":")
