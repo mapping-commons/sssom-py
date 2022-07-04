@@ -536,6 +536,8 @@ def get_writer_function(
         return write_json, output_format
     elif output_format == "fhir_json":
         return write_fhir_json, output_format
+    elif output_format == "ontoportal_json":
+        return write_ontoportal_json, output_format
     elif output_format == "owl":
         return write_owl, SSSOM_DEFAULT_RDF_SERIALISATION
     else:
