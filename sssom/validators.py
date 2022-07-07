@@ -7,6 +7,7 @@ from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from sssom_schema import MappingSet
 
+from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 
@@ -70,6 +71,11 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     :raises ValidationError: If all prefixes not in curie_map.
     """
     prefixes = get_all_prefixes(msdf)
+    prefixes_including_builtins = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    msdf.prefix_map = prefixes_including_builtins
+    # TODO: If prefixes_including_builtins NOT EQUAL to msdf.prefix_map
+    # 1. Raise error OR
+    # 2. Warning stating added builtins.
     missing_prefixes = []
     for pref in prefixes:
         if pref not in list(msdf.prefix_map.keys()):
