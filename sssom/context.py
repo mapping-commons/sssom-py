@@ -72,7 +72,9 @@ def add_built_in_prefixes_to_prefix_map(
             if k not in prefix_map:
                 prefix_map[k] = v
             elif builtinmap[k] != prefix_map[k]:
-                raise ValueError(f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})")
+                raise ValueError(
+                    f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
+                )
     return prefix_map
 
 
