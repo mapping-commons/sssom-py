@@ -8,8 +8,8 @@
 #  b: "http://example.org/b/"
 #  c: "http://example.org/c/"
 #  d: "http://example.org/d/"
-#  rdfs: "http://example.org/rdfs/"
-#  owl: "http://example.org/owl/"
+#  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+#  owl: "http://www.w3.org/2002/07/owl#"
 #  semapv: "https://w3id.org/semapv/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
 c:something	YYYYY	owl:equivalentClass		b:something	yyyyyy	semapv:LexicalMatching	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
