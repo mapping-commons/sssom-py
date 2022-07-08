@@ -14,9 +14,9 @@ tests:
     ct_json_elements: 13
     ct_data_frame_rows: 126
     ct_graph_queries_owl:
-      query_count_equivalent_classes: 79
+      query_count_equivalent_classes: 78
     ct_graph_queries_rdf:
-      query_count_equivalent_classes: 79 
+      query_count_equivalent_classes: 78
   - filename: "cob-to-external.tsv"
     inputformat: "tsv"
     multiple_input: False
