@@ -5,9 +5,9 @@ tests:
     ct_json_elements: 13
     ct_data_frame_rows: 141
     ct_graph_queries_owl:
-      query_count_equivalent_classes: 90
+      query_count_equivalent_classes: 84
     ct_graph_queries_rdf:
-      query_count_equivalent_classes: 90
+      query_count_equivalent_classes: 84
   - filename: "basic2.tsv"
     inputformat: "tsv"
     multiple_input: True

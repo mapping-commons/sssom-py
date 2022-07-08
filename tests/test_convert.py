@@ -34,7 +34,7 @@ class TestConvert(unittest.TestCase):
                 }"""
         )
         size = len(results)
-        self.assertEqual(size, 90)
+        self.assertEqual(size, 84)
 
     def test_cob_to_owl(self):
         """Test converting the COB example to an OWL RDF graph."""
@@ -61,4 +61,4 @@ class TestConvert(unittest.TestCase):
                 }"""
         )
         size = len(results)
-        self.assertEqual(size, 90)
+        self.assertEqual(size, 84)

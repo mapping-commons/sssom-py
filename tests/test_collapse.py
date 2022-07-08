@@ -38,18 +38,18 @@ class TestCollapse(unittest.TestCase):
         """Test the row count after collapsing the dataframe."""
         df = collapse(self.df)
         self.assertEqual(
-            len(df), 91, f"Dataframe should have a different {df.head(10)}"
+            len(df), 98, f"Dataframe should have a different {df.head(10)}"
         )
 
     def test_filter(self):
         """Test the row count after filtering redundant rows."""
         df = filter_redundant_rows(self.df)
-        self.assertEqual(len(df), 91)
+        self.assertEqual(len(df), 97)
 
     def test_ptable(self):
         """Test the row count of the ptable export."""
         rows = dataframe_to_ptable(self.df)
-        self.assertEqual(91, len(rows))
+        self.assertEqual(98, len(rows))
 
     def test_groupings(self):
         """Test the row count after grouping mappings."""
