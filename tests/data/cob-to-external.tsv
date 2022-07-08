@@ -4,6 +4,7 @@
 #  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
 #  skos: "http://www.w3.org/2004/02/skos/core#"
 #  owl: "http://www.w3.org/2002/07/owl#"
+#  semapv: "https://w3id.org/semapv/"
 #  BFO: "http://purl.obolibrary.org/obo/BFO_"
 #  CARO: "http://purl.obolibrary.org/obo/CARO_"
 #  CHEBI: "http://purl.obolibrary.org/obo/CHEBI_"

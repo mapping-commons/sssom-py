@@ -16,6 +16,8 @@ from rdflib.namespace import OWL, RDF
 # from .sssom_datamodel import slots
 from sssom_schema import slots
 
+from sssom.validators import check_all_prefixes_in_curie_map
+
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
 from .util import (
@@ -98,7 +100,7 @@ def write_rdf(
         )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
-    # check_all_prefixes_in_curie_map(msdf)
+    check_all_prefixes_in_curie_map(msdf)
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     print(t.decode(), file=file)

@@ -1,5 +1,6 @@
 """Validators."""
 
+import logging
 from typing import List
 
 from jsonschema import ValidationError
@@ -21,7 +22,6 @@ def validate(
 
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
-    :return: Validation error or None.
     """
     validation_methods = {
         SchemaValidationType.JsonSchema: validate_json_schema,
@@ -29,7 +29,7 @@ def validate(
         SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
     }
     for vt in validation_types:
-        return validation_methods[vt](msdf)
+        validation_methods[vt](msdf)
 
 
 def validate_json_schema(msdf: MappingSetDataFrame) -> None:
@@ -72,10 +72,15 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     """
     prefixes = get_all_prefixes(msdf)
     prefixes_including_builtins = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    uncommon_maps = {
+        k: v
+        for k, v in msdf.prefix_map.items()
+        if k not in prefixes_including_builtins.keys()
+    }
+    if len(uncommon_maps) > 0:
+        logging.info(f"Adding prefixes: {uncommon_maps} to the MapingSetDataFrame.")
     msdf.prefix_map = prefixes_including_builtins
-    # TODO: If prefixes_including_builtins NOT EQUAL to msdf.prefix_map
-    # 1. Raise error OR
-    # 2. Warning that staes we added built-ins.
+
     missing_prefixes = []
     for pref in prefixes:
         if pref not in list(msdf.prefix_map.keys()):
