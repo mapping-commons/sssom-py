@@ -34,7 +34,7 @@ from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, split_file, validate_file
+from .io import convert_file, filter_file, parse_file, split_file, validate_file
 from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -571,6 +571,33 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
+
+
+@main.command()
+@input_argument
+@click.option(
+    "-P",
+    "--prefix",
+    multiple=True,
+    help="Prefixes that need to be filtered.",
+)
+@click.option(
+    "-D",
+    "--predicate",
+    multiple=True,
+    help="Predicates that need to be filtered.",
+)
+@output_option
+def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
+    """Filter mapping file based on prefix and predicates provided.
+
+    :param input: Input mapping file (tsv)
+    :param output: SSSOM TSV file.
+    :param prefix: Prefixes to be retained.
+    :param predicate: Predicates to be retained.
+    """
+    filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
+    write_table(msdf=filtered_msdf, file=output)
 
 
 if __name__ == "__main__":

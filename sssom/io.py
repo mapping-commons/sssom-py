@@ -5,17 +5,22 @@ import os
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
+import pandas as pd
 from bioregistry import get_iri
 
 from sssom.validators import validate
 
 from .constants import (
+    OBJECT_ID,
+    PREDICATE_ID,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    SUBJECT_ID,
     SchemaValidationType,
 )
 from .context import (
+    add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
     set_default_license,
     set_default_mapping_set_id,
@@ -23,6 +28,7 @@ from .context import (
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import (
+    MappingSetDataFrame,
     is_curie,
     is_iri,
     raise_for_bad_path,
@@ -228,3 +234,48 @@ def extract_iri(input, prefix_map) -> list:
             f"skipped from processing."
         )
     return []
+
+
+def filter_file(input: str, prefix: tuple, predicate: tuple) -> MappingSetDataFrame:
+    """Filter mapping file based on prefix and predicates provided.
+
+    :param input: Input mapping file (tsv)
+    :param prefix: Prefixes to be retained.
+    :param predicate: Predicates to be retained.
+    :return: Filtered MappingSetDataFrame.
+    """
+    msdf: MappingSetDataFrame = parse_sssom_table(input)
+    prefix_map = msdf.prefix_map
+    df: pd.DataFrame = msdf.df
+    # Filter prefix_map
+    filtered_prefix_map = {
+        k: v for k, v in prefix_map.items() if k in prefix_map.keys() and k in prefix
+    }
+
+    filtered_predicates = {
+        k: v
+        for k, v in prefix_map.items()
+        if len([x for x in predicate if str(x).startswith(k)]) > 0
+    }
+    filtered_prefix_map.update(filtered_predicates)
+    filtered_prefix_map = add_built_in_prefixes_to_prefix_map(filtered_prefix_map)
+
+    # Filter df based on predicates
+    predicate_filtered_df: pd.DataFrame = df.loc[
+        df[PREDICATE_ID].apply(lambda x: x in predicate)
+    ]
+
+    # Filter df based on prefix_map
+    prefix_keys = tuple(filtered_prefix_map.keys())
+    condition_subj = predicate_filtered_df[SUBJECT_ID].apply(
+        lambda x: str(x).startswith(prefix_keys)
+    )
+    condition_obj = predicate_filtered_df[OBJECT_ID].apply(
+        lambda x: str(x).startswith(prefix_keys)
+    )
+    filtered_df = predicate_filtered_df.loc[condition_subj & condition_obj]
+
+    new_msdf: MappingSetDataFrame = MappingSetDataFrame(
+        df=filtered_df, prefix_map=filtered_prefix_map, metadata=msdf.metadata
+    )
+    return new_msdf
