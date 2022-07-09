@@ -1,0 +1,35 @@
+# comment: .
+# creator_id:
+# - orcid:1234
+# - orcid:5678
+# curie_map:
+#   owl: http://www.w3.org/2002/07/owl#
+#   rdfs: http://www.w3.org/2000/01/rdf-schema#
+#   skos: http://www.w3.org/2004/02/skos/core#
+#   sssom: https://w3id.org/sssom/
+#   x: http://example.org/x/
+#   y: http://example.org/y/
+#   z: http://example.org/z/
+# license: https://creativecommons.org/publicdomain/zero/1.0/
+# mapping_date: '2020-05-30'
+# mapping_set_id: https://w3id.org/sssom/mapping/tests/data/basic.tsv
+# mapping_tool: https://github.com/cmungall/rdf_matcher
+# object_match_field:
+# - rdfs:label
+# object_source: y
+# subject_match_field:
+# - rdfs:label
+# subject_source: z
+subject_id	subject_label	subject_category	predicate_id	predicate_modifier	object_id	object_label	object_category	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	match_string	comment
+x:bone_element	bone element	biolink:AnatomicalEntity	skos:broadMatch		z:bone_element		biolink:AnatomicalEntity	semapv:LexicalMatching	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	UBERON:0001474	.
+x:bone_tissue	bone tissue	biolink:AnatomicalEntity	skos:broadMatch		z:bone_element		biolink:AnatomicalEntity	semapv:LexicalMatching	x	z	rdf_matcher		oio:hasBroadSynonym	oio:hasBroadSynonym	bone	.
+x:bone_tissue	bone tissue	biolink:AnatomicalEntity	owl:subClassOf		y:bone	bones	biolink:AnatomicalEntity	semapv:LexicalMatching	x	y	rdf_matcher	0.534601961	oio:hasBroadSynonym	rdfs:label	bone	.
+x:eye	eye	biolink:AnatomicalEntity	owl:subClassOf		y:eye	eyes	biolink:AnatomicalEntity	semapv:LexicalMatching	x	y	rdf_matcher	0.568874072	rdfs:label	rdfs:label	ey	.
+x:foot	pes	biolink:AnatomicalEntity	skos:broadMatch		y:foot	feet	biolink:AnatomicalEntity	semapv:LexicalMatching	x	y	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	UBERON:0002387	.
+x:hand	manus	biolink:AnatomicalEntity	skos:exactMatch		z:hand		biolink:AnatomicalEntity	semapv:LexicalMatching	x	z	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	UBERON:0002398	.
+x:hand	manus	biolink:AnatomicalEntity	skos:broadMatch		y:hand	hands	biolink:AnatomicalEntity	semapv:LogicalReasoning	x	y	rdf_matcher	0.821262391	oio:hasExactSynonym	rdfs:label	hand	.
+x:hindlimb	hindlimb	biolink:AnatomicalEntity	skos:exactMatch		z:hindlimb	hindlimb	biolink:AnatomicalEntity	semapv:LexicalMatching	x	z	rdf_matcher	0.881856236	rdfs:label	rdfs:label	hindlimb	.
+x:lung	lung	biolink:AnatomicalEntity	skos:exactMatch		y:lung	lungs	biolink:AnatomicalEntity	semapv:UnspecifiedMatching	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	lung	.
+x:region	region	biolink:AnatomicalEntity	skos:exactMatch		y:region	regions	biolink:AnatomicalEntity	semapv:UnspecifiedMatching	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	region	.
+z:organ	ORGAN	biolink:AnatomicalEntity	skos:exactMatch		x:liver	liver	biolink:AnatomicalEntity	semapv:LexicalMatching	z	x	rdf_matcher	0.738796125	oio:hasDbXref	oio:hasDbXref	BAD:ORGAN	.
+
