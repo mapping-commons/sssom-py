@@ -27,6 +27,7 @@ from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
+    MAPPING_SLOTS,
     PREFIX_MAP_MODES,
     SchemaValidationType,
 )
@@ -573,32 +574,51 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     write_table(msdf, output)
 
 
+# @main.command()
+# @input_argument
+# @click.option(
+#     "-P",
+#     "--prefix",
+#     multiple=True,
+#     help="Prefixes that need to be filtered.",
+# )
+# @click.option(
+#     "-D",
+#     "--predicate",
+#     multiple=True,
+#     help="Predicates that need to be filtered.",
+# )
+# @output_option
+# def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
+#     """Filter mapping file based on prefix and predicates provided.
+
+#     :param input: Input mapping file (tsv)
+#     :param output: SSSOM TSV file.
+#     :param prefix: Prefixes to be retained.
+#     :param predicate: Predicates to be retained.
+#     """
+#     filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
+#     write_table(msdf=filtered_msdf, file=output)
+
+
+
+def dynamically_generate_sssom_options(options):
+    def decorator(f):
+        for sssom_slot in reversed(options):
+            
+
+            click.option('--' + sssom_slot, multiple=True)(f)
+        return f
+    return decorator
+
 @main.command()
 @input_argument
-@click.option(
-    "-P",
-    "--prefix",
-    multiple=True,
-    help="Prefixes that need to be filtered.",
-)
-@click.option(
-    "-D",
-    "--predicate",
-    multiple=True,
-    help="Predicates that need to be filtered.",
-)
-@output_option
-def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
-    """Filter mapping file based on prefix and predicates provided.
+@dynamically_generate_sssom_options(MAPPING_SLOTS)
+def filter(input, **kwargs):
+    table = parse_sssom_table(input)
+    params = {k:v for k, v in kwargs.items() if v }
 
-    :param input: Input mapping file (tsv)
-    :param output: SSSOM TSV file.
-    :param prefix: Prefixes to be retained.
-    :param predicate: Predicates to be retained.
-    """
-    filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
-    write_table(msdf=filtered_msdf, file=output)
-
+    import pdb; pdb.set_trace()
 
 if __name__ == "__main__":
     main()
