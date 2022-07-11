@@ -132,6 +132,7 @@
 <span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
 
 <span class="sd">    :param prefix_map: A custom prefix map</span>
+<span class="sd">    :raises ValueError: If there is a prefix map mismatch.</span>
 <span class="sd">    :return: A prefix map</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">builtinmap</span> <span class="o">=</span> <span class="n">get_built_in_prefix_map</span><span class="p">()</span>
@@ -142,7 +143,7 @@
             <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">:</span>
                 <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">elif</span> <span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Built-in prefix </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is specified (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) but differs from default (</span><span class="si">{</span><span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
                 <span class="p">)</span>
     <span class="k">return</span> <span class="n">prefix_map</span></div>
