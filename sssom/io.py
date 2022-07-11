@@ -255,7 +255,7 @@ def filter_file(input: str, prefix: tuple, predicate: tuple) -> MappingSetDataFr
     filtered_predicates = {
         k: v
         for k, v in prefix_map.items()
-        if len([x for x in predicate if str(x).startswith(k)]) > 0
+        if len([x for x in predicate if str(x).startswith(k)]) > 0 # use re.find instead.
     }
     filtered_prefix_map.update(filtered_predicates)
     filtered_prefix_map = add_built_in_prefixes_to_prefix_map(filtered_prefix_map)
