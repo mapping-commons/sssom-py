@@ -72,13 +72,13 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     """
     prefixes = get_all_prefixes(msdf)
     prefixes_including_builtins = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
-    not_built_in = {
+    uncommon_maps = {
         k: v
         for k, v in msdf.prefix_map.items()
         if k not in prefixes_including_builtins.keys()
     }
-    if len(not_built_in) > 0:
-        logging.info(f"Adding prefixes: {not_built_in} to the MapingSetDataFrame.")
+    if len(uncommon_maps) > 0:
+        logging.info(f"Adding prefixes: {uncommon_maps} to the MapingSetDataFrame.")
     msdf.prefix_map = prefixes_including_builtins
 
     missing_prefixes = []
