@@ -8,8 +8,8 @@
 #  b: "http://example.org/b/"
 #  c: "http://example.org/c/"
 #  d: "http://example.org/d/"
-#  rdfs: "http://example.org/rdfs/"
-#  owl: "http://example.org/owl/"
+#  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+#  owl: "http://www.w3.org/2002/07/owl#"
 comment	mapping_tool	subject_label	confidence	object_id	mapping_justification	subject_source	object_source	subject_id	subject_match_field	object_match_field	object_label	subject_category	predicate_modifier	object_category	match_string	predicate_id
 mock data	rdf_matcher	YYYYY	0.81	b:something	Lexical	c	d	c:something	rdfs:label	rdfs:label	yyyyyy	biolink:AnatomicalEntity		biolink:AnatomicalEntity	xxxxx	owl:equivalentClass
 mock data	rdf_matcher	YYYYY	0.82	a:something	Lexical	d	a	d:something	rdfs:label	rdfs:label	yyyyyy	biolink:AnatomicalEntity	Not	biolink:AnatomicalEntity	xxxxx	owl:equivalentClass

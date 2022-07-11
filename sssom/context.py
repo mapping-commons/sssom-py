@@ -62,6 +62,7 @@ def add_built_in_prefixes_to_prefix_map(
     [Auto generated from sssom.yaml by jsonldcontextgen.py]
 
     :param prefix_map: A custom prefix map
+    :raises ValueError: If there is a prefix map mismatch.
     :return: A prefix map
     """
     builtinmap = get_built_in_prefix_map()
@@ -72,7 +73,7 @@ def add_built_in_prefixes_to_prefix_map(
             if k not in prefix_map:
                 prefix_map[k] = v
             elif builtinmap[k] != prefix_map[k]:
-                logging.warning(
+                raise ValueError(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
     return prefix_map
