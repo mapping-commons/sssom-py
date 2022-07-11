@@ -601,24 +601,27 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
 #     write_table(msdf=filtered_msdf, file=output)
 
 
-
 def dynamically_generate_sssom_options(options):
     def decorator(f):
         for sssom_slot in reversed(options):
-            
 
-            click.option('--' + sssom_slot, multiple=True)(f)
+            click.option("--" + sssom_slot, multiple=True)(f)
         return f
+
     return decorator
+
 
 @main.command()
 @input_argument
 @dynamically_generate_sssom_options(MAPPING_SLOTS)
 def filter(input, **kwargs):
     table = parse_sssom_table(input)
-    params = {k:v for k, v in kwargs.items() if v }
+    params = {k: v for k, v in kwargs.items() if v}
 
-    import pdb; pdb.set_trace()
+    import pdb
+
+    pdb.set_trace()
+
 
 if __name__ == "__main__":
     main()
