@@ -33,7 +33,7 @@ from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, run_sql_query, split_file, validate_file
+from .io import convert_file, filter_file, parse_file, run_sql_query, split_file, validate_file
 from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -634,18 +634,7 @@ def filter(input: str, output: TextIO, **kwargs):
     :param output: Output location.
     :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     """
-    params = {k: v for k, v in kwargs.items() if v}
-    query = "SELECT * FROM df WHERE ("
-    multiple_params = True if len(params) > 1 else False
-    for idx, (k, v) in enumerate(params.items(), start=1):
-        query += k + " LIKE '" + v[0] + "' "
-        if len(v) > 1:
-            for exp in v[1:]:
-                query += " OR "
-                query += k + " LIKE '" + exp + "') "
-        if multiple_params and idx != len(params):
-            query += " AND ("
-    run_sql_query(query=query, inputs=[input], output=output)
+    filter_file(input=input, output=output, **kwargs)
 
 
 if __name__ == "__main__":

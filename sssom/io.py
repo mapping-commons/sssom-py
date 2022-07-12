@@ -2,21 +2,19 @@
 
 import logging
 import os
+import re
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
-import pandas as pd
 from bioregistry import get_iri
+from pandasql import sqldf
 
 from sssom.validators import validate
 
 from .constants import (
-    OBJECT_ID,
-    PREDICATE_ID,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
-    SUBJECT_ID,
     SchemaValidationType,
 )
 from .context import (
@@ -236,47 +234,112 @@ def extract_iri(input, prefix_map) -> list:
     return []
 
 
-def filter_file(input: str, prefix: tuple, predicate: tuple) -> MappingSetDataFrame:
-    """Filter mapping file based on prefix and predicates provided.
+# def filter_file(input: str, prefix: tuple, predicate: tuple) -> MappingSetDataFrame:
+#     """Filter mapping file based on prefix and predicates provided.
 
-    :param input: Input mapping file (tsv)
-    :param prefix: Prefixes to be retained.
-    :param predicate: Predicates to be retained.
-    :return: Filtered MappingSetDataFrame.
+#     :param input: Input mapping file (tsv)
+#     :param prefix: Prefixes to be retained.
+#     :param predicate: Predicates to be retained.
+#     :return: Filtered MappingSetDataFrame.
+#     """
+#     msdf: MappingSetDataFrame = parse_sssom_table(input)
+#     prefix_map = msdf.prefix_map
+#     df: pd.DataFrame = msdf.df
+#     # Filter prefix_map
+#     filtered_prefix_map = {
+#         k: v for k, v in prefix_map.items() if k in prefix_map.keys() and k in prefix
+#     }
+
+#     filtered_predicates = {
+#         k: v
+#         for k, v in prefix_map.items()
+#         if len([x for x in predicate if str(x).startswith(k)])
+#         > 0  # use re.find instead.
+#     }
+#     filtered_prefix_map.update(filtered_predicates)
+#     filtered_prefix_map = add_built_in_prefixes_to_prefix_map(filtered_prefix_map)
+
+#     # Filter df based on predicates
+#     predicate_filtered_df: pd.DataFrame = df.loc[
+#         df[PREDICATE_ID].apply(lambda x: x in predicate)
+#     ]
+
+#     # Filter df based on prefix_map
+#     prefix_keys = tuple(filtered_prefix_map.keys())
+#     condition_subj = predicate_filtered_df[SUBJECT_ID].apply(
+#         lambda x: str(x).startswith(prefix_keys)
+#     )
+#     condition_obj = predicate_filtered_df[OBJECT_ID].apply(
+#         lambda x: str(x).startswith(prefix_keys)
+#     )
+#     filtered_df = predicate_filtered_df.loc[condition_subj & condition_obj]
+
+#     new_msdf: MappingSetDataFrame = MappingSetDataFrame(
+#         df=filtered_df, prefix_map=filtered_prefix_map, metadata=msdf.metadata
+#     )
+#     return new_msdf
+
+def run_sql_query(query: str, inputs: List[str], output: TextIO):
+    """Run a SQL query over one or more SSSOM files.
+
+    Each of the N inputs is assigned a table name df1, df2, ..., dfN
+
+    Alternatively, the filenames can be used as table names - these are first stemmed
+    E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
+
+    Example:
+        sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+
+    Example:
+        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
+        FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
+
+    :param query: Query to be executed over a pandas DataFrame (msdf.df).
+    :param inputs: Input files that form the source tables for query.
+    :param output: Output.
     """
-    msdf: MappingSetDataFrame = parse_sssom_table(input)
-    prefix_map = msdf.prefix_map
-    df: pd.DataFrame = msdf.df
-    # Filter prefix_map
-    filtered_prefix_map = {
-        k: v for k, v in prefix_map.items() if k in prefix_map.keys() and k in prefix
-    }
+    n = 1
+    new_msdf = MappingSetDataFrame()
+    while len(inputs) >= n:
+        fn = inputs[n - 1]
+        msdf = parse_sssom_table(fn)
+        df = msdf.df
+        # df = parse(fn)
+        globals()[f"df{n}"] = df
+        tn = re.sub("[.].*", "", Path(fn).stem).lower()
+        globals()[tn] = df
+        n += 1
 
-    filtered_predicates = {
-        k: v
-        for k, v in prefix_map.items()
-        if len([x for x in predicate if str(x).startswith(k)])
-        > 0  # use re.find instead.
-    }
-    filtered_prefix_map.update(filtered_predicates)
-    filtered_prefix_map = add_built_in_prefixes_to_prefix_map(filtered_prefix_map)
-
-    # Filter df based on predicates
-    predicate_filtered_df: pd.DataFrame = df.loc[
-        df[PREDICATE_ID].apply(lambda x: x in predicate)
-    ]
-
-    # Filter df based on prefix_map
-    prefix_keys = tuple(filtered_prefix_map.keys())
-    condition_subj = predicate_filtered_df[SUBJECT_ID].apply(
-        lambda x: str(x).startswith(prefix_keys)
-    )
-    condition_obj = predicate_filtered_df[OBJECT_ID].apply(
-        lambda x: str(x).startswith(prefix_keys)
-    )
-    filtered_df = predicate_filtered_df.loc[condition_subj & condition_obj]
-
-    new_msdf: MappingSetDataFrame = MappingSetDataFrame(
-        df=filtered_df, prefix_map=filtered_prefix_map, metadata=msdf.metadata
-    )
+    new_df = sqldf(query)
+    new_msdf.df = new_df
+    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    new_msdf.metadata = msdf.metadata
+    write_table(new_msdf, output)
     return new_msdf
+
+def filter_file(input: str, output: TextIO, **kwargs):
+    """Filter a dataframe by dynamically generating queries based on user input.
+
+    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
+
+    yields the query:
+
+    "SELECT * FROM df WHERE (subject_id LIKE 'x:%'  OR subject_id LIKE 'y:%')
+     AND (object_id LIKE 'y:%'  OR object_id LIKE 'z:%') " and displays the output.
+
+    :param input: DataFrame to be queried over.
+    :param output: Output location.
+    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    """
+    params = {k: v for k, v in kwargs.items() if v}
+    query = "SELECT * FROM df WHERE ("
+    multiple_params = True if len(params) > 1 else False
+    for idx, (k, v) in enumerate(params.items(), start=1):
+        query += k + " LIKE '" + v[0] + "' "
+        if len(v) > 1:
+            for exp in v[1:]:
+                query += " OR "
+                query += k + " LIKE '" + exp + "') "
+        if multiple_params and idx != len(params):
+            query += " AND ("
+    return run_sql_query(query=query, inputs=[input], output=output)
