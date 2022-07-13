@@ -75,7 +75,7 @@ SSSOM_READ_FORMATS = [
     "tsv",
     "alignment-api-xml",
     "obographs-json",
-    "snomed-complex-map-tsv"
+    "snomed-complex-map-tsv",
 ]
 SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir"]
 

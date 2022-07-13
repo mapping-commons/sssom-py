@@ -5,7 +5,6 @@ import logging
 import re
 import typing
 from collections import Counter
-from dateutil import parser as date_parser
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union, cast
 from urllib.request import urlopen
@@ -16,12 +15,11 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from dateutil import parser as date_parser
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
-
 from sssom_schema import Mapping, MappingSet
-
 
 from sssom.constants import (
     CONFIDENCE,
@@ -266,21 +264,25 @@ def parse_snomed_complex_map_tsv(
     file_path: str,
     prefix_map: Dict[str, str] = None,
     meta: Dict[str, str] = None,
-    filter_by_confident_mappings=True
+    filter_by_confident_mappings=True,
 ) -> MappingSetDataFrame:
     """Parse special SNOMED ICD10CM mapping file and translates it into a MappingSetDataFrame.
 
     :param file_path: The path to the source file
-    :param prefix_map: an optional prefix map
-    :param meta: an optional dictionary of metadata elements
-    :param filter_by_confident_mappings: Will only include mapping rows where the `mapAdvice` field includes an 'ALWAYS
-      <code>' pattern.
+    :param prefix_map: An optional prefix map, defaults to None
+    :param meta: An optional dictionary of metadata elements, defaults to None
+    :param filter_by_confident_mappings: Will only include mapping rows where the
+    `mapAdvice` field includes an 'ALWAYS <code>' pattern., defaults to True
     :return: A SSSOM MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
     df = read_pandas(file_path)
     df2 = from_snomed_complex_map_tsv(
-        df, prefix_map=prefix_map, meta=meta, filter_by_confident_mappings=filter_by_confident_mappings)
+        df,
+        prefix_map=prefix_map,
+        meta=meta,
+        filter_by_confident_mappings=filter_by_confident_mappings,
+    )
     return df2
 
 
@@ -693,7 +695,7 @@ def from_snomed_complex_map_tsv(
     df: pd.DataFrame,
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    filter_by_confident_mappings=True
+    filter_by_confident_mappings=True,
 ) -> MappingSetDataFrame:
     """Convert a snomed_icd10cm_map dataframe to a MappingSetDataFrame.
 
@@ -740,24 +742,32 @@ def from_snomed_complex_map_tsv(
     mapping_justification_snomed_unspecified_id = 447561005
     # - Note: joeflack4: I used this info as a reference for this pattern.
     # https://www.medicalbillingandcoding.org/icd-10-cm/#:~:text=ICD%2D10%2DCM%20is%20a,decimal%20point%20and%20the%20subcategory.
-    always_confidence_pattern = 'ALWAYS [A-Z]{1}[0-9]{1,2}\.[0-9A-Z]{1,4}'
-    always_confidence_antipattern = always_confidence_pattern + '\?'
+    always_confidence_pattern = "ALWAYS [A-Z]{1}[0-9]{1,2}\.[0-9A-Z]{1,4}"
+    always_confidence_antipattern = always_confidence_pattern + "\?"
     prefix_map = _ensure_prefix_map(prefix_map)
     ms = _init_mapping_set(meta)
 
     # Filtering
     if filter_by_confident_mappings:
         df = df[
-            (df['mapAdvice'].str.contains(always_confidence_pattern, regex=True, na=False)) &
-            (~df['mapAdvice'].str.contains(always_confidence_antipattern, regex=True, na=False))]
+            (
+                df["mapAdvice"].str.contains(
+                    always_confidence_pattern, regex=True, na=False
+                )
+            )
+            & (
+                ~df["mapAdvice"].str.contains(
+                    always_confidence_antipattern, regex=True, na=False
+                )
+            )
+        ]
 
     # Map mappings
     mlist: List[Mapping] = []
     for _, row in df.iterrows():
         mdict = {
-            'subject_id': f'SNOMED:{row["referencedComponentId"]}',
-            'subject_label': row['referencedComponentName'],
-
+            "subject_id": f'SNOMED:{row["referencedComponentId"]}',
+            "subject_label": row["referencedComponentName"],
             # 'predicate_id': 'skos:exactMatch',
             # - mapCategoryId: can use for mapping predicate? Or is correlationId more suitable?
             #   or is there a SKOS predicate I can map to in case where predicate is unknown? I think most of these
@@ -777,12 +787,10 @@ def from_snomed_complex_map_tsv(
             #   "IF LISSENCEPHALY TYPE 3 FAMILIAL FETAL AKINESIA SEQUENCE SYNDROME CHOOSE Q04.3 | MAP OF SOURCE CONCEPT
             #   IS CONTEXT DEPENDENT"
             #   "MAP SOURCE CONCEPT CANNOT BE CLASSIFIED WITH AVAILABLE DATA"
-            'predicate_id': f'SNOMED:{row["mapCategoryId"]}',
-            'predicate_label': row['mapCategoryName'],
-
-            'object_id': f'ICD10CM:{row["mapTarget"]}',
-            'object_label': row['mapTargetName'],
-
+            "predicate_id": f'SNOMED:{row["mapCategoryId"]}',
+            "predicate_label": row["mapCategoryName"],
+            "object_id": f'ICD10CM:{row["mapTarget"]}',
+            "object_label": row["mapTargetName"],
             # mapping_justification <- mapRule?
             #   ex: TRUE: when "ALWAYS <code>" is in pipe-delimited list in mapAdvice, this always shows TRUE. Does this
             #       mean I could use skos:exactMatch in these cases?
@@ -795,20 +803,25 @@ def from_snomed_complex_map_tsv(
             # slots.mapping_justification = Slot(uri=SSSOM.mapping_justification, name="mapping_justification", curie=SSSOM.curie('mapping_justification'),
             #                    model_uri=SSSOM.mapping_justification, domain=None, range=Union[str, EntityReference],
             #                    pattern=re.compile(r'^semapv:(MappingReview|ManualMappingCuration|LogicalReasoning|LexicalMatching|CompositeMatching|UnspecifiedMatching|SemanticSimilarityThresholdMatching|LexicalSimilarityThresholdMatching|MappingChaining)$'))
-            'mapping_justification':
-                'Unspecified' if row['correlationId'] == mapping_justification_snomed_unspecified_id else 'Unspecified',
-            'mapping_date': date_parser.parse(str(row['effectiveTime'])).date(),
-            'other': '|'.join([f'{k}={str(row[k])}' for k in [
-                'id',
-                'active',
-                'moduleId',
-                'refsetId',
-                'mapGroup',
-                'mapPriority',
-                'mapRule',
-                'mapAdvice',
-            ]]),
-
+            "mapping_justification": "Unspecified"
+            if row["correlationId"] == mapping_justification_snomed_unspecified_id
+            else "Unspecified",
+            "mapping_date": date_parser.parse(str(row["effectiveTime"])).date(),
+            "other": "|".join(
+                [
+                    f"{k}={str(row[k])}"
+                    for k in [
+                        "id",
+                        "active",
+                        "moduleId",
+                        "refsetId",
+                        "mapGroup",
+                        "mapPriority",
+                        "mapRule",
+                        "mapAdvice",
+                    ]
+                ]
+            ),
             # More fields (https://mapping-commons.github.io/sssom/Mapping/):
             # - subject_category: absent
             # - author_id: can this be "SNOMED"?
