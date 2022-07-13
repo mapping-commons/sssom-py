@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
+import pandas as pd
 from bioregistry import get_iri
 from pandasql import sqldf
 
@@ -333,11 +334,24 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     :param input: DataFrame to be queried over.
     :param output: Output location.
     :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :raises ValueError: If parameter provided is invalid.
     :return: Filtered MappingSetDataFrame object.
     """
     params = {k: v for k, v in kwargs.items() if v}
     query = "SELECT * FROM df WHERE ("
     multiple_params = True if len(params) > 1 else False
+
+    # Check if all params are legit
+    input_df: pd.DataFrame = parse_sssom_table(input).df
+    if not input_df.empty and len(input_df.columns) > 0:
+        column_list = list(input_df.columns)
+    else:
+        raise ValueError(f"{input} is either not a SSSOM TSV file or an empty one.")
+    legit_params = all(p in column_list for p in params)
+    if not legit_params:
+        invalids = [p for p in params if p not in column_list]
+        raise ValueError(f"The params are invalid: {invalids}")
+
     for idx, (k, v) in enumerate(params.items(), start=1):
         query += k + " LIKE '" + v[0] + "' "
         if len(v) > 1:

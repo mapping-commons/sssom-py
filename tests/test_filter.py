@@ -36,3 +36,9 @@ class TestSort(unittest.TestCase):
         self.assertEqual(len(filtered_df), len(validation_msdf.df))
         # Pandas does something weird with assert_frame_equal
         # assert_frame_equal(filtered_df.sort_index(axis=1), validation_msdf.df.sort_index(axis=1), check_like=True)
+
+    def test_filter_fail(self):
+        """Pass invalid param to see if it fails."""
+        kwargs = {"subject_ids": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
+        with self.assertRaises(ValueError):
+            filter_file(input=self.input, output=sys.stdout, **kwargs)
