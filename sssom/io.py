@@ -279,7 +279,8 @@ def extract_iri(input, prefix_map) -> list:
 #     )
 #     return new_msdf
 
-def run_sql_query(query: str, inputs: List[str], output: TextIO):
+
+def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDataFrame:
     """Run a SQL query over one or more SSSOM files.
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
@@ -297,6 +298,7 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO):
     :param query: Query to be executed over a pandas DataFrame (msdf.df).
     :param inputs: Input files that form the source tables for query.
     :param output: Output.
+    :return: Filtered MappingSetDataFrame object.
     """
     n = 1
     new_msdf = MappingSetDataFrame()
@@ -317,7 +319,8 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO):
     write_table(new_msdf, output)
     return new_msdf
 
-def filter_file(input: str, output: TextIO, **kwargs):
+
+def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -330,6 +333,7 @@ def filter_file(input: str, output: TextIO, **kwargs):
     :param input: DataFrame to be queried over.
     :param output: Output location.
     :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :return: Filtered MappingSetDataFrame object.
     """
     params = {k: v for k, v in kwargs.items() if v}
     query = "SELECT * FROM df WHERE ("

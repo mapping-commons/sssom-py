@@ -15,7 +15,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import ChainMap, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
@@ -33,7 +33,14 @@ from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, filter_file, parse_file, run_sql_query, split_file, validate_file
+from .io import (
+    convert_file,
+    filter_file,
+    parse_file,
+    run_sql_query,
+    split_file,
+    validate_file,
+)
 from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -601,7 +608,7 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
 #     write_table(msdf=filtered_msdf, file=output)
 
 
-def dynamically_generate_sssom_options(options) -> str:
+def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
     """Dynamically generate click options.
 
     :param options: List of all possible options.
