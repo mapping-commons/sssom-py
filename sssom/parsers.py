@@ -843,7 +843,7 @@ def from_snomed_complex_map_tsv(
 			#     Example: UBERON:0001062 (The CURIE of the Uberon term for "anatomical entity".)
 			# - object_source: URL of some official page for ICD10CM version used?
 			# - object_source_version: would this be "10CM" as in "ICD10CM"? Or something else? Or nothing?
-			# - mapping_provider: can this be "SNOMED"?
+			# - mapping_provider/mapping_tool: can this be "SNOMED"?
 			# - mapping_cardinality: Could I determine 1:1 or 1:many or many:1 based on:
 			#   mapGroup, mapPriority, mapRule, mapAdvice?
 			# - match_term_type: What is this?
