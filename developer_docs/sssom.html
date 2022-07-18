@@ -46,7 +46,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Technical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="api.html">Python API</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">SSSOM Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sssom-cli-module">sssom.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cli">sssom.cli module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sssom.cliques">sssom.cliques module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sssom.context">sssom.context module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-io-module">sssom.io module</a></li>
@@ -55,7 +55,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sssom-datamodel-module">sssom.sssom_datamodel module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sssom-document-module">sssom.sssom_document module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-util-module">sssom.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sssom-writers-module">sssom.writers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.writers">sssom.writers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sssom">Module contents</a></li>
 </ul>
 </li>
@@ -91,8 +91,35 @@
              
   <section id="sssom-submodules">
 <h1>SSSOM Submodules<a class="headerlink" href="#sssom-submodules" title="Permalink to this heading"></a></h1>
-<section id="sssom-cli-module">
-<h2>sssom.cli module<a class="headerlink" href="#sssom-cli-module" title="Permalink to this heading"></a></h2>
+<section id="module-sssom.cli">
+<span id="sssom-cli-module"></span><h2>sssom.cli module<a class="headerlink" href="#module-sssom.cli" title="Permalink to this heading"></a></h2>
+<p>Command line interface for SSSOM.</p>
+<p>Why does this file exist, and why not put this in <code class="docutils literal notranslate"><span class="pre">__main__</span></code>? You might be tempted to import things from <code class="docutils literal notranslate"><span class="pre">__main__</span></code>
+later, but that will cause problems–the code will get executed twice:</p>
+<ul class="simple">
+<li><p>When you run <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">sssom</span></code> python will execute``__main__.py`` as a script. That means there won’t be any
+<code class="docutils literal notranslate"><span class="pre">sssom.__main__</span></code> in <code class="docutils literal notranslate"><span class="pre">sys.modules</span></code>.</p></li>
+<li><p>When you import __main__ it will get executed again (as a module) because
+there’s no <code class="docutils literal notranslate"><span class="pre">sssom.__main__</span></code> in <code class="docutils literal notranslate"><span class="pre">sys.modules</span></code>.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://click.palletsprojects.com/en/8.0.x/setuptools/">https://click.palletsprojects.com/en/8.0.x/setuptools/</a></p>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.cli.dynamically_generate_sssom_options">
+<span class="sig-prename descclassname"><span class="pre">sssom.cli.</span></span><span class="sig-name descname"><span class="pre">dynamically_generate_sssom_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sssom/cli.html#dynamically_generate_sssom_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.cli.dynamically_generate_sssom_options" title="Permalink to this definition"></a></dt>
+<dd><p>Dynamically generate click options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>options</strong> – List of all possible options.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Click options deduced from user input into parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-sssom.cliques">
 <span id="sssom-cliques-module"></span><h2>sssom.cliques module<a class="headerlink" href="#module-sssom.cliques" title="Permalink to this heading"></a></h2>
@@ -253,6 +280,181 @@
 </section>
 <section id="sssom-io-module">
 <h2>sssom.io module<a class="headerlink" href="#sssom-io-module" title="Permalink to this heading"></a></h2>
+<p>I/O utilities for SSSOM.</p>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">convert_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#convert_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert a file from one format to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_path</strong> – The path to the input SSSOM tsv file</p></li>
+<li><p><strong>output</strong> – The path to the output file. If none is given, will default to using stdout.</p></li>
+<li><p><strong>output_format</strong> – The format to which the the SSSOM TSV should be converted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#extract_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Recursively extracts a list of IRIs from a string or file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – CURIE OR list of CURIEs OR file path containing the same.</p></li>
+<li><p><strong>prefix_map</strong> – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of IRIs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">filter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></span><a class="reference internal" href="../_modules/sssom/io.html#filter_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Filter a dataframe by dynamically generating queries based on user input.</p>
+<p>e.g. sssom filter –subject_id x:% –subject_id y:% –object_id y:% –object_id z:% tests/data/basic.tsv</p>
+<p>yields the query:</p>
+<dl class="simple">
+<dt>“SELECT * FROM df WHERE (subject_id LIKE ‘x:%’  OR subject_id LIKE ‘y:%’)</dt><dd><p>AND (object_id LIKE ‘y:%’  OR object_id LIKE ‘z:%’) ” and displays the output.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – DataFrame to be queried over.</p></li>
+<li><p><strong>output</strong> – Output location.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If parameter provided is invalid.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Filtered MappingSetDataFrame object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_list_of_predicate_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#get_list_of_predicate_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Return a list of IRIs for predicate CURIEs passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predicate_filter</strong> – CURIE OR list of CURIEs OR file path containing the same.</p></li>
+<li><p><strong>prefix_map</strong> – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of IRIs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Metadata</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Load SSSOM metadata from a file, and then augments it with default prefixes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata_path</strong> – The metadata file in YAML format</p></li>
+<li><p><strong>prefix_map_mode</strong> – one of metadata_only, sssom_default_only, merged</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a prefix map dictionary and a metadata object dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">parse_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_prefixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping_predicate_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#parse_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Parse an SSSOM metadata file and write to a table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_path</strong> – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
+<li><p><strong>output</strong> – The path to the output file.</p></li>
+<li><p><strong>input_format</strong> – The string denoting the input format.</p></li>
+<li><p><strong>metadata_path</strong> – The path to a file containing the sssom metadata (including prefix_map)
+to be used during parse.</p></li>
+<li><p><strong>prefix_map_mode</strong> – Defines whether the prefix map in the metadata should be extended or replaced with
+the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged</p></li>
+<li><p><strong>clean_prefixes</strong> – If True (default), records with unknown prefixes are removed from the SSSOM file.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
+:param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">run_sql_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></span><a class="reference internal" href="../_modules/sssom/io.html#run_sql_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Run a SQL query over one or more SSSOM files.</p>
+<p>Each of the N inputs is assigned a table name df1, df2, …, dfN</p>
+<p>Alternatively, the filenames can be used as table names - these are first stemmed
+E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>sssom dosql -Q “SELECT * FROM df1 WHERE confidence&gt;0.5 ORDER BY confidence” my.sssom.tsv</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>sssom dosql -Q “SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id” FROM file1.sssom.tsv file2.sssom.tsv</cite></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Query to be executed over a pandas DataFrame (msdf.df).</p></li>
+<li><p><strong>inputs</strong> – Input files that form the source tables for query.</p></li>
+<li><p><strong>output</strong> – Output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Filtered MappingSetDataFrame object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">split_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#split_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Split an SSSOM TSV by prefixes and relations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_path</strong> – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
+<li><p><strong>output_directory</strong> – The directory to which the split file should be exported.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">SchemaValidationType</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Validate the incoming SSSOM TSV according to the SSSOM specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_path</strong> – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
+<li><p><strong>validation_types</strong> – A list of validation types to run.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-sssom.parsers">
 <span id="sssom-parsers-module"></span><h2>sssom.parsers module<a class="headerlink" href="#module-sssom.parsers" title="Permalink to this heading"></a></h2>
@@ -1209,8 +1411,135 @@ works on the first charcter in the line</p></li>
 </dd></dl>
 
 </section>
-<section id="sssom-writers-module">
-<h2>sssom.writers module<a class="headerlink" href="#sssom-writers-module" title="Permalink to this heading"></a></h2>
+<section id="module-sssom.writers">
+<span id="sssom-writers-module"></span><h2>sssom.writers module<a class="headerlink" href="#module-sssom.writers" title="Permalink to this heading"></a></h2>
+<p>Serialization functions for SSSOM.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.get_writer_function">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">get_writer_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TextIO</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#get_writer_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.get_writer_function" title="Permalink to this definition"></a></dt>
+<dd><p>Get appropriate writer function based on file format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> – Output file</p></li>
+<li><p><strong>output_format</strong> – Output file format, defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Unknown output format</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Type of writer function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_dataframe" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a mapping set dataframe to a dataframe.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.to_fhir_json">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_fhir_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_fhir_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_fhir_json" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a mapping set dataframe to a JSON object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msdf</strong> – MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dict: A Dictionary serializable as JSON.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Resources:</dt><dd><ul class="simple">
+<li><p>ConcpetMap::SSSOM mapping spreadsheet: https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</p></li>
+</ul>
+</dd>
+</dl>
+<p>TODOs
+todo: when/how to conform to R5 instead of R4?: <a class="reference external" href="https://build.fhir.org/conceptmap.html">https://build.fhir.org/conceptmap.html</a>
+TODO: Add additional fields from both specs</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ConceptMap spec fields: <a class="reference external" href="https://www.hl7.org/fhir/r4/conceptmap.html">https://www.hl7.org/fhir/r4/conceptmap.html</a></p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Joe: Can also utilize: /Users/joeflack4/projects/hapi-fhir-jpaserver-starter/_archive/issues/sssom/example_json/minimal.json</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>SSSOM more fields:</p></li>
+<li><p>prefix_map</p></li>
+<li><p>SSSOM spec fields: <a class="reference external" href="https://mapping-commons.github.io/sssom/Mapping/">https://mapping-commons.github.io/sssom/Mapping/</a></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.to_json">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">JsonObj</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_json" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a mapping set dataframe to a JSON object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.to_owl_graph">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_owl_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Graph</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_owl_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_owl_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a mapping set dataframe to OWL in an RDF graph.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.to_rdf_graph">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_rdf_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Graph</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#to_rdf_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_rdf_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a mapping set dataframe to an RDF graph.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_fhir_json">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_fhir_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fhir'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_fhir_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_fhir_json" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as FHIR ConceptMap JSON.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_json">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_json" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as JSON.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_owl">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_owl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'turtle'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_owl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_owl" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as OWL.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_rdf">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_rdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_rdf" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as RDF.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_table">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tsv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_table" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as a table.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.writers.write_tables">
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sssom_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/writers.html#write_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_tables" title="Permalink to this definition"></a></dt>
+<dd><p>Write table from MappingSetDataFrame object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sssom_dict</strong> – Dictionary of MappingSetDataframes</p></li>
+<li><p><strong>output_dir</strong> – The directory in which the derived SSSOM files are written</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-sssom">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sssom" title="Permalink to this heading"></a></h2>

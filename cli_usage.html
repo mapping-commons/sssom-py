@@ -41,7 +41,30 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Quick Install Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sssom">sssom</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-cliquesummary">cliquesummary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-convert">convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-correlations">correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-crosstab">crosstab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-dedupe">dedupe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-diff">diff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-dosql">dosql</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-filter">filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-merge">merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-parse">parse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-partition">partition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-ptable">ptable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-reconcile-prefixes">reconcile-prefixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-rewire">rewire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-sort">sort</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-sparql">sparql</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-split">split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
@@ -77,6 +100,840 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sssom convert -i tests/data/basic.tsv -o basic.ttl
 </pre></div>
 </div>
+<section id="sssom">
+<h2>sssom<a class="headerlink" href="#sssom" title="Permalink to this heading"></a></h2>
+<p>Run the SSSOM CLI.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-v">
+<span id="cmdoption-sssom-verbose"></span><span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-v" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-q">
+<span id="cmdoption-sssom-quiet"></span><span class="sig-name descname"><span class="pre">-q</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--quiet</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quiet&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-q" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-version" title="Permalink to this definition"></a></dt>
+<dd><p>Show the version and exit.</p>
+</dd></dl>
+
+<section id="sssom-cliquesummary">
+<h3>cliquesummary<a class="headerlink" href="#sssom-cliquesummary" title="Permalink to this heading"></a></h3>
+<p>Calculate summaries for each clique in a SSSOM file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom cliquesummary <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-cliquesummary-o">
+<span id="cmdoption-sssom-cliquesummary-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-cliquesummary-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-cliquesummary-m">
+<span id="cmdoption-sssom-cliquesummary-metadata"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--metadata</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;metadata&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-cliquesummary-m" title="Permalink to this definition"></a></dt>
+<dd><p>The path to a file containing the sssom metadata (including prefix_map) to be used.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-cliquesummary-s">
+<span id="cmdoption-sssom-cliquesummary-statsfile"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--statsfile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;statsfile&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-cliquesummary-s" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-cliquesummary-arg-INPUT">
+<span id="cmdoption-sssom-cliquesummary-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-cliquesummary-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-convert">
+<h3>convert<a class="headerlink" href="#sssom-convert" title="Permalink to this heading"></a></h3>
+<p>Convert a file.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>sssom convert my.sssom.tsv –output-format rdfxml –output my.sssom.owl</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom convert <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-convert-o">
+<span id="cmdoption-sssom-convert-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-convert-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-convert-O">
+<span id="cmdoption-sssom-convert-output-format"></span><span class="sig-name descname"><span class="pre">-O</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_format&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-convert-O" title="Permalink to this definition"></a></dt>
+<dd><p>Desired output format, e.g. tsv,rdf,owl,json,fhir</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-convert-arg-INPUT">
+<span id="cmdoption-sssom-convert-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-convert-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-correlations">
+<h3>correlations<a class="headerlink" href="#sssom-correlations" title="Permalink to this heading"></a></h3>
+<p>Calculate correlations.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom correlations <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-correlations-o">
+<span id="cmdoption-sssom-correlations-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-correlations-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-correlations-t">
+<span id="cmdoption-sssom-correlations-transpose"></span><span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--transpose</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transpose&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-correlations-t" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-correlations-f">
+<span id="cmdoption-sssom-correlations-fields"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--fields</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fields&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-correlations-f" title="Permalink to this definition"></a></dt>
+<dd><p>Fields.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-correlations-arg-INPUT">
+<span id="cmdoption-sssom-correlations-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-correlations-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-crosstab">
+<h3>crosstab<a class="headerlink" href="#sssom-crosstab" title="Permalink to this heading"></a></h3>
+<p>Write sssom summary cross-tabulated by categories.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom crosstab <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-crosstab-o">
+<span id="cmdoption-sssom-crosstab-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-crosstab-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-crosstab-t">
+<span id="cmdoption-sssom-crosstab-transpose"></span><span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--transpose</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transpose&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-crosstab-t" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-crosstab-f">
+<span id="cmdoption-sssom-crosstab-fields"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--fields</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fields&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-crosstab-f" title="Permalink to this definition"></a></dt>
+<dd><p>Fields.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-crosstab-arg-INPUT">
+<span id="cmdoption-sssom-crosstab-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-crosstab-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-dedupe">
+<h3>dedupe<a class="headerlink" href="#sssom-dedupe" title="Permalink to this heading"></a></h3>
+<p>Remove lower confidence duplicate lines from an SSSOM file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom dedupe <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-dedupe-o">
+<span id="cmdoption-sssom-dedupe-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-dedupe-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-dedupe-arg-INPUT">
+<span id="cmdoption-sssom-dedupe-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-dedupe-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-diff">
+<h3>diff<a class="headerlink" href="#sssom-diff" title="Permalink to this heading"></a></h3>
+<p>Compare two SSSOM files.</p>
+<p>The output is a new SSSOM file with the union of all mappings, and
+injected comments indicating uniqueness to set1 or set2.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom diff <span class="o">[</span>OPTIONS<span class="o">]</span> INPUTS...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-diff-o">
+<span id="cmdoption-sssom-diff-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-diff-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-diff-arg-INPUTS">
+<span id="cmdoption-sssom-diff-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-diff-arg-INPUTS" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-dosql">
+<h3>dosql<a class="headerlink" href="#sssom-dosql" title="Permalink to this heading"></a></h3>
+<p>Run a SQL query over one or more SSSOM files.</p>
+<p>Each of the N inputs is assigned a table name df1, df2, …, dfN</p>
+<p>Alternatively, the filenames can be used as table names - these are first stemmed
+E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>sssom dosql -Q “SELECT * FROM df1 WHERE confidence&gt;0.5 ORDER BY confidence” my.sssom.tsv</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>sssom dosql -Q “SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id” FROM file1.sssom.tsv file2.sssom.tsv</cite></p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom dosql <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-dosql-Q">
+<span id="cmdoption-sssom-dosql-q"></span><span id="cmdoption-sssom-dosql-query"></span><span class="sig-name descname"><span class="pre">-Q</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--query</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;query&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-dosql-Q" title="Permalink to this definition"></a></dt>
+<dd><p>SQL query. Use “df” as table name.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-dosql-o">
+<span id="cmdoption-sssom-dosql-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-dosql-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-dosql-arg-INPUTS">
+<span id="cmdoption-sssom-dosql-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-dosql-arg-INPUTS" title="Permalink to this definition"></a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-filter">
+<h3>filter<a class="headerlink" href="#sssom-filter" title="Permalink to this heading"></a></h3>
+<p>Filter a dataframe by dynamically generating queries based on user input.</p>
+<p>e.g. sssom filter –subject_id x:% –subject_id y:% –object_id y:% –object_id z:% tests/data/basic.tsv</p>
+<p>yields the query:</p>
+<dl class="simple">
+<dt>“SELECT * FROM df WHERE (subject_id LIKE ‘x:%’  OR subject_id LIKE ‘y:%’)</dt><dd><p>AND (object_id LIKE ‘y:%’  OR object_id LIKE ‘z:%’) ” and displays the output.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">param input</dt>
+<dd class="field-odd"><p>DataFrame to be queried over.</p>
+</dd>
+<dt class="field-even">param output</dt>
+<dd class="field-even"><p>Output location.</p>
+</dd>
+<dt class="field-odd">param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt>
+<dd class="field-odd"><p>Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom filter <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-o">
+<span id="cmdoption-sssom-filter-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_id">
+<span id="cmdoption-sssom-filter-subject-id"></span><span class="sig-name descname"><span class="pre">--subject_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_label">
+<span id="cmdoption-sssom-filter-subject-label"></span><span class="sig-name descname"><span class="pre">--subject_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_category">
+<span id="cmdoption-sssom-filter-subject-category"></span><span class="sig-name descname"><span class="pre">--subject_category</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_category&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-predicate_id">
+<span id="cmdoption-sssom-filter-predicate-id"></span><span class="sig-name descname"><span class="pre">--predicate_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;predicate_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-predicate_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-predicate_label">
+<span id="cmdoption-sssom-filter-predicate-label"></span><span class="sig-name descname"><span class="pre">--predicate_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;predicate_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-predicate_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-predicate_modifier">
+<span id="cmdoption-sssom-filter-predicate-modifier"></span><span class="sig-name descname"><span class="pre">--predicate_modifier</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;predicate_modifier&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-predicate_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_id">
+<span id="cmdoption-sssom-filter-object-id"></span><span class="sig-name descname"><span class="pre">--object_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_label">
+<span id="cmdoption-sssom-filter-object-label"></span><span class="sig-name descname"><span class="pre">--object_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_category">
+<span id="cmdoption-sssom-filter-object-category"></span><span class="sig-name descname"><span class="pre">--object_category</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_category&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-mapping_justification">
+<span id="cmdoption-sssom-filter-mapping-justification"></span><span class="sig-name descname"><span class="pre">--mapping_justification</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_justification&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-mapping_justification" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-author_id">
+<span id="cmdoption-sssom-filter-author-id"></span><span class="sig-name descname"><span class="pre">--author_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;author_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-author_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-author_label">
+<span id="cmdoption-sssom-filter-author-label"></span><span class="sig-name descname"><span class="pre">--author_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;author_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-author_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-reviewer_id">
+<span id="cmdoption-sssom-filter-reviewer-id"></span><span class="sig-name descname"><span class="pre">--reviewer_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;reviewer_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-reviewer_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-reviewer_label">
+<span id="cmdoption-sssom-filter-reviewer-label"></span><span class="sig-name descname"><span class="pre">--reviewer_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;reviewer_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-reviewer_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-creator_id">
+<span id="cmdoption-sssom-filter-creator-id"></span><span class="sig-name descname"><span class="pre">--creator_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;creator_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-creator_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-creator_label">
+<span id="cmdoption-sssom-filter-creator-label"></span><span class="sig-name descname"><span class="pre">--creator_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;creator_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-creator_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-license">
+<span class="sig-name descname"><span class="pre">--license</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;license&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-license" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_type">
+<span id="cmdoption-sssom-filter-subject-type"></span><span class="sig-name descname"><span class="pre">--subject_type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_type&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_source">
+<span id="cmdoption-sssom-filter-subject-source"></span><span class="sig-name descname"><span class="pre">--subject_source</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_source&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_source" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_source_version">
+<span id="cmdoption-sssom-filter-subject-source-version"></span><span class="sig-name descname"><span class="pre">--subject_source_version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_source_version&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_source_version" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_type">
+<span id="cmdoption-sssom-filter-object-type"></span><span class="sig-name descname"><span class="pre">--object_type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_type&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_source">
+<span id="cmdoption-sssom-filter-object-source"></span><span class="sig-name descname"><span class="pre">--object_source</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_source&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_source" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_source_version">
+<span id="cmdoption-sssom-filter-object-source-version"></span><span class="sig-name descname"><span class="pre">--object_source_version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_source_version&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_source_version" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-mapping_provider">
+<span id="cmdoption-sssom-filter-mapping-provider"></span><span class="sig-name descname"><span class="pre">--mapping_provider</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_provider&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-mapping_provider" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-mapping_cardinality">
+<span id="cmdoption-sssom-filter-mapping-cardinality"></span><span class="sig-name descname"><span class="pre">--mapping_cardinality</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_cardinality&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-mapping_cardinality" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-mapping_tool">
+<span id="cmdoption-sssom-filter-mapping-tool"></span><span class="sig-name descname"><span class="pre">--mapping_tool</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_tool&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-mapping_tool" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-mapping_tool_version">
+<span id="cmdoption-sssom-filter-mapping-tool-version"></span><span class="sig-name descname"><span class="pre">--mapping_tool_version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_tool_version&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-mapping_tool_version" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-mapping_date">
+<span id="cmdoption-sssom-filter-mapping-date"></span><span class="sig-name descname"><span class="pre">--mapping_date</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_date&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-mapping_date" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-confidence">
+<span class="sig-name descname"><span class="pre">--confidence</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;confidence&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-confidence" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_match_field">
+<span id="cmdoption-sssom-filter-subject-match-field"></span><span class="sig-name descname"><span class="pre">--subject_match_field</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_match_field&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_match_field" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_match_field">
+<span id="cmdoption-sssom-filter-object-match-field"></span><span class="sig-name descname"><span class="pre">--object_match_field</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_match_field&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_match_field" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-match_string">
+<span id="cmdoption-sssom-filter-match-string"></span><span class="sig-name descname"><span class="pre">--match_string</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;match_string&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-match_string" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-subject_preprocessing">
+<span id="cmdoption-sssom-filter-subject-preprocessing"></span><span class="sig-name descname"><span class="pre">--subject_preprocessing</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_preprocessing&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-subject_preprocessing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-object_preprocessing">
+<span id="cmdoption-sssom-filter-object-preprocessing"></span><span class="sig-name descname"><span class="pre">--object_preprocessing</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_preprocessing&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-object_preprocessing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-semantic_similarity_score">
+<span id="cmdoption-sssom-filter-semantic-similarity-score"></span><span class="sig-name descname"><span class="pre">--semantic_similarity_score</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;semantic_similarity_score&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-semantic_similarity_score" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-semantic_similarity_measure">
+<span id="cmdoption-sssom-filter-semantic-similarity-measure"></span><span class="sig-name descname"><span class="pre">--semantic_similarity_measure</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;semantic_similarity_measure&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-semantic_similarity_measure" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-see_also">
+<span id="cmdoption-sssom-filter-see-also"></span><span class="sig-name descname"><span class="pre">--see_also</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;see_also&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-see_also" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-other">
+<span class="sig-name descname"><span class="pre">--other</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;other&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-other" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-comment">
+<span class="sig-name descname"><span class="pre">--comment</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;comment&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-filter-comment" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-filter-arg-INPUT">
+<span id="cmdoption-sssom-filter-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-filter-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-merge">
+<h3>merge<a class="headerlink" href="#sssom-merge" title="Permalink to this heading"></a></h3>
+<p>Merge multiple MappingSetDataFrames into one .</p>
+<p>if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
+reconcile (if msdf contains a higher confidence _negative_ mapping,
+then remove lower confidence positive one. If confidence is the same,
+prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom merge <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-merge-R">
+<span id="cmdoption-sssom-merge-r"></span><span id="cmdoption-sssom-merge-reconcile"></span><span class="sig-name descname"><span class="pre">-R</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--reconcile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;reconcile&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-merge-R" title="Permalink to this definition"></a></dt>
+<dd><p>Boolean indicating the need for reconciliation of the SSSOM tsv file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-merge-o">
+<span id="cmdoption-sssom-merge-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-merge-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-merge-arg-INPUTS">
+<span id="cmdoption-sssom-merge-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-merge-arg-INPUTS" title="Permalink to this definition"></a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-parse">
+<h3>parse<a class="headerlink" href="#sssom-parse" title="Permalink to this heading"></a></h3>
+<p>Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom parse <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-I">
+<span id="cmdoption-sssom-parse-i"></span><span id="cmdoption-sssom-parse-input-format"></span><span class="sig-name descname"><span class="pre">-I</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--input-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;input_format&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-parse-I" title="Permalink to this definition"></a></dt>
+<dd><p>The string denoting the input format, e.g. tsv,rdf,owl,alignment-api-xml,obographs-json,json</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-m">
+<span id="cmdoption-sssom-parse-metadata"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--metadata</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;metadata&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-parse-m" title="Permalink to this definition"></a></dt>
+<dd><p>The path to a file containing the sssom metadata (including prefix_map) to be used.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-C">
+<span id="cmdoption-sssom-parse-c"></span><span id="cmdoption-sssom-parse-prefix-map-mode"></span><span class="sig-name descname"><span class="pre">-C</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prefix-map-mode</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prefix_map_mode&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-parse-C" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> Defines whether the prefix map in the metadata should be extended or replaced with the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>metadata_only</p>
+</dd>
+<dt class="field-even">Options</dt>
+<dd class="field-even"><p>metadata_only | sssom_default_only | merged</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-p">
+<span id="cmdoption-sssom-parse-clean-prefixes"></span><span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--clean-prefixes</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-parse-p" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> If True (default), records with unknown prefixes are removed from the SSSOM file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-E">
+<span id="cmdoption-sssom-parse-e"></span><span id="cmdoption-sssom-parse-embedded-mode"></span><span class="sig-name descname"><span class="pre">-E</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--embedded-mode</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-parse-E" title="Permalink to this definition"></a></dt>
+<dd><p>If False, the resultant SSSOM file will be saved        in the ‘filename’.tsv provided by -o/–output option        AND the metadata gets saved in the ‘filename’.yml.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-F">
+<span id="cmdoption-sssom-parse-f"></span><span id="cmdoption-sssom-parse-mapping-predicate-filter"></span><span class="sig-name descname"><span class="pre">-F</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--mapping-predicate-filter</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_predicate_filter&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-parse-F" title="Permalink to this definition"></a></dt>
+<dd><p>A list of predicates or a file path containing the list of predicates to be considered.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-o">
+<span id="cmdoption-sssom-parse-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-parse-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-parse-arg-INPUT">
+<span id="cmdoption-sssom-parse-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-parse-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-partition">
+<h3>partition<a class="headerlink" href="#sssom-partition" title="Permalink to this heading"></a></h3>
+<p>Partition an SSSOM into one file for each strongly connected component.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom partition <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>INPUTS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-partition-d">
+<span id="cmdoption-sssom-partition-output-directory"></span><span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output-directory</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_directory&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-partition-d" title="Permalink to this definition"></a></dt>
+<dd><p>Output directory path.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-partition-arg-INPUTS">
+<span id="cmdoption-sssom-partition-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-partition-arg-INPUTS" title="Permalink to this definition"></a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+<section id="sssom-ptable">
+<h3>ptable<a class="headerlink" href="#sssom-ptable" title="Permalink to this heading"></a></h3>
+<p>Convert an SSSOM file to a ptable for kboom/<a class="reference external" href="https://github.com/INCATools/boomer">boomer</a>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom ptable <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-ptable-o">
+<span id="cmdoption-sssom-ptable-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-ptable-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-ptable-W">
+<span id="cmdoption-sssom-ptable-w"></span><span id="cmdoption-sssom-ptable-inverse-factor"></span><span class="sig-name descname"><span class="pre">-W</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--inverse-factor</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;inverse_factor&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-ptable-W" title="Permalink to this definition"></a></dt>
+<dd><p>Inverse factor.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-ptable-arg-INPUT">
+<span id="cmdoption-sssom-ptable-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-ptable-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-reconcile-prefixes">
+<h3>reconcile-prefixes<a class="headerlink" href="#sssom-reconcile-prefixes" title="Permalink to this heading"></a></h3>
+<p>Reconcile prefix_map based on provided YAML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param input</dt>
+<dd class="field-odd"><p>MappingSetDataFrame filename</p>
+</dd>
+<dt class="field-even">param reconcile_prefix_file</dt>
+<dd class="field-even"><p>YAML file containing the prefix reconcilation rules.</p>
+</dd>
+<dt class="field-odd">param output</dt>
+<dd class="field-odd"><p>Target file path.</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom reconcile-prefixes <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-reconcile-prefixes-p">
+<span id="cmdoption-sssom-reconcile-prefixes-reconcile-prefix-file"></span><span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--reconcile-prefix-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;reconcile_prefix_file&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-reconcile-prefixes-p" title="Permalink to this definition"></a></dt>
+<dd><p>Provide YAML file with prefix reconciliation information.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-reconcile-prefixes-o">
+<span id="cmdoption-sssom-reconcile-prefixes-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-reconcile-prefixes-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-reconcile-prefixes-arg-INPUT">
+<span id="cmdoption-sssom-reconcile-prefixes-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-reconcile-prefixes-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-rewire">
+<h3>rewire<a class="headerlink" href="#sssom-rewire" title="Permalink to this heading"></a></h3>
+<p>Rewire an ontology using equivalent classes/properties from a mapping file.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv –precedence PR</p>
+</dd>
+</dl>
+<p># noqa: DAR101</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom rewire <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-rewire-m">
+<span id="cmdoption-sssom-rewire-mapping-file"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--mapping-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_file&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-rewire-m" title="Permalink to this definition"></a></dt>
+<dd><p>Path to SSSOM file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-rewire-I">
+<span id="cmdoption-sssom-rewire-i"></span><span id="cmdoption-sssom-rewire-input-format"></span><span class="sig-name descname"><span class="pre">-I</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--input-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;input_format&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-rewire-I" title="Permalink to this definition"></a></dt>
+<dd><p>Ontology input format.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-rewire-O">
+<span id="cmdoption-sssom-rewire-o"></span><span id="cmdoption-sssom-rewire-output-format"></span><span class="sig-name descname"><span class="pre">-O</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_format&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-rewire-O" title="Permalink to this definition"></a></dt>
+<dd><p>Ontology output format.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-rewire-precedence">
+<span class="sig-name descname"><span class="pre">--precedence</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;precedence&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-rewire-precedence" title="Permalink to this definition"></a></dt>
+<dd><p>List of prefixes in order of precedence.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-rewire-0">
+<span id="cmdoption-sssom-rewire-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-rewire-0" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-rewire-arg-INPUT">
+<span id="cmdoption-sssom-rewire-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-rewire-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-sort">
+<h3>sort<a class="headerlink" href="#sssom-sort" title="Permalink to this heading"></a></h3>
+<p>Sort DataFrame columns canonically.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param input</dt>
+<dd class="field-odd"><p>SSSOM TSV file.</p>
+</dd>
+<dt class="field-even">param by_columns</dt>
+<dd class="field-even"><p>Boolean flag to sort columns canonically.</p>
+</dd>
+<dt class="field-odd">param by_rows</dt>
+<dd class="field-odd"><p>Boolean flag to sort rows by column #1 (ascending order).</p>
+</dd>
+<dt class="field-even">param output</dt>
+<dd class="field-even"><p>SSSOM TSV file with columns sorted.</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom sort <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sort-o">
+<span id="cmdoption-sssom-sort-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sort-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sort-k">
+<span id="cmdoption-sssom-sort-by-columns"></span><span class="sig-name descname"><span class="pre">-k</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--by-columns</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;by_columns&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sort-k" title="Permalink to this definition"></a></dt>
+<dd><p>Sort columns of DataFrame canonically.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sort-r">
+<span id="cmdoption-sssom-sort-by-rows"></span><span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--by-rows</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;by_rows&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sort-r" title="Permalink to this definition"></a></dt>
+<dd><p>Sort rows by DataFrame column #1 (ascending).</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sort-arg-INPUT">
+<span id="cmdoption-sssom-sort-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-sort-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-sparql">
+<h3>sparql<a class="headerlink" href="#sssom-sparql" title="Permalink to this heading"></a></h3>
+<p>Run a SPARQL query.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom sparql <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-c">
+<span id="cmdoption-sssom-sparql-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sparql-c" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-e">
+<span id="cmdoption-sssom-sparql-url"></span><span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sparql-e" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-g">
+<span id="cmdoption-sssom-sparql-graph"></span><span class="sig-name descname"><span class="pre">-g</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--graph</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;graph&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sparql-g" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-object-labels">
+<span id="cmdoption-sssom-sparql-no-object-labels"></span><span class="sig-name descname"><span class="pre">--object-labels</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-object-labels</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-sparql-object-labels" title="Permalink to this definition"></a></dt>
+<dd><p>if set, includes object labels</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-l">
+<span id="cmdoption-sssom-sparql-limit"></span><span class="sig-name descname"><span class="pre">-l</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--limit</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;limit&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sparql-l" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-P">
+<span id="cmdoption-sssom-sparql-p"></span><span id="cmdoption-sssom-sparql-prefix"></span><span class="sig-name descname"><span class="pre">-P</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prefix&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sparql-P" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-sparql-o">
+<span id="cmdoption-sssom-sparql-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-sparql-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+</section>
+<section id="sssom-split">
+<h3>split<a class="headerlink" href="#sssom-split" title="Permalink to this heading"></a></h3>
+<p>Split input file into multiple output broken down by prefixes.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom split <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-split-d">
+<span id="cmdoption-sssom-split-output-directory"></span><span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output-directory</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_directory&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-split-d" title="Permalink to this definition"></a></dt>
+<dd><p>Output directory path.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-split-arg-INPUT">
+<span id="cmdoption-sssom-split-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-split-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-validate">
+<h3>validate<a class="headerlink" href="#sssom-validate" title="Permalink to this heading"></a></h3>
+<p>Produce an error report for an SSSOM file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom validate <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-validate-V">
+<span id="cmdoption-sssom-validate-v"></span><span id="cmdoption-sssom-validate-validation-types"></span><span class="sig-name descname"><span class="pre">-V</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--validation-types</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;validation_types&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-validate-V" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>SchemaValidationType.JsonSchema | SchemaValidationType.Shacl | SchemaValidationType.PrefixMapCompleteness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-validate-arg-INPUT">
+<span id="cmdoption-sssom-validate-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-validate-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+</section>
 </section>
 
 
