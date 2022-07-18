@@ -13,6 +13,7 @@ from pandasql import sqldf
 from sssom.validators import validate
 
 from .constants import (
+    MAPPING_SET_SLOTS,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
@@ -361,3 +362,32 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
         if multiple_params and idx != len(params):
             query += " AND ("
     return run_sql_query(query=query, inputs=[input], output=output)
+
+
+def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
+    """Annotate a file i.e. add custom metadata to the mapping set.
+
+    :param input: DataFrame to be queried over.
+    :param output: Output location.
+    :param **kwargs: Options provided by user
+        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
+    :raises ValueError: If parameter provided is invalid.
+    :return: Annotated MappingSetDataFrame object.
+    """
+    params = {k: v for k, v in kwargs.items() if v}
+    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
+    if not legit_params:
+        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
+        raise ValueError(
+            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
+        )
+
+    input_msdf = parse_sssom_table(input)
+    if input_msdf.metadata:
+        for k, v in params.items():
+            if len(v) <= 1:
+                input_msdf.metadata[k] = v[0]
+            else:
+                input_msdf.metadata[k] = list(v)
+        write_table(input_msdf, output)
+    return input_msdf

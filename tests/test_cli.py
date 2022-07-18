@@ -7,6 +7,7 @@ from typing import Mapping
 from click.testing import CliRunner, Result
 
 from sssom.cli import (
+    annotate,
     cliquesummary,
     convert,
     correlations,
@@ -62,6 +63,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_dosql(runner, test)
                     self.run_sort_rows_columns(runner, test)
                     self.run_filter(runner, test)
+                    self.run_annotate(runner, test)
 
         self.assertTrue(len(test_cases) > 2)
 
@@ -294,7 +296,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         return result
 
     def run_filter(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
-        """Test sorting of DataFrame columns."""
+        """Test filtering of DataFrame columns."""
         out_file = os.path.join(test_out_dir, "filter_test.tsv")
         in_file = test_case.filepath
         result = runner.invoke(
@@ -311,6 +313,25 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 "y:%",
                 "--object_id",
                 "z:%",
+            ],
+        )
+        self.run_successful(result, test_case)
+        return result
+
+    def run_annotate(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Test annotation of mapping set metadata."""
+        out_file = os.path.join(test_out_dir, "test_annotate.tsv")
+        in_file = test_case.filepath
+        result = runner.invoke(
+            annotate,
+            [
+                in_file,
+                "-o",
+                os.path.join(test_out_dir, out_file),
+                "--mapping_set_id",
+                "http://w3id.org/my/mapping.sssom.tsv",
+                "--mapping_set_version",
+                "2021-01-01",
             ],
         )
         self.run_successful(result, test_case)

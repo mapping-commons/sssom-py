@@ -25,6 +25,7 @@ from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
+    MAPPING_SET_SLOTS,
     MAPPING_SLOTS,
     PREFIX_MAP_MODES,
     SchemaValidationType,
@@ -34,6 +35,7 @@ from sssom.context import get_default_metadata
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
 from .io import (
+    annotate_file,
     convert_file,
     filter_file,
     parse_file,
@@ -642,6 +644,21 @@ def filter(input: str, output: TextIO, **kwargs):
     :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     """
     filter_file(input=input, output=output, **kwargs)
+
+
+@main.command()
+@input_argument
+@output_option
+@dynamically_generate_sssom_options(MAPPING_SET_SLOTS)
+def annotate(input: str, output: TextIO, **kwargs):
+    """Annotate metadata of a mapping set.
+
+    :param input: Input path of the SSSOM tsv file.
+    :param output: Output location.
+    :param **kwargs: Options provided by user
+        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
+    """
+    annotate_file(input=input, output=output, **kwargs)
 
 
 if __name__ == "__main__":
