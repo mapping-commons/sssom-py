@@ -14,6 +14,7 @@ from sssom.cli import (
     dedupe,
     diff,
     dosql,
+    filter,
     merge,
     parse,
     partition,
@@ -60,6 +61,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_reconcile_prefix(runner, test)
                     self.run_dosql(runner, test)
                     self.run_sort_rows_columns(runner, test)
+                    self.run_filter(runner, test)
 
         self.assertTrue(len(test_cases) > 2)
 
@@ -286,6 +288,29 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 True,
                 "-r",
                 True,
+            ],
+        )
+        self.run_successful(result, test_case)
+        return result
+
+    def run_filter(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Test sorting of DataFrame columns."""
+        out_file = os.path.join(test_out_dir, "filter_test.tsv")
+        in_file = test_case.filepath
+        result = runner.invoke(
+            filter,
+            [
+                in_file,
+                "-o",
+                os.path.join(test_out_dir, out_file),
+                "--subject_id",
+                "x:%",
+                "--subject_id",
+                "y:%",
+                "--object_id",
+                "y:%",
+                "--object_id",
+                "z:%",
             ],
         )
         self.run_successful(result, test_case)

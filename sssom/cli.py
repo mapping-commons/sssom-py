@@ -13,20 +13,19 @@ later, but that will cause problems--the code will get executed twice:
 
 import logging
 import os
-import re
 import sys
 from pathlib import Path
-from typing import ChainMap, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
 import yaml
-from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
+    MAPPING_SLOTS,
     PREFIX_MAP_MODES,
     SchemaValidationType,
 )
@@ -34,7 +33,14 @@ from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, split_file, validate_file
+from .io import (
+    convert_file,
+    filter_file,
+    parse_file,
+    run_sql_query,
+    split_file,
+    validate_file,
+)
 from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -111,14 +117,15 @@ predicate_filter_option = click.option(
 @click.version_option(__version__)
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
+    logger = logging.getLogger()
     if verbose >= 2:
-        logging.basicConfig(level=logging.DEBUG)
+        logger.setLevel(level=logging.DEBUG)
     elif verbose == 1:
-        logging.basicConfig(level=logging.INFO)
+        logger.setLevel(level=logging.INFO)
     else:
-        logging.basicConfig(level=logging.WARNING)
+        logger.setLevel(level=logging.WARNING)
     if quiet:
-        logging.basicConfig(level=logging.ERROR)
+        logger.setLevel(level=logging.ERROR)
 
 
 @main.command()
@@ -265,23 +272,24 @@ def dosql(query: str, inputs: List[str], output: TextIO):
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
-    n = 1
-    new_msdf = MappingSetDataFrame()
-    while len(inputs) >= n:
-        fn = inputs[n - 1]
-        msdf = parse_sssom_table(fn)
-        df = msdf.df
-        # df = parse(fn)
-        globals()[f"df{n}"] = df
-        tn = re.sub("[.].*", "", Path(fn).stem).lower()
-        globals()[tn] = df
-        n += 1
+    run_sql_query(query=query, inputs=inputs, output=output)
+    # n = 1
+    # new_msdf = MappingSetDataFrame()
+    # while len(inputs) >= n:
+    #     fn = inputs[n - 1]
+    #     msdf = parse_sssom_table(fn)
+    #     df = msdf.df
+    #     # df = parse(fn)
+    #     globals()[f"df{n}"] = df
+    #     tn = re.sub("[.].*", "", Path(fn).stem).lower()
+    #     globals()[tn] = df
+    #     n += 1
 
-    new_df = sqldf(query)
-    new_msdf.df = new_df
-    new_msdf.prefix_map = msdf.prefix_map
-    new_msdf.metadata = msdf.metadata
-    write_table(new_msdf, output)
+    # new_df = sqldf(query)
+    # new_msdf.df = new_df
+    # new_msdf.prefix_map = msdf.prefix_map
+    # new_msdf.metadata = msdf.metadata
+    # write_table(new_msdf, output)
 
 
 @main.command()
@@ -571,6 +579,69 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
+
+
+# @main.command()
+# @input_argument
+# @click.option(
+#     "-P",
+#     "--prefix",
+#     multiple=True,
+#     help="Prefixes that need to be filtered.",
+# )
+# @click.option(
+#     "-D",
+#     "--predicate",
+#     multiple=True,
+#     help="Predicates that need to be filtered.",
+# )
+# @output_option
+# def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
+#     """Filter mapping file based on prefix and predicates provided.
+
+#     :param input: Input mapping file (tsv)
+#     :param output: SSSOM TSV file.
+#     :param prefix: Prefixes to be retained.
+#     :param predicate: Predicates to be retained.
+#     """
+#     filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
+#     write_table(msdf=filtered_msdf, file=output)
+
+
+def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
+    """Dynamically generate click options.
+
+    :param options: List of all possible options.
+    :return: Click options deduced from user input into parameters.
+    """
+
+    def decorator(f):
+        for sssom_slot in reversed(options):
+            click.option("--" + sssom_slot, multiple=True)(f)
+        return f
+
+    return decorator
+
+
+@main.command()
+@input_argument
+@output_option
+@dynamically_generate_sssom_options(MAPPING_SLOTS)
+def filter(input: str, output: TextIO, **kwargs):
+    """Filter a dataframe by dynamically generating queries based on user input.
+
+    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
+
+    yields the query:
+
+    "SELECT * FROM df WHERE (subject_id LIKE 'x:%'  OR subject_id LIKE 'y:%')
+     AND (object_id LIKE 'y:%'  OR object_id LIKE 'z:%') " and displays the output.
+
+    :param input: DataFrame to be queried over.
+    :param output: Output location.
+    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    """
+    filter_file(input=input, output=output, **kwargs)
 
 
 if __name__ == "__main__":
