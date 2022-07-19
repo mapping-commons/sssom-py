@@ -1256,7 +1256,7 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
     """Augment metadata with parameters passed.
 
     :param msdf: MappingSetDataFrame (MSDF) object.
-    :param params: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
     :return: MSDF with updated metadata.
     """
     if msdf.metadata:
