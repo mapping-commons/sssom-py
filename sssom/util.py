@@ -1267,9 +1267,11 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
                 elif isinstance(msdf.metadata[v], list):
                     msdf.metadata[k] = msdf.metadata[k].append(v)
                 else:
-                    raise ValueError(f"{k} is of type {type(msdf.metadata[k])} and \
-                        as of now only slots of type 'str' or 'list' are handled.")
+                    raise ValueError(
+                        f"{k} is of type {type(msdf.metadata[k])} and \
+                        as of now only slots of type 'str' or 'list' are handled."
+                    )
             else:
                 msdf.metadata[k] = v[0]
-            
+
     return msdf
