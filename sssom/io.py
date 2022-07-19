@@ -376,6 +376,11 @@ def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     :return: Annotated MappingSetDataFrame object.
     """
     params = {k: v for k, v in kwargs.items() if v}
+
+    empty_params = {k: v for k, v in kwargs.items() if v is None or v == ""}
+    if len(empty_params) > 0:
+        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
+
     legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
     if not legit_params:
         invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
