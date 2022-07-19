@@ -1261,8 +1261,15 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
     """
     if msdf.metadata:
         for k, v in meta.items():
-            if len(v) == 1:
-                msdf.metadata[k] = v[0]
+            if k in MULTIVALUED_SLOTS:
+                if isinstance(msdf.metadata[v], str):
+                    msdf.metadata[k] = list(msdf.metadata[k]).append(v)
+                elif isinstance(msdf.metadata[v], list):
+                    msdf.metadata[k] = msdf.metadata[k].append(v)
+                else:
+                    raise ValueError(f"{k} is of type {type(msdf.metadata[k])} and \
+                        as of now only slots of type 'str' or 'list' are handled.")
             else:
-                msdf.metadata[k] = list(v)
+                msdf.metadata[k] = v[0]
+            
     return msdf
