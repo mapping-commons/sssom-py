@@ -1250,3 +1250,19 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         prefix_list = list(set(prefix_list))
 
     return prefix_list
+
+
+def augment_metadata(msdf: MappingSetDataFrame, params: dict) -> MappingSetDataFrame:
+    """Augment metadata with parameters passed.
+
+    :param msdf: MappingSetDataFrame (MSDF) object.
+    :param params: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :return: MSDF with updated metadata.
+    """
+    if msdf.metadata:
+        for k, v in params.items():
+            if len(v) == 1:
+                msdf.metadata[k] = v[0]
+            else:
+                msdf.metadata[k] = list(v)
+    return msdf

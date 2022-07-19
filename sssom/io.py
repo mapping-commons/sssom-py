@@ -29,6 +29,7 @@ from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import (
     MappingSetDataFrame,
+    augment_metadata,
     is_curie,
     is_iri,
     raise_for_bad_path,
@@ -367,7 +368,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     """Annotate a file i.e. add custom metadata to the mapping set.
 
-    :param input: DataFrame to be queried over.
+    :param input: SSSOM tsv file to be queried over.
     :param output: Output location.
     :param **kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
@@ -383,11 +384,6 @@ def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
         )
 
     input_msdf = parse_sssom_table(input)
-    if input_msdf.metadata:
-        for k, v in params.items():
-            if len(v) <= 1:
-                input_msdf.metadata[k] = v[0]
-            else:
-                input_msdf.metadata[k] = list(v)
-        write_table(input_msdf, output)
-    return input_msdf
+    msdf = augment_metadata(input_msdf, params)
+    write_table(msdf, output)
+    return msdf
