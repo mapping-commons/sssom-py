@@ -1262,6 +1262,7 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
     """
     if msdf.metadata:
         for k, v in meta.items():
+            # If slot is multivalued, add to list.
             if k in MULTIVALUED_SLOTS:
                 tmp_value: list = []
                 if isinstance(msdf.metadata[k], str):
