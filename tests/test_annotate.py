@@ -33,6 +33,22 @@ class TestSort(unittest.TestCase):
         self.assertEqual(annotated_msdf.prefix_map, validation_msdf.prefix_map)
         self.assertEqual(len(annotated_msdf.df), len(validation_msdf.df))
 
+    def test_annotate_multivalued(self):
+        """Test annotation of metadata which are multivalued."""
+        kwargs = {
+            "creator_id": ("orcid:0123",),
+        }
+        annotated_msdf = annotate_file(input=self.input, output=sys.stdout, **kwargs)
+
+        self.assertTrue(len(annotated_msdf.metadata["creator_id"]), 3)
+
+        # Pass same ORCID.
+        kwargs = {
+            "creator_id": ("orcid:1234",),
+        }
+        annotated_msdf_2 = annotate_file(input=self.input, output=sys.stdout, **kwargs)
+        self.assertTrue(len(annotated_msdf_2.metadata["creator_id"]), 2)
+
     def test_annotate_fail(self):
         """Pass invalid param to see if it fails."""
         kwargs = {"abcd": ("x:%", "y:%")}

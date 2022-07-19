@@ -1257,20 +1257,24 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
 
     :param msdf: MappingSetDataFrame (MSDF) object.
     :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :raises ValueError: If type of slot is neither str nor list.
     :return: MSDF with updated metadata.
     """
     if msdf.metadata:
         for k, v in meta.items():
             if k in MULTIVALUED_SLOTS:
-                if isinstance(msdf.metadata[v], str):
-                    msdf.metadata[k] = list(msdf.metadata[k]).append(v)
-                elif isinstance(msdf.metadata[v], list):
-                    msdf.metadata[k] = msdf.metadata[k].append(v)
+                tmp_value: list = []
+                if isinstance(msdf.metadata[k], str):
+                    tmp_value = [msdf.metadata[k]]
+                elif isinstance(msdf.metadata[k], list):
+                    tmp_value = msdf.metadata[k]
                 else:
                     raise ValueError(
                         f"{k} is of type {type(msdf.metadata[k])} and \
                         as of now only slots of type 'str' or 'list' are handled."
                     )
+                tmp_value.extend(v)
+                msdf.metadata[k] = list(set(tmp_value))
             else:
                 msdf.metadata[k] = v[0]
 
