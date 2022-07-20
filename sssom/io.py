@@ -13,7 +13,6 @@ from pandasql import sqldf
 from sssom.validators import validate
 
 from .constants import (
-    MAPPING_SET_SLOTS,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
@@ -29,6 +28,7 @@ from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import (
     MappingSetDataFrame,
+    are_params_slots,
     augment_metadata,
     is_curie,
     is_iri,
@@ -372,22 +372,10 @@ def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     :param output: Output location.
     :param **kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
-    :raises ValueError: If parameter provided is invalid.
     :return: Annotated MappingSetDataFrame object.
     """
     params = {k: v for k, v in kwargs.items() if v}
-
-    empty_params = {k: v for k, v in kwargs.items() if v is None or v == ""}
-    if len(empty_params) > 0:
-        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
-
-    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
-    if not legit_params:
-        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
-        raise ValueError(
-            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
-        )
-
+    are_params_slots(params)
     input_msdf = parse_sssom_table(input)
     msdf = augment_metadata(input_msdf, params)
     write_table(msdf, output)

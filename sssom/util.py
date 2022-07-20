@@ -43,6 +43,7 @@ from .constants import (
     ENTITY_REFERENCE_SLOTS,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
+    MAPPING_SET_SLOTS,
     MAPPING_SET_SOURCE,
     MULTIVALUED_SLOTS,
     OBJECT_CATEGORY,
@@ -1260,6 +1261,8 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
     :raises ValueError: If type of slot is neither str nor list.
     :return: MSDF with updated metadata.
     """
+    are_params_slots(meta)
+
     if msdf.metadata:
         for k, v in meta.items():
             # If slot is multivalued, add to list.
@@ -1280,3 +1283,23 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
                 msdf.metadata[k] = v[0]
 
     return msdf
+
+
+def are_params_slots(params: dict) -> bool:
+    """Check if parameters conform to the slots in MAPPING_SET_SLOTS.
+
+    :param params: Dictionary of parameters.
+    :raises ValueError: If params are not slots.
+    :return: True/False
+    """
+    empty_params = {k: v for k, v in params.items() if v is None or v == ""}
+    if len(empty_params) > 0:
+        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
+
+    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
+    if not legit_params:
+        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
+        raise ValueError(
+            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
+        )
+    return True
