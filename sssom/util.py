@@ -1253,11 +1253,15 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
     return prefix_list
 
 
-def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFrame:
+def augment_metadata(
+    msdf: MappingSetDataFrame, meta: dict, replace_multivalued: bool = False
+) -> MappingSetDataFrame:
     """Augment metadata with parameters passed.
 
     :param msdf: MappingSetDataFrame (MSDF) object.
     :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False.
     :raises ValueError: If type of slot is neither str nor list.
     :return: MSDF with updated metadata.
     """
@@ -1266,7 +1270,7 @@ def augment_metadata(msdf: MappingSetDataFrame, meta: dict) -> MappingSetDataFra
     if msdf.metadata:
         for k, v in meta.items():
             # If slot is multivalued, add to list.
-            if k in MULTIVALUED_SLOTS:
+            if k in MULTIVALUED_SLOTS and not replace_multivalued:
                 tmp_value: list = []
                 if isinstance(msdf.metadata[k], str):
                     tmp_value = [msdf.metadata[k]]

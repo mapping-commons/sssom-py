@@ -649,16 +649,26 @@ def filter(input: str, output: TextIO, **kwargs):
 @main.command()
 @input_argument
 @output_option
+@click.option(
+    "--replace-multivalued",
+    default=False,
+    type=bool,
+    help="Multivalued slots should be replaced or not. [default: False]",
+)
 @dynamically_generate_sssom_options(MAPPING_SET_SLOTS)
-def annotate(input: str, output: TextIO, **kwargs):
+def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     """Annotate metadata of a mapping set.
 
     :param input: Input path of the SSSOM tsv file.
     :param output: Output location.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False
     :param **kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     """
-    annotate_file(input=input, output=output, **kwargs)
+    annotate_file(
+        input=input, output=output, replace_multivalued=replace_multivalued, **kwargs
+    )
 
 
 if __name__ == "__main__":

@@ -365,11 +365,15 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     return run_sql_query(query=query, inputs=[input], output=output)
 
 
-def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
+def annotate_file(
+    input: str, output: TextIO, replace_multivalued: bool = False, **kwargs
+) -> MappingSetDataFrame:
     """Annotate a file i.e. add custom metadata to the mapping set.
 
     :param input: SSSOM tsv file to be queried over.
     :param output: Output location.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False
     :param **kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     :return: Annotated MappingSetDataFrame object.
@@ -377,6 +381,6 @@ def annotate_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     params = {k: v for k, v in kwargs.items() if v}
     are_params_slots(params)
     input_msdf = parse_sssom_table(input)
-    msdf = augment_metadata(input_msdf, params)
+    msdf = augment_metadata(input_msdf, params, replace_multivalued)
     write_table(msdf, output)
     return msdf
