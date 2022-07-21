@@ -649,6 +649,10 @@ def filter(input: str, output: TextIO, **kwargs):
 @main.command()
 @input_argument
 @output_option
+# TODO Revist the option below.
+# If a multivalued slot needs to be partially preserved,
+# the users will need to type the ones they need and
+# set --replace-multivalued to True.
 @click.option(
     "--replace-multivalued",
     default=False,
