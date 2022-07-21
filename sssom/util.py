@@ -1283,6 +1283,8 @@ def augment_metadata(
                     )
                 tmp_value.extend(v)
                 msdf.metadata[k] = list(set(tmp_value))
+            elif k in MULTIVALUED_SLOTS and replace_multivalued:
+                msdf.metadata[k] = list(v)
             else:
                 msdf.metadata[k] = v[0]
 
