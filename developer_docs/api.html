@@ -127,6 +127,28 @@ object</p>
 <p>Conversion between TSV/pandas, internal datamodel and RDF</p>
 <span class="target" id="module-sssom.io"></span><p>I/O utilities for SSSOM.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="sssom.io.annotate_file">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">annotate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></span><a class="reference internal" href="../_modules/sssom/io.html#annotate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.annotate_file" title="Permalink to this definition"></a></dt>
+<dd><p>Annotate a file i.e. add custom metadata to the mapping set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – SSSOM tsv file to be queried over.</p></li>
+<li><p><strong>output</strong> – Output location.</p></li>
+<li><p><strong>replace_multivalued</strong> – Multivalued slots should be
+replaced or not, defaults to False</p></li>
+<li><p><strong>**kwargs</strong> – <p>Options provided by user
+which are added to the metadata (e.g.: –mapping_set_id <a class="reference external" href="http://example.org/abcd">http://example.org/abcd</a>)</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Annotated MappingSetDataFrame object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.convert_file">
 <span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">convert_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/sssom/io.html#convert_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.convert_file" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a file from one format to another.</p>
@@ -388,6 +410,23 @@ set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="sssom.util.are_params_slots">
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">are_params_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/sssom/util.html#are_params_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.are_params_slots" title="Permalink to this definition"></a></dt>
+<dd><p>Check if parameters conform to the slots in MAPPING_SET_SLOTS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> – Dictionary of parameters.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If params are not slots.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True/False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.assign_default_confidence">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">assign_default_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sssom/util.html#assign_default_confidence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.assign_default_confidence" title="Permalink to this definition"></a></dt>
 <dd><p>Assign <code class="xref py py-data docutils literal notranslate"><span class="pre">numpy.nan</span></code> to confidence that are blank.</p>
@@ -397,6 +436,28 @@ set self.__traceback__ to tb and return self.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.util.augment_metadata">
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">augment_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></span><a class="reference internal" href="../_modules/sssom/util.html#augment_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.augment_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Augment metadata with parameters passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> – MappingSetDataFrame (MSDF) object.</p></li>
+<li><p><strong>meta</strong> – Dictionary that needs to be added/updated to the metadata of the MSDF.</p></li>
+<li><p><strong>replace_multivalued</strong> – Multivalued slots should be
+replaced or not, defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If type of slot is neither str nor list.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>MSDF with updated metadata.</p>
 </dd>
 </dl>
 </dd></dl>

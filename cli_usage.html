@@ -43,6 +43,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sssom">sssom</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-annotate">annotate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-cliquesummary">cliquesummary</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-convert">convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-correlations">correlations</a></li>
@@ -123,6 +124,169 @@
 <dd><p>Show the version and exit.</p>
 </dd></dl>
 
+<section id="sssom-annotate">
+<h3>annotate<a class="headerlink" href="#sssom-annotate" title="Permalink to this heading"></a></h3>
+<p>Annotate metadata of a mapping set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param input</dt>
+<dd class="field-odd"><p>Input path of the SSSOM tsv file.</p>
+</dd>
+<dt class="field-even">param output</dt>
+<dd class="field-even"><p>Output location.</p>
+</dd>
+<dt class="field-odd">param replace_multivalued</dt>
+<dd class="field-odd"><p>Multivalued slots should be
+replaced or not, defaults to False</p>
+</dd>
+<dt class="field-even">param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt>
+<dd class="field-even"><p>Options provided by user
+which are added to the metadata (e.g.: –mapping_set_id <a class="reference external" href="http://example.org/abcd">http://example.org/abcd</a>)</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom annotate <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-o">
+<span id="cmdoption-sssom-annotate-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-replace-multivalued">
+<span class="sig-name descname"><span class="pre">--replace-multivalued</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;replace_multivalued&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-replace-multivalued" title="Permalink to this definition"></a></dt>
+<dd><p>Multivalued slots should be replaced or not. [default: False]</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mappings">
+<span class="sig-name descname"><span class="pre">--mappings</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mappings&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mappings" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_set_id">
+<span id="cmdoption-sssom-annotate-mapping-set-id"></span><span class="sig-name descname"><span class="pre">--mapping_set_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_set_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_set_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_set_version">
+<span id="cmdoption-sssom-annotate-mapping-set-version"></span><span class="sig-name descname"><span class="pre">--mapping_set_version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_set_version&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_set_version" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_set_source">
+<span id="cmdoption-sssom-annotate-mapping-set-source"></span><span class="sig-name descname"><span class="pre">--mapping_set_source</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_set_source&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_set_source" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_set_description">
+<span id="cmdoption-sssom-annotate-mapping-set-description"></span><span class="sig-name descname"><span class="pre">--mapping_set_description</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_set_description&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_set_description" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-creator_id">
+<span id="cmdoption-sssom-annotate-creator-id"></span><span class="sig-name descname"><span class="pre">--creator_id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;creator_id&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-creator_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-creator_label">
+<span id="cmdoption-sssom-annotate-creator-label"></span><span class="sig-name descname"><span class="pre">--creator_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;creator_label&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-creator_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-license">
+<span class="sig-name descname"><span class="pre">--license</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;license&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-license" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-subject_type">
+<span id="cmdoption-sssom-annotate-subject-type"></span><span class="sig-name descname"><span class="pre">--subject_type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_type&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-subject_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-subject_source">
+<span id="cmdoption-sssom-annotate-subject-source"></span><span class="sig-name descname"><span class="pre">--subject_source</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_source&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-subject_source" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-subject_source_version">
+<span id="cmdoption-sssom-annotate-subject-source-version"></span><span class="sig-name descname"><span class="pre">--subject_source_version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_source_version&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-subject_source_version" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-object_type">
+<span id="cmdoption-sssom-annotate-object-type"></span><span class="sig-name descname"><span class="pre">--object_type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_type&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-object_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-object_source">
+<span id="cmdoption-sssom-annotate-object-source"></span><span class="sig-name descname"><span class="pre">--object_source</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_source&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-object_source" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-object_source_version">
+<span id="cmdoption-sssom-annotate-object-source-version"></span><span class="sig-name descname"><span class="pre">--object_source_version</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_source_version&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-object_source_version" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_provider">
+<span id="cmdoption-sssom-annotate-mapping-provider"></span><span class="sig-name descname"><span class="pre">--mapping_provider</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_provider&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_provider" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_tool">
+<span id="cmdoption-sssom-annotate-mapping-tool"></span><span class="sig-name descname"><span class="pre">--mapping_tool</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_tool&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_tool" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-mapping_date">
+<span id="cmdoption-sssom-annotate-mapping-date"></span><span class="sig-name descname"><span class="pre">--mapping_date</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mapping_date&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-mapping_date" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-subject_match_field">
+<span id="cmdoption-sssom-annotate-subject-match-field"></span><span class="sig-name descname"><span class="pre">--subject_match_field</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_match_field&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-subject_match_field" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-object_match_field">
+<span id="cmdoption-sssom-annotate-object-match-field"></span><span class="sig-name descname"><span class="pre">--object_match_field</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_match_field&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-object_match_field" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-subject_preprocessing">
+<span id="cmdoption-sssom-annotate-subject-preprocessing"></span><span class="sig-name descname"><span class="pre">--subject_preprocessing</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;subject_preprocessing&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-subject_preprocessing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-object_preprocessing">
+<span id="cmdoption-sssom-annotate-object-preprocessing"></span><span class="sig-name descname"><span class="pre">--object_preprocessing</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;object_preprocessing&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-object_preprocessing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-see_also">
+<span id="cmdoption-sssom-annotate-see-also"></span><span class="sig-name descname"><span class="pre">--see_also</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;see_also&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-see_also" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-other">
+<span class="sig-name descname"><span class="pre">--other</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;other&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-other" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-comment">
+<span class="sig-name descname"><span class="pre">--comment</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;comment&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-annotate-comment" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-annotate-arg-INPUT">
+<span id="cmdoption-sssom-annotate-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-annotate-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
 <section id="sssom-cliquesummary">
 <h3>cliquesummary<a class="headerlink" href="#sssom-cliquesummary" title="Permalink to this heading"></a></h3>
 <p>Calculate summaries for each clique in a SSSOM file.</p>
@@ -346,7 +510,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dt class="field-even">param output</dt>
 <dd class="field-even"><p>Output location.</p>
 </dd>
-<dt class="field-odd">param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt>
+<dt class="field-odd">param <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs</dt>
 <dd class="field-odd"><p>Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p>
 </dd>
 </dl>

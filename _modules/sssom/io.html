@@ -98,6 +98,8 @@
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
+    <span class="n">are_params_slots</span><span class="p">,</span>
+    <span class="n">augment_metadata</span><span class="p">,</span>
     <span class="n">is_curie</span><span class="p">,</span>
     <span class="n">is_iri</span><span class="p">,</span>
     <span class="n">raise_for_bad_path</span><span class="p">,</span>
@@ -431,6 +433,27 @@
         <span class="k">if</span> <span class="n">multiple_params</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot; AND (&quot;</span>
     <span class="k">return</span> <span class="n">run_sql_query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="nb">input</span><span class="p">],</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="annotate_file"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.io.annotate_file">[docs]</a><span class="k">def</span> <span class="nf">annotate_file</span><span class="p">(</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Annotate a file i.e. add custom metadata to the mapping set.</span>
+
+<span class="sd">    :param input: SSSOM tsv file to be queried over.</span>
+<span class="sd">    :param output: Output location.</span>
+<span class="sd">    :param replace_multivalued: Multivalued slots should be</span>
+<span class="sd">        replaced or not, defaults to False</span>
+<span class="sd">    :param **kwargs: Options provided by user</span>
+<span class="sd">        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)</span>
+<span class="sd">    :return: Annotated MappingSetDataFrame object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">}</span>
+    <span class="n">are_params_slots</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">input_msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">msdf</span> <span class="o">=</span> <span class="n">augment_metadata</span><span class="p">(</span><span class="n">input_msdf</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">)</span>
+    <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msdf</span></div>
 </pre></div>
 
            </div>
