@@ -23,7 +23,7 @@ class TestSort(unittest.TestCase):
         self.validation_file = join(data_dir, "test_filter_sssom.tsv")
 
     def test_filter(self):
-        """Test sorting of columns."""
+        """Test filtering of rows."""
         kwargs = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
         filtered_msdf = filter_file(input=self.input, output=sys.stdout, **kwargs)
         validation_msdf = parse_sssom_table(self.validation_file)

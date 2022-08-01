@@ -43,6 +43,7 @@ from .constants import (
     ENTITY_REFERENCE_SLOTS,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
+    MAPPING_SET_SLOTS,
     MAPPING_SET_SOURCE,
     MULTIVALUED_SLOTS,
     OBJECT_CATEGORY,
@@ -1250,3 +1251,61 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         prefix_list = list(set(prefix_list))
 
     return prefix_list
+
+
+def augment_metadata(
+    msdf: MappingSetDataFrame, meta: dict, replace_multivalued: bool = False
+) -> MappingSetDataFrame:
+    """Augment metadata with parameters passed.
+
+    :param msdf: MappingSetDataFrame (MSDF) object.
+    :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False.
+    :raises ValueError: If type of slot is neither str nor list.
+    :return: MSDF with updated metadata.
+    """
+    are_params_slots(meta)
+
+    if msdf.metadata:
+        for k, v in meta.items():
+            # If slot is multivalued, add to list.
+            if k in MULTIVALUED_SLOTS and not replace_multivalued:
+                tmp_value: list = []
+                if isinstance(msdf.metadata[k], str):
+                    tmp_value = [msdf.metadata[k]]
+                elif isinstance(msdf.metadata[k], list):
+                    tmp_value = msdf.metadata[k]
+                else:
+                    raise ValueError(
+                        f"{k} is of type {type(msdf.metadata[k])} and \
+                        as of now only slots of type 'str' or 'list' are handled."
+                    )
+                tmp_value.extend(v)
+                msdf.metadata[k] = list(set(tmp_value))
+            elif k in MULTIVALUED_SLOTS and replace_multivalued:
+                msdf.metadata[k] = list(v)
+            else:
+                msdf.metadata[k] = v[0]
+
+    return msdf
+
+
+def are_params_slots(params: dict) -> bool:
+    """Check if parameters conform to the slots in MAPPING_SET_SLOTS.
+
+    :param params: Dictionary of parameters.
+    :raises ValueError: If params are not slots.
+    :return: True/False
+    """
+    empty_params = {k: v for k, v in params.items() if v is None or v == ""}
+    if len(empty_params) > 0:
+        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
+
+    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
+    if not legit_params:
+        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
+        raise ValueError(
+            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
+        )
+    return True
