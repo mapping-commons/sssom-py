@@ -990,27 +990,54 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     return list(set(prefixes))
 
 
-def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.DataFrame:
+def filter_out_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+) -> pd.DataFrame:
     """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
 
     :param df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
+    :param features: List of dataframe column names dataframe to consider
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
     rows = []
 
     for _, row in df.iterrows():
-        # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
-        prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
-        # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        # Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
         if not any(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
     else:
-        return pd.DataFrame(columns=KEY_FEATURES)
+        return pd.DataFrame(columns=features)
+
+
+def filter_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+) -> pd.DataFrame:
+    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+
+    :param df: Pandas DataFrame
+    :param filter_prefixes: List of prefixes
+    :param features: List of dataframe column names dataframe to consider
+    :return: Pandas Dataframe
+    """
+    filter_prefix_set = set(filter_prefixes)
+    rows = []
+
+    for _, row in df.iterrows():
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
+        # If TRUE, append row.
+        if all(prefix in prefixes for prefix in filter_prefix_set):
+            rows.append(row)
+    if rows:
+        return pd.DataFrame(rows)
+    else:
+        return pd.DataFrame(columns=features)
 
 
 # TODO this is not used anywhere
