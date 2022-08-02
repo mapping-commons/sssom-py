@@ -199,7 +199,7 @@ def parse_sssom_rdf(
     metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
-    g.load(file_path, format=serialisation)
+    g.parse(file_path, format=serialisation)
     msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
