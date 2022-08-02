@@ -27,7 +27,7 @@ class TestIO(unittest.TestCase):
         self.assertEqual(3, len(iri_list))
 
     def test_filter_prefixes(self):
-        """Test filtering MSDF by prefixes provided."""
+        """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x","y"]
         filtered_df = filter_prefixes(self.msdf.df, prefix_filter_list, self.features)
         self.assertEqual(len(filtered_df), 40)
