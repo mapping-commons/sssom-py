@@ -12,6 +12,7 @@ class TestIO(unittest.TestCase):
     """A test case for merging msdfs."""
 
     def setUp(self) -> None:
+        """Set up."""
         self.msdf = parse_sssom_table(f"{data_dir}/basic.tsv")
         self.features = [SUBJECT_ID, OBJECT_ID]
 
