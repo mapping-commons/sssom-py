@@ -1032,7 +1032,7 @@ def filter_prefixes(
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
         # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
-        if all(prefix in prefixes for prefix in filter_prefix_set):
+        if all(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
