@@ -149,6 +149,21 @@ class MappingSetDataFrame:
             self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
 
+    def remove_mappings(self, msdf: "MappingSetDataFrame") -> "MappingSetDataFrame":
+        """_summary_
+
+        :param msdf: MappingSetDataframe object to be removed from primary msdf object.
+        :return: Pruned msdf.
+        """
+        self.df = pd.merge(self.df, msdf.df, on=KEY_FEATURES, how="outer", suffixes=('', '_2'), indicator=True)\
+                    .query("_merge == 'left_only'")\
+                    .drop("_merge", axis=1)\
+                    .reset_index(drop=True)
+        
+        self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
+        self.clean_prefix_map()
+
+
 
 @dataclass
 class EntityPair:
