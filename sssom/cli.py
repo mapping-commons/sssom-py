@@ -675,5 +675,26 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     )
 
 
+@main.command()
+@input_argument
+@click.option(
+    "--remove-map",
+    type=click.Path(),
+    help="Mapping file path that needs to be removed from input.",
+)
+@output_option
+def remove(input: str, output: TextIO, remove_map: str):
+    """Remove mappings from an input mapping.
+
+    :param input: Input SSSOM tsv file.
+    :param output: Output path.
+    :param remove_map: Mapping to be removed.
+    """
+    input_msdf = parse_sssom_table(input)
+    remove_msdf = parse_sssom_table(remove_map)
+    input_msdf.remove_mappings(remove_msdf)
+    write_table(input_msdf, output)
+
+
 if __name__ == "__main__":
     main()
