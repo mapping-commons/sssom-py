@@ -360,6 +360,8 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
             for exp in v[1:]:
                 query += " OR "
                 query += k + " LIKE '" + exp + "') "
+        else:
+            query += ") "
         if multiple_params and idx != len(params):
             query += " AND ("
     return run_sql_query(query=query, inputs=[input], output=output)
