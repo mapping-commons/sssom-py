@@ -2,11 +2,15 @@
 
 import json
 import logging
+import os
 import uuid
 from typing import Optional
 
+import pkg_resources
+
 from .external_context import sssom_external_context
 from .typehints import Metadata, MetadataType, PrefixMap
+from linkml.generators.jsonldcontextgen import ContextGenerator
 
 # HERE = pathlib.Path(__file__).parent.resolve()
 # DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
@@ -25,7 +29,11 @@ def get_jsonld_context():
 
     :return: JSON-LD context
     """
-    sssom_context = ?
+    schema_path = pkg_resources.resource_filename(
+        "sssom_schema", os.path.join("schema", "sssom_schema.yaml")
+    )
+    
+    sssom_context = ContextGenerator(schema_path).serialize()
     return json.loads(sssom_context, strict=False)
 
 
