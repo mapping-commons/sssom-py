@@ -6,7 +6,6 @@ import uuid
 from typing import Optional
 
 from .external_context import sssom_external_context
-from .internal_context import sssom_context
 from .typehints import Metadata, MetadataType, PrefixMap
 
 # HERE = pathlib.Path(__file__).parent.resolve()
@@ -26,6 +25,7 @@ def get_jsonld_context():
 
     :return: JSON-LD context
     """
+    sssom_context = ?
     return json.loads(sssom_context, strict=False)
 
 
