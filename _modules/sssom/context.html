@@ -75,8 +75,11 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">from</span> <span class="nn">linkml.generators.jsonldcontextgen</span> <span class="kn">import</span> <span class="n">ContextGenerator</span>
+
+<span class="kn">from</span> <span class="nn">sssom.constants</span> <span class="kn">import</span> <span class="n">SCHEMA_YAML</span>
+
 <span class="kn">from</span> <span class="nn">.external_context</span> <span class="kn">import</span> <span class="n">sssom_external_context</span>
-<span class="kn">from</span> <span class="nn">.internal_context</span> <span class="kn">import</span> <span class="n">sssom_context</span>
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span>
 
 <span class="c1"># HERE = pathlib.Path(__file__).parent.resolve()</span>
@@ -96,6 +99,7 @@
 
 <span class="sd">    :return: JSON-LD context</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sssom_context</span> <span class="o">=</span> <span class="n">ContextGenerator</span><span class="p">(</span><span class="n">SCHEMA_YAML</span><span class="p">)</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">sssom_context</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
