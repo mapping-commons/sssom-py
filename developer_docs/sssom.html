@@ -875,6 +875,17 @@ if false, it simply return the merged data frame.</p></li>
 <span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">remove_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.remove_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Remove mappings in right msdf from left msdf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msdf</strong> – MappingSetDataframe object to be removed from primary msdf object.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1105,13 +1116,32 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_out_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_out_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['subject_id',</span> <span class="pre">'predicate_id',</span> <span class="pre">'object_id']</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Filter any row where a CURIE in one of the key column uses one of the given prefixes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> – Pandas DataFrame</p></li>
 <li><p><strong>filter_prefixes</strong> – List of prefixes</p></li>
+<li><p><strong>features</strong> – List of dataframe column names dataframe to consider</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['subject_id',</span> <span class="pre">'predicate_id',</span> <span class="pre">'object_id']</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/sssom/util.html#filter_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Filter any row where a CURIE in one of the key column uses one of the given prefixes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – Pandas DataFrame</p></li>
+<li><p><strong>filter_prefixes</strong> – List of prefixes</p></li>
+<li><p><strong>features</strong> – List of dataframe column names dataframe to consider</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

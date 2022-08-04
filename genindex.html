@@ -456,6 +456,8 @@
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-reconcile-prefixes-o">sssom-reconcile-prefixes command line option</a>
 </li>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-o">sssom-remove command line option</a>
+</li>
         <li><a href="cli_usage.html#cmdoption-sssom-rewire-0">sssom-rewire command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-sort-o">sssom-sort command line option</a>
@@ -551,6 +553,13 @@
 
       <ul>
         <li><a href="cli_usage.html#cmdoption-sssom-reconcile-prefixes-p">sssom-reconcile-prefixes command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --remove-map
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-remove-map">sssom-remove command line option</a>
 </li>
       </ul></li>
       <li>
@@ -840,6 +849,8 @@
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-reconcile-prefixes-o">sssom-reconcile-prefixes command line option</a>
 </li>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-o">sssom-remove command line option</a>
+</li>
         <li><a href="cli_usage.html#cmdoption-sssom-rewire-0">sssom-rewire command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-sort-o">sssom-sort command line option</a>
@@ -1008,12 +1019,14 @@
 </li>
       <li><a href="developer_docs/api.html#sssom.util.filter_out_prefixes">filter_out_prefixes() (in module sssom.util)</a>
 </li>
-      <li><a href="developer_docs/api.html#sssom.util.filter_redundant_rows">filter_redundant_rows() (in module sssom.util)</a>
+      <li><a href="developer_docs/api.html#sssom.util.filter_prefixes">filter_prefixes() (in module sssom.util)</a>
 </li>
-      <li><a href="developer_docs/sssom.html#sssom.parsers.from_alignment_minidom">from_alignment_minidom() (in module sssom.parsers)</a>
+      <li><a href="developer_docs/api.html#sssom.util.filter_redundant_rows">filter_redundant_rows() (in module sssom.util)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="developer_docs/sssom.html#sssom.parsers.from_alignment_minidom">from_alignment_minidom() (in module sssom.parsers)</a>
+</li>
       <li><a href="developer_docs/sssom.html#sssom.parsers.from_obographs">from_obographs() (in module sssom.parsers)</a>
 </li>
       <li><a href="developer_docs/sssom.html#sssom.parsers.from_sssom_dataframe">from_sssom_dataframe() (in module sssom.parsers)</a>
@@ -1095,6 +1108,8 @@
         <li><a href="cli_usage.html#cmdoption-sssom-ptable-arg-INPUT">sssom-ptable command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-reconcile-prefixes-arg-INPUT">sssom-reconcile-prefixes command line option</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-arg-INPUT">sssom-remove command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-rewire-arg-INPUT">sssom-rewire command line option</a>
 </li>
@@ -1229,15 +1244,17 @@
 </li>
       <li><a href="developer_docs/api.html#sssom.util.read_pandas">read_pandas() (in module sssom.util)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="developer_docs/sssom.html#sssom.parsers.read_sssom_json">read_sssom_json() (in module sssom.parsers)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="developer_docs/sssom.html#sssom.parsers.read_sssom_rdf">read_sssom_rdf() (in module sssom.parsers)</a>
 </li>
       <li><a href="developer_docs/sssom.html#sssom.parsers.read_sssom_table">read_sssom_table() (in module sssom.parsers)</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.util.reconcile_prefix_and_data">reconcile_prefix_and_data() (in module sssom.util)</a>
+</li>
+      <li><a href="developer_docs/api.html#sssom.util.MappingSetDataFrame.remove_mappings">remove_mappings() (sssom.util.MappingSetDataFrame method)</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.util.remove_unmatched">remove_unmatched() (in module sssom.util)</a>
 </li>
@@ -1639,6 +1656,19 @@
         <li><a href="cli_usage.html#cmdoption-sssom-reconcile-prefixes-p">-p</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-reconcile-prefixes-arg-INPUT">INPUT</a>
+</li>
+      </ul></li>
+      <li>
+    sssom-remove command line option
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-o">--output</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-remove-map">--remove-map</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-o">-o</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-remove-arg-INPUT">INPUT</a>
 </li>
       </ul></li>
       <li>

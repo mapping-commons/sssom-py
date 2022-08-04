@@ -745,6 +745,27 @@
     <span class="p">)</span>
 
 
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@input_argument</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--remove-map&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mapping file path that needs to be removed from input.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@output_option</span>
+<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">remove_map</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove mappings from an input mapping.</span>
+
+<span class="sd">    :param input: Input SSSOM tsv file.</span>
+<span class="sd">    :param output: Output path.</span>
+<span class="sd">    :param remove_map: Mapping to be removed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">input_msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">remove_msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="n">remove_map</span><span class="p">)</span>
+    <span class="n">input_msdf</span><span class="o">.</span><span class="n">remove_mappings</span><span class="p">(</span><span class="n">remove_msdf</span><span class="p">)</span>
+    <span class="n">write_table</span><span class="p">(</span><span class="n">input_msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>

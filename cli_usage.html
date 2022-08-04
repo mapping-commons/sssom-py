@@ -57,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#sssom-partition">partition</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-ptable">ptable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-reconcile-prefixes">reconcile-prefixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom-remove">remove</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-rewire">rewire</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sort">sort</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sparql">sparql</a></li>
@@ -905,6 +906,44 @@ prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-sssom-reconcile-prefixes-arg-INPUT">
 <span id="cmdoption-sssom-reconcile-prefixes-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-reconcile-prefixes-arg-INPUT" title="Permalink to this definition"></a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="sssom-remove">
+<h3>remove<a class="headerlink" href="#sssom-remove" title="Permalink to this heading"></a></h3>
+<p>Remove mappings from an input mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param input</dt>
+<dd class="field-odd"><p>Input SSSOM tsv file.</p>
+</dd>
+<dt class="field-even">param output</dt>
+<dd class="field-even"><p>Output path.</p>
+</dd>
+<dt class="field-odd">param remove_map</dt>
+<dd class="field-odd"><p>Mapping to be removed.</p>
+</dd>
+</dl>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom remove <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-remove-remove-map">
+<span class="sig-name descname"><span class="pre">--remove-map</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;remove_map&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-remove-remove-map" title="Permalink to this definition"></a></dt>
+<dd><p>Mapping file path that needs to be removed from input.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-remove-o">
+<span id="cmdoption-sssom-remove-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-remove-o" title="Permalink to this definition"></a></dt>
+<dd><p>Path of SSSOM output file.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-remove-arg-INPUT">
+<span id="cmdoption-sssom-remove-arg-input"></span><span class="sig-name descname"><span class="pre">INPUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-remove-arg-INPUT" title="Permalink to this definition"></a></dt>
 <dd><p>Required argument</p>
 </dd></dl>
 
