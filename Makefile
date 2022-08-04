@@ -1,5 +1,5 @@
 PYTHON=python
-DEFAULT_PREFIX_MAP="https://raw.githubusercontent.com/biopragmatics/bioregistry/main/exports/contexts/obo_synonyms.context.jsonld"
+DEFAULT_PREFIX_MAP="https://raw.githubusercontent.com/biopragmatics/bioregistry/main/exports/contexts/obo.context.jsonld"
 SSSOM_PY="https://raw.githubusercontent.com/mapping-commons/sssom/master/sssom/sssom.py"
 SSSOM_YAML="https://raw.githubusercontent.com/mapping-commons/sssom/master/sssom/model/schema/sssom.yaml"
 SSSOM_JSON_SCHEMA="https://raw.githubusercontent.com/mapping-commons/sssom/master/sssom/jsonschema/sssom.schema.json"
