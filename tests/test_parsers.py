@@ -19,9 +19,8 @@ from sssom.parsers import (
     from_sssom_json,
     from_sssom_rdf,
     parse_sssom_table,
-    to_mapping_set_document,
 )
-from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns, to_mapping_set_dataframe
+from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
@@ -32,6 +31,7 @@ class TestParse(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case."""
+        # TODO: change back to the commented url.
         self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
         self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"
         self.rdf_graph = Graph()
@@ -98,7 +98,7 @@ class TestParse(unittest.TestCase):
             write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
-            9878,
+            9876,
             f"{self.obographs_file} has the wrong number of mappings.",
         )
 
@@ -173,17 +173,20 @@ class TestParse(unittest.TestCase):
             f"{self.json_file} has the wrong number of mappings.",
         )
 
-    def test_piped_element_to_list(self):
-        """Test for multi-valued element (piped in SSSOM tables) to list."""
-        input_path = os.path.join(test_data_dir, "basic.tsv")
-        msdf = parse_sssom_table(input_path)
-        df = msdf.df
-        msdf.df = df[df["match_type"].str.contains("\\|", na=False)].reset_index()
-        old_match_type = msdf.df["match_type"]
-        msdoc = to_mapping_set_document(msdf)
-        new_msdf = to_mapping_set_dataframe(msdoc)
-        new_match_type = new_msdf.df["match_type"]
-        self.assertTrue(old_match_type.equals(new_match_type))
+    # * "mapping_justification" is no longer multivalued.
+    # def test_piped_element_to_list(self):
+    #     """Test for multi-valued element (piped in SSSOM tables) to list."""
+    #     input_path = os.path.join(test_data_dir, "basic.tsv")
+    #     msdf = parse_sssom_table(input_path)
+    #     df = msdf.df
+    #     msdf.df = df[
+    #         df["mapping_justification"].str.contains("\\|", na=False)
+    #     ].reset_index()
+    #     old_match_type = msdf.df["mapping_justification"]
+    #     msdoc = to_mapping_set_document(msdf)
+    #     new_msdf = to_mapping_set_dataframe(msdoc)
+    #     new_match_type = new_msdf.df["mapping_justification"]
+    #     self.assertTrue(old_match_type.equals(new_match_type))
 
     def test_read_sssom_table(self):
         """Test read SSSOM method to validate import of all columns."""
@@ -196,7 +199,7 @@ class TestParse(unittest.TestCase):
             "subject_match_field",
             "object_match_field",
             "match_string",
-            "match_type",
+            "mapping_justification",
         ]
         for idx, row in msdf.df.iterrows():
             for k, v in row.iteritems():
@@ -208,7 +211,7 @@ class TestParse(unittest.TestCase):
                             self.assertTrue(imported_df.iloc[idx][k] is v)
                         else:
                             self.assertEqual(imported_df.iloc[idx][k], v)
-                    elif k == "match_type":
+                    elif k == "mapping_justification":
                         self.assertEqual(imported_df.iloc[idx][k], v)
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)

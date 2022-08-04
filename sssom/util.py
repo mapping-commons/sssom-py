@@ -29,13 +29,40 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 
-from .constants import PREFIX_MAP_MODES, SCHEMA_DICT, SCHEMA_YAML
+# from .sssom_datamodel import Mapping as SSSOM_Mapping
+# from .sssom_datamodel import slots
+from sssom_schema import Mapping as SSSOM_Mapping
+from sssom_schema import slots
+
+from .constants import (
+    COMMENT,
+    CONFIDENCE,
+    ENTITY_REFERENCE_SLOTS,
+    MAPPING_JUSTIFICATION,
+    MAPPING_SET_ID,
+    MAPPING_SET_SLOTS,
+    MAPPING_SET_SOURCE,
+    MULTIVALUED_SLOTS,
+    OBJECT_CATEGORY,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    OBJECT_SOURCE,
+    PREDICATE_ID,
+    PREDICATE_MODIFIER,
+    PREDICATE_MODIFIER_NOT,
+    PREFIX_MAP_MODES,
+    SCHEMA_DICT,
+    SCHEMA_YAML,
+    SEMAPV,
+    SUBJECT_CATEGORY,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+    SUBJECT_SOURCE,
+)
 from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
-from .internal_context import multivalued_slots
-from .sssom_datamodel import Mapping as SSSOM_Mapping
-from .sssom_datamodel import slots
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -50,30 +77,9 @@ SSSOM_READ_FORMATS = [
     "obographs-json",
     "json",
 ]
-SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json"]
+SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
-
-
-# TODO: use sssom_datamodel (Mapping Class)
-SUBJECT_ID = "subject_id"
-SUBJECT_LABEL = "subject_label"
-OBJECT_ID = "object_id"
-OBJECT_LABEL = "object_label"
-PREDICATE_ID = "predicate_id"
-PREDICATE_MODIFIER = "predicate_modifier"
-PREDICATE_MODIFIER_NOT = "Not"
-CONFIDENCE = "confidence"
-SUBJECT_CATEGORY = "subject_category"
-OBJECT_CATEGORY = "object_category"
-SUBJECT_SOURCE = "subject_source"
-OBJECT_SOURCE = "object_source"
-COMMENT = "comment"
-MAPPING_PROVIDER = "mapping_provider"
-MATCH_TYPE = "match_type"
-HUMAN_CURATED_MATCH_TYPE = "HumanCurated"
-MAPPING_SET_ID = "mapping_set_id"
-MAPPING_SET_SOURCE = "mapping_set_source"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
@@ -142,6 +148,28 @@ class MappingSetDataFrame:
         if missing_prefixes:
             self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
+
+    def remove_mappings(self, msdf: "MappingSetDataFrame"):
+        """Remove mappings in right msdf from left msdf.
+
+        :param msdf: MappingSetDataframe object to be removed from primary msdf object.
+        """
+        self.df = (
+            pd.merge(
+                self.df,
+                msdf.df,
+                on=KEY_FEATURES,
+                how="outer",
+                suffixes=("", "_2"),
+                indicator=True,
+            )
+            .query("_merge == 'left_only'")
+            .drop("_merge", axis=1)
+            .reset_index(drop=True)
+        )
+
+        self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
+        self.clean_prefix_map()
 
 
 @dataclass
@@ -379,7 +407,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
+def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
@@ -388,6 +416,8 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = 0.5):
     :raises ValueError: Predicate type value error
     :return: List of rows
     """
+    if not inverse_factor:
+        inverse_factor = 0.5
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
@@ -605,7 +635,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         PREDICATE_ID,
         OBJECT_ID,
         CONFIDENCE,
-        MATCH_TYPE,
+        MAPPING_JUSTIFICATION,
     ]
     negation_subset = normalized_negation_df[columns_of_interest]
     positive_subset = positive_df[columns_of_interest]
@@ -636,7 +666,10 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
                 & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
-                & (combined_normalized_subset[MATCH_TYPE] == HUMAN_CURATED_MATCH_TYPE)
+                & (
+                    combined_normalized_subset[MAPPING_JUSTIFICATION]
+                    == SEMAPV.ManualMappingCuration
+                )
             )
             # In spite of this, if match_condition_1
             # is returning multiple rows, pick any random row from above.
@@ -708,13 +741,12 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     with open(SCHEMA_YAML) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
-
     if msdf.metadata is not None and msdf.df is not None:
         for k, v in msdf.metadata.items():
             if k not in msdf.df.columns and k in slots:
                 if k == MAPPING_SET_ID:
                     k = MAPPING_SET_SOURCE
-                msdf.df[k] = v
+                msdf.df[k] = str(v)
     return msdf
 
 
@@ -980,27 +1012,54 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     return list(set(prefixes))
 
 
-def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.DataFrame:
+def filter_out_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+) -> pd.DataFrame:
     """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
 
     :param df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
+    :param features: List of dataframe column names dataframe to consider
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
     rows = []
 
     for _, row in df.iterrows():
-        # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
-        prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
-        # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        # Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
         if not any(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
     else:
-        return pd.DataFrame(columns=KEY_FEATURES)
+        return pd.DataFrame(columns=features)
+
+
+def filter_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+) -> pd.DataFrame:
+    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+
+    :param df: Pandas DataFrame
+    :param filter_prefixes: List of prefixes
+    :param features: List of dataframe column names dataframe to consider
+    :return: Pandas Dataframe
+    """
+    filter_prefix_set = set(filter_prefixes)
+    rows = []
+
+    for _, row in df.iterrows():
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
+        # If TRUE, append row.
+        if all(prefix in filter_prefix_set for prefix in prefixes):
+            rows.append(row)
+    if rows:
+        return pd.DataFrame(rows)
+    else:
+        return pd.DataFrame(columns=features)
 
 
 # TODO this is not used anywhere
@@ -1090,7 +1149,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
 
-    return slot in multivalued_slots
+    return slot in MULTIVALUED_SLOTS
 
 
 def reconcile_prefix_and_data(
@@ -1189,3 +1248,113 @@ def sort_df_rows_columns(
     if by_rows and len(df) > 0:
         df = df.sort_values(by=df.columns[0], ignore_index=True)
     return df
+
+
+def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
+    """Fetch all prefixes in the MappingSetDataFrame.
+
+    :param msdf: MappingSetDataFrame
+    :raises ValidationError: If slot is wrong.
+    :raises ValidationError: If slot is wrong.
+    :return:  List of all prefixes.
+    """
+    prefix_list = []
+    if msdf.metadata and not msdf.df.empty:  # type: ignore
+        metadata_keys = list(msdf.metadata.keys())
+        df_columns_list = msdf.df.columns.to_list()  # type: ignore
+        all_keys = metadata_keys + df_columns_list
+        ent_ref_slots = [s for s in all_keys if s in ENTITY_REFERENCE_SLOTS]
+
+        for slot in ent_ref_slots:
+            if slot in metadata_keys:
+                if type(msdf.metadata[slot]) == list:
+                    for s in msdf.metadata[slot]:
+                        if get_prefix_from_curie(s) == "":
+                            # print(
+                            #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
+                            # )
+                            raise ValidationError(
+                                f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
+                            )
+                        prefix_list.append(get_prefix_from_curie(s))
+                else:
+                    if get_prefix_from_curie(msdf.metadata[slot]) == "":
+                        # print(
+                        #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
+                        # )
+                        raise ValidationError(
+                            f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
+                        )
+                    prefix_list.append(get_prefix_from_curie(msdf.metadata[slot]))
+            else:
+                column_prefixes = list(
+                    set(
+                        [
+                            get_prefix_from_curie(s)
+                            for s in list(set(msdf.df[slot].to_list()))  # type: ignore
+                        ]
+                    )
+                )
+                prefix_list = prefix_list + column_prefixes
+
+        prefix_list = list(set(prefix_list))
+
+    return prefix_list
+
+
+def augment_metadata(
+    msdf: MappingSetDataFrame, meta: dict, replace_multivalued: bool = False
+) -> MappingSetDataFrame:
+    """Augment metadata with parameters passed.
+
+    :param msdf: MappingSetDataFrame (MSDF) object.
+    :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False.
+    :raises ValueError: If type of slot is neither str nor list.
+    :return: MSDF with updated metadata.
+    """
+    are_params_slots(meta)
+
+    if msdf.metadata:
+        for k, v in meta.items():
+            # If slot is multivalued, add to list.
+            if k in MULTIVALUED_SLOTS and not replace_multivalued:
+                tmp_value: list = []
+                if isinstance(msdf.metadata[k], str):
+                    tmp_value = [msdf.metadata[k]]
+                elif isinstance(msdf.metadata[k], list):
+                    tmp_value = msdf.metadata[k]
+                else:
+                    raise ValueError(
+                        f"{k} is of type {type(msdf.metadata[k])} and \
+                        as of now only slots of type 'str' or 'list' are handled."
+                    )
+                tmp_value.extend(v)
+                msdf.metadata[k] = list(set(tmp_value))
+            elif k in MULTIVALUED_SLOTS and replace_multivalued:
+                msdf.metadata[k] = list(v)
+            else:
+                msdf.metadata[k] = v[0]
+
+    return msdf
+
+
+def are_params_slots(params: dict) -> bool:
+    """Check if parameters conform to the slots in MAPPING_SET_SLOTS.
+
+    :param params: Dictionary of parameters.
+    :raises ValueError: If params are not slots.
+    :return: True/False
+    """
+    empty_params = {k: v for k, v in params.items() if v is None or v == ""}
+    if len(empty_params) > 0:
+        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
+
+    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
+    if not legit_params:
+        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
+        raise ValueError(
+            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
+        )
+    return True

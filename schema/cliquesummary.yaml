@@ -1,14 +1,14 @@
-id: http://w3id.org/sssom/schema/cliquesummary/
+id: https://w3id.org/sssom/schema/cliquesummary/
 name: sssom-cliquesummary
 description: Data dictionary for clique summaries
 imports:
 - biolinkml:types
 prefixes:
   biolinkml: https://w3id.org/biolink/biolinkml/
-  sssom: http://w3id.org/sssom/
-  sssom.cs: http://w3id.org/sssom/cliquesummary
+  sssom: https://w3id.org/sssom/
+  sssom.cs: https://w3id.org/sssom/cliquesummary
 see_also:
-- http://w3id.org/sssom/SSSOM.md
+- https://w3id.org/sssom/SSSOM.md
 default_curi_maps:
 - semweb_context
 - obo_context

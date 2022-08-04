@@ -4,7 +4,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-   xmlns:sssom="http://w3id.org/sssom/"
+   xmlns:sssom="https://w3id.org/sssom/"
 >
   <rdf:Description rdf:nodeID="N20fd9119f8d64b9285d2498d6f87b318">
     <sssom:object_label>nucleus</sssom:object_label>
@@ -92,7 +92,7 @@
     <sssom:mappings rdf:nodeID="Ne600f58533f44c49ad140bcf97135d04"/>
     <sssom:mappings rdf:nodeID="N57e2e6b3e7da41678cd026aa6df1cb73"/>
     <sssom:mappings rdf:nodeID="N84b6a45273bd4de19f5c58ab3a284018"/>
-    <rdf:type rdf:resource="http://w3id.org/sssom/MappingSet"/>
+    <rdf:type rdf:resource="https://w3id.org/sssom/MappingSet"/>
     <sssom:mappings rdf:nodeID="N8979e4422b0f4d0d83b1cf4f3b250304"/>
     <sssom:mappings rdf:nodeID="N23e0855fcb054ad9a1d34ff05a68344a"/>
     <sssom:mappings rdf:nodeID="Nf619555d46904c728e387b1d56e1f9e3"/>

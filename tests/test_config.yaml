@@ -16,7 +16,7 @@ tests:
     ct_graph_queries_owl:
       query_count_equivalent_classes: 79
     ct_graph_queries_rdf:
-      query_count_equivalent_classes: 79 
+      query_count_equivalent_classes: 79
   - filename: "cob-to-external.tsv"
     inputformat: "tsv"
     multiple_input: False

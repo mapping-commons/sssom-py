@@ -6,8 +6,10 @@ from typing import Any, Dict, List, Optional
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 
+# from .sssom_datamodel import EntityReference, Mapping
+from sssom_schema import EntityReference, Mapping
+
 from .parsers import to_mapping_set_document
-from .sssom_datamodel import EntityReference, Mapping
 from .util import MappingSetDataFrame
 
 __all__ = [

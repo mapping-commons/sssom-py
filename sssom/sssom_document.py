@@ -2,9 +2,11 @@
 
 from dataclasses import dataclass
 
+# from .sssom_datamodel import MappingSet
+from sssom_schema import MappingSet
+
 from sssom.context import DEFAULT_LICENSE, DEFAULT_MAPPING_SET_ID
 
-from .sssom_datamodel import MappingSet
 from .typehints import PrefixMap
 
 __all__ = [

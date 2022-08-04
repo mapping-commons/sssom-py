@@ -1,4 +1,4 @@
-@prefix : <http://w3id.org/sssom/> .
+@prefix : <https://w3id.org/sssom/> .
 @prefix BFO: <http://purl.obolibrary.org/obo/BFO_> .
 @prefix CARO: <http://purl.obolibrary.org/obo/CARO_> .
 @prefix CHEBI: <http://purl.obolibrary.org/obo/CHEBI_> .
@@ -26,7 +26,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix sssom: <http://w3id.org/sssom/> .
+@prefix sssom: <https://w3id.org/sssom/> .
 
 sssom:object_label a owl:AnnotationProperty .
 
