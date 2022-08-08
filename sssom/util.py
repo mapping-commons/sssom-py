@@ -945,7 +945,7 @@ class NoCURIEException(ValueError):
     """An exception raised when a CURIE can not be parsed with a given prefix map."""
 
 
-CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
+CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
 
 def is_curie(string: str) -> bool:
