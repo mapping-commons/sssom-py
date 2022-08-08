@@ -290,6 +290,24 @@ def filter_redundant_rows(
     # Use pandas.concat instead.
     # return_df = df.append(nan_df).drop_duplicates()
     return_df = pd.concat([df, nan_df]).drop_duplicates()
+    # import pdb; pdb.set_trace()
+    # new_key = [SUBJECT_ID, OBJECT_ID, CONFIDENCE]
+    # abcd = df.groupby(key, as_index=False)
+    #TODO: Filter further based on match type provided the KEY_FEATURES are the same.
+    # Precedence rules provided confidence are EQUAL.
+    # owl:equivalentClass
+    # owl:equivalentProperty
+    # rdfs:subClassOf
+    # rdfs:subPropertyOf
+    # owl:sameAs
+    # skos:exactMatch
+    # skos:closeMatch
+    # skos:broadMatch
+    # skos:narrowMatch
+    # oboInOwl:hasDbXref
+    # skos:relatedMatch
+    # rdfs:seeAlso
+
 
     if return_df[CONFIDENCE].isnull().all():
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
@@ -945,7 +963,7 @@ class NoCURIEException(ValueError):
     """An exception raised when a CURIE can not be parsed with a given prefix map."""
 
 
-CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
+CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
 
 def is_curie(string: str) -> bool:
