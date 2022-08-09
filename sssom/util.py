@@ -331,7 +331,7 @@ def filter_redundant_rows(
             logic_df[logic_df[list(tmp_df_grp.columns)]].dropna().index
         )
         concerned_df = multiple_predicate_df.iloc[concerned_row_index]
-        # Go down the hierarchical list if PREDICATE_LIST and grab the first match
+        # Go down the hierarchical list of PREDICATE_LIST and grab the first match
         return_df = pd.concat(
             [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
         ).drop_duplicates()
