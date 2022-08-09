@@ -290,24 +290,26 @@ def filter_redundant_rows(
     # will be removed from pandas in a future version.
     # Use pandas.concat instead.
     # return_df = df.append(nan_df).drop_duplicates()
-    conf_recon_df = pd.concat([df, nan_df]).drop_duplicates()
+    confidence_reconciled_df = pd.concat([df, nan_df]).drop_duplicates()
 
     # Reconciling dataframe rows based on the predicates with equal confidence.
-    if PREDICATE_MODIFIER in conf_recon_df.columns:
-        tmp_df = conf_recon_df[
+    if PREDICATE_MODIFIER in confidence_reconciled_df.columns:
+        tmp_df = confidence_reconciled_df[
             [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE, PREDICATE_MODIFIER]
         ]
         tmp_df = tmp_df[tmp_df[PREDICATE_MODIFIER] != PREDICATE_MODIFIER_NOT].drop(
             PREDICATE_MODIFIER, axis=1
         )
     else:
-        tmp_df = conf_recon_df[[SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE]]
+        tmp_df = confidence_reconciled_df[
+            [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE]
+        ]
     tmp_df_grp = tmp_df.groupby(
         [SUBJECT_ID, OBJECT_ID, CONFIDENCE], as_index=False
     ).count()
     tmp_df_grp = tmp_df_grp[tmp_df_grp[PREDICATE_ID] > 1].drop(PREDICATE_ID, axis=1)
     non_predicate_reconciled_df = (
-        conf_recon_df.merge(
+        confidence_reconciled_df.merge(
             tmp_df_grp, on=list(tmp_df_grp.columns), how="left", indicator=True
         )
         .query('_merge == "left_only"')
@@ -315,14 +317,12 @@ def filter_redundant_rows(
     )
 
     multiple_predicate_df = (
-        conf_recon_df.merge(
+        confidence_reconciled_df.merge(
             tmp_df_grp, on=list(tmp_df_grp.columns), how="right", indicator=True
         )
         .query('_merge == "both"')
         .drop(columns="_merge")
     )
-
-    # TODO: Filter further based on match type provided the KEY_FEATURES are the same.
 
     return_df = non_predicate_reconciled_df
     for _, row in tmp_df_grp.iterrows():
