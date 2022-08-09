@@ -51,6 +51,7 @@ from .constants import (
     OBJECT_LABEL,
     OBJECT_SOURCE,
     PREDICATE_ID,
+    PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
@@ -289,12 +290,61 @@ def filter_redundant_rows(
     # will be removed from pandas in a future version.
     # Use pandas.concat instead.
     # return_df = df.append(nan_df).drop_duplicates()
-    return_df = pd.concat([df, nan_df]).drop_duplicates()
-    # import pdb; pdb.set_trace()
-    # new_key = [SUBJECT_ID, OBJECT_ID, CONFIDENCE]
-    # abcd = df.groupby(key, as_index=False)
-    #TODO: Filter further based on match type provided the KEY_FEATURES are the same.
-    # Precedence rules provided confidence are EQUAL.
+    conf_recon_df = pd.concat([df, nan_df]).drop_duplicates()
+
+    # Reconciling dataframe rows based on the predicates with equal confidence.
+    if PREDICATE_MODIFIER in conf_recon_df.columns:
+        tmp_df = conf_recon_df[
+            [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE, PREDICATE_MODIFIER]
+        ]
+        tmp_df = tmp_df[tmp_df[PREDICATE_MODIFIER] != PREDICATE_MODIFIER_NOT].drop(
+            PREDICATE_MODIFIER, axis=1
+        )
+    else:
+        tmp_df = conf_recon_df[[SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE]]
+    tmp_df_grp = tmp_df.groupby(
+        [SUBJECT_ID, OBJECT_ID, CONFIDENCE], as_index=False
+    ).count()
+    tmp_df_grp = tmp_df_grp[tmp_df_grp[PREDICATE_ID] > 1].drop(PREDICATE_ID, axis=1)
+    non_predicate_reconciled_df = (
+        conf_recon_df.merge(
+            tmp_df_grp, on=list(tmp_df_grp.columns), how="left", indicator=True
+        )
+        .query('_merge == "left_only"')
+        .drop(columns="_merge")
+    )
+
+    multiple_predicate_df = (
+        conf_recon_df.merge(
+            tmp_df_grp, on=list(tmp_df_grp.columns), how="right", indicator=True
+        )
+        .query('_merge == "both"')
+        .drop(columns="_merge")
+    )
+
+    # TODO: Filter further based on match type provided the KEY_FEATURES are the same.
+
+    return_df = non_predicate_reconciled_df
+    for _, row in tmp_df_grp.iterrows():
+        logic_df = multiple_predicate_df[list(tmp_df_grp.columns)] == row
+        concerned_row_index = (
+            logic_df[logic_df[list(tmp_df_grp.columns)]].dropna().index
+        )
+        concerned_df = multiple_predicate_df.iloc[concerned_row_index]
+        # Go down the hierarchical list if PREDICATE_LIST and grab the first match
+        return_df = pd.concat(
+            [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
+        ).drop_duplicates()
+
+    if return_df[CONFIDENCE].isnull().all():
+        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
+    return return_df
+
+
+def get_row_based_on_hierarchy(df: pd.DataFrame):
+    """Get row based on hierarchy of predicates.
+
+    The hierarchy is as follows:
     # owl:equivalentClass
     # owl:equivalentProperty
     # rdfs:subClassOf
@@ -308,10 +358,13 @@ def filter_redundant_rows(
     # skos:relatedMatch
     # rdfs:seeAlso
 
-
-    if return_df[CONFIDENCE].isnull().all():
-        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
-    return return_df
+    :param df: Dataframe containing multiple predicates for same subject and object.
+    :return: Dataframe with a single row which ranks higher in the hierarchy.
+    """
+    for pred in PREDICATE_LIST:
+        hierarchical_df = df[df[PREDICATE_ID] == pred]
+        if not hierarchical_df.empty:
+            return df[df[PREDICATE_ID] == pred]
 
 
 def assign_default_confidence(
@@ -591,7 +644,10 @@ def merge_msdf(
     merged_msdf.df = df_merged
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-        if PREDICATE_MODIFIER in merged_msdf.df.columns:
+        if (
+            PREDICATE_MODIFIER in merged_msdf.df.columns
+            and PREDICATE_MODIFIER_NOT in merged_msdf.df[PREDICATE_MODIFIER]
+        ):
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
     # TODO: Add default values for license and mapping_set_id.
