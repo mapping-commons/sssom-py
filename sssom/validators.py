@@ -10,18 +10,21 @@ from sssom_schema import MappingSet
 
 from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
-from sssom.util import MappingSetDataFrame, get_all_prefixes
+from sssom.util import MappingSetDataFrame, SssomMalformedYamlError, get_all_prefixes
 
 from .constants import SCHEMA_YAML, SchemaValidationType
 
 
 def validate(
-    msdf: MappingSetDataFrame, validation_types: List[SchemaValidationType]
+    msdf: MappingSetDataFrame,
+    validation_types: List[SchemaValidationType],
+    verbose=False,
 ) -> None:
     """Validate SSSOM files against `sssom-schema` using linkML's validator function.
 
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
+    :param verbose: If true, print detailed error message.
     """
     validation_methods = {
         SchemaValidationType.JsonSchema: validate_json_schema,
@@ -29,7 +32,12 @@ def validate(
         SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
     }
     for vt in validation_types:
-        validation_methods[vt](msdf)
+        try:
+            validation_methods[vt](msdf)
+        except SssomMalformedYamlError as e:
+            print("Your SSSOM mapping set metadata is malformed YAML.")
+            if verbose:
+                print(e)
 
 
 def validate_json_schema(msdf: MappingSetDataFrame) -> None:

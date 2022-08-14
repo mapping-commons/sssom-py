@@ -28,6 +28,7 @@ from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import (
     MappingSetDataFrame,
+    SssomMalformedYamlError,
     are_params_slots,
     augment_metadata,
     is_curie,
@@ -114,18 +115,24 @@ def parse_file(
 
 
 def validate_file(
-    input_path: str, validation_types: List[SchemaValidationType]
+    input_path: str, validation_types: List[SchemaValidationType], verbose: bool = False
 ) -> None:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
     :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
     :param validation_types: A list of validation types to run.
+    :param verbose: If true, print detailed error message.
     """
     # Two things to check:
     # 1. All prefixes in the DataFrame are define in prefix_map
     # 2. All columns in the DataFrame abide by sssom-schema.
-    msdf = parse_sssom_table(file_path=input_path)
-    validate(msdf=msdf, validation_types=validation_types)
+    try:
+        msdf = parse_sssom_table(file_path=input_path)
+        validate(msdf=msdf, validation_types=validation_types)
+    except SssomMalformedYamlError as e:
+        print("Your SSSOM mapping set metadata is malformed YAML.")
+        if verbose:
+            print(e)
 
 
 def split_file(input_path: str, output_directory: Union[str, Path]) -> None:

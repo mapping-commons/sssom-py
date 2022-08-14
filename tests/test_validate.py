@@ -6,6 +6,7 @@ from jsonschema import ValidationError
 
 from sssom.constants import DEFAULT_VALIDATION_TYPES, SchemaValidationType
 from sssom.parsers import parse_sssom_table
+from sssom.util import SssomMalformedYamlError
 from sssom.validators import validate
 from tests.constants import data_dir
 
@@ -60,4 +61,17 @@ class TestValidate(unittest.TestCase):
             validate,
             self.correct_msdf1,
             self.shacl_validation_types,
+        )
+
+    def test_validate_json_fail_mgi(self):
+        """
+        Test if JSONSchemaValidation fail is as expected.
+
+        In this particular test case, the 'mapping_justification' slot
+        does not have EntityReference objects, but strings.
+        """
+        self.assertRaises(
+            SssomMalformedYamlError,
+            parse_sssom_table,
+            f"{data_dir}/hp_mp_kidsfirst_mgi.sssom.tsv",
         )
