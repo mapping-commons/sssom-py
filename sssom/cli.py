@@ -168,7 +168,7 @@ def convert(input: str, output: TextIO, output_format: str):
 )
 @click.option(
     "-E",
-    "--embedded-mode",
+    "--embedded-mode / --non-embedded-mode",
     default=True,
     is_flag=True,
     help="If False, the resultant SSSOM file will be saved\
