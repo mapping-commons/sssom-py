@@ -121,6 +121,7 @@ OBJECT_SOURCE_ID = "object_source_id"
 # PREDICATES
 OWL_EQUIVALENT_CLASS = "owl:equivalentClass"
 OWL_EQUIVALENT_PROPERTY = "owl:equivalentProperty"
+OWL_DIFFERENT_FROM = "owl:differentFrom"
 RDFS_SUBCLASS_OF = "rdfs:subClassOf"
 RDFS_SUBPROPERTY_OF = "rdfs:subPropertyOf"
 OWL_SAME_AS = "owl:sameAs"
@@ -131,11 +132,13 @@ SKOS_NARROW_MATCH = "skos:narrowMatch"
 OBO_HAS_DB_XREF = "oboInOwl:hasDbXref"
 SKOS_RELATED_MATCH = "skos:relatedMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
+SSSOM_SUPERCLASS_OF = "inverseOf(owl:subClassOf)"
 
 PREDICATE_LIST = [
     OWL_EQUIVALENT_CLASS,
     OWL_EQUIVALENT_PROPERTY,
     RDFS_SUBCLASS_OF,
+    SSSOM_SUPERCLASS_OF,
     RDFS_SUBPROPERTY_OF,
     OWL_SAME_AS,
     SKOS_EXACT_MATCH,

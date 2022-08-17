@@ -50,14 +50,24 @@ from .constants import (
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
+    OBO_HAS_DB_XREF,
+    OWL_DIFFERENT_FROM,
+    OWL_EQUIVALENT_CLASS,
     PREDICATE_ID,
     PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
+    RDFS_SUBCLASS_OF,
     SCHEMA_DICT,
     SCHEMA_YAML,
     SEMAPV,
+    SKOS_BROAD_MATCH,
+    SKOS_CLOSE_MATCH,
+    SKOS_EXACT_MATCH,
+    SKOS_NARROW_MATCH,
+    SKOS_RELATED_MATCH,
+    SSSOM_SUPERCLASS_OF,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
@@ -501,29 +511,27 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
         residual_confidence = (1 - (confidence + inverse_confidence)) / 2.0
 
         predicate = row[PREDICATE_ID]
-        if predicate == "owl:equivalentClass":
+        if predicate == OWL_EQUIVALENT_CLASS:
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "skos:exactMatch":
+        elif predicate == SKOS_EXACT_MATCH:
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "skos:closeMatch":
+        elif predicate == SKOS_CLOSE_MATCH:
             # TODO: consider distributing
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "owl:subClassOf":
+        elif predicate == RDFS_SUBCLASS_OF:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == "skos:broadMatch":
+        elif predicate == SKOS_BROAD_MATCH:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == "inverseOf(owl:subClassOf)":
+        elif predicate == SSSOM_SUPERCLASS_OF:
             predicate_type = PREDICATE_SUPERCLASS
-        elif predicate == "skos:narrowMatch":
+        elif predicate == SKOS_NARROW_MATCH:
             predicate_type = PREDICATE_SUPERCLASS
-        elif predicate == "owl:differentFrom":
-            predicate_type = PREDICATE_SIBLING
-        elif predicate == "dbpedia-owl:different":
+        elif predicate == OWL_DIFFERENT_FROM:
             predicate_type = PREDICATE_SIBLING
         # * Added by H2 ############################
-        elif predicate == "oboInOwl:hasDbXref":
+        elif predicate == OBO_HAS_DB_XREF:
             predicate_type = PREDICATE_HAS_DBXREF
-        elif predicate == "skos:relatedMatch":
+        elif predicate == SKOS_RELATED_MATCH:
             predicate_type = PREDICATE_RELATED_MATCH
         # * ########################################
         else:
