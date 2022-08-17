@@ -364,7 +364,7 @@ def get_row_based_on_hierarchy(df: pd.DataFrame):
     for pred in PREDICATE_LIST:
         hierarchical_df = df[df[PREDICATE_ID] == pred]
         if not hierarchical_df.empty:
-            return df[df[PREDICATE_ID] == pred]
+            return hierarchical_df
 
 
 def assign_default_confidence(
