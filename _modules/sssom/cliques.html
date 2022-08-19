@@ -81,6 +81,17 @@
 <span class="c1"># from .sssom_datamodel import Mapping</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span>
 
+<span class="kn">from</span> <span class="nn">sssom.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">OWL_DIFFERENT_FROM</span><span class="p">,</span>
+    <span class="n">OWL_EQUIVALENT_CLASS</span><span class="p">,</span>
+    <span class="n">RDFS_SUBCLASS_OF</span><span class="p">,</span>
+    <span class="n">SKOS_BROAD_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_CLOSE_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_EXACT_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_NARROW_MATCH</span><span class="p">,</span>
+    <span class="n">SSSOM_SUPERCLASS_OF</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span>
@@ -101,24 +112,22 @@
 
             <span class="n">pi</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;owl:equivalentClass&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="n">OWL_EQUIVALENT_CLASS</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">2</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;skos:exactMatch&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">SKOS_EXACT_MATCH</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">2</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;skos:closeMatch&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">SKOS_CLOSE_MATCH</span><span class="p">:</span>
                 <span class="c1"># TODO: consider distributing</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">2</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;owl:subClassOf&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">RDFS_SUBCLASS_OF</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;skos:broadMatch&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">SKOS_BROAD_MATCH</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;inverseOf(owl:subClassOf)&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">SSSOM_SUPERCLASS_OF</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;skos:narrowMatch&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">SKOS_NARROW_MATCH</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;owl:differentFrom&quot;</span><span class="p">:</span>
-                <span class="n">pi</span> <span class="o">=</span> <span class="mi">3</span>
-            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="s2">&quot;dbpedia-owl:different&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">p</span> <span class="o">==</span> <span class="n">OWL_DIFFERENT_FROM</span><span class="p">:</span>
                 <span class="n">pi</span> <span class="o">=</span> <span class="mi">3</span>
 
             <span class="k">if</span> <span class="n">pi</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

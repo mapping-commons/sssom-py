@@ -1232,6 +1232,33 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_row_based_on_hierarchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_row_based_on_hierarchy"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get row based on hierarchy of predicates.</p>
+<p>The hierarchy is as follows:
+# owl:equivalentClass
+# owl:equivalentProperty
+# rdfs:subClassOf
+# rdfs:subPropertyOf
+# owl:sameAs
+# skos:exactMatch
+# skos:closeMatch
+# skos:broadMatch
+# skos:narrowMatch
+# oboInOwl:hasDbXref
+# skos:relatedMatch
+# rdfs:seeAlso</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – Dataframe containing multiple predicates for same subject and object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dataframe with a single row which ranks higher in the hierarchy.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">group_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#sssom.util.EntityPair" title="sssom.util.EntityPair"><span class="pre">EntityPair</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/sssom/util.html#group_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Group mappings by EntityPairs.</p>
 </dd></dl>
@@ -1295,7 +1322,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">merge_msdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconcile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></span><a class="reference internal" href="../_modules/sssom/util.html#merge_msdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">merge_msdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconcile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></span><a class="reference internal" href="../_modules/sssom/util.html#merge_msdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Merge multiple MappingSetDataFrames into one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

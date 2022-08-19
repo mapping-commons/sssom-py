@@ -120,13 +120,24 @@
     <span class="n">OBJECT_ID</span><span class="p">,</span>
     <span class="n">OBJECT_LABEL</span><span class="p">,</span>
     <span class="n">OBJECT_SOURCE</span><span class="p">,</span>
+    <span class="n">OBO_HAS_DB_XREF</span><span class="p">,</span>
+    <span class="n">OWL_DIFFERENT_FROM</span><span class="p">,</span>
+    <span class="n">OWL_EQUIVALENT_CLASS</span><span class="p">,</span>
     <span class="n">PREDICATE_ID</span><span class="p">,</span>
+    <span class="n">PREDICATE_LIST</span><span class="p">,</span>
     <span class="n">PREDICATE_MODIFIER</span><span class="p">,</span>
     <span class="n">PREDICATE_MODIFIER_NOT</span><span class="p">,</span>
     <span class="n">PREFIX_MAP_MODES</span><span class="p">,</span>
+    <span class="n">RDFS_SUBCLASS_OF</span><span class="p">,</span>
     <span class="n">SCHEMA_DICT</span><span class="p">,</span>
     <span class="n">SCHEMA_YAML</span><span class="p">,</span>
     <span class="n">SEMAPV</span><span class="p">,</span>
+    <span class="n">SKOS_BROAD_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_CLOSE_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_EXACT_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_NARROW_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_RELATED_MATCH</span><span class="p">,</span>
+    <span class="n">SSSOM_SUPERCLASS_OF</span><span class="p">,</span>
     <span class="n">SUBJECT_CATEGORY</span><span class="p">,</span>
     <span class="n">SUBJECT_ID</span><span class="p">,</span>
     <span class="n">SUBJECT_LABEL</span><span class="p">,</span>
@@ -359,11 +370,81 @@
     <span class="c1"># will be removed from pandas in a future version.</span>
     <span class="c1"># Use pandas.concat instead.</span>
     <span class="c1"># return_df = df.append(nan_df).drop_duplicates()</span>
-    <span class="n">return_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">confidence_reconciled_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="c1"># Reconciling dataframe rows based on the predicates with equal confidence.</span>
+    <span class="k">if</span> <span class="n">PREDICATE_MODIFIER</span> <span class="ow">in</span> <span class="n">confidence_reconciled_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">tmp_df</span> <span class="o">=</span> <span class="n">confidence_reconciled_df</span><span class="p">[</span>
+            <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">CONFIDENCE</span><span class="p">,</span> <span class="n">PREDICATE_MODIFIER</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="n">tmp_df</span> <span class="o">=</span> <span class="n">tmp_df</span><span class="p">[</span><span class="n">tmp_df</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span> <span class="o">!=</span> <span class="n">PREDICATE_MODIFIER_NOT</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+            <span class="n">PREDICATE_MODIFIER</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tmp_df</span> <span class="o">=</span> <span class="n">confidence_reconciled_df</span><span class="p">[</span>
+            <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">CONFIDENCE</span><span class="p">]</span>
+        <span class="p">]</span>
+    <span class="n">tmp_df_grp</span> <span class="o">=</span> <span class="n">tmp_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">,</span> <span class="n">CONFIDENCE</span><span class="p">],</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="n">tmp_df_grp</span> <span class="o">=</span> <span class="n">tmp_df_grp</span><span class="p">[</span><span class="n">tmp_df_grp</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">non_predicate_reconciled_df</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">confidence_reconciled_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">tmp_df_grp</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">tmp_df_grp</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;_merge == &quot;left_only&quot;&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;_merge&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">multiple_predicate_df</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">confidence_reconciled_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">tmp_df_grp</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">tmp_df_grp</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;_merge == &quot;both&quot;&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;_merge&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">return_df</span> <span class="o">=</span> <span class="n">non_predicate_reconciled_df</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tmp_df_grp</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">logic_df</span> <span class="o">=</span> <span class="n">multiple_predicate_df</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tmp_df_grp</span><span class="o">.</span><span class="n">columns</span><span class="p">)]</span> <span class="o">==</span> <span class="n">row</span>
+        <span class="n">concerned_row_index</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">logic_df</span><span class="p">[</span><span class="n">logic_df</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">tmp_df_grp</span><span class="o">.</span><span class="n">columns</span><span class="p">)]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span>
+        <span class="p">)</span>
+        <span class="n">concerned_df</span> <span class="o">=</span> <span class="n">multiple_predicate_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">concerned_row_index</span><span class="p">]</span>
+        <span class="c1"># Go down the hierarchical list of PREDICATE_LIST and grab the first match</span>
+        <span class="n">return_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">concerned_df</span><span class="p">),</span> <span class="n">return_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">return_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
         <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">return_df</span></div>
+
+
+<div class="viewcode-block" id="get_row_based_on_hierarchy"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.get_row_based_on_hierarchy">[docs]</a><span class="k">def</span> <span class="nf">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get row based on hierarchy of predicates.</span>
+
+<span class="sd">    The hierarchy is as follows:</span>
+<span class="sd">    # owl:equivalentClass</span>
+<span class="sd">    # owl:equivalentProperty</span>
+<span class="sd">    # rdfs:subClassOf</span>
+<span class="sd">    # rdfs:subPropertyOf</span>
+<span class="sd">    # owl:sameAs</span>
+<span class="sd">    # skos:exactMatch</span>
+<span class="sd">    # skos:closeMatch</span>
+<span class="sd">    # skos:broadMatch</span>
+<span class="sd">    # skos:narrowMatch</span>
+<span class="sd">    # oboInOwl:hasDbXref</span>
+<span class="sd">    # skos:relatedMatch</span>
+<span class="sd">    # rdfs:seeAlso</span>
+
+<span class="sd">    :param df: Dataframe containing multiple predicates for same subject and object.</span>
+<span class="sd">    :return: Dataframe with a single row which ranks higher in the hierarchy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">PREDICATE_LIST</span><span class="p">:</span>
+        <span class="n">hierarchical_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">==</span> <span class="n">pred</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hierarchical_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hierarchical_df</span></div>
 
 
 <div class="viewcode-block" id="assign_default_confidence"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.assign_default_confidence">[docs]</a><span class="k">def</span> <span class="nf">assign_default_confidence</span><span class="p">(</span>
@@ -500,29 +581,27 @@
         <span class="n">residual_confidence</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">confidence</span> <span class="o">+</span> <span class="n">inverse_confidence</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
 
         <span class="n">predicate</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;owl:equivalentClass&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">OWL_EQUIVALENT_CLASS</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_EQUIVALENT</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;skos:exactMatch&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">SKOS_EXACT_MATCH</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_EQUIVALENT</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;skos:closeMatch&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">SKOS_CLOSE_MATCH</span><span class="p">:</span>
             <span class="c1"># TODO: consider distributing</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_EQUIVALENT</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;owl:subClassOf&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">RDFS_SUBCLASS_OF</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_SUBCLASS</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;skos:broadMatch&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">SKOS_BROAD_MATCH</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_SUBCLASS</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;inverseOf(owl:subClassOf)&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">SSSOM_SUPERCLASS_OF</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_SUPERCLASS</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;skos:narrowMatch&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">SKOS_NARROW_MATCH</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_SUPERCLASS</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;owl:differentFrom&quot;</span><span class="p">:</span>
-            <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_SIBLING</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;dbpedia-owl:different&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">OWL_DIFFERENT_FROM</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_SIBLING</span>
         <span class="c1"># * Added by H2 ############################</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;oboInOwl:hasDbXref&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">OBO_HAS_DB_XREF</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_HAS_DBXREF</span>
-        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="s2">&quot;skos:relatedMatch&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">predicate</span> <span class="o">==</span> <span class="n">SKOS_RELATED_MATCH</span><span class="p">:</span>
             <span class="n">predicate_type</span> <span class="o">=</span> <span class="n">PREDICATE_RELATED_MATCH</span>
         <span class="c1"># * ########################################</span>
         <span class="k">else</span><span class="p">:</span>
@@ -608,7 +687,7 @@
 
 <div class="viewcode-block" id="merge_msdf"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.merge_msdf">[docs]</a><span class="k">def</span> <span class="nf">merge_msdf</span><span class="p">(</span>
     <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
-    <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Merge multiple MappingSetDataFrames into one.</span>
 
@@ -643,7 +722,10 @@
     <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df_merged</span>
     <span class="k">if</span> <span class="n">reconcile</span><span class="p">:</span>
         <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">PREDICATE_MODIFIER</span> <span class="ow">in</span> <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">PREDICATE_MODIFIER</span> <span class="ow">in</span> <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+            <span class="ow">and</span> <span class="n">PREDICATE_MODIFIER_NOT</span> <span class="ow">in</span> <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">deal_with_negation</span><span class="p">(</span><span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>  <span class="c1"># deals with negation</span>
 
     <span class="c1"># TODO: Add default values for license and mapping_set_id.</span>
