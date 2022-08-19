@@ -83,7 +83,7 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
 
     missing_prefixes = []
     for pref in prefixes:
-        if pref not in list(msdf.prefix_map.keys()) and pref != "":
+        if pref not in list(msdf.prefix_map.keys()):
             missing_prefixes.append(pref)
     if missing_prefixes:
         raise ValidationError(

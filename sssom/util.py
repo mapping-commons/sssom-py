@@ -1379,6 +1379,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
                         [
                             get_prefix_from_curie(s)
                             for s in list(set(msdf.df[slot].to_list()))  # type: ignore
+                            if get_prefix_from_curie(s) != ""
                         ]
                     )
                 )
