@@ -109,7 +109,7 @@ def parse_file(
     #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
-        doc.clean_prefix_map_and_metadata()
+        doc.clean_prefix_map()
     write_table(doc, output, embedded_mode)
 
 

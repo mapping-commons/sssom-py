@@ -143,17 +143,16 @@ class MappingSetDataFrame:
             description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map_and_metadata(self) -> None:
+    def clean_prefix_map(self) -> None:
         """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         prefixes_in_map = get_prefixes_used_in_table(self.df)
         new_prefixes: PrefixMap = dict()
-        new_meta: MetadataType = dict()
         missing_prefixes = []
         for prefix in prefixes_in_map:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
             elif prefix in self.metadata:  # type: ignore
-                new_meta[prefix] = self.metadata[prefix]  # type: ignore
+                continue
             else:
                 logging.warning(
                     f"{prefix} is used in the dataframe but neither exists in prefix map nor metadata"
@@ -162,7 +161,6 @@ class MappingSetDataFrame:
         if missing_prefixes:
             self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
-        self.metadata = new_meta
 
     def remove_mappings(self, msdf: "MappingSetDataFrame"):
         """Remove mappings in right msdf from left msdf.
@@ -184,7 +182,7 @@ class MappingSetDataFrame:
         )
 
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
-        self.clean_prefix_map_and_metadata()
+        self.clean_prefix_map()
 
 
 @dataclass
