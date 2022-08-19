@@ -617,7 +617,7 @@ def sha256sum(path: str) -> str:
 
 def merge_msdf(
     *msdfs: MappingSetDataFrame,
-    reconcile: bool = True,
+    reconcile: bool = False,
 ) -> MappingSetDataFrame:
     """Merge multiple MappingSetDataFrames into one.
 

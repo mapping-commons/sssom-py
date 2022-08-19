@@ -484,7 +484,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: str, output: TextIO, reconcile: bool = True):
+def merge(inputs: str, output: TextIO, reconcile: bool = False):
     """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
