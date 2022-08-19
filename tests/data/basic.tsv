@@ -154,7 +154,7 @@ z:region	REGION	owl:equivalentClass		y:region	regions	semapv:ManualMappingCurati
 z:tissue	TISSUE	owl:equivalentClass		x:tissue	tissue	semapv:ManualMappingCuration	z:example	x:example	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
 z:tissue	TISSUE	owl:equivalentClass		x:tissue	tissue	semapv:LexicalMatching	z:example	x:example	rdf_matcher	0.881856236	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissue	.
 z:tissue	TISSUE	owl:equivalentClass		y:tissue	tissues	semapv:ManualMappingCuration	z:example	y:example	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	tissu	.
-a:something	XXXXX	owl:subClassOf		b:something	xxxxxx	semapv:LexicalMatching	a:example	b:example	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
+a:something	XXXXX	rdfs:subClassOf		b:something	xxxxxx	semapv:LexicalMatching	a:example	b:example	rdf_matcher	0.8	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 c:something	YYYYY	owl:equivalentClass		d:something	yyyyyy	semapv:LexicalMatching	c:example	d:example	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 d:something	YYYYY	owl:equivalentClass	Not	a:something	yyyyyy	semapv:LexicalMatching	d:example	a:example	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 a:something	XYXYX	owl:equivalentClass		c:something	xyxyxy	semapv:LexicalMatching	a:example	c:example	rdf_matcher	0.83	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data

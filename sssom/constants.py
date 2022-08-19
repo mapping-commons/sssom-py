@@ -118,6 +118,38 @@ CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
 OBJECT_SOURCE_ID = "object_source_id"
 
+# PREDICATES
+OWL_EQUIVALENT_CLASS = "owl:equivalentClass"
+OWL_EQUIVALENT_PROPERTY = "owl:equivalentProperty"
+OWL_DIFFERENT_FROM = "owl:differentFrom"
+RDFS_SUBCLASS_OF = "rdfs:subClassOf"
+RDFS_SUBPROPERTY_OF = "rdfs:subPropertyOf"
+OWL_SAME_AS = "owl:sameAs"
+SKOS_EXACT_MATCH = "skos:exactMatch"
+SKOS_CLOSE_MATCH = "skos:closeMatch"
+SKOS_BROAD_MATCH = "skos:broadMatch"
+SKOS_NARROW_MATCH = "skos:narrowMatch"
+OBO_HAS_DB_XREF = "oboInOwl:hasDbXref"
+SKOS_RELATED_MATCH = "skos:relatedMatch"
+RDF_SEE_ALSO = "rdfs:seeAlso"
+SSSOM_SUPERCLASS_OF = "inverseOf(owl:subClassOf)"
+
+PREDICATE_LIST = [
+    OWL_EQUIVALENT_CLASS,
+    OWL_EQUIVALENT_PROPERTY,
+    RDFS_SUBCLASS_OF,
+    SSSOM_SUPERCLASS_OF,
+    RDFS_SUBPROPERTY_OF,
+    OWL_SAME_AS,
+    SKOS_EXACT_MATCH,
+    SKOS_CLOSE_MATCH,
+    SKOS_BROAD_MATCH,
+    SKOS_NARROW_MATCH,
+    OBO_HAS_DB_XREF,
+    SKOS_RELATED_MATCH,
+    RDF_SEE_ALSO,
+]
+
 
 class SEMAPV(Enum):
     """SEMAPV Enum containing different mapping_justification."""

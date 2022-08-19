@@ -50,13 +50,24 @@ from .constants import (
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
+    OBO_HAS_DB_XREF,
+    OWL_DIFFERENT_FROM,
+    OWL_EQUIVALENT_CLASS,
     PREDICATE_ID,
+    PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
+    RDFS_SUBCLASS_OF,
     SCHEMA_DICT,
     SCHEMA_YAML,
     SEMAPV,
+    SKOS_BROAD_MATCH,
+    SKOS_CLOSE_MATCH,
+    SKOS_EXACT_MATCH,
+    SKOS_NARROW_MATCH,
+    SKOS_RELATED_MATCH,
+    SSSOM_SUPERCLASS_OF,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
@@ -289,11 +300,81 @@ def filter_redundant_rows(
     # will be removed from pandas in a future version.
     # Use pandas.concat instead.
     # return_df = df.append(nan_df).drop_duplicates()
-    return_df = pd.concat([df, nan_df]).drop_duplicates()
+    confidence_reconciled_df = pd.concat([df, nan_df]).drop_duplicates()
+
+    # Reconciling dataframe rows based on the predicates with equal confidence.
+    if PREDICATE_MODIFIER in confidence_reconciled_df.columns:
+        tmp_df = confidence_reconciled_df[
+            [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE, PREDICATE_MODIFIER]
+        ]
+        tmp_df = tmp_df[tmp_df[PREDICATE_MODIFIER] != PREDICATE_MODIFIER_NOT].drop(
+            PREDICATE_MODIFIER, axis=1
+        )
+    else:
+        tmp_df = confidence_reconciled_df[
+            [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE]
+        ]
+    tmp_df_grp = tmp_df.groupby(
+        [SUBJECT_ID, OBJECT_ID, CONFIDENCE], as_index=False
+    ).count()
+    tmp_df_grp = tmp_df_grp[tmp_df_grp[PREDICATE_ID] > 1].drop(PREDICATE_ID, axis=1)
+    non_predicate_reconciled_df = (
+        confidence_reconciled_df.merge(
+            tmp_df_grp, on=list(tmp_df_grp.columns), how="left", indicator=True
+        )
+        .query('_merge == "left_only"')
+        .drop(columns="_merge")
+    )
+
+    multiple_predicate_df = (
+        confidence_reconciled_df.merge(
+            tmp_df_grp, on=list(tmp_df_grp.columns), how="right", indicator=True
+        )
+        .query('_merge == "both"')
+        .drop(columns="_merge")
+    )
+
+    return_df = non_predicate_reconciled_df
+    for _, row in tmp_df_grp.iterrows():
+        logic_df = multiple_predicate_df[list(tmp_df_grp.columns)] == row
+        concerned_row_index = (
+            logic_df[logic_df[list(tmp_df_grp.columns)]].dropna().index
+        )
+        concerned_df = multiple_predicate_df.iloc[concerned_row_index]
+        # Go down the hierarchical list of PREDICATE_LIST and grab the first match
+        return_df = pd.concat(
+            [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
+        ).drop_duplicates()
 
     if return_df[CONFIDENCE].isnull().all():
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
+
+
+def get_row_based_on_hierarchy(df: pd.DataFrame):
+    """Get row based on hierarchy of predicates.
+
+    The hierarchy is as follows:
+    # owl:equivalentClass
+    # owl:equivalentProperty
+    # rdfs:subClassOf
+    # rdfs:subPropertyOf
+    # owl:sameAs
+    # skos:exactMatch
+    # skos:closeMatch
+    # skos:broadMatch
+    # skos:narrowMatch
+    # oboInOwl:hasDbXref
+    # skos:relatedMatch
+    # rdfs:seeAlso
+
+    :param df: Dataframe containing multiple predicates for same subject and object.
+    :return: Dataframe with a single row which ranks higher in the hierarchy.
+    """
+    for pred in PREDICATE_LIST:
+        hierarchical_df = df[df[PREDICATE_ID] == pred]
+        if not hierarchical_df.empty:
+            return hierarchical_df
 
 
 def assign_default_confidence(
@@ -430,29 +511,27 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
         residual_confidence = (1 - (confidence + inverse_confidence)) / 2.0
 
         predicate = row[PREDICATE_ID]
-        if predicate == "owl:equivalentClass":
+        if predicate == OWL_EQUIVALENT_CLASS:
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "skos:exactMatch":
+        elif predicate == SKOS_EXACT_MATCH:
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "skos:closeMatch":
+        elif predicate == SKOS_CLOSE_MATCH:
             # TODO: consider distributing
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "owl:subClassOf":
+        elif predicate == RDFS_SUBCLASS_OF:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == "skos:broadMatch":
+        elif predicate == SKOS_BROAD_MATCH:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == "inverseOf(owl:subClassOf)":
+        elif predicate == SSSOM_SUPERCLASS_OF:
             predicate_type = PREDICATE_SUPERCLASS
-        elif predicate == "skos:narrowMatch":
+        elif predicate == SKOS_NARROW_MATCH:
             predicate_type = PREDICATE_SUPERCLASS
-        elif predicate == "owl:differentFrom":
-            predicate_type = PREDICATE_SIBLING
-        elif predicate == "dbpedia-owl:different":
+        elif predicate == OWL_DIFFERENT_FROM:
             predicate_type = PREDICATE_SIBLING
         # * Added by H2 ############################
-        elif predicate == "oboInOwl:hasDbXref":
+        elif predicate == OBO_HAS_DB_XREF:
             predicate_type = PREDICATE_HAS_DBXREF
-        elif predicate == "skos:relatedMatch":
+        elif predicate == SKOS_RELATED_MATCH:
             predicate_type = PREDICATE_RELATED_MATCH
         # * ########################################
         else:
@@ -538,7 +617,7 @@ def sha256sum(path: str) -> str:
 
 def merge_msdf(
     *msdfs: MappingSetDataFrame,
-    reconcile: bool = True,
+    reconcile: bool = False,
 ) -> MappingSetDataFrame:
     """Merge multiple MappingSetDataFrames into one.
 
@@ -573,7 +652,10 @@ def merge_msdf(
     merged_msdf.df = df_merged
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-        if PREDICATE_MODIFIER in merged_msdf.df.columns:
+        if (
+            PREDICATE_MODIFIER in merged_msdf.df.columns
+            and PREDICATE_MODIFIER_NOT in merged_msdf.df[PREDICATE_MODIFIER]
+        ):
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
     # TODO: Add default values for license and mapping_set_id.
