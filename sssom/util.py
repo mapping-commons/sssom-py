@@ -146,12 +146,13 @@ class MappingSetDataFrame:
     def clean_prefix_map(self) -> None:
         """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         prefixes_in_map = get_prefixes_used_in_table(self.df)
+        prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
         for prefix in prefixes_in_map:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
-            elif str(self.metadata.values).startswith(prefix):  # type: ignore
+            elif prefix in prefixes_in_metadata:  # type: ignore
                 continue
             else:
                 logging.warning(
@@ -1096,6 +1097,15 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
                     prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
 
+def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
+    """Get a list of prefixes used in CURIEs in the metadata."""
+    prefixes = []
+    if meta:
+        for v in meta.values:
+            prefixes.append(get_prefix_from_curie(v))
+    return prefixes
+        
+        
 
 def filter_out_prefixes(
     df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
