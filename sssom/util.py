@@ -146,13 +146,14 @@ class MappingSetDataFrame:
     def clean_prefix_map(self) -> None:
         """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         prefixes_in_map = get_prefixes_used_in_table(self.df)
-        prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)  # type: ignore
+        if self.metadata:
+            prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
         for prefix in prefixes_in_map:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
-            elif prefix in prefixes_in_metadata:  # type: ignore
+            elif len(prefixes_in_metadata) > 0 and prefix in prefixes_in_metadata:
                 continue
             else:
                 logging.warning(
