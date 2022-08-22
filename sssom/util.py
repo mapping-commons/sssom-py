@@ -151,7 +151,7 @@ class MappingSetDataFrame:
         for prefix in prefixes_in_map:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
-            elif prefix in self.metadata:  # type: ignore
+            elif str(self.metadata.values).startswith(prefix):  # type: ignore
                 continue
             else:
                 logging.warning(
