@@ -1102,8 +1102,8 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
     """Get a list of prefixes used in CURIEs in the metadata."""
     prefixes = []
     if meta:
-        for v in meta.values:
-            prefixes.append(get_prefix_from_curie(v))
+        for v in meta.values():
+            prefixes.append(get_prefix_from_curie(str(v)))
     return prefixes
 
 
