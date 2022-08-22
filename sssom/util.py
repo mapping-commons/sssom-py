@@ -1097,6 +1097,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
                     prefixes.append(get_prefix_from_curie(v))
     return list(set(prefixes))
 
+
 def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
     """Get a list of prefixes used in CURIEs in the metadata."""
     prefixes = []
@@ -1104,8 +1105,7 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
         for v in meta.values:
             prefixes.append(get_prefix_from_curie(v))
     return prefixes
-        
-        
+
 
 def filter_out_prefixes(
     df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
