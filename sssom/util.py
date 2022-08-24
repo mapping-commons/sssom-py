@@ -73,7 +73,12 @@ from .constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
 )
-from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
+from .context import (
+    SSSOM_BUILT_IN_PREFIXES,
+    SSSOM_URI_PREFIX,
+    get_default_metadata,
+    get_jsonld_context,
+)
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -145,19 +150,22 @@ class MappingSetDataFrame:
 
     def clean_prefix_map(self) -> None:
         """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
-        prefixes_in_map = get_prefixes_used_in_table(self.df)
+        all_prefixes = []
+        prefixes_in_table = get_prefixes_used_in_table(self.df)
         if self.metadata:
             prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)
+            all_prefixes = list(set(prefixes_in_table + prefixes_in_metadata))
+        else:
+            all_prefixes = prefixes_in_table
+
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
-        for prefix in prefixes_in_map:
+        for prefix in all_prefixes:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
-            elif len(prefixes_in_metadata) > 0 and prefix in prefixes_in_metadata:
-                continue
             else:
                 logging.warning(
-                    f"{prefix} is used in the dataframe but neither exists in prefix map nor metadata"
+                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
                 )
                 missing_prefixes.append(prefix)
         if missing_prefixes:
@@ -1090,22 +1098,35 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
-    prefixes = []
+    prefixes = SSSOM_BUILT_IN_PREFIXES
     if not df.empty:
         for col in ENTITY_REFERENCE_SLOTS:
             if col in df.columns:
                 for v in df[col].values:
-                    prefixes.append(get_prefix_from_curie(v))
+                    pref = get_prefix_from_curie(str(v))
+                    if pref != "" and not None:
+                        prefixes.append(pref)
     return list(set(prefixes))
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
     """Get a list of prefixes used in CURIEs in the metadata."""
-    prefixes = []
+    prefixes = SSSOM_BUILT_IN_PREFIXES
     if meta:
         for v in meta.values():
-            prefixes.append(get_prefix_from_curie(str(v)))
-    return prefixes
+            if type(v) is list:
+                prefixes.extend(
+                    [
+                        get_prefix_from_curie(x)
+                        for x in v
+                        if get_prefix_from_curie(x) != ""
+                    ]
+                )
+            else:
+                pref = get_prefix_from_curie(str(v))
+                if pref != "" and not None:
+                    prefixes.append(pref)
+    return list(set(prefixes))
 
 
 def filter_out_prefixes(
