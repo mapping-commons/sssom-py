@@ -17,7 +17,7 @@ from .typehints import Metadata, MetadataType, PrefixMap
 # EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
-SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
+SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos", "semapv"]
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 
