@@ -357,9 +357,11 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
     for idx, (k, v) in enumerate(params.items(), start=1):
         query += k + " LIKE '" + v[0] + "' "
         if len(v) > 1:
-            for exp in v[1:]:
+            for idx2, exp in enumerate(v[1:]):
                 query += " OR "
-                query += k + " LIKE '" + exp + "') "
+                query += k + " LIKE '" + exp + "'"
+                if idx2 + 1 == len(v) - 1:
+                    query += ") "
         else:
             query += ") "
         if multiple_params and idx != len(params):

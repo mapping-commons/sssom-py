@@ -24,7 +24,7 @@ class TestSort(unittest.TestCase):
 
     def test_filter(self):
         """Test filtering of rows."""
-        kwargs = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
+        kwargs = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%", "a:%")}
         filtered_msdf = filter_file(input=self.input, output=sys.stdout, **kwargs)
         validation_msdf = parse_sssom_table(self.validation_file)
 
