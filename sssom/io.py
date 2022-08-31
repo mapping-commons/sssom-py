@@ -360,7 +360,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
             for idx2, exp in enumerate(v[1:]):
                 query += " OR "
                 query += k + " LIKE '" + exp + "'"
-                if idx2+1 == len(v)-1:
+                if idx2 + 1 == len(v) - 1:
                     query += ") "
         else:
             query += ") "
