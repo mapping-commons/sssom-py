@@ -629,7 +629,7 @@ def from_obographs(
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
-            elif "edges" in g:
+            if "edges" in g:
                 for edge in g["edges"]:
                     mdict = {}
                     subject_id = edge["sub"]
@@ -638,10 +638,11 @@ def from_obographs(
                     if predicate_id in mapping_predicates:
                         mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
                         mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
+                        mdict[SUBJECT_LABEL] = label
                         mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
-            elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
+            if "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
                     if "nodeIds" in equivalents:
                         for ec1 in equivalents["nodeIds"]:
@@ -656,6 +657,7 @@ def from_obographs(
                                     mdict[
                                         MAPPING_JUSTIFICATION
                                     ] = MAPPING_JUSTIFICATION_UNSPECIFIED
+                                    mdict[SUBJECT_LABEL] = label
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
