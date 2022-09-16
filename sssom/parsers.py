@@ -33,6 +33,7 @@ from sssom.constants import (
     MAPPING_SET_SLOTS,
     MAPPING_SLOTS,
     OBJECT_ID,
+    OBJECT_LABEL,
     OBJECT_SOURCE,
     OBJECT_SOURCE_ID,
     OWL_EQUIV_CLASS,
@@ -573,6 +574,20 @@ def from_obographs(
     if not mapping_predicates:
         mapping_predicates = DEFAULT_MAPPING_PROPERTIES
 
+    labels = {}
+
+    # Build a dictionary of labels to populate _label columns
+    if "graphs" in jsondoc:
+        for g in jsondoc["graphs"]:
+            if "nodes" in g:
+                for n in g["nodes"]:
+                    nid = n["id"]
+                    if "lbl" in n:
+                        label = n["lbl"]
+                    else:
+                        label = ""
+                    labels[nid] = label
+
     if "graphs" in jsondoc:
         for g in jsondoc["graphs"]:
             if "nodes" in g:
@@ -629,7 +644,7 @@ def from_obographs(
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
-            elif "edges" in g:
+            if "edges" in g:
                 for edge in g["edges"]:
                     mdict = {}
                     subject_id = edge["sub"]
@@ -638,10 +653,12 @@ def from_obographs(
                     if predicate_id in mapping_predicates:
                         mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
                         mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
+                        mdict[SUBJECT_LABEL] = labels[subject_id]
+                        mdict[OBJECT_LABEL] = labels[object_id]
                         mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
-            elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
+            if "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
                     if "nodeIds" in equivalents:
                         for ec1 in equivalents["nodeIds"]:
@@ -656,6 +673,8 @@ def from_obographs(
                                     mdict[
                                         MAPPING_JUSTIFICATION
                                     ] = MAPPING_JUSTIFICATION_UNSPECIFIED
+                                    mdict[SUBJECT_LABEL] = labels[ec1]
+                                    mdict[OBJECT_LABEL] = labels[ec2]
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
