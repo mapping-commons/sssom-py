@@ -103,6 +103,7 @@
     <span class="n">MAPPING_SET_SLOTS</span><span class="p">,</span>
     <span class="n">MAPPING_SLOTS</span><span class="p">,</span>
     <span class="n">OBJECT_ID</span><span class="p">,</span>
+    <span class="n">OBJECT_LABEL</span><span class="p">,</span>
     <span class="n">OBJECT_SOURCE</span><span class="p">,</span>
     <span class="n">OBJECT_SOURCE_ID</span><span class="p">,</span>
     <span class="n">OWL_EQUIV_CLASS</span><span class="p">,</span>
@@ -643,6 +644,20 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping_predicates</span><span class="p">:</span>
         <span class="n">mapping_predicates</span> <span class="o">=</span> <span class="n">DEFAULT_MAPPING_PROPERTIES</span>
 
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Build a dictionary of labels to populate _label columns</span>
+    <span class="k">if</span> <span class="s2">&quot;graphs&quot;</span> <span class="ow">in</span> <span class="n">jsondoc</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">jsondoc</span><span class="p">[</span><span class="s2">&quot;graphs&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s2">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]:</span>
+                    <span class="n">nid</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="s2">&quot;lbl&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;lbl&quot;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">labels</span><span class="p">[</span><span class="n">nid</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+
     <span class="k">if</span> <span class="s2">&quot;graphs&quot;</span> <span class="ow">in</span> <span class="n">jsondoc</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">jsondoc</span><span class="p">[</span><span class="s2">&quot;graphs&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="s2">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
@@ -699,7 +714,7 @@
                                     <span class="k">except</span> <span class="n">NoCURIEException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                                         <span class="c1"># FIXME this will cause ragged mappings</span>
                                         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="s2">&quot;edges&quot;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;edges&quot;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;edges&quot;</span><span class="p">]:</span>
                     <span class="n">mdict</span> <span class="o">=</span> <span class="p">{}</span>
                     <span class="n">subject_id</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="s2">&quot;sub&quot;</span><span class="p">]</span>
@@ -708,10 +723,12 @@
                     <span class="k">if</span> <span class="n">predicate_id</span> <span class="ow">in</span> <span class="n">mapping_predicates</span><span class="p">:</span>
                         <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">subject_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
                         <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">object_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">subject_id</span><span class="p">]</span>
+                        <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
                         <span class="n">mdict</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_from_uri</span><span class="p">(</span><span class="n">predicate_id</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
                         <span class="n">mdict</span><span class="p">[</span><span class="n">MAPPING_JUSTIFICATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
                         <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="s2">&quot;equivalentNodesSets&quot;</span> <span class="ow">in</span> <span class="n">g</span> <span class="ow">and</span> <span class="n">OWL_EQUIV_CLASS</span> <span class="ow">in</span> <span class="n">mapping_predicates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;equivalentNodesSets&quot;</span> <span class="ow">in</span> <span class="n">g</span> <span class="ow">and</span> <span class="n">OWL_EQUIV_CLASS</span> <span class="ow">in</span> <span class="n">mapping_predicates</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">equivalents</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;equivalentNodesSets&quot;</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="s2">&quot;nodeIds&quot;</span> <span class="ow">in</span> <span class="n">equivalents</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">ec1</span> <span class="ow">in</span> <span class="n">equivalents</span><span class="p">[</span><span class="s2">&quot;nodeIds&quot;</span><span class="p">]:</span>
@@ -726,6 +743,8 @@
                                     <span class="n">mdict</span><span class="p">[</span>
                                         <span class="n">MAPPING_JUSTIFICATION</span>
                                     <span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">ec1</span><span class="p">]</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">ec2</span><span class="p">]</span>
                                     <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No graphs element in obographs file, wrong format?&quot;</span><span class="p">)</span>
