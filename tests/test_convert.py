@@ -1,5 +1,5 @@
 """Tests for conversion utilities."""
-
+import json
 import unittest
 
 from sssom.parsers import parse_sssom_table
@@ -67,10 +67,14 @@ class TestConvert(unittest.TestCase):
         """Test converting the basic example to a JSON object."""
         json_obj = to_json(self.msdf)
         self.assertIsInstance(json_obj, dict)
-        print(json_obj)
         self.assertIsNotNone(json_obj['mapping_set_id'])
         self.assertIsNotNone(json_obj['license'])
         self.assertGreater(len(json_obj['mappings']), 100)
         # TODO: add inject_type=False to arguments to dumper
         #self.assertNotIn("@type", json_obj)
+        for m in json_obj['mappings']:
+            self.assertIn('subject_id', m)
+            # ensure no JSON-LD strangeness
+            for k in m.keys():
+                self.assertFalse(k.startswith("@"))
 
