@@ -3,7 +3,7 @@
 import unittest
 
 from sssom.parsers import parse_sssom_table
-from sssom.writers import to_owl_graph, to_rdf_graph
+from sssom.writers import to_owl_graph, to_rdf_graph, to_json
 from tests.constants import data_dir
 
 
@@ -62,3 +62,15 @@ class TestConvert(unittest.TestCase):
         )
         size = len(results)
         self.assertEqual(size, 90)
+
+    def test_to_json(self):
+        """Test converting the basic example to a JSON object."""
+        json_obj = to_json(self.msdf)
+        self.assertIsInstance(json_obj, dict)
+        print(json_obj)
+        self.assertIsNotNone(json_obj['mapping_set_id'])
+        self.assertIsNotNone(json_obj['license'])
+        self.assertGreater(len(json_obj['mappings']), 100)
+        # TODO: add inject_type=False to arguments to dumper
+        #self.assertNotIn("@type", json_obj)
+
