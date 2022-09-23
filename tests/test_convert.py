@@ -2,7 +2,7 @@
 import unittest
 
 from sssom.parsers import parse_sssom_table
-from sssom.writers import to_owl_graph, to_rdf_graph, to_json
+from sssom.writers import to_json, to_owl_graph, to_rdf_graph
 from tests.constants import data_dir
 
 
@@ -66,14 +66,13 @@ class TestConvert(unittest.TestCase):
         """Test converting the basic example to a JSON object."""
         json_obj = to_json(self.msdf)
         self.assertIsInstance(json_obj, dict)
-        self.assertIsNotNone(json_obj['mapping_set_id'])
-        self.assertIsNotNone(json_obj['license'])
-        self.assertGreater(len(json_obj['mappings']), 100)
+        self.assertIsNotNone(json_obj["mapping_set_id"])
+        self.assertIsNotNone(json_obj["license"])
+        self.assertGreater(len(json_obj["mappings"]), 100)
         # TODO: add inject_type=False to arguments to dumper
-        #self.assertNotIn("@type", json_obj)
-        for m in json_obj['mappings']:
-            self.assertIn('subject_id', m)
+        # self.assertNotIn("@type", json_obj)
+        for m in json_obj["mappings"]:
+            self.assertIn("subject_id", m)
             # ensure no JSON-LD strangeness
             for k in m.keys():
                 self.assertFalse(k.startswith("@"))
-
