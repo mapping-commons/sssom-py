@@ -178,7 +178,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_json_elements,
             f"The re-serialised JSON file has less elements than the orginal one for {test.filename}",
         )
-        path = test.get_out_file("jsonld")
+        path = test.get_out_file("json")
         with open(path, "w") as file:
             write_json(msdf, file)
         with open(path) as json_file:
