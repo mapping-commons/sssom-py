@@ -26,7 +26,6 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install tox
-        mkdir -p tests/tmp/
     - name: Check manifest
       run: tox -e manifest
     - name: Lint with flake8
