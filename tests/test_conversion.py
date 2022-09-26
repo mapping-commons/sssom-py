@@ -1,6 +1,6 @@
 """Tests for conversion utilities."""
 
-import filecmp
+from os import stat
 import json
 import logging
 import unittest
@@ -65,7 +65,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.graph_serialisation,
             test.ct_graph_queries_owl,
         )
-        # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
+        self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
     def _test_to_json(self, mdoc, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -87,7 +87,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.graph_serialisation,
             test.ct_graph_queries_rdf,
         )
-        # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
+        self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
     def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str):
         self._test_graph_size(
@@ -102,7 +102,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
 
     def _test_files_equal(self, f1, f2):
-        self.assertTrue(filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!")
+        # self.assertTrue(filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!")
+        self.assertTrue(stat(f1).st_size == stat(f2).st_size)
+        self.assertTrue(stat(f1).st_dev == stat(f2).st_dev)
 
     def _test_load_graph_size(self, file: str, graph_serialisation: str, queries: list):
         g = Graph()
@@ -136,7 +138,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         path = test.get_out_file("tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
-        # self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
+        self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
         df = read_pandas(path)
         self.assertEqual(
             len(df),
@@ -177,7 +179,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             write_json(msdf, file)
         with open(path) as json_file:
             data = json.load(json_file)
-        # self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))
+        self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))
         self.assertEqual(
             len(data),
             test.ct_json_elements,

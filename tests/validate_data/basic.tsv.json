@@ -1,0 +1,3525 @@
+{
+  "mapping_set_id": "https://w3id.org/sssom/mapping/tests/data/basic.tsv",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "mappings": [
+    {
+      "subject_id": "a:something",
+      "predicate_id": "rdfs:subClassOf",
+      "object_id": "b:something",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "XXXXX",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "xxxxxx",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "a:example",
+      "object_source": "b:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.8,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "xxxxx"
+      ],
+      "comment": "mock data"
+    },
+    {
+      "subject_id": "a:something",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "c:something",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "XYXYX",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "xyxyxy",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "a:example",
+      "object_source": "c:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.83,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "xxxxx"
+      ],
+      "comment": "mock data"
+    },
+    {
+      "subject_id": "c:something",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "b:something",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "YXYXY",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "yxyxyx",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "c:example",
+      "object_source": "b:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.84,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "xxxxx"
+      ],
+      "comment": "mock data"
+    },
+    {
+      "subject_id": "c:something",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "d:something",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "YYYYY",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "yyyyyy",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "c:example",
+      "object_source": "d:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.81,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "xxxxx"
+      ],
+      "comment": "mock data"
+    },
+    {
+      "subject_id": "d:something",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "a:something",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "YYYYY",
+      "subject_category": "biolink:AnatomicalEntity",
+      "predicate_modifier": "Not",
+      "object_label": "yyyyyy",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "d:example",
+      "object_source": "a:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.82,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "xxxxx"
+      ],
+      "comment": "mock data"
+    },
+    {
+      "subject_id": "x:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:appendage",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "appendage",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "appendages",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label",
+        "skos:prefLabel"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendag"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:appendage",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "appendage",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "APPENDAGE",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendage"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:appendage",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "appendage",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "APPENDAGE",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendag"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.764651037,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasRelatedSynonym"
+      ],
+      "match_string": [
+        "bone element"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0001474"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.696730455,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasRelatedSynonym"
+      ],
+      "match_string": [
+        "bone el"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0001474"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone element",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bone tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002481"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "eye",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eyes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000970"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "eye",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eyes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.568874072,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "ey"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "eye",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000970"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:eyeball",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:eyeball",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "eyeball",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0010230"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "pes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "feet",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002387"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "pes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002387"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "pes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.849778895,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "foot"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:foot",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "pes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.8,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "foot"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "manus",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.849778895,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:hand",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "manus",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hands",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.821262391,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hand",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "manus",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.8,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "manus",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002398"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "manus",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hands",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002398"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:heart",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "heart",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hearts",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "heart"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "heart",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000948"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:organ",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "heart",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "ORGAN",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "BAD:ORGAN"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "heart",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hearts",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000948"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hindlimb",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hindlimb",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "hindlimb",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hindlimb",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "hindlimb"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:hindlimb",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hindlimb",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "hindlimb",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hindlimb",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "hindlimb"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "liver",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "livers",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002107"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "liver",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002107"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:organ",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "liver",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "ORGAN",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "BAD:ORGAN"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:liver",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "liver",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "livers",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "liver"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:lung",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "lung",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lungs",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "lung"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:organ",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "lung",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "ORGAN",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "BAD:ORGAN"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "lung",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002048"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "lung",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lungs",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002048"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:organ",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "organ",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "organs",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:organ",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "organ",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "ORGAN",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:organ",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "organ",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "ORGAN",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:region",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "region",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "REGION",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:region",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "region",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "REGION",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:region",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "region",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "regions",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:tissue",
+      "mapping_justification": "semapv:UnspecifiedMatching",
+      "subject_label": "tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "tissues",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissu"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:tissue",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "TISSUE",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissu"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "x:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "tissue",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "TISSUE",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "x:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissue"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:appendage",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "appendages",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "appendage",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendag"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:appendage",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "appendages",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "APPENDAGE",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendag"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0001474"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_tissue",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_tissue",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.764651037,
+      "subject_match_field": [
+        "oio:hasRelatedSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "bone element"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:bone_element",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0001474"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:bone",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "bones",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.696730455,
+      "subject_match_field": [
+        "oio:hasRelatedSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "bone el"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "eyes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eye",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000970"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:eye",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "eyes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eye",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.568874072,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "ey"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "eyes",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000970"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "feet",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "pes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002387"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "feet",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002387"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hand",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "hands",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "manus",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.821262391,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "hands",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "manus",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002398"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "hands",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002398"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:hand",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "hands",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.821262391,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "hearts",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000948"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:heart",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "hearts",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "heart",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "heart"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "hearts",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "heart",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000948"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "livers",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002107"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:liver",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "livers",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "liver",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "liver"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "livers",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "liver",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002107"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "lungs",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lung",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002048"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:lung",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "lungs",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lung",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "lung"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "lungs",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002048"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:organ",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "organs",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "organ",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:organ",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "organs",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "ORGAN",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:region",
+      "mapping_justification": "semapv:SemanticSimilarityThresholdMatching",
+      "subject_label": "regions",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "region",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:region",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "regions",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "REGION",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "z:tissue",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "tissues",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "TISSUE",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "z:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissu"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "y:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:tissue",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "tissues",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "y:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissu"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:appendage",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "APPENDAGE",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "appendage",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendag"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:appendage",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "APPENDAGE",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "appendage",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendage"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:appendage",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:appendage",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_label": "APPENDAGE",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "appendages",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "appendag"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0001474"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0001474"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_element",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_tissue",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002481"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.261203875,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_tissue",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:bone_element",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bone element",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.2,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:bone_tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:bone",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "bones",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.534601961,
+      "subject_match_field": [
+        "oio:hasBroadSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "bone"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eye",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000970"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:eye",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:eye",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eyes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000970"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:eyeball",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:eyeball",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "eyeball",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0010230"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "feet",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002387"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "pes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002387"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:foot",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "pes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.849778895,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "foot"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:foot",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:foot",
+      "mapping_justification": "semapv:LogicalReasoning",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "pes",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.8,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "foot"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "manus",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002398"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "manus",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.849778895,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hand",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "manus",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.8,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:hand",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hands",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002398"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hand",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:hand",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hands",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.821262391,
+      "subject_match_field": [
+        "oio:hasExactSynonym"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "hand"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hearts",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000948"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:heart",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "heart",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0000948"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hindlimb",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hindlimb",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "hindlimb",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hindlimb",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "hindlimb"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:hindlimb",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:hindlimb",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "hindlimb",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "hindlimb",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "hindlimb"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "liver",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002107"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:liver",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "livers",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002107"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lung",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002048"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:lung",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lungs",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "UBERON:0002048"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:organ",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "ORGAN",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "organs",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:organ",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "ORGAN",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "organ",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:liver",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "ORGAN",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "liver",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "BAD:ORGAN"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:heart",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "ORGAN",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "heart",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "BAD:ORGAN"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:organ",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "ORGAN",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "organ",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "organ"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:organ",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:lung",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "ORGAN",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "lung",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.738796125,
+      "subject_match_field": [
+        "oio:hasDbXref"
+      ],
+      "object_match_field": [
+        "oio:hasDbXref"
+      ],
+      "match_string": [
+        "BAD:ORGAN"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:region",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "REGION",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "region",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:region",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "REGION",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "region",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:region",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:region",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "REGION",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "regions",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "region"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:tissue",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "TISSUE",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissu"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "x:tissue",
+      "mapping_justification": "semapv:LexicalMatching",
+      "subject_label": "TISSUE",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "tissue",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "x:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.881856236,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissue"
+      ],
+      "comment": "."
+    },
+    {
+      "subject_id": "z:tissue",
+      "predicate_id": "owl:equivalentClass",
+      "object_id": "y:tissue",
+      "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_label": "TISSUE",
+      "subject_category": "biolink:AnatomicalEntity",
+      "object_label": "tissues",
+      "object_category": "biolink:AnatomicalEntity",
+      "subject_source": "z:example",
+      "object_source": "y:example",
+      "mapping_tool": "rdf_matcher",
+      "confidence": 0.840714406,
+      "subject_match_field": [
+        "rdfs:label"
+      ],
+      "object_match_field": [
+        "rdfs:label"
+      ],
+      "match_string": [
+        "tissu"
+      ],
+      "comment": "."
+    }
+  ],
+  "creator_id": [
+    "orcid:1234",
+    "orcid:5678"
+  ],
+  "subject_source": "z:example",
+  "object_source": "y:example",
+  "mapping_tool": "https://github.com/cmungall/rdf_matcher",
+  "mapping_date": "2020-05-30",
+  "subject_match_field": [
+    "rdfs:label"
+  ],
+  "object_match_field": [
+    "rdfs:label"
+  ],
+  "comment": ".",
+  "@type": "MappingSet",
+  "@context": {
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "linkml": "https://w3id.org/linkml/",
+    "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "pav": "http://purl.org/pav/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "semapv": "https://w3id.org/semapv/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "sssom": "https://w3id.org/sssom/",
+    "@vocab": "https://w3id.org/sssom/",
+    "author_id": {
+      "@type": "rdfs:Resource",
+      "@id": "pav:authoredBy"
+    },
+    "comment": {
+      "@id": "rdfs:comment"
+    },
+    "confidence": {
+      "@type": "xsd:double"
+    },
+    "creator_id": {
+      "@type": "rdfs:Resource",
+      "@id": "dc:creator"
+    },
+    "documentation": {
+      "@type": "@id"
+    },
+    "homepage": {
+      "@type": "@id"
+    },
+    "imports": {
+      "@type": "@id"
+    },
+    "last_updated": {
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@type": "@id",
+      "@id": "dcterms:license"
+    },
+    "mapping_cardinality": {
+      "@context": {
+        "@vocab": "@null",
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      }
+    },
+    "mapping_date": {
+      "@type": "xsd:date",
+      "@id": "pav:authoredOn"
+    },
+    "mapping_justification": {
+      "@type": "rdfs:Resource"
+    },
+    "mapping_provider": {
+      "@type": "@id"
+    },
+    "mapping_registry_id": {
+      "@type": "rdfs:Resource"
+    },
+    "mapping_set_description": {
+      "@id": "dc:description"
+    },
+    "mapping_set_id": {
+      "@type": "@id"
+    },
+    "mapping_set_references": {
+      "@type": "@id"
+    },
+    "mapping_set_source": {
+      "@type": "@id",
+      "@id": "prov:wasDerivedFrom"
+    },
+    "mapping_set_version": {
+      "@id": "owl:versionInfo"
+    },
+    "mapping_source": {
+      "@type": "rdfs:Resource"
+    },
+    "mappings": {
+      "@type": "@id"
+    },
+    "mirror_from": {
+      "@type": "@id"
+    },
+    "object_id": {
+      "@type": "rdfs:Resource",
+      "@id": "owl:annotatedTarget"
+    },
+    "object_match_field": {
+      "@type": "rdfs:Resource"
+    },
+    "object_preprocessing": {
+      "@type": "rdfs:Resource"
+    },
+    "object_source": {
+      "@type": "rdfs:Resource"
+    },
+    "object_type": {
+      "@context": {
+        "@vocab": "@null",
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      }
+    },
+    "predicate_id": {
+      "@type": "rdfs:Resource",
+      "@id": "owl:annotatedProperty"
+    },
+    "predicate_modifier": {
+      "@context": {
+        "@vocab": "@null",
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      }
+    },
+    "predicate_type": {
+      "@context": {
+        "@vocab": "@null",
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      }
+    },
+    "publication_date": {
+      "@type": "xsd:date",
+      "@id": "dc:created"
+    },
+    "registry_confidence": {
+      "@type": "xsd:double"
+    },
+    "reviewer_id": {
+      "@type": "rdfs:Resource"
+    },
+    "see_also": {
+      "@id": "rdfs:seeAlso"
+    },
+    "semantic_similarity_score": {
+      "@type": "xsd:double"
+    },
+    "subject_id": {
+      "@type": "rdfs:Resource",
+      "@id": "owl:annotatedSource"
+    },
+    "subject_match_field": {
+      "@type": "rdfs:Resource"
+    },
+    "subject_preprocessing": {
+      "@type": "rdfs:Resource"
+    },
+    "subject_source": {
+      "@type": "rdfs:Resource"
+    },
+    "subject_type": {
+      "@context": {
+        "@vocab": "@null",
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      }
+    },
+    "Mapping": {
+      "@id": "owl:Axiom"
+    },
+    "a": "http://example.org/a/",
+    "x": "http://example.org/x/",
+    "y": "http://example.org/y/",
+    "z": "http://example.org/z/",
+    "b": "http://example.org/b/",
+    "c": "http://example.org/c/",
+    "d": "http://example.org/d/",
+    "orcid": "https://orcid.org/my-orcid?orcid="
+  }
+}
