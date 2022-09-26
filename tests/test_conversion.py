@@ -1,9 +1,9 @@
 """Tests for conversion utilities."""
 
-from os import stat
 import json
 import logging
 import unittest
+from os import stat
 
 from rdflib import Graph
 
@@ -65,7 +65,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.graph_serialisation,
             test.ct_graph_queries_owl,
         )
-        self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
+        self._test_files_equal(
+            test.get_out_file(file_format), test.get_validate_file(file_format)
+        )
 
     def _test_to_json(self, mdoc, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -87,7 +89,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.graph_serialisation,
             test.ct_graph_queries_rdf,
         )
-        self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
+        self._test_files_equal(
+            test.get_out_file(file_format), test.get_validate_file(file_format)
+        )
 
     def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str):
         self._test_graph_size(
@@ -179,7 +183,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             write_json(msdf, file)
         with open(path) as json_file:
             data = json.load(json_file)
-        self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))
+        self._test_files_equal(
+            test.get_out_file("json"), test.get_validate_file("json")
+        )
         self.assertEqual(
             len(data),
             test.ct_json_elements,
