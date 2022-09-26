@@ -104,7 +104,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
     def _test_files_equal(self, f1, f2):
         # self.assertTrue(filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!")
         self.assertTrue(stat(f1).st_size == stat(f2).st_size)
-        self.assertTrue(stat(f1).st_dev == stat(f2).st_dev)
+        self.assertTrue(stat(f1).st_mode == stat(f2).st_mode)
 
     def _test_load_graph_size(self, file: str, graph_serialisation: str, queries: list):
         g = Graph()
