@@ -16,6 +16,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -46,16 +47,68 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Technical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="api.html">Python API</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">SSSOM Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cli">sssom.cli module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cliques">sssom.cliques module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-sssom.context">sssom.context module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cli">sssom.cli module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.cli.dynamically_generate_sssom_options"><code class="docutils literal notranslate"><span class="pre">dynamically_generate_sssom_options()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.cliques">sssom.cliques module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.cliques.get_src"><code class="docutils literal notranslate"><span class="pre">get_src()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.cliques.group_values"><code class="docutils literal notranslate"><span class="pre">group_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.cliques.split_into_cliques"><code class="docutils literal notranslate"><span class="pre">split_into_cliques()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.cliques.summarize_cliques"><code class="docutils literal notranslate"><span class="pre">summarize_cliques()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.cliques.to_digraph"><code class="docutils literal notranslate"><span class="pre">to_digraph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.context">sssom.context module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.add_built_in_prefixes_to_prefix_map"><code class="docutils literal notranslate"><span class="pre">add_built_in_prefixes_to_prefix_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_built_in_prefix_map"><code class="docutils literal notranslate"><span class="pre">get_built_in_prefix_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_default_metadata"><code class="docutils literal notranslate"><span class="pre">get_default_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_external_jsonld_context"><code class="docutils literal notranslate"><span class="pre">get_external_jsonld_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_jsonld_context"><code class="docutils literal notranslate"><span class="pre">get_jsonld_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.set_default_license"><code class="docutils literal notranslate"><span class="pre">set_default_license()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.set_default_mapping_set_id"><code class="docutils literal notranslate"><span class="pre">set_default_mapping_set_id()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-io-module">sssom.io module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-sssom.parsers">sssom.parsers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.parsers">sssom.parsers module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.from_alignment_minidom"><code class="docutils literal notranslate"><span class="pre">from_alignment_minidom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.from_obographs"><code class="docutils literal notranslate"><span class="pre">from_obographs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.from_sssom_dataframe"><code class="docutils literal notranslate"><span class="pre">from_sssom_dataframe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.from_sssom_json"><code class="docutils literal notranslate"><span class="pre">from_sssom_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.from_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">from_sssom_rdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.get_parsing_function"><code class="docutils literal notranslate"><span class="pre">get_parsing_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_alignment_xml"><code class="docutils literal notranslate"><span class="pre">parse_alignment_xml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_obographs_json"><code class="docutils literal notranslate"><span class="pre">parse_obographs_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_sssom_json"><code class="docutils literal notranslate"><span class="pre">parse_sssom_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">parse_sssom_rdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_sssom_table"><code class="docutils literal notranslate"><span class="pre">parse_sssom_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.read_sssom_json"><code class="docutils literal notranslate"><span class="pre">read_sssom_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.read_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">read_sssom_rdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.read_sssom_table"><code class="docutils literal notranslate"><span class="pre">read_sssom_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.split_dataframe"><code class="docutils literal notranslate"><span class="pre">split_dataframe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.split_dataframe_by_prefix"><code class="docutils literal notranslate"><span class="pre">split_dataframe_by_prefix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.to_mapping_set_document"><code class="docutils literal notranslate"><span class="pre">to_mapping_set_document()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sparql-util-module">sssom.sparql_util module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sssom-datamodel-module">sssom.sssom_datamodel module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-sssom-document-module">sssom.sssom_document module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-util-module">sssom.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-sssom.writers">sssom.writers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sssom.writers">sssom.writers module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.get_writer_function"><code class="docutils literal notranslate"><span class="pre">get_writer_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.to_dataframe"><code class="docutils literal notranslate"><span class="pre">to_dataframe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.to_fhir_json"><code class="docutils literal notranslate"><span class="pre">to_fhir_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.to_owl_graph"><code class="docutils literal notranslate"><span class="pre">to_owl_graph()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.to_rdf_graph"><code class="docutils literal notranslate"><span class="pre">to_rdf_graph()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.write_fhir_json"><code class="docutils literal notranslate"><span class="pre">write_fhir_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.write_json"><code class="docutils literal notranslate"><span class="pre">write_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.write_owl"><code class="docutils literal notranslate"><span class="pre">write_owl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.write_rdf"><code class="docutils literal notranslate"><span class="pre">write_rdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.write_table"><code class="docutils literal notranslate"><span class="pre">write_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.writers.write_tables"><code class="docutils literal notranslate"><span class="pre">write_tables()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sssom">Module contents</a></li>
 </ul>
 </li>

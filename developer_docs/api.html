@@ -16,6 +16,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,9 +46,73 @@
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Technical Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Python API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#datamodel">Datamodel</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#i-o">I/O</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#utils">Utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#datamodel">Datamodel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.sssom_document.MappingSetDocument"><code class="docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#i-o">I/O</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.annotate_file"><code class="docutils literal notranslate"><span class="pre">annotate_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.convert_file"><code class="docutils literal notranslate"><span class="pre">convert_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.extract_iri"><code class="docutils literal notranslate"><span class="pre">extract_iri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.filter_file"><code class="docutils literal notranslate"><span class="pre">filter_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.get_list_of_predicate_iri"><code class="docutils literal notranslate"><span class="pre">get_list_of_predicate_iri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.get_metadata_and_prefix_map"><code class="docutils literal notranslate"><span class="pre">get_metadata_and_prefix_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.parse_file"><code class="docutils literal notranslate"><span class="pre">parse_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.run_sql_query"><code class="docutils literal notranslate"><span class="pre">run_sql_query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.split_file"><code class="docutils literal notranslate"><span class="pre">split_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.io.validate_file"><code class="docutils literal notranslate"><span class="pre">validate_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#utils">Utils</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.EntityPair"><code class="docutils literal notranslate"><span class="pre">EntityPair</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.KEY_FEATURES"><code class="docutils literal notranslate"><span class="pre">KEY_FEATURES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.MappingSetDataFrame"><code class="docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.MappingSetDiff"><code class="docutils literal notranslate"><span class="pre">MappingSetDiff</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.NoCURIEException"><code class="docutils literal notranslate"><span class="pre">NoCURIEException</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.PREFIX_MAP_KEY"><code class="docutils literal notranslate"><span class="pre">PREFIX_MAP_KEY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.are_params_slots"><code class="docutils literal notranslate"><span class="pre">are_params_slots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.assign_default_confidence"><code class="docutils literal notranslate"><span class="pre">assign_default_confidence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.augment_metadata"><code class="docutils literal notranslate"><span class="pre">augment_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.collapse"><code class="docutils literal notranslate"><span class="pre">collapse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.compare_dataframes"><code class="docutils literal notranslate"><span class="pre">compare_dataframes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.create_entity"><code class="docutils literal notranslate"><span class="pre">create_entity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.curie_from_uri"><code class="docutils literal notranslate"><span class="pre">curie_from_uri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.dataframe_to_ptable"><code class="docutils literal notranslate"><span class="pre">dataframe_to_ptable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.deal_with_negation"><code class="docutils literal notranslate"><span class="pre">deal_with_negation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.extract_global_metadata"><code class="docutils literal notranslate"><span class="pre">extract_global_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.filter_out_prefixes"><code class="docutils literal notranslate"><span class="pre">filter_out_prefixes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.filter_prefixes"><code class="docutils literal notranslate"><span class="pre">filter_prefixes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.filter_redundant_rows"><code class="docutils literal notranslate"><span class="pre">filter_redundant_rows()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_all_prefixes"><code class="docutils literal notranslate"><span class="pre">get_all_prefixes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_dict_from_mapping"><code class="docutils literal notranslate"><span class="pre">get_dict_from_mapping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_file_extension"><code class="docutils literal notranslate"><span class="pre">get_file_extension()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_prefix_from_curie"><code class="docutils literal notranslate"><span class="pre">get_prefix_from_curie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_prefixes_used_in_metadata"><code class="docutils literal notranslate"><span class="pre">get_prefixes_used_in_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_prefixes_used_in_table"><code class="docutils literal notranslate"><span class="pre">get_prefixes_used_in_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.get_row_based_on_hierarchy"><code class="docutils literal notranslate"><span class="pre">get_row_based_on_hierarchy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.group_mappings"><code class="docutils literal notranslate"><span class="pre">group_mappings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.guess_file_format"><code class="docutils literal notranslate"><span class="pre">guess_file_format()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.inject_metadata_into_df"><code class="docutils literal notranslate"><span class="pre">inject_metadata_into_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.is_curie"><code class="docutils literal notranslate"><span class="pre">is_curie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.is_iri"><code class="docutils literal notranslate"><span class="pre">is_iri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.is_multivalued_slot"><code class="docutils literal notranslate"><span class="pre">is_multivalued_slot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.merge_msdf"><code class="docutils literal notranslate"><span class="pre">merge_msdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.prepare_context"><code class="docutils literal notranslate"><span class="pre">prepare_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.prepare_context_str"><code class="docutils literal notranslate"><span class="pre">prepare_context_str()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.raise_for_bad_path"><code class="docutils literal notranslate"><span class="pre">raise_for_bad_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.raise_for_bad_prefix_map_mode"><code class="docutils literal notranslate"><span class="pre">raise_for_bad_prefix_map_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.read_csv"><code class="docutils literal notranslate"><span class="pre">read_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.read_metadata"><code class="docutils literal notranslate"><span class="pre">read_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.read_pandas"><code class="docutils literal notranslate"><span class="pre">read_pandas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.reconcile_prefix_and_data"><code class="docutils literal notranslate"><span class="pre">reconcile_prefix_and_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.remove_unmatched"><code class="docutils literal notranslate"><span class="pre">remove_unmatched()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.sha256sum"><code class="docutils literal notranslate"><span class="pre">sha256sum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.sort_df_rows_columns"><code class="docutils literal notranslate"><span class="pre">sort_df_rows_columns()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.sort_sssom"><code class="docutils literal notranslate"><span class="pre">sort_sssom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.util.to_mapping_set_dataframe"><code class="docutils literal notranslate"><span class="pre">to_mapping_set_dataframe()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="sssom.html">SSSOM Submodules</a></li>
