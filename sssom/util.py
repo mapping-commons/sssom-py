@@ -892,7 +892,7 @@ def read_csv(
                 if not line.decode("utf-8").startswith(comment)
             ]
         )
-    return pd.read_csv(StringIO(lines), sep=sep)
+    return pd.read_csv(StringIO(lines), sep=sep, low_memory=False)
 
 
 def read_metadata(filename: str) -> Metadata:
