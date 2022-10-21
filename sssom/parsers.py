@@ -30,8 +30,6 @@ from sssom.constants import (
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
     MAPPING_SET_ID,
-    MAPPING_SET_SLOTS,
-    MAPPING_SLOTS,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -44,6 +42,7 @@ from sssom.constants import (
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
 )
+from sssom.schema import MAPPING_SET_SLOTS, MAPPING_SLOTS
 
 from .context import (
     DEFAULT_LICENSE,

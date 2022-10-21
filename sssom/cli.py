@@ -25,12 +25,11 @@ from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
-    MAPPING_SET_SLOTS,
-    MAPPING_SLOTS,
     PREFIX_MAP_MODES,
     SchemaValidationType,
 )
 from sssom.context import get_default_metadata
+from sssom.schema import MAPPING_SET_SLOTS, MAPPING_SLOTS
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques

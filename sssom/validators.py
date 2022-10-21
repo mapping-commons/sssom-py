@@ -10,9 +10,10 @@ from sssom_schema import MappingSet
 
 from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
+from sssom.schema import SCHEMA_YAML
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 
-from .constants import SCHEMA_YAML, SchemaValidationType
+from .constants import SchemaValidationType
 
 
 def validate(

@@ -7,7 +7,7 @@ from typing import Optional
 
 from linkml.generators.jsonldcontextgen import ContextGenerator
 
-from sssom.constants import SCHEMA_YAML
+from sssom.schema import SCHEMA_YAML
 
 from .external_context import sssom_external_context
 from .typehints import Metadata, MetadataType, PrefixMap

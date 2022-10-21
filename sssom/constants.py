@@ -3,22 +3,11 @@
 import pathlib
 from enum import Enum
 
-import pkg_resources
-from linkml_runtime.utils.schema_as_dict import schema_as_dict
-from linkml_runtime.utils.schemaview import SchemaView
+from sssom.schema import SCHEMA_VIEW
 
 # from linkml_runtime.utils.introspection import package_schemaview
 
 HERE = pathlib.Path(__file__).parent.resolve()
-
-SCHEMA_YAML = pkg_resources.resource_filename(
-    "sssom_schema", "schema/sssom_schema.yaml"
-)
-SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
-# SCHEMA_VIEW = package_schemaview("sssom_schema")
-SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
-MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
-MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"

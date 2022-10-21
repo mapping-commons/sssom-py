@@ -2,8 +2,8 @@
 
 import unittest
 
-from sssom.constants import SCHEMA_DICT
 from sssom.parsers import parse_sssom_table
+from sssom.schema import SCHEMA_DICT
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
 
