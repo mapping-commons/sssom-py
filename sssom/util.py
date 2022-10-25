@@ -37,16 +37,20 @@ from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
-from sssom.schema import MAPPING_SET_SLOTS, SCHEMA_DICT, SCHEMA_YAML
+from sssom.schema import (
+    ENTITY_REFERENCE_SLOTS,
+    MAPPING_SET_SLOTS,
+    MULTIVALUED_SLOTS,
+    SCHEMA_DICT,
+    SCHEMA_YAML,
+)
 
 from .constants import (
     COMMENT,
     CONFIDENCE,
-    ENTITY_REFERENCE_SLOTS,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
-    MULTIVALUED_SLOTS,
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
