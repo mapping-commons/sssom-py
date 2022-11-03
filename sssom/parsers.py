@@ -17,6 +17,8 @@ import validators
 import yaml
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
+from linkml_runtime.utils.schema_as_dict import schema_as_dict
+from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 
 # from .sssom_datamodel import Mapping, MappingSet
@@ -37,12 +39,12 @@ from sssom.constants import (
     OWL_EQUIV_CLASS,
     PREDICATE_ID,
     RDFS_SUBCLASS_OF,
+    SCHEMA_YAML,
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
 )
-from sssom.schema import MAPPING_SET_SLOTS, MAPPING_SLOTS
 
 from .context import (
     DEFAULT_LICENSE,
@@ -309,6 +311,10 @@ def _get_mdict_ms_and_bad_attrs(
 ) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
+    schema_view = SchemaView(SCHEMA_YAML)
+    schema_dict = schema_as_dict(schema_view.schema)
+    mapping_slots = schema_dict["classes"]["mapping"]["slots"]
+    mapping_set_slots = schema_dict["classes"]["mapping set"]["slots"]
 
     for k, v in row.items():
         if v and v == v:
@@ -317,11 +323,11 @@ def _get_mdict_ms_and_bad_attrs(
                 k = str(k)
             v = _address_multivalued_slot(k, v)
             # if hasattr(Mapping, k):
-            if k in MAPPING_SLOTS:
+            if k in mapping_slots:
                 mdict[k] = v
                 ok = True
             # if hasattr(MappingSet, k):
-            if k in MAPPING_SET_SLOTS:
+            if k in mapping_set_slots:
                 ms[k] = v
                 ok = True
             if not ok:

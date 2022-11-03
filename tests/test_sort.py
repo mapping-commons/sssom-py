@@ -2,10 +2,16 @@
 
 import unittest
 
+from linkml_runtime.utils.schema_as_dict import schema_as_dict
+from linkml_runtime.utils.schemaview import SchemaView
+
+from sssom.constants import SCHEMA_YAML
 from sssom.parsers import parse_sssom_table
-from sssom.schema import SCHEMA_DICT
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
+
+SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
+SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
 
 
 class TestSort(unittest.TestCase):

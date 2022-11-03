@@ -31,19 +31,13 @@ import validators
 import yaml
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
+from linkml_runtime.utils.schema_as_dict import schema_as_dict
+from linkml_runtime.utils.schemaview import SchemaView
 
 # from .sssom_datamodel import Mapping as SSSOM_Mapping
 # from .sssom_datamodel import slots
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
-
-from sssom.schema import (
-    ENTITY_REFERENCE_SLOTS,
-    MAPPING_SET_SLOTS,
-    MULTIVALUED_SLOTS,
-    SCHEMA_DICT,
-    SCHEMA_YAML,
-)
 
 from .constants import (
     COMMENT,
@@ -64,6 +58,7 @@ from .constants import (
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
     RDFS_SUBCLASS_OF,
+    SCHEMA_YAML,
     SEMAPV,
     SKOS_BROAD_MATCH,
     SKOS_CLOSE_MATCH,
@@ -1043,6 +1038,19 @@ class NoCURIEException(ValueError):
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
+SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
+ENTITY_REFERENCE = "EntityReference"
+ENTITY_REFERENCE_SLOTS = [
+    c
+    for c in SCHEMA_VIEW.all_slots()
+    if SCHEMA_VIEW.get_slot(c).range == ENTITY_REFERENCE
+]
+SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
+MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
+MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
+MULTIVALUED_SLOTS = [
+    c for c in SCHEMA_VIEW.all_slots() if SCHEMA_VIEW.get_slot(c).multivalued
+]
 
 
 def is_curie(string: str) -> bool:

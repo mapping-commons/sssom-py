@@ -3,12 +3,18 @@
 import pathlib
 from enum import Enum
 
+import pkg_resources
+
 # from linkml_runtime.utils.introspection import package_schemaview
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+
+SCHEMA_YAML = pkg_resources.resource_filename(
+    "sssom_schema", "schema/sssom_schema.yaml"
+)
 
 DEFAULT_MAPPING_PROPERTIES = [
     "http://www.geneontology.org/formats/oboInOwl#hasDbXref",

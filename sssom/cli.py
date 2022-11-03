@@ -20,16 +20,18 @@ from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
 import click
 import pandas as pd
 import yaml
+from linkml_runtime.utils.schema_as_dict import schema_as_dict
+from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
+    SCHEMA_YAML,
     SchemaValidationType,
 )
 from sssom.context import get_default_metadata
-from sssom.schema import MAPPING_SET_SLOTS, MAPPING_SLOTS
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
@@ -60,6 +62,11 @@ from .util import (
     to_mapping_set_dataframe,
 )
 from .writers import write_table
+
+SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
+SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
+MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
+MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
