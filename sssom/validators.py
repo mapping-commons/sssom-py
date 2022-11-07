@@ -8,7 +8,7 @@ from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from sssom_schema import MappingSet
 
-from sssom.constants import SCHEMA_YAML, SchemaValidationType
+from sssom.constants import SchemaValidationType, SSSOMSchemaView
 from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
@@ -36,7 +36,8 @@ def validate_json_schema(msdf: MappingSetDataFrame) -> None:
 
     :param msdf: MappingSetDataFrame to eb validated.
     """
-    validator = JsonSchemaDataValidator(SCHEMA_YAML)
+    schema_view_object = SSSOMSchemaView()
+    validator = JsonSchemaDataValidator(schema_view_object.yaml)
     mapping_set = to_mapping_set_document(msdf).mapping_set
     validator.validate_object(mapping_set, MappingSet)
 

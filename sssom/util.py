@@ -31,8 +31,6 @@ import validators
 import yaml
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
-from linkml_runtime.utils.schema_as_dict import schema_as_dict
-from linkml_runtime.utils.schemaview import SchemaView
 
 # from .sssom_datamodel import Mapping as SSSOM_Mapping
 # from .sssom_datamodel import slots
@@ -58,7 +56,6 @@ from .constants import (
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
     RDFS_SUBCLASS_OF,
-    SCHEMA_YAML,
     SEMAPV,
     SKOS_BROAD_MATCH,
     SKOS_CLOSE_MATCH,
@@ -70,6 +67,7 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    SSSOMSchemaView,
 )
 from .context import (
     SSSOM_BUILT_IN_PREFIXES,
@@ -830,7 +828,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     :return: MappingSetDataFrame with metadata as columns
     """
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    with open(SCHEMA_YAML) as file:
+    with open(schema_view_object.yaml) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
     if msdf.metadata is not None and msdf.df is not None:
@@ -955,8 +953,8 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     data = []
     slots_with_double_as_range = [
         s
-        for s in SCHEMA_DICT["slots"].keys()
-        if SCHEMA_DICT["slots"][s]["range"] == "double"
+        for s in schema_dict["slots"].keys()
+        if schema_dict["slots"][s]["range"] == "double"
     ]
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
@@ -989,19 +987,19 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     map_dict = {}
     slots_with_double_as_range = [
         s
-        for s in SCHEMA_DICT["slots"].keys()
-        if SCHEMA_DICT["slots"][s]["range"] == "double"
+        for s in schema_dict["slots"].keys()
+        if schema_dict["slots"][s]["range"] == "double"
     ]
     for property in map_obj:
         if map_obj[property] is not None:
             if isinstance(map_obj[property], list):
                 # IF object is an enum
                 if (
-                    SCHEMA_DICT["slots"][property]["range"]
-                    in SCHEMA_DICT["enums"].keys()
+                    schema_dict["slots"][property]["range"]
+                    in schema_dict["enums"].keys()
                 ):
                     # IF object is a multivalued enum
-                    if SCHEMA_DICT["slots"][property]["multivalued"]:
+                    if schema_dict["slots"][property]["multivalued"]:
                         map_dict[property] = "|".join(
                             enum_value.code.text for enum_value in map_obj[property]
                         )
@@ -1017,8 +1015,8 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
             else:
                 # IF object is an enum
                 if (
-                    SCHEMA_DICT["slots"][property]["range"]
-                    in SCHEMA_DICT["enums"].keys()
+                    schema_dict["slots"][property]["range"]
+                    in schema_dict["enums"].keys()
                 ):
                     map_dict[property] = map_obj[property].code.text
                 else:
@@ -1038,18 +1036,17 @@ class NoCURIEException(ValueError):
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
-SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
-ENTITY_REFERENCE = "EntityReference"
-ENTITY_REFERENCE_SLOTS = [
-    c
-    for c in SCHEMA_VIEW.all_slots()
-    if SCHEMA_VIEW.get_slot(c).range == ENTITY_REFERENCE
+schema_view_object = SSSOMSchemaView()
+schema_view = schema_view_object.view
+schema_dict = schema_view_object.dict
+mapping_set_slots = schema_view_object.mapping_set_slots
+multivalued_slots = [
+    c for c in schema_view.all_slots() if schema_view.get_slot(c).multivalued
 ]
-SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
-MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
-MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
-MULTIVALUED_SLOTS = [
-    c for c in SCHEMA_VIEW.all_slots() if SCHEMA_VIEW.get_slot(c).multivalued
+entity_reference_slots = [
+    c
+    for c in schema_view.all_slots()
+    if schema_view.get_slot(c).range == schema_view_object.entity_reference
 ]
 
 
@@ -1111,7 +1108,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = SSSOM_BUILT_IN_PREFIXES
     if not df.empty:
-        for col in ENTITY_REFERENCE_SLOTS:
+        for col in entity_reference_slots:
             if col in df.columns:
                 for v in df[col].values:
                     pref = get_prefix_from_curie(str(v))
@@ -1277,7 +1274,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
 
-    return slot in MULTIVALUED_SLOTS
+    return slot in multivalued_slots
 
 
 def reconcile_prefix_and_data(
@@ -1340,7 +1337,7 @@ def reconcile_prefix_and_data(
     # Data editing
     if len(data_switch_dict) > 0:
         # Read schema file
-        slots = SCHEMA_DICT["slots"]
+        slots = schema_dict["slots"]
         entity_reference_columns = [
             k for k, v in slots.items() if v["range"] == "EntityReference"
         ]
@@ -1370,7 +1367,7 @@ def sort_df_rows_columns(
     """
     if by_columns and len(df.columns) > 0:
         column_sequence = [
-            col for col in SCHEMA_DICT["slots"].keys() if col in df.columns
+            col for col in schema_dict["slots"].keys() if col in df.columns
         ]
         df = df.reindex(column_sequence, axis=1)
     if by_rows and len(df) > 0:
@@ -1391,7 +1388,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         metadata_keys = list(msdf.metadata.keys())
         df_columns_list = msdf.df.columns.to_list()  # type: ignore
         all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [s for s in all_keys if s in ENTITY_REFERENCE_SLOTS]
+        ent_ref_slots = [s for s in all_keys if s in entity_reference_slots]
 
         for slot in ent_ref_slots:
             if slot in metadata_keys:
@@ -1448,7 +1445,7 @@ def augment_metadata(
     if msdf.metadata:
         for k, v in meta.items():
             # If slot is multivalued, add to list.
-            if k in MULTIVALUED_SLOTS and not replace_multivalued:
+            if k in multivalued_slots and not replace_multivalued:
                 tmp_value: list = []
                 if isinstance(msdf.metadata[k], str):
                     tmp_value = [msdf.metadata[k]]
@@ -1461,7 +1458,7 @@ def augment_metadata(
                     )
                 tmp_value.extend(v)
                 msdf.metadata[k] = list(set(tmp_value))
-            elif k in MULTIVALUED_SLOTS and replace_multivalued:
+            elif k in multivalued_slots and replace_multivalued:
                 msdf.metadata[k] = list(v)
             else:
                 msdf.metadata[k] = v[0]
@@ -1480,10 +1477,10 @@ def are_params_slots(params: dict) -> bool:
     if len(empty_params) > 0:
         logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
 
-    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
+    legit_params = all(p in mapping_set_slots for p in params.keys())
     if not legit_params:
-        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
+        invalids = [p for p in params if p not in mapping_set_slots]
         raise ValueError(
-            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
+            f"The params are invalid: {invalids}. Should be any of the following: {mapping_set_slots}"
         )
     return True

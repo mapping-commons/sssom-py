@@ -5,7 +5,7 @@
 import os
 import unittest
 
-from sssom.constants import SCHEMA_YAML
+from sssom.constants import SSSOMSchemaView
 
 
 class TestResources(unittest.TestCase):
@@ -13,4 +13,4 @@ class TestResources(unittest.TestCase):
 
     def test_exists(self):
         """Test the schema YAML file is available to the package."""
-        self.assertTrue(os.path.exists(SCHEMA_YAML))
+        self.assertTrue(os.path.exists(SSSOMSchemaView().yaml))

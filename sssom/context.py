@@ -7,7 +7,7 @@ from typing import Optional
 
 from linkml.generators.jsonldcontextgen import ContextGenerator
 
-from sssom.constants import SCHEMA_YAML
+from sssom.constants import SSSOMSchemaView
 
 from .external_context import sssom_external_context
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -29,7 +29,7 @@ def get_jsonld_context():
 
     :return: JSON-LD context
     """
-    sssom_context = ContextGenerator(SCHEMA_YAML).serialize()
+    sssom_context = ContextGenerator(SSSOMSchemaView().yaml).serialize()
     return json.loads(sssom_context, strict=False)
 
 

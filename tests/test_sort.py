@@ -2,16 +2,14 @@
 
 import unittest
 
-from linkml_runtime.utils.schema_as_dict import schema_as_dict
-from linkml_runtime.utils.schemaview import SchemaView
-
-from sssom.constants import SCHEMA_YAML
+from sssom.constants import SSSOMSchemaView
 from sssom.parsers import parse_sssom_table
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
 
-SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
-SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
+schema_view_object = SSSOMSchemaView()
+schema_view = schema_view_object.view
+schema_dict = schema_view_object.dict
 
 
 class TestSort(unittest.TestCase):
@@ -25,6 +23,6 @@ class TestSort(unittest.TestCase):
         """Test sorting of columns."""
         new_df = sort_df_rows_columns(self.msdf.df)
         column_sequence = [
-            col for col in SCHEMA_DICT["slots"].keys() if col in new_df.columns
+            col for col in schema_dict["slots"].keys() if col in new_df.columns
         ]
         self.assertListEqual(column_sequence, list(new_df.columns))

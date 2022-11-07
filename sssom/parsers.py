@@ -17,8 +17,6 @@ import validators
 import yaml
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
-from linkml_runtime.utils.schema_as_dict import schema_as_dict
-from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 
 # from .sssom_datamodel import Mapping, MappingSet
@@ -39,11 +37,11 @@ from sssom.constants import (
     OWL_EQUIV_CLASS,
     PREDICATE_ID,
     RDFS_SUBCLASS_OF,
-    SCHEMA_YAML,
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
+    SSSOMSchemaView,
 )
 
 from .context import (
@@ -311,10 +309,9 @@ def _get_mdict_ms_and_bad_attrs(
 ) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
-    schema_view = SchemaView(SCHEMA_YAML)
-    schema_dict = schema_as_dict(schema_view.schema)
-    mapping_slots = schema_dict["classes"]["mapping"]["slots"]
-    mapping_set_slots = schema_dict["classes"]["mapping set"]["slots"]
+    schema_view = SSSOMSchemaView()
+    mapping_slots = schema_view.mapping_slots
+    mapping_set_slots = schema_view.mapping_set_slots
 
     for k, v in row.items():
         if v and v == v:

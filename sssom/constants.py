@@ -4,6 +4,8 @@ import pathlib
 from enum import Enum
 
 import pkg_resources
+from linkml_runtime.utils.schema_as_dict import schema_as_dict
+from linkml_runtime.utils.schemaview import SchemaView
 
 # from linkml_runtime.utils.introspection import package_schemaview
 
@@ -11,10 +13,6 @@ HERE = pathlib.Path(__file__).parent.resolve()
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
-
-SCHEMA_YAML = pkg_resources.resource_filename(
-    "sssom_schema", "schema/sssom_schema.yaml"
-)
 
 DEFAULT_MAPPING_PROPERTIES = [
     "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
@@ -160,3 +158,19 @@ DEFAULT_VALIDATION_TYPES = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
 ]
+
+
+class SSSOMSchemaView:
+    """
+    SchemaView class from linkml which is instantiated when necessary.
+
+    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322
+    Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
+    """
+
+    entity_reference = "EntityReference"
+    yaml = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
+    view = SchemaView(yaml)
+    dict = schema_as_dict(view.schema)
+    mapping_slots = dict["classes"]["mapping"]["slots"]
+    mapping_set_slots = dict["classes"]["mapping set"]["slots"]

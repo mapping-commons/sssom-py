@@ -16,7 +16,7 @@ from rdflib.namespace import OWL, RDF
 # from .sssom_datamodel import slots
 from sssom_schema import slots
 
-from sssom.constants import SCHEMA_YAML
+from sssom.constants import SSSOMSchemaView
 from sssom.validators import check_all_prefixes_in_curie_map
 
 from .parsers import to_mapping_set_document
@@ -284,7 +284,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     # os.remove("sssom.ttl")  # remove the intermediate file.
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
-        schemaview=SchemaView(SCHEMA_YAML),
+        schemaview=SchemaView(SSSOMSchemaView().yaml),
         prefix_map=msdf.prefix_map,
     )
     return graph
