@@ -42,15 +42,6 @@ PREFIX_MAP_MODES = [
 ]
 ENTITY_REFERENCE = "EntityReference"
 
-# MULTIVALUED_SLOTS = [
-#     c for c in SCHEMA_VIEW.all_slots() if SCHEMA_VIEW.get_slot(c).multivalued
-# ]
-# ENTITY_REFERENCE_SLOTS = [
-#     c
-#     for c in SCHEMA_VIEW.all_slots()
-#     if SCHEMA_VIEW.get_slot(c).range == ENTITY_REFERENCE
-# ]
-
 # Slot Constants
 MIRROR_FROM = "mirror_from"
 REGISTRY_CONFIDENCE = "registry_confidence"
