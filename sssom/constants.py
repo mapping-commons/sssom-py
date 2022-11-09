@@ -2,6 +2,7 @@
 
 import pathlib
 from enum import Enum
+from typing import List
 
 import pkg_resources
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
@@ -170,7 +171,43 @@ class SSSOMSchemaView:
 
     entity_reference = "EntityReference"
     yaml = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
-    view = SchemaView(yaml)
-    dict = schema_as_dict(view.schema)
-    mapping_slots = dict["classes"]["mapping"]["slots"]
-    mapping_set_slots = dict["classes"]["mapping set"]["slots"]
+    _view = None
+    _dict = None
+
+    @property
+    def view(self) -> SchemaView:
+        """Return SchemaView object."""
+        if self._view is None:
+            self._view = SchemaView(self.yaml)
+        return self._view
+
+    @property
+    def dict(self) -> dict:
+        """Return SchemaView as a dictionary."""
+        if self._dict is None:
+            self._dict = schema_as_dict(self.view.schema)
+        return self._dict
+
+    @property
+    def mapping_slots(self) -> List[str]:
+        """Return list of mapping slots."""
+        return self.dict["classes"]["mapping"]["slots"]
+
+    @property
+    def mapping_set_slots(self) -> List[str]:
+        """Return list of mapping set slots."""
+        return self.dict["classes"]["mapping set"]["slots"]
+
+    @property
+    def entity_reference_slots(self) -> List[str]:
+        """Return list of entity reference slots."""
+        return [
+            c
+            for c in self.view.all_slots()
+            if self.view.get_slot(c).range == self.entity_reference
+        ]
+
+    @property
+    def multivalued_slots(self) -> List[str]:
+        """Return list of multivalued slots."""
+        return [c for c in self.view.all_slots() if self.view.get_slot(c).multivalued]

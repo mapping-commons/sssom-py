@@ -7,10 +7,6 @@ from sssom.parsers import parse_sssom_table
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
 
-schema_view_object = SSSOMSchemaView()
-schema_view = schema_view_object.view
-schema_dict = schema_view_object.dict
-
 
 class TestSort(unittest.TestCase):
     """A test case for sorting msdf columns."""
@@ -23,6 +19,8 @@ class TestSort(unittest.TestCase):
         """Test sorting of columns."""
         new_df = sort_df_rows_columns(self.msdf.df)
         column_sequence = [
-            col for col in schema_dict["slots"].keys() if col in new_df.columns
+            col
+            for col in SSSOMSchemaView().dict["slots"].keys()
+            if col in new_df.columns
         ]
         self.assertListEqual(column_sequence, list(new_df.columns))

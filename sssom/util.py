@@ -828,7 +828,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     :return: MappingSetDataFrame with metadata as columns
     """
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    with open(schema_view_object.yaml) as file:
+    with open(SSSOMSchemaView().yaml) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
     if msdf.metadata is not None and msdf.df is not None:
@@ -953,8 +953,8 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     data = []
     slots_with_double_as_range = [
         s
-        for s in schema_dict["slots"].keys()
-        if schema_dict["slots"][s]["range"] == "double"
+        for s in SSSOMSchemaView().dict["slots"].keys()
+        if SSSOMSchemaView().dict["slots"][s]["range"] == "double"
     ]
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
@@ -985,6 +985,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :return: Dictionary
     """
     map_dict = {}
+    schema_dict = SSSOMSchemaView().dict
     slots_with_double_as_range = [
         s
         for s in schema_dict["slots"].keys()
@@ -1036,18 +1037,6 @@ class NoCURIEException(ValueError):
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
-schema_view_object = SSSOMSchemaView()
-schema_view = schema_view_object.view
-schema_dict = schema_view_object.dict
-mapping_set_slots = schema_view_object.mapping_set_slots
-multivalued_slots = [
-    c for c in schema_view.all_slots() if schema_view.get_slot(c).multivalued
-]
-entity_reference_slots = [
-    c
-    for c in schema_view.all_slots()
-    if schema_view.get_slot(c).range == schema_view_object.entity_reference
-]
 
 
 def is_curie(string: str) -> bool:
@@ -1107,8 +1096,9 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = SSSOM_BUILT_IN_PREFIXES
+    schemaview_object = SSSOMSchemaView()
     if not df.empty:
-        for col in entity_reference_slots:
+        for col in schemaview_object.entity_reference_slots:
             if col in df.columns:
                 for v in df[col].values:
                     pref = get_prefix_from_curie(str(v))
@@ -1274,7 +1264,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
 
-    return slot in multivalued_slots
+    return slot in SSSOMSchemaView().multivalued_slots
 
 
 def reconcile_prefix_and_data(
@@ -1337,7 +1327,7 @@ def reconcile_prefix_and_data(
     # Data editing
     if len(data_switch_dict) > 0:
         # Read schema file
-        slots = schema_dict["slots"]
+        slots = SSSOMSchemaView().dict["slots"]
         entity_reference_columns = [
             k for k, v in slots.items() if v["range"] == "EntityReference"
         ]
@@ -1367,7 +1357,7 @@ def sort_df_rows_columns(
     """
     if by_columns and len(df.columns) > 0:
         column_sequence = [
-            col for col in schema_dict["slots"].keys() if col in df.columns
+            col for col in SSSOMSchemaView().dict["slots"].keys() if col in df.columns
         ]
         df = df.reindex(column_sequence, axis=1)
     if by_rows and len(df) > 0:
@@ -1388,7 +1378,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         metadata_keys = list(msdf.metadata.keys())
         df_columns_list = msdf.df.columns.to_list()  # type: ignore
         all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [s for s in all_keys if s in entity_reference_slots]
+        ent_ref_slots = [
+            s for s in all_keys if s in SSSOMSchemaView().entity_reference_slots
+        ]
 
         for slot in ent_ref_slots:
             if slot in metadata_keys:
@@ -1441,7 +1433,7 @@ def augment_metadata(
     :return: MSDF with updated metadata.
     """
     are_params_slots(meta)
-
+    multivalued_slots = SSSOMSchemaView().multivalued_slots
     if msdf.metadata:
         for k, v in meta.items():
             # If slot is multivalued, add to list.
@@ -1474,6 +1466,7 @@ def are_params_slots(params: dict) -> bool:
     :return: True/False
     """
     empty_params = {k: v for k, v in params.items() if v is None or v == ""}
+    mapping_set_slots = SSSOMSchemaView().mapping_set_slots
     if len(empty_params) > 0:
         logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
 

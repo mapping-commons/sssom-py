@@ -309,9 +309,6 @@ def _get_mdict_ms_and_bad_attrs(
 ) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
-    schema_view = SSSOMSchemaView()
-    mapping_slots = schema_view.mapping_slots
-    mapping_set_slots = schema_view.mapping_set_slots
 
     for k, v in row.items():
         if v and v == v:
@@ -320,11 +317,11 @@ def _get_mdict_ms_and_bad_attrs(
                 k = str(k)
             v = _address_multivalued_slot(k, v)
             # if hasattr(Mapping, k):
-            if k in mapping_slots:
+            if k in SSSOMSchemaView().mapping_slots:
                 mdict[k] = v
                 ok = True
             # if hasattr(MappingSet, k):
-            if k in mapping_set_slots:
+            if k in SSSOMSchemaView().mapping_set_slots:
                 ms[k] = v
                 ok = True
             if not ok:
