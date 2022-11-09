@@ -30,8 +30,6 @@ from sssom.constants import (
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
     MAPPING_SET_ID,
-    MAPPING_SET_SLOTS,
-    MAPPING_SLOTS,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -43,6 +41,7 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
+    SSSOMSchemaView,
 )
 
 from .context import (
@@ -310,7 +309,7 @@ def _get_mdict_ms_and_bad_attrs(
 ) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
-
+    sssom_schema_object = SSSOMSchemaView()
     for k, v in row.items():
         if v and v == v:
             ok = False
@@ -318,11 +317,11 @@ def _get_mdict_ms_and_bad_attrs(
                 k = str(k)
             v = _address_multivalued_slot(k, v)
             # if hasattr(Mapping, k):
-            if k in MAPPING_SLOTS:
+            if k in sssom_schema_object.mapping_slots:
                 mdict[k] = v
                 ok = True
             # if hasattr(MappingSet, k):
-            if k in MAPPING_SET_SLOTS:
+            if k in sssom_schema_object.mapping_set_slots:
                 ms[k] = v
                 ok = True
             if not ok:
