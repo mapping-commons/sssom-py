@@ -187,7 +187,7 @@ class SSSOMSchemaView(SSSOMSchemaViewSingleton):
     """
 
     def __init__(self):
-        """Initialize class attributes"""
+        """Initialize class attributes."""
         self.view = SchemaView(SCHEMA_YAML)
         self.dict = schema_as_dict(self.view.schema)
         self.mapping_slots = self.dict["classes"]["mapping"]["slots"]
