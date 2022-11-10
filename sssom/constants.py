@@ -168,7 +168,17 @@ DEFAULT_VALIDATION_TYPES = [
 ]
 
 
-class SSSOMSchemaView:
+class SSSOMSchemaViewSingleton(object):
+    """Singleton class that holds the SSSOM schema view."""
+
+    def __new__(cls):
+        """Create new instance of the SSSOM schema view."""
+        if not hasattr(cls, "instance"):
+            cls.instance = super(SSSOMSchemaViewSingleton, cls).__new__(cls)
+            return cls.instance
+
+
+class SSSOMSchemaView(SSSOMSchemaViewSingleton):
     """
     SchemaView class from linkml which is instantiated when necessary.
 
@@ -176,29 +186,50 @@ class SSSOMSchemaView:
     Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    _view = None
-    _dict = None
+    def __init__(self):
+        """Initialize class attributes"""
+        self.view = SchemaView(SCHEMA_YAML)
+        self.dict = schema_as_dict(self.view.schema)
+        self.mapping_slots = self.dict["classes"]["mapping"]["slots"]
+        self.mapping_set_slots = self.dict["classes"]["mapping set"]["slots"]
 
     @property
-    def view(self) -> SchemaView:
-        """Return SchemaView object."""
-        if self._view is None:
-            self._view = SchemaView(SCHEMA_YAML)
-        return self._view
+    def multivalued_slots(self) -> List[str]:
+        """Return list of multivalued slots."""
+        return [c for c in self.view.all_slots() if self.view.get_slot(c).multivalued]
 
     @property
-    def dict(self) -> dict:
-        """Return SchemaView as a dictionary."""
-        if self._dict is None:
-            self._dict = schema_as_dict(self.view.schema)
-        return self._dict
+    def entity_reference_slots(self) -> List[str]:
+        """Return list of entity reference slots."""
+        return [
+            c
+            for c in self.view.all_slots()
+            if self.view.get_slot(c).range == ENTITY_REFERENCE
+        ]
 
-    @property
-    def mapping_slots(self) -> List[str]:
-        """Return list of mapping slots."""
-        return self.dict["classes"]["mapping"]["slots"]
+    # _view = None
+    # _dict = None
 
-    @property
-    def mapping_set_slots(self) -> List[str]:
-        """Return list of mapping set slots."""
-        return self.dict["classes"]["mapping set"]["slots"]
+    # @property
+    # def view(self) -> SchemaView:
+    #     """Return SchemaView object."""
+    #     if self._view is None:
+    #         self._view = SchemaView(SCHEMA_YAML)
+    #     return self._view
+
+    # @property
+    # def dict(self) -> dict:
+    #     """Return SchemaView as a dictionary."""
+    #     if self._dict is None:
+    #         self._dict = schema_as_dict(self.view.schema)
+    #     return self._dict
+
+    # @property
+    # def mapping_slots(self) -> List[str]:
+    #     """Return list of mapping slots."""
+    #     return self.dict["classes"]["mapping"]["slots"]
+
+    # @property
+    # def mapping_set_slots(self) -> List[str]:
+    #     """Return list of mapping set slots."""
+    #     return self.dict["classes"]["mapping set"]["slots"]

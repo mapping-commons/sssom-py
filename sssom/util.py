@@ -100,17 +100,11 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 #: The 3 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
-SSSOM_SV_OBJECT = SSSOMSchemaView()
-MULTIVALUED_SLOTS = [
-    c
-    for c in SSSOM_SV_OBJECT.view.all_slots()
-    if SSSOM_SV_OBJECT.view.get_slot(c).multivalued
-]
-ENTITY_REFERENCE_SLOTS = [
-    c
-    for c in SSSOM_SV_OBJECT.view.all_slots()
-    if SSSOM_SV_OBJECT.view.get_slot(c).range == ENTITY_REFERENCE
-]
+SSSOM_SV_OBJECT = (
+    SSSOMSchemaView.instance
+    if hasattr(SSSOMSchemaView, "instance")
+    else SSSOMSchemaView()
+)
 
 
 @dataclass
@@ -1110,7 +1104,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = SSSOM_BUILT_IN_PREFIXES
     if not df.empty:
-        for col in ENTITY_REFERENCE_SLOTS:
+        for col in SSSOM_SV_OBJECT.entity_reference_slots:
             if col in df.columns:
                 for v in df[col].values:
                     pref = get_prefix_from_curie(str(v))
@@ -1275,8 +1269,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # Ideally:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
-
-    return slot in MULTIVALUED_SLOTS
+    return slot in SSSOM_SV_OBJECT.multivalued_slots
 
 
 def reconcile_prefix_and_data(
@@ -1390,7 +1383,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         metadata_keys = list(msdf.metadata.keys())
         df_columns_list = msdf.df.columns.to_list()  # type: ignore
         all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [s for s in all_keys if s in ENTITY_REFERENCE_SLOTS]
+        ent_ref_slots = [
+            s for s in all_keys if s in SSSOM_SV_OBJECT.entity_reference_slots
+        ]
 
         for slot in ent_ref_slots:
             if slot in metadata_keys:
@@ -1447,7 +1442,7 @@ def augment_metadata(
     if msdf.metadata:
         for k, v in meta.items():
             # If slot is multivalued, add to list.
-            if k in MULTIVALUED_SLOTS and not replace_multivalued:
+            if k in SSSOM_SV_OBJECT.multivalued_slots and not replace_multivalued:
                 tmp_value: list = []
                 if isinstance(msdf.metadata[k], str):
                     tmp_value = [msdf.metadata[k]]
@@ -1460,7 +1455,7 @@ def augment_metadata(
                     )
                 tmp_value.extend(v)
                 msdf.metadata[k] = list(set(tmp_value))
-            elif k in MULTIVALUED_SLOTS and replace_multivalued:
+            elif k in SSSOM_SV_OBJECT.multivalued_slots and replace_multivalued:
                 msdf.metadata[k] = list(v)
             else:
                 msdf.metadata[k] = v[0]

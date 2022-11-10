@@ -309,7 +309,9 @@ def _get_mdict_ms_and_bad_attrs(
 ) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
-    sssom_schema_object = SSSOMSchemaView()
+    sssom_schema_object = (
+        SSSOMSchemaView.instance if SSSOMSchemaView.instance else SSSOMSchemaView()
+    )
     for k, v in row.items():
         if v and v == v:
             ok = False
