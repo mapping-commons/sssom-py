@@ -40,7 +40,6 @@ from sssom_schema import slots
 from .constants import (
     COMMENT,
     CONFIDENCE,
-    ENTITY_REFERENCE,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
