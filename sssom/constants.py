@@ -172,7 +172,7 @@ class SSSOMSchemaViewSingleton(object):
     """Singleton class that holds the SSSOM schema view."""
 
     def __new__(cls):
-        """Create new instance of the SSSOM schema view."""
+        """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaViewSingleton, cls).__new__(cls)
             return cls.instance
@@ -206,30 +206,3 @@ class SSSOMSchemaView(SSSOMSchemaViewSingleton):
             for c in self.view.all_slots()
             if self.view.get_slot(c).range == ENTITY_REFERENCE
         ]
-
-    # _view = None
-    # _dict = None
-
-    # @property
-    # def view(self) -> SchemaView:
-    #     """Return SchemaView object."""
-    #     if self._view is None:
-    #         self._view = SchemaView(SCHEMA_YAML)
-    #     return self._view
-
-    # @property
-    # def dict(self) -> dict:
-    #     """Return SchemaView as a dictionary."""
-    #     if self._dict is None:
-    #         self._dict = schema_as_dict(self.view.schema)
-    #     return self._dict
-
-    # @property
-    # def mapping_slots(self) -> List[str]:
-    #     """Return list of mapping slots."""
-    #     return self.dict["classes"]["mapping"]["slots"]
-
-    # @property
-    # def mapping_set_slots(self) -> List[str]:
-    #     """Return list of mapping set slots."""
-    #     return self.dict["classes"]["mapping set"]["slots"]
