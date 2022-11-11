@@ -167,6 +167,7 @@ DEFAULT_VALIDATION_TYPES = [
     SchemaValidationType.PrefixMapCompleteness,
 ]
 
+
 class SSSOMSchemaView(object):
     """
     SchemaView class from linkml which is instantiated when necessary.
