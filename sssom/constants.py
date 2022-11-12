@@ -202,12 +202,12 @@ class SSSOMSchemaView(object):
     @property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        return self.dict["classes"]["mapping"]["slots"]
+        return self.view.get_class("mapping").slots
 
     @property
     def mapping_set_slots(self) -> List[str]:
         """Return list of mapping set slots."""
-        return self.dict["classes"]["mapping set"]["slots"]
+        return self.view.get_class("mapping set").slots
 
     @property
     def multivalued_slots(self) -> List[str]:
