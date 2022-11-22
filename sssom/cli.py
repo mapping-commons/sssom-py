@@ -74,7 +74,7 @@ input_format_option = click.option(
     "-I",
     "--input-format",
     help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}',
-) 
+)
 output_option = click.option(
     "-o",
     "--output",
