@@ -37,11 +37,11 @@ from sssom.constants import (
     OWL_EQUIV_CLASS,
     PREDICATE_ID,
     RDFS_SUBCLASS_OF,
+    SSSOM_SCHEMA_OBJECT,
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
-    SSSOMSchemaView,
 )
 
 from .context import (
@@ -309,9 +309,7 @@ def _get_mdict_ms_and_bad_attrs(
 ) -> Tuple[dict, MappingSet, Counter]:
 
     mdict = {}
-    sssom_schema_object = (
-        SSSOMSchemaView.instance if SSSOMSchemaView.instance else SSSOMSchemaView()
-    )
+    sssom_schema_object = SSSOM_SCHEMA_OBJECT
     for k, v in row.items():
         if v and v == v:
             ok = False
