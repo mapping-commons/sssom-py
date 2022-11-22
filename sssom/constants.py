@@ -222,10 +222,3 @@ class SSSOMSchemaView(object):
             for c in self.view.all_slots()
             if self.view.get_slot(c).range == ENTITY_REFERENCE
         ]
-
-
-SSSOM_SCHEMA_OBJECT = (
-    SSSOMSchemaView.instance  # type: ignore
-    if hasattr(SSSOMSchemaView, "instance")
-    else SSSOMSchemaView()
-)
