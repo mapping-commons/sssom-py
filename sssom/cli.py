@@ -25,10 +25,9 @@ from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
-    MAPPING_SET_SLOTS,
-    MAPPING_SLOTS,
     PREFIX_MAP_MODES,
     SchemaValidationType,
+    SSSOMSchemaView,
 )
 from sssom.context import get_default_metadata
 
@@ -61,6 +60,12 @@ from .util import (
     to_mapping_set_dataframe,
 )
 from .writers import write_table
+
+SSSOM_SV_OBJECT = (
+    SSSOMSchemaView.instance
+    if hasattr(SSSOMSchemaView, "instance")
+    else SSSOMSchemaView()
+)
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
@@ -628,7 +633,7 @@ def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
 @main.command()
 @input_argument
 @output_option
-@dynamically_generate_sssom_options(MAPPING_SLOTS)
+@dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_slots)
 def filter(input: str, output: TextIO, **kwargs):
     """Filter a dataframe by dynamically generating queries based on user input.
 
@@ -659,7 +664,7 @@ def filter(input: str, output: TextIO, **kwargs):
     type=bool,
     help="Multivalued slots should be replaced or not. [default: False]",
 )
-@dynamically_generate_sssom_options(MAPPING_SET_SLOTS)
+@dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_set_slots)
 def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     """Annotate metadata of a mapping set.
 

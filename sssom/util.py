@@ -40,12 +40,9 @@ from sssom_schema import slots
 from .constants import (
     COMMENT,
     CONFIDENCE,
-    ENTITY_REFERENCE_SLOTS,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
-    MAPPING_SET_SLOTS,
     MAPPING_SET_SOURCE,
-    MULTIVALUED_SLOTS,
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
@@ -59,7 +56,6 @@ from .constants import (
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
     RDFS_SUBCLASS_OF,
-    SCHEMA_DICT,
     SCHEMA_YAML,
     SEMAPV,
     SKOS_BROAD_MATCH,
@@ -72,6 +68,7 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    SSSOMSchemaView,
 )
 from .context import (
     SSSOM_BUILT_IN_PREFIXES,
@@ -101,6 +98,12 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
 #: The 3 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
+
+SSSOM_SV_OBJECT = (
+    SSSOMSchemaView.instance
+    if hasattr(SSSOMSchemaView, "instance")
+    else SSSOMSchemaView()
+)
 
 
 @dataclass
@@ -957,8 +960,8 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     data = []
     slots_with_double_as_range = [
         s
-        for s in SCHEMA_DICT["slots"].keys()
-        if SCHEMA_DICT["slots"][s]["range"] == "double"
+        for s in SSSOM_SV_OBJECT.dict["slots"].keys()
+        if SSSOM_SV_OBJECT.dict["slots"][s]["range"] == "double"
     ]
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
@@ -991,19 +994,19 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     map_dict = {}
     slots_with_double_as_range = [
         s
-        for s in SCHEMA_DICT["slots"].keys()
-        if SCHEMA_DICT["slots"][s]["range"] == "double"
+        for s in SSSOM_SV_OBJECT.dict["slots"].keys()
+        if SSSOM_SV_OBJECT.dict["slots"][s]["range"] == "double"
     ]
     for property in map_obj:
         if map_obj[property] is not None:
             if isinstance(map_obj[property], list):
                 # IF object is an enum
                 if (
-                    SCHEMA_DICT["slots"][property]["range"]
-                    in SCHEMA_DICT["enums"].keys()
+                    SSSOM_SV_OBJECT.dict["slots"][property]["range"]
+                    in SSSOM_SV_OBJECT.dict["enums"].keys()
                 ):
                     # IF object is a multivalued enum
-                    if SCHEMA_DICT["slots"][property]["multivalued"]:
+                    if SSSOM_SV_OBJECT.dict["slots"][property]["multivalued"]:
                         map_dict[property] = "|".join(
                             enum_value.code.text for enum_value in map_obj[property]
                         )
@@ -1019,8 +1022,8 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
             else:
                 # IF object is an enum
                 if (
-                    SCHEMA_DICT["slots"][property]["range"]
-                    in SCHEMA_DICT["enums"].keys()
+                    SSSOM_SV_OBJECT.dict["slots"][property]["range"]
+                    in SSSOM_SV_OBJECT.dict["enums"].keys()
                 ):
                     map_dict[property] = map_obj[property].code.text
                 else:
@@ -1100,7 +1103,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = SSSOM_BUILT_IN_PREFIXES
     if not df.empty:
-        for col in ENTITY_REFERENCE_SLOTS:
+        for col in SSSOM_SV_OBJECT.entity_reference_slots:
             if col in df.columns:
                 for v in df[col].values:
                     pref = get_prefix_from_curie(str(v))
@@ -1265,8 +1268,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # Ideally:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
-
-    return slot in MULTIVALUED_SLOTS
+    return slot in SSSOM_SV_OBJECT.multivalued_slots
 
 
 def reconcile_prefix_and_data(
@@ -1329,7 +1331,7 @@ def reconcile_prefix_and_data(
     # Data editing
     if len(data_switch_dict) > 0:
         # Read schema file
-        slots = SCHEMA_DICT["slots"]
+        slots = SSSOM_SV_OBJECT.dict["slots"]
         entity_reference_columns = [
             k for k, v in slots.items() if v["range"] == "EntityReference"
         ]
@@ -1359,7 +1361,7 @@ def sort_df_rows_columns(
     """
     if by_columns and len(df.columns) > 0:
         column_sequence = [
-            col for col in SCHEMA_DICT["slots"].keys() if col in df.columns
+            col for col in SSSOM_SV_OBJECT.dict["slots"].keys() if col in df.columns
         ]
         df = df.reindex(column_sequence, axis=1)
     if by_rows and len(df) > 0:
@@ -1380,7 +1382,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         metadata_keys = list(msdf.metadata.keys())
         df_columns_list = msdf.df.columns.to_list()  # type: ignore
         all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [s for s in all_keys if s in ENTITY_REFERENCE_SLOTS]
+        ent_ref_slots = [
+            s for s in all_keys if s in SSSOM_SV_OBJECT.entity_reference_slots
+        ]
 
         for slot in ent_ref_slots:
             if slot in metadata_keys:
@@ -1437,7 +1441,7 @@ def augment_metadata(
     if msdf.metadata:
         for k, v in meta.items():
             # If slot is multivalued, add to list.
-            if k in MULTIVALUED_SLOTS and not replace_multivalued:
+            if k in SSSOM_SV_OBJECT.multivalued_slots and not replace_multivalued:
                 tmp_value: list = []
                 if isinstance(msdf.metadata[k], str):
                     tmp_value = [msdf.metadata[k]]
@@ -1450,7 +1454,7 @@ def augment_metadata(
                     )
                 tmp_value.extend(v)
                 msdf.metadata[k] = list(set(tmp_value))
-            elif k in MULTIVALUED_SLOTS and replace_multivalued:
+            elif k in SSSOM_SV_OBJECT.multivalued_slots and replace_multivalued:
                 msdf.metadata[k] = list(v)
             else:
                 msdf.metadata[k] = v[0]
@@ -1469,10 +1473,10 @@ def are_params_slots(params: dict) -> bool:
     if len(empty_params) > 0:
         logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
 
-    legit_params = all(p in MAPPING_SET_SLOTS for p in params.keys())
+    legit_params = all(p in SSSOM_SV_OBJECT.mapping_set_slots for p in params.keys())
     if not legit_params:
-        invalids = [p for p in params if p not in MAPPING_SET_SLOTS]
+        invalids = [p for p in params if p not in SSSOM_SV_OBJECT.mapping_set_slots]
         raise ValueError(
-            f"The params are invalid: {invalids}. Should be any of the following: {MAPPING_SET_SLOTS}"
+            f"The params are invalid: {invalids}. Should be any of the following: {SSSOM_SV_OBJECT.mapping_set_slots}"
         )
     return True

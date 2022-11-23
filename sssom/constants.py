@@ -2,6 +2,7 @@
 
 import pathlib
 from enum import Enum
+from typing import List
 
 import pkg_resources
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
@@ -14,11 +15,8 @@ HERE = pathlib.Path(__file__).parent.resolve()
 SCHEMA_YAML = pkg_resources.resource_filename(
     "sssom_schema", "schema/sssom_schema.yaml"
 )
-SCHEMA_VIEW = SchemaView(SCHEMA_YAML)
+
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
-SCHEMA_DICT = schema_as_dict(SCHEMA_VIEW.schema)
-MAPPING_SLOTS = SCHEMA_DICT["classes"]["mapping"]["slots"]
-MAPPING_SET_SLOTS = SCHEMA_DICT["classes"]["mapping set"]["slots"]
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
@@ -43,15 +41,6 @@ PREFIX_MAP_MODES = [
     PREFIX_MAP_MODE_MERGED,
 ]
 ENTITY_REFERENCE = "EntityReference"
-
-MULTIVALUED_SLOTS = [
-    c for c in SCHEMA_VIEW.all_slots() if SCHEMA_VIEW.get_slot(c).multivalued
-]
-ENTITY_REFERENCE_SLOTS = [
-    c
-    for c in SCHEMA_VIEW.all_slots()
-    if SCHEMA_VIEW.get_slot(c).range == ENTITY_REFERENCE
-]
 
 # Slot Constants
 MIRROR_FROM = "mirror_from"
@@ -177,3 +166,59 @@ DEFAULT_VALIDATION_TYPES = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
 ]
+
+
+class SSSOMSchemaView(object):
+    """
+    SchemaView class from linkml which is instantiated when necessary.
+
+    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322
+    Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
+    """
+
+    _view = None
+    _dict = None
+
+    def __new__(cls):
+        """Create a instance of the SSSOM schema view if non-existent."""
+        if not hasattr(cls, "instance"):
+            cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
+            return cls.instance
+
+    @property
+    def view(self) -> SchemaView:
+        """Return SchemaView object."""
+        if self._view is None:
+            self._view = SchemaView(SCHEMA_YAML)
+        return self._view
+
+    @property
+    def dict(self) -> dict:
+        """Return SchemaView as a dictionary."""
+        if self._dict is None:
+            self._dict = schema_as_dict(self.view.schema)
+        return self._dict
+
+    @property
+    def mapping_slots(self) -> List[str]:
+        """Return list of mapping slots."""
+        return self.view.get_class("mapping").slots
+
+    @property
+    def mapping_set_slots(self) -> List[str]:
+        """Return list of mapping set slots."""
+        return self.view.get_class("mapping set").slots
+
+    @property
+    def multivalued_slots(self) -> List[str]:
+        """Return list of multivalued slots."""
+        return [c for c in self.view.all_slots() if self.view.get_slot(c).multivalued]
+
+    @property
+    def entity_reference_slots(self) -> List[str]:
+        """Return list of entity reference slots."""
+        return [
+            c
+            for c in self.view.all_slots()
+            if self.view.get_slot(c).range == ENTITY_REFERENCE
+        ]
