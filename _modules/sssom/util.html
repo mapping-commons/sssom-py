@@ -170,12 +170,6 @@
 <span class="c1">#: The 3 columns whose combination would be used as primary keys while merging/grouping</span>
 <span class="n">KEY_FEATURES</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">]</span>
 
-<span class="n">SSSOM_SV_OBJECT</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span>
-    <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
-<span class="p">)</span>
-
 
 <div class="viewcode-block" id="MappingSetDataFrame"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.MappingSetDataFrame">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MappingSetDataFrame</span><span class="p">:</span>
@@ -1031,8 +1025,8 @@
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">slots_with_double_as_range</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">s</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">:</span>
@@ -1065,19 +1059,21 @@
     <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">slots_with_double_as_range</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">s</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="n">map_obj</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">map_obj</span><span class="p">[</span><span class="nb">property</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_obj</span><span class="p">[</span><span class="nb">property</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="c1"># IF object is an enum</span>
                 <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="nb">property</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
-                    <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;enums&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="nb">property</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+                    <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;enums&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
                 <span class="p">):</span>
                     <span class="c1"># IF object is a multivalued enum</span>
-                    <span class="k">if</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="nb">property</span><span class="p">][</span><span class="s2">&quot;multivalued&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="nb">property</span><span class="p">][</span>
+                        <span class="s2">&quot;multivalued&quot;</span>
+                    <span class="p">]:</span>
                         <span class="n">map_dict</span><span class="p">[</span><span class="nb">property</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                             <span class="n">enum_value</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">enum_value</span> <span class="ow">in</span> <span class="n">map_obj</span><span class="p">[</span><span class="nb">property</span><span class="p">]</span>
                         <span class="p">)</span>
@@ -1093,8 +1089,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># IF object is an enum</span>
                 <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="nb">property</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
-                    <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;enums&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="nb">property</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
+                    <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;enums&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
                 <span class="p">):</span>
                     <span class="n">map_dict</span><span class="p">[</span><span class="nb">property</span><span class="p">]</span> <span class="o">=</span> <span class="n">map_obj</span><span class="p">[</span><span class="nb">property</span><span class="p">]</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">text</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -1174,7 +1170,7 @@
     <span class="sd">&quot;&quot;&quot;Get a list of prefixes used in CURIEs in key feature columns in a dataframe.&quot;&quot;&quot;</span>
     <span class="n">prefixes</span> <span class="o">=</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">entity_reference_slots</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
                     <span class="n">pref</span> <span class="o">=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
@@ -1339,7 +1335,7 @@
     <span class="c1"># Ideally:</span>
     <span class="c1"># view = SchemaView(&#39;schema/sssom.yaml&#39;)</span>
     <span class="c1"># return view.get_slot(slot).multivalued</span>
-    <span class="k">return</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">multivalued_slots</span></div>
+    <span class="k">return</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span></div>
 
 
 <div class="viewcode-block" id="reconcile_prefix_and_data"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.reconcile_prefix_and_data">[docs]</a><span class="k">def</span> <span class="nf">reconcile_prefix_and_data</span><span class="p">(</span>
@@ -1402,7 +1398,7 @@
     <span class="c1"># Data editing</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_switch_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="c1"># Read schema file</span>
-        <span class="n">slots</span> <span class="o">=</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
+        <span class="n">slots</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
         <span class="n">entity_reference_columns</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">slots</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EntityReference&quot;</span>
         <span class="p">]</span>
@@ -1432,7 +1428,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">by_columns</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">column_sequence</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+            <span class="n">col</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
         <span class="p">]</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">column_sequence</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">by_rows</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1454,7 +1452,9 @@
         <span class="n">df_columns_list</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
         <span class="n">all_keys</span> <span class="o">=</span> <span class="n">metadata_keys</span> <span class="o">+</span> <span class="n">df_columns_list</span>
         <span class="n">ent_ref_slots</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">all_keys</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">entity_reference_slots</span>
+            <span class="n">s</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">all_keys</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span>
         <span class="p">]</span>
 
         <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">ent_ref_slots</span><span class="p">:</span>
@@ -1512,7 +1512,10 @@
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># If slot is multivalued, add to list.</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">multivalued_slots</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace_multivalued</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">k</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace_multivalued</span>
+            <span class="p">):</span>
                 <span class="n">tmp_value</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
                     <span class="n">tmp_value</span> <span class="o">=</span> <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
@@ -1525,7 +1528,10 @@
                     <span class="p">)</span>
                 <span class="n">tmp_value</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
                 <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">multivalued_slots</span> <span class="ow">and</span> <span class="n">replace_multivalued</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">k</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span>
+                <span class="ow">and</span> <span class="n">replace_multivalued</span>
+            <span class="p">):</span>
                 <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1544,13 +1550,27 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">empty_params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="n">empty_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2"> has(ve) no value.&quot;</span><span class="p">)</span>
 
-    <span class="n">legit_params</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">p</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_set_slots</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">legit_params</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="n">p</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_set_slots</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">legit_params</span><span class="p">:</span>
-        <span class="n">invalids</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="p">]</span>
+        <span class="n">invalids</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_set_slots</span>
+        <span class="p">]</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The params are invalid: </span><span class="si">{</span><span class="n">invalids</span><span class="si">}</span><span class="s2">. Should be any of the following: </span><span class="si">{</span><span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;The params are invalid: </span><span class="si">{</span><span class="n">invalids</span><span class="si">}</span><span class="s2">. Should be any of the following: </span><span class="si">{</span><span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_sssom_schema_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SSSOMSchemaView</span><span class="p">:</span>
+
+    <span class="n">sssom_sv_object</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">sssom_sv_object</span>
 </pre></div>
 
            </div>
