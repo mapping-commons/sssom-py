@@ -166,7 +166,10 @@ class MappingSetDataFrame:
                 )
                 missing_prefixes.append(prefix)
         if missing_prefixes:
-            self.df = filter_out_prefixes(self.df, missing_prefixes)
+            raise ValueError(
+                f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
+            )
+            # self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
 
     def remove_mappings(self, msdf: "MappingSetDataFrame"):
