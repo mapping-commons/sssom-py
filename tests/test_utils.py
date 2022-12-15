@@ -47,13 +47,14 @@ class TestIO(unittest.TestCase):
         filtered_df = filter_out_prefixes(
             self.msdf.df, prefix_filter_list, self.features
         )
+        original_msdf = self.msdf
         new_msdf = MappingSetDataFrame(
             df=filtered_df, prefix_map=self.msdf.prefix_map, metadata=self.msdf.metadata
         )
-        original_length = len(self.msdf.df)
-        self.msdf.remove_mappings(new_msdf)
+        original_length = len(original_msdf.df)
+        original_msdf.remove_mappings(new_msdf)
         # len(self.msdf.df) = 141 and len(new_msdf.df) = 5
-        self.assertEqual(len(self.msdf.df), original_length - len(new_msdf.df))
+        self.assertEqual(len(original_msdf.df), original_length - len(new_msdf.df))
 
     def test_clean_prefix_map(self):
         """Test clean prefix map."""
