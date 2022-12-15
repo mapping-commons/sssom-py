@@ -146,7 +146,13 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self) -> None:
-        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
+        """
+        Remove unused prefixes from the internal prefix map based on the internal dataframe.
+        Rule:
+        1. All prefixes in the internal dataframe should be represented in prefix-map
+
+        :raises ValueError: If prefix used in dataframe not present in prefix_map.
+        """
         all_prefixes = []
         prefixes_in_table = get_prefixes_used_in_table(self.df)
         if self.metadata:
@@ -155,22 +161,29 @@ class MappingSetDataFrame:
         else:
             all_prefixes = prefixes_in_table
 
-        new_prefixes: PrefixMap = dict()
-        missing_prefixes = []
-        for prefix in all_prefixes:
-            if prefix in self.prefix_map:
-                new_prefixes[prefix] = self.prefix_map[prefix]
-            else:
-                logging.warning(
-                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
-                )
-                missing_prefixes.append(prefix)
+        missing_prefixes = [
+            k for k in all_prefixes if k in prefixes_in_table and k not in all_prefixes
+        ]
         if missing_prefixes:
             raise ValueError(
-                f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
+                f"{missing_prefixes} used in the SSSOM mapping set but do not exist in the prefix map"
             )
-            # self.df = filter_out_prefixes(self.df, missing_prefixes)
-        self.prefix_map = new_prefixes
+        prefix_map_from_table = {k: self.prefix_map[k] for k in prefixes_in_table}
+
+        # for prefix in all_prefixes:
+        #     if prefix in self.prefix_map and prefix in prefixes_in_table:
+        #         new_prefixes[prefix] = self.prefix_map[prefix]
+        # else:
+        # logging.warning(
+        #     f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
+        # )
+        # missing_prefixes.append(prefix)
+        # if missing_prefixes:
+        #     raise ValueError(
+        #         f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
+        #     )
+        # self.df = filter_out_prefixes(self.df, missing_prefixes)
+        self.prefix_map = prefix_map_from_table
 
     def remove_mappings(self, msdf: "MappingSetDataFrame"):
         """Remove mappings in right msdf from left msdf.
