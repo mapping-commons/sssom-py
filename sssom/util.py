@@ -148,6 +148,7 @@ class MappingSetDataFrame:
     def clean_prefix_map(self) -> None:
         """
         Remove unused prefixes from the internal prefix map based on the internal dataframe.
+        
         Rule:
         1. All prefixes in the internal dataframe should be represented in prefix-map
 
