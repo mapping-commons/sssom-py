@@ -166,7 +166,9 @@ class MappingSetDataFrame:
                 )
                 missing_prefixes.append(prefix)
         if missing_prefixes:
-            import pdb; pdb.set_trace()
+            import pdb
+
+            pdb.set_trace()
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
             )

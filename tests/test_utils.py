@@ -31,7 +31,9 @@ class TestIO(unittest.TestCase):
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
-        filtered_df = filter_prefixes(original_msdf.df, prefix_filter_list, self.features)
+        filtered_df = filter_prefixes(
+            original_msdf.df, prefix_filter_list, self.features
+        )
         self.assertEqual(len(filtered_df), 40)
 
     def test_filter_out_prefixes(self):
@@ -51,7 +53,9 @@ class TestIO(unittest.TestCase):
             original_msdf.df, prefix_filter_list, self.features
         )
         new_msdf = MappingSetDataFrame(
-            df=filtered_df, prefix_map=original_msdf.prefix_map, metadata=original_msdf.metadata
+            df=filtered_df,
+            prefix_map=original_msdf.prefix_map,
+            metadata=original_msdf.metadata,
         )
         original_length = len(original_msdf.df)
         original_msdf.remove_mappings(new_msdf)
@@ -66,7 +70,9 @@ class TestIO(unittest.TestCase):
             original_msdf.df, prefix_filter_list, self.features
         )
         new_msdf = MappingSetDataFrame(
-            df=filtered_df, prefix_map=original_msdf.prefix_map, metadata=original_msdf.metadata
+            df=filtered_df,
+            prefix_map=original_msdf.prefix_map,
+            metadata=original_msdf.metadata,
         )
         new_msdf.clean_prefix_map()
         self.assertEqual(
