@@ -146,14 +146,7 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self) -> None:
-        """
-        Remove unused prefixes from the internal prefix map based on the internal dataframe.
-
-        Rule:
-        1. All prefixes in the internal dataframe should be represented in prefix-map
-
-        :raises ValueError: If prefix used in dataframe not present in prefix_map.
-        """
+        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
         all_prefixes = []
         prefixes_in_table = get_prefixes_used_in_table(self.df)
         if self.metadata:
@@ -162,29 +155,23 @@ class MappingSetDataFrame:
         else:
             all_prefixes = prefixes_in_table
 
-        missing_prefixes = [
-            k for k in all_prefixes if k in prefixes_in_table and k not in all_prefixes
-        ]
+        new_prefixes: PrefixMap = dict()
+        missing_prefixes = []
+        for prefix in all_prefixes:
+            if prefix in self.prefix_map:
+                new_prefixes[prefix] = self.prefix_map[prefix]
+            else:
+                logging.warning(
+                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
+                )
+                missing_prefixes.append(prefix)
         if missing_prefixes:
+            import pdb; pdb.set_trace()
             raise ValueError(
-                f"{missing_prefixes} used in the SSSOM mapping set but do not exist in the prefix map"
+                f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
             )
-        prefix_map_from_table = {k: self.prefix_map[k] for k in prefixes_in_table}
-
-        # for prefix in all_prefixes:
-        #     if prefix in self.prefix_map and prefix in prefixes_in_table:
-        #         new_prefixes[prefix] = self.prefix_map[prefix]
-        # else:
-        # logging.warning(
-        #     f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
-        # )
-        # missing_prefixes.append(prefix)
-        # if missing_prefixes:
-        #     raise ValueError(
-        #         f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
-        #     )
-        # self.df = filter_out_prefixes(self.df, missing_prefixes)
-        self.prefix_map = prefix_map_from_table
+            # self.df = filter_out_prefixes(self.df, missing_prefixes)
+        self.prefix_map = new_prefixes
 
     def remove_mappings(self, msdf: "MappingSetDataFrame"):
         """Remove mappings in right msdf from left msdf.
@@ -1114,20 +1101,17 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
-    prefixes = SSSOM_BUILT_IN_PREFIXES
+    prefixes = list(SSSOM_BUILT_IN_PREFIXES)
     if not df.empty:
         for col in _get_sssom_schema_object().entity_reference_slots:
             if col in df.columns:
-                for v in df[col].values:
-                    pref = get_prefix_from_curie(str(v))
-                    if pref != "" and not None:
-                        prefixes.append(pref)
+                prefixes.extend(list(set(df[col].str.split(":", n=1, expand=True)[0])))
     return list(set(prefixes))
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
     """Get a list of prefixes used in CURIEs in the metadata."""
-    prefixes = SSSOM_BUILT_IN_PREFIXES
+    prefixes = list(SSSOM_BUILT_IN_PREFIXES)
     if meta:
         for v in meta.values():
             if type(v) is list:

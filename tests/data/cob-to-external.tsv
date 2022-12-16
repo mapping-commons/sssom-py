@@ -30,14 +30,6 @@
 #  SEPIO: "http://purl.obolibrary.org/obo/SEPIO_"
 #  STATO: "http://purl.obolibrary.org/obo/STATO_"
 #  DRON: "http://purl.obolibrary.org/obo/DRON_"
-#  oio: "http://www.geneontology.org/formats/oboInOwl#"
-#  x: "http://example.org/x/"
-#  y: "http://example.org/y/"
-#  z: "http://example.org/z/"
-#  a: "http://example.org/a/"
-#  b: "http://example.org/b/"
-#  c: "http://example.org/c/"
-#  d: "http://example.org/d/"
 subject_id	subject_label	predicate_id	object_id	object_label	notes	mapping_justification
 COB:0000003	mass	owl:equivalentClass	PATO:0000125	mass	.	semapv:ManualMappingCuration
 COB:0000004	charge	owl:equivalentClass	PATO:0002193	electric	.	semapv:ManualMappingCuration
