@@ -202,7 +202,7 @@ class TestParse(unittest.TestCase):
             "mapping_justification",
         ]
         for idx, row in msdf.df.iterrows():
-            for k, v in row.iteritems():
+            for k, v in row.items():
                 if v == "":
                     self.assertTrue(math.isnan(imported_df.iloc[idx][k]))
                 else:
