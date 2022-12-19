@@ -862,8 +862,8 @@ def split_dataframe(
     """
     if msdf.df is None:
         raise RuntimeError
-    subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", 1, expand=True)[0])
+    subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", n=1, expand=True)[0])
+    object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", n=1, expand=True)[0])
     relations = set(msdf.df[PREDICATE_ID])
     return split_dataframe_by_prefix(
         msdf=msdf,

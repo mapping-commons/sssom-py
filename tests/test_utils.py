@@ -30,27 +30,54 @@ class TestIO(unittest.TestCase):
     def test_filter_prefixes(self):
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
-        filtered_df = filter_prefixes(self.msdf.df, prefix_filter_list, self.features)
+        original_msdf = self.msdf
+        filtered_df = filter_prefixes(
+            original_msdf.df, prefix_filter_list, self.features
+        )
         self.assertEqual(len(filtered_df), 40)
 
     def test_filter_out_prefixes(self):
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
+        original_msdf = self.msdf
         filtered_df = filter_out_prefixes(
-            self.msdf.df, prefix_filter_list, self.features
+            original_msdf.df, prefix_filter_list, self.features
         )
         self.assertEqual(len(filtered_df), 5)
 
     def test_remove_mappings(self):
         """Test remove mappings."""
         prefix_filter_list = ["x", "y"]
+        original_msdf = self.msdf
         filtered_df = filter_out_prefixes(
-            self.msdf.df, prefix_filter_list, self.features
+            original_msdf.df, prefix_filter_list, self.features
         )
         new_msdf = MappingSetDataFrame(
-            df=filtered_df, prefix_map=self.msdf.prefix_map, metadata=self.msdf.metadata
+            df=filtered_df,
+            prefix_map=original_msdf.prefix_map,
+            metadata=original_msdf.metadata,
         )
-        original_length = len(self.msdf.df)
-        self.msdf.remove_mappings(new_msdf)
+        original_length = len(original_msdf.df)
+        original_msdf.remove_mappings(new_msdf)
         # len(self.msdf.df) = 141 and len(new_msdf.df) = 5
-        self.assertEqual(len(self.msdf.df), original_length - len(new_msdf.df))
+        self.assertEqual(len(original_msdf.df), original_length - len(new_msdf.df))
+
+    def test_clean_prefix_map(self):
+        """Test clean prefix map."""
+        prefix_filter_list = ["x", "y"]
+        original_msdf = self.msdf
+        filtered_df = filter_out_prefixes(
+            original_msdf.df, prefix_filter_list, self.features
+        )
+        new_msdf = MappingSetDataFrame(
+            df=filtered_df,
+            prefix_map=original_msdf.prefix_map,
+            metadata=original_msdf.metadata,
+        )
+        new_msdf.clean_prefix_map()
+        self.assertEqual(
+            new_msdf.prefix_map.keys(),
+            set(original_msdf.prefix_map.keys()).intersection(
+                set(new_msdf.prefix_map.keys())
+            ),
+        )
