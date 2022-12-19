@@ -88,7 +88,7 @@
 <span class="c1"># EXTERNAL_CONTEXT_PATH = HERE / &quot;sssom.external.context.jsonld&quot;</span>
 
 <span class="n">SSSOM_URI_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;https://w3id.org/sssom/&quot;</span>
-<span class="n">SSSOM_BUILT_IN_PREFIXES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sssom&quot;</span><span class="p">,</span> <span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;rdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">,</span> <span class="s2">&quot;semapv&quot;</span><span class="p">]</span>
+<span class="n">SSSOM_BUILT_IN_PREFIXES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;sssom&quot;</span><span class="p">,</span> <span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;rdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">,</span> <span class="s2">&quot;semapv&quot;</span><span class="p">)</span>
 <span class="n">DEFAULT_MAPPING_SET_ID</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings/</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="n">DEFAULT_LICENSE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">license/unspecified&quot;</span>
 
@@ -122,7 +122,7 @@
     <span class="n">contxt</span> <span class="o">=</span> <span class="n">get_jsonld_context</span><span class="p">()</span>
     <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
