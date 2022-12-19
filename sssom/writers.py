@@ -54,6 +54,7 @@ def write_table(
     file: TextIO,
     embedded_mode: bool = True,
     serialisation="tsv",
+    sort = False
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
@@ -68,8 +69,8 @@ def write_table(
         meta.update(msdf.metadata)
     if msdf.prefix_map is not None:
         meta[PREFIX_MAP_KEY] = msdf.prefix_map
-
-    msdf.df = sort_df_rows_columns(msdf.df)
+    if sort:
+        msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
     lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep=sep, index=False)
