@@ -100,6 +100,7 @@
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">get_file_extension</span><span class="p">,</span>
     <span class="n">prepare_context_str</span><span class="p">,</span>
+    <span class="n">sort_df_rows_columns</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># from sssom.validators import check_all_prefixes_in_curie_map</span>
@@ -124,6 +125,7 @@
     <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">embedded_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;tsv&quot;</span><span class="p">,</span>
+    <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as a table.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -138,7 +140,8 @@
         <span class="n">meta</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">meta</span><span class="p">[</span><span class="n">PREFIX_MAP_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
-
+    <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+        <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">sort_df_rows_columns</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
