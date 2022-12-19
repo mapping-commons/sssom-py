@@ -29,6 +29,7 @@ from .util import (
     MappingSetDataFrame,
     get_file_extension,
     prepare_context_str,
+    sort_df_rows_columns,
 )
 
 # from sssom.validators import check_all_prefixes_in_curie_map
@@ -68,6 +69,7 @@ def write_table(
     if msdf.prefix_map is not None:
         meta[PREFIX_MAP_KEY] = msdf.prefix_map
 
+    msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
     lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep=sep, index=False)
