@@ -674,8 +674,12 @@ def from_obographs(
                                     mdict[
                                         MAPPING_JUSTIFICATION
                                     ] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                    mdict[SUBJECT_LABEL] = labels[ec1]
-                                    mdict[OBJECT_LABEL] = labels[ec2]
+                                    mdict[SUBJECT_LABEL] = (
+                                        labels[ec1] if ec1 in labels.keys() else ""
+                                    )
+                                    mdict[OBJECT_LABEL] = (
+                                        labels[ec2] if ec2 in labels.keys() else ""
+                                    )
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
