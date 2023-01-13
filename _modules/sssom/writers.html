@@ -1,33 +1,73 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>sssom.writers &mdash; sssom-py 0.3.6-dev documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> sssom-py
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -35,7 +75,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
@@ -44,30 +95,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">sssom-py</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">sssom.writers</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sssom.writers</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for sssom.writers</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Serialization functions for SSSOM.&quot;&quot;&quot;</span>
 
@@ -127,7 +217,7 @@
     <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;tsv&quot;</span><span class="p">,</span>
     <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as a table.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as a table.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span>
 
@@ -164,7 +254,7 @@
     <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">serialisation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as RDF.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as RDF.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">serialisation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">serialisation</span> <span class="o">=</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
     <span class="k">elif</span> <span class="n">serialisation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RDF_FORMATS</span><span class="p">:</span>
@@ -184,13 +274,13 @@
 <div class="viewcode-block" id="write_fhir_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">write_fhir_json</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;fhir&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as FHIR ConceptMap JSON.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as FHIR ConceptMap JSON.&quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="write_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_json">[docs]</a><span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as JSON.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as JSON.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">serialisation</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -205,7 +295,7 @@
     <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">serialisation</span><span class="o">=</span><span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as OWL.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as OWL.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">serialisation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RDF_FORMATS</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Serialisation </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2"> is not supported, &quot;</span>
@@ -223,7 +313,7 @@
 
 
 <div class="viewcode-block" id="to_dataframe"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_dataframe">[docs]</a><span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a dataframe.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a dataframe.&quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -240,7 +330,7 @@
 
 
 <div class="viewcode-block" id="to_owl_graph"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_owl_graph">[docs]</a><span class="k">def</span> <span class="nf">to_owl_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to OWL in an RDF graph.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to OWL in an RDF graph.&quot;&quot;&quot;</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">_s</span><span class="p">,</span> <span class="n">_p</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">URI_SSSOM_MAPPINGS</span><span class="p">),</span> <span class="kc">None</span><span class="p">)):</span>
@@ -342,7 +432,7 @@
 
 
 <div class="viewcode-block" id="to_rdf_graph"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_rdf_graph">[docs]</a><span class="k">def</span> <span class="nf">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to an RDF graph.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to an RDF graph.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="c1"># cntxt = prepare_context(doc.prefix_map)</span>
 
@@ -365,7 +455,7 @@
 
 
 <div class="viewcode-block" id="to_fhir_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</span>
 <span class="sd">    :return: Dict: A Dictionary serializable as JSON.</span>
@@ -543,7 +633,7 @@
 
 
 <div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">prepare_context_str</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">JSONDumper</span><span class="p">()</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
@@ -557,7 +647,7 @@
 <div class="viewcode-block" id="get_writer_function"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.get_writer_function">[docs]</a><span class="k">def</span> <span class="nf">get_writer_function</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MSDFWriter</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get appropriate writer function based on file format.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get appropriate writer function based on file format.</span>
 
 <span class="sd">    :param output: Output file</span>
 <span class="sd">    :param output_format: Output file format, defaults to None</span>
@@ -586,7 +676,7 @@
 <div class="viewcode-block" id="write_tables"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_tables">[docs]</a><span class="k">def</span> <span class="nf">write_tables</span><span class="p">(</span>
     <span class="n">sssom_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Write table from MappingSetDataFrame object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write table from MappingSetDataFrame object.</span>
 
 <span class="sd">    :param sssom_dict: Dictionary of MappingSetDataframes</span>
 <span class="sd">    :param output_dir: The directory in which the derived SSSOM files are written</span>
@@ -633,30 +723,46 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

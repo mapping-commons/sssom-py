@@ -1,33 +1,73 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>sssom.cli &mdash; sssom-py 0.3.6-dev documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> sssom-py
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -35,7 +75,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
@@ -44,30 +95,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">sssom-py</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">sssom.cli</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sssom.cli</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for sssom.cli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Command line interface for SSSOM.</span>
 
@@ -194,7 +284,7 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="n">__version__</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Run the SSSOM CLI.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the SSSOM CLI.&quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
@@ -207,11 +297,23 @@
 
 
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;subcommand&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+<span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Echoes help for subcommands.&quot;&quot;&quot;</span>
+    <span class="n">subcommand_obj</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">subcommand_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;The command you seek help with does not exist.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">subcommand_obj</span><span class="o">.</span><span class="n">get_help</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span>
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
 <span class="nd">@output_format_option</span>
 <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert a file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a file.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl</span>
@@ -263,7 +365,7 @@
     <span class="n">embedded_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">mapping_predicate_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file.&quot;&quot;&quot;</span>
     <span class="n">parse_file</span><span class="p">(</span>
         <span class="n">input_path</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span>
         <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span>
@@ -286,7 +388,7 @@
     <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_VALIDATION_TYPES</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_types</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Produce an error report for an SSSOM file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce an error report for an SSSOM file.&quot;&quot;&quot;</span>
     <span class="n">validation_type_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">validation_types</span><span class="p">]</span>
     <span class="n">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">validation_types</span><span class="o">=</span><span class="n">validation_type_list</span><span class="p">)</span>
 
@@ -295,7 +397,7 @@
 <span class="nd">@input_argument</span>
 <span class="nd">@output_directory_option</span>
 <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Split input file into multiple output broken down by prefixes.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split input file into multiple output broken down by prefixes.&quot;&quot;&quot;</span>
     <span class="n">split_file</span><span class="p">(</span><span class="n">input_path</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">output_directory</span><span class="o">=</span><span class="n">output_directory</span><span class="p">)</span>
 
 
@@ -304,7 +406,7 @@
 <span class="nd">@output_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-W&quot;</span><span class="p">,</span> <span class="s2">&quot;--inverse-factor&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Inverse factor.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ptable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert an SSSOM file to a ptable for kboom/`boomer &lt;https://github.com/INCATools/boomer&gt;`_.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an SSSOM file to a ptable for kboom/`boomer &lt;https://github.com/INCATools/boomer&gt;`_.&quot;&quot;&quot;</span>
     <span class="c1"># TODO should maybe move to boomer (but for now it can live here, so cjm can tweak</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="c1"># df = parse(input)</span>
@@ -319,7 +421,7 @@
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
 <span class="k">def</span> <span class="nf">dedupe</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove lower confidence duplicate lines from an SSSOM file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove lower confidence duplicate lines from an SSSOM file.&quot;&quot;&quot;</span>
     <span class="c1"># df = parse(input)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
@@ -335,7 +437,7 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="nd">@output_option</span>
 <span class="k">def</span> <span class="nf">dosql</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Run a SQL query over one or more SSSOM files.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a SQL query over one or more SSSOM files.</span>
 
 <span class="sd">    Each of the N inputs is assigned a table name df1, df2, ..., dfN</span>
 
@@ -391,7 +493,7 @@
     <span class="n">prefix</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
     <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Run a SPARQL query.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a SPARQL query.&quot;&quot;&quot;</span>
     <span class="c1"># FIXME this usage needs _serious_ refactoring</span>
     <span class="n">endpoint</span> <span class="o">=</span> <span class="n">EndpointConfig</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
     <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -418,7 +520,7 @@
 <span class="nd">@output_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compare two SSSOM files.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare two SSSOM files.</span>
 
 <span class="sd">    The output is a new SSSOM file with the union of all mappings, and</span>
 <span class="sd">    injected comments indicating uniqueness to set1 or set2.</span>
@@ -453,10 +555,10 @@
 <span class="nd">@output_directory_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Partition an SSSOM into one file for each strongly connected component.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Partition an SSSOM into one file for each strongly connected component.&quot;&quot;&quot;</span>
     <span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-    <span class="sd">&quot;&quot;&quot;for d2 in docs:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;for d2 in docs:</span>
 <span class="sd">        doc.mapping_set.mappings += d2.mapping_set.mappings&quot;&quot;&quot;</span>
     <span class="n">cliquedocs</span> <span class="o">=</span> <span class="n">split_into_cliques</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">cdoc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cliquedocs</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -476,7 +578,7 @@
 <span class="nd">@metadata_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--statsfile&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cliquesummary</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">statsfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate summaries for each clique in a SSSOM file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate summaries for each clique in a SSSOM file.&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">yaml</span>
 
     <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -498,7 +600,7 @@
 <span class="nd">@transpose_option</span>
 <span class="nd">@fields_option</span>
 <span class="k">def</span> <span class="nf">crosstab</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write sssom summary cross-tabulated by categories.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write sssom summary cross-tabulated by categories.&quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">remove_unmatched</span><span class="p">(</span><span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="c1"># df = parse(input)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#CROSSTAB ON </span><span class="si">{</span><span class="n">fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -515,7 +617,7 @@
 <span class="nd">@fields_option</span>
 <span class="nd">@input_argument</span>
 <span class="k">def</span> <span class="nf">correlations</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate correlations.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate correlations.&quot;&quot;&quot;</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">remove_unmatched</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="c1"># df = remove_unmatched(parse(input))</span>
@@ -561,7 +663,7 @@
 <span class="p">)</span>
 <span class="nd">@output_option</span>
 <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Merge multiple MappingSetDataFrames into one .</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple MappingSetDataFrames into one .</span>
 
 <span class="sd">    if reconcile=True, then dedupe(remove redundant lower confidence mappings) and</span>
 <span class="sd">    reconcile (if msdf contains a higher confidence _negative_ mapping,</span>
@@ -592,7 +694,7 @@
     <span class="n">input_format</span><span class="p">,</span>
     <span class="n">output_format</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Rewire an ontology using equivalent classes/properties from a mapping file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rewire an ontology using equivalent classes/properties from a mapping file.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR</span>
@@ -616,7 +718,7 @@
 <span class="p">)</span>
 <span class="nd">@output_option</span>
 <span class="k">def</span> <span class="nf">reconcile_prefixes</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reconcile_prefix_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reconcile prefix_map based on provided YAML file.</span>
 
 <span class="sd">    :param input: MappingSetDataFrame filename</span>
@@ -646,7 +748,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Sort rows by DataFrame column #1 (ascending).&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">by_columns</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">by_rows</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sort DataFrame columns canonically.</span>
 
 <span class="sd">    :param input: SSSOM TSV file.</span>
@@ -687,7 +789,7 @@
 
 
 <div class="viewcode-block" id="dynamically_generate_sssom_options"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.cli.dynamically_generate_sssom_options">[docs]</a><span class="k">def</span> <span class="nf">dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Dynamically generate click options.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dynamically generate click options.</span>
 
 <span class="sd">    :param options: List of all possible options.</span>
 <span class="sd">    :return: Click options deduced from user input into parameters.</span>
@@ -706,7 +808,7 @@
 <span class="nd">@output_option</span>
 <span class="nd">@dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_slots</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter a dataframe by dynamically generating queries based on user input.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a dataframe by dynamically generating queries based on user input.</span>
 
 <span class="sd">    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv</span>
 
@@ -737,7 +839,7 @@
 <span class="p">)</span>
 <span class="nd">@dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Annotate metadata of a mapping set.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Annotate metadata of a mapping set.</span>
 
 <span class="sd">    :param input: Input path of the SSSOM tsv file.</span>
 <span class="sd">    :param output: Output location.</span>
@@ -760,7 +862,7 @@
 <span class="p">)</span>
 <span class="nd">@output_option</span>
 <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">remove_map</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove mappings from an input mapping.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove mappings from an input mapping.</span>
 
 <span class="sd">    :param input: Input SSSOM tsv file.</span>
 <span class="sd">    :param output: Output path.</span>
@@ -777,30 +879,46 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

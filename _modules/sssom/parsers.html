@@ -1,33 +1,73 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>sssom.parsers &mdash; sssom-py 0.3.6-dev documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> sssom-py
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -35,7 +75,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
@@ -44,30 +95,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">sssom-py</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">sssom.parsers</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sssom.parsers</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for sssom.parsers</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;SSSOM parsers.&quot;&quot;&quot;</span>
 
@@ -151,7 +241,7 @@
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">parse_sssom_table</span><span class="p">(</span>
         <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span>
     <span class="p">)</span></div>
@@ -169,7 +259,7 @@
     <span class="n">serialisation</span><span class="o">=</span><span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">parse_sssom_rdf</span><span class="p">(</span>
         <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
         <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span>
@@ -191,7 +281,7 @@
     <span class="o">**</span><span class="n">kwargs</span>
     <span class="c1"># mapping_predicates: Optional[List[str]] = None,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">parse_sssom_json</span><span class="p">(</span>
         <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">kwarg</span><span class="o">=</span><span class="n">kwargs</span>
     <span class="p">)</span></div>
@@ -208,7 +298,7 @@
     <span class="o">**</span><span class="n">kwargs</span>
     <span class="c1"># mapping_predicates: Optional[List[str]] = None,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">read_pandas</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="c1"># if mapping_predicates:</span>
@@ -265,7 +355,7 @@
     <span class="o">**</span><span class="n">kwargs</span>
     <span class="c1"># mapping_predicates: Optional[List[str]] = None,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
@@ -285,7 +375,7 @@
     <span class="o">**</span><span class="n">kwargs</span>
     <span class="c1"># mapping_predicates: Optional[List[str]] = None,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
@@ -309,7 +399,7 @@
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">mapping_predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.</span>
 
 <span class="sd">    :param file_path: The path to the obographs file</span>
 <span class="sd">    :param prefix_map: an optional prefix map</span>
@@ -408,7 +498,7 @@
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">mapping_predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Parse a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
@@ -431,7 +521,7 @@
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a dataframe to a MappingSetDataFrame.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a dataframe to a MappingSetDataFrame.</span>
 
 <span class="sd">    :param df: A mappings dataframe</span>
 <span class="sd">    :param prefix_map: A prefix map</span>
@@ -468,7 +558,7 @@
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert an SSSOM RDF graph into a SSSOM data table.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an SSSOM RDF graph into a SSSOM data table.</span>
 
 <span class="sd">    :param g: the Graph (rdflib)</span>
 <span class="sd">    :param prefix_map: A dictionary containing the prefix map, defaults to None</span>
@@ -534,7 +624,7 @@
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load a mapping set dataframe from a JSON object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a mapping set dataframe from a JSON object.</span>
 
 <span class="sd">    :param jsondoc: JSON document</span>
 <span class="sd">    :param prefix_map: Prefix map</span>
@@ -559,7 +649,7 @@
     <span class="n">meta</span><span class="p">:</span> <span class="n">MetadataType</span><span class="p">,</span>
     <span class="n">mapping_predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Read a minidom Document object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a minidom Document object.</span>
 
 <span class="sd">    :param dom: XML (minidom) object</span>
 <span class="sd">    :param prefix_map: A prefix map</span>
@@ -629,7 +719,7 @@
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">mapping_predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a obographs json object to an SSSOM data frame.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a obographs json object to an SSSOM data frame.</span>
 
 <span class="sd">    :param jsondoc: The JSON object representing the ontology in obographs format</span>
 <span class="sd">    :param prefix_map: The prefix map to be used</span>
@@ -762,7 +852,7 @@
 
 
 <div class="viewcode-block" id="get_parsing_function"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.get_parsing_function">[docs]</a><span class="k">def</span> <span class="nf">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return appropriate parser function based on input format of file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return appropriate parser function based on input format of file.</span>
 
 <span class="sd">    :param input_format: File format</span>
 <span class="sd">    :param filename: Filename</span>
@@ -900,7 +990,7 @@
 
 
 <div class="viewcode-block" id="to_mapping_set_document"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.to_mapping_set_document">[docs]</a><span class="k">def</span> <span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDocument</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert a MappingSetDataFrame to a MappingSetDocument.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a MappingSetDataFrame to a MappingSetDocument.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No valid prefix_map provided&quot;</span><span class="p">)</span>
 
@@ -925,7 +1015,7 @@
 <div class="viewcode-block" id="split_dataframe"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.split_dataframe">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Group the mapping set dataframe into several subdataframes by prefix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Group the mapping set dataframe into several subdataframes by prefix.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame object</span>
 <span class="sd">    :raises RuntimeError: DataFrame object within MappingSetDataFrame is None</span>
@@ -947,7 +1037,7 @@
 <div class="viewcode-block" id="split_dataframe_by_prefix"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.split_dataframe_by_prefix">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe_by_prefix</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">subject_prefixes</span><span class="p">,</span> <span class="n">object_prefixes</span><span class="p">,</span> <span class="n">relations</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Split a mapping set dataframe by prefix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a mapping set dataframe by prefix.</span>
 
 <span class="sd">    :param msdf: An SSSOM MappingSetDataFrame</span>
 <span class="sd">    :param subject_prefixes: a list of prefixes pertaining to the subject</span>
@@ -988,30 +1078,46 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
