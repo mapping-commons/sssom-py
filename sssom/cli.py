@@ -134,15 +134,18 @@ def main(verbose: int, quiet: bool):
     if quiet:
         logger.setLevel(level=logging.ERROR)
 
+
 @main.command()
-@click.argument('subcommand')
+@click.argument("subcommand")
 @click.pass_context
 def help(ctx, subcommand):
+    """Echoes help for subcommands."""
     subcommand_obj = main.get_command(ctx, subcommand)
     if subcommand_obj is None:
         click.echo("The command you seek help with does not exist.")
     else:
         click.echo(subcommand_obj.get_help(ctx))
+
 
 @main.command()
 @input_argument
