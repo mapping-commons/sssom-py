@@ -835,8 +835,12 @@
                                     <span class="n">mdict</span><span class="p">[</span>
                                         <span class="n">MAPPING_JUSTIFICATION</span>
                                     <span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">ec1</span><span class="p">]</span>
-                                    <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">ec2</span><span class="p">]</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">SUBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                        <span class="n">labels</span><span class="p">[</span><span class="n">ec1</span><span class="p">]</span> <span class="k">if</span> <span class="n">ec1</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                                    <span class="p">)</span>
+                                    <span class="n">mdict</span><span class="p">[</span><span class="n">OBJECT_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                        <span class="n">labels</span><span class="p">[</span><span class="n">ec2</span><span class="p">]</span> <span class="k">if</span> <span class="n">ec2</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                                    <span class="p">)</span>
                                     <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No graphs element in obographs file, wrong format?&quot;</span><span class="p">)</span>
