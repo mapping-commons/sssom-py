@@ -234,7 +234,8 @@
 <span class="n">input_format_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-I&quot;</span><span class="p">,</span>
     <span class="s2">&quot;--input-format&quot;</span><span class="p">,</span>
-    <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;The string denoting the input format, e.g. </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SSSOM_READ_FORMATS</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The string denoting the input format.&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">SSSOM_READ_FORMATS</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">output_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
@@ -246,7 +247,8 @@
 <span class="n">output_format_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-O&quot;</span><span class="p">,</span>
     <span class="s2">&quot;--output-format&quot;</span><span class="p">,</span>
-    <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Desired output format, e.g. </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SSSOM_EXPORT_FORMATS</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Desired output format.&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">SSSOM_EXPORT_FORMATS</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">output_directory_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
