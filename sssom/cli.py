@@ -73,7 +73,7 @@ input_argument = click.argument("input", required=True, type=click.Path())
 input_format_option = click.option(
     "-I",
     "--input-format",
-    help=f"The string denoting the input format.",
+    help="The string denoting the input format.",
     type=click.Choice(SSSOM_READ_FORMATS),
 )
 output_option = click.option(
@@ -86,7 +86,7 @@ output_option = click.option(
 output_format_option = click.option(
     "-O",
     "--output-format",
-    help=f"Desired output format.",
+    help="Desired output format.",
     type=click.Choice(SSSOM_EXPORT_FORMATS),
 )
 output_directory_option = click.option(
