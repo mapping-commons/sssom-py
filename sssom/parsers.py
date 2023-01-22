@@ -654,8 +654,12 @@ def from_obographs(
                     if predicate_id in mapping_predicates:
                         mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
                         mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
-                        mdict[SUBJECT_LABEL] = labels[subject_id]
-                        mdict[OBJECT_LABEL] = labels[object_id]
+                        mdict[SUBJECT_LABEL] = (
+                            labels[subject_id] if subject_id in labels.keys() else ""
+                        )
+                        mdict[OBJECT_LABEL] = (
+                            labels[object_id] if object_id in labels.keys() else ""
+                        )
                         mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
