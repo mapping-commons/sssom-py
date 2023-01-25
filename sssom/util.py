@@ -1105,7 +1105,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
         for col in _get_sssom_schema_object().entity_reference_slots:
             if col in df.columns:
                 prefixes.extend(list(set(df[col].str.split(":", n=1, expand=True)[0])))
-    return list(set(prefixes))
+    return list(set(prefixes)).remove("")
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:

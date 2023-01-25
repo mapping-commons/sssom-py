@@ -179,7 +179,7 @@ def convert(input: str, output: TextIO, output_format: str):
 )
 @click.option(
     "-p",
-    "--clean-prefixes",
+    "--clean-prefixes / --no-clean-prefixes",
     default=True,
     is_flag=True,
     required=True,
