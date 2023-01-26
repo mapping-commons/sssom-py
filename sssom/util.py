@@ -164,7 +164,8 @@ class MappingSetDataFrame:
                 logging.warning(
                     f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
                 )
-                missing_prefixes.append(prefix)
+                if prefix != "":
+                    missing_prefixes.append(prefix)
         if missing_prefixes:
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
