@@ -325,7 +325,8 @@
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2"> is used in the SSSOM mapping set but it does not exist in the prefix map&quot;</span>
                 <span class="p">)</span>
-                <span class="n">missing_prefixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">missing_prefixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">missing_prefixes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">missing_prefixes</span><span class="si">}</span><span class="s2"> are used in the SSSOM mapping set but it does not exist in the prefix map&quot;</span>
