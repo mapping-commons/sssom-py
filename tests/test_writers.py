@@ -142,6 +142,7 @@ class TestWrite(unittest.TestCase):
             self.mapping_count,
             f"{path} has the wrong number of mappings.",
         )
+        print()  # TODO: temp
 
     def test_write_sssom_owl(self):
         """Test writing as OWL."""
