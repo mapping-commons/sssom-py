@@ -308,6 +308,8 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
 
 
 # TODO: add to CLI & to these functions: r4 vs r5 param
+# TODO: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
+#  - todo: later: allow any nested aribtrary override: (get in kwargs, else metadata.get(key, None))
 def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     """Convert a mapping set dataframe to a JSON object.
 
@@ -322,14 +324,18 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
      TODO: Add additional fields from both specs
      - ConceptMap spec fields: https://www.hl7.org/fhir/r4/conceptmap.html
       - Joe: Can also utilize: /Users/joeflack4/projects/hapi-fhir-jpaserver-starter/_archive/issues/sssom/example_json/minimal.json
-     - SSSOM https://mapping-commons.github.io/sssom/Mapping/
+
+     Common issues
+      #1: If there is any variation for any records in a MappingSet, this may need to be a group.element.target.extension
+
+     - SSSOM: Mapping https://mapping-commons.github.io/sssom/Mapping/
         author_id,?
         author_label,?
         comment,group.element.target.comment
         confidence,?
         creator_id,?,?,See: #1
         creator_label,?,?,See: #1
-        license,copyright~,?,#1: If there is any variation for any records in a MappingSet, this may need to be a group.element.target.extension
+        license,copyright~,See: #1
         mapping_cardinality,?
         mapping_date,date~,?,See: #1
         mapping_justification,?,group.element.target.extension
@@ -362,7 +368,8 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
         subject_source,sourceUri;group.source~,?,See: #1
         subject_source_version,?,?,See: #1
         subject_type,?,?,See: #1
-     - SSSOM https://mapping-commons.github.io/sssom/MappingSet/
+
+     - SSSOM: MappingSet https://mapping-commons.github.io/sssom/MappingSet/
         comment,?
         creator_id,?
         creator_label,?
@@ -394,9 +401,6 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     mapping_set_id = metadata.get("mapping_set_id", "")
     name: str = mapping_set_id.split("/")[-1].replace(".sssom.tsv", "")
     # Construct JSON
-    # TODO: Fix: sssom/writers.py:293: error: Item "None" of "Optional[Dict[str, Any]]" has no attribute "get"
-    #  ...a. Maybe remove the typing? b. remove the get? c. do outside of dict and add after?, d. Add "None"? maybe cant be done here
-    #  ...e. Probably assign metadata to new object and use that instead. so won't read as None
     json_obj = {
         "resourceType": "ConceptMap",
         "url": mapping_set_id,
@@ -439,98 +443,101 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
         "targetUri": metadata.get("object_source", ""),
         # TODO: Might want to make each "group" first, if there is more than 1 set of ontology1::ontology2
         #  ...within a given MappingSet / set of SSSOM TSV rows.
-        "group": [{
-            "source": metadata.get("subject_source", ""),
-            "target": metadata.get("object_source", ""),
-            "element": [
-                {
-                    "code": row["subject_id"],
-                    "display": row.get("subject_label", ""),
-                    "target": [
-                        {
-                            "code": row["object_id"],
-                            "display": row.get("object_label", ""),
-                            # TODO: R4 (try this first)
-                            #  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint
-                            #  https://www.hl7.org/fhir/r4/conceptmap.html
-                            # todo: r4: if not found, eventually needs to be `null` or something. check docs to see if nullable, else ask on Zulip
-                            # TODO: R5 Needs to be one of:
-                            #  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to
-                            #  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html
-                            #  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones
-                            #  and then add the original SSSOM mapping CURIE fields somewhere else
-                            # https://www.hl7.org/fhir/valueset-concept-map-equivalence.html
-                            # https://github.com/mapping-commons/sssom-py/issues/258
-                            "equivalence": {
-                                # relateedto: The concepts are related to each other, and have at least some overlap
-                                # in meaning, but the exact relationship is not known.
-                                "skos:related": "relatedto",
-                                "skos:relatedMatch": "relatedto",  # canonical
-                                # equivalent: The definitions of the concepts mean the same thing (including when
-                                # structural implications of meaning are considered) (i.e. extensionally identical).
-                                "skos:exactMatch": "equivalent",
-                                # equal: The definitions of the concepts are exactly the same (i.e. only grammatical
-                                # differences) and structural implications of meaning are identical or irrelevant
-                                # (i.e. intentionally identical).
-                                "equal": "equal",  # todo what's difference between this and above? which to use?
-                                # wider: The target mapping is wider in meaning than the source concept.
-                                "skos:broader": "wider",
-                                "skos:broadMatch": "wider",  # canonical
-                                # subsumes: The target mapping subsumes the meaning of the source concept (e.g. the
-                                # source is-a target).
-                                "rdfs:subClassOf": "subsumes",
-                                "owl:subClassOf": "subsumes",
-                                # narrower: The target mapping is narrower in meaning than the source concept. The
-                                # sense in which the mapping is narrower SHALL be described in the comments in this
-                                # case, and applications should be careful when attempting to use these mappings
-                                # operationally.
-                                "skos:narrower": "narrower",
-                                "skos:narrowMatch": "narrower",  # canonical
-                                # specializes: The target mapping specializes the meaning of the source concept
-                                # (e.g. the target is-a source).
-                                "sssom:superClassOf": "specializes",
-                                # inexact: The target mapping overlaps with the source concept, but both source and
-                                # target cover additional meaning, or the definitions are imprecise and it is
-                                # uncertain whether they have the same boundaries to their meaning. The sense in
-                                # which the mapping is inexact SHALL be described in the comments in this case, and
-                                # applications should be careful when attempting to use these mappings operationally
-                                "skos:closeMatch": "inexact",
-                                # unmatched: There is no match for this concept in the target code system.
-                                # todo: unmatched: this is more complicated. This will be a combination of
-                                #  predicate_id and predicate_modifier (if present). See:
-                                #  https://github.com/mapping-commons/sssom/issues/185
-                                "unmatched": "unmatched",
-                                # disjoint: This is an explicit assertion that there is no mapping between the
-                                # source and target concept.
-                                "owl:disjointWith": "disjoint",
-                            }.get(
-                                row["predicate_id"], row["predicate_id"]
-                            ),  # r4
-                            # "relationship": row['predicate_id'],  # r5
-                            # "comment": '',
-                            "extension": [
-                                {
-                                    # todo: `mapping_justification` consider changing `ValueString` -> `ValueCoding`
-                                    #  ...that is, if I happen to know the categories/codes for this categorical variable
-                                    #  ...if i do that, do i also need to upload that coding as a (i) `ValueSet` resource? (or (ii) codeable concept? prolly (i))
-                                    "url": "http://example.org/fhir/StructureDefinition/mapping_justification",
-                                    "ValueString": row.get(
-                                        "mapping_justification",
-                                        row.get("mapping_justification", ""),
-                                    ),
-                                }
-                            ],
-                        }
-                    ],
-                }
-                for i, row in df.iterrows()
-            ],
-            # "unmapped": {  # todo: conceptmap
-            #     "mode": "fixed",
-            #     "code": "temp",
-            #     "display": "temp"
-            # }
-        }],
+        "group": [
+            {
+                # TODO: Override? but how?
+                "source": metadata.get("subject_source", ""),
+                "target": metadata.get("object_source", ""),
+                "element": [
+                    {
+                        "code": row["subject_id"],
+                        "display": row.get("subject_label", ""),
+                        "target": [
+                            {
+                                "code": row["object_id"],
+                                "display": row.get("object_label", ""),
+                                # TODO: R4 (try this first)
+                                #  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint
+                                #  https://www.hl7.org/fhir/r4/conceptmap.html
+                                # todo: r4: if not found, eventually needs to be `null` or something. check docs to see if nullable, else ask on Zulip
+                                # TODO: R5 Needs to be one of:
+                                #  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to
+                                #  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html
+                                #  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones
+                                #  and then add the original SSSOM mapping CURIE fields somewhere else
+                                # https://www.hl7.org/fhir/valueset-concept-map-equivalence.html
+                                # https://github.com/mapping-commons/sssom-py/issues/258
+                                "equivalence": {
+                                    # relateedto: The concepts are related to each other, and have at least some overlap
+                                    # in meaning, but the exact relationship is not known.
+                                    "skos:related": "relatedto",
+                                    "skos:relatedMatch": "relatedto",  # canonical
+                                    # equivalent: The definitions of the concepts mean the same thing (including when
+                                    # structural implications of meaning are considered) (i.e. extensionally identical).
+                                    "skos:exactMatch": "equivalent",
+                                    # equal: The definitions of the concepts are exactly the same (i.e. only grammatical
+                                    # differences) and structural implications of meaning are identical or irrelevant
+                                    # (i.e. intentionally identical).
+                                    "equal": "equal",  # todo what's difference between this and above? which to use?
+                                    # wider: The target mapping is wider in meaning than the source concept.
+                                    "skos:broader": "wider",
+                                    "skos:broadMatch": "wider",  # canonical
+                                    # subsumes: The target mapping subsumes the meaning of the source concept (e.g. the
+                                    # source is-a target).
+                                    "rdfs:subClassOf": "subsumes",
+                                    "owl:subClassOf": "subsumes",
+                                    # narrower: The target mapping is narrower in meaning than the source concept. The
+                                    # sense in which the mapping is narrower SHALL be described in the comments in this
+                                    # case, and applications should be careful when attempting to use these mappings
+                                    # operationally.
+                                    "skos:narrower": "narrower",
+                                    "skos:narrowMatch": "narrower",  # canonical
+                                    # specializes: The target mapping specializes the meaning of the source concept
+                                    # (e.g. the target is-a source).
+                                    "sssom:superClassOf": "specializes",
+                                    # inexact: The target mapping overlaps with the source concept, but both source and
+                                    # target cover additional meaning, or the definitions are imprecise and it is
+                                    # uncertain whether they have the same boundaries to their meaning. The sense in
+                                    # which the mapping is inexact SHALL be described in the comments in this case, and
+                                    # applications should be careful when attempting to use these mappings operationally
+                                    "skos:closeMatch": "inexact",
+                                    # unmatched: There is no match for this concept in the target code system.
+                                    # todo: unmatched: this is more complicated. This will be a combination of
+                                    #  predicate_id and predicate_modifier (if present). See:
+                                    #  https://github.com/mapping-commons/sssom/issues/185
+                                    "unmatched": "unmatched",
+                                    # disjoint: This is an explicit assertion that there is no mapping between the
+                                    # source and target concept.
+                                    "owl:disjointWith": "disjoint",
+                                }.get(
+                                    row["predicate_id"], row["predicate_id"]
+                                ),  # r4
+                                # "relationship": row['predicate_id'],  # r5
+                                # "comment": '',
+                                "extension": [
+                                    {
+                                        # todo: `mapping_justification` consider changing `ValueString` -> `ValueCoding`
+                                        #  ...that is, if I happen to know the categories/codes for this categorical variable
+                                        #  ...if i do that, do i also need to upload that coding as a (i) `ValueSet` resource? (or (ii) codeable concept? prolly (i))
+                                        "url": "http://example.org/fhir/StructureDefinition/mapping_justification",
+                                        "valueString": row.get(
+                                            "mapping_justification",
+                                            row.get("mapping_justification", ""),
+                                        ),
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                    for i, row in df.iterrows()
+                ],
+                # "unmapped": {  # todo: conceptmap
+                #     "mode": "fixed",
+                #     "code": "temp",
+                #     "display": "temp"
+                # }
+            }
+        ],
     }
 
     # Delete empty fields
@@ -610,7 +617,7 @@ def get_writer_function(
         return write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION
     elif output_format == "json":
         return write_json, output_format
-    elif output_format == "fhir_json":
+    elif output_format == "fhir":
         return write_fhir_json, output_format
     elif output_format == "ontoportal_json":
         return write_ontoportal_json, output_format
