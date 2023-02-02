@@ -310,7 +310,9 @@ def _get_mdict_ms_and_bad_attrs(
 
     mdict = {}
     sssom_schema_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView,"instance") else SSSOMSchemaView()
+        SSSOMSchemaView.instance
+        if hasattr(SSSOMSchemaView, "instance")
+        else SSSOMSchemaView()
     )
     for k, v in row.items():
         if v and v == v:
