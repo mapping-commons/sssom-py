@@ -1496,7 +1496,6 @@ def are_params_slots(params: dict) -> bool:
 
 
 def _get_sssom_schema_object() -> SSSOMSchemaView:
-
     sssom_sv_object = (
         SSSOMSchemaView.instance
         if hasattr(SSSOMSchemaView, "instance")
