@@ -468,10 +468,11 @@
 <span class="k">def</span> <span class="nf">_get_mdict_ms_and_bad_attrs</span><span class="p">(</span>
     <span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">Counter</span><span class="p">]:</span>
-
     <span class="n">mdict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">sssom_schema_object</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span> <span class="k">if</span> <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span> <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
+        <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span>

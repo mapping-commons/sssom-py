@@ -561,15 +561,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get rows having numpy.NaN as confidence</span>
     <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-            <span class="n">nan_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="n">nan_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+            <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
             <span class="n">nan_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;DataFrame cannot be empty to &#39;assign_default_confidence&#39;.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span></div>
+    <span class="k">return</span> <span class="n">new_df</span><span class="p">,</span> <span class="n">nan_df</span></div>
 
 
 <div class="viewcode-block" id="remove_unmatched"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.remove_unmatched">[docs]</a><span class="k">def</span> <span class="nf">remove_unmatched</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
@@ -1657,7 +1658,6 @@
 
 
 <span class="k">def</span> <span class="nf">_get_sssom_schema_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SSSOMSchemaView</span><span class="p">:</span>
-
     <span class="n">sssom_sv_object</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span>
