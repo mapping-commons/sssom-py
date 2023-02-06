@@ -400,15 +400,16 @@ def assign_default_confidence(
     """
     # Get rows having numpy.NaN as confidence
     if df is not None:
-        if CONFIDENCE not in df.columns:
-            df[CONFIDENCE] = np.NaN
-            nan_df = pd.DataFrame(columns=df.columns)
+        new_df = df.copy()
+        if CONFIDENCE not in new_df.columns:
+            new_df[CONFIDENCE] = np.NaN
+            nan_df = pd.DataFrame(columns=new_df.columns)
         else:
-            df = df[~df[CONFIDENCE].isna()]
+            new_df = df[~df[CONFIDENCE].isna()]
             nan_df = df[df[CONFIDENCE].isna()]
     else:
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
-    return df, nan_df
+    return new_df, nan_df
 
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
@@ -1496,7 +1497,6 @@ def are_params_slots(params: dict) -> bool:
 
 
 def _get_sssom_schema_object() -> SSSOMSchemaView:
-
     sssom_sv_object = (
         SSSOMSchemaView.instance
         if hasattr(SSSOMSchemaView, "instance")

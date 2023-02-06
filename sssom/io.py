@@ -141,7 +141,6 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 
 def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
-
     if prefix_map_mode is None:
         prefix_map_mode = PREFIX_MAP_MODE_METADATA_ONLY
 

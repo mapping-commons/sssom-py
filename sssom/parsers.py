@@ -307,10 +307,11 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
 def _get_mdict_ms_and_bad_attrs(
     row: pd.Series, ms: MappingSet, bad_attrs: Counter
 ) -> Tuple[dict, MappingSet, Counter]:
-
     mdict = {}
     sssom_schema_object = (
-        SSSOMSchemaView.instance if SSSOMSchemaView.instance else SSSOMSchemaView()
+        SSSOMSchemaView.instance
+        if hasattr(SSSOMSchemaView, "instance")
+        else SSSOMSchemaView()
     )
     for k, v in row.items():
         if v and v == v:
