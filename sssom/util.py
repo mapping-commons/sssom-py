@@ -1171,7 +1171,9 @@ def filter_prefixes(
     rows = []
 
     for _, row in df.iterrows():
-        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        prefixes = {
+            get_prefix_from_curie(curie) for curie in row[features] if curie is not None
+        }
         # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
         if all(prefix in filter_prefix_set for prefix in prefixes):
