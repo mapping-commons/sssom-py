@@ -3,7 +3,7 @@
 import unittest
 
 import yaml
-from pandasql import sqldf
+from pansql import sqldf
 
 from sssom import (
     collapse,
