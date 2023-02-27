@@ -4,7 +4,7 @@ import unittest
 from sssom.constants import OBJECT_ID, SUBJECT_ID
 from sssom.io import extract_iri
 from sssom.parsers import parse_sssom_table
-from sssom.util import MappingSetDataFrame, filter_out_prefixes, filter_prefixes
+from sssom.util import MappingSetDataFrame, filter_out_prefixes, filter_prefixes, flip_nodes
 from tests.constants import data_dir
 
 
@@ -14,6 +14,7 @@ class TestIO(unittest.TestCase):
     def setUp(self) -> None:
         """Set up."""
         self.msdf = parse_sssom_table(f"{data_dir}/basic.tsv")
+        self.msdf2 = parse_sssom_table(f"{data_dir}/basic7.tsv")
         self.features = [SUBJECT_ID, OBJECT_ID]
 
     def test_broken_predicate_list(self):
@@ -81,3 +82,17 @@ class TestIO(unittest.TestCase):
                 set(new_msdf.prefix_map.keys())
             ),
         )
+
+    def test_flip_nodes(self):
+        """Test flip nodes."""
+        subject_prefix = "a"
+        original_msdf = self.msdf2
+        flipped_df = flip_nodes(original_msdf.df, subject_prefix, False)
+        self.assertEqual(len(flipped_df), 14)
+    
+    def test_flip_nodes_merged(self):
+        """Test flip nodes."""
+        subject_prefix = "a"
+        original_msdf = self.msdf2
+        flipped_df = flip_nodes(original_msdf.df, subject_prefix, True)
+        self.assertEqual(len(flipped_df), 36)

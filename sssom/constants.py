@@ -139,6 +139,17 @@ PREDICATE_LIST = [
     RDF_SEE_ALSO,
 ]
 
+PREDICATE_FLIP_DICTIONARY = {
+        "skos:closeMatch": "skos:closeMatch",
+        "skos:relatedMatch": "skos:relatedMatch",
+        "skos:narrowMatch" : "skos:broadMatch",
+        "skos:broadMatch" : "skos:narrowMatch",
+        "skos:exactMatch" : "skos:exactMatch",
+        "semapv:crossSpeciesExactMatch" : "semapv:crossSpeciesExactMatch",
+        "semapv:crossSpeciesNarrowMatch" : "semapv:crossSpeciesBroadMatch",
+        "semapv:crossSpeciesBroadMatch" : "semapv:crossSpeciesNarrowMatch",
+    }
+
 
 class SEMAPV(Enum):
     """SEMAPV Enum containing different mapping_justification."""

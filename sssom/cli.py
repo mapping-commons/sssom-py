@@ -58,6 +58,7 @@ from .util import (
     remove_unmatched,
     sort_df_rows_columns,
     to_mapping_set_dataframe,
+    flip_nodes,
 )
 from .writers import write_table
 
@@ -713,6 +714,32 @@ def remove(input: str, output: TextIO, remove_map: str):
     remove_msdf = parse_sssom_table(remove_map)
     input_msdf.remove_mappings(remove_msdf)
     write_table(input_msdf, output)
+
+@main.command()
+@input_argument
+@output_option
+@click.option(
+    "-P",
+    "--subject-prefix",
+    help="Flip subject_id and object_id such that all subject_ids have the same prefix.",
+)
+@click.option(
+    "--merge-flipped/--no-merge-flipped",
+    default=True,
+    is_flag=True,
+    help="If True (default), add flipped dataframe to input else, just return flipped data.",
+)
+def flip(input: str, output: TextIO, subject_prefix: str, merge_flipped: bool):
+    """
+    Flip subject and object IDs such that all subjects have the prefix provided.
+
+    :param input: SSSOM TSV file.
+    :param prefix: Prefix of all subject_ids.
+    :param output: SSSOM TSV file with columns sorted.
+    """
+    msdf = parse_sssom_table(input)
+    msdf.df = flip_nodes(msdf.df, subject_prefix, merge_flipped)
+    write_table(msdf, output)
 
 
 if __name__ == "__main__":
