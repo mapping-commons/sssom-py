@@ -728,7 +728,7 @@ def remove(input: str, output: TextIO, remove_map: str):
     "--merge-flipped/--no-merge-flipped",
     default=True,
     is_flag=True,
-    help="If True (default), add flipped dataframe to input else, just return flipped data.",
+    help="If True (default), add flipped mappings to the input mapping set, else, just return flipped mappings as a separate mapping set.",
 )
 def flip(input: str, output: TextIO, subject_prefix: str, merge_flipped: bool):
     """
