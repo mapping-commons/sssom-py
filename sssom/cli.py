@@ -53,12 +53,12 @@ from .util import (
     compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
+    flip_nodes,
     merge_msdf,
     reconcile_prefix_and_data,
     remove_unmatched,
     sort_df_rows_columns,
     to_mapping_set_dataframe,
-    flip_nodes,
 )
 from .writers import write_table
 
@@ -714,6 +714,7 @@ def remove(input: str, output: TextIO, remove_map: str):
     remove_msdf = parse_sssom_table(remove_map)
     input_msdf.remove_mappings(remove_msdf)
     write_table(input_msdf, output)
+
 
 @main.command()
 @input_argument

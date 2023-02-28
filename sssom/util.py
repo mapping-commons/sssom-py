@@ -1509,40 +1509,55 @@ def _get_sssom_schema_object() -> SSSOMSchemaView:
     )
     return sssom_sv_object
 
-def flip_nodes(df: pd.DataFrame, subject_prefix: str, merge_flipped: bool = True) -> pd.DataFrame:
+
+def flip_nodes(
+    df: pd.DataFrame, subject_prefix: str, merge_flipped: bool = True
+) -> pd.DataFrame:
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
 
     :param df: Pandas dataframe.
     :param prefix: Prefix of subjects desired.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
-    condition_1 = df[SUBJECT_ID].str.startswith(subject_prefix+":")
-    condition_2 = df[OBJECT_ID].str.startswith(subject_prefix+":")
+    condition_1 = df[SUBJECT_ID].str.startswith(subject_prefix + ":")
+    condition_2 = df[OBJECT_ID].str.startswith(subject_prefix + ":")
     condition_3 = df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT
     predicate_flip_map = PREDICATE_FLIP_DICTIONARY
 
     predicate_modified_df = pd.DataFrame(df[condition_3])
     non_predicate_modified_df = pd.DataFrame(df[~condition_3])
 
-    prefixed_subjects_df = pd.DataFrame(non_predicate_modified_df[(condition_1 & ~condition_2)])
-    non_prefix_subjects_df = pd.DataFrame(non_predicate_modified_df[(~condition_1 & condition_2)])
-    df_to_flip = non_prefix_subjects_df.loc[non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_flip_map.keys()))]
-    flipped_df = df_to_flip.rename(columns={
-        SUBJECT_ID:OBJECT_ID, 
-        SUBJECT_LABEL:OBJECT_LABEL,
-        SUBJECT_CATEGORY: OBJECT_CATEGORY,
-        SUBJECT_MATCH_FIELD: OBJECT_MATCH_FIELD,
-        SUBJECT_SOURCE: OBJECT_SOURCE,
-        OBJECT_ID:SUBJECT_ID, 
-        OBJECT_LABEL:SUBJECT_LABEL,
-        OBJECT_CATEGORY: SUBJECT_CATEGORY,
-        OBJECT_MATCH_FIELD: SUBJECT_MATCH_FIELD,
-        OBJECT_SOURCE: SUBJECT_SOURCE,
-    })
+    prefixed_subjects_df = pd.DataFrame(
+        non_predicate_modified_df[(condition_1 & ~condition_2)]
+    )
+    non_prefix_subjects_df = pd.DataFrame(
+        non_predicate_modified_df[(~condition_1 & condition_2)]
+    )
+    df_to_flip = non_prefix_subjects_df.loc[
+        non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_flip_map.keys()))
+    ]
+    flipped_df = df_to_flip.rename(
+        columns={
+            SUBJECT_ID: OBJECT_ID,
+            SUBJECT_LABEL: OBJECT_LABEL,
+            SUBJECT_CATEGORY: OBJECT_CATEGORY,
+            SUBJECT_MATCH_FIELD: OBJECT_MATCH_FIELD,
+            SUBJECT_SOURCE: OBJECT_SOURCE,
+            OBJECT_ID: SUBJECT_ID,
+            OBJECT_LABEL: SUBJECT_LABEL,
+            OBJECT_CATEGORY: SUBJECT_CATEGORY,
+            OBJECT_MATCH_FIELD: SUBJECT_MATCH_FIELD,
+            OBJECT_SOURCE: SUBJECT_SOURCE,
+        }
+    )
     flipped_df = flipped_df[df.columns]
-    flipped_df[PREDICATE_ID] = flipped_df[PREDICATE_ID].apply(lambda x: predicate_flip_map[x])
+    flipped_df[PREDICATE_ID] = flipped_df[PREDICATE_ID].apply(
+        lambda x: predicate_flip_map[x]
+    )
 
-    return_df = pd.concat([prefixed_subjects_df, predicate_modified_df, flipped_df]).drop_duplicates()
+    return_df = pd.concat(
+        [prefixed_subjects_df, predicate_modified_df, flipped_df]
+    ).drop_duplicates()
     if merge_flipped:
         return pd.concat([df, return_df]).drop_duplicates()
     else:
