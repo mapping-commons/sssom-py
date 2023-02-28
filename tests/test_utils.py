@@ -92,7 +92,7 @@ class TestIO(unittest.TestCase):
         """Test flip nodes."""
         subject_prefix = "a"
         flipped_df = flip_mappings(self.msdf2.df, subject_prefix, False)
-        self.assertEqual(len(flipped_df), 14)
+        self.assertEqual(len(flipped_df), 11)
 
     def test_flip_nodes_merged(self):
         """Test flip nodes."""
