@@ -120,7 +120,7 @@ SKOS_BROAD_MATCH = "skos:broadMatch"
 SKOS_NARROW_MATCH = "skos:narrowMatch"
 OBO_HAS_DB_XREF = "oboInOwl:hasDbXref"
 SKOS_RELATED_MATCH = "skos:relatedMatch"
-CROSS_SPECIES_EXACT_MATCH ="semapv:crossSpeciesExactMatch"
+CROSS_SPECIES_EXACT_MATCH = "semapv:crossSpeciesExactMatch"
 CROSS_SPECIES_NARROW_MATCH = "semapv:crossSpeciesNarrowMatch"
 CROSS_SPECIES_BROAD_MATCH = "semapv:crossSpeciesBroadMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
@@ -169,7 +169,6 @@ class SEMAPV(Enum):
     CrossSpeciesExactMatch = CROSS_SPECIES_EXACT_MATCH
     CrossSpeciesNarrowMatch = CROSS_SPECIES_NARROW_MATCH
     CrossSpeciesBroadMatch = CROSS_SPECIES_BROAD_MATCH
-
 
 
 class SchemaValidationType(str, Enum):
