@@ -1510,7 +1510,7 @@ def _get_sssom_schema_object() -> SSSOMSchemaView:
     return sssom_sv_object
 
 
-def flip_nodes(
+def flip_mappings(
     df: pd.DataFrame, subject_prefix: str, merge_flipped: bool = True
 ) -> pd.DataFrame:
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.

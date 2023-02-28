@@ -120,6 +120,9 @@ SKOS_BROAD_MATCH = "skos:broadMatch"
 SKOS_NARROW_MATCH = "skos:narrowMatch"
 OBO_HAS_DB_XREF = "oboInOwl:hasDbXref"
 SKOS_RELATED_MATCH = "skos:relatedMatch"
+CROSS_SPECIES_EXACT_MATCH ="semapv:crossSpeciesExactMatch"
+CROSS_SPECIES_NARROW_MATCH = "semapv:crossSpeciesNarrowMatch"
+CROSS_SPECIES_BROAD_MATCH = "semapv:crossSpeciesBroadMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
 SSSOM_SUPERCLASS_OF = "inverseOf(owl:subClassOf)"
 
@@ -140,14 +143,14 @@ PREDICATE_LIST = [
 ]
 
 PREDICATE_FLIP_DICTIONARY = {
-    "skos:closeMatch": "skos:closeMatch",
-    "skos:relatedMatch": "skos:relatedMatch",
-    "skos:narrowMatch": "skos:broadMatch",
-    "skos:broadMatch": "skos:narrowMatch",
-    "skos:exactMatch": "skos:exactMatch",
-    "semapv:crossSpeciesExactMatch": "semapv:crossSpeciesExactMatch",
-    "semapv:crossSpeciesNarrowMatch": "semapv:crossSpeciesBroadMatch",
-    "semapv:crossSpeciesBroadMatch": "semapv:crossSpeciesNarrowMatch",
+    SKOS_CLOSE_MATCH: SKOS_CLOSE_MATCH,
+    SKOS_RELATED_MATCH: SKOS_RELATED_MATCH,
+    SKOS_NARROW_MATCH: SKOS_BROAD_MATCH,
+    SKOS_BROAD_MATCH: SKOS_NARROW_MATCH,
+    SKOS_EXACT_MATCH: SKOS_EXACT_MATCH,
+    CROSS_SPECIES_EXACT_MATCH: CROSS_SPECIES_EXACT_MATCH,
+    CROSS_SPECIES_NARROW_MATCH: CROSS_SPECIES_BROAD_MATCH,
+    CROSS_SPECIES_BROAD_MATCH: CROSS_SPECIES_NARROW_MATCH,
 }
 
 
@@ -163,6 +166,10 @@ class SEMAPV(Enum):
     MappingChaining = "semapv:MappingChaining"
     MappingReview = "semapv:MappingReview"
     ManualMappingCuration = "semapv:ManualMappingCuration"
+    CrossSpeciesExactMatch = CROSS_SPECIES_EXACT_MATCH
+    CrossSpeciesNarrowMatch = CROSS_SPECIES_NARROW_MATCH
+    CrossSpeciesBroadMatch = CROSS_SPECIES_BROAD_MATCH
+
 
 
 class SchemaValidationType(str, Enum):

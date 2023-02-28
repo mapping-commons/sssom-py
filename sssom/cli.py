@@ -53,7 +53,7 @@ from .util import (
     compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
-    flip_nodes,
+    flip_mappings,
     merge_msdf,
     reconcile_prefix_and_data,
     remove_unmatched,
@@ -741,7 +741,7 @@ def flip(input: str, output: TextIO, subject_prefix: str, merge_flipped: bool):
     :param output: SSSOM TSV file with columns sorted.
     """
     msdf = parse_sssom_table(input)
-    msdf.df = flip_nodes(msdf.df, subject_prefix, merge_flipped)
+    msdf.df = flip_mappings(msdf.df, subject_prefix, merge_flipped)
     write_table(msdf, output)
 
 
