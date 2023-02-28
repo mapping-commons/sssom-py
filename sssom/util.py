@@ -1516,7 +1516,9 @@ def flip_nodes(
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
 
     :param df: Pandas dataframe.
-    :param prefix: Prefix of subjects desired.
+    :param subject_prefix: Prefix of subjects desired.
+    :param merge_flipped: If True (default), add flipped dataframe to input else,
+                          just return flipped data.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
     condition_1 = df[SUBJECT_ID].str.startswith(subject_prefix + ":")

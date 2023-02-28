@@ -735,7 +735,9 @@ def flip(input: str, output: TextIO, subject_prefix: str, merge_flipped: bool):
     Flip subject and object IDs such that all subjects have the prefix provided.
 
     :param input: SSSOM TSV file.
-    :param prefix: Prefix of all subject_ids.
+    :param subject_prefix: Prefix of all subject_ids.
+    :param merge_flipped: If True (default), add flipped dataframe to input else,
+                          just return flipped data.
     :param output: SSSOM TSV file with columns sorted.
     """
     msdf = parse_sssom_table(input)
