@@ -1531,7 +1531,7 @@ def flip_mappings(
     object_starts_with_prefix_condition = df[OBJECT_ID].str.startswith(
         subject_prefix + ":"
     )
-    not_predicate_modifier = df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT
+    not_predicate_modifier = df[PREDICATE_MODIFIER] != ""
     predicate_flip_map = PREDICATE_FLIP_DICTIONARY
 
     # predicate_modified_df = pd.DataFrame(df[not_predicate_modifier])
