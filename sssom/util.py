@@ -1534,7 +1534,7 @@ def flip_mappings(
     not_predicate_modifier = df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT
     predicate_flip_map = PREDICATE_FLIP_DICTIONARY
 
-    predicate_modified_df = pd.DataFrame(df[not_predicate_modifier])
+    # predicate_modified_df = pd.DataFrame(df[not_predicate_modifier])
     non_predicate_modified_df = pd.DataFrame(df[~not_predicate_modifier])
 
     prefixed_subjects_df = pd.DataFrame(
@@ -1569,7 +1569,7 @@ def flip_mappings(
 
     return_df = pd.concat([prefixed_subjects_df, flipped_df]).drop_duplicates()
     if merge_flipped:
-        return pd.concat([df, predicate_modified_df, return_df]).drop_duplicates()
+        return pd.concat([df, return_df]).drop_duplicates()
     else:
         return return_df
 
