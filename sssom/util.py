@@ -1039,8 +1039,22 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
+def get_sssom_error_message(e: Exception):
+    """Get a human readble error message from an exception."""
+    msg = ""
+    if hasattr(e, "message"):
+        msg = getattr(e, "message")
+    else:
+        str(e)
+    return msg
+
+
 class NoCURIEException(ValueError):
     """An exception raised when a CURIE can not be parsed with a given prefix map."""
+
+
+class SssomMalformedYamlError(ValueError):
+    """An exception raised when the YAML header is malformed."""
 
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
@@ -1130,6 +1144,19 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
                 if pref != "" and not None:
                     prefixes.append(pref)
     return list(set(prefixes))
+
+
+def purl_to_source_id(uri: str, prefix_map: Mapping[str, str]) -> str:
+    """Parse a CURIE from an PURL to serve as a generic source reference (by splitting of file extension).
+
+    :param uri: The URI to parse. If this is already a CURIE, return directly.
+    :param prefix_map: The prefix map against which the IRI is checked
+    :return: A CURIE
+    """
+    curie = curie_from_uri(uri=uri, prefix_map=prefix_map)
+    if curie.endswith(".owl"):
+        curie = curie[:-4]
+    return curie
 
 
 def filter_out_prefixes(
@@ -1368,7 +1395,7 @@ def sort_df_rows_columns(
             if col in df.columns
         ]
         df = df.reindex(column_sequence, axis=1)
-    if by_rows and len(df) > 0:
+    if by_rows and len(df) > 0 and len(df.columns) > 0:
         df = df.sort_values(by=df.columns[0], ignore_index=True)
     return df
 

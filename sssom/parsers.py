@@ -58,9 +58,12 @@ from .util import (
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     NoCURIEException,
+    SssomMalformedYamlError,
     curie_from_uri,
     get_file_extension,
+    get_sssom_error_message,
     is_multivalued_slot,
+    purl_to_source_id,
     raise_for_bad_path,
     read_pandas,
     to_mapping_set_dataframe,
@@ -537,9 +540,13 @@ def from_alignment_minidom(
                 elif node_name == "onto2":
                     ms[OBJECT_SOURCE_ID] = e.firstChild.nodeValue
                 elif node_name == "uri1":
-                    ms[SUBJECT_SOURCE] = e.firstChild.nodeValue
+                    ms[SUBJECT_SOURCE] = purl_to_source_id(
+                        uri=e.firstChild.nodeValue, prefix_map=prefix_map
+                    )
                 elif node_name == "uri2":
-                    ms[OBJECT_SOURCE] = e.firstChild.nodeValue
+                    ms[OBJECT_SOURCE] = purl_to_source_id(
+                        uri=e.firstChild.nodeValue, prefix_map=prefix_map
+                    )
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
@@ -774,9 +781,12 @@ def _read_metadata_from_table(path: Union[str, Path]) -> Dict[str, Any]:
                 break
 
     if yamlstr:
-        meta = yaml.safe_load(yamlstr)
-        logging.info(f"Meta={meta}")
-        return meta
+        try:
+            meta = yaml.safe_load(yamlstr)
+            logging.info(f"Meta={meta}")
+            return meta
+        except Exception as e:
+            raise SssomMalformedYamlError(get_sssom_error_message(e))
     return {}
 
 
