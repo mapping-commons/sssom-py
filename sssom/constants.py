@@ -19,7 +19,7 @@ SCHEMA_YAML = pkg_resources.resource_filename(
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
-RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+RDFS_SUBCLASS_OF_URI = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
 
 DEFAULT_MAPPING_PROPERTIES = [
     "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
@@ -151,6 +151,10 @@ PREDICATE_FLIP_DICTIONARY = {
     CROSS_SPECIES_EXACT_MATCH: CROSS_SPECIES_EXACT_MATCH,
     CROSS_SPECIES_NARROW_MATCH: CROSS_SPECIES_BROAD_MATCH,
     CROSS_SPECIES_BROAD_MATCH: CROSS_SPECIES_NARROW_MATCH,
+    OWL_EQUIVALENT_CLASS: OWL_EQUIVALENT_CLASS,
+    OWL_SAME_AS: OWL_SAME_AS,
+    RDFS_SUBCLASS_OF: SSSOM_SUPERCLASS_OF,
+    SSSOM_SUPERCLASS_OF: RDFS_SUBCLASS_OF,
 }
 
 

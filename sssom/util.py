@@ -47,7 +47,9 @@ from .constants import (
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_MATCH_FIELD,
+    OBJECT_PREPROCESSING,
     OBJECT_SOURCE,
+    OBJECT_SOURCE_VERSION,
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
@@ -70,7 +72,9 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_MATCH_FIELD,
+    SUBJECT_PREPROCESSING,
     SUBJECT_SOURCE,
+    SUBJECT_SOURCE_VERSION,
     SSSOMSchemaView,
 )
 from .context import (
@@ -1521,37 +1525,42 @@ def flip_mappings(
                           just return flipped data.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
-    condition_1 = df[SUBJECT_ID].str.startswith(subject_prefix + ":")
-    condition_2 = df[OBJECT_ID].str.startswith(subject_prefix + ":")
-    condition_3 = df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT
+    subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(
+        subject_prefix + ":"
+    )
+    object_starts_with_prefix_condition = df[OBJECT_ID].str.startswith(
+        subject_prefix + ":"
+    )
+    not_predicate_modifier = df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT
     predicate_flip_map = PREDICATE_FLIP_DICTIONARY
 
-    predicate_modified_df = pd.DataFrame(df[condition_3]).reset_index()
-    non_predicate_modified_df = pd.DataFrame(df[~condition_3]).reset_index()
+    predicate_modified_df = pd.DataFrame(df[not_predicate_modifier])
+    non_predicate_modified_df = pd.DataFrame(df[~not_predicate_modifier])
 
     prefixed_subjects_df = pd.DataFrame(
-        non_predicate_modified_df[(condition_1 & ~condition_2)]
-    ).reset_index()
+        non_predicate_modified_df[
+            (
+                subject_starts_with_prefix_condition
+                & ~object_starts_with_prefix_condition
+            )
+        ]
+    )
     non_prefix_subjects_df = pd.DataFrame(
-        non_predicate_modified_df[(~condition_1 & condition_2)]
-    ).reset_index()
+        non_predicate_modified_df[
+            (
+                ~subject_starts_with_prefix_condition
+                & object_starts_with_prefix_condition
+            )
+        ]
+    )
     df_to_flip = non_prefix_subjects_df.loc[
         non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_flip_map.keys()))
     ]
-
+    list_of_subject_object_columns = [
+        x for x in df_to_flip.columns if x.startswith(("subject", "object"))
+    ]
     flipped_df = df_to_flip.rename(
-        columns={
-            SUBJECT_ID: OBJECT_ID,
-            SUBJECT_LABEL: OBJECT_LABEL,
-            SUBJECT_CATEGORY: OBJECT_CATEGORY,
-            SUBJECT_MATCH_FIELD: OBJECT_MATCH_FIELD,
-            SUBJECT_SOURCE: OBJECT_SOURCE,
-            OBJECT_ID: SUBJECT_ID,
-            OBJECT_LABEL: SUBJECT_LABEL,
-            OBJECT_CATEGORY: SUBJECT_CATEGORY,
-            OBJECT_MATCH_FIELD: SUBJECT_MATCH_FIELD,
-            OBJECT_SOURCE: SUBJECT_SOURCE,
-        }
+        columns=_flip_column_names(list_of_subject_object_columns)
     )
     flipped_df = flipped_df[df.columns]
     flipped_df[PREDICATE_ID] = flipped_df[PREDICATE_ID].apply(
@@ -1560,6 +1569,27 @@ def flip_mappings(
 
     return_df = pd.concat([prefixed_subjects_df, flipped_df]).drop_duplicates()
     if merge_flipped:
-        return pd.concat([df, predicate_modified_df, return_df]).drop_duplicates()
+        return pd.concat([df, return_df]).drop_duplicates()
     else:
         return return_df
+
+
+def _flip_column_names(column_names) -> dict:
+    """Return a dictionary for column renames in pandas DataFrame."""
+    column_flip_map = {
+        SUBJECT_ID: OBJECT_ID,
+        SUBJECT_LABEL: OBJECT_LABEL,
+        SUBJECT_CATEGORY: OBJECT_CATEGORY,
+        SUBJECT_MATCH_FIELD: OBJECT_MATCH_FIELD,
+        SUBJECT_SOURCE: OBJECT_SOURCE,
+        SUBJECT_PREPROCESSING: OBJECT_PREPROCESSING,
+        SUBJECT_SOURCE_VERSION: OBJECT_SOURCE_VERSION,
+        OBJECT_ID: SUBJECT_ID,
+        OBJECT_LABEL: SUBJECT_LABEL,
+        OBJECT_CATEGORY: SUBJECT_CATEGORY,
+        OBJECT_MATCH_FIELD: SUBJECT_MATCH_FIELD,
+        OBJECT_SOURCE: SUBJECT_SOURCE,
+        OBJECT_PREPROCESSING: SUBJECT_PREPROCESSING,
+        OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
+    }
+    return {x: column_flip_map[x] for x in column_names}
