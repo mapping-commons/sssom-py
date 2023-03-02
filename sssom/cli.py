@@ -53,7 +53,7 @@ from .util import (
     compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
-    flip_mappings,
+    invert_mappings,
     merge_msdf,
     reconcile_prefix_and_data,
     remove_unmatched,
@@ -722,26 +722,44 @@ def remove(input: str, output: TextIO, remove_map: str):
 @click.option(
     "-P",
     "--subject-prefix",
-    help="Flip subject_id and object_id such that all subject_ids have the same prefix.",
+    help="Invert subject_id and object_id such that all subject_ids have the same prefix.",
 )
 @click.option(
-    "--merge-flipped/--no-merge-flipped",
+    "--merge-inverted/--no-merge-inverted",
     default=True,
     is_flag=True,
-    help="If True (default), add flipped mappings to the input mapping set, else, just return flipped mappings as a separate mapping set.",
+    help="If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.",
 )
-def flip(input: str, output: TextIO, subject_prefix: str, merge_flipped: bool):
+@click.option(
+    "--inverse-map", help="Path to file that contains the inverse predicate dictionary."
+)
+def invert(
+    input: str,
+    output: TextIO,
+    subject_prefix: str,
+    merge_inverted: bool,
+    inverse_map: TextIO,
+):
     """
-    Flip subject and object IDs such that all subjects have the prefix provided.
+    Invert subject and object IDs such that all subjects have the prefix provided.
 
     :param input: SSSOM TSV file.
     :param subject_prefix: Prefix of all subject_ids.
-    :param merge_flipped: If True (default), add flipped dataframe to input else,
-                          just return flipped data.
+    :param merge_inverted: If True (default), add inverted dataframe to input else,
+                          just return inverted data.
+    :param inverse_map: YAML file providing the inverse mapping for predicates.
     :param output: SSSOM TSV file with columns sorted.
     """
     msdf = parse_sssom_table(input)
-    msdf.df = flip_mappings(msdf.df, subject_prefix, merge_flipped)
+    if inverse_map:
+        with open(inverse_map, "r") as im:  # type: ignore
+            inverse_dictionary = yaml.safe_load(im)
+    msdf.df = invert_mappings(
+        msdf.df,
+        subject_prefix,
+        merge_inverted,
+        inverse_dictionary["inverse_predicate_map"],
+    )
     write_table(msdf, output)
 
 

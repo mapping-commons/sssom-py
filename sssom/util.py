@@ -38,6 +38,7 @@ from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
 from .constants import (
+    COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
     MAPPING_JUSTIFICATION,
@@ -46,15 +47,12 @@ from .constants import (
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
-    OBJECT_MATCH_FIELD,
-    OBJECT_PREPROCESSING,
     OBJECT_SOURCE,
-    OBJECT_SOURCE_VERSION,
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
-    PREDICATE_FLIP_DICTIONARY,
     PREDICATE_ID,
+    PREDICATE_INVERT_DICTIONARY,
     PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
@@ -71,10 +69,7 @@ from .constants import (
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
-    SUBJECT_MATCH_FIELD,
-    SUBJECT_PREPROCESSING,
     SUBJECT_SOURCE,
-    SUBJECT_SOURCE_VERSION,
     SSSOMSchemaView,
 )
 from .context import (
@@ -771,7 +766,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
                 & (
                     combined_normalized_subset[MAPPING_JUSTIFICATION]
-                    == SEMAPV.ManualMappingCuration
+                    == SEMAPV.ManualMappingCuration.value
                 )
             )
             # In spite of this, if match_condition_1
@@ -1514,15 +1509,19 @@ def _get_sssom_schema_object() -> SSSOMSchemaView:
     return sssom_sv_object
 
 
-def flip_mappings(
-    df: pd.DataFrame, subject_prefix: str, merge_flipped: bool = True
+def invert_mappings(
+    df: pd.DataFrame,
+    subject_prefix: str,
+    merge_inverted: bool = True,
+    predicate_invert_dictionary: dict = None,
 ) -> pd.DataFrame:
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
 
     :param df: Pandas dataframe.
     :param subject_prefix: Prefix of subjects desired.
-    :param merge_flipped: If True (default), add flipped dataframe to input else,
-                          just return flipped data.
+    :param merge_inverted: If True (default), add inverted dataframe to input else,
+                          just return inverted data.
+    :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
     subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(
@@ -1532,7 +1531,11 @@ def flip_mappings(
         subject_prefix + ":"
     )
     blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
-    predicate_flip_map = PREDICATE_FLIP_DICTIONARY
+    if predicate_invert_dictionary:
+        predicate_invert_map = predicate_invert_dictionary
+    else:
+        predicate_invert_map = PREDICATE_INVERT_DICTIONARY
+    columns_invert_map = COLUMN_INVERT_DICTIONARY
 
     # predicate_modified_df = pd.DataFrame(df[not_predicate_modifier])
     non_predicate_modified_df = pd.DataFrame(df[blank_predicate_modifier])
@@ -1553,43 +1556,26 @@ def flip_mappings(
             )
         ]
     )
-    df_to_flip = non_prefix_subjects_df.loc[
-        non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_flip_map.keys()))
+    df_to_invert = non_prefix_subjects_df.loc[
+        non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
     ]
     list_of_subject_object_columns = [
-        x for x in df_to_flip.columns if x.startswith(("subject", "object"))
+        x for x in df_to_invert.columns if x.startswith(("subject", "object"))
     ]
-    flipped_df = df_to_flip.rename(
-        columns=_flip_column_names(list_of_subject_object_columns)
+    inverted_df = df_to_invert.rename(
+        columns=_invert_column_names(list_of_subject_object_columns, columns_invert_map)
     )
-    flipped_df = flipped_df[df.columns]
-    flipped_df[PREDICATE_ID] = flipped_df[PREDICATE_ID].apply(
-        lambda x: predicate_flip_map[x]
-    )
+    inverted_df = inverted_df[df.columns]
+    inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_map)
+    inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
 
-    return_df = pd.concat([prefixed_subjects_df, flipped_df]).drop_duplicates()
-    if merge_flipped:
+    return_df = pd.concat([prefixed_subjects_df, inverted_df]).drop_duplicates()
+    if merge_inverted:
         return pd.concat([df, return_df]).drop_duplicates()
     else:
         return return_df
 
 
-def _flip_column_names(column_names) -> dict:
+def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
     """Return a dictionary for column renames in pandas DataFrame."""
-    column_flip_map = {
-        SUBJECT_ID: OBJECT_ID,
-        SUBJECT_LABEL: OBJECT_LABEL,
-        SUBJECT_CATEGORY: OBJECT_CATEGORY,
-        SUBJECT_MATCH_FIELD: OBJECT_MATCH_FIELD,
-        SUBJECT_SOURCE: OBJECT_SOURCE,
-        SUBJECT_PREPROCESSING: OBJECT_PREPROCESSING,
-        SUBJECT_SOURCE_VERSION: OBJECT_SOURCE_VERSION,
-        OBJECT_ID: SUBJECT_ID,
-        OBJECT_LABEL: SUBJECT_LABEL,
-        OBJECT_CATEGORY: SUBJECT_CATEGORY,
-        OBJECT_MATCH_FIELD: SUBJECT_MATCH_FIELD,
-        OBJECT_SOURCE: SUBJECT_SOURCE,
-        OBJECT_PREPROCESSING: SUBJECT_PREPROCESSING,
-        OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
-    }
-    return {x: column_flip_map[x] for x in column_names}
+    return {x: columns_invert_map[x] for x in column_names}

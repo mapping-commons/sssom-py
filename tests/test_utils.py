@@ -8,7 +8,7 @@ from sssom.util import (
     MappingSetDataFrame,
     filter_out_prefixes,
     filter_prefixes,
-    flip_mappings,
+    invert_mappings,
 )
 from tests.constants import data_dir
 
@@ -88,14 +88,14 @@ class TestIO(unittest.TestCase):
             ),
         )
 
-    def test_flip_nodes(self):
-        """Test flip nodes."""
+    def test_invert_nodes(self):
+        """Test invert nodes."""
         subject_prefix = "a"
-        flipped_df = flip_mappings(self.msdf2.df, subject_prefix, False)
-        self.assertEqual(len(flipped_df), 13)
+        inverted_df = invert_mappings(self.msdf2.df, subject_prefix, False)
+        self.assertEqual(len(inverted_df), 13)
 
-    def test_flip_nodes_merged(self):
-        """Test flip nodes."""
+    def test_invert_nodes_merged(self):
+        """Test invert nodes."""
         subject_prefix = "a"
-        flipped_df = flip_mappings(self.msdf2.df, subject_prefix, True)
-        self.assertEqual(len(flipped_df), 38)
+        inverted_df = invert_mappings(self.msdf2.df, subject_prefix, True)
+        self.assertEqual(len(inverted_df), 38)

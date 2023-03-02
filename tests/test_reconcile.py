@@ -26,9 +26,9 @@ class TestReconcile(unittest.TestCase):
     def test_deal_with_negation(self):
         """Test handling negating returns the right number of rows."""
         df1 = deal_with_negation(self.msdf1.df)
-        self.assertEqual(7, len(df1.index))
+        self.assertEqual(8, len(df1.index))
         df2 = deal_with_negation(self.msdf2.df)
-        self.assertEqual(5, len(df2.index))
+        self.assertEqual(13, len(df2.index))
 
     def test_merge(self):
         """Test merging two tables."""
