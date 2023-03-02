@@ -124,7 +124,7 @@ CROSS_SPECIES_EXACT_MATCH = "semapv:crossSpeciesExactMatch"
 CROSS_SPECIES_NARROW_MATCH = "semapv:crossSpeciesNarrowMatch"
 CROSS_SPECIES_BROAD_MATCH = "semapv:crossSpeciesBroadMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
-SSSOM_SUPERCLASS_OF = "inverseOf(owl:subClassOf)"
+SSSOM_SUPERCLASS_OF = "sssom:superClassOf"
 
 PREDICATE_LIST = [
     OWL_EQUIVALENT_CLASS,
