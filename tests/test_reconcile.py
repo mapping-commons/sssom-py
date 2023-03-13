@@ -53,3 +53,14 @@ class TestReconcile(unittest.TestCase):
         self.assertEqual(53, len(msdf1.df))
         self.assertEqual(53, len(msdf2.df))
         self.assertEqual(len(merged_msdf.df), (len(msdf1.df) + len(msdf2.df)))
+
+    def test_merge_with_reconcile_without_confidence(self):
+        """Test merging two tables without reconciliation."""
+        msdf1 = parse_sssom_table(data_dir / "reconcile_1.tsv")
+        msdf2 = parse_sssom_table(data_dir / "reconcile_2.tsv")
+
+        merged_msdf = merge_msdf(msdf1, msdf2, reconcile=True)
+
+        self.assertEqual(3, len(msdf1.df))
+        self.assertEqual(4, len(msdf2.df))
+        self.assertEqual(len(merged_msdf.df), (len(msdf1.df) + len(msdf2.df)))

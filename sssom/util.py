@@ -273,6 +273,8 @@ def filter_redundant_rows(
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
     :return: Filtered pandas DataFrame
     """
+    if CONFIDENCE not in df.columns:
+        return df
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
