@@ -95,7 +95,12 @@ class TestIO(unittest.TestCase):
         self.assertEqual(len(inverted_df), 13)
 
     def test_invert_nodes_merged(self):
-        """Test invert nodes."""
+        """Test invert nodes with merge_inverted."""
         subject_prefix = "a"
         inverted_df = invert_mappings(self.msdf2.df, subject_prefix, True)
         self.assertEqual(len(inverted_df), 38)
+
+    def test_invert_nodes_without_prefix(self):
+        """Test invert nodes."""
+        inverted_df = invert_mappings(df=self.msdf2.df, merge_inverted=False)
+        self.assertEqual(len(inverted_df), len(self.msdf2.df.drop_duplicates()))

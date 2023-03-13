@@ -722,6 +722,7 @@ def remove(input: str, output: TextIO, remove_map: str):
 @click.option(
     "-P",
     "--subject-prefix",
+    required=False,
     help="Invert subject_id and object_id such that all subject_ids have the same prefix.",
 )
 @click.option(
@@ -736,7 +737,7 @@ def remove(input: str, output: TextIO, remove_map: str):
 def invert(
     input: str,
     output: TextIO,
-    subject_prefix: str,
+    subject_prefix: Optional[str],
     merge_inverted: bool,
     inverse_map: TextIO,
 ):

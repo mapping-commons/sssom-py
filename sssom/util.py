@@ -1511,7 +1511,7 @@ def _get_sssom_schema_object() -> SSSOMSchemaView:
 
 def invert_mappings(
     df: pd.DataFrame,
-    subject_prefix: str,
+    subject_prefix: Optional[str] = None,
     merge_inverted: bool = True,
     predicate_invert_dictionary: dict = None,
 ) -> pd.DataFrame:
@@ -1524,12 +1524,6 @@ def invert_mappings(
     :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
-    subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(
-        subject_prefix + ":"
-    )
-    object_starts_with_prefix_condition = df[OBJECT_ID].str.startswith(
-        subject_prefix + ":"
-    )
     blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
     if predicate_invert_dictionary:
         predicate_invert_map = predicate_invert_dictionary
@@ -1537,28 +1531,49 @@ def invert_mappings(
         predicate_invert_map = PREDICATE_INVERT_DICTIONARY
     columns_invert_map = COLUMN_INVERT_DICTIONARY
 
-    # predicate_modified_df = pd.DataFrame(df[not_predicate_modifier])
+    predicate_modified_df = pd.DataFrame(df[~blank_predicate_modifier])
     non_predicate_modified_df = pd.DataFrame(df[blank_predicate_modifier])
-
-    prefixed_subjects_df = pd.DataFrame(
-        non_predicate_modified_df[
-            (
-                subject_starts_with_prefix_condition
-                & ~object_starts_with_prefix_condition
+    if subject_prefix:
+        subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(
+            subject_prefix + ":"
+        )
+        object_starts_with_prefix_condition = df[OBJECT_ID].str.startswith(
+            subject_prefix + ":"
+        )
+        prefixed_subjects_df = pd.DataFrame(
+            non_predicate_modified_df[
+                (
+                    subject_starts_with_prefix_condition
+                    & ~object_starts_with_prefix_condition
+                )
+            ]
+        )
+        non_prefix_subjects_df = pd.DataFrame(
+            non_predicate_modified_df[
+                (
+                    ~subject_starts_with_prefix_condition
+                    & object_starts_with_prefix_condition
+                )
+            ]
+        )
+        df_to_invert = non_prefix_subjects_df.loc[
+            non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+        ]
+        # non_inverted_df_by_predicate = non_prefix_subjects_df.loc[
+        #     ~non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+        # ]
+    else:
+        prefixed_subjects_df = pd.DataFrame()
+        df_to_invert = non_predicate_modified_df.loc[
+            non_predicate_modified_df[PREDICATE_ID].isin(
+                list(predicate_invert_map.keys())
             )
         ]
-    )
-    non_prefix_subjects_df = pd.DataFrame(
-        non_predicate_modified_df[
-            (
-                ~subject_starts_with_prefix_condition
-                & object_starts_with_prefix_condition
+        non_inverted_df_by_predicate = non_predicate_modified_df.loc[
+            ~non_predicate_modified_df[PREDICATE_ID].isin(
+                list(predicate_invert_map.keys())
             )
         ]
-    )
-    df_to_invert = non_prefix_subjects_df.loc[
-        non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
-    ]
     list_of_subject_object_columns = [
         x for x in df_to_invert.columns if x.startswith(("subject", "object"))
     ]
@@ -1568,8 +1583,12 @@ def invert_mappings(
     inverted_df = inverted_df[df.columns]
     inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_map)
     inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
-
-    return_df = pd.concat([prefixed_subjects_df, inverted_df]).drop_duplicates()
+    if not prefixed_subjects_df.empty:
+        return_df = pd.concat([prefixed_subjects_df, inverted_df]).drop_duplicates()
+    else:
+        return_df = pd.concat(
+            [inverted_df, predicate_modified_df, non_inverted_df_by_predicate]
+        ).drop_duplicates()
     if merge_inverted:
         return pd.concat([df, return_df]).drop_duplicates()
     else:
