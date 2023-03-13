@@ -7,6 +7,7 @@ inverse_predicate_map:
   semapv:crossSpeciesExactMatch: semapv:crossSpeciesExactMatch
   semapv:crossSpeciesNarrowMatch: semapv:crossSpeciesBroadMatch
   semapv:crossSpeciesBroadMatch: semapv:crossSpeciesNarrowMatch
+  semapv:crossSpeciesCloseMatch: semapv:crossSpeciesCloseMatch
   owl:equivalentClass: owl:equivalentClass
   owl:sameAs: owl:sameAs
   rdfs:subClassOf: sssom:superClassOf
