@@ -5,6 +5,7 @@ from enum import Enum
 from typing import List
 
 import pkg_resources
+import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 
@@ -19,7 +20,7 @@ SCHEMA_YAML = pkg_resources.resource_filename(
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
 
 OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
-RDFS_SUBCLASS_OF = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+RDFS_SUBCLASS_OF_URI = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
 
 DEFAULT_MAPPING_PROPERTIES = [
     "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
@@ -120,8 +121,11 @@ SKOS_BROAD_MATCH = "skos:broadMatch"
 SKOS_NARROW_MATCH = "skos:narrowMatch"
 OBO_HAS_DB_XREF = "oboInOwl:hasDbXref"
 SKOS_RELATED_MATCH = "skos:relatedMatch"
+CROSS_SPECIES_EXACT_MATCH = "semapv:crossSpeciesExactMatch"
+CROSS_SPECIES_NARROW_MATCH = "semapv:crossSpeciesNarrowMatch"
+CROSS_SPECIES_BROAD_MATCH = "semapv:crossSpeciesBroadMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
-SSSOM_SUPERCLASS_OF = "inverseOf(owl:subClassOf)"
+SSSOM_SUPERCLASS_OF = "sssom:superClassOf"
 
 PREDICATE_LIST = [
     OWL_EQUIVALENT_CLASS,
@@ -139,6 +143,28 @@ PREDICATE_LIST = [
     RDF_SEE_ALSO,
 ]
 
+with open(HERE / "inverse_map.yaml", "r") as im:
+    inverse_map = yaml.safe_load(im)
+
+PREDICATE_INVERT_DICTIONARY = inverse_map["inverse_predicate_map"]
+
+COLUMN_INVERT_DICTIONARY = {
+    SUBJECT_ID: OBJECT_ID,
+    SUBJECT_LABEL: OBJECT_LABEL,
+    SUBJECT_CATEGORY: OBJECT_CATEGORY,
+    SUBJECT_MATCH_FIELD: OBJECT_MATCH_FIELD,
+    SUBJECT_SOURCE: OBJECT_SOURCE,
+    SUBJECT_PREPROCESSING: OBJECT_PREPROCESSING,
+    SUBJECT_SOURCE_VERSION: OBJECT_SOURCE_VERSION,
+    OBJECT_ID: SUBJECT_ID,
+    OBJECT_LABEL: SUBJECT_LABEL,
+    OBJECT_CATEGORY: SUBJECT_CATEGORY,
+    OBJECT_MATCH_FIELD: SUBJECT_MATCH_FIELD,
+    OBJECT_SOURCE: SUBJECT_SOURCE,
+    OBJECT_PREPROCESSING: SUBJECT_PREPROCESSING,
+    OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
+}
+
 
 class SEMAPV(Enum):
     """SEMAPV Enum containing different mapping_justification."""
@@ -152,6 +178,10 @@ class SEMAPV(Enum):
     MappingChaining = "semapv:MappingChaining"
     MappingReview = "semapv:MappingReview"
     ManualMappingCuration = "semapv:ManualMappingCuration"
+    MappingInversion = "semapv:MappingInversion"
+    CrossSpeciesExactMatch = CROSS_SPECIES_EXACT_MATCH
+    CrossSpeciesNarrowMatch = CROSS_SPECIES_NARROW_MATCH
+    CrossSpeciesBroadMatch = CROSS_SPECIES_BROAD_MATCH
 
 
 class SchemaValidationType(str, Enum):

@@ -4,7 +4,12 @@ import unittest
 from sssom.constants import OBJECT_ID, SUBJECT_ID
 from sssom.io import extract_iri
 from sssom.parsers import parse_sssom_table
-from sssom.util import MappingSetDataFrame, filter_out_prefixes, filter_prefixes
+from sssom.util import (
+    MappingSetDataFrame,
+    filter_out_prefixes,
+    filter_prefixes,
+    invert_mappings,
+)
 from tests.constants import data_dir
 
 
@@ -14,6 +19,7 @@ class TestIO(unittest.TestCase):
     def setUp(self) -> None:
         """Set up."""
         self.msdf = parse_sssom_table(f"{data_dir}/basic.tsv")
+        self.msdf2 = parse_sssom_table(f"{data_dir}/basic7.tsv")
         self.features = [SUBJECT_ID, OBJECT_ID]
 
     def test_broken_predicate_list(self):
@@ -81,3 +87,20 @@ class TestIO(unittest.TestCase):
                 set(new_msdf.prefix_map.keys())
             ),
         )
+
+    def test_invert_nodes(self):
+        """Test invert nodes."""
+        subject_prefix = "a"
+        inverted_df = invert_mappings(self.msdf2.df, subject_prefix, False)
+        self.assertEqual(len(inverted_df), 13)
+
+    def test_invert_nodes_merged(self):
+        """Test invert nodes with merge_inverted."""
+        subject_prefix = "a"
+        inverted_df = invert_mappings(self.msdf2.df, subject_prefix, True)
+        self.assertEqual(len(inverted_df), 38)
+
+    def test_invert_nodes_without_prefix(self):
+        """Test invert nodes."""
+        inverted_df = invert_mappings(df=self.msdf2.df, merge_inverted=False)
+        self.assertEqual(len(inverted_df), len(self.msdf2.df.drop_duplicates()))
