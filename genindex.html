@@ -10,10 +10,8 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -214,6 +212,13 @@
 </li>
       </ul></li>
       <li>
+    --inverse-map
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-inverse-map">sssom-invert command line option</a>
+</li>
+      </ul></li>
+      <li>
     --license
 
       <ul>
@@ -334,6 +339,13 @@
 </li>
       </ul></li>
       <li>
+    --merge-inverted
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-merge-inverted">sssom-invert command line option</a>
+</li>
+      </ul></li>
+      <li>
     --metadata
 
       <ul>
@@ -347,6 +359,13 @@
 
       <ul>
         <li><a href="cli_usage.html#cmdoption-sssom-parse-p">sssom-parse command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --no-merge-inverted
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-merge-inverted">sssom-invert command line option</a>
 </li>
       </ul></li>
       <li>
@@ -466,6 +485,8 @@
         <li><a href="cli_usage.html#cmdoption-sssom-dosql-o">sssom-dosql command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-filter-o">sssom-filter command line option</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-o">sssom-invert command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-merge-o">sssom-merge command line option</a>
 </li>
@@ -630,6 +651,13 @@
 
       <ul>
         <li><a href="cli_usage.html#cmdoption-sssom-cliquesummary-s">sssom-cliquesummary command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --subject-prefix
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-P">sssom-invert command line option</a>
 </li>
       </ul></li>
       <li>
@@ -860,6 +888,8 @@
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-filter-o">sssom-filter command line option</a>
 </li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-o">sssom-invert command line option</a>
+</li>
         <li><a href="cli_usage.html#cmdoption-sssom-merge-o">sssom-merge command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-parse-o">sssom-parse command line option</a>
@@ -881,6 +911,8 @@
     -P
 
       <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-P">sssom-invert command line option</a>
+</li>
         <li><a href="cli_usage.html#cmdoption-sssom-sparql-P">sssom-sparql command line option</a>
 </li>
       </ul></li>
@@ -1126,6 +1158,8 @@
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-filter-arg-INPUT">sssom-filter command line option</a>
 </li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-arg-INPUT">sssom-invert command line option</a>
+</li>
         <li><a href="cli_usage.html#cmdoption-sssom-parse-arg-INPUT">sssom-parse command line option</a>
 </li>
         <li><a href="cli_usage.html#cmdoption-sssom-ptable-arg-INPUT">sssom-ptable command line option</a>
@@ -1158,6 +1192,8 @@
         <li><a href="cli_usage.html#cmdoption-sssom-partition-arg-INPUTS">sssom-partition command line option</a>
 </li>
       </ul></li>
+      <li><a href="developer_docs/api.html#sssom.util.invert_mappings">invert_mappings() (in module sssom.util)</a>
+</li>
       <li><a href="developer_docs/api.html#sssom.util.is_curie">is_curie() (in module sssom.util)</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.util.is_iri">is_iri() (in module sssom.util)</a>
@@ -1595,6 +1631,27 @@
 
       <ul>
         <li><a href="cli_usage.html#cmdoption-sssom-help-arg-SUBCOMMAND">SUBCOMMAND</a>
+</li>
+      </ul></li>
+      <li>
+    sssom-invert command line option
+
+      <ul>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-inverse-map">--inverse-map</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-merge-inverted">--merge-inverted</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-merge-inverted">--no-merge-inverted</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-o">--output</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-P">--subject-prefix</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-o">-o</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-P">-P</a>
+</li>
+        <li><a href="cli_usage.html#cmdoption-sssom-invert-arg-INPUT">INPUT</a>
 </li>
       </ul></li>
       <li>
