@@ -147,12 +147,13 @@ class MappingSetDataFrame:
             description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map(self, strict:bool = True) -> None:
+    def clean_prefix_map(self, strict: bool = True) -> None:
         """
         Remove unused prefixes from the internal prefix map based on the internal dataframe.
-        
+
         :param strict: Boolean if True, errors out if all prefixes in dataframe are not
                        listed in the 'curie_map'.
+        :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
         """
         all_prefixes = []
         prefixes_in_table = get_prefixes_used_in_table(self.df)
