@@ -273,8 +273,6 @@ def filter_redundant_rows(
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
     :return: Filtered pandas DataFrame
     """
-    if CONFIDENCE not in df.columns:
-        return df
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
@@ -404,7 +402,7 @@ def assign_default_confidence(
     if df is not None:
         new_df = df.copy()
         if CONFIDENCE not in new_df.columns:
-            new_df[CONFIDENCE] = np.NaN
+            new_df[CONFIDENCE] = 0.0  # np.NaN
             nan_df = pd.DataFrame(columns=new_df.columns)
         else:
             new_df = df[~df[CONFIDENCE].isna()]
