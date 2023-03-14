@@ -145,7 +145,7 @@ class MappingSetDataFrame:
             description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map(self, strict: bool = False) -> None:
+    def clean_prefix_map(self, strict: bool = True) -> None:
         """
         Remove unused prefixes from the internal prefix map based on the internal dataframe.
 
