@@ -145,8 +145,14 @@ class MappingSetDataFrame:
             description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map(self) -> None:
-        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
+    def clean_prefix_map(self, strict: bool = False) -> None:
+        """
+        Remove unused prefixes from the internal prefix map based on the internal dataframe.
+
+        :param strict: Boolean if True errors out if all prefixes in dataframe are not
+                       accounted for in the 'curie_map'.
+
+        """
         all_prefixes = []
         prefixes_in_table = get_prefixes_used_in_table(self.df)
         if self.metadata:
@@ -166,7 +172,7 @@ class MappingSetDataFrame:
                 )
                 if prefix != "":
                     missing_prefixes.append(prefix)
-        if missing_prefixes:
+        if missing_prefixes and strict:
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
             )
