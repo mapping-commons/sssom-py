@@ -32,7 +32,7 @@ DEFAULT_MAPPING_PROPERTIES = [
     OWL_EQUIV_CLASS,
 ]
 
-
+UNKNOWN_IRI = "http://w3id.org/sssom/unknown_prefix/"
 PREFIX_MAP_MODE_METADATA_ONLY = "metadata_only"
 PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY = "sssom_default_only"
 PREFIX_MAP_MODE_MERGED = "merged"
