@@ -825,7 +825,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     else:
         return_df = reconciled_df.append(nan_df).drop_duplicates()
 
-    if confidence_in_original:
+    if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
 
     return return_df
