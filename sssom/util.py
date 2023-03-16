@@ -277,7 +277,8 @@ def filter_redundant_rows(
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
     # df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: x + random.random() / 10000)
-    df, nan_df, confidence_column_created = assign_default_confidence(df)
+    confidence_in_original = CONFIDENCE in df.columns
+    df, nan_df = assign_default_confidence(df)
     if ignore_predicate:
         key = [SUBJECT_ID, OBJECT_ID]
     else:
@@ -359,7 +360,7 @@ def filter_redundant_rows(
             [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
         ).drop_duplicates()
 
-    if confidence_column_created:
+    if confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
 
@@ -392,26 +393,24 @@ def get_row_based_on_hierarchy(df: pd.DataFrame):
 
 def assign_default_confidence(
     df: pd.DataFrame,
-) -> Tuple[pd.DataFrame, pd.DataFrame, bool]:
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Assign :data:`numpy.nan` to confidence that are blank.
 
     :param df: SSSOM DataFrame
     :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
     """
-    confidence_column_created = False
     # Get rows having numpy.NaN as confidence
     if df is not None:
         new_df = df.copy()
         if CONFIDENCE not in new_df.columns:
             new_df[CONFIDENCE] = 0.0  # np.NaN
             nan_df = pd.DataFrame(columns=new_df.columns)
-            confidence_column_created = True
         else:
             new_df = df[~df[CONFIDENCE].isna()]
             nan_df = df[df[CONFIDENCE].isna()]
     else:
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
-    return new_df, nan_df, confidence_column_created
+    return new_df, nan_df
 
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
@@ -705,7 +704,8 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     """
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
-    df, nan_df, confidence_column_created = assign_default_confidence(df)
+    confidence_in_original = CONFIDENCE in df.columns
+    df, nan_df = assign_default_confidence(df)
     if df is None:
         raise ValueError(
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
@@ -825,7 +825,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     else:
         return_df = reconciled_df.append(nan_df).drop_duplicates()
 
-    if confidence_column_created:
+    if confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
 
     return return_df
