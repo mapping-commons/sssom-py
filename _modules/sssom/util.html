@@ -10,7 +10,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -220,8 +221,14 @@
             <span class="n">description</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">description</span>
 
-<div class="viewcode-block" id="MappingSetDataFrame.clean_prefix_map"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.MappingSetDataFrame.clean_prefix_map">[docs]</a>    <span class="k">def</span> <span class="nf">clean_prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove unused prefixes from the internal prefix map based on the internal dataframe.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MappingSetDataFrame.clean_prefix_map"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.MappingSetDataFrame.clean_prefix_map">[docs]</a>    <span class="k">def</span> <span class="nf">clean_prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove unused prefixes from the internal prefix map based on the internal dataframe.</span>
+
+<span class="sd">        :param strict: Boolean if True, errors out if all prefixes in dataframe are not</span>
+<span class="sd">                       listed in the &#39;curie_map&#39;.</span>
+<span class="sd">        :raises ValueError: If prefixes absent in &#39;curie_map&#39; and strict flag = True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_prefixes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">prefixes_in_table</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
@@ -241,7 +248,7 @@
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                     <span class="n">missing_prefixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">missing_prefixes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">missing_prefixes</span> <span class="ow">and</span> <span class="n">strict</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">missing_prefixes</span><span class="si">}</span><span class="s2"> are used in the SSSOM mapping set but it does not exist in the prefix map&quot;</span>
             <span class="p">)</span>
