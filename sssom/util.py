@@ -360,7 +360,7 @@ def filter_redundant_rows(
             [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
         ).drop_duplicates()
 
-    if confidence_in_original:
+    if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
 
