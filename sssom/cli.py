@@ -500,7 +500,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @click.option(
     "-R",
     "--reconcile",
-    default=True,
+    default=False,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option

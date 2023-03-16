@@ -285,6 +285,7 @@ def filter_redundant_rows(
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
     # df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: x + random.random() / 10000)
+    confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
     if ignore_predicate:
         key = [SUBJECT_ID, OBJECT_ID]
@@ -367,7 +368,7 @@ def filter_redundant_rows(
             [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
         ).drop_duplicates()
 
-    if return_df[CONFIDENCE].isnull().all():
+    if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
 
@@ -410,7 +411,7 @@ def assign_default_confidence(
     if df is not None:
         new_df = df.copy()
         if CONFIDENCE not in new_df.columns:
-            new_df[CONFIDENCE] = np.NaN
+            new_df[CONFIDENCE] = 0.0  # np.NaN
             nan_df = pd.DataFrame(columns=new_df.columns)
         else:
             new_df = df[~df[CONFIDENCE].isna()]
@@ -711,6 +712,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     """
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
+    confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
     if df is None:
         raise ValueError(
@@ -830,6 +832,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         return_df = reconciled_df
     else:
         return_df = reconciled_df.append(nan_df).drop_duplicates()
+
+    if not confidence_in_original:
+        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
 
     return return_df
 
