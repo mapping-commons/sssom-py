@@ -359,6 +359,7 @@
     <span class="c1"># create a &#39;sort&#39; method and then replce the following line by sort()</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">sort_sssom</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="c1"># df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: x + random.random() / 10000)</span>
+    <span class="n">confidence_in_original</span> <span class="o">=</span> <span class="n">CONFIDENCE</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
     <span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span> <span class="o">=</span> <span class="n">assign_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ignore_predicate</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">]</span>
@@ -441,7 +442,7 @@
             <span class="p">[</span><span class="n">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">concerned_df</span><span class="p">),</span> <span class="n">return_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
         <span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">return_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">confidence_in_original</span><span class="p">:</span>
         <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">return_df</span></div>
 
@@ -484,7 +485,7 @@
     <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># np.NaN</span>
             <span class="n">nan_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
@@ -785,6 +786,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Handle DataFrames with no &#39;confidence&#39; column (basically adding a np.NaN to all non-numeric confidences)</span>
+    <span class="n">confidence_in_original</span> <span class="o">=</span> <span class="n">CONFIDENCE</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
     <span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span> <span class="o">=</span> <span class="n">assign_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -904,6 +906,9 @@
         <span class="n">return_df</span> <span class="o">=</span> <span class="n">reconciled_df</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">return_df</span> <span class="o">=</span> <span class="n">reconciled_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nan_df</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">confidence_in_original</span><span class="p">:</span>
+        <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">return_df</span></div>
 
