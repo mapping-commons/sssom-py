@@ -240,9 +240,12 @@
 
         <span class="n">new_prefixes</span><span class="p">:</span> <span class="n">PrefixMap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">default_prefix_map</span> <span class="o">=</span> <span class="n">get_default_metadata</span><span class="p">()</span><span class="o">.</span><span class="n">prefix_map</span>
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">all_prefixes</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
                 <span class="n">new_prefixes</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">default_prefix_map</span><span class="p">:</span>
+                <span class="n">new_prefixes</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_prefix_map</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2"> is used in the SSSOM mapping set but it does not exist in the prefix map&quot;</span>
