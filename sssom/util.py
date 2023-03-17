@@ -166,9 +166,12 @@ class MappingSetDataFrame:
 
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
+        default_prefix_map = get_default_metadata().prefix_map
         for prefix in all_prefixes:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
+            elif prefix in default_prefix_map:
+                new_prefixes[prefix] = default_prefix_map[prefix]
             else:
                 logging.warning(
                     f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
