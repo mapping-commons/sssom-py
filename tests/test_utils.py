@@ -88,6 +88,24 @@ class TestIO(unittest.TestCase):
             ),
         )
 
+    def test_clean_prefix_map_strict(self):
+        """Test clean prefix map with 'strict'=True."""
+        msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
+        with self.assertRaises(ValueError):
+            msdf.clean_prefix_map(strict=True)
+
+    def test_clean_prefix_map_not_strict(self):
+        """Test clean prefix map with 'strict'=False."""
+        expected_difference = set({"x", "y", "z1", "y1", "z", "x1"})
+        msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
+        original_curie_map = msdf.prefix_map
+        msdf.clean_prefix_map(strict=False)
+        new_curie_map = msdf.prefix_map
+        self.assertEqual(
+            set(new_curie_map.keys()) - set(original_curie_map.keys()),
+            expected_difference,
+        )
+
     def test_invert_nodes(self):
         """Test invert nodes."""
         subject_prefix = "a"

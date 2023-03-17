@@ -70,6 +70,7 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    UNKNOWN_IRI,
     SSSOMSchemaView,
 )
 from .context import (
@@ -174,6 +175,9 @@ class MappingSetDataFrame:
                 )
                 if prefix != "":
                     missing_prefixes.append(prefix)
+                    if not strict:
+                        new_prefixes[prefix] = UNKNOWN_IRI + prefix.lower() + "/"
+
         if missing_prefixes and strict:
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
