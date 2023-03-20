@@ -1,5 +1,6 @@
 """Validators."""
 
+import logging
 from typing import List
 
 from jsonschema import ValidationError
@@ -7,6 +8,7 @@ from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from sssom_schema import MappingSet
 
+from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 
@@ -20,7 +22,6 @@ def validate(
 
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
-    :return: Validation error or None.
     """
     validation_methods = {
         SchemaValidationType.JsonSchema: validate_json_schema,
@@ -28,7 +29,7 @@ def validate(
         SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
     }
     for vt in validation_types:
-        return validation_methods[vt](msdf)
+        validation_methods[vt](msdf)
 
 
 def validate_json_schema(msdf: MappingSetDataFrame) -> None:
@@ -70,6 +71,16 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     :raises ValidationError: If all prefixes not in curie_map.
     """
     prefixes = get_all_prefixes(msdf)
+    prefixes_including_builtins = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    added_built_in = {
+        k: v
+        for k, v in prefixes_including_builtins.items()
+        if k not in msdf.prefix_map.keys()
+    }
+    if len(added_built_in) > 0:
+        logging.info(f"Adding prefixes: {added_built_in} to the MapingSetDataFrame.")
+    msdf.prefix_map = prefixes_including_builtins
+
     missing_prefixes = []
     for pref in prefixes:
         if pref not in list(msdf.prefix_map.keys()):

@@ -5,8 +5,11 @@ import logging
 import uuid
 from typing import Optional
 
+from linkml.generators.jsonldcontextgen import ContextGenerator
+
+from sssom.constants import SCHEMA_YAML
+
 from .external_context import sssom_external_context
-from .internal_context import sssom_context
 from .typehints import Metadata, MetadataType, PrefixMap
 
 # HERE = pathlib.Path(__file__).parent.resolve()
@@ -14,7 +17,7 @@ from .typehints import Metadata, MetadataType, PrefixMap
 # EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
-SSSOM_BUILT_IN_PREFIXES = ["sssom", "owl", "rdf", "rdfs", "skos"]
+SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 
@@ -26,6 +29,7 @@ def get_jsonld_context():
 
     :return: JSON-LD context
     """
+    sssom_context = ContextGenerator(SCHEMA_YAML).serialize()
     return json.loads(sssom_context, strict=False)
 
 
@@ -47,7 +51,7 @@ def get_built_in_prefix_map() -> PrefixMap:
     contxt = get_jsonld_context()
     prefix_map = {}
     for key in contxt["@context"]:
-        if key in SSSOM_BUILT_IN_PREFIXES:
+        if key in list(SSSOM_BUILT_IN_PREFIXES):
             v = contxt["@context"][key]
             if isinstance(v, str):
                 prefix_map[key] = v
@@ -62,6 +66,7 @@ def add_built_in_prefixes_to_prefix_map(
     [Auto generated from sssom.yaml by jsonldcontextgen.py]
 
     :param prefix_map: A custom prefix map
+    :raises ValueError: If there is a prefix map mismatch.
     :return: A prefix map
     """
     builtinmap = get_built_in_prefix_map()
@@ -72,7 +77,7 @@ def add_built_in_prefixes_to_prefix_map(
             if k not in prefix_map:
                 prefix_map[k] = v
             elif builtinmap[k] != prefix_map[k]:
-                logging.warning(
+                raise ValueError(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
     return prefix_map

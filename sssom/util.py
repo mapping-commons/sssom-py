@@ -38,30 +38,47 @@ from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
 from .constants import (
+    COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
-    ENTITY_REFERENCE_SLOTS,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
-    MULTIVALUED_SLOTS,
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
+    OBO_HAS_DB_XREF,
+    OWL_DIFFERENT_FROM,
+    OWL_EQUIVALENT_CLASS,
     PREDICATE_ID,
+    PREDICATE_INVERT_DICTIONARY,
+    PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
     PREFIX_MAP_MODES,
-    SCHEMA_DICT,
+    RDFS_SUBCLASS_OF,
     SCHEMA_YAML,
     SEMAPV,
+    SKOS_BROAD_MATCH,
+    SKOS_CLOSE_MATCH,
+    SKOS_EXACT_MATCH,
+    SKOS_NARROW_MATCH,
+    SKOS_RELATED_MATCH,
+    SSSOM_SUPERCLASS_OF,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    UNKNOWN_IRI,
+    SSSOMSchemaView,
 )
-from .context import SSSOM_URI_PREFIX, get_default_metadata, get_jsonld_context
+from .context import (
+    SSSOM_BUILT_IN_PREFIXES,
+    SSSOM_URI_PREFIX,
+    get_default_metadata,
+    get_jsonld_context,
+)
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -131,22 +148,67 @@ class MappingSetDataFrame:
             description += self.df.tail().to_string() + "\n"
         return description
 
-    def clean_prefix_map(self) -> None:
-        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
-        prefixes_in_map = get_prefixes_used_in_table(self.df)
+    def clean_prefix_map(self, strict: bool = True) -> None:
+        """
+        Remove unused prefixes from the internal prefix map based on the internal dataframe.
+
+        :param strict: Boolean if True, errors out if all prefixes in dataframe are not
+                       listed in the 'curie_map'.
+        :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
+        """
+        all_prefixes = []
+        prefixes_in_table = get_prefixes_used_in_table(self.df)
+        if self.metadata:
+            prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)
+            all_prefixes = list(set(prefixes_in_table + prefixes_in_metadata))
+        else:
+            all_prefixes = prefixes_in_table
+
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
-        for prefix in prefixes_in_map:
+        default_prefix_map = get_default_metadata().prefix_map
+        for prefix in all_prefixes:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
+            elif prefix in default_prefix_map:
+                new_prefixes[prefix] = default_prefix_map[prefix]
             else:
                 logging.warning(
-                    f"{prefix} is used in the data frame but does not exist in prefix map"
+                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
                 )
-                missing_prefixes.append(prefix)
-        if missing_prefixes:
-            self.df = filter_out_prefixes(self.df, missing_prefixes)
+                if prefix != "":
+                    missing_prefixes.append(prefix)
+                    if not strict:
+                        new_prefixes[prefix] = UNKNOWN_IRI + prefix.lower() + "/"
+
+        if missing_prefixes and strict:
+            raise ValueError(
+                f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
+            )
+            # self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
+
+    def remove_mappings(self, msdf: "MappingSetDataFrame"):
+        """Remove mappings in right msdf from left msdf.
+
+        :param msdf: MappingSetDataframe object to be removed from primary msdf object.
+        """
+        self.df = (
+            pd.merge(
+                self.df,
+                msdf.df,
+                on=KEY_FEATURES,
+                how="outer",
+                suffixes=("", "_2"),
+                indicator=True,
+            )
+            .query("_merge == 'left_only'")
+            .drop("_merge", axis=1)
+            .reset_index(drop=True)
+        )
+
+        self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
+        self.clean_prefix_map()
 
 
 @dataclass
@@ -230,6 +292,7 @@ def filter_redundant_rows(
     # create a 'sort' method and then replce the following line by sort()
     df = sort_sssom(df)
     # df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: x + random.random() / 10000)
+    confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
     if ignore_predicate:
         key = [SUBJECT_ID, OBJECT_ID]
@@ -266,11 +329,81 @@ def filter_redundant_rows(
     # will be removed from pandas in a future version.
     # Use pandas.concat instead.
     # return_df = df.append(nan_df).drop_duplicates()
-    return_df = pd.concat([df, nan_df]).drop_duplicates()
+    confidence_reconciled_df = pd.concat([df, nan_df]).drop_duplicates()
 
-    if return_df[CONFIDENCE].isnull().all():
+    # Reconciling dataframe rows based on the predicates with equal confidence.
+    if PREDICATE_MODIFIER in confidence_reconciled_df.columns:
+        tmp_df = confidence_reconciled_df[
+            [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE, PREDICATE_MODIFIER]
+        ]
+        tmp_df = tmp_df[tmp_df[PREDICATE_MODIFIER] != PREDICATE_MODIFIER_NOT].drop(
+            PREDICATE_MODIFIER, axis=1
+        )
+    else:
+        tmp_df = confidence_reconciled_df[
+            [SUBJECT_ID, OBJECT_ID, PREDICATE_ID, CONFIDENCE]
+        ]
+    tmp_df_grp = tmp_df.groupby(
+        [SUBJECT_ID, OBJECT_ID, CONFIDENCE], as_index=False
+    ).count()
+    tmp_df_grp = tmp_df_grp[tmp_df_grp[PREDICATE_ID] > 1].drop(PREDICATE_ID, axis=1)
+    non_predicate_reconciled_df = (
+        confidence_reconciled_df.merge(
+            tmp_df_grp, on=list(tmp_df_grp.columns), how="left", indicator=True
+        )
+        .query('_merge == "left_only"')
+        .drop(columns="_merge")
+    )
+
+    multiple_predicate_df = (
+        confidence_reconciled_df.merge(
+            tmp_df_grp, on=list(tmp_df_grp.columns), how="right", indicator=True
+        )
+        .query('_merge == "both"')
+        .drop(columns="_merge")
+    )
+
+    return_df = non_predicate_reconciled_df
+    for _, row in tmp_df_grp.iterrows():
+        logic_df = multiple_predicate_df[list(tmp_df_grp.columns)] == row
+        concerned_row_index = (
+            logic_df[logic_df[list(tmp_df_grp.columns)]].dropna().index
+        )
+        concerned_df = multiple_predicate_df.iloc[concerned_row_index]
+        # Go down the hierarchical list of PREDICATE_LIST and grab the first match
+        return_df = pd.concat(
+            [get_row_based_on_hierarchy(concerned_df), return_df], axis=0
+        ).drop_duplicates()
+
+    if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
     return return_df
+
+
+def get_row_based_on_hierarchy(df: pd.DataFrame):
+    """Get row based on hierarchy of predicates.
+
+    The hierarchy is as follows:
+    # owl:equivalentClass
+    # owl:equivalentProperty
+    # rdfs:subClassOf
+    # rdfs:subPropertyOf
+    # owl:sameAs
+    # skos:exactMatch
+    # skos:closeMatch
+    # skos:broadMatch
+    # skos:narrowMatch
+    # oboInOwl:hasDbXref
+    # skos:relatedMatch
+    # rdfs:seeAlso
+
+    :param df: Dataframe containing multiple predicates for same subject and object.
+    :return: Dataframe with a single row which ranks higher in the hierarchy.
+    """
+    for pred in PREDICATE_LIST:
+        hierarchical_df = df[df[PREDICATE_ID] == pred]
+        if not hierarchical_df.empty:
+            return hierarchical_df
 
 
 def assign_default_confidence(
@@ -283,15 +416,16 @@ def assign_default_confidence(
     """
     # Get rows having numpy.NaN as confidence
     if df is not None:
-        if CONFIDENCE not in df.columns:
-            df[CONFIDENCE] = np.NaN
-            nan_df = pd.DataFrame(columns=df.columns)
+        new_df = df.copy()
+        if CONFIDENCE not in new_df.columns:
+            new_df[CONFIDENCE] = 0.0  # np.NaN
+            nan_df = pd.DataFrame(columns=new_df.columns)
         else:
-            df = df[~df[CONFIDENCE].isna()]
+            new_df = df[~df[CONFIDENCE].isna()]
             nan_df = df[df[CONFIDENCE].isna()]
     else:
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
-    return df, nan_df
+    return new_df, nan_df
 
 
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
@@ -407,29 +541,27 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
         residual_confidence = (1 - (confidence + inverse_confidence)) / 2.0
 
         predicate = row[PREDICATE_ID]
-        if predicate == "owl:equivalentClass":
+        if predicate == OWL_EQUIVALENT_CLASS:
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "skos:exactMatch":
+        elif predicate == SKOS_EXACT_MATCH:
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "skos:closeMatch":
+        elif predicate == SKOS_CLOSE_MATCH:
             # TODO: consider distributing
             predicate_type = PREDICATE_EQUIVALENT
-        elif predicate == "owl:subClassOf":
+        elif predicate == RDFS_SUBCLASS_OF:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == "skos:broadMatch":
+        elif predicate == SKOS_BROAD_MATCH:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == "inverseOf(owl:subClassOf)":
+        elif predicate == SSSOM_SUPERCLASS_OF:
             predicate_type = PREDICATE_SUPERCLASS
-        elif predicate == "skos:narrowMatch":
+        elif predicate == SKOS_NARROW_MATCH:
             predicate_type = PREDICATE_SUPERCLASS
-        elif predicate == "owl:differentFrom":
-            predicate_type = PREDICATE_SIBLING
-        elif predicate == "dbpedia-owl:different":
+        elif predicate == OWL_DIFFERENT_FROM:
             predicate_type = PREDICATE_SIBLING
         # * Added by H2 ############################
-        elif predicate == "oboInOwl:hasDbXref":
+        elif predicate == OBO_HAS_DB_XREF:
             predicate_type = PREDICATE_HAS_DBXREF
-        elif predicate == "skos:relatedMatch":
+        elif predicate == SKOS_RELATED_MATCH:
             predicate_type = PREDICATE_RELATED_MATCH
         # * ########################################
         else:
@@ -515,7 +647,7 @@ def sha256sum(path: str) -> str:
 
 def merge_msdf(
     *msdfs: MappingSetDataFrame,
-    reconcile: bool = True,
+    reconcile: bool = False,
 ) -> MappingSetDataFrame:
     """Merge multiple MappingSetDataFrames into one.
 
@@ -550,7 +682,10 @@ def merge_msdf(
     merged_msdf.df = df_merged
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
-        if PREDICATE_MODIFIER in merged_msdf.df.columns:
+        if (
+            PREDICATE_MODIFIER in merged_msdf.df.columns
+            and PREDICATE_MODIFIER_NOT in merged_msdf.df[PREDICATE_MODIFIER]
+        ):
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
     # TODO: Add default values for license and mapping_set_id.
@@ -584,6 +719,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     """
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
+    confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
     if df is None:
         raise ValueError(
@@ -645,7 +781,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
                 & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
                 & (
                     combined_normalized_subset[MAPPING_JUSTIFICATION]
-                    == SEMAPV.ManualMappingCuration
+                    == SEMAPV.ManualMappingCuration.value
                 )
             )
             # In spite of this, if match_condition_1
@@ -703,6 +839,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         return_df = reconciled_df
     else:
         return_df = reconciled_df.append(nan_df).drop_duplicates()
+
+    if not confidence_in_original:
+        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
 
     return return_df
 
@@ -775,7 +914,7 @@ def read_csv(
                 if not line.decode("utf-8").startswith(comment)
             ]
         )
-    return pd.read_csv(StringIO(lines), sep=sep)
+    return pd.read_csv(StringIO(lines), sep=sep, low_memory=False)
 
 
 def read_metadata(filename: str) -> Metadata:
@@ -840,8 +979,8 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     data = []
     slots_with_double_as_range = [
         s
-        for s in SCHEMA_DICT["slots"].keys()
-        if SCHEMA_DICT["slots"][s]["range"] == "double"
+        for s in _get_sssom_schema_object().dict["slots"].keys()
+        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
     ]
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
@@ -874,19 +1013,21 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     map_dict = {}
     slots_with_double_as_range = [
         s
-        for s in SCHEMA_DICT["slots"].keys()
-        if SCHEMA_DICT["slots"][s]["range"] == "double"
+        for s in _get_sssom_schema_object().dict["slots"].keys()
+        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
     ]
     for property in map_obj:
         if map_obj[property] is not None:
             if isinstance(map_obj[property], list):
                 # IF object is an enum
                 if (
-                    SCHEMA_DICT["slots"][property]["range"]
-                    in SCHEMA_DICT["enums"].keys()
+                    _get_sssom_schema_object().dict["slots"][property]["range"]
+                    in _get_sssom_schema_object().dict["enums"].keys()
                 ):
                     # IF object is a multivalued enum
-                    if SCHEMA_DICT["slots"][property]["multivalued"]:
+                    if _get_sssom_schema_object().dict["slots"][property][
+                        "multivalued"
+                    ]:
                         map_dict[property] = "|".join(
                             enum_value.code.text for enum_value in map_obj[property]
                         )
@@ -902,8 +1043,8 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
             else:
                 # IF object is an enum
                 if (
-                    SCHEMA_DICT["slots"][property]["range"]
-                    in SCHEMA_DICT["enums"].keys()
+                    _get_sssom_schema_object().dict["slots"][property]["range"]
+                    in _get_sssom_schema_object().dict["enums"].keys()
                 ):
                     map_dict[property] = map_obj[property].code.text
                 else:
@@ -922,7 +1063,7 @@ class NoCURIEException(ValueError):
     """An exception raised when a CURIE can not be parsed with a given prefix map."""
 
 
-CURIE_RE = re.compile(r"[A-Za-z0-9_]+[:][A-Za-z0-9_]")
+CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
 
 def is_curie(string: str) -> bool:
@@ -981,35 +1122,86 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
-    prefixes = []
+    prefixes = list(SSSOM_BUILT_IN_PREFIXES)
     if not df.empty:
-        for col in KEY_FEATURES:
-            for v in df[col].values:
-                prefixes.append(get_prefix_from_curie(v))
+        for col in _get_sssom_schema_object().entity_reference_slots:
+            if col in df.columns:
+                prefixes.extend(list(set(df[col].str.split(":", n=1, expand=True)[0])))
+    if "" in prefixes:
+        prefixes.remove("")
     return list(set(prefixes))
 
 
-def filter_out_prefixes(df: pd.DataFrame, filter_prefixes: List[str]) -> pd.DataFrame:
+def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
+    """Get a list of prefixes used in CURIEs in the metadata."""
+    prefixes = list(SSSOM_BUILT_IN_PREFIXES)
+    if meta:
+        for v in meta.values():
+            if type(v) is list:
+                prefixes.extend(
+                    [
+                        get_prefix_from_curie(x)
+                        for x in v
+                        if get_prefix_from_curie(x) != ""
+                    ]
+                )
+            else:
+                pref = get_prefix_from_curie(str(v))
+                if pref != "" and not None:
+                    prefixes.append(pref)
+    return list(set(prefixes))
+
+
+def filter_out_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+) -> pd.DataFrame:
     """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
 
     :param df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
+    :param features: List of dataframe column names dataframe to consider
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
     rows = []
 
     for _, row in df.iterrows():
-        # Get list of CURIEs from the 3 columns (KEY_FEATURES) for the row.
-        prefixes = {get_prefix_from_curie(curie) for curie in row[KEY_FEATURES]}
-        # Confirm if none of the 3 CURIEs in the list above appear in the filter_prefixes list.
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        # Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
         if not any(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
     else:
-        return pd.DataFrame(columns=KEY_FEATURES)
+        return pd.DataFrame(columns=features)
+
+
+def filter_prefixes(
+    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+) -> pd.DataFrame:
+    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+
+    :param df: Pandas DataFrame
+    :param filter_prefixes: List of prefixes
+    :param features: List of dataframe column names dataframe to consider
+    :return: Pandas Dataframe
+    """
+    filter_prefix_set = set(filter_prefixes)
+    rows = []
+
+    for _, row in df.iterrows():
+        prefixes = {
+            get_prefix_from_curie(curie) for curie in row[features] if curie is not None
+        }
+        # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
+        # If TRUE, append row.
+        if all(prefix in filter_prefix_set for prefix in prefixes):
+            rows.append(row)
+    if rows:
+        return pd.DataFrame(rows)
+    else:
+        return pd.DataFrame(columns=features)
 
 
 # TODO this is not used anywhere
@@ -1098,8 +1290,7 @@ def is_multivalued_slot(slot: str) -> bool:
     # Ideally:
     # view = SchemaView('schema/sssom.yaml')
     # return view.get_slot(slot).multivalued
-
-    return slot in MULTIVALUED_SLOTS
+    return slot in _get_sssom_schema_object().multivalued_slots
 
 
 def reconcile_prefix_and_data(
@@ -1162,7 +1353,7 @@ def reconcile_prefix_and_data(
     # Data editing
     if len(data_switch_dict) > 0:
         # Read schema file
-        slots = SCHEMA_DICT["slots"]
+        slots = _get_sssom_schema_object().dict["slots"]
         entity_reference_columns = [
             k for k, v in slots.items() if v["range"] == "EntityReference"
         ]
@@ -1192,7 +1383,9 @@ def sort_df_rows_columns(
     """
     if by_columns and len(df.columns) > 0:
         column_sequence = [
-            col for col in SCHEMA_DICT["slots"].keys() if col in df.columns
+            col
+            for col in _get_sssom_schema_object().dict["slots"].keys()
+            if col in df.columns
         ]
         df = df.reindex(column_sequence, axis=1)
     if by_rows and len(df) > 0:
@@ -1213,7 +1406,11 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         metadata_keys = list(msdf.metadata.keys())
         df_columns_list = msdf.df.columns.to_list()  # type: ignore
         all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [s for s in all_keys if s in ENTITY_REFERENCE_SLOTS]
+        ent_ref_slots = [
+            s
+            for s in all_keys
+            if s in _get_sssom_schema_object().entity_reference_slots
+        ]
 
         for slot in ent_ref_slots:
             if slot in metadata_keys:
@@ -1242,6 +1439,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
                         [
                             get_prefix_from_curie(s)
                             for s in list(set(msdf.df[slot].to_list()))  # type: ignore
+                            if get_prefix_from_curie(s) != ""
                         ]
                     )
                 )
@@ -1250,3 +1448,171 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
         prefix_list = list(set(prefix_list))
 
     return prefix_list
+
+
+def augment_metadata(
+    msdf: MappingSetDataFrame, meta: dict, replace_multivalued: bool = False
+) -> MappingSetDataFrame:
+    """Augment metadata with parameters passed.
+
+    :param msdf: MappingSetDataFrame (MSDF) object.
+    :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False.
+    :raises ValueError: If type of slot is neither str nor list.
+    :return: MSDF with updated metadata.
+    """
+    are_params_slots(meta)
+
+    if msdf.metadata:
+        for k, v in meta.items():
+            # If slot is multivalued, add to list.
+            if (
+                k in _get_sssom_schema_object().multivalued_slots
+                and not replace_multivalued
+            ):
+                tmp_value: list = []
+                if isinstance(msdf.metadata[k], str):
+                    tmp_value = [msdf.metadata[k]]
+                elif isinstance(msdf.metadata[k], list):
+                    tmp_value = msdf.metadata[k]
+                else:
+                    raise ValueError(
+                        f"{k} is of type {type(msdf.metadata[k])} and \
+                        as of now only slots of type 'str' or 'list' are handled."
+                    )
+                tmp_value.extend(v)
+                msdf.metadata[k] = list(set(tmp_value))
+            elif (
+                k in _get_sssom_schema_object().multivalued_slots
+                and replace_multivalued
+            ):
+                msdf.metadata[k] = list(v)
+            else:
+                msdf.metadata[k] = v[0]
+
+    return msdf
+
+
+def are_params_slots(params: dict) -> bool:
+    """Check if parameters conform to the slots in MAPPING_SET_SLOTS.
+
+    :param params: Dictionary of parameters.
+    :raises ValueError: If params are not slots.
+    :return: True/False
+    """
+    empty_params = {k: v for k, v in params.items() if v is None or v == ""}
+    if len(empty_params) > 0:
+        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
+
+    legit_params = all(
+        p in _get_sssom_schema_object().mapping_set_slots for p in params.keys()
+    )
+    if not legit_params:
+        invalids = [
+            p for p in params if p not in _get_sssom_schema_object().mapping_set_slots
+        ]
+        raise ValueError(
+            f"The params are invalid: {invalids}. Should be any of the following: {_get_sssom_schema_object().mapping_set_slots}"
+        )
+    return True
+
+
+def _get_sssom_schema_object() -> SSSOMSchemaView:
+    sssom_sv_object = (
+        SSSOMSchemaView.instance
+        if hasattr(SSSOMSchemaView, "instance")
+        else SSSOMSchemaView()
+    )
+    return sssom_sv_object
+
+
+def invert_mappings(
+    df: pd.DataFrame,
+    subject_prefix: Optional[str] = None,
+    merge_inverted: bool = True,
+    predicate_invert_dictionary: dict = None,
+) -> pd.DataFrame:
+    """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
+
+    :param df: Pandas dataframe.
+    :param subject_prefix: Prefix of subjects desired.
+    :param merge_inverted: If True (default), add inverted dataframe to input else,
+                          just return inverted data.
+    :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
+    :return: Pandas dataframe with all subject IDs having the same prefix.
+    """
+    blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
+    if predicate_invert_dictionary:
+        predicate_invert_map = predicate_invert_dictionary
+    else:
+        predicate_invert_map = PREDICATE_INVERT_DICTIONARY
+    columns_invert_map = COLUMN_INVERT_DICTIONARY
+
+    predicate_modified_df = pd.DataFrame(df[~blank_predicate_modifier])
+    non_predicate_modified_df = pd.DataFrame(df[blank_predicate_modifier])
+    if subject_prefix:
+        subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(
+            subject_prefix + ":"
+        )
+        object_starts_with_prefix_condition = df[OBJECT_ID].str.startswith(
+            subject_prefix + ":"
+        )
+        prefixed_subjects_df = pd.DataFrame(
+            non_predicate_modified_df[
+                (
+                    subject_starts_with_prefix_condition
+                    & ~object_starts_with_prefix_condition
+                )
+            ]
+        )
+        non_prefix_subjects_df = pd.DataFrame(
+            non_predicate_modified_df[
+                (
+                    ~subject_starts_with_prefix_condition
+                    & object_starts_with_prefix_condition
+                )
+            ]
+        )
+        df_to_invert = non_prefix_subjects_df.loc[
+            non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+        ]
+        # non_inverted_df_by_predicate = non_prefix_subjects_df.loc[
+        #     ~non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+        # ]
+    else:
+        prefixed_subjects_df = pd.DataFrame()
+        df_to_invert = non_predicate_modified_df.loc[
+            non_predicate_modified_df[PREDICATE_ID].isin(
+                list(predicate_invert_map.keys())
+            )
+        ]
+        non_inverted_df_by_predicate = non_predicate_modified_df.loc[
+            ~non_predicate_modified_df[PREDICATE_ID].isin(
+                list(predicate_invert_map.keys())
+            )
+        ]
+    list_of_subject_object_columns = [
+        x for x in df_to_invert.columns if x.startswith(("subject", "object"))
+    ]
+    inverted_df = df_to_invert.rename(
+        columns=_invert_column_names(list_of_subject_object_columns, columns_invert_map)
+    )
+    inverted_df = inverted_df[df.columns]
+    inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_map)
+    inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
+    if not prefixed_subjects_df.empty:
+        return_df = pd.concat([prefixed_subjects_df, inverted_df]).drop_duplicates()
+    else:
+        return_df = pd.concat(
+            [inverted_df, predicate_modified_df, non_inverted_df_by_predicate]
+        ).drop_duplicates()
+    if merge_inverted:
+        return pd.concat([df, return_df]).drop_duplicates()
+    else:
+        return return_df
+
+
+def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
+    """Return a dictionary for column renames in pandas DataFrame."""
+    return {x: columns_invert_map[x] for x in column_names}

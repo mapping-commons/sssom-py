@@ -3,7 +3,7 @@
 import unittest
 
 import yaml
-from pandasql import sqldf
+from pansql import sqldf
 
 from sssom import (
     collapse,
@@ -44,7 +44,7 @@ class TestCollapse(unittest.TestCase):
     def test_filter(self):
         """Test the row count after filtering redundant rows."""
         df = filter_redundant_rows(self.df)
-        self.assertEqual(len(df), 91)
+        self.assertEqual(len(df), 92)
 
     def test_ptable(self):
         """Test the row count of the ptable export."""

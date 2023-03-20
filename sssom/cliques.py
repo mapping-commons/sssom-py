@@ -11,6 +11,17 @@ import pandas as pd
 # from .sssom_datamodel import Mapping
 from sssom_schema import Mapping
 
+from sssom.constants import (
+    OWL_DIFFERENT_FROM,
+    OWL_EQUIVALENT_CLASS,
+    RDFS_SUBCLASS_OF,
+    SKOS_BROAD_MATCH,
+    SKOS_CLOSE_MATCH,
+    SKOS_EXACT_MATCH,
+    SKOS_NARROW_MATCH,
+    SSSOM_SUPERCLASS_OF,
+)
+
 from .parsers import to_mapping_set_document
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
@@ -31,24 +42,22 @@ def to_digraph(msdf: MappingSetDataFrame) -> nx.DiGraph:
 
             pi = None
 
-            if p == "owl:equivalentClass":
+            if p == OWL_EQUIVALENT_CLASS:
                 pi = 2
-            elif p == "skos:exactMatch":
+            elif p == SKOS_EXACT_MATCH:
                 pi = 2
-            elif p == "skos:closeMatch":
+            elif p == SKOS_CLOSE_MATCH:
                 # TODO: consider distributing
                 pi = 2
-            elif p == "owl:subClassOf":
+            elif p == RDFS_SUBCLASS_OF:
                 pi = 0
-            elif p == "skos:broadMatch":
+            elif p == SKOS_BROAD_MATCH:
                 pi = 0
-            elif p == "inverseOf(owl:subClassOf)":
+            elif p == SSSOM_SUPERCLASS_OF:
                 pi = 1
-            elif p == "skos:narrowMatch":
+            elif p == SKOS_NARROW_MATCH:
                 pi = 1
-            elif p == "owl:differentFrom":
-                pi = 3
-            elif p == "dbpedia-owl:different":
+            elif p == OWL_DIFFERENT_FROM:
                 pi = 3
 
             if pi == 0:

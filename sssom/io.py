@@ -2,10 +2,13 @@
 
 import logging
 import os
+import re
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
+import pandas as pd
 from bioregistry import get_iri
+from pansql import sqldf
 
 from sssom.validators import validate
 
@@ -16,6 +19,7 @@ from .constants import (
     SchemaValidationType,
 )
 from .context import (
+    add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
     set_default_license,
     set_default_mapping_set_id,
@@ -23,6 +27,9 @@ from .context import (
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import (
+    MappingSetDataFrame,
+    are_params_slots,
+    augment_metadata,
     is_curie,
     is_iri,
     raise_for_bad_path,
@@ -134,7 +141,6 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 
 def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
-
     if prefix_map_mode is None:
         prefix_map_mode = PREFIX_MAP_MODE_METADATA_ONLY
 
@@ -228,3 +234,156 @@ def extract_iri(input, prefix_map) -> list:
             f"skipped from processing."
         )
     return []
+
+
+# def filter_file(input: str, prefix: tuple, predicate: tuple) -> MappingSetDataFrame:
+#     """Filter mapping file based on prefix and predicates provided.
+
+#     :param input: Input mapping file (tsv)
+#     :param prefix: Prefixes to be retained.
+#     :param predicate: Predicates to be retained.
+#     :return: Filtered MappingSetDataFrame.
+#     """
+#     msdf: MappingSetDataFrame = parse_sssom_table(input)
+#     prefix_map = msdf.prefix_map
+#     df: pd.DataFrame = msdf.df
+#     # Filter prefix_map
+#     filtered_prefix_map = {
+#         k: v for k, v in prefix_map.items() if k in prefix_map.keys() and k in prefix
+#     }
+
+#     filtered_predicates = {
+#         k: v
+#         for k, v in prefix_map.items()
+#         if len([x for x in predicate if str(x).startswith(k)])
+#         > 0  # use re.find instead.
+#     }
+#     filtered_prefix_map.update(filtered_predicates)
+#     filtered_prefix_map = add_built_in_prefixes_to_prefix_map(filtered_prefix_map)
+
+#     # Filter df based on predicates
+#     predicate_filtered_df: pd.DataFrame = df.loc[
+#         df[PREDICATE_ID].apply(lambda x: x in predicate)
+#     ]
+
+#     # Filter df based on prefix_map
+#     prefix_keys = tuple(filtered_prefix_map.keys())
+#     condition_subj = predicate_filtered_df[SUBJECT_ID].apply(
+#         lambda x: str(x).startswith(prefix_keys)
+#     )
+#     condition_obj = predicate_filtered_df[OBJECT_ID].apply(
+#         lambda x: str(x).startswith(prefix_keys)
+#     )
+#     filtered_df = predicate_filtered_df.loc[condition_subj & condition_obj]
+
+#     new_msdf: MappingSetDataFrame = MappingSetDataFrame(
+#         df=filtered_df, prefix_map=filtered_prefix_map, metadata=msdf.metadata
+#     )
+#     return new_msdf
+
+
+def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDataFrame:
+    """Run a SQL query over one or more SSSOM files.
+
+    Each of the N inputs is assigned a table name df1, df2, ..., dfN
+
+    Alternatively, the filenames can be used as table names - these are first stemmed
+    E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
+
+    Example:
+        sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+
+    Example:
+        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
+        FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
+
+    :param query: Query to be executed over a pandas DataFrame (msdf.df).
+    :param inputs: Input files that form the source tables for query.
+    :param output: Output.
+    :return: Filtered MappingSetDataFrame object.
+    """
+    n = 1
+    new_msdf = MappingSetDataFrame()
+    while len(inputs) >= n:
+        fn = inputs[n - 1]
+        msdf = parse_sssom_table(fn)
+        df = msdf.df
+        # df = parse(fn)
+        globals()[f"df{n}"] = df
+        tn = re.sub("[.].*", "", Path(fn).stem).lower()
+        globals()[tn] = df
+        n += 1
+
+    new_df = sqldf(query)
+    new_msdf.df = new_df
+    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    new_msdf.metadata = msdf.metadata
+    write_table(new_msdf, output)
+    return new_msdf
+
+
+def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
+    """Filter a dataframe by dynamically generating queries based on user input.
+
+    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
+
+    yields the query:
+
+    "SELECT * FROM df WHERE (subject_id LIKE 'x:%'  OR subject_id LIKE 'y:%')
+     AND (object_id LIKE 'y:%'  OR object_id LIKE 'z:%') " and displays the output.
+
+    :param input: DataFrame to be queried over.
+    :param output: Output location.
+    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :raises ValueError: If parameter provided is invalid.
+    :return: Filtered MappingSetDataFrame object.
+    """
+    params = {k: v for k, v in kwargs.items() if v}
+    query = "SELECT * FROM df WHERE ("
+    multiple_params = True if len(params) > 1 else False
+
+    # Check if all params are legit
+    input_df: pd.DataFrame = parse_sssom_table(input).df
+    if not input_df.empty and len(input_df.columns) > 0:
+        column_list = list(input_df.columns)
+    else:
+        raise ValueError(f"{input} is either not a SSSOM TSV file or an empty one.")
+    legit_params = all(p in column_list for p in params)
+    if not legit_params:
+        invalids = [p for p in params if p not in column_list]
+        raise ValueError(f"The params are invalid: {invalids}")
+
+    for idx, (k, v) in enumerate(params.items(), start=1):
+        query += k + " LIKE '" + v[0] + "' "
+        if len(v) > 1:
+            for idx2, exp in enumerate(v[1:]):
+                query += " OR "
+                query += k + " LIKE '" + exp + "'"
+                if idx2 + 1 == len(v) - 1:
+                    query += ") "
+        else:
+            query += ") "
+        if multiple_params and idx != len(params):
+            query += " AND ("
+    return run_sql_query(query=query, inputs=[input], output=output)
+
+
+def annotate_file(
+    input: str, output: TextIO, replace_multivalued: bool = False, **kwargs
+) -> MappingSetDataFrame:
+    """Annotate a file i.e. add custom metadata to the mapping set.
+
+    :param input: SSSOM tsv file to be queried over.
+    :param output: Output location.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False
+    :param **kwargs: Options provided by user
+        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
+    :return: Annotated MappingSetDataFrame object.
+    """
+    params = {k: v for k, v in kwargs.items() if v}
+    are_params_slots(params)
+    input_msdf = parse_sssom_table(input)
+    msdf = augment_metadata(input_msdf, params, replace_multivalued)
+    write_table(msdf, output)
+    return msdf

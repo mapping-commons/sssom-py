@@ -13,33 +13,53 @@ class TestReconcile(unittest.TestCase):
 
     def setUp(self) -> None:
         """Test up the test case with the third basic example."""
-        self.msdf = parse_sssom_table(data_dir / "basic3.tsv")
+        self.msdf1 = parse_sssom_table(data_dir / "basic3.tsv")
+        self.msdf2 = parse_sssom_table(data_dir / "basic7.tsv")
 
     def test_filter(self):
         """Test filtering returns the right number of rows."""
-        df = filter_redundant_rows(self.msdf.df)
-        self.assertEqual(10, len(df.index))
+        df1 = filter_redundant_rows(self.msdf1.df)
+        self.assertEqual(10, len(df1.index))
+        df2 = filter_redundant_rows(self.msdf2.df)
+        self.assertEqual(18, len(df2.index))
 
     def test_deal_with_negation(self):
         """Test handling negating returns the right number of rows."""
-        df = deal_with_negation(self.msdf.df)
-        self.assertEqual(7, len(df.index))
+        df1 = deal_with_negation(self.msdf1.df)
+        self.assertEqual(8, len(df1.index))
+        df2 = deal_with_negation(self.msdf2.df)
+        self.assertEqual(13, len(df2.index))
 
     def test_merge(self):
         """Test merging two tables."""
-        msdf1 = parse_sssom_table(data_dir / "basic.tsv")
-        msdf2 = parse_sssom_table(data_dir / "basic2.tsv")
-        merged_msdf = merge_msdf(msdf1, msdf2)
+        msdf3 = parse_sssom_table(data_dir / "basic.tsv")
+        merged_msdf1 = merge_msdf(self.msdf1, msdf3)
 
-        self.assertEqual(122, len(merged_msdf.df))
+        self.assertEqual(152, len(merged_msdf1.df))
 
-    def test_merge_no_reconcile(self):
+        merged_msdf2 = merge_msdf(self.msdf2, msdf3)
+        self.assertEqual(174, len(merged_msdf2.df))
+
+        merged_msdf3 = merge_msdf(self.msdf1, self.msdf2)
+        self.assertEqual(34, len(merged_msdf3.df))
+
+    def test_merge_with_reconcile(self):
+        """Test merging two tables with reconciliation."""
+        merged_msdf = merge_msdf(self.msdf1, self.msdf2, reconcile=True)
+        self.assertEqual(len(merged_msdf.df), 18)
+
+    def test_merge_without_reconcile(self):
         """Test merging two tables without reconciliation."""
-        msdf1 = parse_sssom_table(data_dir / "basic4.tsv")
-        msdf2 = parse_sssom_table(data_dir / "basic5.tsv")
+        merged_msdf = merge_msdf(self.msdf1, self.msdf2, reconcile=False)
+        self.assertEqual(len(merged_msdf.df), 34)
 
-        merged_msdf = merge_msdf(msdf1, msdf2, reconcile=False)
+    def test_merge_with_reconcile_without_confidence(self):
+        """Test merging two tables without reconciliation."""
+        msdf1 = parse_sssom_table(data_dir / "reconcile_1.tsv")
+        msdf2 = parse_sssom_table(data_dir / "reconcile_2.tsv")
 
-        self.assertEqual(53, len(msdf1.df))
-        self.assertEqual(53, len(msdf2.df))
+        merged_msdf = merge_msdf(msdf1, msdf2, reconcile=True)
+
+        self.assertEqual(3, len(msdf1.df))
+        self.assertEqual(4, len(msdf2.df))
         self.assertEqual(len(merged_msdf.df), (len(msdf1.df) + len(msdf2.df)))

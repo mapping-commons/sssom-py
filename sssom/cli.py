@@ -13,15 +13,13 @@ later, but that will cause problems--the code will get executed twice:
 
 import logging
 import os
-import re
 import sys
 from pathlib import Path
-from typing import ChainMap, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
 import yaml
-from pandasql import sqldf
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
@@ -29,12 +27,21 @@ from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
     SchemaValidationType,
+    SSSOMSchemaView,
 )
 from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
-from .io import convert_file, parse_file, split_file, validate_file
+from .io import (
+    annotate_file,
+    convert_file,
+    filter_file,
+    parse_file,
+    run_sql_query,
+    split_file,
+    validate_file,
+)
 from .parsers import parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
@@ -46,6 +53,7 @@ from .util import (
     compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
+    invert_mappings,
     merge_msdf,
     reconcile_prefix_and_data,
     remove_unmatched,
@@ -54,13 +62,20 @@ from .util import (
 )
 from .writers import write_table
 
+SSSOM_SV_OBJECT = (
+    SSSOMSchemaView.instance
+    if hasattr(SSSOMSchemaView, "instance")
+    else SSSOMSchemaView()
+)
+
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
 
 input_format_option = click.option(
     "-I",
     "--input-format",
-    help=f'The string denoting the input format, e.g. {",".join(SSSOM_READ_FORMATS)}',
+    help="The string denoting the input format.",
+    type=click.Choice(SSSOM_READ_FORMATS),
 )
 output_option = click.option(
     "-o",
@@ -72,7 +87,8 @@ output_option = click.option(
 output_format_option = click.option(
     "-O",
     "--output-format",
-    help=f'Desired output format, e.g. {",".join(SSSOM_EXPORT_FORMATS)}',
+    help="Desired output format.",
+    type=click.Choice(SSSOM_EXPORT_FORMATS),
 )
 output_directory_option = click.option(
     "-d",
@@ -111,14 +127,27 @@ predicate_filter_option = click.option(
 @click.version_option(__version__)
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
+    logger = logging.getLogger()
     if verbose >= 2:
-        logging.basicConfig(level=logging.DEBUG)
+        logger.setLevel(level=logging.DEBUG)
     elif verbose == 1:
-        logging.basicConfig(level=logging.INFO)
+        logger.setLevel(level=logging.INFO)
     else:
-        logging.basicConfig(level=logging.WARNING)
+        logger.setLevel(level=logging.WARNING)
     if quiet:
-        logging.basicConfig(level=logging.ERROR)
+        logger.setLevel(level=logging.ERROR)
+
+
+@main.command()
+@click.argument("subcommand")
+@click.pass_context
+def help(ctx, subcommand):
+    """Echoes help for subcommands."""
+    subcommand_obj = main.get_command(ctx, subcommand)
+    if subcommand_obj is None:
+        click.echo("The command you seek help with does not exist.")
+    else:
+        click.echo(subcommand_obj.get_help(ctx))
 
 
 @main.command()
@@ -151,7 +180,7 @@ def convert(input: str, output: TextIO, output_format: str):
 )
 @click.option(
     "-p",
-    "--clean-prefixes",
+    "--clean-prefixes / --no-clean-prefixes",
     default=True,
     is_flag=True,
     required=True,
@@ -159,7 +188,7 @@ def convert(input: str, output: TextIO, output_format: str):
 )
 @click.option(
     "-E",
-    "--embedded-mode",
+    "--embedded-mode / --non-embedded-mode",
     default=True,
     is_flag=True,
     help="If False, the resultant SSSOM file will be saved\
@@ -265,23 +294,24 @@ def dosql(query: str, inputs: List[str], output: TextIO):
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
-    n = 1
-    new_msdf = MappingSetDataFrame()
-    while len(inputs) >= n:
-        fn = inputs[n - 1]
-        msdf = parse_sssom_table(fn)
-        df = msdf.df
-        # df = parse(fn)
-        globals()[f"df{n}"] = df
-        tn = re.sub("[.].*", "", Path(fn).stem).lower()
-        globals()[tn] = df
-        n += 1
+    run_sql_query(query=query, inputs=inputs, output=output)
+    # n = 1
+    # new_msdf = MappingSetDataFrame()
+    # while len(inputs) >= n:
+    #     fn = inputs[n - 1]
+    #     msdf = parse_sssom_table(fn)
+    #     df = msdf.df
+    #     # df = parse(fn)
+    #     globals()[f"df{n}"] = df
+    #     tn = re.sub("[.].*", "", Path(fn).stem).lower()
+    #     globals()[tn] = df
+    #     n += 1
 
-    new_df = sqldf(query)
-    new_msdf.df = new_df
-    new_msdf.prefix_map = msdf.prefix_map
-    new_msdf.metadata = msdf.metadata
-    write_table(new_msdf, output)
+    # new_df = sqldf(query)
+    # new_msdf.df = new_df
+    # new_msdf.prefix_map = msdf.prefix_map
+    # new_msdf.metadata = msdf.metadata
+    # write_table(new_msdf, output)
 
 
 @main.command()
@@ -470,11 +500,11 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @click.option(
     "-R",
     "--reconcile",
-    default=True,
+    default=False,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: str, output: TextIO, reconcile: bool = True):
+def merge(inputs: str, output: TextIO, reconcile: bool = False):
     """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -570,6 +600,167 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     """
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
+    write_table(msdf, output)
+
+
+# @main.command()
+# @input_argument
+# @click.option(
+#     "-P",
+#     "--prefix",
+#     multiple=True,
+#     help="Prefixes that need to be filtered.",
+# )
+# @click.option(
+#     "-D",
+#     "--predicate",
+#     multiple=True,
+#     help="Predicates that need to be filtered.",
+# )
+# @output_option
+# def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
+#     """Filter mapping file based on prefix and predicates provided.
+
+#     :param input: Input mapping file (tsv)
+#     :param output: SSSOM TSV file.
+#     :param prefix: Prefixes to be retained.
+#     :param predicate: Predicates to be retained.
+#     """
+#     filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
+#     write_table(msdf=filtered_msdf, file=output)
+
+
+def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
+    """Dynamically generate click options.
+
+    :param options: List of all possible options.
+    :return: Click options deduced from user input into parameters.
+    """
+
+    def decorator(f):
+        for sssom_slot in reversed(options):
+            click.option("--" + sssom_slot, multiple=True)(f)
+        return f
+
+    return decorator
+
+
+@main.command()
+@input_argument
+@output_option
+@dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_slots)
+def filter(input: str, output: TextIO, **kwargs):
+    """Filter a dataframe by dynamically generating queries based on user input.
+
+    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
+
+    yields the query:
+
+    "SELECT * FROM df WHERE (subject_id LIKE 'x:%'  OR subject_id LIKE 'y:%')
+     AND (object_id LIKE 'y:%'  OR object_id LIKE 'z:%') " and displays the output.
+
+    :param input: DataFrame to be queried over.
+    :param output: Output location.
+    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    """
+    filter_file(input=input, output=output, **kwargs)
+
+
+@main.command()
+@input_argument
+@output_option
+# TODO Revist the option below.
+# If a multivalued slot needs to be partially preserved,
+# the users will need to type the ones they need and
+# set --replace-multivalued to True.
+@click.option(
+    "--replace-multivalued",
+    default=False,
+    type=bool,
+    help="Multivalued slots should be replaced or not. [default: False]",
+)
+@dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_set_slots)
+def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
+    """Annotate metadata of a mapping set.
+
+    :param input: Input path of the SSSOM tsv file.
+    :param output: Output location.
+    :param replace_multivalued: Multivalued slots should be
+        replaced or not, defaults to False
+    :param **kwargs: Options provided by user
+        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
+    """
+    annotate_file(
+        input=input, output=output, replace_multivalued=replace_multivalued, **kwargs
+    )
+
+
+@main.command()
+@input_argument
+@click.option(
+    "--remove-map",
+    type=click.Path(),
+    help="Mapping file path that needs to be removed from input.",
+)
+@output_option
+def remove(input: str, output: TextIO, remove_map: str):
+    """Remove mappings from an input mapping.
+
+    :param input: Input SSSOM tsv file.
+    :param output: Output path.
+    :param remove_map: Mapping to be removed.
+    """
+    input_msdf = parse_sssom_table(input)
+    remove_msdf = parse_sssom_table(remove_map)
+    input_msdf.remove_mappings(remove_msdf)
+    write_table(input_msdf, output)
+
+
+@main.command()
+@input_argument
+@output_option
+@click.option(
+    "-P",
+    "--subject-prefix",
+    required=False,
+    help="Invert subject_id and object_id such that all subject_ids have the same prefix.",
+)
+@click.option(
+    "--merge-inverted/--no-merge-inverted",
+    default=True,
+    is_flag=True,
+    help="If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.",
+)
+@click.option(
+    "--inverse-map", help="Path to file that contains the inverse predicate dictionary."
+)
+def invert(
+    input: str,
+    output: TextIO,
+    subject_prefix: Optional[str],
+    merge_inverted: bool,
+    inverse_map: TextIO,
+):
+    """
+    Invert subject and object IDs such that all subjects have the prefix provided.
+
+    :param input: SSSOM TSV file.
+    :param subject_prefix: Prefix of all subject_ids.
+    :param merge_inverted: If True (default), add inverted dataframe to input else,
+                          just return inverted data.
+    :param inverse_map: YAML file providing the inverse mapping for predicates.
+    :param output: SSSOM TSV file with columns sorted.
+    """
+    msdf = parse_sssom_table(input)
+    if inverse_map:
+        with open(inverse_map, "r") as im:  # type: ignore
+            inverse_dictionary = yaml.safe_load(im)
+    msdf.df = invert_mappings(
+        msdf.df,
+        subject_prefix,
+        merge_inverted,
+        inverse_dictionary["inverse_predicate_map"],
+    )
     write_table(msdf, output)
 
 

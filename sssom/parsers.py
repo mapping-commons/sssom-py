@@ -30,9 +30,8 @@ from sssom.constants import (
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
     MAPPING_SET_ID,
-    MAPPING_SET_SLOTS,
-    MAPPING_SLOTS,
     OBJECT_ID,
+    OBJECT_LABEL,
     OBJECT_SOURCE,
     OBJECT_SOURCE_ID,
     OWL_EQUIV_CLASS,
@@ -42,6 +41,7 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
+    SSSOMSchemaView,
 )
 
 from .context import (
@@ -199,7 +199,7 @@ def parse_sssom_rdf(
     metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
-    g.load(file_path, format=serialisation)
+    g.parse(file_path, format=serialisation)
     msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
@@ -307,9 +307,12 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
 def _get_mdict_ms_and_bad_attrs(
     row: pd.Series, ms: MappingSet, bad_attrs: Counter
 ) -> Tuple[dict, MappingSet, Counter]:
-
     mdict = {}
-
+    sssom_schema_object = (
+        SSSOMSchemaView.instance
+        if hasattr(SSSOMSchemaView, "instance")
+        else SSSOMSchemaView()
+    )
     for k, v in row.items():
         if v and v == v:
             ok = False
@@ -317,11 +320,11 @@ def _get_mdict_ms_and_bad_attrs(
                 k = str(k)
             v = _address_multivalued_slot(k, v)
             # if hasattr(Mapping, k):
-            if k in MAPPING_SLOTS:
+            if k in sssom_schema_object.mapping_slots:
                 mdict[k] = v
                 ok = True
             # if hasattr(MappingSet, k):
-            if k in MAPPING_SET_SLOTS:
+            if k in sssom_schema_object.mapping_set_slots:
                 ms[k] = v
                 ok = True
             if not ok:
@@ -573,6 +576,20 @@ def from_obographs(
     if not mapping_predicates:
         mapping_predicates = DEFAULT_MAPPING_PROPERTIES
 
+    labels = {}
+
+    # Build a dictionary of labels to populate _label columns
+    if "graphs" in jsondoc:
+        for g in jsondoc["graphs"]:
+            if "nodes" in g:
+                for n in g["nodes"]:
+                    nid = n["id"]
+                    if "lbl" in n:
+                        label = n["lbl"]
+                    else:
+                        label = ""
+                    labels[nid] = label
+
     if "graphs" in jsondoc:
         for g in jsondoc["graphs"]:
             if "nodes" in g:
@@ -629,7 +646,7 @@ def from_obographs(
                                     except NoCURIEException as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
-            elif "edges" in g:
+            if "edges" in g:
                 for edge in g["edges"]:
                     mdict = {}
                     subject_id = edge["sub"]
@@ -638,10 +655,16 @@ def from_obographs(
                     if predicate_id in mapping_predicates:
                         mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
                         mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
+                        mdict[SUBJECT_LABEL] = (
+                            labels[subject_id] if subject_id in labels.keys() else ""
+                        )
+                        mdict[OBJECT_LABEL] = (
+                            labels[object_id] if object_id in labels.keys() else ""
+                        )
                         mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
-            elif "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
+            if "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
                     if "nodeIds" in equivalents:
                         for ec1 in equivalents["nodeIds"]:
@@ -656,6 +679,12 @@ def from_obographs(
                                     mdict[
                                         MAPPING_JUSTIFICATION
                                     ] = MAPPING_JUSTIFICATION_UNSPECIFIED
+                                    mdict[SUBJECT_LABEL] = (
+                                        labels[ec1] if ec1 in labels.keys() else ""
+                                    )
+                                    mdict[OBJECT_LABEL] = (
+                                        labels[ec2] if ec2 in labels.keys() else ""
+                                    )
                                     mlist.append(Mapping(**mdict))
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
@@ -842,8 +871,8 @@ def split_dataframe(
     """
     if msdf.df is None:
         raise RuntimeError
-    subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", 1, expand=True)[0])
-    object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", 1, expand=True)[0])
+    subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", n=1, expand=True)[0])
+    object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", n=1, expand=True)[0])
     relations = set(msdf.df[PREDICATE_ID])
     return split_dataframe_by_prefix(
         msdf=msdf,

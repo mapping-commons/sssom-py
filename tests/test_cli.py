@@ -7,6 +7,7 @@ from typing import Mapping
 from click.testing import CliRunner, Result
 
 from sssom.cli import (
+    annotate,
     cliquesummary,
     convert,
     correlations,
@@ -14,11 +15,13 @@ from sssom.cli import (
     dedupe,
     diff,
     dosql,
+    filter,
     merge,
     parse,
     partition,
     ptable,
     reconcile_prefixes,
+    remove,
     sort,
     split,
     validate,
@@ -30,6 +33,8 @@ from tests.test_data import (
     get_multiple_input_test_cases,
     test_out_dir,
 )
+
+from .constants import data_dir
 
 
 class SSSOMCLITestSuite(unittest.TestCase):
@@ -60,6 +65,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_reconcile_prefix(runner, test)
                     self.run_dosql(runner, test)
                     self.run_sort_rows_columns(runner, test)
+                    self.run_filter(runner, test)
+                    self.run_annotate(runner, test)
+                    self.run_remove(runner, test)
 
         self.assertTrue(len(test_cases) > 2)
 
@@ -286,6 +294,66 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 True,
                 "-r",
                 True,
+            ],
+        )
+        self.run_successful(result, test_case)
+        return result
+
+    def run_filter(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Test filtering of DataFrame columns."""
+        out_file = os.path.join(test_out_dir, "filter_test.tsv")
+        in_file = test_case.filepath
+        result = runner.invoke(
+            filter,
+            [
+                in_file,
+                "-o",
+                os.path.join(test_out_dir, out_file),
+                "--subject_id",
+                "x:%",
+                "--subject_id",
+                "y:%",
+                "--object_id",
+                "y:%",
+                "--object_id",
+                "z:%",
+            ],
+        )
+        self.run_successful(result, test_case)
+        return result
+
+    def run_annotate(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Test annotation of mapping set metadata."""
+        out_file = os.path.join(test_out_dir, "test_annotate.tsv")
+        in_file = test_case.filepath
+        result = runner.invoke(
+            annotate,
+            [
+                in_file,
+                "-o",
+                os.path.join(test_out_dir, out_file),
+                "--mapping_set_id",
+                "http://w3id.org/my/mapping.sssom.tsv",
+                "--mapping_set_version",
+                "2021-01-01",
+            ],
+        )
+        self.run_successful(result, test_case)
+        return result
+
+    def run_remove(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+        """Test removal of mappings."""
+        out_file = os.path.join(test_out_dir, "remove_map_test.tsv")
+        in_file = test_case.filepath
+        rm_file = os.path.join(data_dir, "basic3.tsv")
+        result = runner.invoke(
+            remove,
+            [
+                in_file,
+                "-o",
+                os.path.join(test_out_dir, out_file),
+                "--remove-map",
+                rm_file,
             ],
         )
         self.run_successful(result, test_case)

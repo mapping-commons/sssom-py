@@ -16,6 +16,8 @@ from rdflib.namespace import OWL, RDF
 # from .sssom_datamodel import slots
 from sssom_schema import slots
 
+from sssom.validators import check_all_prefixes_in_curie_map
+
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
 from .typehints import PrefixMap
@@ -28,6 +30,7 @@ from .util import (
     MappingSetDataFrame,
     get_file_extension,
     prepare_context_str,
+    sort_df_rows_columns,
 )
 
 # from sssom.validators import check_all_prefixes_in_curie_map
@@ -52,6 +55,7 @@ def write_table(
     file: TextIO,
     embedded_mode: bool = True,
     serialisation="tsv",
+    sort=False,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
@@ -66,7 +70,8 @@ def write_table(
         meta.update(msdf.metadata)
     if msdf.prefix_map is not None:
         meta[PREFIX_MAP_KEY] = msdf.prefix_map
-
+    if sort:
+        msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
     lines = [f"# {line}" for line in lines if line != ""]
     s = msdf.df.to_csv(sep=sep, index=False)
@@ -99,7 +104,7 @@ def write_rdf(
         )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
-    # check_all_prefixes_in_curie_map(msdf)
+    check_all_prefixes_in_curie_map(msdf)
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     print(t.decode(), file=file)
