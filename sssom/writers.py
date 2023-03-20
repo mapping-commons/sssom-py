@@ -51,11 +51,11 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
 def write_table(
-    msdf: MappingSetDataFrame,
-    file: TextIO,
-    embedded_mode: bool = True,
-    serialisation="tsv",
-    sort=False,
+        msdf: MappingSetDataFrame,
+        file: TextIO,
+        embedded_mode: bool = True,
+        serialisation="tsv",
+        sort=False,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     if msdf.df is None:
@@ -90,9 +90,9 @@ def write_table(
 
 
 def write_rdf(
-    msdf: MappingSetDataFrame,
-    file: TextIO,
-    serialisation: Optional[str] = None,
+        msdf: MappingSetDataFrame,
+        file: TextIO,
+        serialisation: Optional[str] = None,
 ) -> None:
     """Write a mapping set dataframe to the file as RDF."""
     if serialisation is None:
@@ -112,7 +112,7 @@ def write_rdf(
 
 # todo: not sure the need for serialization param here; seems superfluous for some of these funcs
 def write_fhir_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir"
+        msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir"
 ) -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     data = to_fhir_json(msdf)
@@ -131,9 +131,9 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
 
 
 def write_owl(
-    msdf: MappingSetDataFrame,
-    file: TextIO,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+        msdf: MappingSetDataFrame,
+        file: TextIO,
+        serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
     if serialisation not in RDF_FORMATS:
@@ -149,7 +149,7 @@ def write_owl(
 
 
 def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation="ontoportal_json"
+        msdf: MappingSetDataFrame, output: TextIO, serialisation="ontoportal_json"
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
     if serialisation == "ontoportal_json":
@@ -516,12 +516,10 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
                 "source_name": metadata.get("mapping_set_id", ""),
                 "source_contact_info": ",".join(metadata.get("creator_id", "")),
                 "date": metadata.get("mapping_date", row.get("mapping_date", "")),
-                "process": {
-                    "name": metadata.get("mapping_set_description", ""),
-                    "source": resolve(row.get("mapping_justification", "")),
-                    "comment": row.get("comment", ""),
-                    "relation": [resolve(row["predicate_id"])],
-                },
+                "name": metadata.get("mapping_set_description", ""),
+                "source": resolve(row.get("mapping_justification", "")),
+                "comment": row.get("comment", ""),
+                "relation": [resolve(row["predicate_id"])]
             }
             m_list.append(json_obj)
 
@@ -532,7 +530,7 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 
 
 def get_writer_function(
-    *, output_format: Optional[str] = None, output: TextIO
+        *, output_format: Optional[str] = None, output: TextIO
 ) -> Tuple[MSDFWriter, str]:
     """Get appropriate writer function based on file format.
 
@@ -563,7 +561,7 @@ def get_writer_function(
 
 
 def write_tables(
-    sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]
+        sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]
 ) -> None:
     """Write table from MappingSetDataFrame object.
 
