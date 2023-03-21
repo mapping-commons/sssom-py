@@ -85,12 +85,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         first_ob: Dict = jsonob[0]
         self.assertTrue("classes" in first_ob)
         self.assertTrue(len(first_ob.get("classes")) == 2)
-        self.assertTrue("process" in first_ob)
-        first_process_ob: Dict = first_ob.get("process")
-
-        self.assertTrue("relation" in first_process_ob)
-        self.assertIsInstance(first_process_ob.get("relation"), list)
-        self.assertGreater(len(first_process_ob.get("relation")), 0)
+        self.assertTrue("relation" in first_ob)
+        self.assertIsInstance(first_ob.get("relation"), list)
+        self.assertGreater(len(first_ob.get("relation")), 0)
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
