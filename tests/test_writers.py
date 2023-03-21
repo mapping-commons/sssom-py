@@ -6,7 +6,14 @@ import unittest
 from jsonasobj2 import JsonObj
 
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
-from sssom.writers import write_fhir_json, write_json, write_owl, write_rdf, write_table, write_ontoportal_json
+from sssom.writers import (
+    write_fhir_json,
+    write_json,
+    write_ontoportal_json,
+    write_owl,
+    write_rdf,
+    write_table,
+)
 from tests.constants import data_dir as test_data_dir
 from tests.constants import test_out_dir
 

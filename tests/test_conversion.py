@@ -14,12 +14,13 @@ from sssom.util import read_pandas, to_mapping_set_dataframe
 from sssom.writers import (
     to_dataframe,
     to_json,
+    to_ontoportal_json,
     to_owl_graph,
     to_rdf_graph,
     write_json,
     write_owl,
     write_rdf,
-    write_table, to_ontoportal_json,
+    write_table,
 )
 
 from .test_data import SSSOMTestCase, get_all_test_cases
@@ -53,7 +54,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 self._test_to_json_dict(mdoc, test)
                 self._test_to_json(mdoc, test)
                 logging.info("Testing ontoportal JSON export")
-                self._test_to_ontoportal_json(mdoc,test)
+                self._test_to_ontoportal_json(mdoc, test)
 
     def _test_to_owl_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
