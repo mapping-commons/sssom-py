@@ -4,6 +4,7 @@ import filecmp
 import json
 import logging
 import unittest
+from typing import Dict
 
 from rdflib import Graph
 
@@ -13,6 +14,7 @@ from sssom.util import read_pandas, to_mapping_set_dataframe
 from sssom.writers import (
     to_dataframe,
     to_json,
+    to_ontoportal_json,
     to_owl_graph,
     to_rdf_graph,
     write_json,
@@ -51,6 +53,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 logging.info("Testing JSON export")
                 self._test_to_json_dict(mdoc, test)
                 self._test_to_json(mdoc, test)
+                logging.info("Testing ontoportal JSON export")
+                self._test_to_ontoportal_json(mdoc, test)
 
     def _test_to_owl_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -73,6 +77,17 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(len(jsonob), test.ct_json_elements)
         with open(test.get_out_file("json"), "w") as file:
             write_json(msdf, file, serialisation="json")
+
+    def _test_to_ontoportal_json(self, mdoc, test: SSSOMTestCase):
+        msdf = to_mapping_set_dataframe(mdoc)
+        jsonob = to_ontoportal_json(msdf)
+        self.assertEqual(len(jsonob), test.ct_data_frame_rows)
+        first_ob: Dict = jsonob[0]
+        self.assertTrue("classes" in first_ob)
+        self.assertTrue(len(first_ob.get("classes")) == 2)
+        self.assertTrue("relation" in first_ob)
+        self.assertIsInstance(first_ob.get("relation"), list)
+        self.assertGreater(len(first_ob.get("relation")), 0)
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)

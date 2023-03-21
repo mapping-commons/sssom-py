@@ -6,7 +6,14 @@ import unittest
 from jsonasobj2 import JsonObj
 
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
-from sssom.writers import write_fhir_json, write_json, write_owl, write_rdf, write_table
+from sssom.writers import (
+    write_fhir_json,
+    write_json,
+    write_ontoportal_json,
+    write_owl,
+    write_rdf,
+    write_table,
+)
 from tests.constants import data_dir as test_data_dir
 from tests.constants import test_out_dir
 
@@ -84,3 +91,18 @@ class TestWrite(unittest.TestCase):
         # FIXME this test doesn't test anything
         # TODO implement "read_owl" function
         self.assertEqual(1, 1)
+
+    def test_write_sssom_ontoportal_json(self):
+        """Test writing as ontoportal JSON."""
+        path = os.path.join(test_out_dir, "test_write_sssom_ontoportal_json.json")
+        with open(path, "w") as file:
+            write_ontoportal_json(self.msdf, file)
+
+        with open(path, "r") as file:
+            d: list = json.load(file)
+
+        self.assertEqual(
+            len(d),
+            self.mapping_count,
+            f"{path} has the wrong number of mappings.",
+        )
