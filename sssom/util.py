@@ -1543,7 +1543,7 @@ def invert_mappings(
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
     if PREDICATE_MODIFIER not in df.columns:
-        df['predicate_modifier'] = ""
+        df["predicate_modifier"] = ""
     blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
     if predicate_invert_dictionary:
         predicate_invert_map = predicate_invert_dictionary
