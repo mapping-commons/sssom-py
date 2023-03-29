@@ -187,6 +187,14 @@ def convert(input: str, output: TextIO, output_format: str):
     help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
 )
 @click.option(
+    "-p",
+    "--strict-clean-prefixes / --no-strict-clean-prefixes",
+    default=True,
+    is_flag=True,
+    required=True,
+    help="If True (default), `clean_prefixes(strict = True)`.",
+)
+@click.option(
     "-E",
     "--embedded-mode / --non-embedded-mode",
     default=True,
@@ -203,6 +211,7 @@ def parse(
     metadata: str,
     prefix_map_mode: str,
     clean_prefixes: bool,
+    strict_clean_prefixes: bool,
     output: TextIO,
     embedded_mode: bool,
     mapping_predicate_filter: Optional[tuple],
@@ -215,6 +224,7 @@ def parse(
         metadata_path=metadata,
         prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
+        strict_clean_prefixes=strict_clean_prefixes,
         embedded_mode=embedded_mode,
         mapping_predicate_filter=mapping_predicate_filter,
     )
