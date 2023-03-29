@@ -108,6 +108,8 @@ CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
 OBJECT_SOURCE_ID = "object_source_id"
 
+SLOTS_NOT_IN_METADATA = [MAPPINGS, COMMENT, MAPPING_DATE]
+
 # PREDICATES
 OWL_EQUIVALENT_CLASS = "owl:equivalentClass"
 OWL_EQUIVALENT_PROPERTY = "owl:equivalentProperty"
