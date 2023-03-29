@@ -191,7 +191,6 @@ def convert(input: str, output: TextIO, output_format: str):
     "--strict-clean-prefixes / --no-strict-clean-prefixes",
     default=True,
     is_flag=True,
-    required=True,
     help="If True (default), `clean_prefixes(strict = True)`.",
 )
 @click.option(
