@@ -2,7 +2,7 @@ tests:
   - filename: "basic.tsv"
     inputformat: "tsv"
     multiple_input: True
-    ct_json_elements: 12
+    ct_json_elements: 8
     ct_data_frame_rows: 141
     ct_graph_queries_owl:
       query_count_equivalent_classes: 90
@@ -11,7 +11,7 @@ tests:
   - filename: "basic2.tsv"
     inputformat: "tsv"
     multiple_input: True
-    ct_json_elements: 12
+    ct_json_elements: 8
     ct_data_frame_rows: 126
     ct_graph_queries_owl:
       query_count_equivalent_classes: 79

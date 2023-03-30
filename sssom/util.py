@@ -65,7 +65,6 @@ from .constants import (
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
-    SLOTS_NOT_IN_METADATA,
     SSSOM_SUPERCLASS_OF,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
@@ -964,7 +963,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
         if not callable(getattr(slots, slot)) and not slot.startswith("__")
     ]:
         slot = getattr(slots, key).name
-        if slot not in SLOTS_NOT_IN_METADATA and slot in ms_meta:
+        if slot not in ["mappings"] and slot in ms_meta:
             if ms_meta[slot]:
                 meta[key] = ms_meta[slot]
     return meta
