@@ -305,8 +305,8 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
 
 
 def _get_mdict_ms_and_bad_attrs(
-    row: pd.Series, ms: MappingSet, bad_attrs: Counter
-) -> Tuple[dict, MappingSet, Counter]:
+    row: pd.Series, bad_attrs: Counter
+) -> Tuple[dict, Counter]:
     mdict = {}
     sssom_schema_object = (
         SSSOMSchemaView.instance
@@ -319,17 +319,20 @@ def _get_mdict_ms_and_bad_attrs(
             if k:
                 k = str(k)
             v = _address_multivalued_slot(k, v)
-            # if hasattr(Mapping, k):
+
             if k in sssom_schema_object.mapping_slots:
                 mdict[k] = v
                 ok = True
-            # if hasattr(MappingSet, k):
-            if k in sssom_schema_object.mapping_set_slots:
-                ms[k] = v
-                ok = True
+
+            # ! This causes propogation of
+            # ! mappings level metadata to the mapping set
+            # ! which is not desirable atm.
+            # if k in sssom_schema_object.mapping_set_slots:
+            #     ms[k] = v
+            #     ok = True
             if not ok:
                 bad_attrs[k] += 1
-    return (mdict, ms, bad_attrs)
+    return (mdict, bad_attrs)
 
 
 def parse_alignment_xml(
@@ -381,7 +384,7 @@ def from_sssom_dataframe(
     ms = _init_mapping_set(meta)
     bad_attrs: typing.Counter[str] = Counter()
     for _, row in df.iterrows():
-        mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
+        mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
         mlist.append(_prepare_mapping(Mapping(**mdict)))
     for k, v in bad_attrs.most_common():
         logging.warning(f"No attr for {k} [{v} instances]")
@@ -847,7 +850,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     bad_attrs: Counter = Counter()
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
-            mdict, ms, bad_attrs = _get_mdict_ms_and_bad_attrs(row, ms, bad_attrs)
+            mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
             m = _prepare_mapping(Mapping(**mdict))
             mlist.append(m)
     for k, v in bad_attrs.items():

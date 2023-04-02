@@ -1,4 +1,3 @@
-# comment: .
 # creator_id:
 # - orcid:1234
 # - orcid:5678
@@ -7,13 +6,14 @@
 #   b: http://example.org/b/
 #   c: http://example.org/c/
 #   d: http://example.org/d/
+#   oio: http://www.geneontology.org/formats/oboInOwl#
 #   orcid: https://orcid.org/my-orcid?orcid=
 #   owl: http://www.w3.org/2002/07/owl#
+#   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
 #   rdfs: http://www.w3.org/2000/01/rdf-schema#
 #   semapv: https://w3id.org/semapv/
 #   skos: http://www.w3.org/2004/02/skos/core#
 #   sssom: https://w3id.org/sssom/
-#   oio: http://www.geneontology.org/formats/oboInOwl#
 #   x: http://example.org/x/
 #   y: http://example.org/y/
 #   z: http://example.org/z/
@@ -22,14 +22,8 @@
 # mapping_set_id: http://w3id.org/my/mapping.sssom.tsv
 # mapping_set_version: '2021-01-01'
 # mapping_tool: https://github.com/cmungall/rdf_matcher
-# object_match_field:
-# - rdfs:label
-# object_source: y:example
-# subject_match_field:
-# - rdfs:label
-# subject_source: z:example
 subject_id	subject_label	subject_category	predicate_id	predicate_modifier	object_id	object_label	object_category	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	match_string	comment
-a:something	XXXXX	biolink:AnatomicalEntity	owl:subClassOf		b:something	xxxxxx	biolink:AnatomicalEntity	semapv:LexicalMatching	a:example	b:example	rdf_matcher	0.8	rdfs:label	rdfs:label	xxxxx	mock data
+a:something	XXXXX	biolink:AnatomicalEntity	rdfs:subClassOf		b:something	xxxxxx	biolink:AnatomicalEntity	semapv:LexicalMatching	a:example	b:example	rdf_matcher	0.8	rdfs:label	rdfs:label	xxxxx	mock data
 a:something	XYXYX	biolink:AnatomicalEntity	owl:equivalentClass		c:something	xyxyxy	biolink:AnatomicalEntity	semapv:LexicalMatching	a:example	c:example	rdf_matcher	0.83	rdfs:label	rdfs:label	xxxxx	mock data
 c:something	YXYXY	biolink:AnatomicalEntity	owl:equivalentClass		b:something	yxyxyx	biolink:AnatomicalEntity	semapv:LexicalMatching	c:example	b:example	rdf_matcher	0.84	rdfs:label	rdfs:label	xxxxx	mock data
 c:something	YYYYY	biolink:AnatomicalEntity	owl:equivalentClass		d:something	yyyyyy	biolink:AnatomicalEntity	semapv:LexicalMatching	c:example	d:example	rdf_matcher	0.81	rdfs:label	rdfs:label	xxxxx	mock data

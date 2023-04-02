@@ -1542,15 +1542,20 @@ def invert_mappings(
     :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
-    blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
     if predicate_invert_dictionary:
         predicate_invert_map = predicate_invert_dictionary
     else:
         predicate_invert_map = PREDICATE_INVERT_DICTIONARY
     columns_invert_map = COLUMN_INVERT_DICTIONARY
 
-    predicate_modified_df = pd.DataFrame(df[~blank_predicate_modifier])
-    non_predicate_modified_df = pd.DataFrame(df[blank_predicate_modifier])
+    if PREDICATE_MODIFIER in df.columns:
+        blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
+        predicate_modified_df = pd.DataFrame(df[~blank_predicate_modifier])
+        non_predicate_modified_df = pd.DataFrame(df[blank_predicate_modifier])
+    else:
+        predicate_modified_df = pd.DataFrame(columns=df.columns)
+        non_predicate_modified_df = df
+
     if subject_prefix:
         subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(
             subject_prefix + ":"
