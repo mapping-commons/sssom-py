@@ -379,8 +379,8 @@
 
 
 <span class="k">def</span> <span class="nf">_get_mdict_ms_and_bad_attrs</span><span class="p">(</span>
-    <span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">Counter</span><span class="p">]:</span>
+    <span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Counter</span><span class="p">]:</span>
     <span class="n">mdict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">sssom_schema_object</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span>
@@ -393,17 +393,20 @@
             <span class="k">if</span> <span class="n">k</span><span class="p">:</span>
                 <span class="n">k</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-            <span class="c1"># if hasattr(Mapping, k):</span>
+
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_schema_object</span><span class="o">.</span><span class="n">mapping_slots</span><span class="p">:</span>
                 <span class="n">mdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
                 <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="c1"># if hasattr(MappingSet, k):</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_schema_object</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="p">:</span>
-                <span class="n">ms</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-                <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># ! This causes propogation of</span>
+            <span class="c1"># ! mappings level metadata to the mapping set</span>
+            <span class="c1"># ! which is not desirable atm.</span>
+            <span class="c1"># if k in sssom_schema_object.mapping_set_slots:</span>
+            <span class="c1">#     ms[k] = v</span>
+            <span class="c1">#     ok = True</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
                 <span class="n">bad_attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="parse_alignment_xml"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.parsers.parse_alignment_xml">[docs]</a><span class="k">def</span> <span class="nf">parse_alignment_xml</span><span class="p">(</span>
@@ -455,7 +458,7 @@
     <span class="n">ms</span> <span class="o">=</span> <span class="n">_init_mapping_set</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="n">mdict</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">bad_attrs</span> <span class="o">=</span> <span class="n">_get_mdict_ms_and_bad_attrs</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
+        <span class="n">mdict</span><span class="p">,</span> <span class="n">bad_attrs</span> <span class="o">=</span> <span class="n">_get_mdict_ms_and_bad_attrs</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
         <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_prepare_mapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">)))</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bad_attrs</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No attr for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> instances]&quot;</span><span class="p">)</span>
@@ -921,7 +924,7 @@
     <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-            <span class="n">mdict</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">bad_attrs</span> <span class="o">=</span> <span class="n">_get_mdict_ms_and_bad_attrs</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
+            <span class="n">mdict</span><span class="p">,</span> <span class="n">bad_attrs</span> <span class="o">=</span> <span class="n">_get_mdict_ms_and_bad_attrs</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">_prepare_mapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
             <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bad_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
