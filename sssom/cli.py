@@ -187,7 +187,6 @@ def convert(input: str, output: TextIO, output_format: str):
     help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
 )
 @click.option(
-    "-p",
     "--strict-clean-prefixes / --no-strict-clean-prefixes",
     default=True,
     is_flag=True,
