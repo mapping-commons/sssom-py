@@ -1,6 +1,7 @@
 """Tests for the command line interface."""
 
 import os
+import subprocess  # noqa
 import unittest
 from typing import Mapping
 
@@ -361,8 +362,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def test_convert_cli(self) -> Result:
         """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
-        import subprocess
-
         test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
         command = [
             "sssom",
@@ -371,5 +370,5 @@ class SSSOMCLITestSuite(unittest.TestCase):
             "--output-format",
             "owl",
         ]
-        result = subprocess.run(command)
+        result = subprocess.run(command)  # noqa
         self.assertEqual(result.returncode, 0)
