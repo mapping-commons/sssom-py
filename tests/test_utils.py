@@ -8,6 +8,7 @@ from sssom.util import (
     MappingSetDataFrame,
     filter_out_prefixes,
     filter_prefixes,
+    inject_metadata_into_df,
     invert_mappings,
 )
 from tests.constants import data_dir
@@ -122,3 +123,11 @@ class TestIO(unittest.TestCase):
         """Test invert nodes."""
         inverted_df = invert_mappings(df=self.msdf2.df, merge_inverted=False)
         self.assertEqual(len(inverted_df), len(self.msdf2.df.drop_duplicates()))
+
+    def test_inject_metadata_into_df(self):
+        """Test injecting metadata into DataFrame is as expected."""
+        expected_creators = "orcid:0000-0001-5839-2535|orcid:0000-0001-5839-2532"
+        msdf = parse_sssom_table(f"{data_dir}/test_inject_metadata_msdf.tsv")
+        msdf_with_meta = inject_metadata_into_df(msdf)
+        creator_ids = msdf_with_meta.df["creator_id"].drop_duplicates().values.item()
+        self.assertEqual(creator_ids, expected_creators)

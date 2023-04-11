@@ -862,6 +862,8 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
             if k not in msdf.df.columns and k in slots:
                 if k == MAPPING_SET_ID:
                     k = MAPPING_SET_SOURCE
+                if isinstance(v, list):
+                    v = "|".join(x for x in v)
                 msdf.df[k] = str(v)
     return msdf
 
