@@ -192,8 +192,9 @@ class TestParse(unittest.TestCase):
         """Test read SSSOM method to validate import of all columns."""
         input_path = os.path.join(test_data_dir, "basic3.tsv")
         msdf = parse_sssom_table(input_path)
-        imported_df = pd.read_csv(input_path, comment="#", sep="\t")
+        imported_df = pd.read_csv(input_path, comment="#", sep="\t").fillna("")
         imported_df = sort_df_rows_columns(imported_df)
+        msdf.df = sort_df_rows_columns(msdf.df)
         self.assertEqual(set(imported_df.columns), set(msdf.df.columns))
         list_cols = [
             "subject_match_field",
@@ -203,7 +204,7 @@ class TestParse(unittest.TestCase):
         ]
         for idx, row in msdf.df.iterrows():
             for k, v in row.items():
-                if v == "":
+                if v == np.nan:
                     self.assertTrue(math.isnan(imported_df.iloc[idx][k]))
                 else:
                     if k not in list_cols:
