@@ -1391,7 +1391,7 @@ def sort_df_rows_columns(
         ]
         df = df.reindex(column_sequence, axis=1)
     if by_rows and len(df) > 0:
-        df = df.sort_values(by=df.columns[0], ignore_index=True)
+        df = df.sort_values(by=[SUBJECT_ID, PREDICATE_ID, OBJECT_ID], ignore_index=True)
     return df
 
 
