@@ -1391,7 +1391,7 @@ def sort_df_rows_columns(
         ]
         df = df.reindex(column_sequence, axis=1)
     if by_rows and len(df) > 0:
-        df = df.sort_values(by=column_sequence, ignore_index=True)
+        df = df.sort_values(by=column_sequence, ignore_index=True, na_position="last")
     return df
 
 
