@@ -1658,9 +1658,9 @@
         <span class="n">df_to_invert</span> <span class="o">=</span> <span class="n">non_prefix_subjects_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
             <span class="n">non_prefix_subjects_df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">predicate_invert_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="p">]</span>
-        <span class="c1"># non_inverted_df_by_predicate = non_prefix_subjects_df.loc[</span>
-        <span class="c1">#     ~non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))</span>
-        <span class="c1"># ]</span>
+        <span class="n">non_inverted_df_by_predicate</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">non_prefix_subjects_df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">prefixed_subjects_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="n">df_to_invert</span> <span class="o">=</span> <span class="n">non_predicate_modified_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
