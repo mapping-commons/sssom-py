@@ -1640,7 +1640,9 @@ def invert_mappings(
         df_to_invert = non_prefix_subjects_df.loc[
             non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
         ]
-        non_inverted_df_by_predicate = pd.DataFrame(columns=non_prefix_subjects_df.columns)
+        non_inverted_df_by_predicate = pd.DataFrame(
+            columns=non_prefix_subjects_df.columns
+        )
     else:
         prefixed_subjects_df = pd.DataFrame()
         df_to_invert = non_predicate_modified_df.loc[
