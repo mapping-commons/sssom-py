@@ -595,7 +595,7 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
     "-r",
     "--by-rows",
     default=True,
-    help="Sort rows by DataFrame column #1 (ascending).",
+    help="Sort rows by DataFrame all columns (ascending).",
 )
 def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
     """
