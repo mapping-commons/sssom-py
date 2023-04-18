@@ -29,7 +29,6 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
-from deprecated import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 
@@ -52,7 +51,6 @@ from .constants import (
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
-    OWL_SAME_AS,
     PREDICATE_ID,
     PREDICATE_INVERT_DICTIONARY,
     PREDICATE_LIST,
@@ -518,60 +516,6 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     #    r['other'] = 'synthesized sssom file'
     d.combined_dataframe = pd.DataFrame(rows).drop_duplicates()
     return d
-
-
-@deprecated("Not implemented yet.")
-def diff_sssom(
-    df1: pd.DataFrame, df2: pd.DataFrame, columns_of_interest: list = None
-) -> pd.DataFrame:
-    """Return difference between two dataframes based on triples.
-
-    :param df1: First DataFrame.
-    :param df2: Second DataFrame.
-    :param columns_of_interest: Columns to compare, defaults to None
-    :return: DataFrame showing the difference.
-    """
-    if columns_of_interest is None:
-        columns_of_interest = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
-    merge_map = {
-        "left_only": "UNIQUE_1",
-        "right_only": "UNIQUE_2",
-    }
-    df1_subset = df1[columns_of_interest].drop_duplicates()
-    df2_subset = df2[columns_of_interest].drop_duplicates()
-    df_diff = df1_subset.merge(
-        df2_subset, on=[df1_subset.columns.to_list()], how="left", indicator=True
-    )
-    df_diff = df_diff.loc[df_diff["_merge"] != "both"]
-    df_diff["_merge"] = df_diff["_merge"].map(merge_map)
-    df_diff.rename(columns={"_merge": COMMENT}, inplace=True)
-    return df_diff
-
-
-def apply_skos(df: pd.DataFrame) -> pd.DataFrame:
-    """Convert predicates to skos-based predicates.
-
-    :param df: SSSOM dataframe.
-    :return: Dataframe with skos-based predicates.
-    """
-    replacements_dict = {
-        OWL_EQUIVALENT_CLASS: SKOS_EXACT_MATCH,
-        RDFS_SUBCLASS_OF: SKOS_BROAD_MATCH,
-        SSSOM_SUPERCLASS_OF: SKOS_NARROW_MATCH,
-        OWL_SAME_AS: SKOS_EXACT_MATCH,
-    }
-    return update_predicate(df, replacements_dict)
-
-
-def update_predicate(df: pd.DataFrame, replacements_dict: dict) -> pd.DataFrame:
-    """Update dataframe with predicats based on the replacement dictionary.
-
-    :param df: SSSOM dataframe.
-    :param replacements_dict: Dictionary for prdicate ID conversion.
-    :return: SSSOM Dataframe with converted predicates.
-    """
-    df[PREDICATE_ID] = df[PREDICATE_ID].map(replacements_dict)
-    return df
 
 
 def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
