@@ -31,6 +31,7 @@ import validators
 import yaml
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
+from pandas.errors import EmptyDataError
 
 # from .sssom_datamodel import Mapping as SSSOM_Mapping
 # from .sssom_datamodel import slots
@@ -51,6 +52,7 @@ from .constants import (
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
+    OWL_SAME_AS,
     PREDICATE_ID,
     PREDICATE_INVERT_DICTIONARY,
     PREDICATE_LIST,
@@ -916,7 +918,21 @@ def read_csv(
                 if not line.decode("utf-8").startswith(comment)
             ]
         )
-    return pd.read_csv(StringIO(lines), sep=sep, low_memory=False)
+    try:
+        df = pd.read_csv(StringIO(lines), sep=sep, low_memory=False)
+    except EmptyDataError as e:
+        logging.warning(f"Seems like the dataframe is empty: {e}")
+        df = pd.DataFrame(
+            columns=[
+                SUBJECT_ID,
+                SUBJECT_LABEL,
+                PREDICATE_ID,
+                OBJECT_ID,
+                MAPPING_JUSTIFICATION,
+            ]
+        )
+
+    return df
 
 
 def read_metadata(filename: str) -> Metadata:
