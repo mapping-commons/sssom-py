@@ -105,6 +105,7 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
+<span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
 
 <span class="c1"># from .sssom_datamodel import Mapping as SSSOM_Mapping</span>
 <span class="c1"># from .sssom_datamodel import slots</span>
@@ -125,6 +126,7 @@
     <span class="n">OBO_HAS_DB_XREF</span><span class="p">,</span>
     <span class="n">OWL_DIFFERENT_FROM</span><span class="p">,</span>
     <span class="n">OWL_EQUIVALENT_CLASS</span><span class="p">,</span>
+    <span class="n">OWL_SAME_AS</span><span class="p">,</span>
     <span class="n">PREDICATE_ID</span><span class="p">,</span>
     <span class="n">PREDICATE_INVERT_DICTIONARY</span><span class="p">,</span>
     <span class="n">PREDICATE_LIST</span><span class="p">,</span>
@@ -990,7 +992,21 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
             <span class="p">]</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">EmptyDataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seems like the dataframe is empty: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">SUBJECT_ID</span><span class="p">,</span>
+                <span class="n">SUBJECT_LABEL</span><span class="p">,</span>
+                <span class="n">PREDICATE_ID</span><span class="p">,</span>
+                <span class="n">OBJECT_ID</span><span class="p">,</span>
+                <span class="n">MAPPING_JUSTIFICATION</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
 
 
 <div class="viewcode-block" id="read_metadata"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.read_metadata">[docs]</a><span class="k">def</span> <span class="nf">read_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
