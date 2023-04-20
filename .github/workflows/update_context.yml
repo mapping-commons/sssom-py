@@ -13,6 +13,9 @@ jobs:
       - name: Work around permission issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       
+      - name: Update schema files
+        run: make all_schema
+
       - name: Update sssom context
         run: make deploy-dm
 
