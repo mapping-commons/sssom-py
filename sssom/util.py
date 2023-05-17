@@ -1172,7 +1172,7 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
 def filter_out_prefixes(
     df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
 ) -> pd.DataFrame:
-    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+    """Filter out any row which contains a CURIE with a prefix in the filter_prefixes list.
 
     :param df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
@@ -1195,16 +1195,22 @@ def filter_out_prefixes(
 
 
 def filter_prefixes(
-    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+    df: pd.DataFrame,
+    filter_prefixes: List[str],
+    features: list = KEY_FEATURES,
+    require_all_prefixes: bool = True,
 ) -> pd.DataFrame:
-    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+    """Filter out any row which does NOT contain CURIEs with a prefix in the filter_prefixes list.
 
-    :param df: Pandas DataFrame
+    Args:
+    :df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
+    :param require_all_prefixes: If True, all prefixes must be present in the row, otherwise any
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
+    selection = all if require_all_prefixes else any
     rows = []
 
     for _, row in df.iterrows():
@@ -1213,7 +1219,7 @@ def filter_prefixes(
         }
         # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
-        if all(prefix in filter_prefix_set for prefix in prefixes):
+        if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
