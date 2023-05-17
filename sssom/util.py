@@ -1170,7 +1170,10 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
 
 
 def filter_out_prefixes(
-    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+    df: pd.DataFrame,
+    filter_prefixes: List[str],
+    features: list = KEY_FEATURES,
+    require_all_prefixes: bool = False,
 ) -> pd.DataFrame:
     """Filter out any row which contains a CURIE with a prefix in the filter_prefixes list.
 
@@ -1181,12 +1184,13 @@ def filter_out_prefixes(
     """
     filter_prefix_set = set(filter_prefixes)
     rows = []
+    selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
         # Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.
         # If TRUE, append row.
-        if not any(prefix in prefixes for prefix in filter_prefix_set):
+        if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
     if rows:
         return pd.DataFrame(rows)
