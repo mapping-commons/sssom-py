@@ -1175,7 +1175,7 @@ def filter_out_prefixes(
     features: list = KEY_FEATURES,
     require_all_prefixes: bool = False,
 ) -> pd.DataFrame:
-    """Filter out any row which contains a CURIE with a prefix in the filter_prefixes list.
+    """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
 
     :param df: Pandas DataFrame
     :param filter_prefixes: List of prefixes
@@ -1188,8 +1188,6 @@ def filter_out_prefixes(
 
     for _, row in df.iterrows():
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
-        # Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.
-        # If TRUE, append row.
         if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
     if rows:
@@ -1204,7 +1202,7 @@ def filter_prefixes(
     features: list = KEY_FEATURES,
     require_all_prefixes: bool = True,
 ) -> pd.DataFrame:
-    """Filter out any row which does NOT contain CURIEs with a prefix in the filter_prefixes list.
+    """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
 
     Args:
     :df: Pandas DataFrame
@@ -1214,21 +1212,14 @@ def filter_prefixes(
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
-    selection = all if require_all_prefixes else any
     rows = []
+    selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
-        prefixes = {
-            get_prefix_from_curie(curie) for curie in row[features] if curie is not None
-        }
-        # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
-        # If TRUE, append row.
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features] if curie is not None}
         if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
-    if rows:
-        return pd.DataFrame(rows)
-    else:
-        return pd.DataFrame(columns=features)
+    return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
 # TODO this is not used anywhere

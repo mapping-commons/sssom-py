@@ -1,4 +1,4 @@
-test/
+.venv/
 venv/
 sssom/__pycache__/
 .idea
