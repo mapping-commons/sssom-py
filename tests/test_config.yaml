@@ -51,6 +51,10 @@ tests:
       HP: "http://purl.obolibrary.org/obo/HP_"
       ORDO: "http://www.orpha.net/ORDO/Orphanet_"
       oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
+    metadata_file: 
+      license: "https://w3id.org/sssom/license/unspecified"
+      mapping_set_id: "https://w3id.org/sssom/mappings/8f6f3d4d-8131-4704-8ee1-9cf20045bb7d"
+
 queries:
   query_count_equivalent_classes: >
     SELECT DISTINCT ?e1 ?e2 WHERE {
