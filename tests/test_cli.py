@@ -47,9 +47,11 @@ class SSSOMCLITestSuite(unittest.TestCase):
         # Initially returned 2 tsv and 1 rdf. The RDF failed test
         test_cases = get_all_test_cases()
         for test in test_cases:
-            self.run_convert(runner, test)
-            if test.inputformat == "tsv":
+            if test.inputformat == "alignment-api-xml":
+                self.run_parse(runner, test)
+            elif test.inputformat == "tsv":
                 # These test only run on TSV inputs
+                self.run_convert(runner, test)
                 self.run_validate(runner, test)
                 self.run_parse(runner, test)
 
