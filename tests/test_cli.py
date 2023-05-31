@@ -125,7 +125,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         ]
         if test_case.metadata_file:
             params.append("--metadata")
-            params.append(test_case.metadata_file)
+            params.append(data_dir / test_case.metadata_file)
 
         result = runner.invoke(parse, params)
         self.run_successful(result, test_case)

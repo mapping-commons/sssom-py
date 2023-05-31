@@ -6,6 +6,7 @@ import logging
 import unittest
 from typing import Dict
 
+import yaml
 from rdflib import Graph
 
 from sssom.parsers import get_parsing_function, to_mapping_set_document
@@ -23,6 +24,7 @@ from sssom.writers import (
     write_table,
 )
 
+from .constants import data_dir
 from .test_data import SSSOMTestCase, get_all_test_cases
 
 
@@ -36,9 +38,12 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         for test in test_cases:
             with self.subTest(test=test.id):
                 read_func = get_parsing_function(test.inputformat, test.filepath)
-                msdf = read_func(
-                    test.filepath, prefix_map=test.prefix_map, meta=test.metadata_file
-                )
+                if test.metadata_file:
+                    with open(data_dir / test.metadata_file, "r") as f:
+                        meta = yaml.safe_load(f)
+                else:
+                    meta = None
+                msdf = read_func(test.filepath, prefix_map=test.prefix_map, meta=meta)
                 mdoc = to_mapping_set_document(msdf)
                 logging.info(f"Testing {test.filepath}")
                 self.assertEqual(
