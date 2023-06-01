@@ -1244,55 +1244,57 @@
 
 
 <div class="viewcode-block" id="filter_out_prefixes"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.filter_out_prefixes">[docs]</a><span class="k">def</span> <span class="nf">filter_out_prefixes</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span><span class="p">,</span>
+    <span class="n">require_all_prefixes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter any row where a CURIE in one of the key column uses one of the given prefixes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.</span>
 
-<span class="sd">    :param df: Pandas DataFrame</span>
+<span class="sd">    :param df: Pandas DataFrame of SSSOM Mapping</span>
 <span class="sd">    :param filter_prefixes: List of prefixes</span>
 <span class="sd">    :param features: List of dataframe column names dataframe to consider</span>
+<span class="sd">    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out</span>
 <span class="sd">    :return: Pandas Dataframe</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">filter_prefix_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">filter_prefixes</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="nb">all</span> <span class="k">if</span> <span class="n">require_all_prefixes</span> <span class="k">else</span> <span class="nb">any</span>
 
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
         <span class="n">prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span> <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="n">features</span><span class="p">]}</span>
-        <span class="c1"># Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.</span>
-        <span class="c1"># If TRUE, append row.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes</span> <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">filter_prefix_set</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">(</span><span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes</span> <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">filter_prefix_set</span><span class="p">):</span>
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">rows</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="k">if</span> <span class="n">rows</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="filter_prefixes"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.filter_prefixes">[docs]</a><span class="k">def</span> <span class="nf">filter_prefixes</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span><span class="p">,</span>
+    <span class="n">require_all_prefixes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter any row where a CURIE in one of the key column uses one of the given prefixes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.</span>
 
-<span class="sd">    :param df: Pandas DataFrame</span>
+<span class="sd">    :param df: Pandas DataFrame of SSSOM Mapping</span>
 <span class="sd">    :param filter_prefixes: List of prefixes</span>
 <span class="sd">    :param features: List of dataframe column names dataframe to consider</span>
+<span class="sd">    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out</span>
 <span class="sd">    :return: Pandas Dataframe</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">filter_prefix_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">filter_prefixes</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="nb">all</span> <span class="k">if</span> <span class="n">require_all_prefixes</span> <span class="k">else</span> <span class="nb">any</span>
 
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
         <span class="n">prefixes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span> <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="n">features</span><span class="p">]</span> <span class="k">if</span> <span class="n">curie</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">}</span>
-        <span class="c1"># Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.</span>
-        <span class="c1"># If TRUE, append row.</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">prefix</span> <span class="ow">in</span> <span class="n">filter_prefix_set</span> <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">selection</span><span class="p">(</span><span class="n">prefix</span> <span class="ow">in</span> <span class="n">filter_prefix_set</span> <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="p">):</span>
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">rows</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="k">if</span> <span class="n">rows</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO this is not used anywhere</span>
