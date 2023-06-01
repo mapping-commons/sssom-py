@@ -1177,9 +1177,10 @@ def filter_out_prefixes(
 ) -> pd.DataFrame:
     """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
 
-    :param df: Pandas DataFrame
+    :param df: Pandas DataFrame of SSSOM Mapping
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
+    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
@@ -1190,7 +1191,7 @@ def filter_out_prefixes(
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
         if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
-            
+
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
@@ -1203,10 +1204,10 @@ def filter_prefixes(
     """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
 
     Args:
-    :df: Pandas DataFrame
+    :param df: Pandas DataFrame of SSSOM Mapping
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
-    :param require_all_prefixes: If True, all prefixes must be present in the row, otherwise any
+    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
