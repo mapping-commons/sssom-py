@@ -1190,10 +1190,8 @@ def filter_out_prefixes(
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
         if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
-    if rows:
-        return pd.DataFrame(rows)
-    else:
-        return pd.DataFrame(columns=features)
+            
+    return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
 def filter_prefixes(
@@ -1221,6 +1219,7 @@ def filter_prefixes(
         }
         if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
+
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
