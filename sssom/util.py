@@ -1216,7 +1216,9 @@ def filter_prefixes(
     selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
-        prefixes = {get_prefix_from_curie(curie) for curie in row[features] if curie is not None}
+        prefixes = {
+            get_prefix_from_curie(curie) for curie in row[features] if curie is not None
+        }
         if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)

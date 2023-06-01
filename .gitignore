@@ -1,5 +1,5 @@
-.venv/
-venv/
+.venv
+venv
 sssom/__pycache__/
 .idea
 sssom.egg-info
