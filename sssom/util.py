@@ -1203,7 +1203,6 @@ def filter_prefixes(
 ) -> pd.DataFrame:
     """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
 
-    Args:
     :param df: Pandas DataFrame of SSSOM Mapping
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
