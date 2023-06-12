@@ -17,7 +17,7 @@
 #  c: "http://example.org/c/"
 #  d: "http://example.org/d/"
 #  orcid: "https://orcid.org/my-orcid?orcid="
-#  semapv: "https://w3id.org/semapv/"
+#  semapv: "https://w3id.org/semapv/vocab/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
 x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	semapv:ManualMappingCuration	x:example	y:example	rdf_matcher	0.840714406	rdfs:label|skos:prefLabel	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	semapv:ManualMappingCuration	x:example	z:example	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
