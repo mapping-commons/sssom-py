@@ -111,9 +111,7 @@ def write_rdf(
 
 
 # todo: not sure the need for serialization param here; seems superfluous for some of these funcs
-def write_fhir_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir"
-) -> None:
+def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir") -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     data = to_fhir_json(msdf)
     json.dump(data, output, indent=2)
@@ -125,9 +123,7 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
         data = to_json(msdf)
         json.dump(data, output, indent=2)
     else:
-        raise ValueError(
-            f"Unknown json format: {serialisation}, currently only json supported"
-        )
+        raise ValueError(f"Unknown json format: {serialisation}, currently only json supported")
 
 
 def write_owl(
@@ -507,12 +503,8 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
         for _, row in msdf.df.iterrows():
             json_obj = {
                 "classes": [resolve(row["subject_id"]), resolve(row["object_id"])],
-                "subject_source_id": _resolve_prefix(
-                    row.get("subject_source", ""), prefix_map
-                ),
-                "object_source_id": _resolve_prefix(
-                    row.get("object_source", ""), prefix_map
-                ),
+                "subject_source_id": _resolve_prefix(row.get("subject_source", ""), prefix_map),
+                "object_source_id": _resolve_prefix(row.get("object_source", ""), prefix_map),
                 "source_name": metadata.get("mapping_set_id", ""),
                 "source_contact_info": ",".join(metadata.get("creator_id", "")),
                 "date": metadata.get("mapping_date", row.get("mapping_date", "")),
@@ -560,9 +552,7 @@ def get_writer_function(
         raise ValueError(f"Unknown output format: {output_format}")
 
 
-def write_tables(
-    sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]
-) -> None:
+def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]) -> None:
     """Write table from MappingSetDataFrame object.
 
     :param sssom_dict: Dictionary of MappingSetDataframes
@@ -603,9 +593,7 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
     elif serialisation == "tsv" or serialisation is None:
         sep = "\t"
     else:
-        raise ValueError(
-            f"Unknown table format: {serialisation}, should be one of tsv or csv"
-        )
+        raise ValueError(f"Unknown table format: {serialisation}, should be one of tsv or csv")
     return sep
 
 

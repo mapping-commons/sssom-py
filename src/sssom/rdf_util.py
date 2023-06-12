@@ -42,9 +42,7 @@ def rewire_graph(
                 src, tgt = m.subject_id, m.object_id
             else:
                 src, tgt = m.object_id, m.subject_id
-            if not isinstance(src, EntityReference) or not isinstance(
-                tgt, EntityReference
-            ):
+            if not isinstance(src, EntityReference) or not isinstance(tgt, EntityReference):
                 raise TypeError
             if src in rewire_map:
                 curr_tgt = rewire_map[src]

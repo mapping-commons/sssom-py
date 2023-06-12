@@ -42,9 +42,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     if config.predicates is None:
         predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
-        predicates = [
-            expand_curie(predicate, config) for predicate in config.predicates
-        ]
+        predicates = [expand_curie(predicate, config) for predicate in config.predicates]
     predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
@@ -60,11 +58,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     if config.include_object_labels:
         cols.insert(-1, "object_label")
     colstr = " ".join([f"?{c}" for c in cols])
-    olq = (
-        "OPTIONAL { ?object_id rdfs:label ?object_label }"
-        if config.include_object_labels
-        else ""
-    )
+    olq = "OPTIONAL { ?object_id rdfs:label ?object_label }" if config.include_object_labels else ""
     q = f"""\
     PREFIX rdfs: {RDFS.uri.n3()}
     SELECT {colstr}

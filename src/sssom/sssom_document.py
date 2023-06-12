@@ -37,9 +37,7 @@ class MappingSetDocument:
     @classmethod
     def empty(cls, prefix_map: PrefixMap) -> "MappingSetDocument":
         """Get an empty mapping set document with the given prefix map."""
-        mapping_set = MappingSet(
-            mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE
-        )
+        mapping_set = MappingSet(mapping_set_id=DEFAULT_MAPPING_SET_ID, license=DEFAULT_LICENSE)
         return cls(
             prefix_map=prefix_map,
             mapping_set=mapping_set,

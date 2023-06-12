@@ -13,9 +13,7 @@ from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = pkg_resources.resource_filename(
-    "sssom_schema", "schema/sssom_schema.yaml"
-)
+SCHEMA_YAML = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
 
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
 
@@ -247,8 +245,4 @@ class SSSOMSchemaView(object):
     @property
     def entity_reference_slots(self) -> List[str]:
         """Return list of entity reference slots."""
-        return [
-            c
-            for c in self.view.all_slots()
-            if self.view.get_slot(c).range == ENTITY_REFERENCE
-        ]
+        return [c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE]

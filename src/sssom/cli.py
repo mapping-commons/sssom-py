@@ -63,9 +63,7 @@ from .util import (
 from .writers import write_table
 
 SSSOM_SV_OBJECT = (
-    SSSOMSchemaView.instance
-    if hasattr(SSSOMSchemaView, "instance")
-    else SSSOMSchemaView()
+    SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
 )
 
 # Click input options common across commands
@@ -275,9 +273,7 @@ def dedupe(input: str, output: TextIO):
     # df = parse(input)
     msdf = parse_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
-    msdf_out = MappingSetDataFrame(
-        df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata
-    )
+    msdf_out = MappingSetDataFrame(df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata)
     # df.to_csv(output, sep="\t", index=False)
     write_table(msdf_out, output)
 
@@ -698,9 +694,7 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     :param **kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     """
-    annotate_file(
-        input=input, output=output, replace_multivalued=replace_multivalued, **kwargs
-    )
+    annotate_file(input=input, output=output, replace_multivalued=replace_multivalued, **kwargs)
 
 
 @main.command()
@@ -739,9 +733,7 @@ def remove(input: str, output: TextIO, remove_map: str):
     is_flag=True,
     help="If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.",
 )
-@click.option(
-    "--inverse-map", help="Path to file that contains the inverse predicate dictionary."
-)
+@click.option("--inverse-map", help="Path to file that contains the inverse predicate dictionary.")
 def invert(
     input: str,
     output: TextIO,

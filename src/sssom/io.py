@@ -52,9 +52,7 @@ def convert_file(
     """
     raise_for_bad_path(input_path)
     doc = parse_sssom_table(input_path)
-    write_func, fileformat = get_writer_function(
-        output_format=output_format, output=output
-    )
+    write_func, fileformat = get_writer_function(output_format=output_format, output=output)
     # TODO cthoyt figure out how to use protocols for this
     write_func(doc, output, serialisation=fileformat)  # type:ignore
 
@@ -115,9 +113,7 @@ def parse_file(
     write_table(doc, output, embedded_mode)
 
 
-def validate_file(
-    input_path: str, validation_types: List[SchemaValidationType]
-) -> None:
+def validate_file(input_path: str, validation_types: List[SchemaValidationType]) -> None:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
     :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml

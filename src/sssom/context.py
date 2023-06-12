@@ -125,9 +125,7 @@ def set_default_mapping_set_id(meta: Metadata) -> Metadata:
     :param meta: Metadata without mapping_set_id
     :return: Metadata with a default mapping_set_id
     """
-    if ("mapping_set_id" not in meta.metadata) or (
-        meta.metadata["mapping_set_id"] is None
-    ):
+    if ("mapping_set_id" not in meta.metadata) or (meta.metadata["mapping_set_id"] is None):
         meta.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
     return meta
 

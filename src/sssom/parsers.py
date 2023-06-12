@@ -81,9 +81,7 @@ def read_sssom_table(
     **kwargs,
 ) -> MappingSetDataFrame:
     """DEPRECATE."""
-    return parse_sssom_table(
-        file_path=file_path, prefix_map=prefix_map, meta=meta, kwargs=kwargs
-    )
+    return parse_sssom_table(file_path=file_path, prefix_map=prefix_map, meta=meta, kwargs=kwargs)
 
 
 @deprecated(
@@ -121,9 +119,7 @@ def read_sssom_json(
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """DEPRECATE."""
-    return parse_sssom_json(
-        file_path=file_path, prefix_map=prefix_map, meta=meta, kwarg=kwargs
-    )
+    return parse_sssom_json(file_path=file_path, prefix_map=prefix_map, meta=meta, kwarg=kwargs)
 
 
 # * *******************************************************
@@ -157,9 +153,7 @@ def parse_sssom_table(
                             f"conflicts with provided ({meta[k]})."
                         )
                 else:
-                    logging.info(
-                        f"Externally provided metadata {k}:{v} is added to metadata set."
-                    )
+                    logging.info(f"Externally provided metadata {k}:{v} is added to metadata set.")
                     sssom_metadata[k] = v
         meta = sssom_metadata
 
@@ -180,9 +174,7 @@ def parse_sssom_table(
             prefix_map = sssom_metadata[CURIE_MAP]
 
     meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    msdf = from_sssom_dataframe(
-        df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata
-    )
+    msdf = from_sssom_dataframe(df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata)
     return msdf
 
 
@@ -220,9 +212,7 @@ def parse_sssom_json(
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-    msdf = from_sssom_json(
-        jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata
-    )
+    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -267,9 +257,7 @@ def _get_prefix_map_and_metadata(
     default_metadata = get_default_metadata()
 
     if prefix_map is None:
-        logging.warning(
-            "No prefix map provided (not recommended), trying to use defaults.."
-        )
+        logging.warning("No prefix map provided (not recommended), trying to use defaults..")
         prefix_map = default_metadata.prefix_map
 
     if meta is None:
@@ -304,14 +292,10 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     return MappingSet(mapping_set_id=mapping_set_id, license=license)
 
 
-def _get_mdict_ms_and_bad_attrs(
-    row: pd.Series, bad_attrs: Counter
-) -> Tuple[dict, Counter]:
+def _get_mdict_ms_and_bad_attrs(row: pd.Series, bad_attrs: Counter) -> Tuple[dict, Counter]:
     mdict = {}
     sssom_schema_object = (
-        SSSOMSchemaView.instance
-        if hasattr(SSSOMSchemaView, "instance")
-        else SSSOMSchemaView()
+        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
     )
     for k, v in row.items():
         if v and v == v:
@@ -475,14 +459,10 @@ def from_sssom_json(
     :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
-    mapping_set = cast(
-        MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
-    )
+    mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
-    mapping_set_document = MappingSetDocument(
-        mapping_set=mapping_set, prefix_map=prefix_map
-    )
+    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, prefix_map=prefix_map)
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -613,14 +593,10 @@ def from_obographs(
                                 mdict: Dict[str, Any] = {}
                                 try:
                                     mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
-                                    mdict[OBJECT_ID] = curie_from_uri(
-                                        xref_id, prefix_map
-                                    )
+                                    mdict[OBJECT_ID] = curie_from_uri(xref_id, prefix_map)
                                     mdict[SUBJECT_LABEL] = label
                                     mdict[PREDICATE_ID] = "oboInOwl:hasDbXref"
-                                    mdict[
-                                        MAPPING_JUSTIFICATION
-                                    ] = MAPPING_JUSTIFICATION_UNSPECIFIED
+                                    mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except NoCURIEException as e:
                                     # FIXME this will cause all sorts of ragged Mappings
@@ -632,16 +608,10 @@ def from_obographs(
                                     xref_id = value["val"]
                                     mdict = {}
                                     try:
-                                        mdict[SUBJECT_ID] = curie_from_uri(
-                                            nid, prefix_map
-                                        )
-                                        mdict[OBJECT_ID] = curie_from_uri(
-                                            xref_id, prefix_map
-                                        )
+                                        mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
+                                        mdict[OBJECT_ID] = curie_from_uri(xref_id, prefix_map)
                                         mdict[SUBJECT_LABEL] = label
-                                        mdict[PREDICATE_ID] = curie_from_uri(
-                                            pred, prefix_map
-                                        )
+                                        mdict[PREDICATE_ID] = curie_from_uri(pred, prefix_map)
                                         mdict[
                                             MAPPING_JUSTIFICATION
                                         ] = MAPPING_JUSTIFICATION_UNSPECIFIED
@@ -679,9 +649,7 @@ def from_obographs(
                                     mdict[PREDICATE_ID] = curie_from_uri(
                                         OWL_EQUIV_CLASS, prefix_map
                                     )
-                                    mdict[
-                                        MAPPING_JUSTIFICATION
-                                    ] = MAPPING_JUSTIFICATION_UNSPECIFIED
+                                    mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mdict[SUBJECT_LABEL] = (
                                         labels[ec1] if ec1 in labels.keys() else ""
                                     )
@@ -798,9 +766,7 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(
-    cell_node, prefix_map: PrefixMap, mapping_predicates
-) -> Optional[Mapping]:
+def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -> Optional[Mapping]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -822,9 +788,7 @@ def _cell_element_values(
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
-                    logging.warning(
-                        f"Unsupported alignment api element: {child.nodeName}"
-                    )
+                    logging.warning(f"Unsupported alignment api element: {child.nodeName}")
             except NoCURIEException as e:
                 logging.warning(e)
 

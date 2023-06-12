@@ -13,15 +13,9 @@ from dataclasses import dataclass
 from typing import Any, ClassVar, Dict, List, Optional, Union
 
 from jsonasobj2 import JsonObj, as_dict
-from linkml_runtime.linkml_model.meta import (
-    EnumDefinition,
-    PermissibleValue,
-    PvFormulaOptions,
-)
+from linkml_runtime.linkml_model.meta import EnumDefinition, PermissibleValue, PvFormulaOptions
 from linkml_runtime.utils.curienamespace import CurieNamespace
-from linkml_runtime.utils.dataclass_extensions_376 import (
-    dataclasses_init_fn_with_kwargs,
-)
+from linkml_runtime.utils.dataclass_extensions_376 import dataclasses_init_fn_with_kwargs
 from linkml_runtime.utils.enumerations import EnumDefinitionImpl
 from linkml_runtime.utils.formatutils import camelcase, sfx, underscore
 from linkml_runtime.utils.metamodelcore import (
@@ -40,12 +34,7 @@ from linkml_runtime.utils.metamodelcore import (
     empty_list,
 )
 from linkml_runtime.utils.slot import Slot
-from linkml_runtime.utils.yamlutils import (
-    YAMLRoot,
-    extended_float,
-    extended_int,
-    extended_str,
-)
+from linkml_runtime.utils.yamlutils import YAMLRoot, extended_float, extended_int, extended_str
 from rdflib import Namespace, URIRef
 
 metamodel_version = "1.7.0"
@@ -243,42 +232,28 @@ class Clique(YAMLRoot):
         self.members = [v if isinstance(v, str) else str(v) for v in self.members]
 
         if not isinstance(self.members_labels, list):
-            self.members_labels = (
-                [self.members_labels] if self.members_labels is not None else []
-            )
-        self.members_labels = [
-            v if isinstance(v, str) else str(v) for v in self.members_labels
-        ]
+            self.members_labels = [self.members_labels] if self.members_labels is not None else []
+        self.members_labels = [v if isinstance(v, str) else str(v) for v in self.members_labels]
 
         if self.num_members is not None and not isinstance(self.num_members, int):
             self.num_members = int(self.num_members)
 
-        if self.max_confidence is not None and not isinstance(
-            self.max_confidence, float
-        ):
+        if self.max_confidence is not None and not isinstance(self.max_confidence, float):
             self.max_confidence = float(self.max_confidence)
 
-        if self.min_confidence is not None and not isinstance(
-            self.min_confidence, float
-        ):
+        if self.min_confidence is not None and not isinstance(self.min_confidence, float):
             self.min_confidence = float(self.min_confidence)
 
-        if self.avg_confidence is not None and not isinstance(
-            self.avg_confidence, float
-        ):
+        if self.avg_confidence is not None and not isinstance(self.avg_confidence, float):
             self.avg_confidence = float(self.avg_confidence)
 
         if self.is_conflated is not None and not isinstance(self.is_conflated, Bool):
             self.is_conflated = Bool(self.is_conflated)
 
-        if self.is_all_conflated is not None and not isinstance(
-            self.is_all_conflated, Bool
-        ):
+        if self.is_all_conflated is not None and not isinstance(self.is_all_conflated, Bool):
             self.is_all_conflated = Bool(self.is_all_conflated)
 
-        if self.total_conflated is not None and not isinstance(
-            self.total_conflated, int
-        ):
+        if self.total_conflated is not None and not isinstance(self.total_conflated, int):
             self.total_conflated = int(self.total_conflated)
 
         if self.proportion_conflated is not None and not isinstance(
@@ -286,35 +261,25 @@ class Clique(YAMLRoot):
         ):
             self.proportion_conflated = float(self.proportion_conflated)
 
-        if self.conflation_score is not None and not isinstance(
-            self.conflation_score, float
-        ):
+        if self.conflation_score is not None and not isinstance(self.conflation_score, float):
             self.conflation_score = float(self.conflation_score)
 
         if self.members_count is not None and not isinstance(self.members_count, int):
             self.members_count = int(self.members_count)
 
-        if self.min_count_by_source is not None and not isinstance(
-            self.min_count_by_source, int
-        ):
+        if self.min_count_by_source is not None and not isinstance(self.min_count_by_source, int):
             self.min_count_by_source = int(self.min_count_by_source)
 
-        if self.max_count_by_source is not None and not isinstance(
-            self.max_count_by_source, int
-        ):
+        if self.max_count_by_source is not None and not isinstance(self.max_count_by_source, int):
             self.max_count_by_source = int(self.max_count_by_source)
 
-        if self.avg_count_by_source is not None and not isinstance(
-            self.avg_count_by_source, float
-        ):
+        if self.avg_count_by_source is not None and not isinstance(self.avg_count_by_source, float):
             self.avg_count_by_source = float(self.avg_count_by_source)
 
         if self.harmonic_mean_count_by_source is not None and not isinstance(
             self.harmonic_mean_count_by_source, float
         ):
-            self.harmonic_mean_count_by_source = float(
-                self.harmonic_mean_count_by_source
-            )
+            self.harmonic_mean_count_by_source = float(self.harmonic_mean_count_by_source)
 
         super().__post_init__(**kwargs)
 
