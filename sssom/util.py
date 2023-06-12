@@ -100,8 +100,9 @@ SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
-#: The 3 columns whose combination would be used as primary keys while merging/grouping
-KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
+#: The 4 columns whose combination would be used as primary keys while merging/grouping
+KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
+TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 @dataclass
@@ -761,7 +762,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
     max_confidence_df = combined_normalized_subset.groupby(
-        KEY_FEATURES, as_index=False
+        TRIPLES_IDS, as_index=False
     )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
