@@ -18,10 +18,6 @@ import yaml
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
-
-# from .sssom_datamodel import Mapping, MappingSet
-from sssom_schema import Mapping, MappingSet
-
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
@@ -51,6 +47,9 @@ from sssom.constants import (
     SUBJECT_SOURCE_ID,
     SSSOMSchemaView,
 )
+
+# from .sssom_datamodel import Mapping, MappingSet
+from sssom_schema import Mapping, MappingSet
 
 from .context import (
     DEFAULT_LICENSE,
@@ -546,16 +545,20 @@ def from_alignment_minidom(
                 elif node_name == "onto1":
                     ms[SUBJECT_SOURCE_ID] = e.firstChild.nodeValue
                 elif node_name == "onto2":
+                    ms[OBJECT_SOURCE_ID] = e.firstChild.nodeValue
+                elif node_name == "uri1":
+                    import pdb
+
+                    pdb.set_trace()
                     ms[
-                        OBJECT_SOURCE_ID
+                        SUBJECT_SOURCE
                     ] = (
                         e.firstChild.nodeValue
-                    )
-                elif node_name == "uri1":
-                    import pdb; pdb.set_trace()
-                    ms[SUBJECT_SOURCE] = e.firstChild.nodeValue  # CURIEfy this node value && If endswith(".extension"), replace it with _)
+                    )  # CURIEfy this node value && If endswith(".extension"), replace it with _)
                 elif node_name == "uri2":
-                    import pdb; pdb.set_trace()
+                    import pdb
+
+                    pdb.set_trace()
                     ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore

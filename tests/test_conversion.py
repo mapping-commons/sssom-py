@@ -8,7 +8,6 @@ from typing import Dict
 
 import yaml
 from rdflib import Graph
-
 from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import read_pandas, to_mapping_set_dataframe
