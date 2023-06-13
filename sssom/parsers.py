@@ -552,12 +552,10 @@ def from_alignment_minidom(
                         e.firstChild.nodeValue
                     )
                 elif node_name == "uri1":
-                    import pdb; pdb.set_trace()
+                    # import pdb; pdb.set_trace()
                     ms[SUBJECT_SOURCE] = e.firstChild.nodeValue  # CURIEfy this node value && If endswith(".extension"), replace it with _)
                 elif node_name == "uri2":
-                    import pdb
-
-                    pdb.set_trace()
+                    # import pdb; pdb.set_trace()
                     ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore
