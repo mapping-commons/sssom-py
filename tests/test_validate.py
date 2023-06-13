@@ -3,10 +3,10 @@
 import unittest
 
 from jsonschema import ValidationError
-
 from sssom.constants import DEFAULT_VALIDATION_TYPES, SchemaValidationType
 from sssom.parsers import parse_sssom_table
 from sssom.validators import validate
+
 from tests.constants import data_dir
 
 

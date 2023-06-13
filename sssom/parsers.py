@@ -18,10 +18,6 @@ import yaml
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from rdflib import Graph, URIRef
-
-# from .sssom_datamodel import Mapping, MappingSet
-from sssom_schema import Mapping, MappingSet
-
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
@@ -43,6 +39,9 @@ from sssom.constants import (
     SUBJECT_SOURCE_ID,
     SSSOMSchemaView,
 )
+
+# from .sssom_datamodel import Mapping, MappingSet
+from sssom_schema import Mapping, MappingSet
 
 from .context import (
     DEFAULT_LICENSE,
