@@ -12,10 +12,11 @@ from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
-from sssom.validators import check_all_prefixes_in_curie_map
 
 # from .sssom_datamodel import slots
 from sssom_schema import slots
+
+from sssom.validators import check_all_prefixes_in_curie_map
 
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document

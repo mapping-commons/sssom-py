@@ -9,7 +9,6 @@ from sssom.io import filter_file
 
 # from sssom.io import filter_file
 from sssom.parsers import parse_sssom_table
-
 from tests.constants import data_dir
 
 

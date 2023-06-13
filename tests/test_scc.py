@@ -4,7 +4,6 @@ import unittest
 
 from sssom.cliques import split_into_cliques, summarize_cliques
 from sssom.parsers import parse_sssom_table
-
 from tests.constants import data_dir
 
 
