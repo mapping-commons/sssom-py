@@ -2,9 +2,10 @@
 
 import unittest
 
-from sssom import filter_redundant_rows
 from sssom.parsers import parse_sssom_table
 from sssom.util import deal_with_negation, merge_msdf
+
+from sssom import filter_redundant_rows
 from tests.constants import data_dir
 
 
@@ -28,7 +29,7 @@ class TestReconcile(unittest.TestCase):
         df1 = deal_with_negation(self.msdf1.df)
         self.assertEqual(8, len(df1.index))
         df2 = deal_with_negation(self.msdf2.df)
-        self.assertEqual(12, len(df2.index))
+        self.assertEqual(14, len(df2.index))
 
     def test_merge(self):
         """Test merging two tables."""

@@ -4,6 +4,7 @@ import unittest
 
 from sssom.parsers import parse_sssom_table
 from sssom.util import merge_msdf
+
 from tests.constants import data_dir
 
 

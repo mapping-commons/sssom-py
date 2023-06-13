@@ -6,11 +6,10 @@ from typing import List
 from jsonschema import ValidationError
 from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
 from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
-from sssom_schema import MappingSet
-
 from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
+from sssom_schema import MappingSet
 
 from .constants import SCHEMA_YAML, SchemaValidationType
 

@@ -4,9 +4,9 @@ import os
 import unittest
 
 from rdflib import Graph
-
 from sssom.parsers import parse_sssom_table
 from sssom.rdf_util import rewire_graph
+
 from tests.constants import data_dir, test_out_dir
 
 
