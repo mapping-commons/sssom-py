@@ -5,7 +5,6 @@ import unittest
 from sssom.constants import SSSOMSchemaView
 from sssom.parsers import parse_sssom_table
 from sssom.util import sort_df_rows_columns
-
 from tests.constants import data_dir
 
 SCHEMA_DICT = SSSOMSchemaView.instance.dict

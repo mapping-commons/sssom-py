@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import yaml
 from rdflib import Graph
+
 from sssom.context import get_default_metadata
 from sssom.parsers import (
     from_alignment_minidom,
@@ -21,7 +22,6 @@ from sssom.parsers import (
 )
 from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns
 from sssom.writers import write_table
-
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
 

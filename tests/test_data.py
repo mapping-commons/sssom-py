@@ -4,8 +4,8 @@ import os
 from typing import Any, List, Mapping
 
 import yaml
-from sssom.util import PREFIX_MAP_KEY
 
+from sssom.util import PREFIX_MAP_KEY
 from tests.constants import cwd, data_dir, test_out_dir
 
 test_validate_dir = os.path.join(cwd, "validate_data")
