@@ -728,23 +728,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
         )
 
-    #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
-    # negation_df: pd.DataFrame
-    # negation_df = df.loc[df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT]
-    # normalized_negation_df = negation_df.reset_index()
-
-    # This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
-    # normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
-    #     PREDICATE_ID
-    # ].str.replace("!", "")
-    ########################################################
-    # normalized_negation_df = normalized_negation_df.drop(["index"], axis=1)
-
-    # remove the NOT rows from the main DataFrame
-    # condition = negation_df.isin(df)
-    # positive_df = df.drop(condition.index)
-    # positive_df = positive_df.reset_index().drop(["index"], axis=1)
-
     columns_of_interest = [
         SUBJECT_ID,
         PREDICATE_ID,
@@ -754,21 +737,12 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         MAPPING_JUSTIFICATION,
     ]
     df_subset = df[columns_of_interest]
-    # negation_subset = normalized_negation_df[columns_of_interest]
-    # positive_subset = positive_df[columns_of_interest]
-
-    # combined_normalized_subset = pd.concat(
-    #     [positive_subset, negation_subset]
-    # ).drop_duplicates()
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
     max_confidence_df = df_subset.groupby(KEY_FEATURES, as_index=False)[
         CONFIDENCE
     ].max()
-    # max_confidence_df = combined_normalized_subset.groupby(TRIPLES_IDS, as_index=False)[
-    #     CONFIDENCE
-    # ].max()
 
     # If same confidence prefer "HumanCurated".
     reconciled_df_subset = pd.DataFrame(columns=df_subset.columns)
@@ -796,14 +770,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             if len(match_condition_1[match_condition_1].index) > 1:
                 match_condition_1 = match_condition_1[match_condition_1].sample()
 
-        # FutureWarning: The frame.append method is deprecated and will be removed
-        # from pandas in a future version. Use pandas.concat instead.
-        # reconciled_df_subset = reconciled_df_subset.append(
-        #     combined_normalized_subset.loc[
-        #         match_condition_1[match_condition_1].index, :
-        #     ],
-        #     ignore_index=True,
-        # )
         reconciled_df_subset = pd.concat(
             [
                 reconciled_df_subset,
