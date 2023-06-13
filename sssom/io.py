@@ -9,7 +9,6 @@ from typing import List, Optional, TextIO, Union
 import pandas as pd
 from bioregistry import get_iri
 from pansql import sqldf
-
 from sssom.validators import validate
 
 from .constants import (

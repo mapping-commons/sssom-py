@@ -3,6 +3,7 @@ import unittest
 
 from sssom.parsers import parse_sssom_table
 from sssom.writers import to_json, to_owl_graph, to_rdf_graph
+
 from tests.constants import data_dir
 
 
