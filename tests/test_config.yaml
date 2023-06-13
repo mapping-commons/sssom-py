@@ -44,9 +44,9 @@ tests:
     ct_json_elements: 1293
     ct_data_frame_rows: 646
     ct_graph_queries_owl:
-      query_count_equivalent_classes: 646
+      query_count_equivalent_classes: 0
     ct_graph_queries_rdf:
-      query_count_equivalent_classes: 646
+      query_count_equivalent_classes: 0
     curie_map:
       HP: "http://purl.obolibrary.org/obo/HP_"
       ORDO: "http://www.orpha.net/ORDO/Orphanet_"
