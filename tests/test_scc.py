@@ -24,6 +24,4 @@ class TestSCC(unittest.TestCase):
         """Test summarizing cliques."""
         df = summarize_cliques(self.mset)
         df.to_csv(data_dir / "basic-cliquesummary.tsv", sep="\t")
-        df.describe().transpose().to_csv(
-            data_dir / "basic-cliquesummary-stats.tsv", sep="\t"
-        )
+        df.describe().transpose().to_csv(data_dir / "basic-cliquesummary-stats.tsv", sep="\t")

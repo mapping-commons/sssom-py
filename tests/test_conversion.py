@@ -105,9 +105,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
     def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str):
-        self._test_graph_size(
-            g, getattr(test, f"ct_graph_queries_{file_format}"), test.filename
-        )
+        self._test_graph_size(g, getattr(test, f"ct_graph_queries_{file_format}"), test.filename)
         f_roundtrip = test.get_out_file(f"roundtrip.{file_format}")
         g.serialize(destination=f_roundtrip, format=test.graph_serialisation)
         self._test_load_graph_size(

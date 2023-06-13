@@ -164,9 +164,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     """def run_sparql(self, runner, test_case: SSSOMTestCase):
         prams = []"""
 
-    def run_diff(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
-    ) -> Result:
+    def run_diff(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the diff test."""
         params = []
         out_file = None
@@ -181,9 +179,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         else:
             self.fail("No test to run.")
 
-    def run_partition(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
-    ) -> Result:
+    def run_partition(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the partition test."""
         params = []
         primary_test_case = None
@@ -229,9 +225,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_merge(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
-    ) -> Result:
+    def run_merge(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the merge test."""
         params = []
         out_file = None
@@ -245,9 +239,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_cases)
         return result
 
-    def run_reconcile_prefix(
-        self, runner: CliRunner, test_case: SSSOMTestCase
-    ) -> Result:
+    def run_reconcile_prefix(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the merge test with reconcile prefixes."""
         out_file = os.path.join(test_out_dir, "reconciled_prefix.tsv")
         result = runner.invoke(
@@ -279,9 +271,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_sort_rows_columns(
-        self, runner: CliRunner, test_case: SSSOMTestCase
-    ) -> Result:
+    def run_sort_rows_columns(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Test sorting of DataFrame columns."""
         out_file = os.path.join(test_out_dir, "sort_column_test.tsv")
         in_file = test_case.filepath.replace("basic", "basic6")

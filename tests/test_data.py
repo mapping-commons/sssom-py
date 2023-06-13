@@ -39,12 +39,8 @@ class SSSOMTestCase:
         self.ct_json_elements = config["ct_json_elements"]
         self.ct_data_frame_rows = config["ct_data_frame_rows"]
         self.inputformat = config.get("inputformat")
-        self.ct_graph_queries_owl = self._query_tuple(
-            config, "ct_graph_queries_owl", queries
-        )
-        self.ct_graph_queries_rdf = self._query_tuple(
-            config, "ct_graph_queries_rdf", queries
-        )
+        self.ct_graph_queries_owl = self._query_tuple(config, "ct_graph_queries_owl", queries)
+        self.ct_graph_queries_rdf = self._query_tuple(config, "ct_graph_queries_rdf", queries)
         self.prefix_map = config.get(PREFIX_MAP_KEY)
 
     @staticmethod

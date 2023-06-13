@@ -32,7 +32,9 @@ class TestParse(unittest.TestCase):
     def setUp(self) -> None:
         """Set up the test case."""
         # TODO: change back to the commented url.
-        self.df_url = "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
+        self.df_url = (
+            "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
+        )
         self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"
         self.rdf_graph = Graph()
         self.rdf_graph.parse(self.rdf_graph_file, format="ttl")
@@ -115,9 +117,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_tsv(self):
         """Test parsing TSV."""
-        msdf = from_sssom_dataframe(
-            df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta
-        )
+        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta)
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)

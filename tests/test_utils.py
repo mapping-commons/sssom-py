@@ -86,9 +86,7 @@ class TestIO(unittest.TestCase):
         """Test remove mappings."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
-        filtered_df = filter_out_prefixes(
-            original_msdf.df, prefix_filter_list, self.features
-        )
+        filtered_df = filter_out_prefixes(original_msdf.df, prefix_filter_list, self.features)
         new_msdf = MappingSetDataFrame(
             df=filtered_df,
             prefix_map=original_msdf.prefix_map,
@@ -103,9 +101,7 @@ class TestIO(unittest.TestCase):
         """Test clean prefix map."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
-        filtered_df = filter_out_prefixes(
-            original_msdf.df, prefix_filter_list, self.features
-        )
+        filtered_df = filter_out_prefixes(original_msdf.df, prefix_filter_list, self.features)
         new_msdf = MappingSetDataFrame(
             df=filtered_df,
             prefix_map=original_msdf.prefix_map,
@@ -114,9 +110,7 @@ class TestIO(unittest.TestCase):
         new_msdf.clean_prefix_map()
         self.assertEqual(
             new_msdf.prefix_map.keys(),
-            set(original_msdf.prefix_map.keys()).intersection(
-                set(new_msdf.prefix_map.keys())
-            ),
+            set(original_msdf.prefix_map.keys()).intersection(set(new_msdf.prefix_map.keys())),
         )
 
     def test_clean_prefix_map_strict(self):

@@ -1,5 +1,5 @@
 PYTHON=python
-SSSOM_VERSION_TAG=0.11.0
+SSSOM_VERSION_TAG=0.12.0
 DEFAULT_PREFIX_MAP="https://raw.githubusercontent.com/biopragmatics/bioregistry/main/exports/contexts/obo.context.jsonld"
 SSSOM_PY="https://raw.githubusercontent.com/mapping-commons/sssom/$(SSSOM_VERSION_TAG)/src/sssom_schema/datamodel/sssom_schema.py"
 SSSOM_YAML="https://raw.githubusercontent.com/mapping-commons/sssom/$(SSSOM_VERSION_TAG)/src/sssom_schema/schema/sssom_schema.yaml"

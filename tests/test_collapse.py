@@ -37,9 +37,7 @@ class TestCollapse(unittest.TestCase):
     def test_collapse(self):
         """Test the row count after collapsing the dataframe."""
         df = collapse(self.df)
-        self.assertEqual(
-            len(df), 91, f"Dataframe should have a different {df.head(10)}"
-        )
+        self.assertEqual(len(df), 91, f"Dataframe should have a different {df.head(10)}")
 
     def test_filter(self):
         """Test the row count after filtering redundant rows."""

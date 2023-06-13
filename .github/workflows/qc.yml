@@ -1,36 +1,40 @@
-name: SSSOM qc
+name: sssom-py QC
 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ubuntu-latest, windows-latest]
+        python-version: [ "3.8", "3.9", "3.10" ]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v3.0.2
 
-    - name: Install dependencies
-      run: |
-        pip install --upgrade pip
-        pip install tox
-    - name: Check manifest
-      run: tox -e manifest
-    - name: Lint with flake8
-      run: tox -e flake8
-    - name: Test with MyPy
-      run: tox -e mypy
-    - name: Test with pytest
-      run: tox -e py
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+
+      - name: Install Poetry
+        # Pin to 1.3.2 to workaround https://github.com/python-poetry/poetry/issues/7611
+        run: pipx install poetry==1.3.2
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Check code quality with flake8
+        run: poetry run tox -e flake8
+
+      - name: Check static typing with MyPy
+        run: poetry run tox -e mypy
+
+      - name: Test with pytest and generate coverage file
+        run: poetry run tox -e py
