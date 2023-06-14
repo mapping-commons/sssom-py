@@ -169,7 +169,6 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         msdf = to_mapping_set_dataframe(mdoc)
         json_dict = to_json(msdf)
         self.assertTrue("mappings" in json_dict)
-
         self.assertEqual(
             len(json_dict),
             test.ct_json_elements,

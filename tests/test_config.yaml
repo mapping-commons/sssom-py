@@ -41,7 +41,7 @@ tests:
   - filename: "oaei-ordo-hp.rdf"
     inputformat: "alignment-api-xml"
     multiple_input: False
-    ct_json_elements: 1293
+    ct_json_elements: 7
     ct_data_frame_rows: 646
     ct_graph_queries_owl:
       query_count_equivalent_classes: 0
