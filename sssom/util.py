@@ -760,9 +760,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
-    max_confidence_df = combined_normalized_subset.groupby(
-        TRIPLE_IDS, as_index=False
-    )[CONFIDENCE].max()
+    max_confidence_df = combined_normalized_subset.groupby(TRIPLE_IDS, as_index=False)[
+        CONFIDENCE
+    ].max()
 
     # If same confidence prefer "HumanCurated".
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
