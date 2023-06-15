@@ -102,6 +102,7 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
 #: The 4 columns whose combination would be used as primary keys while merging/grouping
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
+TRIPLE_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 @dataclass
@@ -726,41 +727,61 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
         )
+    #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
+    negation_df: pd.DataFrame
+    negation_df = df.loc[df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT]
+    normalized_negation_df = negation_df.reset_index()
+
+    # This step ONLY if 'NOT' is expressed by the symbol '!' in 'predicate_id' #####
+    # normalized_negation_df[PREDICATE_ID] = normalized_negation_df[
+    #     PREDICATE_ID
+    # ].str.replace("!", "")
+    ########################################################
+    normalized_negation_df = normalized_negation_df.drop(["index"], axis=1)
+
+    # remove the NOT rows from the main DataFrame
+    condition = negation_df.isin(df)
+    positive_df = df.drop(condition.index)
+    positive_df = positive_df.reset_index().drop(["index"], axis=1)
 
     columns_of_interest = [
         SUBJECT_ID,
         PREDICATE_ID,
-        PREDICATE_MODIFIER,
         OBJECT_ID,
         CONFIDENCE,
         MAPPING_JUSTIFICATION,
     ]
-    df_subset = df[columns_of_interest]
+    negation_subset = normalized_negation_df[columns_of_interest]
+    positive_subset = positive_df[columns_of_interest]
+
+    combined_normalized_subset = pd.concat(
+        [positive_subset, negation_subset]
+    ).drop_duplicates()
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
-    max_confidence_df = df_subset.groupby(KEY_FEATURES, as_index=False)[
-        CONFIDENCE
-    ].max()
+    max_confidence_df = combined_normalized_subset.groupby(
+        TRIPLE_IDS, as_index=False
+    )[CONFIDENCE].max()
 
     # If same confidence prefer "HumanCurated".
-    reconciled_df_subset = pd.DataFrame(columns=df_subset.columns)
+    reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
     for _, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
-            (df_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
-            & (df_subset[OBJECT_ID] == row_1[OBJECT_ID])
-            & (df_subset[CONFIDENCE] == row_1[CONFIDENCE])
+            (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
+            & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
+            & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
         )
         # match_condition_1[match_condition_1] gives the list of 'True's.
         # In other words, the rows that match the condition (rules declared).
         # Ideally, there should be 1 row. If not apply an extra rule to look for 'HumanCurated'.
         if len(match_condition_1[match_condition_1].index) > 1:
             match_condition_1 = (
-                (df_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
-                & (df_subset[OBJECT_ID] == row_1[OBJECT_ID])
-                & (df_subset[CONFIDENCE] == row_1[CONFIDENCE])
+                (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
+                & (combined_normalized_subset[OBJECT_ID] == row_1[OBJECT_ID])
+                & (combined_normalized_subset[CONFIDENCE] == row_1[CONFIDENCE])
                 & (
-                    df_subset[MAPPING_JUSTIFICATION]
+                    combined_normalized_subset[MAPPING_JUSTIFICATION]
                     == SEMAPV.ManualMappingCuration.value
                 )
             )
@@ -772,7 +793,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         reconciled_df_subset = pd.concat(
             [
                 reconciled_df_subset,
-                df_subset.loc[match_condition_1[match_condition_1].index, :],
+                combined_normalized_subset.loc[
+                    match_condition_1[match_condition_1].index, :
+                ],
             ],
             ignore_index=True,
         )
@@ -780,7 +803,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # Add negations (PREDICATE_MODIFIER) back to DataFrame
     # NOTE: negative TRUMPS positive if negative and positive with same
     # [SUBJECT_ID, OBJECT_ID, PREDICATE_ID] exist
-    for _, row_2 in df_subset.iterrows():
+    for _, row_2 in negation_df.iterrows():
         match_condition_2 = (
             (reconciled_df_subset[SUBJECT_ID] == row_2[SUBJECT_ID])
             & (reconciled_df_subset[OBJECT_ID] == row_2[OBJECT_ID])
