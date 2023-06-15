@@ -174,8 +174,9 @@
 
 <span class="n">URI_SSSOM_MAPPINGS</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings&quot;</span>
 
-<span class="c1">#: The 3 columns whose combination would be used as primary keys while merging/grouping</span>
-<span class="n">KEY_FEATURES</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">]</span>
+<span class="c1">#: The 4 columns whose combination would be used as primary keys while merging/grouping</span>
+<span class="n">KEY_FEATURES</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_MODIFIER</span><span class="p">]</span>
+<span class="n">TRIPLE_IDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="MappingSetDataFrame"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.util.MappingSetDataFrame">[docs]</a><span class="nd">@dataclass</span>
@@ -800,7 +801,6 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;The dataframe, after assigning default confidence, appears empty (deal_with_negation)&quot;</span>
         <span class="p">)</span>
-
     <span class="c1">#  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###</span>
     <span class="n">negation_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
     <span class="n">negation_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span> <span class="o">==</span> <span class="n">PREDICATE_MODIFIER_NOT</span><span class="p">]</span>
@@ -834,9 +834,9 @@
 
     <span class="c1"># GroupBy and SELECT ONLY maximum confidence</span>
     <span class="n">max_confidence_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-    <span class="n">max_confidence_df</span> <span class="o">=</span> <span class="n">combined_normalized_subset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
-        <span class="n">KEY_FEATURES</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">)[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">max_confidence_df</span> <span class="o">=</span> <span class="n">combined_normalized_subset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">TRIPLE_IDS</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span>
+        <span class="n">CONFIDENCE</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
     <span class="c1"># If same confidence prefer &quot;HumanCurated&quot;.</span>
     <span class="n">reconciled_df_subset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">combined_normalized_subset</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -864,14 +864,6 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_condition_1</span><span class="p">[</span><span class="n">match_condition_1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">match_condition_1</span> <span class="o">=</span> <span class="n">match_condition_1</span><span class="p">[</span><span class="n">match_condition_1</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
 
-        <span class="c1"># FutureWarning: The frame.append method is deprecated and will be removed</span>
-        <span class="c1"># from pandas in a future version. Use pandas.concat instead.</span>
-        <span class="c1"># reconciled_df_subset = reconciled_df_subset.append(</span>
-        <span class="c1">#     combined_normalized_subset.loc[</span>
-        <span class="c1">#         match_condition_1[match_condition_1].index, :</span>
-        <span class="c1">#     ],</span>
-        <span class="c1">#     ignore_index=True,</span>
-        <span class="c1"># )</span>
         <span class="n">reconciled_df_subset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">reconciled_df_subset</span><span class="p">,</span>
