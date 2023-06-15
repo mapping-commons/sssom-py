@@ -100,8 +100,9 @@ SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
-#: The 3 columns whose combination would be used as primary keys while merging/grouping
-KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
+#: The 4 columns whose combination would be used as primary keys while merging/grouping
+KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
+TRIPLE_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 @dataclass
@@ -726,7 +727,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
         )
-
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
     negation_df = df.loc[df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT]
@@ -760,9 +760,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
-    max_confidence_df = combined_normalized_subset.groupby(
-        KEY_FEATURES, as_index=False
-    )[CONFIDENCE].max()
+    max_confidence_df = combined_normalized_subset.groupby(TRIPLE_IDS, as_index=False)[
+        CONFIDENCE
+    ].max()
 
     # If same confidence prefer "HumanCurated".
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
@@ -790,14 +790,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             if len(match_condition_1[match_condition_1].index) > 1:
                 match_condition_1 = match_condition_1[match_condition_1].sample()
 
-        # FutureWarning: The frame.append method is deprecated and will be removed
-        # from pandas in a future version. Use pandas.concat instead.
-        # reconciled_df_subset = reconciled_df_subset.append(
-        #     combined_normalized_subset.loc[
-        #         match_condition_1[match_condition_1].index, :
-        #     ],
-        #     ignore_index=True,
-        # )
         reconciled_df_subset = pd.concat(
             [
                 reconciled_df_subset,
