@@ -100,8 +100,9 @@ SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 
-#: The 3 columns whose combination would be used as primary keys while merging/grouping
-KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
+#: The 4 columns whose combination would be used as primary keys while merging/grouping
+KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
+TRIPLE_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 
 @dataclass
@@ -726,7 +727,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(
             "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
         )
-
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
     negation_df = df.loc[df[PREDICATE_MODIFIER] == PREDICATE_MODIFIER_NOT]
@@ -760,9 +760,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
-    max_confidence_df = combined_normalized_subset.groupby(
-        KEY_FEATURES, as_index=False
-    )[CONFIDENCE].max()
+    max_confidence_df = combined_normalized_subset.groupby(TRIPLE_IDS, as_index=False)[
+        CONFIDENCE
+    ].max()
 
     # If same confidence prefer "HumanCurated".
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
@@ -790,14 +790,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             if len(match_condition_1[match_condition_1].index) > 1:
                 match_condition_1 = match_condition_1[match_condition_1].sample()
 
-        # FutureWarning: The frame.append method is deprecated and will be removed
-        # from pandas in a future version. Use pandas.concat instead.
-        # reconciled_df_subset = reconciled_df_subset.append(
-        #     combined_normalized_subset.loc[
-        #         match_condition_1[match_condition_1].index, :
-        #     ],
-        #     ignore_index=True,
-        # )
         reconciled_df_subset = pd.concat(
             [
                 reconciled_df_subset,
@@ -1170,55 +1162,57 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
 
 
 def filter_out_prefixes(
-    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+    df: pd.DataFrame,
+    filter_prefixes: List[str],
+    features: list = KEY_FEATURES,
+    require_all_prefixes: bool = False,
 ) -> pd.DataFrame:
-    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+    """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
 
-    :param df: Pandas DataFrame
+    :param df: Pandas DataFrame of SSSOM Mapping
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
+    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
     rows = []
+    selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
-        # Confirm if none of the CURIEs in the list above appear in the filter_prefixes list.
-        # If TRUE, append row.
-        if not any(prefix in prefixes for prefix in filter_prefix_set):
+        if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
-    if rows:
-        return pd.DataFrame(rows)
-    else:
-        return pd.DataFrame(columns=features)
+
+    return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
 def filter_prefixes(
-    df: pd.DataFrame, filter_prefixes: List[str], features: list = KEY_FEATURES
+    df: pd.DataFrame,
+    filter_prefixes: List[str],
+    features: list = KEY_FEATURES,
+    require_all_prefixes: bool = True,
 ) -> pd.DataFrame:
-    """Filter any row where a CURIE in one of the key column uses one of the given prefixes.
+    """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
 
-    :param df: Pandas DataFrame
+    :param df: Pandas DataFrame of SSSOM Mapping
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
+    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
     :return: Pandas Dataframe
     """
     filter_prefix_set = set(filter_prefixes)
     rows = []
+    selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
         prefixes = {
             get_prefix_from_curie(curie) for curie in row[features] if curie is not None
         }
-        # Confirm if all of the CURIEs in the list above appear in the filter_prefixes list.
-        # If TRUE, append row.
-        if all(prefix in filter_prefix_set for prefix in prefixes):
+        if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
-    if rows:
-        return pd.DataFrame(rows)
-    else:
-        return pd.DataFrame(columns=features)
+
+    return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
 # TODO this is not used anywhere

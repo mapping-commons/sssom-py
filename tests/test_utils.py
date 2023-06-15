@@ -35,23 +35,53 @@ class TestIO(unittest.TestCase):
                 iri_list.extend(p_iri)
         self.assertEqual(3, len(iri_list))
 
-    def test_filter_prefixes(self):
+    def test_filter_prefixes_any(self):
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
         filtered_df = filter_prefixes(
-            original_msdf.df, prefix_filter_list, self.features
+            original_msdf.df,
+            prefix_filter_list,
+            self.features,
+            require_all_prefixes=False,
+        )
+        self.assertEqual(len(filtered_df), 136)
+
+    def test_filter_prefixes_all(self):
+        """Test filtering MSDF.df by prefixes provided."""
+        prefix_filter_list = ["x", "y"]
+        original_msdf = self.msdf
+        filtered_df = filter_prefixes(
+            original_msdf.df,
+            prefix_filter_list,
+            self.features,
+            require_all_prefixes=True,
         )
         self.assertEqual(len(filtered_df), 40)
 
-    def test_filter_out_prefixes(self):
+    def test_filter_out_prefixes_any(self):
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
         filtered_df = filter_out_prefixes(
-            original_msdf.df, prefix_filter_list, self.features
+            original_msdf.df,
+            prefix_filter_list,
+            self.features,
+            require_all_prefixes=False,
         )
         self.assertEqual(len(filtered_df), 5)
+
+    def test_filter_out_prefixes_all(self):
+        """Test filtering MSDF.df by prefixes provided."""
+        prefix_filter_list = ["x", "y"]
+        original_msdf = self.msdf
+        filtered_df = filter_out_prefixes(
+            original_msdf.df,
+            prefix_filter_list,
+            self.features,
+            require_all_prefixes=True,
+        )
+        self.assertEqual(len(filtered_df), 101)
 
     def test_remove_mappings(self):
         """Test remove mappings."""

@@ -23,7 +23,9 @@
 SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings
 
 ```
-WARNING: the export formats (json, rdf) of sssom-py are not yet finalised! Please expect changes in future releases!
+WARNING: 
+    The export formats (json, rdf) of sssom-py are not yet finalised! 
+    Please expect changes in future releases!
 ```
 
 See https://github.com/OBOFoundry/SSSOM
