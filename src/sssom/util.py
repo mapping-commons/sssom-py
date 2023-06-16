@@ -1,4 +1,3 @@
-"""Utilities for SSSOM."""
 
 import hashlib
 import json
