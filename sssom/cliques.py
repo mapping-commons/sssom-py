@@ -7,6 +7,10 @@ from typing import DefaultDict, Dict, List, Optional, Set
 
 import networkx as nx
 import pandas as pd
+
+# from .sssom_datamodel import Mapping
+from sssom_schema import Mapping
+
 from sssom.constants import (
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
@@ -17,10 +21,6 @@ from sssom.constants import (
     SKOS_NARROW_MATCH,
     SSSOM_SUPERCLASS_OF,
 )
-
-# from .sssom_datamodel import Mapping
-from sssom_schema import Mapping
-
 from .parsers import to_mapping_set_document
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
