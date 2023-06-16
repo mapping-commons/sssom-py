@@ -641,12 +641,12 @@ def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
     :return: Click options deduced from user input into parameters.
     """
 
-    def decorator(f):
+    def _decorator(f):
         for sssom_slot in reversed(options):
             click.option("--" + sssom_slot, multiple=True)(f)
         return f
 
-    return decorator
+    return _decorator
 
 
 @main.command()

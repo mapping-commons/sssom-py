@@ -497,6 +497,7 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
     m_list = []
 
     def resolve(x):
+        """Resolve URL."""
         return _resolve_url(x, prefix_map)
 
     if msdf.df is not None:

@@ -29,6 +29,7 @@ def rewire_graph(
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
 
     def expand_curie(curie: str) -> URIRef:
+        """Expand CURIE into URIRef."""
         pfx, local = curie.split(":")
         return URIRef(f"{pm[pfx]}{local}")
 
@@ -66,6 +67,7 @@ def rewire_graph(
     }
 
     def rewire_node(n: Any):
+        """Rewire node."""
         if isinstance(n, URIRef):
             if n in uri_ref_rewire_map:
                 return uri_ref_rewire_map[n]
