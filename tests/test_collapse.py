@@ -5,7 +5,7 @@ import unittest
 import yaml
 from pansql import sqldf
 
-from sssom import (
+from sssom.util import (
     collapse,
     compare_dataframes,
     dataframe_to_ptable,

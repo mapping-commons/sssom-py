@@ -40,7 +40,7 @@ def validate_json_schema(msdf: MappingSetDataFrame) -> None:
     """
     validator = ReferenceValidator(SchemaView(SCHEMA_YAML))
     mapping_set = to_mapping_set_document(msdf).mapping_set
-    validator.validate_object(mapping_set, MappingSet)
+    validator.validate(mapping_set, MappingSet)
 
 
 def validate_shacl(msdf: MappingSetDataFrame) -> None:
