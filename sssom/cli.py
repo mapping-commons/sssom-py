@@ -22,6 +22,7 @@ import pandas as pd
 import yaml
 from rdflib import Graph
 from scipy.stats import chi2_contingency
+
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
