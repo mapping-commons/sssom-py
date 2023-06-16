@@ -5,9 +5,7 @@ import logging
 import uuid
 from typing import Optional
 
-from linkml.generators.jsonldcontextgen import ContextGenerator
-
-from sssom.constants import SCHEMA_YAML
+import pkg_resources
 
 from .external_context import sssom_external_context
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -20,6 +18,9 @@ SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
+SSSOM_CONTEXT = pkg_resources.resource_filename(
+    "sssom_schema", "context/sssom_schema.context.jsonld"
+)
 
 
 def get_jsonld_context():
@@ -29,8 +30,10 @@ def get_jsonld_context():
 
     :return: JSON-LD context
     """
-    sssom_context = ContextGenerator(SCHEMA_YAML).serialize()
-    return json.loads(sssom_context, strict=False)
+    with open(SSSOM_CONTEXT, "r") as c:
+        context = json.load(c, strict=False)
+
+    return context
 
 
 def get_external_jsonld_context():
