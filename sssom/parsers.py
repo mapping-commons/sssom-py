@@ -51,6 +51,7 @@ from sssom.constants import (
     SUBJECT_SOURCE_ID,
     SSSOMSchemaView,
 )
+
 from .context import (
     DEFAULT_LICENSE,
     DEFAULT_MAPPING_SET_ID,

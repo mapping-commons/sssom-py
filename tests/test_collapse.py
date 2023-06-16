@@ -4,7 +4,6 @@ import unittest
 
 import yaml
 from pansql import sqldf
-from sssom.parsers import parse_sssom_table
 
 from sssom import (
     collapse,
@@ -15,6 +14,7 @@ from sssom import (
     parse,
     reconcile_prefix_and_data,
 )
+from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir, prefix_recon_yaml
 
 
