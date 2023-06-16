@@ -6,6 +6,7 @@ import unittest
 from typing import Mapping
 
 from click.testing import CliRunner, Result
+
 from sssom.cli import (
     annotate,
     cliquesummary,
@@ -26,7 +27,6 @@ from sssom.cli import (
     split,
     validate,
 )
-
 from tests.test_data import (
     RECON_YAML,
     SSSOMTestCase,

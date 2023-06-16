@@ -8,6 +8,7 @@ from typing import Dict
 
 import yaml
 from rdflib import Graph
+
 from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import read_pandas, to_mapping_set_dataframe
@@ -169,6 +170,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         msdf = to_mapping_set_dataframe(mdoc)
         json_dict = to_json(msdf)
         self.assertTrue("mappings" in json_dict)
+
         self.assertEqual(
             len(json_dict),
             test.ct_json_elements,
