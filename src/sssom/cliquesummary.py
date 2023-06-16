@@ -1,10 +1,12 @@
-# Auto generated from cliquesummary.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-08-19 18:02
-# Schema: sssom-cliquesummary
-#
-# id: https://w3id.org/sssom/schema/cliquesummary/
-# description: Data dictionary for clique summaries
-# license: https://creativecommons.org/publicdomain/zero/1.0/
+"""
+Auto generated from cliquesummary.yaml by pythongen.py version: 0.9.0
+Generation date: 2021-08-19 18:02
+Schema: sssom-cliquesummary
+
+id: https://w3id.org/sssom/schema/cliquesummary/
+description: Data dictionary for clique summaries
+license: https://creativecommons.org/publicdomain/zero/1.0/
+"""
 
 import dataclasses
 import re
@@ -53,6 +55,7 @@ DEFAULT_ = SSSOM.CS
 
 # Types
 class Count(int):
+    """Count."""
     type_class_uri = XSD.integer
     type_class_curie = "xsd:integer"
     type_name = "count"
@@ -187,6 +190,7 @@ class Nodeidentifier(NodeIdentifier):
 
 # Class references
 class CliqueId(extended_str):
+    """CliqueId."""
     pass
 
 
@@ -289,6 +293,7 @@ class Clique(YAMLRoot):
 
 # Slots
 class slots:
+    """Slots."""
     pass
 
 
