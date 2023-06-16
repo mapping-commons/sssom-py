@@ -56,6 +56,7 @@ DEFAULT_ = SSSOM.CS
 # Types
 class Count(int):
     """Count."""
+
     type_class_uri = XSD.integer
     type_class_curie = "xsd:integer"
     type_name = "count"
@@ -191,6 +192,7 @@ class Nodeidentifier(NodeIdentifier):
 # Class references
 class CliqueId(extended_str):
     """CliqueId."""
+
     pass
 
 
@@ -294,6 +296,7 @@ class Clique(YAMLRoot):
 # Slots
 class slots:
     """Slots."""
+
     pass
 
 
