@@ -21,6 +21,7 @@ from sssom.constants import (
     SKOS_NARROW_MATCH,
     SSSOM_SUPERCLASS_OF,
 )
+
 from .parsers import to_mapping_set_document
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
