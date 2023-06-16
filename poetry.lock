@@ -1988,13 +1988,13 @@ sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
 name = "sssom-schema"
-version = "0.12.0"
+version = "0.13.0"
 description = "SSSOM is a Simple Standard for Sharing Ontology Mappings."
 optional = false
 python-versions = ">=3.7.6,<4.0.0"
 files = [
-    {file = "sssom_schema-0.12.0-py3-none-any.whl", hash = "sha256:f2abf3ecf6f399239d2c74a207a02bca076a660c603f284bb30295fca1a22b2f"},
-    {file = "sssom_schema-0.12.0.tar.gz", hash = "sha256:180934ad8228f82924b3933cd88800ef9b04c5f2ab72e766bc79305556997bef"},
+    {file = "sssom_schema-0.13.0-py3-none-any.whl", hash = "sha256:0414433746c9d09c1eff17552081fe3af02c57ad63833f9a439f8ad5f281099a"},
+    {file = "sssom_schema-0.13.0.tar.gz", hash = "sha256:1e15c346afbe3bde10d340206c884f5a5ff8428c7604e05e5f94c589d12227d9"},
 ]
 
 [package.dependencies]
@@ -2279,4 +2279,4 @@ tests = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "d3d0bbfad866048a6a5353103aff5bcf1c0852db6d9cd68a60f8ddddab066e8a"
+content-hash = "c4f3465fb0b489cb91494c2809ad791119e412c38f1a4f7896ab448c199018a9"
