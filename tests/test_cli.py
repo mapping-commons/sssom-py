@@ -352,7 +352,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def test_convert_cli(self) -> Result:
         """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
-        test_sssom = os.path.join(data_dir, "test_inject_metadata_msdf.tsv")
+        test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
+        import pdb; pdb.set_trace()
         command = [
             "sssom",
             "convert",
