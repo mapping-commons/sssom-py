@@ -1,4 +1,4 @@
-
+"""Utility functions."""
 import hashlib
 import json
 import logging
