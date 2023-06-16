@@ -40,5 +40,8 @@ jobs:
       - name: Check static typing with MyPy
         run: poetry run tox -e mypy
 
+      - name: Check manifest
+        run: poetry run tox -e manifest
+
       - name: Test with pytest and generate coverage file
         run: poetry run tox -e py
