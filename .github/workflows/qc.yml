@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install --extras tests
-          poetry add tox
+          poetry add tox 
 
       - name: Check code quality with flake8
         run: poetry run tox -e flake8
