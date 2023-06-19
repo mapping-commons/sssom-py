@@ -1400,7 +1400,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
                         # print(
                         #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
                         # )
-                        raise ValidationError(
+                        logging.warning(
                             f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
                         )
                     prefix_list.append(get_prefix_from_curie(msdf.metadata[slot]))

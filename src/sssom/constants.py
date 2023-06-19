@@ -17,17 +17,25 @@ SCHEMA_YAML = pkg_resources.resource_filename("sssom_schema", "schema/sssom_sche
 
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
 
-OWL_EQUIV_CLASS = "http://www.w3.org/2002/07/owl#equivalentClass"
+OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF_URI = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+RDF_TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+SSSOM_SUPERCLASS_OF_URI = "http://w3id.org/sssom/superClassOf"
+SKOS_EXACT_MATCH_URI = "http://www.w3.org/2004/02/skos/core#exactMatch"
+SKOS_CLOSE_MATCH_URI = "http://www.w3.org/2004/02/skos/core#closeMatch"
+SKOS_BROAD_MATCH_URI = "http://www.w3.org/2004/02/skos/core#broadMatch"
+SKOS_NARROW_MATCH_URI = "http://www.w3.org/2004/02/skos/core#narrowMatch"
+OBO_HAS_DB_XREF_URI = "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
+SKOS_RELATED_MATCH_URI = "http://www.w3.org/2004/02/skos/core#relatedMatch"
 
 DEFAULT_MAPPING_PROPERTIES = [
-    "http://www.geneontology.org/formats/oboInOwl#hasDbXref",
-    "http://www.w3.org/2004/02/skos/core#exactMatch",
-    "http://www.w3.org/2004/02/skos/core#broadMatch",
-    "http://www.w3.org/2004/02/skos/core#closeMatch",
-    "http://www.w3.org/2004/02/skos/core#narrowMatch",
-    "http://www.w3.org/2004/02/skos/core#relatedMatch",
-    OWL_EQUIV_CLASS,
+    SKOS_EXACT_MATCH_URI,
+    SKOS_CLOSE_MATCH_URI,
+    SKOS_BROAD_MATCH_URI,
+    SKOS_NARROW_MATCH_URI,
+    OBO_HAS_DB_XREF_URI,
+    SKOS_RELATED_MATCH_URI,
+    OWL_EQUIV_CLASS_URI,
 ]
 
 UNKNOWN_IRI = "http://w3id.org/sssom/unknown_prefix/"
@@ -123,6 +131,7 @@ CROSS_SPECIES_EXACT_MATCH = "semapv:crossSpeciesExactMatch"
 CROSS_SPECIES_NARROW_MATCH = "semapv:crossSpeciesNarrowMatch"
 CROSS_SPECIES_BROAD_MATCH = "semapv:crossSpeciesBroadMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
+RDF_TYPE = "rdf:type"
 SSSOM_SUPERCLASS_OF = "sssom:superClassOf"
 
 PREDICATE_LIST = [
