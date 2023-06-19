@@ -28,7 +28,9 @@ jobs:
           pip install poetry==1.4.2
 
       - name: Install dependencies
-        run: poetry install --extras tests
+        run: |
+          poetry install --extras tests
+          poetry add tox
 
       - name: Check code quality with flake8
         run: poetry run tox -e flake8
