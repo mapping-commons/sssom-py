@@ -791,26 +791,18 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -
                     mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
                     relation = child.firstChild.nodeValue
-                    if (relation == "=") and (
-                        SKOS_EXACT_MATCH_URI in mapping_predicates
-                    ):
+                    if (relation == "=") and (SKOS_EXACT_MATCH_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = SKOS_EXACT_MATCH
-                    elif (relation == "<") and (
-                        SKOS_BROAD_MATCH_URI in mapping_predicates
-                    ):
+                    elif (relation == "<") and (SKOS_BROAD_MATCH_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = SKOS_BROAD_MATCH
-                    elif (relation == ">") and (
-                        SKOS_NARROW_MATCH_URI in mapping_predicates
-                    ):
+                    elif (relation == ">") and (SKOS_NARROW_MATCH_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = SKOS_NARROW_MATCH
                     # elif (relation == "%") and (SOMETHING in mapping_predicates)
                     #     # Incompatible.
                     #     pass
                     # elif (relation == "HasInstance") and (SOMETHING in mapping_predicates):
                     #     pass
-                    elif (relation == "InstanceOf") and (
-                        RDF_TYPE_URI in mapping_predicates
-                    ):
+                    elif (relation == "InstanceOf") and (RDF_TYPE_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = RDF_TYPE
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")
