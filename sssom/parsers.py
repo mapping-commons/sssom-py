@@ -34,9 +34,17 @@ from sssom.constants import (
     OBJECT_LABEL,
     OBJECT_SOURCE,
     OBJECT_SOURCE_ID,
-    OWL_EQUIV_CLASS,
+    OWL_EQUIV_CLASS_URI,
     PREDICATE_ID,
+    RDF_TYPE,
+    RDF_TYPE_URI,
     RDFS_SUBCLASS_OF,
+    SKOS_BROAD_MATCH,
+    SKOS_BROAD_MATCH_URI,
+    SKOS_EXACT_MATCH,
+    SKOS_EXACT_MATCH_URI,
+    SKOS_NARROW_MATCH,
+    SKOS_NARROW_MATCH_URI,
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
@@ -667,7 +675,7 @@ def from_obographs(
                         mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
-            if "equivalentNodesSets" in g and OWL_EQUIV_CLASS in mapping_predicates:
+            if "equivalentNodesSets" in g and OWL_EQUIV_CLASS_URI in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
                     if "nodeIds" in equivalents:
                         for ec1 in equivalents["nodeIds"]:
@@ -677,7 +685,7 @@ def from_obographs(
                                     mdict[SUBJECT_ID] = curie_from_uri(ec1, prefix_map)
                                     mdict[OBJECT_ID] = curie_from_uri(ec2, prefix_map)
                                     mdict[PREDICATE_ID] = curie_from_uri(
-                                        OWL_EQUIV_CLASS, prefix_map
+                                        OWL_EQUIV_CLASS_URI, prefix_map
                                     )
                                     mdict[
                                         MAPPING_JUSTIFICATION
@@ -817,8 +825,27 @@ def _cell_element_values(
                     mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
                     relation = child.firstChild.nodeValue
-                    if (relation == "=") and (OWL_EQUIV_CLASS in mapping_predicates):
-                        mdict[PREDICATE_ID] = "owl:equivalentClass"
+                    if (relation == "=") and (
+                        SKOS_EXACT_MATCH_URI in mapping_predicates
+                    ):
+                        mdict[PREDICATE_ID] = SKOS_EXACT_MATCH
+                    elif (relation == "<") and (
+                        SKOS_BROAD_MATCH_URI in mapping_predicates
+                    ):
+                        mdict[PREDICATE_ID] = SKOS_BROAD_MATCH
+                    elif (relation == ">") and (
+                        SKOS_NARROW_MATCH_URI in mapping_predicates
+                    ):
+                        mdict[PREDICATE_ID] = SKOS_NARROW_MATCH
+                    # elif (relation == "%") and (SOMETHING in mapping_predicates)
+                    #     # Incompatible.
+                    #     pass
+                    # elif (relation == "HasInstance") and (SOMETHING in mapping_predicates):
+                    #     pass
+                    elif (relation == "InstanceOf") and (
+                        RDF_TYPE_URI in mapping_predicates
+                    ):
+                        mdict[PREDICATE_ID] = RDF_TYPE
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
