@@ -362,5 +362,5 @@ class SSSOMCLITestSuite(unittest.TestCase):
             "--output-format",
             "owl",
         ]
-        result = subprocess.run(command)  # noqa
+        result = subprocess.run(command, shell=True)  # noqa
         self.assertEqual(result.returncode, 0)
