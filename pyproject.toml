@@ -7,13 +7,13 @@ authors = [
     "Nicolas Matentzoglu <nicolas.matentzoglu@gmail.com>",
     "Harshad Hegde <hhegde@lbl.gov>"
     ]
-license = "Apache Software License 2.0"
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 click = "*"
-importlib-metadata = "^4.8.0"
+importlib-metadata = ">=4.8.0"
 pyparsing = "^3.0.9"
 bioregistry = "^0.9.43"
 deprecation = "^2.1.0"
