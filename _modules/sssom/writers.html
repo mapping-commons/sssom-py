@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sssom.writers &mdash; sssom-py 0.3.6-dev documentation</title>
+  <title>sssom.writers &mdash; sssom-py 0.3.33rc1.post1.dev0+968123b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -44,6 +44,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Update Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
@@ -124,7 +125,7 @@
 <span class="n">MSDFWriter</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="write_table"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_table">[docs]</a><span class="k">def</span> <span class="nf">write_table</span><span class="p">(</span>
+<div class="viewcode-block" id="write_table"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_table">[docs]</a><span class="k">def</span> <span class="nf">write_table</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">embedded_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -163,7 +164,7 @@
             <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_rdf"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_rdf">[docs]</a><span class="k">def</span> <span class="nf">write_rdf</span><span class="p">(</span>
+<div class="viewcode-block" id="write_rdf"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_rdf">[docs]</a><span class="k">def</span> <span class="nf">write_rdf</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">serialisation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -185,26 +186,22 @@
 
 
 <span class="c1"># todo: not sure the need for serialization param here; seems superfluous for some of these funcs</span>
-<div class="viewcode-block" id="write_fhir_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">write_fhir_json</span><span class="p">(</span>
-    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;fhir&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="write_fhir_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">write_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;fhir&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as FHIR ConceptMap JSON.&quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_json">[docs]</a><span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="write_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_json">[docs]</a><span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as JSON.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">serialisation</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unknown json format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, currently only json supported&quot;</span>
-        <span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown json format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, currently only json supported&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_owl"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_owl">[docs]</a><span class="k">def</span> <span class="nf">write_owl</span><span class="p">(</span>
+<div class="viewcode-block" id="write_owl"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_owl">[docs]</a><span class="k">def</span> <span class="nf">write_owl</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">serialisation</span><span class="o">=</span><span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
@@ -222,7 +219,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_ontoportal_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_ontoportal_json">[docs]</a><span class="k">def</span> <span class="nf">write_ontoportal_json</span><span class="p">(</span>
+<div class="viewcode-block" id="write_ontoportal_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_ontoportal_json">[docs]</a><span class="k">def</span> <span class="nf">write_ontoportal_json</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;ontoportal_json&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as the ontoportal mapping JSON model.&quot;&quot;&quot;</span>
@@ -239,7 +236,7 @@
 <span class="c1"># Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)</span>
 
 
-<div class="viewcode-block" id="to_dataframe"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_dataframe">[docs]</a><span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="to_dataframe"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_dataframe">[docs]</a><span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a dataframe.&quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
@@ -256,7 +253,7 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="to_owl_graph"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_owl_graph">[docs]</a><span class="k">def</span> <span class="nf">to_owl_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
+<div class="viewcode-block" id="to_owl_graph"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_owl_graph">[docs]</a><span class="k">def</span> <span class="nf">to_owl_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to OWL in an RDF graph.&quot;&quot;&quot;</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">)</span>
 
@@ -358,7 +355,7 @@
     <span class="k">return</span> <span class="n">graph</span></div>
 
 
-<div class="viewcode-block" id="to_rdf_graph"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_rdf_graph">[docs]</a><span class="k">def</span> <span class="nf">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
+<div class="viewcode-block" id="to_rdf_graph"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_rdf_graph">[docs]</a><span class="k">def</span> <span class="nf">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to an RDF graph.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="c1"># cntxt = prepare_context(doc.prefix_map)</span>
@@ -381,7 +378,7 @@
     <span class="k">return</span> <span class="n">graph</span></div>
 
 
-<div class="viewcode-block" id="to_fhir_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<div class="viewcode-block" id="to_fhir_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_fhir_json">[docs]</a><span class="k">def</span> <span class="nf">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</span>
@@ -559,7 +556,7 @@
     <span class="k">return</span> <span class="n">json_obj</span></div>
 
 
-<div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
+<div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">prepare_context_str</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
@@ -568,25 +565,22 @@
     <span class="k">return</span> <span class="n">json_obj</span></div>
 
 
-<div class="viewcode-block" id="to_ontoportal_json"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.to_ontoportal_json">[docs]</a><span class="k">def</span> <span class="nf">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<div class="viewcode-block" id="to_ontoportal_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_ontoportal_json">[docs]</a><span class="k">def</span> <span class="nf">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a list of ontoportal mapping JSON nbjects.&quot;&quot;&quot;</span>
     <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
     <span class="n">m_list</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve URL.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_resolve_url</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
             <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;classes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">resolve</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]),</span> <span class="n">resolve</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">])],</span>
-                <span class="s2">&quot;subject_source_id&quot;</span><span class="p">:</span> <span class="n">_resolve_prefix</span><span class="p">(</span>
-                    <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">prefix_map</span>
-                <span class="p">),</span>
-                <span class="s2">&quot;object_source_id&quot;</span><span class="p">:</span> <span class="n">_resolve_prefix</span><span class="p">(</span>
-                    <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">prefix_map</span>
-                <span class="p">),</span>
+                <span class="s2">&quot;subject_source_id&quot;</span><span class="p">:</span> <span class="n">_resolve_prefix</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">prefix_map</span><span class="p">),</span>
+                <span class="s2">&quot;object_source_id&quot;</span><span class="p">:</span> <span class="n">_resolve_prefix</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">prefix_map</span><span class="p">),</span>
                 <span class="s2">&quot;source_name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
                 <span class="s2">&quot;source_contact_info&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;creator_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
                 <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
@@ -603,7 +597,7 @@
 <span class="c1"># Support methods</span>
 
 
-<div class="viewcode-block" id="get_writer_function"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.get_writer_function">[docs]</a><span class="k">def</span> <span class="nf">get_writer_function</span><span class="p">(</span>
+<div class="viewcode-block" id="get_writer_function"><a class="viewcode-back" href="../../sssom.html#sssom.writers.get_writer_function">[docs]</a><span class="k">def</span> <span class="nf">get_writer_function</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MSDFWriter</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get appropriate writer function based on file format.</span>
@@ -634,9 +628,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown output format: </span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_tables"><a class="viewcode-back" href="../../developer_docs/sssom.html#sssom.writers.write_tables">[docs]</a><span class="k">def</span> <span class="nf">write_tables</span><span class="p">(</span>
-    <span class="n">sssom_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="write_tables"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_tables">[docs]</a><span class="k">def</span> <span class="nf">write_tables</span><span class="p">(</span><span class="n">sssom_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write table from MappingSetDataFrame object.</span>
 
 <span class="sd">    :param sssom_dict: Dictionary of MappingSetDataframes</span>
@@ -677,9 +669,7 @@
     <span class="k">elif</span> <span class="n">serialisation</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span> <span class="ow">or</span> <span class="n">serialisation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unknown table format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, should be one of tsv or csv&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown table format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, should be one of tsv or csv&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sep</span>
 
 
@@ -705,7 +695,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
+    <p>&#169; Copyright 2023, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sssom.constants &mdash; sssom-py 0.3.33rc1.post1.dev0+968123b documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sssom-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Quick Install Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_usage.html">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sphinx.html">Update Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_docs/modules.html">Technical Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sssom-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sssom.constants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sssom.constants</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Constants.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">linkml_runtime.utils.schema_as_dict</span> <span class="kn">import</span> <span class="n">schema_as_dict</span>
+<span class="kn">from</span> <span class="nn">linkml_runtime.utils.schemaview</span> <span class="kn">import</span> <span class="n">SchemaView</span>
+
+<span class="c1"># from linkml_runtime.utils.introspection import package_schemaview</span>
+
+<span class="n">HERE</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+<span class="n">SCHEMA_YAML</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;sssom_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;schema/sssom_schema.yaml&quot;</span><span class="p">)</span>
+
+<span class="c1"># SCHEMA_VIEW = package_schemaview(&quot;sssom_schema&quot;)</span>
+
+<span class="n">OWL_EQUIV_CLASS_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2002/07/owl#equivalentClass&quot;</span>
+<span class="n">RDFS_SUBCLASS_OF_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2000/01/rdf-schema#subClassOf&quot;</span>
+<span class="n">RDF_TYPE_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&quot;</span>
+<span class="n">SSSOM_SUPERCLASS_OF_URI</span> <span class="o">=</span> <span class="s2">&quot;http://w3id.org/sssom/superClassOf&quot;</span>
+<span class="n">SKOS_EXACT_MATCH_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2004/02/skos/core#exactMatch&quot;</span>
+<span class="n">SKOS_CLOSE_MATCH_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2004/02/skos/core#closeMatch&quot;</span>
+<span class="n">SKOS_BROAD_MATCH_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2004/02/skos/core#broadMatch&quot;</span>
+<span class="n">SKOS_NARROW_MATCH_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2004/02/skos/core#narrowMatch&quot;</span>
+<span class="n">OBO_HAS_DB_XREF_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.geneontology.org/formats/oboInOwl#hasDbXref&quot;</span>
+<span class="n">SKOS_RELATED_MATCH_URI</span> <span class="o">=</span> <span class="s2">&quot;http://www.w3.org/2004/02/skos/core#relatedMatch&quot;</span>
+
+<span class="n">DEFAULT_MAPPING_PROPERTIES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">SKOS_EXACT_MATCH_URI</span><span class="p">,</span>
+    <span class="n">SKOS_CLOSE_MATCH_URI</span><span class="p">,</span>
+    <span class="n">SKOS_BROAD_MATCH_URI</span><span class="p">,</span>
+    <span class="n">SKOS_NARROW_MATCH_URI</span><span class="p">,</span>
+    <span class="n">OBO_HAS_DB_XREF_URI</span><span class="p">,</span>
+    <span class="n">SKOS_RELATED_MATCH_URI</span><span class="p">,</span>
+    <span class="n">OWL_EQUIV_CLASS_URI</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">UNKNOWN_IRI</span> <span class="o">=</span> <span class="s2">&quot;http://w3id.org/sssom/unknown_prefix/&quot;</span>
+<span class="n">PREFIX_MAP_MODE_METADATA_ONLY</span> <span class="o">=</span> <span class="s2">&quot;metadata_only&quot;</span>
+<span class="n">PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY</span> <span class="o">=</span> <span class="s2">&quot;sssom_default_only&quot;</span>
+<span class="n">PREFIX_MAP_MODE_MERGED</span> <span class="o">=</span> <span class="s2">&quot;merged&quot;</span>
+<span class="n">PREFIX_MAP_MODES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">PREFIX_MAP_MODE_METADATA_ONLY</span><span class="p">,</span>
+    <span class="n">PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY</span><span class="p">,</span>
+    <span class="n">PREFIX_MAP_MODE_MERGED</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">ENTITY_REFERENCE</span> <span class="o">=</span> <span class="s2">&quot;EntityReference&quot;</span>
+
+<span class="c1"># Slot Constants</span>
+<span class="n">MIRROR_FROM</span> <span class="o">=</span> <span class="s2">&quot;mirror_from&quot;</span>
+<span class="n">REGISTRY_CONFIDENCE</span> <span class="o">=</span> <span class="s2">&quot;registry_confidence&quot;</span>
+<span class="n">LAST_UPDATED</span> <span class="o">=</span> <span class="s2">&quot;last_updated&quot;</span>
+<span class="n">LOCAL_NAME</span> <span class="o">=</span> <span class="s2">&quot;local_name&quot;</span>
+<span class="n">MAPPING_SET_REFERENCES</span> <span class="o">=</span> <span class="s2">&quot;mapping_set_references&quot;</span>
+<span class="n">MAPPING_REGISTRY_ID</span> <span class="o">=</span> <span class="s2">&quot;mapping_registry_id&quot;</span>
+<span class="n">IMPORTS</span> <span class="o">=</span> <span class="s2">&quot;imports&quot;</span>
+<span class="n">DOCUMENTATION</span> <span class="o">=</span> <span class="s2">&quot;documentation&quot;</span>
+<span class="n">HOMEPAGE</span> <span class="o">=</span> <span class="s2">&quot;homepage&quot;</span>
+<span class="n">MAPPINGS</span> <span class="o">=</span> <span class="s2">&quot;mappings&quot;</span>
+<span class="n">SUBJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;subject_id&quot;</span>
+<span class="n">SUBJECT_LABEL</span> <span class="o">=</span> <span class="s2">&quot;subject_label&quot;</span>
+<span class="n">SUBJECT_CATEGORY</span> <span class="o">=</span> <span class="s2">&quot;subject_category&quot;</span>
+<span class="n">SUBJECT_TYPE</span> <span class="o">=</span> <span class="s2">&quot;subject_type&quot;</span>
+<span class="n">PREDICATE_ID</span> <span class="o">=</span> <span class="s2">&quot;predicate_id&quot;</span>
+<span class="n">PREDICATE_MODIFIER</span> <span class="o">=</span> <span class="s2">&quot;predicate_modifier&quot;</span>
+<span class="n">PREDICATE_MODIFIER_NOT</span> <span class="o">=</span> <span class="s2">&quot;Not&quot;</span>
+<span class="n">PREDICATE_LABEL</span> <span class="o">=</span> <span class="s2">&quot;predicate_label&quot;</span>
+<span class="n">PREDICATE_TYPE</span> <span class="o">=</span> <span class="s2">&quot;predicate_type&quot;</span>
+<span class="n">OBJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;object_id&quot;</span>
+<span class="n">OBJECT_LABEL</span> <span class="o">=</span> <span class="s2">&quot;object_label&quot;</span>
+<span class="n">OBJECT_CATEGORY</span> <span class="o">=</span> <span class="s2">&quot;object_category&quot;</span>
+<span class="n">MAPPING_JUSTIFICATION</span> <span class="o">=</span> <span class="s2">&quot;mapping_justification&quot;</span>
+<span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span> <span class="o">=</span> <span class="s2">&quot;semapv:UnspecifiedMatching&quot;</span>
+<span class="n">OBJECT_TYPE</span> <span class="o">=</span> <span class="s2">&quot;object_type&quot;</span>
+<span class="n">MAPPING_SET_ID</span> <span class="o">=</span> <span class="s2">&quot;mapping_set_id&quot;</span>
+<span class="n">MAPPING_SET_VERSION</span> <span class="o">=</span> <span class="s2">&quot;mapping_set_version&quot;</span>
+<span class="n">MAPPING_SET_GROUP</span> <span class="o">=</span> <span class="s2">&quot;mapping_set_group&quot;</span>
+<span class="n">MAPPING_SET_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;mapping_set_description&quot;</span>
+<span class="n">CREATOR_ID</span> <span class="o">=</span> <span class="s2">&quot;creator_id&quot;</span>
+<span class="n">CREATOR_LABEL</span> <span class="o">=</span> <span class="s2">&quot;creator_label&quot;</span>
+<span class="n">AUTHOR_ID</span> <span class="o">=</span> <span class="s2">&quot;author_id&quot;</span>
+<span class="n">AUTHOR_LABEL</span> <span class="o">=</span> <span class="s2">&quot;author_label&quot;</span>
+<span class="n">REVIEWER_ID</span> <span class="o">=</span> <span class="s2">&quot;reviewer_id&quot;</span>
+<span class="n">REVIEWER_LABEL</span> <span class="o">=</span> <span class="s2">&quot;reviewer_label&quot;</span>
+<span class="n">LICENSE</span> <span class="o">=</span> <span class="s2">&quot;license&quot;</span>
+<span class="n">SUBJECT_SOURCE</span> <span class="o">=</span> <span class="s2">&quot;subject_source&quot;</span>
+<span class="n">SUBJECT_SOURCE_VERSION</span> <span class="o">=</span> <span class="s2">&quot;subject_source_version&quot;</span>
+<span class="n">OBJECT_SOURCE</span> <span class="o">=</span> <span class="s2">&quot;object_source&quot;</span>
+<span class="n">OBJECT_SOURCE_VERSION</span> <span class="o">=</span> <span class="s2">&quot;object_source_version&quot;</span>
+<span class="n">MAPPING_PROVIDER</span> <span class="o">=</span> <span class="s2">&quot;mapping_provider&quot;</span>
+<span class="n">MAPPING_SET_SOURCE</span> <span class="o">=</span> <span class="s2">&quot;mapping_set_source&quot;</span>
+<span class="n">MAPPING_SOURCE</span> <span class="o">=</span> <span class="s2">&quot;mapping_source&quot;</span>
+<span class="n">MAPPING_CARDINALITY</span> <span class="o">=</span> <span class="s2">&quot;mapping_cardinality&quot;</span>
+<span class="n">MAPPING_TOOL</span> <span class="o">=</span> <span class="s2">&quot;mapping_tool&quot;</span>
+<span class="n">MAPPING_TOOL_VERSION</span> <span class="o">=</span> <span class="s2">&quot;mapping_tool_version&quot;</span>
+<span class="n">MAPPING_DATE</span> <span class="o">=</span> <span class="s2">&quot;mapping_date&quot;</span>
+<span class="n">PBLICATION_DATE</span> <span class="o">=</span> <span class="s2">&quot;publication_date&quot;</span>
+<span class="n">CONFIDENCE</span> <span class="o">=</span> <span class="s2">&quot;confidence&quot;</span>
+<span class="n">SUBJECT_MATCH_FIELD</span> <span class="o">=</span> <span class="s2">&quot;subject_match_field&quot;</span>
+<span class="n">OBJECT_MATCH_FIELD</span> <span class="o">=</span> <span class="s2">&quot;object_match_field&quot;</span>
+<span class="n">MATCH_STRING</span> <span class="o">=</span> <span class="s2">&quot;match_string&quot;</span>
+<span class="n">SUBJECT_PREPROCESSING</span> <span class="o">=</span> <span class="s2">&quot;subject_preprocessing&quot;</span>
+<span class="n">OBJECT_PREPROCESSING</span> <span class="o">=</span> <span class="s2">&quot;object_preprocessing&quot;</span>
+<span class="n">SEMANTIC_SIMILARITY_SCORE</span> <span class="o">=</span> <span class="s2">&quot;semantic_similarity_score&quot;</span>
+<span class="n">SEMANTIC_SIMILARITY_MEASURE</span> <span class="o">=</span> <span class="s2">&quot;semantic_similarity_measure&quot;</span>
+<span class="n">SEE_ALSO</span> <span class="o">=</span> <span class="s2">&quot;see_also&quot;</span>
+<span class="n">OTHER</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
+<span class="n">COMMENT</span> <span class="o">=</span> <span class="s2">&quot;comment&quot;</span>
+
+<span class="n">CURIE_MAP</span> <span class="o">=</span> <span class="s2">&quot;curie_map&quot;</span>
+<span class="n">SUBJECT_SOURCE_ID</span> <span class="o">=</span> <span class="s2">&quot;subject_source_id&quot;</span>
+<span class="n">OBJECT_SOURCE_ID</span> <span class="o">=</span> <span class="s2">&quot;object_source_id&quot;</span>
+
+<span class="c1"># PREDICATES</span>
+<span class="n">OWL_EQUIVALENT_CLASS</span> <span class="o">=</span> <span class="s2">&quot;owl:equivalentClass&quot;</span>
+<span class="n">OWL_EQUIVALENT_PROPERTY</span> <span class="o">=</span> <span class="s2">&quot;owl:equivalentProperty&quot;</span>
+<span class="n">OWL_DIFFERENT_FROM</span> <span class="o">=</span> <span class="s2">&quot;owl:differentFrom&quot;</span>
+<span class="n">RDFS_SUBCLASS_OF</span> <span class="o">=</span> <span class="s2">&quot;rdfs:subClassOf&quot;</span>
+<span class="n">RDFS_SUBPROPERTY_OF</span> <span class="o">=</span> <span class="s2">&quot;rdfs:subPropertyOf&quot;</span>
+<span class="n">OWL_SAME_AS</span> <span class="o">=</span> <span class="s2">&quot;owl:sameAs&quot;</span>
+<span class="n">SKOS_EXACT_MATCH</span> <span class="o">=</span> <span class="s2">&quot;skos:exactMatch&quot;</span>
+<span class="n">SKOS_CLOSE_MATCH</span> <span class="o">=</span> <span class="s2">&quot;skos:closeMatch&quot;</span>
+<span class="n">SKOS_BROAD_MATCH</span> <span class="o">=</span> <span class="s2">&quot;skos:broadMatch&quot;</span>
+<span class="n">SKOS_NARROW_MATCH</span> <span class="o">=</span> <span class="s2">&quot;skos:narrowMatch&quot;</span>
+<span class="n">OBO_HAS_DB_XREF</span> <span class="o">=</span> <span class="s2">&quot;oboInOwl:hasDbXref&quot;</span>
+<span class="n">SKOS_RELATED_MATCH</span> <span class="o">=</span> <span class="s2">&quot;skos:relatedMatch&quot;</span>
+<span class="n">CROSS_SPECIES_EXACT_MATCH</span> <span class="o">=</span> <span class="s2">&quot;semapv:crossSpeciesExactMatch&quot;</span>
+<span class="n">CROSS_SPECIES_NARROW_MATCH</span> <span class="o">=</span> <span class="s2">&quot;semapv:crossSpeciesNarrowMatch&quot;</span>
+<span class="n">CROSS_SPECIES_BROAD_MATCH</span> <span class="o">=</span> <span class="s2">&quot;semapv:crossSpeciesBroadMatch&quot;</span>
+<span class="n">RDF_SEE_ALSO</span> <span class="o">=</span> <span class="s2">&quot;rdfs:seeAlso&quot;</span>
+<span class="n">RDF_TYPE</span> <span class="o">=</span> <span class="s2">&quot;rdf:type&quot;</span>
+<span class="n">SSSOM_SUPERCLASS_OF</span> <span class="o">=</span> <span class="s2">&quot;sssom:superClassOf&quot;</span>
+
+<span class="n">PREDICATE_LIST</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">OWL_EQUIVALENT_CLASS</span><span class="p">,</span>
+    <span class="n">OWL_EQUIVALENT_PROPERTY</span><span class="p">,</span>
+    <span class="n">RDFS_SUBCLASS_OF</span><span class="p">,</span>
+    <span class="n">SSSOM_SUPERCLASS_OF</span><span class="p">,</span>
+    <span class="n">RDFS_SUBPROPERTY_OF</span><span class="p">,</span>
+    <span class="n">OWL_SAME_AS</span><span class="p">,</span>
+    <span class="n">SKOS_EXACT_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_CLOSE_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_BROAD_MATCH</span><span class="p">,</span>
+    <span class="n">SKOS_NARROW_MATCH</span><span class="p">,</span>
+    <span class="n">OBO_HAS_DB_XREF</span><span class="p">,</span>
+    <span class="n">SKOS_RELATED_MATCH</span><span class="p">,</span>
+    <span class="n">RDF_SEE_ALSO</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">HERE</span> <span class="o">/</span> <span class="s2">&quot;inverse_map.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">im</span><span class="p">:</span>
+    <span class="n">inverse_map</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+
+<span class="n">PREDICATE_INVERT_DICTIONARY</span> <span class="o">=</span> <span class="n">inverse_map</span><span class="p">[</span><span class="s2">&quot;inverse_predicate_map&quot;</span><span class="p">]</span>
+
+<span class="n">COLUMN_INVERT_DICTIONARY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">SUBJECT_ID</span><span class="p">:</span> <span class="n">OBJECT_ID</span><span class="p">,</span>
+    <span class="n">SUBJECT_LABEL</span><span class="p">:</span> <span class="n">OBJECT_LABEL</span><span class="p">,</span>
+    <span class="n">SUBJECT_CATEGORY</span><span class="p">:</span> <span class="n">OBJECT_CATEGORY</span><span class="p">,</span>
+    <span class="n">SUBJECT_MATCH_FIELD</span><span class="p">:</span> <span class="n">OBJECT_MATCH_FIELD</span><span class="p">,</span>
+    <span class="n">SUBJECT_SOURCE</span><span class="p">:</span> <span class="n">OBJECT_SOURCE</span><span class="p">,</span>
+    <span class="n">SUBJECT_PREPROCESSING</span><span class="p">:</span> <span class="n">OBJECT_PREPROCESSING</span><span class="p">,</span>
+    <span class="n">SUBJECT_SOURCE_VERSION</span><span class="p">:</span> <span class="n">OBJECT_SOURCE_VERSION</span><span class="p">,</span>
+    <span class="n">OBJECT_ID</span><span class="p">:</span> <span class="n">SUBJECT_ID</span><span class="p">,</span>
+    <span class="n">OBJECT_LABEL</span><span class="p">:</span> <span class="n">SUBJECT_LABEL</span><span class="p">,</span>
+    <span class="n">OBJECT_CATEGORY</span><span class="p">:</span> <span class="n">SUBJECT_CATEGORY</span><span class="p">,</span>
+    <span class="n">OBJECT_MATCH_FIELD</span><span class="p">:</span> <span class="n">SUBJECT_MATCH_FIELD</span><span class="p">,</span>
+    <span class="n">OBJECT_SOURCE</span><span class="p">:</span> <span class="n">SUBJECT_SOURCE</span><span class="p">,</span>
+    <span class="n">OBJECT_PREPROCESSING</span><span class="p">:</span> <span class="n">SUBJECT_PREPROCESSING</span><span class="p">,</span>
+    <span class="n">OBJECT_SOURCE_VERSION</span><span class="p">:</span> <span class="n">SUBJECT_SOURCE_VERSION</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="SEMAPV"><a class="viewcode-back" href="../../sssom.html#sssom.constants.SEMAPV">[docs]</a><span class="k">class</span> <span class="nc">SEMAPV</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SEMAPV Enum containing different mapping_justification.&quot;&quot;&quot;</span>
+
+    <span class="n">LexicalMatching</span> <span class="o">=</span> <span class="s2">&quot;semapv:LexicalMatching&quot;</span>
+    <span class="n">LogicalReasoning</span> <span class="o">=</span> <span class="s2">&quot;semapv:LogicalReasoning&quot;</span>
+    <span class="n">CompositeMatching</span> <span class="o">=</span> <span class="s2">&quot;semapv:CompositeMatching&quot;</span>
+    <span class="n">UnspecifiedMatching</span> <span class="o">=</span> <span class="s2">&quot;semapv:UnspecifiedMatching&quot;</span>
+    <span class="n">SemanticSimilarityThresholdMatching</span> <span class="o">=</span> <span class="s2">&quot;semapv:SemanticSimilarityThresholdMatching&quot;</span>
+    <span class="n">LexicalSimilarityThresholdMatching</span> <span class="o">=</span> <span class="s2">&quot;semapv:LexicalSimilarityThresholdMatching&quot;</span>
+    <span class="n">MappingChaining</span> <span class="o">=</span> <span class="s2">&quot;semapv:MappingChaining&quot;</span>
+    <span class="n">MappingReview</span> <span class="o">=</span> <span class="s2">&quot;semapv:MappingReview&quot;</span>
+    <span class="n">ManualMappingCuration</span> <span class="o">=</span> <span class="s2">&quot;semapv:ManualMappingCuration&quot;</span>
+    <span class="n">MappingInversion</span> <span class="o">=</span> <span class="s2">&quot;semapv:MappingInversion&quot;</span>
+    <span class="n">CrossSpeciesExactMatch</span> <span class="o">=</span> <span class="n">CROSS_SPECIES_EXACT_MATCH</span>
+    <span class="n">CrossSpeciesNarrowMatch</span> <span class="o">=</span> <span class="n">CROSS_SPECIES_NARROW_MATCH</span>
+    <span class="n">CrossSpeciesBroadMatch</span> <span class="o">=</span> <span class="n">CROSS_SPECIES_BROAD_MATCH</span></div>
+
+
+<div class="viewcode-block" id="SchemaValidationType"><a class="viewcode-back" href="../../sssom.html#sssom.constants.SchemaValidationType">[docs]</a><span class="k">class</span> <span class="nc">SchemaValidationType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Schema validation types.&quot;&quot;&quot;</span>
+
+    <span class="n">JsonSchema</span> <span class="o">=</span> <span class="s2">&quot;JsonSchema&quot;</span>
+    <span class="n">Shacl</span> <span class="o">=</span> <span class="s2">&quot;Shacl&quot;</span>
+    <span class="n">PrefixMapCompleteness</span> <span class="o">=</span> <span class="s2">&quot;PrefixMapCompleteness&quot;</span></div>
+
+
+<span class="n">DEFAULT_VALIDATION_TYPES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">SchemaValidationType</span><span class="o">.</span><span class="n">JsonSchema</span><span class="p">,</span>
+    <span class="n">SchemaValidationType</span><span class="o">.</span><span class="n">PrefixMapCompleteness</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="SSSOMSchemaView"><a class="viewcode-back" href="../../sssom.html#sssom.constants.SSSOMSchemaView">[docs]</a><span class="k">class</span> <span class="nc">SSSOMSchemaView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SchemaView class from linkml which is instantiated when necessary.</span>
+
+<span class="sd">    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322</span>
+<span class="sd">    Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_view</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SSSOMSchemaView.__new__"><a class="viewcode-back" href="../../sssom.html#sssom.constants.SSSOMSchemaView.__new__">[docs]</a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a instance of the SSSOM schema view if non-existent.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SchemaView</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return SchemaView object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_view</span> <span class="o">=</span> <span class="n">SchemaView</span><span class="p">(</span><span class="n">SCHEMA_YAML</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_view</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return SchemaView as a dictionary.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="n">schema_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mapping_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of mapping slots.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="s2">&quot;mapping&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slots</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mapping_set_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of mapping set slots.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="s2">&quot;mapping set&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slots</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">multivalued_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of multivalued slots.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">all_slots</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_slot</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">multivalued</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">entity_reference_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of entity reference slots.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">all_slots</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_slot</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">==</span> <span class="n">ENTITY_REFERENCE</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

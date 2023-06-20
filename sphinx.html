@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search &mdash; sssom-py 0.3.33rc1.post1.dev0+968123b documentation</title>
+  <title>Update Documentation &mdash; sssom-py 0.3.33rc1.post1.dev0+968123b documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -17,10 +17,10 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
-    <script src="_static/searchtools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Technical Documentation" href="developer_docs/modules.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +35,7 @@
             sssom-py
           </a>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -43,11 +43,15 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Quick Install Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sphinx.html">Update Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Update Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#new-page">New page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-and-page-deployment">Update and page deployment</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
@@ -65,8 +69,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Search</li>
+      <li class="breadcrumb-item active">Update Documentation</li>
       <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/mapping-commons/sssom-py/blob/master/docs//master/docs/sphinx.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -74,22 +79,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <section id="update-documentation">
+<h1>Update Documentation<a class="headerlink" href="#update-documentation" title="Permalink to this heading"></a></h1>
+<p>Using your terminal, <code class="docutils literal notranslate"><span class="pre">cd</span></code> to the ‘docs’ directory within the project.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+</pre></div>
+</div>
+<section id="new-page">
+<h2>New page<a class="headerlink" href="#new-page" title="Permalink to this heading"></a></h2>
+<p>If you need to add a new page create a new file in this directory (docs/<em>filename</em>.rst). Update the content
+within <em>filename</em>.rst to the documentation you wish to add using the guidance provided by the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/contents.html">Sphinx</a> web page.</p>
+</section>
+<section id="update-and-page-deployment">
+<h2>Update and page deployment<a class="headerlink" href="#update-and-page-deployment" title="Permalink to this heading"></a></h2>
+<p>This is done automatically by GitHub Actions through a workflow as soon as the
+pull request is merged to the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.</p>
+</section>
+</section>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="developer_docs/modules.html" class="btn btn-neutral float-right" title="Technical Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
@@ -111,14 +126,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-  <script>
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script id="searchindexloader"></script>
-   
-
+  </script> 
 
 </body>
 </html>
