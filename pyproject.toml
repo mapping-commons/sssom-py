@@ -36,7 +36,6 @@ sphinx-rtd-theme = {version = ">=1.0.0"}
 sphinx-autodoc-typehints = {version = ">=1.2.0"}
 sphinx-click = {version = ">=4.3.0"}
 myst-parser = {version = ">=0.18.1"}
-recommonmark = {version = "^0.7.1"}
 
 [tool.poetry.scripts]
 sssom = "sssom.cli:main"
@@ -48,7 +47,6 @@ docs = [
     "sphinx-autodoc-typehints",
     "sphinx-click",
     "myst-parser",
-    "recommonmark"
     ]
 tests = ["pytest", "tox"]
 

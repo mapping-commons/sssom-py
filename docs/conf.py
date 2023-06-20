@@ -32,7 +32,6 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
-    "recommonmark",
 ]
 
 # Napoleon settings

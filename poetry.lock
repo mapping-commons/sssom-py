@@ -234,20 +234,6 @@ files = [
 ]
 
 [[package]]
-name = "commonmark"
-version = "0.9.1"
-description = "Python parser for the CommonMark Markdown spec"
-optional = false
-python-versions = "*"
-files = [
-    {file = "commonmark-0.9.1-py2.py3-none-any.whl", hash = "sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9"},
-    {file = "commonmark-0.9.1.tar.gz", hash = "sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60"},
-]
-
-[package.extras]
-test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
-
-[[package]]
 name = "curies"
 version = "0.5.5"
 description = "Idiomatic conversion between URIs and compact URIs (CURIEs)."
@@ -1495,22 +1481,6 @@ lxml = ["lxml (>=4.3.0,<5.0.0)"]
 networkx = ["networkx (>=2.0.0,<3.0.0)"]
 
 [[package]]
-name = "recommonmark"
-version = "0.7.1"
-description = "A docutils-compatibility bridge to CommonMark, enabling you to write CommonMark inside of Docutils & Sphinx projects."
-optional = false
-python-versions = "*"
-files = [
-    {file = "recommonmark-0.7.1-py2.py3-none-any.whl", hash = "sha256:1b1db69af0231efce3fa21b94ff627ea33dee7079a01dd0a7f8482c3da148b3f"},
-    {file = "recommonmark-0.7.1.tar.gz", hash = "sha256:bdb4db649f2222dcd8d2d844f0006b958d627f732415d399791ee436a3686d67"},
-]
-
-[package.dependencies]
-commonmark = ">=0.8.1"
-docutils = ">=0.11"
-sphinx = ">=1.3.1"
-
-[[package]]
 name = "regex"
 version = "2023.6.3"
 description = "Alternative regular expression module, to replace re."
@@ -2309,4 +2279,4 @@ tests = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "a53775ee296f74a5ff9c0663fced0d3887952a2012006c78ae64ee6e3ef81f98"
+content-hash = "56765e0bf8c1e3f66d786f4a8e6202adaac761ea6b2f68f81c175e1543166442"
