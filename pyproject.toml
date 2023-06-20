@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sssom"
-version = "0.0.0"
+version = "0.3.33rc1.post1.dev0+968123b"
 description = "Operations on SSSOM mapping tables"
 authors = [
     "Chris Mungall <cjmungall@lbl.gov>",
@@ -29,13 +29,13 @@ validators = "^0.20.0"
 scipy = "^1.10.1"
 
 [tool.poetry.group.dev.dependencies]
-pytest = {version = ">=7.1.2", optional = true}
-tox = {version = ">=3.25.1", optional = true}
-sphinx = {version = ">=6.1.3", optional = true}
-sphinx-rtd-theme = {version = ">=1.0.0", optional = true}
-sphinx-autodoc-typehints = {version = ">=1.2.0", optional = true}
-sphinx-click = {version = ">=4.3.0", optional = true}
-myst-parser = {version = ">=0.18.1", optional = true}
+pytest = {version = ">=7.1.2"}
+tox = {version = ">=3.25.1"}
+sphinx = {version = ">=6.1.3"}
+sphinx-rtd-theme = {version = ">=1.0.0"}
+sphinx-autodoc-typehints = {version = ">=1.2.0"}
+sphinx-click = {version = ">=4.3.0"}
+myst-parser = {version = ">=0.18.1"}
 
 [tool.poetry.scripts]
 sssom = "sssom.cli:main"
@@ -51,7 +51,7 @@ docs = [
 tests = ["pytest", "tox"]
 
 [tool.poetry-dynamic-versioning]
-enable = true
+enable = false
 vcs = "git"
 style = "pep440"
 
