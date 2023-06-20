@@ -36,9 +36,7 @@ class TestValidate(unittest.TestCase):
         In this particular test case, the 'mapping_justification' slot
         does not have EntityReference objects, but strings.
         """
-        self.assertRaises(
-            ValidationError, validate, self.bad_msdf1, self.validation_types
-        )
+        self.assertRaises(ValidationError, validate, self.bad_msdf1, self.validation_types)
 
     def test_validate_shacl(self):
         """

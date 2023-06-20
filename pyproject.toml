@@ -1,14 +1,79 @@
+[tool.poetry]
+name = "sssom"
+version = "0.0.0"
+description = "Operations on SSSOM mapping tables"
+authors = [
+    "Chris Mungall <cjmungall@lbl.gov>",
+    "Nicolas Matentzoglu <nicolas.matentzoglu@gmail.com>",
+    "Harshad Hegde <hhegde@lbl.gov>"
+    ]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+click = "*"
+importlib-metadata = ">=4.8.0"
+pyparsing = "^3.0.9"
+bioregistry = "^0.9.43"
+deprecation = "^2.1.0"
+linkml-runtime = "^1.5.3"
+networkx = "^3.1"
+pandas = "^2.0.2"
+pansql = "^0.0.1"
+pyyaml = "^6.0"
+rdflib = "^6.3.2"
+sparqlwrapper = "^2.0.0"
+sssom-schema = "^0.13.0"
+validators = "^0.20.0"
+scipy = "^1.10.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = {version = ">=7.1.2", optional = true}
+tox = {version = ">=3.25.1", optional = true}
+sphinx = {version = ">=6.1.3", optional = true}
+sphinx-rtd-theme = {version = ">=1.0.0", optional = true}
+sphinx-autodoc-typehints = {version = ">=1.2.0", optional = true}
+sphinx-click = {version = ">=4.3.0", optional = true}
+myst-parser = {version = ">=0.18.1", optional = true}
+
+[tool.poetry.scripts]
+sssom = "sssom.cli:main"
+
+[tool.poetry.extras]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-autodoc-typehints",
+    "sphinx-click",
+    "myst-parser"
+    ]
+tests = ["pytest", "tox"]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+
 [tool.black]
-# line-length = 100
-target-version = ['py37', 'py38', 'py39', 'py310']
+line-length = 100
+target-version = ["py38", "py39", "py310"]
+
+[[tool.mypy.overrides]]
+ module = [
+     'sssom.sssom_datamodel',
+     'sssom.cliquesummary'
+ ]
+ ignore_errors = true
+    
 
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+line_length = 100
+include_trailing_comma = true
+reverse_relative = true
 
-[[tool.mypy.overrides]]
-module = [
-    'sssom.sssom_datamodel',
-    'sssom.cliquesummary'
-]
-ignore_errors = true
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"

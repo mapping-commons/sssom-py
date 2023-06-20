@@ -2,9 +2,8 @@
 
 import unittest
 
-from sssom import filter_redundant_rows
 from sssom.parsers import parse_sssom_table
-from sssom.util import deal_with_negation, merge_msdf
+from sssom.util import deal_with_negation, filter_redundant_rows, merge_msdf
 from tests.constants import data_dir
 
 

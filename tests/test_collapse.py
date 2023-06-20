@@ -5,7 +5,8 @@ import unittest
 import yaml
 from pansql import sqldf
 
-from sssom import (
+from sssom.parsers import parse_sssom_table
+from sssom.util import (
     collapse,
     compare_dataframes,
     dataframe_to_ptable,
@@ -14,7 +15,6 @@ from sssom import (
     parse,
     reconcile_prefix_and_data,
 )
-from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir, prefix_recon_yaml
 
 
@@ -37,9 +37,7 @@ class TestCollapse(unittest.TestCase):
     def test_collapse(self):
         """Test the row count after collapsing the dataframe."""
         df = collapse(self.df)
-        self.assertEqual(
-            len(df), 91, f"Dataframe should have a different {df.head(10)}"
-        )
+        self.assertEqual(len(df), 91, f"Dataframe should have a different {df.head(10)}")
 
     def test_filter(self):
         """Test the row count after filtering redundant rows."""

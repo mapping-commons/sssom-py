@@ -20,7 +20,5 @@ class TestSort(unittest.TestCase):
     def test_sort(self):
         """Test sorting of columns."""
         new_df = sort_df_rows_columns(self.msdf.df)
-        column_sequence = [
-            col for col in SCHEMA_DICT["slots"].keys() if col in new_df.columns
-        ]
+        column_sequence = [col for col in SCHEMA_DICT["slots"].keys() if col in new_df.columns]
         self.assertListEqual(column_sequence, list(new_df.columns))

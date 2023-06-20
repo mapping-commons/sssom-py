@@ -11,21 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.0.2
 
-    - name: Set up Python
-      uses: actions/setup-python@v4.3.0
-      with:
-        python-version: 3.9
+      - name: Set up Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: 3.9
 
-    - name: Install pip
-      run: | 
-        pip install --upgrade pip
-        pip install twine
-        python setup.py sdist
+      - name: Install Poetry
+        run: pip install poetry poetry-dynamic-versioning
+    
+      - name: Install dependencies
+        run: poetry install --no-interaction
 
-    - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.5.0
-      with:
-        user: __token__
-        password: ${{ secrets.SSSOM_TOKEN }}
+      - name: Build source and wheel archives
+        run: poetry build
+
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.5.0
+        with:
+          user: __token__
+          password: ${{ secrets.SSSOM_TOKEN }}
+
+    
