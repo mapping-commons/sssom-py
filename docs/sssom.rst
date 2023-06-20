@@ -1,5 +1,8 @@
-SSSOM Submodules
-================
+sssom package
+=============
+
+Submodules
+----------
 
 sssom.cli module
 ----------------
@@ -17,10 +20,34 @@ sssom.cliques module
    :undoc-members:
    :show-inheritance:
 
+sssom.cliquesummary module
+--------------------------
+
+.. automodule:: sssom.cliquesummary
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+sssom.constants module
+----------------------
+
+.. automodule:: sssom.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 sssom.context module
 --------------------
 
 .. automodule:: sssom.context
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+sssom.external\_context module
+------------------------------
+
+.. automodule:: sssom.external_context
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,12 +59,19 @@ sssom.io module
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 sssom.parsers module
 --------------------
 
 .. automodule:: sssom.parsers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+sssom.rdf\_util module
+----------------------
+
+.. automodule:: sssom.rdf_util
    :members:
    :undoc-members:
    :show-inheritance:
@@ -49,16 +83,6 @@ sssom.sparql\_util module
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
-
-sssom.sssom\_datamodel module
------------------------------
-
-.. automodule:: sssom.sssom_datamodel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :noindex:
 
 sssom.sssom\_document module
 ----------------------------
@@ -67,7 +91,14 @@ sssom.sssom\_document module
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
+
+sssom.typehints module
+----------------------
+
+.. automodule:: sssom.typehints
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 sssom.util module
 -----------------
@@ -76,7 +107,14 @@ sssom.util module
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
+
+sssom.validators module
+-----------------------
+
+.. automodule:: sssom.validators
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 sssom.writers module
 --------------------
@@ -85,7 +123,6 @@ sssom.writers module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

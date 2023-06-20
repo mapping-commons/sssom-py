@@ -1,9 +1,7 @@
-Technical Documentation
-========
+sssom
+=====
 
 .. toctree::
    :maxdepth: 4
 
-   api
    sssom
-   sphinx
