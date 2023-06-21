@@ -1,0 +1,19 @@
+diff a/.github/workflows/deploy-docs.yml b/.github/workflows/deploy-docs.yml	(rejected hunks)
+@@ -21,7 +21,7 @@ jobs:
+ 
+     - name: Install dependencies.
+       run: |
+-        poetry install -E docs
++        poetry install --with docs
+         
+     - name: Build documentation.
+       run: |
+@@ -31,7 +31,7 @@ jobs:
+         cd docs/
+         poetry run sphinx-apidoc -o . ../src/sssom_py/ --ext-autodoc -f
+         poetry run sphinx-build -b html . _build
+-        cp -r _build/html/* ../gh-pages/
++        cp -r _build/* ../gh-pages/
+     
+     - name: Deploy documentation.
+       if: ${{ github.event_name == 'push' }}
