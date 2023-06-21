@@ -1,12 +1,12 @@
 {
   "template": "https://github.com/monarch-initiative/monarch-project-template.git",
-  "commit": "7a5148b11fd6f4f70da7ef921789e0d5fe720e01",
+  "commit": "4a7682b439c90d913390d1ca7d930a88055a22d3",
   "checkout": null,
   "context": {
     "cookiecutter": {
       "project_name": "sssom-py",
       "github_org_name": "mapping-commons",
-      "__project_slug": "sssom",
+      "__project_slug": "sssom_py",
       "project_description": "SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings.",
       "min_python_version": "3.7",
       "file_name": "main",
