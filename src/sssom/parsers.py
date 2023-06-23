@@ -17,6 +17,7 @@ import validators
 import yaml
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
+from pandas.errors import EmptyDataError
 from rdflib import Graph, URIRef
 
 # from .sssom_datamodel import Mapping, MappingSet
@@ -71,7 +72,7 @@ from .util import (
     is_multivalued_slot,
     raise_for_bad_path,
     read_pandas,
-    to_mapping_set_dataframe,
+    to_mapping_set_dataframe, get_seperator_symbol_from_file_path,
 )
 
 # * DEPRECATED methods *****************************************
@@ -133,23 +134,86 @@ def read_sssom_json(
 # * *******************************************************
 # Parsers (from file)
 
+import io
+import requests
+from typing import Union
+from pathlib import Path
+
+def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
+    """
+    This function takes as input a URL, a filepath (from pathlib), or a string
+    (with file contents), and returns a StringIO object.
+
+    Parameters:
+    input (Union[str, Path]): A string representing a URL, a filepath, or file contents,
+                              or a Path object representing a filepath.
+
+    Returns:
+    io.StringIO: A StringIO object containing the input data.
+    """
+
+    # If the import already is a StrinIO, return it
+    if isinstance(input, io.StringIO):
+        return input
+
+    # Convert Path to string, if necessary
+    if isinstance(input, Path):
+        input = str(input)
+
+    if input.startswith('http://') or input.startswith('https://'):
+        # It's a URL
+        data = requests.get(input).content
+        return io.StringIO(data.decode('utf-8'))
+    elif '\n' in input or '\r' in input:
+        # It's string data
+        return io.StringIO(input)
+    else:
+        # It's a local file path
+        with open(input, 'r') as file:
+            file_content = file.read()
+        return io.StringIO(file_content)
+
+def _read_pandas(input: io.StringIO, sep: str = None) -> pd.DataFrame:
+    """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
+
+    :param file: The file to read. If no separator is given, this file should be named.
+    :param sep: File separator for pandas
+    :return: A pandas dataframe
+    """
+
+    try:
+        df = pd.read_csv(input, sep=sep, low_memory=False, comment="#")
+    except EmptyDataError as e:
+        logging.warning(f"Seems like the dataframe is empty: {e}")
+        df = pd.DataFrame(
+            columns=[
+                SUBJECT_ID,
+                SUBJECT_LABEL,
+                PREDICATE_ID,
+                OBJECT_ID,
+                MAPPING_JUSTIFICATION,
+            ]
+        )
+
+    return df.fillna("")
 
 def parse_sssom_table(
-    file_path: Union[str, Path],
+    file_path: Union[str, Path, TextIO],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    **kwargs
-    # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    df = read_pandas(file_path)
+    stream: io.StringIO = _open_input(file_path)
+    sep_new = get_seperator_symbol_from_file_path(file_path)
+    df = _read_pandas(stream, sep_new)
+
     # if mapping_predicates:
     #     # Filter rows based on presence of predicate_id list provided.
     #     df = df[df["predicate_id"].isin(mapping_predicates)]
 
     # If SSSOM external metadata is provided, merge it with the internal metadata
-    sssom_metadata = _read_metadata_from_table(file_path)
+    sssom_metadata = _read_metadata_from_table(stream)
 
     if sssom_metadata:
         if meta:
@@ -733,24 +797,13 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
     return mapping
 
 
-def _read_metadata_from_table(path: Union[str, Path]) -> Dict[str, Any]:
-    if isinstance(path, Path) or not validators.url(path):
-        with open(path) as file:
-            yamlstr = ""
-            for line in file:
-                if line.startswith("#"):
-                    yamlstr += re.sub("^#", "", line)
-                else:
-                    break
-    else:
-        response = urlopen(path)
-        yamlstr = ""
-        for lin in response:
-            line = lin.decode("utf-8")
-            if line.startswith("#"):
-                yamlstr += re.sub("^#", "", line)
-            else:
-                break
+def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
+    yamlstr = ""
+    for line in stream:
+        if line.startswith("#"):
+            yamlstr += re.sub("^#", "", line)
+        else:
+            break
 
     if yamlstr:
         meta = yaml.safe_load(yamlstr)

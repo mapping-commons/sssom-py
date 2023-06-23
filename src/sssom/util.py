@@ -81,6 +81,7 @@ from .context import (
 )
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
+import deprecation
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -848,27 +849,27 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: Union[str, Path, TextIO]) -> str:
+def get_file_extension(file: Union[str, Path]) -> str:
     """Get file extension.
 
     :param file: File path
     :raises Exception: Cannot determine extension exception
-    :return: format of the file passed
+    :return: format of the file passed, default tsv
     """
     if isinstance(file, str):
         filename = file
+        parts = filename.split(".")
+        if len(parts) > 0:
+            f_format = parts[-1]
+            return f_format
+        else:
+            logging.warning(f"Cannot guess format from {filename}")
     elif isinstance(file, Path):
         return file.suffix
-    else:
-        filename = file.name
-    parts = filename.split(".")
-    if len(parts) > 0:
-        f_format = parts[-1]
-        return f_format
-    else:
-        raise Exception(f"Cannot guess format from {filename}")
+    return "tsv"
 
 
+@deprecation.deprecated(details="Use pandas.read_csv() instead.")
 def read_csv(
     filename: Union[str, Path, TextIO], comment: str = "#", sep: str = ","
 ) -> pd.DataFrame:
@@ -923,6 +924,9 @@ def read_metadata(filename: str) -> Metadata:
     return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
+
+
+@deprecation.deprecated(details="Use pandas.read_csv() instead.")
 def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
@@ -930,7 +934,13 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
-    if sep is None:
+    sep_new = get_seperator_symbol_from_file_path(file, sep)
+    df = read_csv(file, comment="#", sep=sep_new).fillna("")
+    return sort_df_rows_columns(df)
+
+
+def get_seperator_symbol_from_file_path(file):
+    if file is isinstance(file, Path) or file is isinstance(file, str):
         extension = get_file_extension(file)
         if extension == "tsv":
             sep = "\t"
@@ -939,8 +949,7 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
         else:
             sep = "\t"
             logging.warning("Cannot automatically determine table format, trying tsv.")
-        df = read_csv(file, comment="#", sep=sep).fillna("")
-    return sort_df_rows_columns(df)
+    return sep
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
@@ -1259,7 +1268,7 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     if isinstance(file_path, Path):
         if not file_path.is_file():
             raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
-    elif not validators.url(file_path) and not os.path.exists(file_path):
+    elif not isinstance(file_path, TextIO) and not validators.url(file_path) and not os.path.exists(file_path):
         raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
 
 
