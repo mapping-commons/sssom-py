@@ -946,13 +946,11 @@ def get_seperator_symbol_from_file_path(file):
     if file is isinstance(file, Path) or file is isinstance(file, str):
         extension = get_file_extension(file)
         if extension == "tsv":
-            sep = "\t"
+            return "\t"
         elif extension == "csv":
-            sep = ","
-        else:
-            sep = "\t"
-            logging.warning("Cannot automatically determine table format, trying tsv.")
-    return sep
+            return ","
+        logging.warning(f"Could not guess file extension for {file}")
+    return None
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:

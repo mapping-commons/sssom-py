@@ -1,5 +1,6 @@
 """Tests for parsers."""
 
+import io
 import json
 import math
 import os
@@ -63,7 +64,7 @@ class TestParse(unittest.TestCase):
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
         self.metadata = get_default_metadata()
 
-    def test_parse_sssom_dataframe(self):
+    def test_parse_sssom_dataframe_from_file(self):
         """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
         msdf = parse_sssom_table(input_path)
@@ -76,7 +77,23 @@ class TestParse(unittest.TestCase):
             f"{input_path} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_dataframe_url(self):
+    def test_parse_sssom_dataframe_from_stringio(self):
+        """Test parsing a TSV."""
+        input_path = f"{test_data_dir}/basic.tsv"
+        with open(input_path, "r") as file:
+            input_string = file.read()
+        stream = io.StringIO(input_string)
+        msdf = parse_sssom_table(stream)
+        output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_stream.tsv")
+        with open(output_path, "w") as file:
+            write_table(msdf, file)
+        self.assertEqual(
+            len(msdf.df),
+            141,
+            f"{input_path} has the wrong number of mappings.",
+        )
+
+    def test_parse_sssom_dataframe_from_url(self):
         """Test parsing a TSV from a URL."""
         msdf = parse_sssom_table(self.df_url)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
