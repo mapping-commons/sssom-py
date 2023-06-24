@@ -24,6 +24,7 @@ from typing import (
 )
 from urllib.request import urlopen
 
+import deprecation
 import numpy as np
 import pandas as pd
 import validators
@@ -81,7 +82,6 @@ from .context import (
 )
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
-import deprecation
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -849,11 +849,10 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: Union[str, Path]) -> str:
+def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     """Get file extension.
 
     :param file: File path
-    :raises Exception: Cannot determine extension exception
     :return: format of the file passed, default tsv
     """
     if isinstance(file, str):
@@ -924,8 +923,6 @@ def read_metadata(filename: str) -> Metadata:
     return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
-
-
 @deprecation.deprecated(details="Use pandas.read_csv() instead.")
 def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
@@ -934,12 +931,18 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
-    sep_new = get_seperator_symbol_from_file_path(file, sep)
+    sep_new = get_seperator_symbol_from_file_path(file) if sep is None else sep
     df = read_csv(file, comment="#", sep=sep_new).fillna("")
     return sort_df_rows_columns(df)
 
 
 def get_seperator_symbol_from_file_path(file):
+    r"""
+    Take as an input a filepath and return the seperate symbol used, for example, by pandas.
+
+    :param file: the file path
+    :return: the seperator symbols as a string, e.g. '\t'
+    """
     if file is isinstance(file, Path) or file is isinstance(file, str):
         extension = get_file_extension(file)
         if extension == "tsv":
@@ -1197,23 +1200,6 @@ def filter_prefixes(
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
-# TODO this is not used anywhere
-def guess_file_format(filename: Union[str, TextIO]) -> str:
-    """Get file format.
-
-    :param filename: filename
-    :raises ValueError: Unrecognized file extension
-    :return: File extension
-    """
-    extension = get_file_extension(filename)
-    if extension in ["owl", "rdf"]:
-        return SSSOM_DEFAULT_RDF_SERIALISATION
-    elif extension in RDF_FORMATS:
-        return extension
-    else:
-        raise ValueError(f"File extension {extension} does not correspond to a legal file format")
-
-
 def prepare_context(
     prefix_map: Optional[PrefixMap] = None,
 ) -> Mapping[str, Any]:
@@ -1268,7 +1254,11 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     if isinstance(file_path, Path):
         if not file_path.is_file():
             raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
-    elif not isinstance(file_path, TextIO) and not validators.url(file_path) and not os.path.exists(file_path):
+    elif (
+        not isinstance(file_path, TextIO)
+        and not validators.url(file_path)
+        and not os.path.exists(file_path)
+    ):
         raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
 
 
