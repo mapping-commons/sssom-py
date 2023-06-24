@@ -1252,11 +1252,9 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     if isinstance(file_path, Path):
         if not file_path.is_file():
             raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
-    elif (
-        not isinstance(file_path, TextIO)
-        and not validators.url(file_path)
-        and not os.path.exists(file_path)
-    ):
+    elif not isinstance(file_path, str):
+        logging.info("Path provided to raise_for_bad_path() is neither a Path nor str-like object.")
+    elif not validators.url(file_path) and not os.path.exists(file_path):
         raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
 
 
