@@ -5,7 +5,7 @@ The conversion framework for SSSOM testing is based on three components:
 raw `filename` to metrics such as number of mappings.
 2. A testcase class (`SSSOMTestCase`) in [test_data.py](test_data.py) that reads this config.
 3. A framework ([test_conversion.py](test_conversion.py)) that dynamically runs all test cases and tests them against the metrics specified
-in the config
+in the config 
 
 At first, the rest results are a bit hard to read this way: if you have dynamic testing, it seems
 any failures are at first a bit unintelligble, because you cannot immediately see what want wrong.
