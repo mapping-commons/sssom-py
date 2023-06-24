@@ -170,7 +170,7 @@ def _read_pandas(input: io.StringIO, sep: str = None) -> pd.DataFrame:
     :return: A pandas dataframe
     """
     try:
-        df = pd.read_csv(input, sep=sep, low_memory=False, comment="#")
+        df = pd.read_csv(input, sep=sep, comment="#")
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
