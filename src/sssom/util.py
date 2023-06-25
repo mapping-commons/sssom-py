@@ -1196,6 +1196,23 @@ def filter_prefixes(
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
+@deprecation.deprecated(details="This is no longer used and will be removed from the public API.")
+def guess_file_format(filename: Union[str, TextIO]) -> str:
+    """Get file format.
+
+    :param filename: filename
+    :raises ValueError: Unrecognized file extension
+    :return: File extension
+    """
+    extension = get_file_extension(filename)
+    if extension in ["owl", "rdf"]:
+        return SSSOM_DEFAULT_RDF_SERIALISATION
+    elif extension in RDF_FORMATS:
+        return extension
+    else:
+        raise ValueError(f"File extension {extension} does not correspond to a legal file format")
+
+
 def prepare_context(
     prefix_map: Optional[PrefixMap] = None,
 ) -> Mapping[str, Any]:
