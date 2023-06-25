@@ -193,7 +193,7 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
 def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
-    :param file: The file to read. If no separator is given, this file should be named.
+    :param input: The file to read. If no separator is given, this file should be named.
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
