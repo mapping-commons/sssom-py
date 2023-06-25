@@ -856,7 +856,14 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     :param file: File path
     :return: format of the file passed, default tsv
     """
-    if isinstance(file, str):
+    if isinstance(file, Path):
+        if file.suffix:
+            return file.suffix.strip(punctuation)
+        else:
+            logging.warning(
+                f"Cannot guess format from {file}, despite appearing to be a Path-like object."
+            )
+    elif isinstance(file, str):
         filename = file
         parts = filename.split(".")
         if len(parts) > 0:
@@ -864,13 +871,7 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
             return f_format.strip(punctuation)
         else:
             logging.warning(f"Cannot guess format from {filename}")
-    elif isinstance(file, Path):
-        if file.suffix:
-            return file.suffix.strip(punctuation)
-        else:
-            logging.warning(
-                f"Cannot guess format from {file}, despite appearing to be a Path-like object."
-            )
+    logging.info(f"Cannot guess format extension for this file, assuming TSV.")
     return "tsv"
 
 
