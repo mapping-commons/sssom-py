@@ -27,6 +27,7 @@ from sssom.cli import (
     split,
     validate,
 )
+from tests.constants import data_dir
 from tests.test_data import (
     RECON_YAML,
     SSSOMTestCase,
@@ -34,8 +35,6 @@ from tests.test_data import (
     get_multiple_input_test_cases,
     test_out_dir,
 )
-
-from .constants import data_dir
 
 
 class SSSOMCLITestSuite(unittest.TestCase):

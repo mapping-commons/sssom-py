@@ -23,9 +23,8 @@ from sssom.writers import (
     write_rdf,
     write_table,
 )
-
-from .constants import data_dir
-from .test_data import SSSOMTestCase, get_all_test_cases
+from tests.constants import data_dir
+from tests.test_data import SSSOMTestCase, get_all_test_cases
 
 
 class SSSOMReadWriteTestSuite(unittest.TestCase):
