@@ -161,31 +161,44 @@ def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
 
     raise IOError(f"Could not determine the type of input {input}")
 
-def _filter_commented_lines_from_stream(s: io.StringIO):
+def _separate_metadata_and_table_from_stream(s: io.StringIO):
     s.seek(0)
 
     # Create a new StringIO object for filtered data
-    filtered_s = io.StringIO()
+    table_component = io.StringIO()
+    metadata_component = io.StringIO()
+
+    header_section = True
 
     # Filter out lines starting with '#'
     for line in s:
         if not line.startswith('#'):
-            filtered_s.write(line)
+            table_component.write(line)
+            if header_section:
+                header_section = False
+        elif header_section:
+            metadata_component.write(line)
+        else:
+            logging.info(f"Line {line} is starting with hash symbol, but header section is already passed. "
+                         f"This line is skipped")
 
     # Reset the cursor to the start of the new StringIO object
-    filtered_s.seek(0)
-    return filtered_s
+    table_component.seek(0)
+    metadata_component.seek(0)
+    return table_component, metadata_component
 
-def _read_pandas(input: io.StringIO, sep: str = None) -> pd.DataFrame:
+def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file: The file to read. If no separator is given, this file should be named.
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
+    table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
+
     try:
-        s = _filter_commented_lines_from_stream(input)
-        df = pd.read_csv(s, sep=sep)
+        df = pd.read_csv(table_stream, sep=sep)
+        df.fillna("",inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -198,7 +211,11 @@ def _read_pandas(input: io.StringIO, sep: str = None) -> pd.DataFrame:
             ]
         )
 
-    return df.fillna("")
+    if isinstance(df, pd.DataFrame):
+        sssom_metadata = _read_metadata_from_table(metadata_stream)
+        return df, sssom_metadata
+
+    return None, None
 
 
 def parse_sssom_table(
@@ -211,14 +228,13 @@ def parse_sssom_table(
         raise_for_bad_path(file_path)
     stream: io.StringIO = _open_input(file_path)
     sep_new = get_seperator_symbol_from_file_path(file_path)
-    df = _read_pandas(stream, sep_new)
-
+    df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
     # if mapping_predicates:
     #     # Filter rows based on presence of predicate_id list provided.
     #     df = df[df["predicate_id"].isin(mapping_predicates)]
 
     # If SSSOM external metadata is provided, merge it with the internal metadata
-    sssom_metadata = _read_metadata_from_table(stream)
+
 
     if sssom_metadata:
         if meta:
