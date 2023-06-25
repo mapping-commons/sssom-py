@@ -161,6 +161,20 @@ def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
 
     raise IOError(f"Could not determine the type of input {input}")
 
+def _filter_commented_lines_from_stream(s: io.StringIO):
+    s.seek(0)
+
+    # Create a new StringIO object for filtered data
+    filtered_s = io.StringIO()
+
+    # Filter out lines starting with '#'
+    for line in s:
+        if not line.startswith('#'):
+            filtered_s.write(line)
+
+    # Reset the cursor to the start of the new StringIO object
+    filtered_s.seek(0)
+    return filtered_s
 
 def _read_pandas(input: io.StringIO, sep: str = None) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
@@ -170,7 +184,8 @@ def _read_pandas(input: io.StringIO, sep: str = None) -> pd.DataFrame:
     :return: A pandas dataframe
     """
     try:
-        df = pd.read_csv(input, sep=sep, comment="#")
+        s = _filter_commented_lines_from_stream(input)
+        df = pd.read_csv(s, sep=sep)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(

@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from functools import reduce
 from io import StringIO
 from pathlib import Path
+from string import punctuation
 from typing import (
     Any,
     ChainMap,
@@ -860,11 +861,14 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
         parts = filename.split(".")
         if len(parts) > 0:
             f_format = parts[-1]
-            return f_format
+            return f_format.strip(punctuation)
         else:
             logging.warning(f"Cannot guess format from {filename}")
     elif isinstance(file, Path):
-        return file.suffix
+        if file.suffix:
+            return file.suffix.strip(punctuation)
+        else:
+            logging.warning(f"Cannot guess format from {file}, despite appearing to be a Path-like object.")
     return "tsv"
 
 
@@ -943,10 +947,10 @@ def get_seperator_symbol_from_file_path(file):
     :param file: the file path
     :return: the seperator symbols as a string, e.g. '\t'
     """
-    if file is isinstance(file, Path) or file is isinstance(file, str):
+    if isinstance(file, Path) or isinstance(file, str):
         extension = get_file_extension(file)
         if extension == "tsv":
-            return "\t"
+            return '\t'
         elif extension == "csv":
             return ","
         logging.warning(f"Could not guess file extension for {file}")
