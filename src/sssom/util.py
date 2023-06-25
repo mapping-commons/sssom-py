@@ -868,7 +868,9 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
         if file.suffix:
             return file.suffix.strip(punctuation)
         else:
-            logging.warning(f"Cannot guess format from {file}, despite appearing to be a Path-like object.")
+            logging.warning(
+                f"Cannot guess format from {file}, despite appearing to be a Path-like object."
+            )
     return "tsv"
 
 
@@ -950,7 +952,7 @@ def get_seperator_symbol_from_file_path(file):
     if isinstance(file, Path) or isinstance(file, str):
         extension = get_file_extension(file)
         if extension == "tsv":
-            return '\t'
+            return "\t"
         elif extension == "csv":
             return ","
         logging.warning(f"Could not guess file extension for {file}")

@@ -161,6 +161,7 @@ def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
 
     raise IOError(f"Could not determine the type of input {input}")
 
+
 def _separate_metadata_and_table_from_stream(s: io.StringIO):
     s.seek(0)
 
@@ -172,20 +173,23 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
 
     # Filter out lines starting with '#'
     for line in s:
-        if not line.startswith('#'):
+        if not line.startswith("#"):
             table_component.write(line)
             if header_section:
                 header_section = False
         elif header_section:
             metadata_component.write(line)
         else:
-            logging.info(f"Line {line} is starting with hash symbol, but header section is already passed. "
-                         f"This line is skipped")
+            logging.info(
+                f"Line {line} is starting with hash symbol, but header section is already passed. "
+                f"This line is skipped"
+            )
 
     # Reset the cursor to the start of the new StringIO object
     table_component.seek(0)
     metadata_component.seek(0)
     return table_component, metadata_component
+
 
 def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
@@ -198,7 +202,7 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
 
     try:
         df = pd.read_csv(table_stream, sep=sep)
-        df.fillna("",inplace=True)
+        df.fillna("", inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -234,7 +238,6 @@ def parse_sssom_table(
     #     df = df[df["predicate_id"].isin(mapping_predicates)]
 
     # If SSSOM external metadata is provided, merge it with the internal metadata
-
 
     if sssom_metadata:
         if meta:
