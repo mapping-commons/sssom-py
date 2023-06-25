@@ -871,7 +871,7 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
             return f_format.strip(punctuation)
         else:
             logging.warning(f"Cannot guess format from {filename}")
-    logging.info(f"Cannot guess format extension for this file, assuming TSV.")
+    logging.info("Cannot guess format extension for this file, assuming TSV.")
     return "tsv"
 
 
@@ -938,26 +938,17 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
-    sep_new = get_seperator_symbol_from_file_path(file) if sep is None else sep
+    sep_new = sep
+    if set is None:
+        if isinstance(file, Path) or isinstance(file, str):
+            extension = get_file_extension(file)
+            if extension == "tsv":
+                sep_new = "\t"
+            elif extension == "csv":
+                sep_new = ","
+            logging.warning(f"Could not guess file extension for {file}")
     df = read_csv(file, comment="#", sep=sep_new).fillna("")
     return sort_df_rows_columns(df)
-
-
-def get_seperator_symbol_from_file_path(file):
-    r"""
-    Take as an input a filepath and return the seperate symbol used, for example, by pandas.
-
-    :param file: the file path
-    :return: the seperator symbols as a string, e.g. '\t'
-    """
-    if isinstance(file, Path) or isinstance(file, str):
-        extension = get_file_extension(file)
-        if extension == "tsv":
-            return "\t"
-        elif extension == "csv":
-            return ","
-        logging.warning(f"Could not guess file extension for {file}")
-    return None
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:

@@ -67,7 +67,6 @@ from .util import (
     NoCURIEException,
     curie_from_uri,
     get_file_extension,
-    get_seperator_symbol_from_file_path,
     is_multivalued_slot,
     raise_for_bad_path,
     to_mapping_set_dataframe,
@@ -222,6 +221,23 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     return None, None
 
 
+def _get_seperator_symbol_from_file_path(file):
+    r"""
+    Take as an input a filepath and return the seperate symbol used, for example, by pandas.
+
+    :param file: the file path
+    :return: the seperator symbols as a string, e.g. '\t'
+    """
+    if isinstance(file, Path) or isinstance(file, str):
+        extension = get_file_extension(file)
+        if extension == "tsv":
+            return "\t"
+        elif extension == "csv":
+            return ","
+        logging.warning(f"Could not guess file extension for {file}")
+    return None
+
+
 def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
     prefix_map: Optional[PrefixMap] = None,
@@ -232,7 +248,7 @@ def parse_sssom_table(
     if isinstance(file_path, Path) or isinstance(file_path, str):
         raise_for_bad_path(file_path)
     stream: io.StringIO = _open_input(file_path)
-    sep_new = get_seperator_symbol_from_file_path(file_path)
+    sep_new = _get_seperator_symbol_from_file_path(file_path)
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
     # if mapping_predicates:
     #     # Filter rows based on presence of predicate_id list provided.
