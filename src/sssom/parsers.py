@@ -226,6 +226,7 @@ def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
+    **kwargs,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     if isinstance(file_path, Path) or isinstance(file_path, str):
