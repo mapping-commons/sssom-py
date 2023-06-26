@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from functools import reduce
 from io import StringIO
 from pathlib import Path
+from string import punctuation
 from typing import (
     Any,
     ChainMap,
@@ -24,6 +25,7 @@ from typing import (
 )
 from urllib.request import urlopen
 
+import deprecation
 import numpy as np
 import pandas as pd
 import validators
@@ -852,23 +854,28 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     """Get file extension.
 
     :param file: File path
-    :raises Exception: Cannot determine extension exception
-    :return: format of the file passed
+    :return: format of the file passed, default tsv
     """
-    if isinstance(file, str):
+    if isinstance(file, Path):
+        if file.suffix:
+            return file.suffix.strip(punctuation)
+        else:
+            logging.warning(
+                f"Cannot guess format from {file}, despite appearing to be a Path-like object."
+            )
+    elif isinstance(file, str):
         filename = file
-    elif isinstance(file, Path):
-        return file.suffix
-    else:
-        filename = file.name
-    parts = filename.split(".")
-    if len(parts) > 0:
-        f_format = parts[-1]
-        return f_format
-    else:
-        raise Exception(f"Cannot guess format from {filename}")
+        parts = filename.split(".")
+        if len(parts) > 0:
+            f_format = parts[-1]
+            return f_format.strip(punctuation)
+        else:
+            logging.warning(f"Cannot guess format from {filename}")
+    logging.info("Cannot guess format extension for this file, assuming TSV.")
+    return "tsv"
 
 
+@deprecation.deprecated(details="Use pandas.read_csv() instead.")
 def read_csv(
     filename: Union[str, Path, TextIO], comment: str = "#", sep: str = ","
 ) -> pd.DataFrame:
@@ -923,6 +930,7 @@ def read_metadata(filename: str) -> Metadata:
     return Metadata(prefix_map=prefix_map, metadata=metadata)
 
 
+@deprecation.deprecated(details="Use pandas.read_csv() instead.")
 def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
@@ -931,15 +939,14 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
     :return: A pandas dataframe
     """
     if sep is None:
-        extension = get_file_extension(file)
-        if extension == "tsv":
-            sep = "\t"
-        elif extension == "csv":
-            sep = ","
-        else:
-            sep = "\t"
-            logging.warning("Cannot automatically determine table format, trying tsv.")
-        df = read_csv(file, comment="#", sep=sep).fillna("")
+        if isinstance(file, Path) or isinstance(file, str):
+            extension = get_file_extension(file)
+            if extension == "tsv":
+                sep = "\t"
+            elif extension == "csv":
+                sep = ","
+            logging.warning(f"Could not guess file extension for {file}")
+    df = read_csv(file, comment="#", sep=sep).fillna("")
     return sort_df_rows_columns(df)
 
 
@@ -1188,7 +1195,7 @@ def filter_prefixes(
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
-# TODO this is not used anywhere
+@deprecation.deprecated(details="This is no longer used and will be removed from the public API.")
 def guess_file_format(filename: Union[str, TextIO]) -> str:
     """Get file format.
 
@@ -1259,6 +1266,8 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     if isinstance(file_path, Path):
         if not file_path.is_file():
             raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
+    elif not isinstance(file_path, str):
+        logging.info("Path provided to raise_for_bad_path() is neither a Path nor str-like object.")
     elif not validators.url(file_path) and not os.path.exists(file_path):
         raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
 

@@ -1,5 +1,6 @@
 """SSSOM parsers."""
 
+import io
 import json
 import logging
 import re
@@ -7,19 +8,17 @@ import typing
 from collections import Counter
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union, cast
-from urllib.request import urlopen
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
 import numpy as np
 import pandas as pd
-import validators
+import requests
 import yaml
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
+from pandas.errors import EmptyDataError
 from rdflib import Graph, URIRef
-
-# from .sssom_datamodel import Mapping, MappingSet
 from sssom_schema import Mapping, MappingSet
 
 from sssom.constants import (
@@ -70,7 +69,6 @@ from .util import (
     get_file_extension,
     is_multivalued_slot,
     raise_for_bad_path,
-    read_pandas,
     to_mapping_set_dataframe,
 )
 
@@ -86,10 +84,9 @@ def read_sssom_table(
     file_path: Union[str, Path],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    **kwargs,
 ) -> MappingSetDataFrame:
     """DEPRECATE."""
-    return parse_sssom_table(file_path=file_path, prefix_map=prefix_map, meta=meta, kwargs=kwargs)
+    return parse_sssom_table(file_path=file_path, prefix_map=prefix_map, meta=meta)
 
 
 @deprecated(
@@ -134,22 +131,130 @@ def read_sssom_json(
 # Parsers (from file)
 
 
+def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
+    """Transform a URL, a filepath (from pathlib), or a string (with file contents) to a StringIO object.
+
+    :param input: A string representing a URL, a filepath, or file contents,
+                              or a Path object representing a filepath.
+    :return: A StringIO object containing the input data.
+    """
+    # If the import already is a StrinIO, return it
+    if isinstance(input, io.StringIO):
+        return input
+    elif isinstance(input, Path):
+        input = str(input)
+
+    if isinstance(input, str):
+        if input.startswith("http://") or input.startswith("https://"):
+            # It's a URL
+            data = requests.get(input, timeout=30).content
+            return io.StringIO(data.decode("utf-8"))
+        elif "\n" in input or "\r" in input:
+            # It's string data
+            return io.StringIO(input)
+        else:
+            # It's a local file path
+            with open(input, "r") as file:
+                file_content = file.read()
+            return io.StringIO(file_content)
+
+    raise IOError(f"Could not determine the type of input {input}")
+
+
+def _separate_metadata_and_table_from_stream(s: io.StringIO):
+    s.seek(0)
+
+    # Create a new StringIO object for filtered data
+    table_component = io.StringIO()
+    metadata_component = io.StringIO()
+
+    header_section = True
+
+    # Filter out lines starting with '#'
+    for line in s:
+        if not line.startswith("#"):
+            table_component.write(line)
+            if header_section:
+                header_section = False
+        elif header_section:
+            metadata_component.write(line)
+        else:
+            logging.info(
+                f"Line {line} is starting with hash symbol, but header section is already passed. "
+                f"This line is skipped"
+            )
+
+    # Reset the cursor to the start of the new StringIO object
+    table_component.seek(0)
+    metadata_component.seek(0)
+    return table_component, metadata_component
+
+
+def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
+    """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
+
+    :param input: The file to read. If no separator is given, this file should be named.
+    :param sep: File separator for pandas
+    :return: A pandas dataframe
+    """
+    table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
+
+    try:
+        df = pd.read_csv(table_stream, sep=sep)
+        df.fillna("", inplace=True)
+    except EmptyDataError as e:
+        logging.warning(f"Seems like the dataframe is empty: {e}")
+        df = pd.DataFrame(
+            columns=[
+                SUBJECT_ID,
+                SUBJECT_LABEL,
+                PREDICATE_ID,
+                OBJECT_ID,
+                MAPPING_JUSTIFICATION,
+            ]
+        )
+
+    if isinstance(df, pd.DataFrame):
+        sssom_metadata = _read_metadata_from_table(metadata_stream)
+        return df, sssom_metadata
+
+    return None, None
+
+
+def _get_seperator_symbol_from_file_path(file):
+    r"""
+    Take as an input a filepath and return the seperate symbol used, for example, by pandas.
+
+    :param file: the file path
+    :return: the seperator symbols as a string, e.g. '\t'
+    """
+    if isinstance(file, Path) or isinstance(file, str):
+        extension = get_file_extension(file)
+        if extension == "tsv":
+            return "\t"
+        elif extension == "csv":
+            return ","
+        logging.warning(f"Could not guess file extension for {file}")
+    return None
+
+
 def parse_sssom_table(
-    file_path: Union[str, Path],
+    file_path: Union[str, Path, TextIO],
     prefix_map: Optional[PrefixMap] = None,
     meta: Optional[MetadataType] = None,
-    **kwargs
-    # mapping_predicates: Optional[List[str]] = None,
+    **kwargs,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
-    raise_for_bad_path(file_path)
-    df = read_pandas(file_path)
+    if isinstance(file_path, Path) or isinstance(file_path, str):
+        raise_for_bad_path(file_path)
+    stream: io.StringIO = _open_input(file_path)
+    sep_new = _get_seperator_symbol_from_file_path(file_path)
+    df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
     # if mapping_predicates:
     #     # Filter rows based on presence of predicate_id list provided.
     #     df = df[df["predicate_id"].isin(mapping_predicates)]
 
     # If SSSOM external metadata is provided, merge it with the internal metadata
-    sssom_metadata = _read_metadata_from_table(file_path)
 
     if sssom_metadata:
         if meta:
@@ -733,24 +838,13 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
     return mapping
 
 
-def _read_metadata_from_table(path: Union[str, Path]) -> Dict[str, Any]:
-    if isinstance(path, Path) or not validators.url(path):
-        with open(path) as file:
-            yamlstr = ""
-            for line in file:
-                if line.startswith("#"):
-                    yamlstr += re.sub("^#", "", line)
-                else:
-                    break
-    else:
-        response = urlopen(path)
-        yamlstr = ""
-        for lin in response:
-            line = lin.decode("utf-8")
-            if line.startswith("#"):
-                yamlstr += re.sub("^#", "", line)
-            else:
-                break
+def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
+    yamlstr = ""
+    for line in stream:
+        if line.startswith("#"):
+            yamlstr += re.sub("^#", "", line)
+        else:
+            break
 
     if yamlstr:
         meta = yaml.safe_load(yamlstr)
