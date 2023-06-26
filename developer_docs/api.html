@@ -861,14 +861,11 @@ replaced or not, defaults to False.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – File path</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Exception</strong> – Cannot determine extension exception</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>format of the file passed</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>format of the file passed, default tsv</p>
 </dd>
 </dl>
 </dd></dl>
@@ -962,6 +959,9 @@ replaced or not, defaults to False.</p></li>
 <dd class="field-even"><p>File extension</p>
 </dd>
 </dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version This: </span>is no longer used and will be removed from the public API.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1162,6 +1162,9 @@ works on the first charcter in the line</p></li>
 <dd class="field-odd"><p>A pandas dataframe</p>
 </dd>
 </dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>pandas.read_csv() instead.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1193,6 +1196,9 @@ works on the first charcter in the line</p></li>
 <dd class="field-odd"><p>A pandas dataframe</p>
 </dd>
 </dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>pandas.read_csv() instead.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
