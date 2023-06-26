@@ -938,16 +938,15 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
-    sep_new = sep
-    if set is None:
+    if sep is None:
         if isinstance(file, Path) or isinstance(file, str):
             extension = get_file_extension(file)
             if extension == "tsv":
-                sep_new = "\t"
+                sep = "\t"
             elif extension == "csv":
-                sep_new = ","
+                sep = ","
             logging.warning(f"Could not guess file extension for {file}")
-    df = read_csv(file, comment="#", sep=sep_new).fillna("")
+    df = read_csv(file, comment="#", sep=sep).fillna("")
     return sort_df_rows_columns(df)
 
 
