@@ -1,7 +1,7 @@
 """Validators."""
 
 import logging
-from typing import List, Dict
+from typing import Dict, List
 
 from jsonschema import ValidationError
 

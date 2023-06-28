@@ -28,7 +28,7 @@ class TestValidate(unittest.TestCase):
         by the rules set by `sssom-schema`.
         """
         results = validate(self.correct_msdf1, self.validation_types)
-        self.assertEqual(len(results),2)
+        self.assertEqual(len(results), 2)
 
     def test_validate_json_fail(self):
         """
