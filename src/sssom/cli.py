@@ -253,14 +253,24 @@ def split(input: str, output_directory: str):
 @input_argument
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
-def ptable(input, output: TextIO, inverse_factor):
+@click.option(
+    "--default-confidence / --no-default-confidence",
+    default=False,
+    is_flag=True,
+    help="If True and SSSOM file does not have the `confidence` column,\
+          it is created and initialized to 0.95. But if the `confidence` column exists,\
+          only `None` values are imputed to 0.95.",
+)
+def ptable(input, output: TextIO, inverse_factor, default_confidence: bool):
     """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`_."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     msdf = parse_sssom_table(input)
     # df = parse(input)
     df = collapse(msdf.df)
     # , priors=list(priors)
-    rows = dataframe_to_ptable(df, inverse_factor=inverse_factor)
+    rows = dataframe_to_ptable(
+        df, inverse_factor=inverse_factor, default_confidence=default_confidence
+    )
     for row in rows:
         print(*row, sep="\t", file=output)
 

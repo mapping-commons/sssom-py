@@ -504,7 +504,9 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
+def dataframe_to_ptable(
+    df: pd.DataFrame, *, inverse_factor: float = None, default_confidence: bool = False
+):
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
@@ -515,6 +517,11 @@ def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
     """
     if not inverse_factor:
         inverse_factor = 0.5
+    if default_confidence and CONFIDENCE not in df:
+        df[CONFIDENCE] = 0.95
+    elif default_confidence:
+        df.loc[df[CONFIDENCE].isnull(), CONFIDENCE] = 0.95
+
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():
