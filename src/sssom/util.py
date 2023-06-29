@@ -512,8 +512,9 @@ def add_default_confidence(df: pd.DataFrame) -> pd.DataFrame:
     :param df: DataFrame whose `confidence` column needs to be filled.
     :return: DataFrame with a complete `confidence` column.
     """
+    df[CONFIDENCE] = df.get(CONFIDENCE, 0.95)
     df.loc[df[CONFIDENCE].isnull(), CONFIDENCE] = 0.95
-    return df.fillna({CONFIDENCE: 0.95})
+    return df
 
 
 def dataframe_to_ptable(
