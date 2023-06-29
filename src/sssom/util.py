@@ -511,6 +511,7 @@ def dataframe_to_ptable(
 
     :param df: Pandas DataFrame
     :param inverse_factor: Multiplier to (1 - confidence), defaults to 0.5
+    :param default_confidence: Boolean that if True initializes blank confidences to 0.95
     :raises ValueError: Predicate value error
     :raises ValueError: Predicate type value error
     :return: List of rows
