@@ -504,6 +504,18 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
+def add_default_confidence(df: pd.DataFrame) -> pd.DataFrame:
+    """Add `confidence` column to DataFrame if absent and initializes to 0.95.
+
+    If `confidence` column already exists, only fill in the None ones by 0.95.
+
+    :param df: DataFrame whose `confidence` column needs to be filled.
+    :return: DataFrame with a complete `confidence` column.
+    """
+    df.loc[df[CONFIDENCE].isnull(), CONFIDENCE] = 0.95
+    return df.fillna({CONFIDENCE: 0.95})
+
+
 def dataframe_to_ptable(
     df: pd.DataFrame, *, inverse_factor: float = None, default_confidence: bool = False
 ):
@@ -519,10 +531,9 @@ def dataframe_to_ptable(
     """
     if not inverse_factor:
         inverse_factor = 0.5
-    if default_confidence and CONFIDENCE not in df:
-        df[CONFIDENCE] = 0.95
-    elif default_confidence:
-        df.loc[df[CONFIDENCE].isnull(), CONFIDENCE] = 0.95
+
+    if default_confidence:
+        df = add_default_confidence(df)
 
     df = collapse(df)
     rows = []

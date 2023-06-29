@@ -24,6 +24,7 @@ from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from sssom.constants import (
+    CONFIDENCE,
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
     SchemaValidationType,
@@ -49,6 +50,7 @@ from .util import (
     SSSOM_EXPORT_FORMATS,
     SSSOM_READ_FORMATS,
     MappingSetDataFrame,
+    add_default_confidence,
     collapse,
     compare_dataframes,
     dataframe_to_ptable,
@@ -266,6 +268,7 @@ def ptable(input, output: TextIO, inverse_factor, default_confidence: bool):
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     msdf = parse_sssom_table(input)
     # df = parse(input)
+    msdf.df = add_default_confidence(msdf.df)
     df = collapse(msdf.df)
     # , priors=list(priors)
     rows = dataframe_to_ptable(
