@@ -24,7 +24,6 @@ from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from sssom.constants import (
-    CONFIDENCE,
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
     SchemaValidationType,
