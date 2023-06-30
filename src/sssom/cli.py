@@ -254,7 +254,7 @@ def split(input: str, output_directory: str):
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
 @click.option(
     "--default-confidence",
-    type=click.FloatRange(0, 1), 
+    type=click.FloatRange(0, 1),
     help="Default confidence to be assigned if absent.",
 )
 def ptable(input, output: TextIO, inverse_factor: float, default_confidence: float):
