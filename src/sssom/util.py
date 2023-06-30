@@ -504,17 +504,41 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def dataframe_to_ptable(df: pd.DataFrame, *, inverse_factor: float = None):
+def add_default_confidence(df: pd.DataFrame, confidence: float = np.NAN) -> pd.DataFrame:
+    """Add `confidence` column to DataFrame if absent and initializes to 0.95.
+
+    If `confidence` column already exists, only fill in the None ones by 0.95.
+
+    :param df: DataFrame whose `confidence` column needs to be filled.
+    :return: DataFrame with a complete `confidence` column.
+    """
+    if CONFIDENCE in df.columns:
+        df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: confidence * x if x is not None else x)
+        df[CONFIDENCE].fillna(float(confidence), inplace=True)
+    else:
+        df[CONFIDENCE] = float(confidence)
+
+    return df
+
+
+def dataframe_to_ptable(
+    df: pd.DataFrame, *, inverse_factor: float = None, default_confidence: float = None
+):
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
     :param inverse_factor: Multiplier to (1 - confidence), defaults to 0.5
+    :param default_confidence: Default confidence to be assigned if absent.
     :raises ValueError: Predicate value error
     :raises ValueError: Predicate type value error
     :return: List of rows
     """
     if not inverse_factor:
         inverse_factor = 0.5
+
+    if default_confidence:
+        df = add_default_confidence(df, default_confidence)
+
     df = collapse(df)
     rows = []
     for _, row in df.iterrows():

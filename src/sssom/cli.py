@@ -6,7 +6,7 @@ later, but that will cause problems--the code will get executed twice:
 - When you run ``python3 -m sssom`` python will execute``__main__.py`` as a script. That means there won't be any
   ``sssom.__main__`` in ``sys.modules``.
 - When you import __main__ it will get executed again (as a module) because
-  there's no ``sssom.__main__`` in ``sys.modules``.
+  there's no ``sssom.__main__`` in ``sys.modules`` .
 
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
@@ -49,7 +49,6 @@ from .util import (
     SSSOM_EXPORT_FORMATS,
     SSSOM_READ_FORMATS,
     MappingSetDataFrame,
-    collapse,
     compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
@@ -253,14 +252,18 @@ def split(input: str, output_directory: str):
 @input_argument
 @output_option
 @click.option("-W", "--inverse-factor", help="Inverse factor.")
-def ptable(input, output: TextIO, inverse_factor):
+@click.option(
+    "--default-confidence",
+    type=click.FloatRange(0, 1),
+    help="Default confidence to be assigned if absent.",
+)
+def ptable(input, output: TextIO, inverse_factor: float, default_confidence: float):
     """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`_."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     msdf = parse_sssom_table(input)
-    # df = parse(input)
-    df = collapse(msdf.df)
-    # , priors=list(priors)
-    rows = dataframe_to_ptable(df, inverse_factor=inverse_factor)
+    rows = dataframe_to_ptable(
+        msdf.df, inverse_factor=inverse_factor, default_confidence=default_confidence
+    )
     for row in rows:
         print(*row, sep="\t", file=output)
 
