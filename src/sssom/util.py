@@ -515,7 +515,7 @@ def add_default_confidence(df: pd.DataFrame, confidence: float = None) -> pd.Dat
     if CONFIDENCE in df.columns:
         df[CONFIDENCE] = confidence * df.get(CONFIDENCE, 1)
     else:
-        df[CONFIDENCE] = confidence
+        df[CONFIDENCE] = float(confidence)
 
     return df
 
