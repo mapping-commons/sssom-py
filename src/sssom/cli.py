@@ -49,8 +49,6 @@ from .util import (
     SSSOM_EXPORT_FORMATS,
     SSSOM_READ_FORMATS,
     MappingSetDataFrame,
-    add_default_confidence,
-    collapse,
     compare_dataframes,
     dataframe_to_ptable,
     filter_redundant_rows,
