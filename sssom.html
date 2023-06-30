@@ -87,7 +87,7 @@ later, but that will cause problems–the code will get executed twice:</p>
 <li><p>When you run <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">sssom</span></code> python will execute``__main__.py`` as a script. That means there won’t be any
 <code class="docutils literal notranslate"><span class="pre">sssom.__main__</span></code> in <code class="docutils literal notranslate"><span class="pre">sys.modules</span></code>.</p></li>
 <li><p>When you import __main__ it will get executed again (as a module) because
-there’s no <code class="docutils literal notranslate"><span class="pre">sssom.__main__</span></code> in <code class="docutils literal notranslate"><span class="pre">sys.modules</span></code>.</p></li>
+there’s no <code class="docutils literal notranslate"><span class="pre">sssom.__main__</span></code> in <code class="docutils literal notranslate"><span class="pre">sys.modules</span></code> .</p></li>
 </ul>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1264,6 +1264,24 @@ the comment column</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="sssom.util.add_default_confidence">
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">add_default_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#add_default_confidence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.add_default_confidence" title="Permalink to this definition"></a></dt>
+<dd><p>Add <cite>confidence</cite> column to DataFrame if absent and initializes to 0.95.</p>
+<p>If <cite>confidence</cite> column already exists, only fill in the None ones by 0.95.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – DataFrame whose <cite>confidence</cite> column needs to be filled.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame with a complete <cite>confidence</cite> column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.are_params_slots">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">are_params_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#are_params_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.are_params_slots" title="Permalink to this definition"></a></dt>
 <dd><p>Check if parameters conform to the slots in MAPPING_SET_SLOTS.</p>
@@ -1414,13 +1432,14 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.dataframe_to_ptable">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_ptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#dataframe_to_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.dataframe_to_ptable" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_ptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#dataframe_to_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.dataframe_to_ptable" title="Permalink to this definition"></a></dt>
 <dd><p>Export a KBOOM table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame</p></li>
 <li><p><strong>inverse_factor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Multiplier to (1 - confidence), defaults to 0.5</p></li>
+<li><p><strong>default_confidence</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Default confidence to be assigned if absent.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>

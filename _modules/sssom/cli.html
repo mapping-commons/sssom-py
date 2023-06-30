@@ -81,7 +81,7 @@
 <span class="sd">- When you run ``python3 -m sssom`` python will execute``__main__.py`` as a script. That means there won&#39;t be any</span>
 <span class="sd">  ``sssom.__main__`` in ``sys.modules``.</span>
 <span class="sd">- When you import __main__ it will get executed again (as a module) because</span>
-<span class="sd">  there&#39;s no ``sssom.__main__`` in ``sys.modules``.</span>
+<span class="sd">  there&#39;s no ``sssom.__main__`` in ``sys.modules`` .</span>
 
 <span class="sd">.. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -124,7 +124,6 @@
     <span class="n">SSSOM_EXPORT_FORMATS</span><span class="p">,</span>
     <span class="n">SSSOM_READ_FORMATS</span><span class="p">,</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
-    <span class="n">collapse</span><span class="p">,</span>
     <span class="n">compare_dataframes</span><span class="p">,</span>
     <span class="n">dataframe_to_ptable</span><span class="p">,</span>
     <span class="n">filter_redundant_rows</span><span class="p">,</span>
@@ -328,14 +327,18 @@
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-W&quot;</span><span class="p">,</span> <span class="s2">&quot;--inverse-factor&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Inverse factor.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ptable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">):</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--default-confidence&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">FloatRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Default confidence to be assigned if absent.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">ptable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">default_confidence</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an SSSOM file to a ptable for kboom/`boomer &lt;https://github.com/INCATools/boomer&gt;`_.&quot;&quot;&quot;</span>
     <span class="c1"># TODO should maybe move to boomer (but for now it can live here, so cjm can tweak</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-    <span class="c1"># df = parse(input)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">collapse</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-    <span class="c1"># , priors=list(priors)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">dataframe_to_ptable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="o">=</span><span class="n">inverse_factor</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">dataframe_to_ptable</span><span class="p">(</span>
+        <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="o">=</span><span class="n">inverse_factor</span><span class="p">,</span> <span class="n">default_confidence</span><span class="o">=</span><span class="n">default_confidence</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
 
