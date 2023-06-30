@@ -268,7 +268,9 @@ def ptable(input, output: TextIO, inverse_factor: float, default_confidence: flo
         msdf.df = add_default_confidence(msdf.df, default_confidence)
     df = collapse(msdf.df)
     # , priors=list(priors)
-    rows = dataframe_to_ptable(df, inverse_factor=inverse_factor, confidence=default_confidence)
+    rows = dataframe_to_ptable(
+        df, inverse_factor=inverse_factor, default_confidence=default_confidence
+    )
     for row in rows:
         print(*row, sep="\t", file=output)
 

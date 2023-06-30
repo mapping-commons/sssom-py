@@ -504,7 +504,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def add_default_confidence(df: pd.DataFrame, confidence: float) -> pd.DataFrame:
+def add_default_confidence(df: pd.DataFrame, confidence: float = None) -> pd.DataFrame:
     """Add `confidence` column to DataFrame if absent and initializes to 0.95.
 
     If `confidence` column already exists, only fill in the None ones by 0.95.
@@ -526,7 +526,7 @@ def dataframe_to_ptable(
 
     :param df: Pandas DataFrame
     :param inverse_factor: Multiplier to (1 - confidence), defaults to 0.5
-    :param confidence: Default confidence to be assigned if absent.
+    :param default_confidence: Default confidence to be assigned if absent.
     :raises ValueError: Predicate value error
     :raises ValueError: Predicate type value error
     :return: List of rows
