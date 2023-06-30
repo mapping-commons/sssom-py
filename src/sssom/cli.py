@@ -6,7 +6,7 @@ later, but that will cause problems--the code will get executed twice:
 - When you run ``python3 -m sssom`` python will execute``__main__.py`` as a script. That means there won't be any
   ``sssom.__main__`` in ``sys.modules``.
 - When you import __main__ it will get executed again (as a module) because
-  there's no ``sssom.__main__`` in ``sys.modules``.
+  there's no ``sssom.__main__`` in ``sys.modules`` .
 
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
