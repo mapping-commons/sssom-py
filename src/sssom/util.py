@@ -504,7 +504,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def add_default_confidence(df: pd.DataFrame, confidence: float = None) -> pd.DataFrame:
+def add_default_confidence(df: pd.DataFrame, confidence: float = np.NAN) -> pd.DataFrame:
     """Add `confidence` column to DataFrame if absent and initializes to 0.95.
 
     If `confidence` column already exists, only fill in the None ones by 0.95.
