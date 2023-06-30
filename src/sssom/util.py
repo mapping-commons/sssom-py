@@ -513,7 +513,8 @@ def add_default_confidence(df: pd.DataFrame, confidence: float = None) -> pd.Dat
     :return: DataFrame with a complete `confidence` column.
     """
     if CONFIDENCE in df.columns:
-        df[CONFIDENCE] = confidence * df.get(CONFIDENCE, 1)
+        df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: confidence * x if x is not None else x)
+        df[CONFIDENCE].fillna(float(confidence), inplace=True)
     else:
         df[CONFIDENCE] = float(confidence)
 
