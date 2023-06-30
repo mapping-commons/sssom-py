@@ -512,10 +512,11 @@ def add_default_confidence(df: pd.DataFrame, confidence: float = None) -> pd.Dat
     :param df: DataFrame whose `confidence` column needs to be filled.
     :return: DataFrame with a complete `confidence` column.
     """
-    # df[CONFIDENCE] = df.get(CONFIDENCE, confidence)
-    if df.get(CONFIDENCE) is not None:
-        df[CONFIDENCE] = confidence * df[CONFIDENCE]
-    df.loc[df[CONFIDENCE].isnull(), CONFIDENCE] = confidence
+    if 'CONFIDENCE' in df.columns:
+        df['CONFIDENCE'] = confidence * df.get('CONFIDENCE', 1)
+    else:
+        df['CONFIDENCE'] = confidence
+    
     return df
 
 
