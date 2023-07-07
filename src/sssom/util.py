@@ -194,6 +194,13 @@ class MappingSetDataFrame:
 
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
         """
+        msdf.df[PREDICATE_MODIFIER] = (
+            "" if PREDICATE_MODIFIER not in msdf.df.columns else msdf.df[PREDICATE_MODIFIER]
+        )
+        self.df[PREDICATE_MODIFIER] = (
+            "" if PREDICATE_MODIFIER not in self.df.columns else self.df[PREDICATE_MODIFIER]
+        )
+
         self.df = (
             pd.merge(
                 self.df,
