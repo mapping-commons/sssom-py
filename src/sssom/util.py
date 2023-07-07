@@ -189,7 +189,7 @@ class MappingSetDataFrame:
             # self.df = filter_out_prefixes(self.df, missing_prefixes)
         self.prefix_map = new_prefixes
 
-    def remove_mappings(self, msdf: "MappingSetDataFrame"):
+    def remove_mappings(self, msdf: "MappingSetDataFrame") -> None:
         """Remove mappings in right msdf from left msdf.
 
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
