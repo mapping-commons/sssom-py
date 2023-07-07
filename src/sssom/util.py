@@ -1200,6 +1200,8 @@ def filter_out_prefixes(
     rows = []
     selection = all if require_all_prefixes else any
 
+    df[PREDICATE_MODIFIER] = "" if PREDICATE_MODIFIER not in df.columns else df[PREDICATE_MODIFIER]
+
     for _, row in df.iterrows():
         prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
         if not selection(prefix in prefixes for prefix in filter_prefix_set):
@@ -1225,6 +1227,8 @@ def filter_prefixes(
     filter_prefix_set = set(filter_prefixes)
     rows = []
     selection = all if require_all_prefixes else any
+
+    df[PREDICATE_MODIFIER] = "" if PREDICATE_MODIFIER not in df.columns else df[PREDICATE_MODIFIER]
 
     for _, row in df.iterrows():
         prefixes = {get_prefix_from_curie(curie) for curie in row[features] if curie is not None}
