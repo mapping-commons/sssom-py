@@ -264,16 +264,20 @@
             <span class="c1"># self.df = filter_out_prefixes(self.df, missing_prefixes)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">new_prefixes</span></div>
 
-<div class="viewcode-block" id="MappingSetDataFrame.remove_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">remove_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="MappingSetDataFrame.remove_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">remove_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove mappings in right msdf from left msdf.</span>
 
 <span class="sd">        :param msdf: MappingSetDataframe object to be removed from primary msdf object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">merge_on</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">PREDICATE_MODIFIER</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">merge_on</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">PREDICATE_MODIFIER</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
                 <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
-                <span class="n">on</span><span class="o">=</span><span class="n">KEY_FEATURES</span><span class="p">,</span>
+                <span class="n">on</span><span class="o">=</span><span class="n">merge_on</span><span class="p">,</span>
                 <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
                 <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_2&quot;</span><span class="p">),</span>
                 <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
