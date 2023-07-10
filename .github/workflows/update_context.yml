@@ -13,11 +13,18 @@ jobs:
       - name: Work around permission issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       
+      - name: Install Black
+        run: |
+          pip install --upgrade pip
+          pip install black
+
       - name: Update schema files
         run: make all_schema
 
       - name: Update sssom context
-        run: make deploy-dm
+        run: |
+          mkdir -p sssom
+          make deploy-dm
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
