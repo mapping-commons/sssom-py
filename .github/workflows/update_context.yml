@@ -17,7 +17,9 @@ jobs:
         run: make all_schema
 
       - name: Update sssom context
-        run: make deploy-dm
+        run: |
+          mkdir -p sssom
+          make deploy-dm
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
