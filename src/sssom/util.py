@@ -194,26 +194,15 @@ class MappingSetDataFrame:
 
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
         """
-        if isinstance(msdf.df, pd.DataFrame):
-            msdf.df[PREDICATE_MODIFIER] = (
-                "" if PREDICATE_MODIFIER not in msdf.df.columns else msdf.df[PREDICATE_MODIFIER]
-            )
-        else:
-            # Handle the case when msdf.df is not a DataFrame
-            raise ValueError("msdf.df is not a valid DataFrame object")
-        if isinstance(self.df, pd.DataFrame):
-            self.df[PREDICATE_MODIFIER] = (
-                "" if PREDICATE_MODIFIER not in self.df.columns else self.df[PREDICATE_MODIFIER]
-            )
-        else:
-            # Handle the case when self.df is not a DataFrame
-            raise ValueError("self.df is not a valid DataFrame object")
+        merge_on = KEY_FEATURES.copy()
+        if self.df and PREDICATE_MODIFIER not in self.df.columns:
+            merge_on.remove(PREDICATE_MODIFIER)
 
         self.df = (
             pd.merge(
                 self.df,
                 msdf.df,
-                on=KEY_FEATURES,
+                on=merge_on,
                 how="outer",
                 suffixes=("", "_2"),
                 indicator=True,
