@@ -195,7 +195,7 @@ class MappingSetDataFrame:
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
         """
         merge_on = KEY_FEATURES.copy()
-        if self.df and PREDICATE_MODIFIER not in self.df.columns:
+        if self.df is not None and PREDICATE_MODIFIER not in self.df.columns:
             merge_on.remove(PREDICATE_MODIFIER)
 
         self.df = (
