@@ -13,14 +13,11 @@ jobs:
       - name: Work around permission issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       
-      - name: Install Poetry
+      - name: Install Black
         run: |
           pip install --upgrade pip
-          pip install poetry==1.3.2
+          pip install black
 
-      - name: Install dependencies
-        run: poetry install
-        
       - name: Update schema files
         run: make all_schema
 
