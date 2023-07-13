@@ -49,7 +49,7 @@ src/sssom/internal_context.py: schema/sssom.context.jsonld
 	cat $< >> $@
 	echo "\"\"\""  >> $@
 
-deploy-dm: sssom/external_context.py sssom/internal_context.py
+deploy-dm: src/sssom/external_context.py src/sssom/internal_context.py
 	cp schema/sssom_datamodel.py src/sssom/
 	cp schema/sssom.context.jsonld src/sssom/
 	cp schema/sssom.external.context.jsonld src/sssom/
