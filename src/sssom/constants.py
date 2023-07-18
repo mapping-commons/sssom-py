@@ -14,6 +14,7 @@ from linkml_runtime.utils.schemaview import SchemaView
 HERE = pathlib.Path(__file__).parent.resolve()
 
 SCHEMA_YAML = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
+EXTERNAL_CONTEXT = HERE / "sssom.external.context.jsonld"
 
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
 
