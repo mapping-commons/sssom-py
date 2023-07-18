@@ -44,14 +44,6 @@ sssom.context module
    :undoc-members:
    :show-inheritance:
 
-sssom.external\_context module
-------------------------------
-
-.. automodule:: sssom.external_context
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 sssom.io module
 ---------------
 
