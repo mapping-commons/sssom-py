@@ -7,7 +7,8 @@ from typing import Optional
 
 import pkg_resources
 
-from .external_context import sssom_external_context
+from sssom.constants import EXTERNAL_CONTEXT
+
 from .typehints import Metadata, MetadataType, PrefixMap
 
 # HERE = pathlib.Path(__file__).parent.resolve()
@@ -41,7 +42,9 @@ def get_external_jsonld_context():
 
     :return: JSON-LD context
     """
-    return json.loads(sssom_external_context, strict=False)
+    with open(str(EXTERNAL_CONTEXT), "r") as f:
+        data = json.load(f, strict=False)
+    return data
 
 
 def get_built_in_prefix_map() -> PrefixMap:
