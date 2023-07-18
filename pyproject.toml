@@ -26,7 +26,7 @@ rdflib = "^6.3.2"
 sparqlwrapper = "^2.0.0"
 sssom-schema = "^0.13.0"
 validators = "^0.20.0"
-scipy = "*"
+scipy = {version = "*", extras = ["scipy"]}
 
 [tool.poetry.group.dev.dependencies]
 pytest = {version = ">=7.1.2"}
