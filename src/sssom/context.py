@@ -42,7 +42,6 @@ def get_external_jsonld_context():
 
     :return: JSON-LD context
     """
-
     with open(str(EXTERNAL_CONTEXT), "r") as f:
         data = json.load(f, strict=False)
     return data
