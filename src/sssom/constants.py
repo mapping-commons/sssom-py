@@ -3,6 +3,7 @@
 import pathlib
 from enum import Enum
 from typing import List
+from curies import Converter
 
 import pkg_resources
 import yaml
@@ -172,6 +173,9 @@ COLUMN_INVERT_DICTIONARY = {
     OBJECT_PREPROCESSING: SUBJECT_PREPROCESSING,
     OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
 }
+
+# TODO: Implement this for all CURIE prefix <=> URI prefix conversions.
+# OBO_EXTENDED_PREFIX_MAP_CONVERTER = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
 
 
 class SEMAPV(Enum):
