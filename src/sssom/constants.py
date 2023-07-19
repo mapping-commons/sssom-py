@@ -3,7 +3,7 @@
 import pathlib
 from enum import Enum
 from typing import List
-from curies import Converter
+# from curies import Converter
 
 import pkg_resources
 import yaml
