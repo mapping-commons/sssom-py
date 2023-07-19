@@ -3,12 +3,14 @@
 import pathlib
 from enum import Enum
 from typing import List
-# from curies import Converter
 
 import pkg_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
+
+# from curies import Converter
+
 
 # from linkml_runtime.utils.introspection import package_schemaview
 
