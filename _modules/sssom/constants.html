@@ -84,12 +84,15 @@
 <span class="kn">from</span> <span class="nn">linkml_runtime.utils.schema_as_dict</span> <span class="kn">import</span> <span class="n">schema_as_dict</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.utils.schemaview</span> <span class="kn">import</span> <span class="n">SchemaView</span>
 
+<span class="c1"># from curies import Converter</span>
+
+
 <span class="c1"># from linkml_runtime.utils.introspection import package_schemaview</span>
 
 <span class="n">HERE</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
 <span class="n">SCHEMA_YAML</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;sssom_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;schema/sssom_schema.yaml&quot;</span><span class="p">)</span>
-<span class="n">EXTERNAL_CONTEXT</span> <span class="o">=</span> <span class="n">HERE</span> <span class="o">/</span> <span class="s2">&quot;sssom.external.context.jsonld&quot;</span>
+<span class="n">EXTENDED_PREFIX_MAP</span> <span class="o">=</span> <span class="n">HERE</span> <span class="o">/</span> <span class="s2">&quot;obo.epm.json&quot;</span>
 
 <span class="c1"># SCHEMA_VIEW = package_schemaview(&quot;sssom_schema&quot;)</span>
 
@@ -247,6 +250,9 @@
     <span class="n">OBJECT_PREPROCESSING</span><span class="p">:</span> <span class="n">SUBJECT_PREPROCESSING</span><span class="p">,</span>
     <span class="n">OBJECT_SOURCE_VERSION</span><span class="p">:</span> <span class="n">SUBJECT_SOURCE_VERSION</span><span class="p">,</span>
 <span class="p">}</span>
+
+<span class="c1"># TODO: Implement this for all CURIE prefix &lt;=&gt; URI prefix conversions.</span>
+<span class="c1"># OBO_EXTENDED_PREFIX_MAP_CONVERTER = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)</span>
 
 
 <div class="viewcode-block" id="SEMAPV"><a class="viewcode-back" href="../../sssom.html#sssom.constants.SEMAPV">[docs]</a><span class="k">class</span> <span class="nc">SEMAPV</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
