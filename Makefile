@@ -1,10 +1,10 @@
 PYTHON=python
 SSSOM_VERSION_TAG=0.12.0
-DEFAULT_PREFIX_MAP="https://raw.githubusercontent.com/biopragmatics/bioregistry/main/exports/contexts/obo.context.jsonld"
 SSSOM_PY="https://raw.githubusercontent.com/mapping-commons/sssom/$(SSSOM_VERSION_TAG)/src/sssom_schema/datamodel/sssom_schema.py"
 SSSOM_YAML="https://raw.githubusercontent.com/mapping-commons/sssom/$(SSSOM_VERSION_TAG)/src/sssom_schema/schema/sssom_schema.yaml"
 SSSOM_JSON_SCHEMA="https://raw.githubusercontent.com/mapping-commons/sssom/$(SSSOM_VERSION_TAG)/project/jsonschema/sssom_schema.schema.json"
 SSSOM_JSONLD_CONTEXT="https://raw.githubusercontent.com/mapping-commons/sssom/$(SSSOM_VERSION_TAG)/project/jsonld/sssom_schema.context.jsonld"
+OBO_EPM_JSON="https://raw.githubusercontent.com/biopragmatics/bioregistry/main/exports/contexts/obo.epm.json"
 
 all: test
 
@@ -20,8 +20,8 @@ schema/cliquesummary.py: schema/cliquesummary.yaml
 	gen-py-classes $< > $@
 schema/%.schema.json: .FORCE
 	wget $(SSSOM_JSON_SCHEMA) -O $@
-src/sssom/sssom.external.context.jsonld:
-	wget $(DEFAULT_PREFIX_MAP) -O $@
+src/sssom/obo.epm.json:
+	wget $(OBO_EPM_JSON) -O $@
 schema/%.context.jsonld: .FORCE
 	wget $(SSSOM_JSONLD_CONTEXT) -O $@
 schema/%.yaml sssom/%.yaml: .FORCE
@@ -33,7 +33,7 @@ test:
 	tox
 	sh tests/tests.sh
 
-deploy-dm: src/sssom/sssom.external.context.jsonld
+deploy-dm: src/sssom/obo.epm.json
 	
 install:
 	pip install .[test,docs]

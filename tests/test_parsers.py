@@ -117,7 +117,7 @@ class TestParse(unittest.TestCase):
             write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
-            9879,
+            9881,
             f"{self.obographs_file} has the wrong number of mappings.",
         )
 

@@ -9,12 +9,15 @@ import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 
+# from curies import Converter
+
+
 # from linkml_runtime.utils.introspection import package_schemaview
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
 SCHEMA_YAML = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
-EXTERNAL_CONTEXT = HERE / "sssom.external.context.jsonld"
+EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 # SCHEMA_VIEW = package_schemaview("sssom_schema")
 
@@ -172,6 +175,9 @@ COLUMN_INVERT_DICTIONARY = {
     OBJECT_PREPROCESSING: SUBJECT_PREPROCESSING,
     OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
 }
+
+# TODO: Implement this for all CURIE prefix <=> URI prefix conversions.
+# OBO_EXTENDED_PREFIX_MAP_CONVERTER = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
 
 
 class SEMAPV(Enum):
