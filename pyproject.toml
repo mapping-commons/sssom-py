@@ -5,8 +5,7 @@ description = "Operations on SSSOM mapping tables"
 authors = [
     "Chris Mungall <cjmungall@lbl.gov>",
     "Nicolas Matentzoglu <nicolas.matentzoglu@gmail.com>",
-    "Harshad Hegde <hhegde@lbl.gov>",
-    "Charles Tapley Hoyt <cthoyt@gmail.com>",
+    "Harshad Hegde <hhegde@lbl.gov>"
 ]
 license = "MIT"
 readme = "README.md"
