@@ -1,9 +1,11 @@
 """Utility functions."""
+
 import hashlib
 import json
 import logging
 import os
 import re
+import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
@@ -1105,13 +1107,12 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
-def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
+def curie_from_uri(uri: str, prefix_map: Union[Mapping[str, str], Converter]) -> str:
     """Parse a CURIE from an IRI.
 
     :param uri: The URI to parse. If this is already a CURIE, return directly.
     :param prefix_map: The prefix map against which the IRI is checked
     :return: A CURIE
-    :raises NoCURIEException: if a CURIE can not be parsed
 
     Example parsing:
     >>> m = {"hgnc.genegroup": "https://example.org/hgnc.genegroup:"}
@@ -1124,21 +1125,10 @@ def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
     >>> curie_from_uri("hgnc.genegroup:1234", {})
     'hgnc.genegroup:1234'
     """
-    # TODO consider replacing with :func:`bioregistry.curie_from_iri`
-    # FIXME what if the curie has a subspace in it? RE will fail
-    if is_curie(uri):
-        return uri
-    for prefix in prefix_map:
-        uri_prefix = prefix_map[prefix]
-        if uri.startswith(uri_prefix):
-            remainder = uri.replace(uri_prefix, "")
-            curie = f"{prefix}:{remainder}"
-            if is_curie(curie):
-                return f"{prefix}:{remainder}"
-            else:
-                logging.warning(f"{prefix}:{remainder} is not a CURIE ... skipping")
-                continue
-    raise NoCURIEException(f"{uri} does not follow any known prefixes")
+    warnings.warn("Use safe_compress() instead", DeprecationWarning)
+    if not isinstance(prefix_map, Converter):
+        converter = Converter.from_prefix_map(prefix_map)
+    return safe_compress(uri, converter)
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
@@ -1608,6 +1598,9 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param converter: Converter used for compression
     :return: A CURIE
     """
-    if is_curie(uri):
-        return uri
-    return converter.compress_strict(uri)
+    if not is_curie(uri):
+        return converter.compress_strict(uri)
+    rv = converter.standardize_curie(uri)
+    if rv is None:
+        raise ValueError
+    return rv
