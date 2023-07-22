@@ -30,16 +30,13 @@ class EndpointConfig:
     limit: Optional[int]
     include_object_labels: bool = False
     prefix_map: Dict[str, str] = field(default_factory=dict)
-    converter: Converter = field(init=False)
-
-    def __post_init__(self):
-        self.converter = Converter.from_prefix_map(self.prefix_map)
 
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     """Query a SPARQL endpoint to obtain a set of mappings."""
     if not config.prefix_map:
         raise TypeError
+    converter = Converter.from_prefix_map(config.prefix_map)
 
     if config.graph is None:
         g = "?g"
@@ -50,9 +47,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     if config.predicates is None:
         predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
-        predicates = [
-            URIRef(config.converter.expand_strict(predicate)) for predicate in config.predicates
-        ]
+        predicates = [URIRef(converter.expand_strict(predicate)) for predicate in config.predicates]
     predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
@@ -91,7 +86,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     results = sparql_wrapper.query().convert()
     df = pd.DataFrame(
         [
-            {key: safe_compress(v["value"], config.converter) for key, v in result.items()}
+            {key: safe_compress(v["value"], converter) for key, v in result.items()}
             for result in results["results"]["bindings"]
         ]
     )
