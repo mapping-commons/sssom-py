@@ -1,7 +1,7 @@
 """Utilities for querying mappings with SPARQL."""
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Mapping, Optional
 
 import pandas as pd
@@ -9,6 +9,7 @@ from rdflib import URIRef
 from rdflib.namespace import RDFS, SKOS
 from SPARQLWrapper import JSON, SPARQLWrapper
 
+from curies import Converter
 from .util import MappingSetDataFrame
 
 __all__ = [
@@ -26,8 +27,38 @@ class EndpointConfig:
     predmap: Dict[str, str]
     predicates: Optional[List[str]]
     limit: Optional[int]
-    prefix_map: Optional[Dict[str, str]]
     include_object_labels: bool = False
+    prefix_map: Dict[str, str] = field(default_factory=dict)
+    converter: Converter = field(init=False)
+
+    def __post_init__(self):
+        self.converter = Converter.from_prefix_map(self.prefix_map)
+
+    def expand_curie(self, curie: str) -> URIRef:
+        """Expand a CURIE to a URI.
+
+        :param curie: CURIE
+        :return: URI of CURIE
+        """
+        if not self.prefix_map:
+            return URIRef(curie)
+        uri = self.converter.expand(curie)
+        if uri is None:
+            raise ValueError
+        return URIRef(uri)
+
+    def contract_uri(self, uri: str) -> str:
+        """Replace the URI with a CURIE based on the prefix map in the given configuration.
+
+        :param uri: A uniform resource identifier
+        :return: A CURIE if it's able to contract, otherwise return the original URI
+        """
+        if not self.prefix_map:
+            return uri
+        curie = self.converter.compress(uri)
+        if curie is None:
+            raise ValueError
+        return curie
 
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
@@ -42,7 +73,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     if config.predicates is None:
         predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
-        predicates = [expand_curie(predicate, config) for predicate in config.predicates]
+        predicates = [config.expand_curie(predicate) for predicate in config.predicates]
     predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
@@ -81,7 +112,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         row = {k: v["value"] for k, v in result.items()}
         rows.append(curiefy_values(row, config))
     df = pd.DataFrame(rows)
-    if config.prefix_map is None:
+    if not config.prefix_map:
         raise TypeError
     return MappingSetDataFrame(df=df, prefix_map=config.prefix_map)
 
@@ -93,35 +124,4 @@ def curiefy_values(row: Mapping[str, str], config: EndpointConfig) -> Dict[str, 
     :param config: Configuration
     :return: A dictionary of string keys to CURIEs
     """
-    return {k: contract_uri(v, config) for k, v in row.items()}
-
-
-def contract_uri(uri: str, config: EndpointConfig) -> str:
-    """Replace the URI with a CURIE based on the prefix map in the given configuration.
-
-    :param uri: A uniform resource identifier
-    :param config: Configuration
-    :return: A CURIE if it's able to contract, otherwise return the original URI
-    """
-    if config.prefix_map is None:
-        return uri
-    for k, v in config.prefix_map.items():
-        if uri.startswith(v):
-            return uri.replace(v, f"{k}:")
-    return uri
-
-
-def expand_curie(curie: str, config: EndpointConfig) -> URIRef:
-    """Expand a CURIE to a URI.
-
-    :param curie: CURIE
-    :param config: Configuration
-    :return: URI of CURIE
-    """
-    if config.prefix_map is None:
-        return URIRef(curie)
-    for k, v in config.prefix_map.items():
-        prefix = f"{k}:"
-        if curie.startswith(prefix):
-            return URIRef(curie.replace(prefix, v))
-    return URIRef(curie)
+    return {k: config.contract_uri(v) for k, v in row.items()}
