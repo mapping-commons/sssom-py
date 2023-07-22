@@ -5,11 +5,11 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Mapping, Optional
 
 import pandas as pd
+from curies import Converter
 from rdflib import URIRef
 from rdflib.namespace import RDFS, SKOS
 from SPARQLWrapper import JSON, SPARQLWrapper
 
-from curies import Converter
 from .util import MappingSetDataFrame
 
 __all__ = [
