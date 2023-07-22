@@ -3,10 +3,9 @@
 import logging
 from typing import Any, Dict, List, Optional
 
+from curies import Converter
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
-
-# from .sssom_datamodel import EntityReference, Mapping
 from sssom_schema import EntityReference, Mapping
 
 from .parsers import to_mapping_set_document
@@ -24,17 +23,12 @@ def rewire_graph(
     precedence: Optional[List[str]] = None,
 ) -> int:
     """Rewire an RDF Graph replacing using equivalence mappings."""
-    pm = mset.prefix_map
     mdoc = to_mapping_set_document(mset)
-    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
-
-    def expand_curie(curie: str) -> URIRef:
-        """Expand CURIE into URIRef."""
-        pfx, local = curie.split(":")
-        return URIRef(f"{pm[pfx]}{local}")
-
     if mdoc.mapping_set.mappings is None:
         raise TypeError
+
+    converter = Converter.from_prefix_map(mdoc.prefix_map)
+    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
             continue
@@ -49,8 +43,8 @@ def rewire_graph(
                 curr_tgt = rewire_map[src]
                 logging.info(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
                 if precedence:
-                    curr_pfx, _ = curr_tgt.split(":")
-                    tgt_pfx, _ = tgt.split(":")
+                    curr_pfx, _ = converter.parse_curie(curr_tgt)
+                    tgt_pfx, _ = converter.parse_curie(tgt)
                     if tgt_pfx in precedence:
                         if curr_pfx not in precedence or precedence.index(
                             tgt_pfx
@@ -63,7 +57,8 @@ def rewire_graph(
                 rewire_map[src] = tgt
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {
-        expand_curie(k): expand_curie(v) for k, v in rewire_map.items()
+        URIRef(converter.expand_strict(k)): URIRef(converter.expand_strict(v))
+        for k, v in rewire_map.items()
     }
 
     def rewire_node(n: Any):

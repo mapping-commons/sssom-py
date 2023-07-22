@@ -1607,19 +1607,7 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param uri: The URI to parse. If this is already a CURIE, return directly.
     :param converter: Converter used for compression
     :return: A CURIE
-    :raises NoCURIEException: if a CURIE can not be parsed
     """
     if is_curie(uri):
         return uri
-    curie = converter.compress(uri)
-    if curie is None:
-        raise NoCURIEException(f"{uri} does not follow any known prefixes")
-    return curie
-
-
-def safe_expand(curie: str, converter: Converter) -> str:
-    """Expand a CURIE to an IRI."""
-    uri = converter.expand(curie)
-    if uri is None:
-        raise NoCURIEException
-    return uri
+    return converter.compress_strict(uri)

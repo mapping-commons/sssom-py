@@ -11,7 +11,7 @@ from rdflib import URIRef
 from rdflib.namespace import RDFS, SKOS
 from SPARQLWrapper import JSON, SPARQLWrapper
 
-from .util import MappingSetDataFrame, safe_compress, safe_expand
+from .util import MappingSetDataFrame, safe_compress
 
 __all__ = [
     "EndpointConfig",
@@ -51,7 +51,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
         predicates = [
-            URIRef(safe_expand(predicate, config.converter)) for predicate in config.predicates
+            URIRef(config.converter.expand_strict(predicate)) for predicate in config.predicates
         ]
     predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
