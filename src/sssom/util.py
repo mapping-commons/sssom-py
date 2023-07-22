@@ -30,12 +30,10 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError
-
-# from .sssom_datamodel import Mapping as SSSOM_Mapping
-# from .sssom_datamodel import slots
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
@@ -1601,3 +1599,27 @@ def invert_mappings(
 def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
     """Return a dictionary for column renames in pandas DataFrame."""
     return {x: columns_invert_map[x] for x in column_names}
+
+
+def safe_compress(uri: str, converter: Converter) -> str:
+    """Parse a CURIE from an IRI.
+
+    :param uri: The URI to parse. If this is already a CURIE, return directly.
+    :param converter: Converter used for compression
+    :return: A CURIE
+    :raises NoCURIEException: if a CURIE can not be parsed
+    """
+    if is_curie(uri):
+        return uri
+    curie = converter.compress(uri)
+    if curie is None:
+        raise NoCURIEException(f"{uri} does not follow any known prefixes")
+    return curie
+
+
+def safe_expand(curie: str, converter: Converter) -> str:
+    """Expand a CURIE to an IRI."""
+    uri = converter.expand(curie)
+    if uri is None:
+        raise NoCURIEException
+    return uri

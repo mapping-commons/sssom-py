@@ -356,11 +356,8 @@ def sparql(
         endpoint.limit = limit
     if object_labels is not None:
         endpoint.include_object_labels = object_labels
-    if prefix is not None:
-        if endpoint.prefix_map is None:
-            endpoint.prefix_map = {}
-        for k, v in prefix:
-            endpoint.prefix_map[k] = v
+    for k, v in prefix or []:
+        endpoint.prefix_map[k] = v
     msdf = query_mappings(endpoint)
     write_table(msdf, output)
 
