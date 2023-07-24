@@ -32,14 +32,13 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
-from typing_extensions import deprecated
-
 from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
+from typing_extensions import deprecated
 
 from .constants import (
     COLUMN_INVERT_DICTIONARY,
@@ -1128,7 +1127,7 @@ def curie_from_uri(uri: str, prefix_map: Union[Mapping[str, str], Converter]) ->
     >>> curie_from_uri("hgnc.genegroup:1234", {})
     'hgnc.genegroup:1234'
     """
-    warnings.warn("Use safe_compress() instead", DeprecationWarning)
+    warnings.warn("Use safe_compress() instead", DeprecationWarning, stacklevel=2)
     if not isinstance(prefix_map, Converter):
         converter = Converter.from_prefix_map(prefix_map)
         return safe_compress(uri, converter)
