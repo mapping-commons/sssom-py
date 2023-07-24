@@ -32,6 +32,8 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from typing_extensions import deprecated
+
 from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
@@ -1107,6 +1109,7 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
+@deprecated("Use safe_compress() with a pre-instantiated curies.Converter instead")
 def curie_from_uri(uri: str, prefix_map: Union[Mapping[str, str], Converter]) -> str:
     """Parse a CURIE from an IRI.
 
