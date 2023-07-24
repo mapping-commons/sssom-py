@@ -1602,5 +1602,7 @@ def safe_compress(uri: str, converter: Converter) -> str:
         return converter.compress_strict(uri)
     rv = converter.standardize_curie(uri)
     if rv is None:
-        raise ValueError
+        raise ValueError(
+            f"CURIE appeared where there should be a URI, and could not be standardized: {uri}"
+        )
     return rv
