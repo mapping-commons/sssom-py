@@ -1128,7 +1128,9 @@ def curie_from_uri(uri: str, prefix_map: Union[Mapping[str, str], Converter]) ->
     warnings.warn("Use safe_compress() instead", DeprecationWarning)
     if not isinstance(prefix_map, Converter):
         converter = Converter.from_prefix_map(prefix_map)
-    return safe_compress(uri, converter)
+        return safe_compress(uri, converter)
+    else:  # assume prefix_map is a Converter
+        return safe_compress(uri, prefix_map)
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
