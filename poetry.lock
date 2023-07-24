@@ -63,13 +63,13 @@ lxml = ["lxml"]
 
 [[package]]
 name = "bioregistry"
-version = "0.9.78"
+version = "0.9.84"
 description = "Integrated registry of biological databases and nomenclatures"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "bioregistry-0.9.78-py3-none-any.whl", hash = "sha256:2be1c3e601acaf89b155c41aea441a563eca368ffb73a90b5c4d5f910e8d6751"},
-    {file = "bioregistry-0.9.78.tar.gz", hash = "sha256:0b0e297c3a41a472c5e0af45f9ff01547bc22db6dbd7ddafa000f493cf7c4ee0"},
+    {file = "bioregistry-0.9.84-py3-none-any.whl", hash = "sha256:4d124f77a3fd0877181dd0c3080b8ef6c73b4ba6ffac9afaad90c226d9b5ae0a"},
+    {file = "bioregistry-0.9.84.tar.gz", hash = "sha256:630b52e3e91abf3c6ece93b587f15995d643a3ea573f232f1d8281755658d31e"},
 ]
 
 [package.dependencies]
@@ -104,13 +104,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2023.5.7"
+version = "2023.7.22"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2023.5.7-py3-none-any.whl", hash = "sha256:c6c2e98f5c7869efca1f8916fed228dd91539f9f1b444c314c06eef02980c716"},
-    {file = "certifi-2023.5.7.tar.gz", hash = "sha256:0f0d56dc5a6ad56fd4ba36484d6cc34451e1c6548c61daad8c320169f91eddc7"},
+    {file = "certifi-2023.7.22-py3-none-any.whl", hash = "sha256:92d6037539857d8206b8f6ae472e8b77db8058fec5937a1ef3f54304089edbb9"},
+    {file = "certifi-2023.7.22.tar.gz", hash = "sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082"},
 ]
 
 [[package]]
@@ -210,13 +210,13 @@ files = [
 
 [[package]]
 name = "click"
-version = "8.1.5"
+version = "8.1.6"
 description = "Composable command line interface toolkit"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "click-8.1.5-py3-none-any.whl", hash = "sha256:e576aa487d679441d7d30abb87e1b43d24fc53bffb8758443b1a9e1cee504548"},
-    {file = "click-8.1.5.tar.gz", hash = "sha256:4be4b1af8d665c6d942909916d31a213a106800c47d0eeba73d34da3cbc11367"},
+    {file = "click-8.1.6-py3-none-any.whl", hash = "sha256:fa244bb30b3b5ee2cae3da8f55c9e5e0c0e86093306301fb418eb9dc40fbded5"},
+    {file = "click-8.1.6.tar.gz", hash = "sha256:48ee849951919527a045bfe3bf7baa8a959c423134e1a5b98c05c20ba75a1cbd"},
 ]
 
 [package.dependencies]
@@ -235,13 +235,13 @@ files = [
 
 [[package]]
 name = "curies"
-version = "0.5.6"
+version = "0.5.7"
 description = "Idiomatic conversion between URIs and compact URIs (CURIEs)."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "curies-0.5.6-py3-none-any.whl", hash = "sha256:27eee34218bf645fdfb5c457bacfba0274146277bac600d9b9a83d2e5e01abcd"},
-    {file = "curies-0.5.6.tar.gz", hash = "sha256:fd9e72ea9b167911057726bd537c9956ed96d88ce71aecf59f9a47c6ca484ffe"},
+    {file = "curies-0.5.7-py3-none-any.whl", hash = "sha256:74fc743e2c41c3bcd2ecb1178cce72236018f245e970c88faf452b89694b475a"},
+    {file = "curies-0.5.7.tar.gz", hash = "sha256:eb984c51dcd04187fec88074a43070ae6f96467887fd502fa5547377722c9a4a"},
 ]
 
 [package.dependencies]
@@ -566,12 +566,12 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "jsbeautifier"
-version = "1.14.8"
+version = "1.14.9"
 description = "JavaScript unobfuscator and beautifier."
 optional = false
 python-versions = "*"
 files = [
-    {file = "jsbeautifier-1.14.8.tar.gz", hash = "sha256:d4c4e263a42dd6194afb9dbe54710be3c5604492cbec3e89c92dd98513f98b9f"},
+    {file = "jsbeautifier-1.14.9.tar.gz", hash = "sha256:c738ebc36b47bd94e4ca6dd17a9004c3cc74edad582ca1d60e0e5d5945a63cb9"},
 ]
 
 [package.dependencies]
@@ -2185,13 +2185,13 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.0.3"
+version = "2.0.4"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "urllib3-2.0.3-py3-none-any.whl", hash = "sha256:48e7fafa40319d358848e1bc6809b208340fafe2096f1725d05d67443d0483d1"},
-    {file = "urllib3-2.0.3.tar.gz", hash = "sha256:bee28b5e56addb8226c96f7f13ac28cb4c301dd5ea8a6ca179c0b9835e032825"},
+    {file = "urllib3-2.0.4-py3-none-any.whl", hash = "sha256:de7df1803967d2c2a98e4b11bb7d6bd9210474c46e8a0401514e3a42a75ebde4"},
+    {file = "urllib3-2.0.4.tar.gz", hash = "sha256:8d22f86aae8ef5e410d4f539fde9ce6b2113a001bb4d189e0aed70642d602b11"},
 ]
 
 [package.extras]
@@ -2218,13 +2218,13 @@ test = ["flake8 (>=2.4.0)", "isort (>=4.2.2)", "pytest (>=2.2.3)"]
 
 [[package]]
 name = "virtualenv"
-version = "20.24.0"
+version = "20.24.1"
 description = "Virtual Python Environment builder"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "virtualenv-20.24.0-py3-none-any.whl", hash = "sha256:18d1b37fc75cc2670625702d76849a91ebd383768b4e91382a8d51be3246049e"},
-    {file = "virtualenv-20.24.0.tar.gz", hash = "sha256:e2a7cef9da880d693b933db7654367754f14e20650dc60e8ee7385571f8593a3"},
+    {file = "virtualenv-20.24.1-py3-none-any.whl", hash = "sha256:01aacf8decd346cf9a865ae85c0cdc7f64c8caa07ff0d8b1dfc1733d10677442"},
+    {file = "virtualenv-20.24.1.tar.gz", hash = "sha256:2ef6a237c31629da6442b0bcaa3999748108c7166318d1f55cc9f8d7294e97bd"},
 ]
 
 [package.dependencies]
@@ -2377,4 +2377,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "a00c8e8839ddaa3b5f5a7c6cfce52410f5eae645f427db9b0a7dd0dbf069fc28"
+content-hash = "1bff12ca9a3bce52d834cc9f86dcc7f1ee557dd912d10a68a1016ea7f643717a"
