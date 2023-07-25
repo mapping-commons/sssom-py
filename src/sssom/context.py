@@ -86,7 +86,8 @@ def add_built_in_prefixes_to_prefix_map(
                 raise ValueError(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
-    del prefix_map["dc"]
+    if "dc" in prefix_map and "dcterms" in prefix_map and prefix_map["dc"] == prefix_map["dcterms"]:
+        del prefix_map["dc"]
     return prefix_map
 
 
