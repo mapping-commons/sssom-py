@@ -86,7 +86,6 @@ def add_built_in_prefixes_to_prefix_map(
                 raise ValueError(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
-    del prefix_map["@vocab"]
     del prefix_map["dc"]
     return prefix_map
 
@@ -110,6 +109,7 @@ def get_default_metadata() -> Metadata:
             if "@id" in v and "@prefix" in v:
                 if v["@prefix"]:
                     prefix_map[key] = v["@id"]
+    del prefix_map["@vocab"]
 
     prefix_map.update({(k, v) for k, v in contxt_external.items() if k not in prefix_map})
 
