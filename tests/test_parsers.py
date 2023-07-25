@@ -10,7 +10,6 @@ from xml.dom import minidom
 import numpy as np
 import pandas as pd
 import yaml
-from curies import Converter
 from rdflib import Graph
 
 from sssom.context import _raise_on_invalid_prefix_map, get_default_metadata
