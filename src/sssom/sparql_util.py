@@ -35,7 +35,9 @@ class EndpointConfig:
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     """Query a SPARQL endpoint to obtain a set of mappings."""
     if not config.prefix_map:
-        raise TypeError
+        raise TypeError(
+            "A query can not be made since the configuration does not have a valid prefix map"
+        )
     converter = Converter.from_prefix_map(config.prefix_map)
 
     if config.graph is None:
