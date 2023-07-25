@@ -158,3 +158,4 @@ schema/sssom_datamodel.py
 sssom/internal_context.py
 sssom/sssom_datamodel.py
 *.rej
+poetry.lock
