@@ -91,7 +91,7 @@ def add_built_in_prefixes_to_prefix_map(
 
 
 def clean_dc(prefix_map):
-    """Removes a common issue with prefix maps in-place for DC/DCTERMS.
+    """Remove a common issue with prefix maps in-place for DC/DCTERMS.
 
     This happens when both DC and DCTERMS are set to the new URI prefix
     for DCTERMS. DC has historically been used to point to DC elements.
