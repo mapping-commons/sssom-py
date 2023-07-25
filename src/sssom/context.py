@@ -86,9 +86,21 @@ def add_built_in_prefixes_to_prefix_map(
                 raise ValueError(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
+    clean_dc(prefix_map)
+    return prefix_map
+
+
+def clean_dc(prefix_map):
+    """Removes a common issue with prefix maps in-place for DC/DCTERMS.
+
+    This happens when both DC and DCTERMS are set to the new URI prefix
+    for DCTERMS. DC has historically been used to point to DC elements.
+    If this happens, then the prefix map doesn't follow the bijectivity
+    rule. This function deletes the DC annotation in favor of the keeping
+    the DCTERMS one. This should be fixed upstream in the SSSOM Schema.
+    """
     if "dc" in prefix_map and "dcterms" in prefix_map and prefix_map["dc"] == prefix_map["dcterms"]:
         del prefix_map["dc"]
-    return prefix_map
 
 
 def get_default_metadata() -> Metadata:
@@ -113,6 +125,9 @@ def get_default_metadata() -> Metadata:
     del prefix_map["@vocab"]
 
     prefix_map.update({(k, v) for k, v in contxt_external.items() if k not in prefix_map})
+    clean_dc(prefix_map)
+    # Tests if the prefix map is a valid bijective map
+    Converter.from_prefix_map(prefix_map)
 
     metadata = Metadata(prefix_map=prefix_map, metadata=metadata_dict)
     metadata.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
