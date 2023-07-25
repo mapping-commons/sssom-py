@@ -126,13 +126,22 @@ def get_default_metadata() -> Metadata:
 
     prefix_map.update({(k, v) for k, v in contxt_external.items() if k not in prefix_map})
     clean_dc(prefix_map)
-    # Tests if the prefix map is a valid bijective map
-    Converter.from_prefix_map(prefix_map)
+    _raise_on_invalid_prefix_map(prefix_map)
 
     metadata = Metadata(prefix_map=prefix_map, metadata=metadata_dict)
     metadata.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
     metadata.metadata["license"] = DEFAULT_LICENSE
     return metadata
+
+
+def _raise_on_invalid_prefix_map(prefix_map):
+    """Raise an exception if the prefix map is not bijective.
+
+    This uses :meth:`curies.Converter.from_prefix_map` to try and load a
+    prefix map. If there are any duplicate values (i.e., it is _not_ bijective)
+    then it throws a value error.
+    """
+    Converter.from_prefix_map(prefix_map)
 
 
 def set_default_mapping_set_id(meta: Metadata) -> Metadata:
