@@ -5,7 +5,6 @@ import json
 import logging
 import os
 import re
-import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
@@ -38,7 +37,6 @@ from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
-from typing_extensions import deprecated
 
 from .constants import (
     COLUMN_INVERT_DICTIONARY,
@@ -1083,9 +1081,6 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-class NoCURIEException(ValueError):
-    """An exception raised when a CURIE can not be parsed with a given prefix map."""
-
 
 CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
@@ -1106,33 +1101,6 @@ def get_prefix_from_curie(curie: str) -> str:
         return curie.split(":")[0]
     else:
         return ""
-
-
-@deprecated("Use safe_compress() with a pre-instantiated curies.Converter instead")
-def curie_from_uri(uri: str, prefix_map: Union[Mapping[str, str], Converter]) -> str:
-    """Parse a CURIE from an IRI.
-
-    :param uri: The URI to parse. If this is already a CURIE, return directly.
-    :param prefix_map: The prefix map against which the IRI is checked
-    :return: A CURIE
-
-    Example parsing:
-    >>> m = {"hgnc.genegroup": "https://example.org/hgnc.genegroup:"}
-    >>> curie_from_uri("https://example.org/hgnc.genegroup:1234", {})
-    'hgnc.genegroup:1234'
-
-    Example CURIE passthrough:
-    >>> curie_from_uri("hgnc:1234", {})
-    'hgnc:1234'
-    >>> curie_from_uri("hgnc.genegroup:1234", {})
-    'hgnc.genegroup:1234'
-    """
-    warnings.warn("Use safe_compress() instead", DeprecationWarning, stacklevel=2)
-    if not isinstance(prefix_map, Converter):
-        converter = Converter.from_prefix_map(prefix_map)
-        return safe_compress(uri, converter)
-    else:  # assume prefix_map is a Converter
-        return safe_compress(uri, prefix_map)
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
