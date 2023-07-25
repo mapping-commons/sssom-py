@@ -44,7 +44,7 @@ def get_extended_prefix_map():
     :return: Prefix map.
     """
     converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
-    return converter.prefix_map
+    return {record.prefix: record.uri_prefix for record in converter.records}
 
 
 def get_built_in_prefix_map() -> PrefixMap:
@@ -86,6 +86,8 @@ def add_built_in_prefixes_to_prefix_map(
                 raise ValueError(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
+    del prefix_map["@vocab"]
+    del prefix_map["dc"]
     return prefix_map
 
 

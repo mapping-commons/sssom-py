@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
+from curies import Converter
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
@@ -596,6 +597,7 @@ def from_alignment_minidom(
     """
     # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
     _ensure_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -612,7 +614,7 @@ def from_alignment_minidom(
                     cell = e.getElementsByTagName("Cell")
                     for c_node in cell:
                         mdict = _cell_element_values(
-                            c_node, prefix_map, mapping_predicates=mapping_predicates
+                            c_node, converter, mapping_predicates=mapping_predicates
                         )
                         if mdict:
                             m = _prepare_mapping(mdict)
@@ -868,19 +870,17 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -> Optional[Mapping]:
+def _cell_element_values(cell_node, converter: Converter, mapping_predicates) -> Optional[Mapping]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
             try:
                 if child.nodeName == "entity1":
                     mdict[SUBJECT_ID] = curie_from_uri(
-                        child.getAttribute("rdf:resource"), prefix_map
+                        child.getAttribute("rdf:resource"), converter
                     )
                 elif child.nodeName == "entity2":
-                    mdict[OBJECT_ID] = curie_from_uri(
-                        child.getAttribute("rdf:resource"), prefix_map
-                    )
+                    mdict[OBJECT_ID] = curie_from_uri(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "measure":
                     mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
