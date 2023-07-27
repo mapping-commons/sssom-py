@@ -16,7 +16,7 @@ import pandas as pd
 import requests
 import yaml
 from curies import Converter
-from deprecation import deprecated
+from deprecated import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph, URIRef
