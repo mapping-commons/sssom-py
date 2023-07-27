@@ -26,12 +26,12 @@ from typing import (
 )
 from urllib.request import urlopen
 
-from deprecated import deprecated
 import numpy as np
 import pandas as pd
 import validators
 import yaml
 from curies import Converter
+from deprecated import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError
