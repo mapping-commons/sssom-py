@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
+from curies import Converter
 from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
@@ -64,11 +65,10 @@ from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
-    NoCURIEException,
-    curie_from_uri,
     get_file_extension,
     is_multivalued_slot,
     raise_for_bad_path,
+    safe_compress,
     to_mapping_set_dataframe,
 )
 
@@ -506,6 +506,7 @@ def from_sssom_rdf(
     :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
@@ -515,7 +516,7 @@ def from_sssom_rdf(
         for _s, p, o in g.triples((ox, None, None)):
             if isinstance(p, URIRef):
                 try:
-                    p_id = curie_from_uri(p, prefix_map)
+                    p_id = safe_compress(p, converter)
                     k = None
 
                     if p_id.startswith("sssom:"):
@@ -529,14 +530,14 @@ def from_sssom_rdf(
 
                     if isinstance(o, URIRef):
                         v: Any
-                        v = curie_from_uri(o, prefix_map)
+                        v = safe_compress(o, converter)
                     else:
                         v = o.toPython()
                     if k:
                         v = _address_multivalued_slot(k, v)
                         mdict[k] = v
 
-                except NoCURIEException as e:
+                except ValueError as e:
                     logging.warning(e)
         if mdict:
             m = _prepare_mapping(Mapping(**mdict))
@@ -596,6 +597,7 @@ def from_alignment_minidom(
     """
     # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
     _ensure_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -612,7 +614,7 @@ def from_alignment_minidom(
                     cell = e.getElementsByTagName("Cell")
                     for c_node in cell:
                         mdict = _cell_element_values(
-                            c_node, prefix_map, mapping_predicates=mapping_predicates
+                            c_node, converter, mapping_predicates=mapping_predicates
                         )
                         if mdict:
                             m = _prepare_mapping(mdict)
@@ -665,6 +667,7 @@ def from_obographs(
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -705,13 +708,13 @@ def from_obographs(
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
                                 try:
-                                    mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
-                                    mdict[OBJECT_ID] = curie_from_uri(xref_id, prefix_map)
+                                    mdict[SUBJECT_ID] = safe_compress(nid, converter)
+                                    mdict[OBJECT_ID] = safe_compress(xref_id, converter)
                                     mdict[SUBJECT_LABEL] = label
                                     mdict[PREDICATE_ID] = "oboInOwl:hasDbXref"
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
-                                except NoCURIEException as e:
+                                except ValueError as e:
                                     # FIXME this will cause all sorts of ragged Mappings
                                     logging.warning(e)
                         if "basicPropertyValues" in n["meta"]:
@@ -721,15 +724,15 @@ def from_obographs(
                                     xref_id = value["val"]
                                     mdict = {}
                                     try:
-                                        mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
-                                        mdict[OBJECT_ID] = curie_from_uri(xref_id, prefix_map)
+                                        mdict[SUBJECT_ID] = safe_compress(nid, converter)
+                                        mdict[OBJECT_ID] = safe_compress(xref_id, converter)
                                         mdict[SUBJECT_LABEL] = label
-                                        mdict[PREDICATE_ID] = curie_from_uri(pred, prefix_map)
+                                        mdict[PREDICATE_ID] = safe_compress(pred, converter)
                                         mdict[
                                             MAPPING_JUSTIFICATION
                                         ] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                         mlist.append(Mapping(**mdict))
-                                    except NoCURIEException as e:
+                                    except ValueError as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
             if "edges" in g:
@@ -739,15 +742,15 @@ def from_obographs(
                     predicate_id = _get_obographs_predicate_id(edge["pred"])
                     object_id = edge["obj"]
                     if predicate_id in mapping_predicates:
-                        mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
-                        mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
+                        mdict[SUBJECT_ID] = safe_compress(subject_id, converter)
+                        mdict[OBJECT_ID] = safe_compress(object_id, converter)
                         mdict[SUBJECT_LABEL] = (
                             labels[subject_id] if subject_id in labels.keys() else ""
                         )
                         mdict[OBJECT_LABEL] = (
                             labels[object_id] if object_id in labels.keys() else ""
                         )
-                        mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
+                        mdict[PREDICATE_ID] = safe_compress(predicate_id, converter)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                         mlist.append(Mapping(**mdict))
             if "equivalentNodesSets" in g and OWL_EQUIV_CLASS_URI in mapping_predicates:
@@ -757,10 +760,10 @@ def from_obographs(
                             for ec2 in equivalents["nodeIds"]:
                                 if ec1 != ec2:
                                     mdict = {}
-                                    mdict[SUBJECT_ID] = curie_from_uri(ec1, prefix_map)
-                                    mdict[OBJECT_ID] = curie_from_uri(ec2, prefix_map)
-                                    mdict[PREDICATE_ID] = curie_from_uri(
-                                        OWL_EQUIV_CLASS_URI, prefix_map
+                                    mdict[SUBJECT_ID] = safe_compress(ec1, converter)
+                                    mdict[OBJECT_ID] = safe_compress(ec2, converter)
+                                    mdict[PREDICATE_ID] = safe_compress(
+                                        OWL_EQUIV_CLASS_URI, converter
                                     )
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mdict[SUBJECT_LABEL] = (
@@ -868,19 +871,15 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -> Optional[Mapping]:
+def _cell_element_values(cell_node, converter: Converter, mapping_predicates) -> Optional[Mapping]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
             try:
                 if child.nodeName == "entity1":
-                    mdict[SUBJECT_ID] = curie_from_uri(
-                        child.getAttribute("rdf:resource"), prefix_map
-                    )
+                    mdict[SUBJECT_ID] = safe_compress(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "entity2":
-                    mdict[OBJECT_ID] = curie_from_uri(
-                        child.getAttribute("rdf:resource"), prefix_map
-                    )
+                    mdict[OBJECT_ID] = safe_compress(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "measure":
                     mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
@@ -902,7 +901,7 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
                     logging.warning(f"Unsupported alignment api element: {child.nodeName}")
-            except NoCURIEException as e:
+            except ValueError as e:
                 logging.warning(e)
 
     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED

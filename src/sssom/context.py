@@ -44,7 +44,7 @@ def get_extended_prefix_map():
     :return: Prefix map.
     """
     converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
-    return converter.prefix_map
+    return {record.prefix: record.uri_prefix for record in converter.records}
 
 
 def get_built_in_prefix_map() -> PrefixMap:
@@ -108,13 +108,25 @@ def get_default_metadata() -> Metadata:
             if "@id" in v and "@prefix" in v:
                 if v["@prefix"]:
                     prefix_map[key] = v["@id"]
+    del prefix_map["@vocab"]
 
     prefix_map.update({(k, v) for k, v in contxt_external.items() if k not in prefix_map})
+    _raise_on_invalid_prefix_map(prefix_map)
 
     metadata = Metadata(prefix_map=prefix_map, metadata=metadata_dict)
     metadata.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
     metadata.metadata["license"] = DEFAULT_LICENSE
     return metadata
+
+
+def _raise_on_invalid_prefix_map(prefix_map):
+    """Raise an exception if the prefix map is not bijective.
+
+    This uses :meth:`curies.Converter.from_prefix_map` to try and load a
+    prefix map. If there are any duplicate values (i.e., it is _not_ bijective)
+    then it throws a value error.
+    """
+    Converter.from_prefix_map(prefix_map)
 
 
 def set_default_mapping_set_id(meta: Metadata) -> Metadata:

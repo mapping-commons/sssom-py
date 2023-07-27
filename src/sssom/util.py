@@ -1,4 +1,5 @@
 """Utility functions."""
+
 import hashlib
 import json
 import logging
@@ -30,12 +31,10 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
+from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError
-
-# from .sssom_datamodel import Mapping as SSSOM_Mapping
-# from .sssom_datamodel import slots
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
@@ -1082,10 +1081,6 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-class NoCURIEException(ValueError):
-    """An exception raised when a CURIE can not be parsed with a given prefix map."""
-
-
 CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
 
@@ -1105,42 +1100,6 @@ def get_prefix_from_curie(curie: str) -> str:
         return curie.split(":")[0]
     else:
         return ""
-
-
-def curie_from_uri(uri: str, prefix_map: Mapping[str, str]) -> str:
-    """Parse a CURIE from an IRI.
-
-    :param uri: The URI to parse. If this is already a CURIE, return directly.
-    :param prefix_map: The prefix map against which the IRI is checked
-    :return: A CURIE
-    :raises NoCURIEException: if a CURIE can not be parsed
-
-    Example parsing:
-    >>> m = {"hgnc.genegroup": "https://example.org/hgnc.genegroup:"}
-    >>> curie_from_uri("https://example.org/hgnc.genegroup:1234", {})
-    'hgnc.genegroup:1234'
-
-    Example CURIE passthrough:
-    >>> curie_from_uri("hgnc:1234", {})
-    'hgnc:1234'
-    >>> curie_from_uri("hgnc.genegroup:1234", {})
-    'hgnc.genegroup:1234'
-    """
-    # TODO consider replacing with :func:`bioregistry.curie_from_iri`
-    # FIXME what if the curie has a subspace in it? RE will fail
-    if is_curie(uri):
-        return uri
-    for prefix in prefix_map:
-        uri_prefix = prefix_map[prefix]
-        if uri.startswith(uri_prefix):
-            remainder = uri.replace(uri_prefix, "")
-            curie = f"{prefix}:{remainder}"
-            if is_curie(curie):
-                return f"{prefix}:{remainder}"
-            else:
-                logging.warning(f"{prefix}:{remainder} is not a CURIE ... skipping")
-                continue
-    raise NoCURIEException(f"{uri} does not follow any known prefixes")
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
@@ -1601,3 +1560,20 @@ def invert_mappings(
 def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
     """Return a dictionary for column renames in pandas DataFrame."""
     return {x: columns_invert_map[x] for x in column_names}
+
+
+def safe_compress(uri: str, converter: Converter) -> str:
+    """Parse a CURIE from an IRI.
+
+    :param uri: The URI to parse. If this is already a CURIE, return directly.
+    :param converter: Converter used for compression
+    :return: A CURIE
+    """
+    if not is_curie(uri):
+        return converter.compress_strict(uri)
+    rv = converter.standardize_curie(uri)
+    if rv is None:
+        raise ValueError(
+            f"CURIE appeared where there should be a URI, and could not be standardized: {uri}"
+        )
+    return rv

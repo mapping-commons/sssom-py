@@ -12,7 +12,7 @@ import pandas as pd
 import yaml
 from rdflib import Graph
 
-from sssom.context import get_default_metadata
+from sssom.context import _raise_on_invalid_prefix_map, get_default_metadata
 from sssom.parsers import (
     from_alignment_minidom,
     from_obographs,
@@ -63,6 +63,7 @@ class TestParse(unittest.TestCase):
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
         self.metadata = get_default_metadata()
+        _raise_on_invalid_prefix_map(self.metadata.prefix_map)
 
     def test_parse_sssom_dataframe_from_file(self):
         """Test parsing a TSV."""
@@ -117,20 +118,9 @@ class TestParse(unittest.TestCase):
             write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
-            9881,
+            8099,
             f"{self.obographs_file} has the wrong number of mappings.",
         )
-
-    def test_broken_obographs(self):
-        """Test parsing OBO Graph JSON."""
-        prefix_map = self.metadata.prefix_map
-        prefix_map["OMIM"] = "http://omim.org/entry/"
-        with self.assertRaises(ValueError):
-            from_obographs(
-                jsondoc=self.broken_obographs,
-                prefix_map=prefix_map,
-                meta=self.metadata.metadata,
-            )
 
     def test_parse_tsv(self):
         """Test parsing TSV."""
