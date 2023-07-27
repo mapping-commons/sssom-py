@@ -31,7 +31,7 @@ import pandas as pd
 import validators
 import yaml
 from curies import Converter
-from deprecated import deprecated
+from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError

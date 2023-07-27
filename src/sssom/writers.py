@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
-from deprecated import deprecated
+from deprecation import deprecated
 from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
