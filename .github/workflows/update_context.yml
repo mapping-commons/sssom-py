@@ -23,7 +23,6 @@ jobs:
 
       - name: Update sssom context
         run: |
-          mkdir -p sssom
           make deploy-dm
 
       - name: Create Pull Request

@@ -6,13 +6,15 @@ import uuid
 from typing import Optional
 
 import pkg_resources
+from curies import Converter
 
-from .external_context import sssom_external_context
+from sssom.constants import EXTENDED_PREFIX_MAP
+
 from .typehints import Metadata, MetadataType, PrefixMap
 
 # HERE = pathlib.Path(__file__).parent.resolve()
 # DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
-# EXTERNAL_CONTEXT_PATH = HERE / "sssom.external.context.jsonld"
+# EXTERNAL_CONTEXT_PATH = HERE / "obo.epm.json"
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
@@ -36,12 +38,13 @@ def get_jsonld_context():
     return context
 
 
-def get_external_jsonld_context():
-    """Get JSON-LD form of sssom_external_context variable from auto-generated 'external_context.py' file.
+def get_extended_prefix_map():
+    """Get prefix map from bioregistry (obo.epm.json).
 
-    :return: JSON-LD context
+    :return: Prefix map.
     """
-    return json.loads(sssom_external_context, strict=False)
+    converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    return converter.prefix_map
 
 
 def get_built_in_prefix_map() -> PrefixMap:
@@ -94,7 +97,7 @@ def get_default_metadata() -> Metadata:
     :return: Metadata
     """
     contxt = get_jsonld_context()
-    contxt_external = get_external_jsonld_context()
+    contxt_external = get_extended_prefix_map()
     prefix_map = {}
     metadata_dict: MetadataType = {}
     for key in contxt["@context"]:
@@ -105,16 +108,8 @@ def get_default_metadata() -> Metadata:
             if "@id" in v and "@prefix" in v:
                 if v["@prefix"]:
                     prefix_map[key] = v["@id"]
-    for key in contxt_external["@context"]:
-        v = contxt_external["@context"][key]
-        if isinstance(v, str):
-            if key not in prefix_map:
-                prefix_map[key] = v
-            else:
-                if prefix_map[key] != v:
-                    logging.warning(
-                        f"{key} is already in prefix map ({prefix_map[key]}, but with a different value than {v}"
-                    )
+
+    prefix_map.update({(k, v) for k, v in contxt_external.items() if k not in prefix_map})
 
     metadata = Metadata(prefix_map=prefix_map, metadata=metadata_dict)
     metadata.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
