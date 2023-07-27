@@ -116,35 +116,11 @@ class TestParse(unittest.TestCase):
         path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
-        # TODO this number seems arbitrary versus having proper tests
-        #  this can be fixed later
-        # self.assertEqual(
-        #     len(msdf.df),
-        #     9881,
-        #     f"{self.obographs_file} has the wrong number of mappings.",
-        # )
-
-    @unittest.skip(reason="This test is a remnant from less careful checking of URIs")
-    def test_broken_obographs(self):
-        """Test parsing OBO Graph JSON.
-
-        The point of this test is that one of the basic property values
-        for http://omim.org/entry/136100 has ``skos:exactMatch`` as
-        a predicate and ``2d:4d finger-length ratio`` as a value.
-        This test is that LinkML throws a value error because this
-        is not a valid CURIE. Now, the ``curies`` package has a better
-        way of finding these. This means that these errors get caught
-        by the part that catches ``curies`` errors instead of throwing a
-        more general ValueError
-        """
-        prefix_map = self.metadata.prefix_map
-        prefix_map["OMIM"] = "http://omim.org/entry/"
-        with self.assertRaises(ValueError):
-            from_obographs(
-                jsondoc=self.broken_obographs,
-                prefix_map=prefix_map,
-                meta=self.metadata.metadata,
-            )
+        self.assertEqual(
+            len(msdf.df),
+            8099,
+            f"{self.obographs_file} has the wrong number of mappings.",
+        )
 
     def test_parse_tsv(self):
         """Test parsing TSV."""
