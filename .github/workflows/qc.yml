@@ -26,6 +26,11 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install poetry
+      
+      - name: Experiment block
+        run: |
+          pip install pytest-logging
+          
 
       - name: Install dependencies
         run: poetry install
