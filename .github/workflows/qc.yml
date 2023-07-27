@@ -22,16 +22,29 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      #----------------------------------------------
+      #          install & configure poetry
+      #----------------------------------------------
       - name: Install Poetry
-        run: pipx install poetry
-      
-      # - name: Experiment block
-      #   run: |
-      #     poetry run pipx wheel --use-pep517 "pytest-logging (==2015.11.4)"
-          
+        uses: snok/install-poetry@v1
 
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
+      #----------------------------------------------
+      # install dependencies if cache does not exist
+      #----------------------------------------------
       - name: Install dependencies
-        run: poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+        
 
       - name: Check code quality with flake8
         run: poetry run tox -e flake8
