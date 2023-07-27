@@ -431,11 +431,8 @@
         <span class="n">endpoint</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
     <span class="k">if</span> <span class="n">object_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">endpoint</span><span class="o">.</span><span class="n">include_object_labels</span> <span class="o">=</span> <span class="n">object_labels</span>
-    <span class="k">if</span> <span class="n">prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">prefix_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">endpoint</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
-            <span class="n">endpoint</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix</span> <span class="ow">or</span> <span class="p">[]:</span>
+        <span class="n">endpoint</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">query_mappings</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
     <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 

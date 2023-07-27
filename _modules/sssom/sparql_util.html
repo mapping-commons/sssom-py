@@ -76,15 +76,17 @@
 <span></span><span class="sd">&quot;&quot;&quot;Utilities for querying mappings with SPARQL.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
 <span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span>
 <span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">RDFS</span><span class="p">,</span> <span class="n">SKOS</span>
 <span class="kn">from</span> <span class="nn">SPARQLWrapper</span> <span class="kn">import</span> <span class="n">JSON</span><span class="p">,</span> <span class="n">SPARQLWrapper</span>
 
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">safe_compress</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;EndpointConfig&quot;</span><span class="p">,</span>
@@ -101,13 +103,18 @@
     <span class="n">predmap</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
-    <span class="n">include_object_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+    <span class="n">include_object_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="query_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.sparql_util.query_mappings">[docs]</a><span class="k">def</span> <span class="nf">query_mappings</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Query a SPARQL endpoint to obtain a set of mappings.&quot;&quot;&quot;</span>
-    <span class="n">sparql</span> <span class="o">=</span> <span class="n">SPARQLWrapper</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;A query can not be made since the configuration does not have a valid prefix map&quot;</span>
+        <span class="p">)</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">graph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">g</span> <span class="o">=</span> <span class="s2">&quot;?g&quot;</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -117,7 +124,7 @@
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">predicates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">predicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">SKOS</span><span class="o">.</span><span class="n">exactMatch</span><span class="p">,</span> <span class="n">SKOS</span><span class="o">.</span><span class="n">closeMatch</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">predicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">expand_curie</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">predicate</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">predicates</span><span class="p">]</span>
+        <span class="n">predicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">URIRef</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">expand_strict</span><span class="p">(</span><span class="n">predicate</span><span class="p">))</span> <span class="k">for</span> <span class="n">predicate</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">predicates</span><span class="p">]</span>
     <span class="n">predstr</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span><span class="o">.</span><span class="n">n3</span><span class="p">()</span> <span class="k">for</span> <span class="n">predicate</span> <span class="ow">in</span> <span class="n">predicates</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">limitstr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LIMIT </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -134,7 +141,8 @@
         <span class="n">cols</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;object_label&quot;</span><span class="p">)</span>
     <span class="n">colstr</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;?</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">])</span>
     <span class="n">olq</span> <span class="o">=</span> <span class="s2">&quot;OPTIONAL { ?object_id rdfs:label ?object_label }&quot;</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">include_object_labels</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+    <span class="n">sparql</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">    PREFIX rdfs: </span><span class="si">{</span><span class="n">RDFS</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">n3</span><span class="p">()</span><span class="si">}</span>
 <span class="s2">    SELECT </span><span class="si">{</span><span class="n">colstr</span><span class="si">}</span>
 <span class="s2">    WHERE </span><span class="se">{{</span>
@@ -147,59 +155,19 @@
 <span class="s2">        BIND(</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2"> as ?mapping_provider)</span>
 <span class="s2">    </span><span class="se">}}</span><span class="s2"> </span><span class="si">{</span><span class="n">limitstr</span><span class="si">}</span>
 <span class="s2">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">sparql</span><span class="o">.</span><span class="n">setQuery</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">sparql</span><span class="o">.</span><span class="n">setReturnFormat</span><span class="p">(</span><span class="n">JSON</span><span class="p">)</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">sparql</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="s2">&quot;bindings&quot;</span><span class="p">]:</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curiefy_values</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span>
+    <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">sparql</span><span class="p">)</span>
+
+    <span class="n">sparql_wrapper</span> <span class="o">=</span> <span class="n">SPARQLWrapper</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">returnFormat</span><span class="o">=</span><span class="n">JSON</span><span class="p">)</span>
+    <span class="n">sparql_wrapper</span><span class="o">.</span><span class="n">setQuery</span><span class="p">(</span><span class="n">sparql</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">sparql_wrapper</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">converter</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="s2">&quot;bindings&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">MappingSetDataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span></div>
-
-
-<span class="k">def</span> <span class="nf">curiefy_values</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert all values in the dict from URIs to CURIEs.</span>
-
-<span class="sd">    :param row: A dictionary of string keys to URIs</span>
-<span class="sd">    :param config: Configuration</span>
-<span class="sd">    :return: A dictionary of string keys to CURIEs</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">contract_uri</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-
-<span class="k">def</span> <span class="nf">contract_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace the URI with a CURIE based on the prefix map in the given configuration.</span>
-
-<span class="sd">    :param uri: A uniform resource identifier</span>
-<span class="sd">    :param config: Configuration</span>
-<span class="sd">    :return: A CURIE if it&#39;s able to contract, otherwise return the original URI</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">uri</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">uri</span>
-
-
-<span class="k">def</span> <span class="nf">expand_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EndpointConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand a CURIE to a URI.</span>
-
-<span class="sd">    :param curie: CURIE</span>
-<span class="sd">    :param config: Configuration</span>
-<span class="sd">    :return: URI of CURIE</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span>
-        <span class="k">if</span> <span class="n">curie</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -991,7 +991,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <p>Utilities for querying mappings with SPARQL.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sparql_util.</span></span><span class="sig-name descname"><span class="pre">EndpointConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_object_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sparql_util.html#EndpointConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sparql_util.EndpointConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sparql_util.</span></span><span class="sig-name descname"><span class="pre">EndpointConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_object_labels=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sparql_util.html#EndpointConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sparql_util.EndpointConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A container for a SPARQL endpoint’s configuration.</p>
 <dl class="py attribute">
@@ -1021,7 +1021,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig.prefix_map">
-<span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]]</span></em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.prefix_map" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]</span></em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.prefix_map" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1249,13 +1249,6 @@ the comment column</p>
 
 </dd></dl>
 
-<dl class="py exception">
-<dt class="sig sig-object py" id="sssom.util.NoCURIEException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">NoCURIEException</span></span><a class="reference internal" href="_modules/sssom/util.html#NoCURIEException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.NoCURIEException" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></p>
-<p>An exception raised when a CURIE can not be parsed with a given prefix map.</p>
-</dd></dl>
-
 <dl class="py data">
 <dt class="sig sig-object py" id="sssom.util.PREFIX_MAP_KEY">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">PREFIX_MAP_KEY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'curie_map'</span></em><a class="headerlink" href="#sssom.util.PREFIX_MAP_KEY" title="Permalink to this definition"></a></dt>
@@ -1395,38 +1388,6 @@ replaced or not, defaults to False.</p></li>
 <dd class="field-odd"><p>An Entity object</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.curie_from_uri">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">curie_from_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#curie_from_uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.curie_from_uri" title="Permalink to this definition"></a></dt>
-<dd><p>Parse a CURIE from an IRI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>uri</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The URI to parse. If this is already a CURIE, return directly.</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The prefix map against which the IRI is checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A CURIE</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#sssom.util.NoCURIEException" title="sssom.util.NoCURIEException"><strong>NoCURIEException</strong></a> – if a CURIE can not be parsed</p>
-</dd>
-</dl>
-<p>Example parsing:
-&gt;&gt;&gt; m = {“hgnc.genegroup”: “<a class="reference external" href="https://example.org/hgnc.genegroup">https://example.org/hgnc.genegroup</a>:”}
-&gt;&gt;&gt; curie_from_uri(”<a class="reference external" href="https://example.org/hgnc.genegroup:1234">https://example.org/hgnc.genegroup:1234</a>”, {})
-‘hgnc.genegroup:1234’</p>
-<p>Example CURIE passthrough:
-&gt;&gt;&gt; curie_from_uri(“hgnc:1234”, {})
-‘hgnc:1234’
-&gt;&gt;&gt; curie_from_uri(“hgnc.genegroup:1234”, {})
-‘hgnc.genegroup:1234’</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1972,6 +1933,26 @@ works on the first charcter in the line</p></li>
 :param df: Pandas DataFrame
 :rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>
 :return: Pandas DataFrame with ‘PREDICATE_ID’ not ‘noMatch’.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.util.safe_compress">
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">safe_compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#safe_compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.safe_compress" title="Permalink to this definition"></a></dt>
+<dd><p>Parse a CURIE from an IRI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uri</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The URI to parse. If this is already a CURIE, return directly.</p></li>
+<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Converter used for compression</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A CURIE</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

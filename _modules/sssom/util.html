@@ -74,6 +74,7 @@
              
   <h1>Source code for sssom.util</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -105,12 +106,10 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">validators</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
 <span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
-
-<span class="c1"># from .sssom_datamodel import Mapping as SSSOM_Mapping</span>
-<span class="c1"># from .sssom_datamodel import slots</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span> <span class="k">as</span> <span class="n">SSSOM_Mapping</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">slots</span>
 
@@ -1157,10 +1156,6 @@
     <span class="k">return</span> <span class="n">map_dict</span></div>
 
 
-<div class="viewcode-block" id="NoCURIEException"><a class="viewcode-back" href="../../sssom.html#sssom.util.NoCURIEException">[docs]</a><span class="k">class</span> <span class="nc">NoCURIEException</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An exception raised when a CURIE can not be parsed with a given prefix map.&quot;&quot;&quot;</span></div>
-
-
 <span class="n">CURIE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[A-Za-z0-9_.]+[:][A-Za-z0-9_]&quot;</span><span class="p">)</span>
 
 
@@ -1180,42 +1175,6 @@
         <span class="k">return</span> <span class="n">curie</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
-
-
-<div class="viewcode-block" id="curie_from_uri"><a class="viewcode-back" href="../../sssom.html#sssom.util.curie_from_uri">[docs]</a><span class="k">def</span> <span class="nf">curie_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a CURIE from an IRI.</span>
-
-<span class="sd">    :param uri: The URI to parse. If this is already a CURIE, return directly.</span>
-<span class="sd">    :param prefix_map: The prefix map against which the IRI is checked</span>
-<span class="sd">    :return: A CURIE</span>
-<span class="sd">    :raises NoCURIEException: if a CURIE can not be parsed</span>
-
-<span class="sd">    Example parsing:</span>
-<span class="sd">    &gt;&gt;&gt; m = {&quot;hgnc.genegroup&quot;: &quot;https://example.org/hgnc.genegroup:&quot;}</span>
-<span class="sd">    &gt;&gt;&gt; curie_from_uri(&quot;https://example.org/hgnc.genegroup:1234&quot;, {})</span>
-<span class="sd">    &#39;hgnc.genegroup:1234&#39;</span>
-
-<span class="sd">    Example CURIE passthrough:</span>
-<span class="sd">    &gt;&gt;&gt; curie_from_uri(&quot;hgnc:1234&quot;, {})</span>
-<span class="sd">    &#39;hgnc:1234&#39;</span>
-<span class="sd">    &gt;&gt;&gt; curie_from_uri(&quot;hgnc.genegroup:1234&quot;, {})</span>
-<span class="sd">    &#39;hgnc.genegroup:1234&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO consider replacing with :func:`bioregistry.curie_from_iri`</span>
-    <span class="c1"># FIXME what if the curie has a subspace in it? RE will fail</span>
-    <span class="k">if</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">uri</span>
-    <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">:</span>
-        <span class="n">uri_prefix</span> <span class="o">=</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">uri_prefix</span><span class="p">):</span>
-            <span class="n">remainder</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">uri_prefix</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="n">curie</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">remainder</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">):</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">remainder</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">remainder</span><span class="si">}</span><span class="s2"> is not a CURIE ... skipping&quot;</span><span class="p">)</span>
-                <span class="k">continue</span>
-    <span class="k">raise</span> <span class="n">NoCURIEException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2"> does not follow any known prefixes&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_prefixes_used_in_table"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_table">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -1676,6 +1635,23 @@
 <span class="k">def</span> <span class="nf">_invert_column_names</span><span class="p">(</span><span class="n">column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">columns_invert_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary for column renames in pandas DataFrame.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">columns_invert_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="safe_compress"><a class="viewcode-back" href="../../sssom.html#sssom.util.safe_compress">[docs]</a><span class="k">def</span> <span class="nf">safe_compress</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a CURIE from an IRI.</span>
+
+<span class="sd">    :param uri: The URI to parse. If this is already a CURIE, return directly.</span>
+<span class="sd">    :param converter: Converter used for compression</span>
+<span class="sd">    :return: A CURIE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">compress_strict</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_curie</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;CURIE appeared where there should be a URI, and could not be standardized: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">rv</span></div>
 </pre></div>
 
            </div>
