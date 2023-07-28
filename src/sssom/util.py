@@ -11,19 +11,7 @@ from functools import reduce
 from io import StringIO
 from pathlib import Path
 from string import punctuation
-from typing import (
-    Any,
-    ChainMap,
-    DefaultDict,
-    Dict,
-    List,
-    Mapping,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    Union,
-)
+from typing import Any, ChainMap, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 from urllib.request import urlopen
 
 import deprecation
@@ -57,7 +45,6 @@ from .constants import (
     PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
-    PREFIX_MAP_MODES,
     RDFS_SUBCLASS_OF,
     SCHEMA_YAML,
     SEMAPV,
@@ -78,7 +65,7 @@ from .context import (
     SSSOM_BUILT_IN_PREFIXES,
     SSSOM_URI_PREFIX,
     get_default_metadata,
-    get_jsonld_context,
+    prepare_context,
 )
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
@@ -954,7 +941,8 @@ def read_metadata(filename: str) -> Metadata:
         metadata = yaml.safe_load(file)
     if PREFIX_MAP_KEY in metadata:
         prefix_map = metadata.pop(PREFIX_MAP_KEY)
-    return Metadata(prefix_map=prefix_map, metadata=metadata)
+    converter = Converter.from_prefix_map(prefix_map)
+    return Metadata(converter=converter, metadata=metadata)
 
 
 @deprecation.deprecated(details="Use pandas.read_csv() instead.")
@@ -1199,29 +1187,7 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
         raise ValueError(f"File extension {extension} does not correspond to a legal file format")
 
 
-def prepare_context(
-    prefix_map: Optional[PrefixMap] = None,
-) -> Mapping[str, Any]:
-    """Prepare a JSON-LD context from a prefix map."""
-    context = get_jsonld_context()
-    if prefix_map is None:
-        prefix_map = get_default_metadata().prefix_map
-
-    for k, v in prefix_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return context
-
-
-def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
+def prepare_context_str(prefix_map: Converter, **kwargs) -> str:
     """Prepare a JSON-LD context and dump to a string.
 
     :param prefix_map: Prefix map, defaults to None
@@ -1229,19 +1195,6 @@ def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str
     :return: Context in str format
     """
     return json.dumps(prepare_context(prefix_map), **kwargs)
-
-
-def raise_for_bad_prefix_map_mode(prefix_map_mode: str = None):
-    """Raise exception if prefix map mode is invalid.
-
-    :param prefix_map_mode: The prefix map mode
-    :raises ValueError: Invalid prefix map mode
-    """
-    if prefix_map_mode not in PREFIX_MAP_MODES:
-        raise ValueError(
-            f"{prefix_map_mode} is not a valid prefix map mode, "
-            f"must be one of {' '.join(PREFIX_MAP_MODES)}"
-        )
 
 
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:

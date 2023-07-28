@@ -2,7 +2,7 @@
 
 import unittest
 
-from sssom.context import get_extended_prefix_map
+from sssom.context import get_external_converter
 
 
 class TestContext(unittest.TestCase):
@@ -10,12 +10,12 @@ class TestContext(unittest.TestCase):
 
     def test_minimum(self):
         """Test the minimum important prefixes are available through the default context."""
-        external_context = get_extended_prefix_map()
-        prefixes = external_context.keys()
+        prefixes = get_external_converter().get_prefixes()
         expected_prefixes = {
             "FlyBase",
             "NCBITaxon",
             "NCBIGene",
             "NCBIProtein",
+            "oboInOwl",
         }
         self.assertLessEqual(expected_prefixes, prefixes)

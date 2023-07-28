@@ -4,6 +4,8 @@
 
 from typing import Any, Dict, NamedTuple
 
+from curies import Converter
+
 __all__ = [
     "PrefixMap",
     "MetadataType",
@@ -19,5 +21,10 @@ MetadataType = Dict[str, Any]
 class Metadata(NamedTuple):
     """A pair of a prefix map and associated metadata."""
 
-    prefix_map: PrefixMap
+    converter: Converter
     metadata: MetadataType
+
+    @property
+    def prefix_map(self) -> PrefixMap:
+        """Get the prefix bimap out of the converter."""
+        return {record.prefix: record.uri_prefix for record in self.converter.records}

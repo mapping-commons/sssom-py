@@ -11,6 +11,7 @@ from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union, ca
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
+import curies
 import numpy as np
 import pandas as pd
 import requests
@@ -365,25 +366,30 @@ def parse_obographs_json(
 
 
 def _get_prefix_map_and_metadata(
-    prefix_map: Optional[PrefixMap] = None, meta: Optional[MetadataType] = None
+    prefix_map: Union[Converter, PrefixMap, None] = None, meta: Optional[MetadataType] = None
 ) -> Metadata:
     default_metadata = get_default_metadata()
 
     if prefix_map is None:
         logging.warning("No prefix map provided (not recommended), trying to use defaults..")
-        prefix_map = default_metadata.prefix_map
+        converter = default_metadata.converter
+    elif isinstance(prefix_map, Converter):
+        converter = prefix_map
+    else:
+        converter = Converter.from_prefix_map(prefix_map)
 
     if meta is None:
         meta = default_metadata.metadata
-    else:
-        if prefix_map and PREFIX_MAP_KEY in meta:
-            logging.info(
-                "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
-                "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
-            )
-            prefix_map = cast(PrefixMap, meta[PREFIX_MAP_KEY])
-
-    return Metadata(prefix_map=prefix_map, metadata=meta)
+    elif prefix_map is not None and PREFIX_MAP_KEY in meta:
+        # use specified directly in function then fall back to
+        # what's in the meta
+        converter = curies.chain(
+            [
+                converter,
+                Converter.from_prefix_map(meta[PREFIX_MAP_KEY]),
+            ]
+        )
+    return Metadata(converter=converter, metadata=meta)
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
@@ -468,7 +474,7 @@ def from_sssom_dataframe(
     :param meta: A metadata dictionary
     :return: MappingSetDataFrame
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
+    converter = _ensure_converter(prefix_map)
 
     # Need to revisit this solution.
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
@@ -489,7 +495,7 @@ def from_sssom_dataframe(
     # so with a heavy heart we employ type:ignore
     ms.mappings = mlist  # type:ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    doc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    doc = MappingSetDocument(mapping_set=ms, prefix_map=converter.prefix_map)
     return to_mapping_set_dataframe(doc)
 
 
@@ -505,8 +511,7 @@ def from_sssom_rdf(
     :param meta: Potentially additional metadata, defaults to None
     :return: MappingSetDataFrame object
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = _ensure_converter(prefix_map)
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
@@ -556,7 +561,7 @@ def from_sssom_rdf(
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mdoc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mdoc = MappingSetDocument(mapping_set=ms, prefix_map=converter.prefix_map)
     return to_mapping_set_dataframe(mdoc)
 
 
@@ -572,11 +577,13 @@ def from_sssom_json(
     :param meta: metadata
     :return: MappingSetDataFrame object
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
+    converter = _ensure_converter(prefix_map)
     mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(
+        mapping_set=mapping_set, prefix_map=converter.prefix_map
+    )
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -595,9 +602,7 @@ def from_alignment_minidom(
     :return: MappingSetDocument
     :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
     """
-    # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
-    _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = _ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -666,8 +671,7 @@ def from_obographs(
     :raises Exception: When there is no CURIE
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
-    _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = _ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -810,11 +814,10 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
         raise Exception(f"Unknown input format: {input_format}")
 
 
-def _ensure_prefix_map(prefix_map: Optional[PrefixMap] = None) -> PrefixMap:
+def _ensure_converter(prefix_map: Union[PrefixMap, None, Converter] = None) -> Converter:
     if not prefix_map:
         raise Exception("No valid prefix_map provided")
-    else:
-        return add_built_in_prefixes_to_prefix_map(prefix_map)
+    return add_built_in_prefixes_to_prefix_map(prefix_map)
 
 
 def _prepare_mapping(mapping: Mapping) -> Mapping:

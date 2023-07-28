@@ -6,8 +6,10 @@ import re
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
+import curies
 import pandas as pd
 from bioregistry import get_iri
+from curies import Converter
 from pansql import sqldf
 
 from sssom.validators import validate
@@ -33,7 +35,6 @@ from .util import (
     is_curie,
     is_iri,
     raise_for_bad_path,
-    raise_for_bad_prefix_map_mode,
     read_metadata,
 )
 from .writers import get_writer_function, write_table, write_tables
@@ -138,23 +139,14 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
-    if prefix_map_mode is None:
-        prefix_map_mode = PREFIX_MAP_MODE_METADATA_ONLY
-
-    raise_for_bad_prefix_map_mode(prefix_map_mode=prefix_map_mode)
-
-    prefix_map = metadata.prefix_map
-
-    if prefix_map_mode != PREFIX_MAP_MODE_METADATA_ONLY:
-        default_metadata: Metadata = get_default_metadata()
-        if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
-            prefix_map = default_metadata.prefix_map
-        elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-            for prefix, uri_prefix in default_metadata.prefix_map.items():
-                if prefix not in prefix_map:
-                    prefix_map[prefix] = uri_prefix
-    return prefix_map
+def _get_converter(metadata: Metadata, prefix_map_mode: str = None) -> Converter:
+    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
+        return metadata.converter
+    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+        return get_default_metadata().converter
+    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+        return curies.chain([metadata.converter, get_default_metadata().converter])
+    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
 def get_metadata_and_prefix_map(
@@ -171,9 +163,8 @@ def get_metadata_and_prefix_map(
         return get_default_metadata()
 
     metadata = read_metadata(metadata_path)
-    prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
-
-    m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
+    converter = _get_converter(metadata=metadata, prefix_map_mode=prefix_map_mode)
+    m = Metadata(converter=converter, metadata=metadata.metadata)
     m = set_default_mapping_set_id(m)
     m = set_default_license(m)
     return m
@@ -314,7 +305,7 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
 
     new_df = sqldf(query)
     new_msdf.df = new_df
-    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map).prefix_map
     new_msdf.metadata = msdf.metadata
     write_table(new_msdf, output)
     return new_msdf
