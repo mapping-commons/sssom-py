@@ -47,7 +47,9 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction
+        run: |
+          poetry run pip wheel --use-pep517 "pytest-logging (==2015.11.4)"  
+          poetry install --no-interaction
         
 
       - name: Check code quality with flake8
