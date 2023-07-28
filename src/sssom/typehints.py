@@ -27,4 +27,9 @@ class Metadata(NamedTuple):
     @property
     def prefix_map(self) -> PrefixMap:
         """Get the prefix bimap out of the converter."""
-        return {record.prefix: record.uri_prefix for record in self.converter.records}
+        return get_bimap(self.converter)
+
+
+def get_bimap(converter: Converter) -> PrefixMap:
+    """Get a bidirectional prefix map."""
+    return {record.prefix: record.uri_prefix for record in converter.records}

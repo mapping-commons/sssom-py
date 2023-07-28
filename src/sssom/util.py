@@ -64,11 +64,11 @@ from .constants import (
 from .context import (
     SSSOM_BUILT_IN_PREFIXES,
     SSSOM_URI_PREFIX,
+    ensure_converter,
     get_default_metadata,
-    prepare_context,
 )
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap
+from .typehints import Metadata, MetadataType, PrefixMap, get_bimap
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -1194,7 +1194,8 @@ def prepare_context_str(prefix_map: Converter, **kwargs) -> str:
     :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
     :return: Context in str format
     """
-    return json.dumps(prepare_context(prefix_map), **kwargs)
+    converter = ensure_converter(prefix_map=prefix_map)
+    return json.dumps(get_bimap(converter), **kwargs)
 
 
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:

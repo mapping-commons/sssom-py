@@ -603,6 +603,7 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
 
 
 def _resolve_url(prefixed_url_str: str, prefix_map: PrefixMap) -> str:
+    # TODO REMOVE
     if not prefixed_url_str:
         return prefixed_url_str
 

@@ -1,69 +1,45 @@
 """Utilities for loading JSON-LD contexts."""
 
-import json
 import logging
 import uuid
-from typing import Any, Mapping, Optional, Union
+from functools import lru_cache
+from typing import Union
 
 import curies
-import pkg_resources
 from curies import Converter
+from rdflib.namespace import is_ncname
 
-from sssom.constants import EXTENDED_PREFIX_MAP
-
+from .constants import (
+    EXTENDED_PREFIX_MAP,
+    PREFIX_MAP_MODE_MERGED,
+    PREFIX_MAP_MODE_METADATA_ONLY,
+    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+)
 from .typehints import Metadata, PrefixMap
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
-SSSOM_CONTEXT = pkg_resources.resource_filename(
-    "sssom_schema", "context/sssom_schema.context.jsonld"
-)
+
+ConverterHint = Union[PrefixMap, None, Converter]
 
 
-def _get_jsonld_context():
-    """Get JSON-LD form of sssom_context variable from auto-generated 'internal_context.py' file."""
-    with open(SSSOM_CONTEXT, "r") as c:
-        context = json.load(c, strict=False)
-    return context
-
-
-def get_internal_converter() -> Converter:
-    """Get a converter from the SSSOM internal context."""
-    context = _get_jsonld_context()
-    prefix_map = {}
-    for key in context["@context"]:
-        v = context["@context"][key]
-        if isinstance(v, str):
-            prefix_map[key] = v
-        elif isinstance(v, dict):
-            if "@id" in v and "@prefix" in v:
-                if v["@prefix"]:
-                    prefix_map[key] = v["@id"]
-    del prefix_map["@vocab"]
-    return Converter.from_prefix_map(prefix_map)
-
-
-def get_external_converter() -> Converter:
+@lru_cache(1)
+def get_converter() -> Converter:
     """Get prefix map from bioregistry (obo.epm.json)."""
-    return Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    records = []
+    for record in converter.records:
+        if not is_ncname(record.prefix):
+            continue
+        record.prefix_synonyms = [s for s in record.prefix_synonyms if is_ncname(s)]
+        records.append(record)
+    return Converter(records)
 
 
-def get_built_in_converter() -> Converter:
-    """Get built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file."""
-    context = _get_jsonld_context()
-    prefix_map = {}
-    for key in context["@context"]:
-        if key in list(SSSOM_BUILT_IN_PREFIXES):
-            v = context["@context"][key]
-            if isinstance(v, str):
-                prefix_map[key] = v
-    return Converter.from_prefix_map(prefix_map)
-
-
-def add_built_in_prefixes_to_prefix_map(
-    prefix_map: Union[Converter, PrefixMap, None] = None,
+def ensure_converter(
+    prefix_map: ConverterHint = None,
 ) -> Converter:
     """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
 
@@ -72,12 +48,12 @@ def add_built_in_prefixes_to_prefix_map(
     :return: A prefix map
     """
     if prefix_map is None:
-        return get_built_in_converter()
+        return get_converter()
     if isinstance(prefix_map, Converter):
         converter = prefix_map
     else:
         converter = Converter.from_prefix_map(prefix_map)
-    return curies.chain([converter, get_built_in_converter()])
+    return curies.chain([converter, get_converter()])
 
 
 def get_default_metadata() -> Metadata:
@@ -85,11 +61,8 @@ def get_default_metadata() -> Metadata:
 
     :return: Metadata
     """
-    converter_internal = get_internal_converter()
-    converter_external = get_external_converter()
-    converter = curies.chain([converter_internal, converter_external])
     return Metadata(
-        converter=converter,
+        converter=get_converter(),
         metadata={
             "mapping_set_id": DEFAULT_MAPPING_SET_ID,
             "license": DEFAULT_LICENSE,
@@ -120,23 +93,12 @@ def set_default_license(meta: Metadata) -> Metadata:
     return meta
 
 
-def prepare_context(
-    prefix_map: Optional[PrefixMap] = None,
-) -> Mapping[str, Any]:
-    """Prepare a JSON-LD context from a prefix map."""
-    context = _get_jsonld_context()
-    if prefix_map is None:
-        prefix_map = get_default_metadata().prefix_map
-
-    for k, v in prefix_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return context
+def merge_converter(metadata: Metadata, prefix_map_mode: str = None) -> Converter:
+    """Merge the metadata's converter with the default converter."""
+    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
+        return metadata.converter
+    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+        return get_converter()
+    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+        return curies.chain([metadata.converter, get_converter()])
+    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
