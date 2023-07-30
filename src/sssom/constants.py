@@ -181,7 +181,10 @@ COLUMN_INVERT_DICTIONARY = {
 
 
 class SEMAPV(Enum):
-    """SEMAPV Enum containing different mapping_justification."""
+    """SEMAPV Enum containing different mapping_justification.
+
+    See also: https://mapping-commons.github.io/semantic-mapping-vocabulary/#matchingprocess
+    """
 
     LexicalMatching = "semapv:LexicalMatching"
     LogicalReasoning = "semapv:LogicalReasoning"
