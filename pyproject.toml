@@ -25,8 +25,9 @@ sparqlwrapper = ">=2.0.0"
 validators = ">=0.20.0"
 deprecation = "^2.1.0"
 pyyaml = "^6.0.1"
-scipy = {version = "*", extras = ["scipy"]}
+pyparsing = ">=3.1.1"
 rdflib = ">=6.3.2"
+scipy = {version = "*", extras = ["scipy"]}
 
 [tool.poetry.group.dev.dependencies]
 pytest = {version = ">=7.1.2"}
