@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sssom.util &mdash; sssom-py 0.3.33rc1.post1.dev0+968123b documentation</title>
+  <title>sssom.util &mdash; sssom-py 0.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -101,12 +101,12 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 
-<span class="kn">import</span> <span class="nn">deprecation</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">validators</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
+<span class="kn">from</span> <span class="nn">deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
 <span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
@@ -977,7 +977,7 @@
     <span class="k">return</span> <span class="s2">&quot;tsv&quot;</span></div>
 
 
-<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_csv">[docs]</a><span class="nd">@deprecation</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use pandas.read_csv() instead.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_csv">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use pandas.read_csv() instead.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
@@ -1032,7 +1032,7 @@
     <span class="k">return</span> <span class="n">Metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_pandas"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_pandas">[docs]</a><span class="nd">@deprecation</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use pandas.read_csv() instead.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="read_pandas"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_pandas">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use pandas.read_csv() instead.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">read_pandas</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="n">sep</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.</span>
 
@@ -1257,7 +1257,7 @@
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="k">if</span> <span class="n">rows</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="guess_file_format"><a class="viewcode-back" href="../../sssom.html#sssom.util.guess_file_format">[docs]</a><span class="nd">@deprecation</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;This is no longer used and will be removed from the public API.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="guess_file_format"><a class="viewcode-back" href="../../sssom.html#sssom.util.guess_file_format">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;This is no longer used and will be removed from the public API.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">guess_file_format</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get file format.</span>
 
