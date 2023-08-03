@@ -42,7 +42,7 @@ from .io import (
     split_file,
     validate_file,
 )
-from .parsers import parse_sssom_table
+from .parsers import from_sssom_dataframe, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
@@ -548,11 +548,26 @@ def rewire(
     # noqa: DAR101
     """
     msdf = parse_sssom_table(mapping_file)
-    g = Graph()
-    g.parse(input, format=input_format)
-    rewire_graph(g, msdf, precedence=precedence)
-    rdfstr = g.serialize(format=output_format)
-    print(rdfstr, file=output)
+    
+    if input_format=="sssom-tsv" or input.endswith("sssom.tsv"):
+        msdf_mapping = parse_sssom_table(input)
+        df_rewired = rewire_sssom_table() # This is the method you need to implement
+        
+        # updating the metadata of the rewired df so you can recognise it was rewired?
+        metadata = msdf.metadata
+        metadata["mapping_set_id"] = msdf["mapping_set_id"]+"rewired.sssom.tsv"
+        
+        # This maybe has to be revisited as the rewiring can change the SSSOM mapping
+        prefix_map = msdf.prefix_map
+        
+        msdf_rewired = from_sssom_dataframe(df_rewired, prefix_map=prefix_map, meta=metadata)
+        write_table(msdf_rewired, output)
+    else:        
+        g = Graph()
+        g.parse(input, format=input_format)
+        rewire_graph(g, msdf, precedence=precedence)
+        outstring = g.serialize(format=output_format)
+        print(outstring, file=output)
 
 
 @main.command()
