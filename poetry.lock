@@ -62,36 +62,6 @@ html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-name = "bioregistry"
-version = "0.9.87"
-description = "Integrated registry of biological databases and nomenclatures"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "bioregistry-0.9.87-py3-none-any.whl", hash = "sha256:f18528f10b1c87ffef530c0e2ad3fa8336aac8279e4c7c0aff4e1003c96825d2"},
-    {file = "bioregistry-0.9.87.tar.gz", hash = "sha256:5bb91640c3a7913ca18b9ee9a575b6a5baff2dd3ccc6df4f4b4af71ba4e2ca3f"},
-]
-
-[package.dependencies]
-click = "*"
-curies = ">=0.5.6"
-more-click = ">=0.1.2"
-pydantic = "<2.0"
-pystow = ">=0.1.13"
-requests = "*"
-tqdm = "*"
-
-[package.extras]
-align = ["beautifulsoup4", "class-resolver", "defusedxml", "fairsharing-client (>=0.1.0)", "pyyaml", "tabulate"]
-charts = ["jinja2", "matplotlib", "matplotlib-venn", "pandas", "seaborn"]
-docs = ["autodoc-pydantic", "sphinx", "sphinx-autodoc-typehints (==1.21.1)", "sphinx-automodapi", "sphinx-click", "sphinx-rtd-theme"]
-export = ["ndex2", "pyyaml", "rdflib", "rdflib-jsonld"]
-gha = ["more-itertools"]
-health = ["click-default-group", "jinja2", "pandas", "pyyaml", "tabulate"]
-tests = ["coverage", "httpx", "more-itertools", "pytest"]
-web = ["bootstrap-flask (<=2.0.0)", "curies[fastapi]", "fastapi", "flask (<2.2.4)", "markdown", "pyyaml", "rdflib", "rdflib-endpoint", "rdflib-jsonld", "uvicorn", "werkzeug (<2.3.0)"]
-
-[[package]]
 name = "cachetools"
 version = "5.3.1"
 description = "Extensible memoizing collections and decorators"
@@ -899,23 +869,6 @@ requests = "*"
 setuptools = ">=18.5"
 
 [[package]]
-name = "more-click"
-version = "0.1.2"
-description = "More click."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "more_click-0.1.2-py3-none-any.whl", hash = "sha256:f6387af37ef7e7423bd94b72a81a53c79c5086a3bfe5cc035da534ff0c2a0a9e"},
-    {file = "more_click-0.1.2.tar.gz", hash = "sha256:085da66d5a9b823c5d912a888dca1fa0c8b3a14ed1b21ea9c8a1b814857a3981"},
-]
-
-[package.dependencies]
-click = "*"
-
-[package.extras]
-tests = ["coverage", "pytest"]
-
-[[package]]
 name = "myst-parser"
 version = "2.0.0"
 description = "An extended [CommonMark](https://spec.commonmark.org/) compliant parser,"
@@ -1294,30 +1247,6 @@ tomli = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
 [package.extras]
 docs = ["furo (>=2023.5.20)", "sphinx (>=7.0.1)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
 testing = ["covdefaults (>=2.3)", "importlib-metadata (>=6.6)", "pytest (>=7.3.1)", "pytest-cov (>=4.1)", "pytest-mock (>=3.10)", "setuptools (>=67.8)", "wheel (>=0.40)"]
-
-[[package]]
-name = "pystow"
-version = "0.5.0"
-description = "Easily pick a place to store data for your python package."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "pystow-0.5.0-py3-none-any.whl", hash = "sha256:816a9da33cd8a3f8fbda577c3d2957cfc99d1fa3ea45032dbfa087b9a21b630f"},
-    {file = "pystow-0.5.0.tar.gz", hash = "sha256:490e9ecbe4f947c72f63297f43f6584323c9ca2f2d48d47f2a22a815dc552bb4"},
-]
-
-[package.dependencies]
-click = "*"
-requests = "*"
-tqdm = "*"
-
-[package.extras]
-aws = ["boto3"]
-docs = ["sphinx", "sphinx-autodoc-typehints", "sphinx-automodapi", "sphinx-click", "sphinx-rtd-theme"]
-pandas = ["pandas"]
-rdf = ["rdflib"]
-tests = ["coverage", "pytest", "requests-file"]
-xml = ["lxml"]
 
 [[package]]
 name = "pytest"
@@ -2157,26 +2086,6 @@ docs = ["furo (>=2023.5.20)", "sphinx (>=7.0.1)", "sphinx-argparse-cli (>=1.11.1
 testing = ["build[virtualenv] (>=0.10)", "covdefaults (>=2.3)", "detect-test-pollution (>=1.1.1)", "devpi-process (>=0.3.1)", "diff-cover (>=7.6)", "distlib (>=0.3.6)", "flaky (>=3.7)", "hatch-vcs (>=0.3)", "hatchling (>=1.17.1)", "psutil (>=5.9.5)", "pytest (>=7.4)", "pytest-cov (>=4.1)", "pytest-mock (>=3.11.1)", "pytest-xdist (>=3.3.1)", "re-assert (>=1.1)", "time-machine (>=2.10)", "wheel (>=0.40)"]
 
 [[package]]
-name = "tqdm"
-version = "4.65.0"
-description = "Fast, Extensible Progress Meter"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "tqdm-4.65.0-py3-none-any.whl", hash = "sha256:c4f53a17fe37e132815abceec022631be8ffe1b9381c2e6e30aa70edc99e9671"},
-    {file = "tqdm-4.65.0.tar.gz", hash = "sha256:1871fb68a86b8fb3b59ca4cdd3dcccbc7e6d613eeed31f4c332531977b89beb5"},
-]
-
-[package.dependencies]
-colorama = {version = "*", markers = "platform_system == \"Windows\""}
-
-[package.extras]
-dev = ["py-make (>=0.1.0)", "twine", "wheel"]
-notebook = ["ipywidgets (>=6)"]
-slack = ["slack-sdk"]
-telegram = ["requests"]
-
-[[package]]
 name = "typing-extensions"
 version = "4.7.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -2392,4 +2301,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "ef19631193014c29ae3937a77e700b3c60c6231dda40e08283b57dfdafc1500e"
+content-hash = "53bd62f6ef92ae97ff5018590716e566a340fc69d2d87ccf5e504f00dd90114e"
