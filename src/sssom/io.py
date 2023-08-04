@@ -207,16 +207,6 @@ def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
     if is_iri(input):
         return [input]
     elif is_curie(input):
-        # p_iri = get_iri(input, prefix_map=prefix_map, use_bioregistry_io=False)
-        # if not p_iri:
-        #     p_iri = get_iri(input)
-        # if p_iri:
-        #     return [p_iri]
-        # else:
-        #     logging.warning(
-        #         f"{input} is a curie but could not be resolved to an IRI, "
-        #         f"neither with the provided prefix map nor with bioregistry."
-        #     )
         converter = Converter.from_prefix_map(prefix_map)
         p_iri = converter.expand(input)
         if p_iri:
