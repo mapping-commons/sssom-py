@@ -14,12 +14,12 @@ from string import punctuation
 from typing import Any, ChainMap, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 from urllib.request import urlopen
 
-import deprecation
 import numpy as np
 import pandas as pd
 import validators
 import yaml
 from curies import Converter
+from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from pandas.errors import EmptyDataError
@@ -889,7 +889,7 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-@deprecation.deprecated(details="Use pandas.read_csv() instead.")
+@deprecated(details="Use pandas.read_csv() instead.")
 def read_csv(
     filename: Union[str, Path, TextIO], comment: str = "#", sep: str = ","
 ) -> pd.DataFrame:
@@ -945,7 +945,7 @@ def read_metadata(filename: str) -> Metadata:
     return Metadata(converter=converter, metadata=metadata)
 
 
-@deprecation.deprecated(details="Use pandas.read_csv() instead.")
+@deprecated(details="Use pandas.read_csv() instead.")
 def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
@@ -1170,7 +1170,7 @@ def filter_prefixes(
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
 
 
-@deprecation.deprecated(details="This is no longer used and will be removed from the public API.")
+@deprecated(details="This is no longer used and will be removed from the public API.")
 def guess_file_format(filename: Union[str, TextIO]) -> str:
     """Get file format.
 
