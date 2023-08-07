@@ -79,10 +79,10 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">bioregistry</span> <span class="kn">import</span> <span class="n">get_iri</span>
+<span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
 <span class="kn">from</span> <span class="nn">pansql</span> <span class="kn">import</span> <span class="n">sqldf</span>
 
 <span class="kn">from</span> <span class="nn">sssom.validators</span> <span class="kn">import</span> <span class="n">validate</span>
@@ -270,7 +270,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">iri_list</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="extract_iri"><a class="viewcode-back" href="../../sssom.html#sssom.io.extract_iri">[docs]</a><span class="k">def</span> <span class="nf">extract_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="extract_iri"><a class="viewcode-back" href="../../sssom.html#sssom.io.extract_iri">[docs]</a><span class="k">def</span> <span class="nf">extract_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recursively extracts a list of IRIs from a string or file.</span>
 
@@ -282,19 +282,14 @@
     <span class="k">if</span> <span class="n">is_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">input</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">is_curie</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-        <span class="n">p_iri</span> <span class="o">=</span> <span class="n">get_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">use_bioregistry_io</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">p_iri</span><span class="p">:</span>
-            <span class="n">p_iri</span> <span class="o">=</span> <span class="n">get_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
+        <span class="n">p_iri</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">p_iri</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">p_iri</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2"> is a curie but could not be resolved to an IRI, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;neither with the provided prefix map nor with bioregistry.&quot;</span>
-            <span class="p">)</span>
+
     <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
         <span class="n">pred_list</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">iri_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">iri_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pred_list</span><span class="p">:</span>
             <span class="n">p_iri</span> <span class="o">=</span> <span class="n">extract_iri</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">p_iri</span><span class="p">:</span>
