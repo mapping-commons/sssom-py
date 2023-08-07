@@ -4,10 +4,10 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import List, Optional, TextIO, Union
+from typing import Dict, List, Optional, TextIO, Union
 
 import pandas as pd
-from bioregistry import get_iri
+from curies import Converter
 from pansql import sqldf
 
 from sssom.validators import validate
@@ -195,7 +195,7 @@ def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list
     return list(set(iri_list))
 
 
-def extract_iri(input, prefix_map) -> list:
+def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
@@ -207,19 +207,14 @@ def extract_iri(input, prefix_map) -> list:
     if is_iri(input):
         return [input]
     elif is_curie(input):
-        p_iri = get_iri(input, prefix_map=prefix_map, use_bioregistry_io=False)
-        if not p_iri:
-            p_iri = get_iri(input)
+        converter = Converter.from_prefix_map(prefix_map)
+        p_iri = converter.expand(input)
         if p_iri:
             return [p_iri]
-        else:
-            logging.warning(
-                f"{input} is a curie but could not be resolved to an IRI, "
-                f"neither with the provided prefix map nor with bioregistry."
-            )
+
     elif os.path.isfile(input):
         pred_list = Path(input).read_text().splitlines()
-        iri_list = []
+        iri_list: List[str] = []
         for p in pred_list:
             p_iri = extract_iri(p, prefix_map)
             if p_iri:
