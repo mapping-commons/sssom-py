@@ -233,7 +233,7 @@ class TestParse(unittest.TestCase):
 
         with open(hp_meta, "r") as f:
             data = yaml.safe_load(f)
-        custom_curie_map = data["curie_map"]
+            custom_curie_map = data["curie_map"]
 
         with open(outfile, "w") as f:
             parse_file(
@@ -245,5 +245,4 @@ class TestParse(unittest.TestCase):
                 output=f,
             )
         msdf = parse_sssom_table(outfile)
-        for k, v in custom_curie_map.items():
-            self.assertEqual(msdf.prefix_map[k], v)
+        self.assertDictContainsSubset(custom_curie_map, msdf.prefix_map)
