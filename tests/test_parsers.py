@@ -13,6 +13,7 @@ import yaml
 from rdflib import Graph
 
 from sssom.context import _raise_on_invalid_prefix_map, get_default_metadata
+from sssom.io import parse_file
 from sssom.parsers import (
     from_alignment_minidom,
     from_obographs,
@@ -223,3 +224,26 @@ class TestParse(unittest.TestCase):
                         self.assertEqual(imported_df.iloc[idx][k], v)
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)
+
+    def test_parse_obographs_merged(self):
+        """Test parsing OBO Graph JSON using custom prefix_map."""
+        hp_json = f"{test_data_dir}/hp-subset.json"
+        hp_meta = f"{test_data_dir}/hp-subset-metadata.yml"
+        outfile = f"{test_out_dir}/hp-subset-parse.tsv"
+
+        with open(hp_meta, "r") as f:
+            data = yaml.safe_load(f)
+        custom_curie_map = data["curie_map"]
+
+        with open(outfile, "w") as f:
+            parse_file(
+                input_path=hp_json,
+                prefix_map_mode="merged",
+                clean_prefixes=True,
+                input_format="obographs-json",
+                metadata_path=hp_meta,
+                output=f,
+            )
+        msdf = parse_sssom_table(outfile)
+        for k, v in custom_curie_map.items():
+            self.assertEqual(msdf.prefix_map[k], v)
