@@ -245,4 +245,4 @@ class TestParse(unittest.TestCase):
                 output=f,
             )
         msdf = parse_sssom_table(outfile)
-        self.assertDictContainsSubset(custom_curie_map, msdf.prefix_map)
+        self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
