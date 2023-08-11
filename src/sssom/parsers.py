@@ -667,7 +667,7 @@ def from_obographs(
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
     _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map, strict=False)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
