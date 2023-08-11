@@ -742,7 +742,7 @@
 <span class="sd">    :return: An SSSOM data frame (MappingSetDataFrame)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_ensure_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
-    <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">ms</span> <span class="o">=</span> <span class="n">_init_mapping_set</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">mlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># bad_attrs = {}</span>
