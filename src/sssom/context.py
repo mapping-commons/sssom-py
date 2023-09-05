@@ -80,7 +80,7 @@ def add_built_in_prefixes_to_prefix_map(
         prefix_map = builtinmap
     else:
         for k, v in builtinmap.items():
-            if k not in prefix_map:
+            if k not in prefix_map and v not in prefix_map.values():
                 prefix_map[k] = v
             elif builtinmap[k] != prefix_map[k]:
                 raise ValueError(
