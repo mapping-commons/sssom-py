@@ -27,7 +27,8 @@ class TestValidate(unittest.TestCase):
         Validate of the incoming file (basic.tsv) abides
         by the rules set by `sssom-schema`.
         """
-        self.assertIsNone(validate(self.correct_msdf1, self.validation_types))
+        results = validate(self.correct_msdf1, self.validation_types)
+        self.assertEqual(len(results), 2)
 
     def test_validate_json_fail(self):
         """
