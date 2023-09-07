@@ -222,3 +222,25 @@ class TestParse(unittest.TestCase):
                         self.assertEqual(imported_df.iloc[idx][k], v)
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)
+
+    def test_parse_obographs_merged(self):
+        """Test parsing OBO Graph JSON using custom prefix_map."""
+        hp_json = f"{test_data_dir}/hp-subset.json"
+        hp_meta = f"{test_data_dir}/hp-subset-metadata.yml"
+        outfile = f"{test_out_dir}/hp-subset-parse.tsv"
+
+        with open(hp_meta, "r") as f:
+            data = yaml.safe_load(f)
+            custom_curie_map = data["curie_map"]
+
+        with open(outfile, "w") as f:
+            parse_file(
+                input_path=hp_json,
+                prefix_map_mode="merged",
+                clean_prefixes=True,
+                input_format="obographs-json",
+                metadata_path=hp_meta,
+                output=f,
+            )
+        msdf = parse_sssom_table(outfile)
+        self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())

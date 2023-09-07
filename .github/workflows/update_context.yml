@@ -18,9 +18,6 @@ jobs:
           pip install --upgrade pip
           pip install black
 
-      - name: Update schema files
-        run: make all_schema
-
       - name: Update sssom context
         run: |
           make deploy-dm
