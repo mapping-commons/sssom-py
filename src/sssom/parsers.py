@@ -517,7 +517,7 @@ def from_sssom_json(
 def from_alignment_minidom(
     dom: Document,
     converter: ConverterHint,
-    meta: Optional[MetadataType]=None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Read a minidom Document object.
@@ -910,10 +910,16 @@ def split_dataframe_by_prefix(
                     & (df[PREDICATE_ID] == relation_curie)
                     & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
                 ]
-                if subject_prefix in msdf.converter and object_prefix in msdf.converter and len(df_subset) > 0:
+                if (
+                    subject_prefix in msdf.converter
+                    and object_prefix in msdf.converter
+                    and len(df_subset) > 0
+                ):
                     splitted[split_name] = from_sssom_dataframe(
                         df_subset,
-                        converter=msdf.converter.get_subset([subject_prefix, object_prefix, relation_prefix]),
+                        converter=msdf.converter.get_subset(
+                            [subject_prefix, object_prefix, relation_prefix]
+                        ),
                         meta=msdf.metadata,
                     )
                 else:

@@ -89,9 +89,7 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
         for curie in component:
             curie_to_component[curie] = i
 
-    documents = [
-        MappingSetDocument.empty(converter=doc.converter) for _ in range(len(components))
-    ]
+    documents = [MappingSetDocument.empty(converter=doc.converter) for _ in range(len(components))]
 
     if not isinstance(doc.mapping_set.mappings, list):
         raise TypeError

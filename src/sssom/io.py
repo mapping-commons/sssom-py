@@ -85,9 +85,7 @@ def parse_file(
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(
-            mapping_predicate_filter, metadata.converter
-        )
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
 
     # if mapping_predicates:
     doc = parse_func(
@@ -283,7 +281,7 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
 
     new_df = sqldf(query)
     new_msdf.df = new_df
-    new_msdf.converter = ensure_converter(msdf.converter)
+    new_msdf.backfill_converter_in_place()
     new_msdf.metadata = msdf.metadata
     write_table(new_msdf, output)
     return new_msdf

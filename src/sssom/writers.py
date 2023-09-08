@@ -13,7 +13,6 @@ from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
-
 from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
@@ -30,7 +29,6 @@ from .util import (
     get_file_extension,
     sort_df_rows_columns,
 )
-
 
 # noinspection PyProtectedMember
 
@@ -64,8 +62,7 @@ def write_table(
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
         meta.update(msdf.metadata)
-    if msdf.prefix_map is not None:
-        meta[PREFIX_MAP_KEY] = msdf.prefix_map
+    meta[PREFIX_MAP_KEY] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
@@ -297,7 +294,8 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
-        prefix_map=msdf.converter.bimap,  # TODO upstream converters to linkml
+        # TODO upstream converters to linkml, see https://github.com/linkml/linkml-runtime/pull/278
+        prefix_map=msdf.converter.bimap,
     )
     return graph
 

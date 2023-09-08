@@ -71,7 +71,7 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     :param msdf: MappingSetDataFrame
     :raises ValidationError: If all prefixes not in curie_map.
     """
-    msdf.converter = ensure_converter(msdf.converter)
+    msdf.backfill_converter_in_place()
     missing_prefixes = set(get_all_prefixes(msdf)).difference(msdf.converter.get_prefixes())
     if missing_prefixes:
         raise ValidationError(f"The prefixes in {missing_prefixes} are missing from 'curie_map'.")

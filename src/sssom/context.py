@@ -3,7 +3,7 @@
 import logging
 import uuid
 from functools import lru_cache
-from typing import Union, Mapping
+from typing import Mapping, Union
 
 import curies
 from curies import Converter

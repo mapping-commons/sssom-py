@@ -6,7 +6,7 @@ import logging
 import os
 import re
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import reduce
 from io import StringIO
 from pathlib import Path
@@ -14,12 +14,11 @@ from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 from urllib.request import urlopen
 
+import curies
 import numpy as np
 import pandas as pd
 import validators
 import yaml
-
-import curies
 from curies import Converter
 from deprecation import deprecated
 from jsonschema import ValidationError
@@ -62,7 +61,7 @@ from .constants import (
     SUBJECT_SOURCE,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, SSSOM_URI_PREFIX
+from .context import SSSOM_BUILT_IN_PREFIXES, SSSOM_URI_PREFIX, ensure_converter, get_converter
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType
 
@@ -93,9 +92,16 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    converter: Optional[Converter] = None
-    prefix_map: None = None
+    converter: Converter = field(default_factory=get_converter)
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
+
+    def backfill_converter_in_place(self):
+        """Add any missing default parts to the converter."""
+        self.converter = ensure_converter(self.converter)
+
+    @property
+    def prefix_map(self):
+        return self.converter.bimap
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -639,8 +645,7 @@ def merge_msdf(
     ).drop_duplicates(ignore_index=True)
 
     # merge the non DataFrame elements
-    prefix_map_list = [msdf.converter for msdf in msdf_with_meta]
-    merged_msdf.converter = curies.chain(prefix_map_list)
+    merged_msdf.converter = curies.chain([msdf.converter for msdf in msdf_with_meta])
     merged_msdf.df = df_merged
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
@@ -1240,7 +1245,7 @@ def reconcile_prefix_and_data(
             df[update_columns] = df[update_columns].replace(k + ":", v + ":", regex=True)
 
     msdf.df = df
-    msdf.prefix_map = prefix_map
+    msdf.converter = Converter.from_prefix_map(prefix_map)  # FIXME work on converters directly
 
     # TODO: When expansion of 2 prefixes in the prefix_map are the same.
     return msdf

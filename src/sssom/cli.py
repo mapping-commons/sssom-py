@@ -18,12 +18,12 @@ from pathlib import Path
 from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
 
 import click
+import curies
 import pandas as pd
 import yaml
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
-import curies
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
