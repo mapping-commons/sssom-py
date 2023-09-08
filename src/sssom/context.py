@@ -38,21 +38,19 @@ def get_converter() -> Converter:
     return Converter(records)
 
 
-def ensure_converter(
-    prefix_map: ConverterHint = None,
-) -> Converter:
+def ensure_converter(converter: ConverterHint = None) -> Converter:
     """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
 
-    :param prefix_map: A custom prefix map
+    :param converter: A custom prefix map
     :raises ValueError: If there is a prefix map mismatch.
     :return: A prefix map
     """
-    if prefix_map is None:
+    if converter is None:
         return get_converter()
-    if isinstance(prefix_map, Converter):
-        converter = prefix_map
+    if isinstance(converter, Converter):
+        converter = converter
     else:
-        converter = Converter.from_prefix_map(prefix_map)
+        converter = Converter.from_prefix_map(converter)
     return curies.chain([converter, get_converter()])
 
 

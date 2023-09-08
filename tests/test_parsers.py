@@ -13,6 +13,7 @@ import yaml
 from rdflib import Graph
 
 from sssom.context import get_default_metadata
+from sssom.io import parse_file
 from sssom.parsers import (
     from_alignment_minidom,
     from_obographs,
@@ -109,7 +110,7 @@ class TestParse(unittest.TestCase):
         """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs,
-            prefix_map=self.metadata.prefix_map,
+            converter=self.metadata.converter,
             meta=self.metadata.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
@@ -123,7 +124,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_tsv(self):
         """Test parsing TSV."""
-        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta)
+        msdf = from_sssom_dataframe(df=self.df, converter=self.df_prefix_map, meta=self.df_meta)
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
@@ -137,7 +138,7 @@ class TestParse(unittest.TestCase):
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml,
-            prefix_map=self.metadata.prefix_map,
+            converter=self.metadata.converter,
             meta=self.metadata.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
@@ -152,7 +153,7 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
         msdf = from_sssom_rdf(
-            g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata.metadata
+            g=self.rdf_graph, converter=self.df_prefix_map, meta=self.metadata.metadata
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
         with open(path, "w") as file:
@@ -167,7 +168,7 @@ class TestParse(unittest.TestCase):
         """Test parsing JSON."""
         msdf = from_sssom_json(
             jsondoc=self.json,
-            prefix_map=self.df_prefix_map,
+            converter=self.df_prefix_map,
             meta=self.metadata.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")

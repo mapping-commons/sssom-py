@@ -6,18 +6,20 @@ import logging
 import os
 import re
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from functools import reduce
 from io import StringIO
 from pathlib import Path
 from string import punctuation
-from typing import Any, ChainMap, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 from urllib.request import urlopen
 
 import numpy as np
 import pandas as pd
 import validators
 import yaml
+
+import curies
 from curies import Converter
 from deprecation import deprecated
 from jsonschema import ValidationError
@@ -58,17 +60,11 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
-    UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import (
-    SSSOM_BUILT_IN_PREFIXES,
-    SSSOM_URI_PREFIX,
-    ensure_converter,
-    get_default_metadata,
-)
+from .context import SSSOM_BUILT_IN_PREFIXES, SSSOM_URI_PREFIX
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap, get_bimap
+from .typehints import Metadata, MetadataType
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -97,8 +93,8 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: Optional[pd.DataFrame] = None  # Mappings
-    # maps CURIE prefixes to URI bases
-    prefix_map: PrefixMap = field(default_factory=dict)
+    converter: Optional[Converter] = None
+    prefix_map: None = None
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
@@ -112,7 +108,7 @@ class MappingSetDataFrame:
         msdf = merge_msdf(self, *msdfs)
         if inplace:
             self.df = msdf.df
-            self.prefix_map = msdf.prefix_map
+            self.converter = msdf.converter
             self.metadata = msdf.metadata
             return self
         else:
@@ -120,7 +116,7 @@ class MappingSetDataFrame:
 
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
-        description += f"Number of prefixes: {len(self.prefix_map)} \n"
+        description += f"Number of prefixes: {len(self.converter)} \n"
         if self.metadata is None:
             description += "No metadata available \n"
         else:
@@ -136,44 +132,11 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
-        """
-        Remove unused prefixes from the internal prefix map based on the internal dataframe.
-
-        :param strict: Boolean if True, errors out if all prefixes in dataframe are not
-                       listed in the 'curie_map'.
-        :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
-        """
-        all_prefixes = []
-        prefixes_in_table = get_prefixes_used_in_table(self.df)
+        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
+        prefixes = get_prefixes_used_in_table(self.df)
         if self.metadata:
-            prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)
-            all_prefixes = list(set(prefixes_in_table + prefixes_in_metadata))
-        else:
-            all_prefixes = prefixes_in_table
-
-        new_prefixes: PrefixMap = dict()
-        missing_prefixes = []
-        default_prefix_map = get_default_metadata().prefix_map
-        for prefix in all_prefixes:
-            if prefix in self.prefix_map:
-                new_prefixes[prefix] = self.prefix_map[prefix]
-            elif prefix in default_prefix_map:
-                new_prefixes[prefix] = default_prefix_map[prefix]
-            else:
-                logging.warning(
-                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
-                )
-                if prefix != "":
-                    missing_prefixes.append(prefix)
-                    if not strict:
-                        new_prefixes[prefix] = UNKNOWN_IRI + prefix.lower() + "/"
-
-        if missing_prefixes and strict:
-            raise ValueError(
-                f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
-            )
-            # self.df = filter_out_prefixes(self.df, missing_prefixes)
-        self.prefix_map = new_prefixes
+            prefixes.update(get_prefixes_used_in_metadata(self.metadata))
+        self.converter = self.converter.get_subset(prefixes)
 
     def remove_mappings(self, msdf: "MappingSetDataFrame") -> None:
         """Remove mappings in right msdf from left msdf.
@@ -676,9 +639,8 @@ def merge_msdf(
     ).drop_duplicates(ignore_index=True)
 
     # merge the non DataFrame elements
-    prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
-    # prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}
-    merged_msdf.prefix_map = dict(ChainMap(*prefix_map_list))
+    prefix_map_list = [msdf.converter for msdf in msdf_with_meta]
+    merged_msdf.converter = curies.chain(prefix_map_list)
     merged_msdf.df = df_merged
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
@@ -965,13 +927,13 @@ def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd
     return sort_df_rows_columns(df)
 
 
-def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
+def _extract_global_metadata(msdoc: MappingSetDocument) -> Dict:
     """Extract metadata.
 
     :param msdoc: MappingSetDocument object
     :return: Dictionary containing metadata
     """
-    meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
+    meta = {}
     ms_meta = msdoc.mapping_set
     for key in [
         slot
@@ -1003,7 +965,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
             m = get_dict_from_mapping(mapping)
             data.append(m)
     df = pd.DataFrame(data=data)
-    meta = extract_global_metadata(doc)
+    meta = _extract_global_metadata(doc)
     meta.pop(PREFIX_MAP_KEY, None)
     # The following 3 lines are to remove columns
     # where all values are blank.
@@ -1012,7 +974,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
     non_double_cols = non_double_cols.replace(np.nan, "")
     df[non_double_cols.columns] = non_double_cols
-    msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
+    msdf = MappingSetDataFrame(df=df, converter=doc.converter, metadata=meta)
     msdf.df = sort_df_rows_columns(msdf.df)
     return msdf
 
@@ -1090,7 +1052,7 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
-def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
+def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = list(SSSOM_BUILT_IN_PREFIXES)
     if not df.empty:
@@ -1099,7 +1061,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
                 prefixes.extend(list(set(df[col].str.split(":", n=1, expand=True)[0])))
     if "" in prefixes:
         prefixes.remove("")
-    return list(set(prefixes))
+    return set(prefixes)
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
@@ -1187,17 +1149,6 @@ def guess_file_format(filename: Union[str, TextIO]) -> str:
         raise ValueError(f"File extension {extension} does not correspond to a legal file format")
 
 
-def prepare_context_str(prefix_map: Converter, **kwargs) -> str:
-    """Prepare a JSON-LD context and dump to a string.
-
-    :param prefix_map: Prefix map, defaults to None
-    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
-    :return: Context in str format
-    """
-    converter = ensure_converter(prefix_map=prefix_map)
-    return json.dumps(get_bimap(converter), **kwargs)
-
-
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     """Raise exception if file path is invalid.
 
@@ -1237,7 +1188,7 @@ def reconcile_prefix_and_data(
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
 
-    prefix_map = msdf.prefix_map
+    prefix_map = msdf.converter.prefix_map
     df: pd.DataFrame = msdf.df
     data_switch_dict = dict()
 

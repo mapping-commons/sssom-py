@@ -302,7 +302,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
-        prefix_map=msdf.prefix_map,
+        prefix_map=msdf.converter.bimap,  # TODO upstream converters to linkml
     )
     return graph
 
@@ -488,7 +488,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    context = prepare_context_str(doc.prefix_map)
+    context = json.dumps(doc.converter.bimap)
     data = JSONDumper().dumps(doc.mapping_set, contexts=context)
     json_obj = json.loads(data)
     return json_obj
@@ -496,20 +496,19 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
 
 def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
     """Convert a mapping set dataframe to a list of ontoportal mapping JSON nbjects."""
-    prefix_map = msdf.prefix_map
     metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
     m_list = []
 
-    def resolve(x):
+    def resolve(curie):
         """Resolve URL."""
-        return _resolve_url(x, prefix_map)
+        return msdf.converter.expand(curie)
 
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
             json_obj = {
                 "classes": [resolve(row["subject_id"]), resolve(row["object_id"])],
-                "subject_source_id": _resolve_prefix(row.get("subject_source", ""), prefix_map),
-                "object_source_id": _resolve_prefix(row.get("object_source", ""), prefix_map),
+                "subject_source_id": row.get("subject_source", ""),
+                "object_source_id": row.get("object_source", ""),
                 "source_name": metadata.get("mapping_set_id", ""),
                 "source_contact_info": ",".join(metadata.get("creator_id", "")),
                 "date": metadata.get("mapping_date", row.get("mapping_date", "")),
@@ -600,19 +599,3 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
     else:
         raise ValueError(f"Unknown table format: {serialisation}, should be one of tsv or csv")
     return sep
-
-
-def _resolve_url(prefixed_url_str: str, prefix_map: PrefixMap) -> str:
-    # TODO REMOVE
-    if not prefixed_url_str:
-        return prefixed_url_str
-
-    prefix_url = prefixed_url_str.split(":")
-    if len(prefix_url) != 2:
-        return prefixed_url_str
-    else:
-        return _resolve_prefix(prefix_url[0], prefix_map) + prefix_url[1]
-
-
-def _resolve_prefix(prefix_str, prefix_map: PrefixMap) -> str:
-    return prefix_map.get(prefix_str, prefix_str + ":")

@@ -121,7 +121,7 @@ class TestIO(unittest.TestCase):
 
     def test_clean_prefix_map_not_strict(self):
         """Test clean prefix map with 'strict'=False."""
-        expected_difference = set({"x", "y", "z1", "y1", "z", "x1"})
+        expected_difference = {"x", "y", "z1", "y1", "z", "x1"}
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
         original_curie_map = msdf.prefix_map
         msdf.clean_prefix_map(strict=False)

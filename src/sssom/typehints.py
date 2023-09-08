@@ -23,13 +23,3 @@ class Metadata(NamedTuple):
 
     converter: Converter
     metadata: MetadataType
-
-    @property
-    def prefix_map(self) -> PrefixMap:
-        """Get the prefix bimap out of the converter."""
-        return get_bimap(self.converter)
-
-
-def get_bimap(converter: Converter) -> PrefixMap:
-    """Get a bidirectional prefix map."""
-    return {record.prefix: record.uri_prefix for record in converter.records}

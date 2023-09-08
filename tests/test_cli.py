@@ -3,6 +3,7 @@
 import os
 import subprocess  # noqa
 import unittest
+from pathlib import Path
 from typing import Mapping
 
 from click.testing import CliRunner, Result
@@ -188,7 +189,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
             if not primary_test_case:
                 primary_test_case = t
             params.append(t.filepath)
-        params.extend(["--output-directory", test_out_dir.as_posix()])
+        name = Path(primary_test_case.filepath).stem
+        directory = test_out_dir.joinpath(name)
+        directory.mkdir(exist_ok=True, parents=True)
+        params.extend(["--output-directory", directory.as_posix()])
         result = runner.invoke(partition, params)
         self.run_successful(result, primary_test_case)
         return result

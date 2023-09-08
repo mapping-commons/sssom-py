@@ -27,7 +27,7 @@ def rewire_graph(
     if mdoc.mapping_set.mappings is None:
         raise TypeError
 
-    converter = Converter.from_prefix_map(mdoc.prefix_map)
+    converter = mdoc.converter
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):

@@ -23,6 +23,7 @@ import yaml
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
+import curies
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
@@ -276,7 +277,7 @@ def dedupe(input: str, output: TextIO):
     # df = parse(input)
     msdf = parse_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
-    msdf_out = MappingSetDataFrame(df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata)
+    msdf_out = MappingSetDataFrame(df=df, converter=msdf.converter, metadata=msdf.metadata)
     # df.to_csv(output, sep="\t", index=False)
     write_table(msdf_out, output)
 
@@ -357,7 +358,7 @@ def sparql(
     if object_labels is not None:
         endpoint.include_object_labels = object_labels
     for k, v in prefix or []:
-        endpoint.prefix_map[k] = v
+        endpoint.converter.add_prefix(k, v)
     msdf = query_mappings(endpoint)
     write_table(msdf, output)
 
@@ -388,8 +389,7 @@ def diff(inputs: Tuple[str, str], output: TextIO):
     msdf = MappingSetDataFrame()
     meta = get_default_metadata()
     msdf.df = d.combined_dataframe.drop_duplicates()
-    prefix_map_list = [msdf1.prefix_map, msdf2.prefix_map]
-    msdf.prefix_map = dict(ChainMap(*prefix_map_list))
+    msdf.converter = curies.chain([msdf1.converter, msdf2.converter])
     msdf.metadata = meta.metadata
     msdf.metadata[
         "comment"

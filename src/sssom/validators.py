@@ -71,18 +71,7 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     :param msdf: MappingSetDataFrame
     :raises ValidationError: If all prefixes not in curie_map.
     """
-    prefixes = get_all_prefixes(msdf)
-    prefixes_including_builtins = ensure_converter(msdf.prefix_map).prefix_map
-    added_built_in = {
-        k: v for k, v in prefixes_including_builtins.items() if k not in msdf.prefix_map.keys()
-    }
-    if len(added_built_in) > 0:
-        logging.info(f"Adding prefixes: {added_built_in} to the MapingSetDataFrame.")
-    msdf.prefix_map = prefixes_including_builtins
-
-    missing_prefixes = []
-    for pref in prefixes:
-        if pref != "" and pref not in list(msdf.prefix_map.keys()):
-            missing_prefixes.append(pref)
+    msdf.converter = ensure_converter(msdf.converter)
+    missing_prefixes = set(get_all_prefixes(msdf)).difference(msdf.converter.get_prefixes())
     if missing_prefixes:
         raise ValidationError(f"The prefixes in {missing_prefixes} are missing from 'curie_map'.")
