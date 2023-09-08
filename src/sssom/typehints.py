@@ -7,12 +7,9 @@ from typing import Any, Dict, NamedTuple
 from curies import Converter
 
 __all__ = [
-    "PrefixMap",
     "MetadataType",
     "Metadata",
 ]
-
-PrefixMap = Dict[str, str]
 
 #: TODO replace this with something more specific
 MetadataType = Dict[str, Any]

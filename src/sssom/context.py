@@ -3,7 +3,7 @@
 import logging
 import uuid
 from functools import lru_cache
-from typing import Union
+from typing import Union, Mapping
 
 import curies
 from curies import Converter
@@ -15,14 +15,14 @@ from .constants import (
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
 )
-from .typehints import Metadata, PrefixMap
+from .typehints import Metadata
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 
-ConverterHint = Union[PrefixMap, None, Converter]
+ConverterHint = Union[Mapping[str, str], None, Converter]
 
 
 @lru_cache(1)

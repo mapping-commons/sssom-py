@@ -14,14 +14,12 @@ from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 
-# from .sssom_datamodel import slots
 from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
-from .typehints import PrefixMap
 from .util import (
     PREFIX_MAP_KEY,
     RDF_FORMATS,
@@ -30,11 +28,8 @@ from .util import (
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
-    prepare_context_str,
     sort_df_rows_columns,
 )
-
-# from sssom.validators import check_all_prefixes_in_curie_map
 
 
 # noinspection PyProtectedMember
