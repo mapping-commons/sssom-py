@@ -730,13 +730,12 @@ def from_obographs(
 # All read_* take as an input a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
 
 
-PARSING_FUNCTIONS = {
+PARSING_FUNCTIONS: Mapping[str, Callable] = {
     "tsv": parse_sssom_table,
     "obographs-json": parse_obographs_json,
     "alignment-api-xml": parse_alignment_xml,
     "json": parse_sssom_json,
     "rdf": parse_sssom_rdf,
-    "owl": None,  # TODO
 }
 
 

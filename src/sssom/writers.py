@@ -520,7 +520,7 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 
 # Support methods
 
-WRITER_FUNCTIONS = {
+WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
     "tsv": (write_table, None),
     "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
     "ontoportal_json": (write_ontoportal_json, None),
@@ -544,9 +544,9 @@ def get_writer_function(
     """
     if output_format is None:
         output_format = get_file_extension(output)
-    func, tag = WRITER_FUNCTIONS.get(output_format, (None, None))
-    if not func:
+    if output_format not in WRITER_FUNCTIONS:
         raise ValueError(f"Unknown output format: {output_format}")
+    func, tag = WRITER_FUNCTIONS[output_format]
     return func, tag or output_format
 
 
