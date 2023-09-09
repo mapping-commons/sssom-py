@@ -196,6 +196,7 @@ class SchemaValidationType(str, Enum):
 
     JsonSchema = "JsonSchema"
     Shacl = "Shacl"
+    Sparql = "Sparql"
     PrefixMapCompleteness = "PrefixMapCompleteness"
 
 

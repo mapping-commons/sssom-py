@@ -233,7 +233,7 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
-def validate(input: str, validation_types: tuple):
+def validate(input: str, validation_types: List[SchemaValidationType]):
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
     validate_file(input_path=input, validation_types=validation_type_list)
