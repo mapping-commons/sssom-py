@@ -194,6 +194,7 @@ class SEMAPV(Enum):
 class SchemaValidationType(str, Enum):
     """Schema validation types."""
 
+    # TODO move this class into validators.py
     JsonSchema = "JsonSchema"
     Shacl = "Shacl"
     Sparql = "Sparql"
