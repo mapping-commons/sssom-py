@@ -20,6 +20,7 @@ from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
 import click
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
@@ -339,12 +340,12 @@ def sparql(
     graph: str,
     limit: int,
     object_labels: bool,
-    prefix: List[Dict[str, str]],
+    prefix: List[Tuple[str, str]],
     output: TextIO,
 ):
     """Run a SPARQL query."""
     # FIXME this usage needs _serious_ refactoring
-    endpoint = EndpointConfig()  # type: ignore
+    endpoint = EndpointConfig(converter=Converter.from_prefix_map(dict(prefix)))  # type: ignore
     if config is not None:
         for k, v in yaml.safe_load(config).items():
             setattr(endpoint, k, v)
@@ -356,8 +357,7 @@ def sparql(
         endpoint.limit = limit
     if object_labels is not None:
         endpoint.include_object_labels = object_labels
-    for k, v in prefix or []:
-        endpoint.prefix_map[k] = v
+
     msdf = query_mappings(endpoint)
     write_table(msdf, output)
 

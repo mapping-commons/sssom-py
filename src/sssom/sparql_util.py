@@ -25,31 +25,28 @@ class EndpointConfig:
 
     url: str
     graph: URIRef
+    converter: Converter
     predmap: Dict[str, str]
     predicates: Optional[List[str]]
     limit: Optional[int]
     include_object_labels: bool = False
-    prefix_map: Dict[str, str] = field(default_factory=dict)
 
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     """Query a SPARQL endpoint to obtain a set of mappings."""
-    if not config.prefix_map:
-        raise TypeError(
-            "A query can not be made since the configuration does not have a valid prefix map"
-        )
-    converter = Converter.from_prefix_map(config.prefix_map)
-
     if config.graph is None:
         g = "?g"
     elif isinstance(config.graph, str):
         g = URIRef(config.graph).n3()
     else:
         g = config.graph.n3()
+
     if config.predicates is None:
         predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
-        predicates = [URIRef(converter.expand_strict(predicate)) for predicate in config.predicates]
+        predicates = [
+            URIRef(config.converter.expand_strict(predicate)) for predicate in config.predicates
+        ]
     predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
@@ -64,7 +61,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     ]
     if config.include_object_labels:
         cols.insert(-1, "object_label")
-    colstr = " ".join([f"?{c}" for c in cols])
+    colstr = " ".join(f"?{c}" for c in cols)
     olq = "OPTIONAL { ?object_id rdfs:label ?object_label }" if config.include_object_labels else ""
     sparql = dedent(
         f"""\
@@ -88,8 +85,8 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     results = sparql_wrapper.query().convert()
     df = pd.DataFrame(
         [
-            {key: safe_compress(v["value"], converter) for key, v in result.items()}
+            {key: safe_compress(v["value"], config.converter) for key, v in result.items()}
             for result in results["results"]["bindings"]
         ]
     )
-    return MappingSetDataFrame(df=df, prefix_map=config.prefix_map)
+    return MappingSetDataFrame.with_converter(df=df, converter=config.converter)

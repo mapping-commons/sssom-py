@@ -114,6 +114,16 @@ class MappingSetDataFrame:
     prefix_map: PrefixMap = field(default_factory=dict)
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
+    @classmethod
+    def with_converter(
+        cls,
+        converter: Converter,
+        df: Optional[pd.DataFrame] = None,
+        metadata: Optional[MetadataType] = None,
+    ) -> "MappingSetDataFrame":
+        """Instantiate with a converter instead of a vanilla prefix map."""
+        return cls(df=df, prefix_map=dict(converter.bimap), metadata=metadata)
+
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
 
