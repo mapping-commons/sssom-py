@@ -1,7 +1,7 @@
 """Utilities for querying mappings with SPARQL."""
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from textwrap import dedent
 from typing import Dict, List, Optional
 

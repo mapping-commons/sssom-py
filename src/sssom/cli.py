@@ -15,7 +15,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, ChainMap, List, Optional, TextIO, Tuple
 
 import click
 import pandas as pd
