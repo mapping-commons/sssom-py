@@ -16,7 +16,6 @@ import pandas as pd
 import requests
 import yaml
 from curies import Converter
-from deprecation import deprecated
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph, URIRef
@@ -71,61 +70,6 @@ from .util import (
     safe_compress,
     to_mapping_set_dataframe,
 )
-
-# * DEPRECATED methods *****************************************
-
-
-@deprecated(
-    deprecated_in="0.3.10",
-    removed_in="0.3.11",
-    details="Use 'parse_sssom_table' instead.",
-)
-def read_sssom_table(
-    file_path: Union[str, Path],
-    prefix_map: Optional[PrefixMap] = None,
-    meta: Optional[MetadataType] = None,
-) -> MappingSetDataFrame:
-    """DEPRECATE."""
-    return parse_sssom_table(file_path=file_path, prefix_map=prefix_map, meta=meta)
-
-
-@deprecated(
-    deprecated_in="0.3.10",
-    removed_in="0.3.11",
-    details="Use 'parse_sssom_rdf' instead.",
-)
-def read_sssom_rdf(
-    file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
-    **kwargs,
-) -> MappingSetDataFrame:
-    """DEPRECATE."""
-    return parse_sssom_rdf(
-        file_path=file_path,
-        prefix_map=prefix_map,
-        meta=meta,
-        serialisation=serialisation,
-        kwargs=kwargs,
-    )
-
-
-@deprecated(
-    deprecated_in="0.3.10",
-    removed_in="0.3.11",
-    details="Use 'parse_sssom_json' instead.",
-)
-def read_sssom_json(
-    file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
-    **kwargs
-    # mapping_predicates: Optional[List[str]] = None,
-) -> MappingSetDataFrame:
-    """DEPRECATE."""
-    return parse_sssom_json(file_path=file_path, prefix_map=prefix_map, meta=meta, kwarg=kwargs)
-
 
 # * *******************************************************
 # Parsers (from file)
@@ -200,7 +144,7 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
 
     try:
-        df = pd.read_csv(table_stream, sep=sep)
+        df = pd.read_csv(table_stream, sep=sep, dtype=str)
         df.fillna("", inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
@@ -782,8 +726,18 @@ def from_obographs(
     return to_mapping_set_dataframe(mdoc)
 
 
-# All from_* take as an input a python object (data frame, json, etc) and return a MappingSetDataFrame
-# All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
+# All from_* take as an input a python object (data frame, json, etc.) and return a MappingSetDataFrame
+# All read_* take as an input a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
+
+
+PARSING_FUNCTIONS = {
+    "tsv": parse_sssom_table,
+    "obographs-json": parse_obographs_json,
+    "alignment-api-xml": parse_alignment_xml,
+    "json": parse_sssom_json,
+    "rdf": parse_sssom_rdf,
+    "owl": None,  # TODO
+}
 
 
 def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
@@ -796,18 +750,10 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
     """
     if input_format is None:
         input_format = get_file_extension(filename)
-    if input_format == "tsv":
-        return parse_sssom_table
-    elif input_format == "rdf":
-        return parse_sssom_rdf
-    elif input_format == "json":
-        return parse_sssom_json
-    elif input_format == "alignment-api-xml":
-        return parse_alignment_xml
-    elif input_format == "obographs-json":
-        return parse_obographs_json
-    else:
+    func = PARSING_FUNCTIONS.get(input_format)
+    if func is None:
         raise Exception(f"Unknown input format: {input_format}")
+    return func
 
 
 def _ensure_prefix_map(prefix_map: Optional[PrefixMap] = None) -> PrefixMap:

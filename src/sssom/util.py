@@ -86,16 +86,6 @@ from .typehints import Metadata, MetadataType, PrefixMap
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
 
-SSSOM_READ_FORMATS = [
-    "tsv",
-    "rdf",
-    "owl",
-    "alignment-api-xml",
-    "obographs-json",
-    "json",
-]
-SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir", "ontoportal_json"]
-
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"

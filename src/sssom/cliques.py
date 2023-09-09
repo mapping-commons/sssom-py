@@ -7,8 +7,6 @@ from typing import DefaultDict, Dict, List, Optional, Set
 
 import networkx as nx
 import pandas as pd
-
-# from .sssom_datamodel import Mapping
 from sssom_schema import Mapping
 
 from sssom.constants import (

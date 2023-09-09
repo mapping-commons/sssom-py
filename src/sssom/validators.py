@@ -4,9 +4,6 @@ import logging
 from typing import List
 
 from jsonschema import ValidationError
-
-# from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
-# from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from linkml_runtime.processing.referencevalidator import ReferenceValidator
 from linkml_runtime.utils.schemaview import SchemaView
 from sssom_schema import MappingSet

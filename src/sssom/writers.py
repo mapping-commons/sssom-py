@@ -13,8 +13,6 @@ from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
-
-# from .sssom_datamodel import slots
 from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
@@ -33,9 +31,6 @@ from .util import (
     prepare_context_str,
     sort_df_rows_columns,
 )
-
-# from sssom.validators import check_all_prefixes_in_curie_map
-
 
 # noinspection PyProtectedMember
 
@@ -525,6 +520,17 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 
 # Support methods
 
+WRITER_FUNCTIONS = {
+    "tsv": (write_table, None),
+    "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
+    "ontoportal_json": (write_ontoportal_json, None),
+    "fhir_json": (write_fhir_json, None),
+    "json": (write_json, None),
+    "rdf": (write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION),
+}
+for rdf_format in RDF_FORMATS:
+    WRITER_FUNCTIONS[rdf_format] = write_rdf, rdf_format
+
 
 def get_writer_function(
     *, output_format: Optional[str] = None, output: TextIO
@@ -538,23 +544,10 @@ def get_writer_function(
     """
     if output_format is None:
         output_format = get_file_extension(output)
-
-    if output_format == "tsv":
-        return write_table, output_format
-    elif output_format in RDF_FORMATS:
-        return write_rdf, output_format
-    elif output_format == "rdf":
-        return write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION
-    elif output_format == "json":
-        return write_json, output_format
-    elif output_format == "fhir_json":
-        return write_fhir_json, output_format
-    elif output_format == "ontoportal_json":
-        return write_ontoportal_json, output_format
-    elif output_format == "owl":
-        return write_owl, SSSOM_DEFAULT_RDF_SERIALISATION
-    else:
+    func, tag = WRITER_FUNCTIONS.get(output_format, (None, None))
+    if not func:
         raise ValueError(f"Unknown output format: {output_format}")
+    return func, tag or output_format
 
 
 def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]) -> None:

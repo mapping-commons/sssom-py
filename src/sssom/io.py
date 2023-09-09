@@ -48,7 +48,7 @@ def convert_file(
 
     :param input_path: The path to the input SSSOM tsv file
     :param output: The path to the output file. If none is given, will default to using stdout.
-    :param output_format: The format to which the the SSSOM TSV should be converted.
+    :param output_format: The format to which the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
     doc = parse_sssom_table(input_path)
