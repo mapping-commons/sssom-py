@@ -59,8 +59,6 @@ def write_table(
 
     sep = _get_separator(serialisation)
 
-    # df = to_dataframe(msdf)
-
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
         meta.update(msdf.metadata)
@@ -190,11 +188,6 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
                 for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
                     graph.add((s, p, o))
 
-    # if MAPPING_SET_ID in msdf.metadata:
-    #    mapping_set_id = msdf.metadata[MAPPING_SET_ID]
-    # else:
-    #    mapping_set_id = DEFAULT_MAPPING_SET_ID
-
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -282,18 +275,6 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
-    # cntxt = prepare_context(doc.prefix_map)
-
-    # rdflib_dumper.dump(
-    #     element=doc.mapping_set,
-    #     schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
-    #     prefix_map=msdf.prefix_map,
-    #     to_file="sssom.ttl",
-    # )
-    # graph = Graph()
-    # graph = graph.parse("sssom.ttl", format="ttl")
-
-    # os.remove("sssom.ttl")  # remove the intermediate file.
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
