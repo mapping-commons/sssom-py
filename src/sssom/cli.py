@@ -480,7 +480,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
     chi2 = chi2_contingency(ct)
 
     logging.info(chi2)
-    expected_frequencies_df = pd.DataFrame(chi2.expected_freq, index=ct.index, columns=ct.columns)
+    expected_frequencies_df = pd.DataFrame(chi2[3], index=ct.index, columns=ct.columns)
     expected_frequencies_df.to_csv(output, sep="\t")
 
     rows = []
