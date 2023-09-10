@@ -469,6 +469,7 @@ def from_sssom_dataframe(
     :return: MappingSetDataFrame
     """
     prefix_map = _ensure_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
 
     # Need to revisit this solution.
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
@@ -489,7 +490,7 @@ def from_sssom_dataframe(
     # so with a heavy heart we employ type:ignore
     ms.mappings = mlist  # type:ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    doc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    doc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(doc)
 
 
@@ -556,7 +557,7 @@ def from_sssom_rdf(
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mdoc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
 
@@ -573,10 +574,11 @@ def from_sssom_json(
     :return: MappingSetDataFrame object
     """
     prefix_map = _ensure_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
     mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -641,7 +643,7 @@ def from_alignment_minidom(
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -778,7 +780,7 @@ def from_obographs(
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mdoc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
 
@@ -936,7 +938,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         for k, v in msdf.metadata.items():
             if k != PREFIX_MAP_KEY:
                 ms[k] = _address_multivalued_slot(k, v)
-    return MappingSetDocument(mapping_set=ms, prefix_map=msdf.prefix_map)
+    return MappingSetDocument(mapping_set=ms, converter=msdf.converter)
 
 
 def split_dataframe(
