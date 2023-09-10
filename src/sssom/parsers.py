@@ -930,16 +930,17 @@ def split_dataframe_by_prefix(
         raise ValueError
     prefix_map = msdf.prefix_map
     meta = msdf.metadata
-    splitted = {}
+    split_to_msdf: Dict[str, MappingSetDataFrame] = {}
     for subject_prefix, object_prefix, relation in itt.product(
         subject_prefixes, object_prefixes, relations
     ):
         relation_prefix, relation_id = relation.split(":")
-        split_name = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
-        if subject_prefix not in prefix_map or object_prefix not in prefix_map:
-            logging.warning(
-                f"Not adding {split_name} because there is a missing prefix ({subject_prefix}, {object_prefix})"
-            )
+        split = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
+        if subject_prefix not in prefix_map:
+            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
+            continue
+        if object_prefix not in prefix_map:
+            logging.warning(f"{split} - missing object prefix - {object_prefix}")
             continue
         df_subset = df[
             (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
@@ -947,15 +948,14 @@ def split_dataframe_by_prefix(
             & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
         ]
         if 0 == len(df_subset):
-            logging.warning(
-                f"Not adding {split_name} because there is a missing prefix ({subject_prefix}, {object_prefix}), "
-                f"or no matches ({len(df_subset)} matches found)"
-            )
+            logging.warning(f"No matches ({len(df_subset)} matches found)")
             continue
-        cm = {
+        split_prefix_map = {
             subject_prefix: prefix_map[subject_prefix],
             object_prefix: prefix_map[object_prefix],
             relation_prefix: prefix_map[relation_prefix],
         }
-        splitted[split_name] = from_sssom_dataframe(df_subset, prefix_map=cm, meta=meta)
-    return splitted
+        split_to_msdf[split] = from_sssom_dataframe(
+            df_subset, prefix_map=split_prefix_map, meta=meta
+        )
+    return split_to_msdf
