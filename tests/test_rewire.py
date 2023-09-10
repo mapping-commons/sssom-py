@@ -27,5 +27,6 @@ class TestRewire(unittest.TestCase):
             rewire_graph(self.graph, self.mset)
 
         n = rewire_graph(self.graph, self.mset, precedence=["PR"])
+        self.assertLessEqual(0, n)
         with open(test_out_dir / "rewired-cob.ttl", "w") as stream:
             stream.write(self.graph.serialize(format="turtle"))

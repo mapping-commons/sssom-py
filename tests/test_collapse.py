@@ -3,7 +3,6 @@
 import unittest
 
 import yaml
-from pansql import sqldf
 
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -64,7 +63,7 @@ class TestCollapse(unittest.TestCase):
         self.assertLess(100, len(diff_df.index))
         for c in diff_df["comment"]:
             self.assertTrue(c.startswith("COMMON_TO_BOTH"))
-        output = sqldf("select * from diff_df where comment != ''")
+        # output = sqldf("select * from diff_df where comment != ''")
 
         df2 = parse(data_dir / "basic2.tsv")
         diff = compare_dataframes(self.df, df2)

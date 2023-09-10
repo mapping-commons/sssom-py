@@ -1,13 +1,14 @@
 """SSSOM parsers."""
 
 import io
+import itertools as itt
 import json
 import logging
 import re
 import typing
 from collections import Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union, cast
+from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -457,46 +458,51 @@ def from_sssom_rdf(
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         mdict: Dict[str, Any] = {}
         # TODO replace with g.predicate_objects()
-        for _s, p, o in g.triples((ox, None, None)):
-            if isinstance(p, URIRef):
-                try:
-                    p_id = safe_compress(p, converter)
-                    k = None
-
-                    if p_id.startswith("sssom:"):
-                        k = p_id.replace("sssom:", "")
-                    elif p_id == "owl:annotatedProperty":
-                        k = "predicate_id"
-                    elif p_id == "owl:annotatedTarget":
-                        k = "object_id"
-                    elif p_id == "owl:annotatedSource":
-                        k = "subject_id"
-
-                    if isinstance(o, URIRef):
-                        v: Any
-                        v = safe_compress(o, converter)
-                    else:
-                        v = o.toPython()
-                    if k:
-                        v = _address_multivalued_slot(k, v)
-                        mdict[k] = v
-
-                except ValueError as e:
-                    logging.warning(e)
-        if mdict:
-            m = _prepare_mapping(Mapping(**mdict))
-            if _is_valid_mapping(m):
-                mlist.append(m)
+        for _, predicate, o in g.triples((ox, None, None)):
+            if not isinstance(predicate, URIRef):
+                continue
+            try:
+                predicate_curie = safe_compress(predicate, converter)
+            except ValueError as e:
+                logging.debug(e)
+                continue
+            if predicate_curie.startswith("sssom:"):
+                key = predicate_curie.replace("sssom:", "")
+            elif predicate_curie == "owl:annotatedProperty":
+                key = "predicate_id"
+            elif predicate_curie == "owl:annotatedTarget":
+                key = "object_id"
+            elif predicate_curie == "owl:annotatedSource":
+                key = "subject_id"
             else:
-                logging.warning(
-                    f"While trying to prepare a mapping for {mdict}, something went wrong. "
-                    f"One of subject_id, object_id or predicate_id was missing."
-                )
-        else:
+                continue
+
+            if isinstance(o, URIRef):
+                v: Any
+                try:
+                    v = safe_compress(o, converter)
+                except ValueError as e:
+                    logging.debug(e)
+                    continue
+            else:
+                v = o.toPython()
+
+            mdict[key] = _address_multivalued_slot(key, v)
+
+        if not mdict:
             logging.warning(
                 f"While trying to prepare a mapping for {sx},{px}, {ox}, something went wrong. "
                 f"This usually happens when a critical prefix_map entry is missing."
             )
+            continue
+        m = _prepare_mapping(Mapping(**mdict))
+        if not _is_valid_mapping(m):
+            logging.warning(
+                f"While trying to prepare a mapping for {mdict}, something went wrong. "
+                f"One of subject_id, object_id or predicate_id was missing."
+            )
+            continue
+        mlist.append(m)
 
     ms.mappings = mlist  # type: ignore
     _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
@@ -659,8 +665,7 @@ def from_obographs(
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mlist.append(Mapping(**mdict))
                                 except ValueError as e:
-                                    # FIXME this will cause all sorts of ragged Mappings
-                                    logging.warning(e)
+                                    logging.debug(e)
                         if "basicPropertyValues" in n["meta"]:
                             for value in n["meta"]["basicPropertyValues"]:
                                 pred = value["pred"]
@@ -907,7 +912,10 @@ def split_dataframe(
 
 
 def split_dataframe_by_prefix(
-    msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
+    msdf: MappingSetDataFrame,
+    subject_prefixes: Iterable[str],
+    object_prefixes: Iterable[str],
+    relations: Iterable[str],
 ) -> Dict[str, MappingSetDataFrame]:
     """Split a mapping set dataframe by prefix.
 
@@ -918,32 +926,36 @@ def split_dataframe_by_prefix(
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
     df = msdf.df
+    if df is None:
+        raise ValueError
     prefix_map = msdf.prefix_map
     meta = msdf.metadata
     splitted = {}
-    for pre_subj in subject_prefixes:
-        for pre_obj in object_prefixes:
-            for rel in relations:
-                relpre = rel.split(":")[0]
-                relppost = rel.split(":")[1]
-                split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
-                if df is not None:
-                    dfs = df[
-                        (df[SUBJECT_ID].str.startswith(pre_subj + ":"))
-                        & (df[PREDICATE_ID] == rel)
-                        & (df[OBJECT_ID].str.startswith(pre_obj + ":"))
-                    ]
-                if pre_subj in prefix_map and pre_obj in prefix_map and len(dfs) > 0:
-                    cm = {
-                        pre_subj: prefix_map[pre_subj],
-                        pre_obj: prefix_map[pre_obj],
-                        relpre: prefix_map[relpre],
-                    }
-                    msdf = from_sssom_dataframe(dfs, prefix_map=cm, meta=meta)
-                    splitted[split_name] = msdf
-                else:
-                    logging.warning(
-                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), "
-                        f"or no matches ({len(dfs)} matches found)"
-                    )
+    for subject_prefix, object_prefix, relation in itt.product(
+        subject_prefixes, object_prefixes, relations
+    ):
+        relation_prefix, relation_id = relation.split(":")
+        split_name = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
+        if subject_prefix not in prefix_map or object_prefix not in prefix_map:
+            logging.warning(
+                f"Not adding {split_name} because there is a missing prefix ({subject_prefix}, {object_prefix})"
+            )
+            continue
+        df_subset = df[
+            (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
+            & (df[PREDICATE_ID] == relation)
+            & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
+        ]
+        if 0 == len(df_subset):
+            logging.warning(
+                f"Not adding {split_name} because there is a missing prefix ({subject_prefix}, {object_prefix}), "
+                f"or no matches ({len(df_subset)} matches found)"
+            )
+            continue
+        cm = {
+            subject_prefix: prefix_map[subject_prefix],
+            object_prefix: prefix_map[object_prefix],
+            relation_prefix: prefix_map[relation_prefix],
+        }
+        splitted[split_name] = from_sssom_dataframe(df_subset, prefix_map=cm, meta=meta)
     return splitted
