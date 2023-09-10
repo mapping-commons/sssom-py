@@ -114,6 +114,10 @@ class MappingSetDataFrame:
     prefix_map: PrefixMap = field(default_factory=dict)
     metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
 
+    @property
+    def converter(self) -> Converter:
+        return Converter.from_prefix_map(self.prefix_map)
+
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
 
