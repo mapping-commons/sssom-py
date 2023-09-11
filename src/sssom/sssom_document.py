@@ -1,6 +1,5 @@
 """Additional SSSOM object models."""
 
-import warnings
 from dataclasses import dataclass
 
 from curies import Converter
@@ -31,7 +30,4 @@ class MappingSetDocument:
     @property
     def prefix_map(self) -> PrefixMap:
         """Get a prefix map."""
-        warnings.warn(
-            "use MappingSetDocument.converter.bimap directly", DeprecationWarning, stacklevel=2
-        )
         return dict(self.converter.bimap)
