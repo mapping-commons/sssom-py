@@ -21,7 +21,7 @@ from sssom.constants import (
     SSSOM_SUPERCLASS_OF,
 )
 
-from .context import DEFAULT_LICENSE, DEFAULT_MAPPING_SET_ID, SSSOM_URI_PREFIX
+from .context import DEFAULT_LICENSE, SSSOM_URI_PREFIX
 from .parsers import to_mapping_set_document
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame

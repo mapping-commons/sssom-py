@@ -3,7 +3,6 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from curies import Converter
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 from sssom_schema import EntityReference, Mapping
