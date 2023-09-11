@@ -8,8 +8,7 @@ from typing import Optional
 import pkg_resources
 from curies import Converter
 
-from sssom.constants import EXTENDED_PREFIX_MAP
-
+from .constants import EXTENDED_PREFIX_MAP
 from .typehints import Metadata, MetadataType, PrefixMap
 
 # HERE = pathlib.Path(__file__).parent.resolve()

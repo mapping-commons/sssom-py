@@ -13,8 +13,6 @@ from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
-
-# from .sssom_datamodel import slots
 from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
@@ -33,9 +31,6 @@ from .util import (
     prepare_context_str,
     sort_df_rows_columns,
 )
-
-# from sssom.validators import check_all_prefixes_in_curie_map
-
 
 # noinspection PyProtectedMember
 
@@ -63,8 +58,6 @@ def write_table(
         raise TypeError
 
     sep = _get_separator(serialisation)
-
-    # df = to_dataframe(msdf)
 
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
@@ -195,11 +188,6 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
                 for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
                     graph.add((s, p, o))
 
-    # if MAPPING_SET_ID in msdf.metadata:
-    #    mapping_set_id = msdf.metadata[MAPPING_SET_ID]
-    # else:
-    #    mapping_set_id = DEFAULT_MAPPING_SET_ID
-
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -287,18 +275,6 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
-    # cntxt = prepare_context(doc.prefix_map)
-
-    # rdflib_dumper.dump(
-    #     element=doc.mapping_set,
-    #     schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
-    #     prefix_map=msdf.prefix_map,
-    #     to_file="sssom.ttl",
-    # )
-    # graph = Graph()
-    # graph = graph.parse("sssom.ttl", format="ttl")
-
-    # os.remove("sssom.ttl")  # remove the intermediate file.
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
@@ -525,6 +501,17 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 
 # Support methods
 
+WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
+    "tsv": (write_table, None),
+    "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
+    "ontoportal_json": (write_ontoportal_json, None),
+    "fhir_json": (write_fhir_json, None),
+    "json": (write_json, None),
+    "rdf": (write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION),
+}
+for rdf_format in RDF_FORMATS:
+    WRITER_FUNCTIONS[rdf_format] = write_rdf, rdf_format
+
 
 def get_writer_function(
     *, output_format: Optional[str] = None, output: TextIO
@@ -538,23 +525,10 @@ def get_writer_function(
     """
     if output_format is None:
         output_format = get_file_extension(output)
-
-    if output_format == "tsv":
-        return write_table, output_format
-    elif output_format in RDF_FORMATS:
-        return write_rdf, output_format
-    elif output_format == "rdf":
-        return write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION
-    elif output_format == "json":
-        return write_json, output_format
-    elif output_format == "fhir_json":
-        return write_fhir_json, output_format
-    elif output_format == "ontoportal_json":
-        return write_ontoportal_json, output_format
-    elif output_format == "owl":
-        return write_owl, SSSOM_DEFAULT_RDF_SERIALISATION
-    else:
+    if output_format not in WRITER_FUNCTIONS:
         raise ValueError(f"Unknown output format: {output_format}")
+    func, tag = WRITER_FUNCTIONS[output_format]
+    return func, tag or output_format
 
 
 def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]) -> None:

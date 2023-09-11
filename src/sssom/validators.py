@@ -1,12 +1,9 @@
 """Validators."""
 
 import logging
-from typing import List
+from typing import Callable, List, Mapping
 
 from jsonschema import ValidationError
-
-# from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
-# from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from linkml_runtime.processing.referencevalidator import ReferenceValidator
 from linkml_runtime.utils.schemaview import SchemaView
 from sssom_schema import MappingSet
@@ -24,13 +21,8 @@ def validate(msdf: MappingSetDataFrame, validation_types: List[SchemaValidationT
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
     """
-    validation_methods = {
-        SchemaValidationType.JsonSchema: validate_json_schema,
-        SchemaValidationType.Shacl: validate_shacl,
-        SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
-    }
     for vt in validation_types:
-        validation_methods[vt](msdf)
+        VALIDATION_METHODS[vt](msdf)
 
 
 def validate_json_schema(msdf: MappingSetDataFrame) -> None:
@@ -86,3 +78,11 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
             missing_prefixes.append(pref)
     if missing_prefixes:
         raise ValidationError(f"The prefixes in {missing_prefixes} are missing from 'curie_map'.")
+
+
+VALIDATION_METHODS: Mapping[SchemaValidationType, Callable] = {
+    SchemaValidationType.JsonSchema: validate_json_schema,
+    SchemaValidationType.Shacl: validate_shacl,
+    SchemaValidationType.Sparql: validate_sparql,
+    SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
+}
