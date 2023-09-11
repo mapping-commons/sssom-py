@@ -967,9 +967,14 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <p>Utilities for querying mappings with SPARQL.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sparql_util.</span></span><span class="sig-name descname"><span class="pre">EndpointConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_object_labels=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sparql_util.html#EndpointConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sparql_util.EndpointConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sparql_util.</span></span><span class="sig-name descname"><span class="pre">EndpointConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_object_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/sparql_util.html#EndpointConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sparql_util.EndpointConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A container for a SPARQL endpoint’s configuration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig.converter">
+<span class="sig-name descname"><span class="pre">converter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.converter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig.graph">
 <span class="sig-name descname"><span class="pre">graph</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">URIRef</span></code></em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.graph" title="Permalink to this definition"></a></dt>
@@ -993,11 +998,6 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig.predmap">
 <span class="sig-name descname"><span class="pre">predmap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]</span></em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.predmap" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sssom.sparql_util.EndpointConfig.prefix_map">
-<span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]</span></em><a class="headerlink" href="#sssom.sparql_util.EndpointConfig.prefix_map" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1187,6 +1187,17 @@ if false, it simply return the merged data frame.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.with_converter">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame.with_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.with_converter" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate with a converter instead of a vanilla prefix map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
