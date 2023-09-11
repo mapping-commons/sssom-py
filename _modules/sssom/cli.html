@@ -89,6 +89,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span>
 
@@ -117,12 +118,10 @@
     <span class="n">split_file</span><span class="p">,</span>
     <span class="n">validate_file</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">parse_sssom_table</span>
+<span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">PARSING_FUNCTIONS</span><span class="p">,</span> <span class="n">parse_sssom_table</span>
 <span class="kn">from</span> <span class="nn">.rdf_util</span> <span class="kn">import</span> <span class="n">rewire_graph</span>
 <span class="kn">from</span> <span class="nn">.sparql_util</span> <span class="kn">import</span> <span class="n">EndpointConfig</span><span class="p">,</span> <span class="n">query_mappings</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">SSSOM_EXPORT_FORMATS</span><span class="p">,</span>
-    <span class="n">SSSOM_READ_FORMATS</span><span class="p">,</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">compare_dataframes</span><span class="p">,</span>
     <span class="n">dataframe_to_ptable</span><span class="p">,</span>
@@ -134,7 +133,7 @@
     <span class="n">sort_df_rows_columns</span><span class="p">,</span>
     <span class="n">to_mapping_set_dataframe</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.writers</span> <span class="kn">import</span> <span class="n">write_table</span>
+<span class="kn">from</span> <span class="nn">.writers</span> <span class="kn">import</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">,</span> <span class="n">write_table</span>
 
 <span class="n">SSSOM_SV_OBJECT</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
@@ -147,7 +146,7 @@
     <span class="s2">&quot;-I&quot;</span><span class="p">,</span>
     <span class="s2">&quot;--input-format&quot;</span><span class="p">,</span>
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The string denoting the input format.&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">SSSOM_READ_FORMATS</span><span class="p">),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">PARSING_FUNCTIONS</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">output_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
@@ -160,7 +159,7 @@
     <span class="s2">&quot;-O&quot;</span><span class="p">,</span>
     <span class="s2">&quot;--output-format&quot;</span><span class="p">,</span>
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Desired output format.&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">SSSOM_EXPORT_FORMATS</span><span class="p">),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">WRITER_FUNCTIONS</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">output_directory_option</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
@@ -309,7 +308,7 @@
     <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_VALIDATION_TYPES</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_types</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce an error report for an SSSOM file.&quot;&quot;&quot;</span>
     <span class="n">validation_type_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">validation_types</span><span class="p">]</span>
     <span class="n">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">validation_types</span><span class="o">=</span><span class="n">validation_type_list</span><span class="p">)</span>
@@ -500,8 +499,6 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--statsfile&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cliquesummary</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">statsfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate summaries for each clique in a SSSOM file.&quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">yaml</span>
-
     <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -520,10 +517,9 @@
 <span class="nd">@output_option</span>
 <span class="nd">@transpose_option</span>
 <span class="nd">@fields_option</span>
-<span class="k">def</span> <span class="nf">crosstab</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">crosstab</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write sssom summary cross-tabulated by categories.&quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">remove_unmatched</span><span class="p">(</span><span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-    <span class="c1"># df = parse(input)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#CROSSTAB ON </span><span class="si">{</span><span class="n">fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
     <span class="n">ct</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">f1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">f2</span><span class="p">])</span>
@@ -537,11 +533,10 @@
 <span class="nd">@transpose_option</span>
 <span class="nd">@fields_option</span>
 <span class="nd">@input_argument</span>
-<span class="k">def</span> <span class="nf">correlations</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">correlations</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate correlations.&quot;&quot;&quot;</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">remove_unmatched</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-    <span class="c1"># df = remove_unmatched(parse(input))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No matched entities in this dataset!&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -560,18 +555,16 @@
     <span class="n">chi2</span> <span class="o">=</span> <span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct</span><span class="p">)</span>
 
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">chi2</span><span class="p">)</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">chi2</span>
-    <span class="n">corr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="n">corr</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">expected_frequencies_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">chi2</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">ct</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">expected_frequencies_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="n">tups</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">corr</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">expected_frequencies_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">tups</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-    <span class="n">tups</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tups</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tx</span><span class="p">:</span> <span class="n">tx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tups</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
@@ -740,7 +733,7 @@
 
 <span class="sd">    :param input: DataFrame to be queried over.</span>
 <span class="sd">    :param output: Output location.</span>
-<span class="sd">    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).</span>
+<span class="sd">    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">filter_file</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -749,9 +742,9 @@
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
 <span class="c1"># TODO Revist the option below.</span>
-<span class="c1"># If a multivalued slot needs to be partially preserved,</span>
-<span class="c1"># the users will need to type the ones they need and</span>
-<span class="c1"># set --replace-multivalued to True.</span>
+<span class="c1">#  If a multivalued slot needs to be partially preserved,</span>
+<span class="c1">#  the users will need to type the ones they need and</span>
+<span class="c1">#  set --replace-multivalued to True.</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;--replace-multivalued&quot;</span><span class="p">,</span>
     <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -766,7 +759,7 @@
 <span class="sd">    :param output: Output location.</span>
 <span class="sd">    :param replace_multivalued: Multivalued slots should be</span>
 <span class="sd">        replaced or not, defaults to False</span>
-<span class="sd">    :param **kwargs: Options provided by user</span>
+<span class="sd">    :param kwargs: Options provided by user</span>
 <span class="sd">        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">annotate_file</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="o">=</span><span class="n">replace_multivalued</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

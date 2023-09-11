@@ -86,9 +86,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_sssom_json"><code class="docutils literal notranslate"><span class="pre">parse_sssom_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">parse_sssom_rdf()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.parse_sssom_table"><code class="docutils literal notranslate"><span class="pre">parse_sssom_table()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.read_sssom_json"><code class="docutils literal notranslate"><span class="pre">read_sssom_json()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.read_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">read_sssom_rdf()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.read_sssom_table"><code class="docutils literal notranslate"><span class="pre">read_sssom_table()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.split_dataframe"><code class="docutils literal notranslate"><span class="pre">split_dataframe()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.split_dataframe_by_prefix"><code class="docutils literal notranslate"><span class="pre">split_dataframe_by_prefix()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.parsers.to_mapping_set_document"><code class="docutils literal notranslate"><span class="pre">to_mapping_set_document()</span></code></a></li>
@@ -405,7 +402,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the input SSSOM tsv file</p></li>
 <li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – The path to the output file. If none is given, will default to using stdout.</p></li>
-<li><p><strong>output_format</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The format to which the the SSSOM TSV should be converted.</p></li>
+<li><p><strong>output_format</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The format to which the SSSOM TSV should be converted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -803,36 +800,6 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="sssom.parsers.read_sssom_json">
-<span class="sig-prename descclassname"><span class="pre">sssom.parsers.</span></span><span class="sig-name descname"><span class="pre">read_sssom_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/parsers.html#read_sssom_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.parsers.read_sssom_json" title="Permalink to this definition"></a></dt>
-<dd><p>DEPRECATE.
-:rtype: <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.10: </span>This will be removed in 0.3.11. Use ‘parse_sssom_json’ instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.parsers.read_sssom_rdf">
-<span class="sig-prename descclassname"><span class="pre">sssom.parsers.</span></span><span class="sig-name descname"><span class="pre">read_sssom_rdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'turtle'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/parsers.html#read_sssom_rdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.parsers.read_sssom_rdf" title="Permalink to this definition"></a></dt>
-<dd><p>DEPRECATE.
-:rtype: <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.10: </span>This will be removed in 0.3.11. Use ‘parse_sssom_rdf’ instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.parsers.read_sssom_table">
-<span class="sig-prename descclassname"><span class="pre">sssom.parsers.</span></span><span class="sig-name descname"><span class="pre">read_sssom_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/parsers.html#read_sssom_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.parsers.read_sssom_table" title="Permalink to this definition"></a></dt>
-<dd><p>DEPRECATE.
-:rtype: <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.3.10: </span>This will be removed in 0.3.11. Use ‘parse_sssom_table’ instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="sssom.parsers.split_dataframe">
 <span class="sig-prename descclassname"><span class="pre">sssom.parsers.</span></span><span class="sig-name descname"><span class="pre">split_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/parsers.html#split_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.parsers.split_dataframe" title="Permalink to this definition"></a></dt>
 <dd><p>Group the mapping set dataframe into several subdataframes by prefix.</p>
@@ -860,9 +827,9 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – An SSSOM MappingSetDataFrame</p></li>
-<li><p><strong>subject_prefixes</strong> – a list of prefixes pertaining to the subject</p></li>
-<li><p><strong>object_prefixes</strong> – a list of prefixes pertaining to the object</p></li>
-<li><p><strong>relations</strong> – a list of relations of interest</p></li>
+<li><p><strong>subject_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a list of prefixes pertaining to the subject</p></li>
+<li><p><strong>object_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a list of prefixes pertaining to the object</p></li>
+<li><p><strong>relations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a list of relations of interest</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1327,14 +1294,14 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_out_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['subject_id',</span> <span class="pre">'predicate_id',</span> <span class="pre">'object_id',</span> <span class="pre">'predicate_modifier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_out_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame of SSSOM Mapping</p></li>
 <li><p><strong>filter_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of prefixes</p></li>
-<li><p><strong>features</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – List of dataframe column names dataframe to consider</p></li>
+<li><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]) – List of dataframe column names dataframe to consider</p></li>
 <li><p><strong>require_all_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, all prefixes must be present in a row to be filtered out</p></li>
 </ul>
 </dd>
@@ -1349,14 +1316,14 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['subject_id',</span> <span class="pre">'predicate_id',</span> <span class="pre">'object_id',</span> <span class="pre">'predicate_modifier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame of SSSOM Mapping</p></li>
 <li><p><strong>filter_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of prefixes</p></li>
-<li><p><strong>features</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – List of dataframe column names dataframe to consider</p></li>
+<li><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]) – List of dataframe column names dataframe to consider</p></li>
 <li><p><strong>require_all_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, all prefixes must be present in a row to be filtered out</p></li>
 </ul>
 </dd>
@@ -1404,7 +1371,7 @@ replaced or not, defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of all prefixes.</p>
@@ -1460,10 +1427,10 @@ replaced or not, defaults to False.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefixes_used_in_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get a list of prefixes used in CURIEs in the metadata.</p>
+<dd><p>Get a set of prefixes used in CURIEs in the metadata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1474,7 +1441,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Get a list of prefixes used in CURIEs in key feature columns in a dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1515,29 +1482,6 @@ replaced or not, defaults to False.</p></li>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<a class="reference internal" href="../sssom.html#sssom.util.EntityPair" title="sssom.util.EntityPair"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntityPair</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>]]</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">guess_file_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#guess_file_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get file format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – filename</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Unrecognized file extension</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>File extension</p>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version This: </span>is no longer used and will be removed from the public API.</p>
-</div>
 </dd></dl>
 
 <dl class="py function">

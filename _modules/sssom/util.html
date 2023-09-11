@@ -76,6 +76,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">itt</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -161,16 +162,6 @@
 <span class="c1">#: The key that&#39;s used in the YAML section of an SSSOM file</span>
 <span class="n">PREFIX_MAP_KEY</span> <span class="o">=</span> <span class="s2">&quot;curie_map&quot;</span>
 
-<span class="n">SSSOM_READ_FORMATS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;tsv&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;rdf&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;owl&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;alignment-api-xml&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;obographs-json&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;json&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">SSSOM_EXPORT_FORMATS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tsv&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;fhir&quot;</span><span class="p">,</span> <span class="s2">&quot;ontoportal_json&quot;</span><span class="p">]</span>
-
 <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span> <span class="o">=</span> <span class="s2">&quot;turtle&quot;</span>
 
 <span class="n">URI_SSSOM_MAPPINGS</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings&quot;</span>
@@ -231,18 +222,14 @@
 <span class="sd">                       listed in the &#39;curie_map&#39;.</span>
 <span class="sd">        :raises ValueError: If prefixes absent in &#39;curie_map&#39; and strict flag = True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">all_prefixes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">prefixes_in_table</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
-            <span class="n">prefixes_in_metadata</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
-            <span class="n">all_prefixes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">prefixes_in_table</span> <span class="o">+</span> <span class="n">prefixes_in_metadata</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">all_prefixes</span> <span class="o">=</span> <span class="n">prefixes_in_table</span>
+            <span class="n">prefixes_in_table</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span>
 
         <span class="n">new_prefixes</span><span class="p">:</span> <span class="n">PrefixMap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">default_prefix_map</span> <span class="o">=</span> <span class="n">get_default_metadata</span><span class="p">()</span><span class="o">.</span><span class="n">prefix_map</span>
-        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">all_prefixes</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes_in_table</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
                 <span class="n">new_prefixes</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">default_prefix_map</span><span class="p">:</span>
@@ -1177,38 +1164,36 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="get_prefixes_used_in_table"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_table">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_prefixes_used_in_table"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_table">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of prefixes used in CURIEs in key feature columns in a dataframe.&quot;&quot;&quot;</span>
-    <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
+    <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">prefixes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
+                <span class="n">prefixes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="s2">&quot;&quot;</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="p">:</span>
         <span class="n">prefixes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">prefixes</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">prefixes</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_prefixes_used_in_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">MetadataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of prefixes used in CURIEs in the metadata.&quot;&quot;&quot;</span>
-    <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">meta</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                <span class="n">prefixes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span> <span class="k">if</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pref</span> <span class="o">=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">pref</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">prefixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pref</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">prefixes</span><span class="p">))</span></div>
+<div class="viewcode-block" id="get_prefixes_used_in_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">MetadataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a set of prefixes used in CURIEs in the metadata.&quot;&quot;&quot;</span>
+    <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">meta</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prefixes</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">prefixes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">prefix</span> <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="p">(</span><span class="n">prefix</span> <span class="o">:=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prefix</span> <span class="o">:=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
+                <span class="n">prefixes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">prefixes</span></div>
 
 
 <div class="viewcode-block" id="filter_out_prefixes"><a class="viewcode-back" href="../../sssom.html#sssom.util.filter_out_prefixes">[docs]</a><span class="k">def</span> <span class="nf">filter_out_prefixes</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span><span class="p">,</span>
+    <span class="n">features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">require_all_prefixes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.</span>
@@ -1219,6 +1204,8 @@
 <span class="sd">    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out</span>
 <span class="sd">    :return: Pandas Dataframe</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span>
     <span class="n">filter_prefix_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">filter_prefixes</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">selection</span> <span class="o">=</span> <span class="nb">all</span> <span class="k">if</span> <span class="n">require_all_prefixes</span> <span class="k">else</span> <span class="nb">any</span>
@@ -1234,7 +1221,7 @@
 <div class="viewcode-block" id="filter_prefixes"><a class="viewcode-back" href="../../sssom.html#sssom.util.filter_prefixes">[docs]</a><span class="k">def</span> <span class="nf">filter_prefixes</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span><span class="p">,</span>
+    <span class="n">features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">require_all_prefixes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.</span>
@@ -1245,6 +1232,8 @@
 <span class="sd">    :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out</span>
 <span class="sd">    :return: Pandas Dataframe</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span>
     <span class="n">filter_prefix_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">filter_prefixes</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">selection</span> <span class="o">=</span> <span class="nb">all</span> <span class="k">if</span> <span class="n">require_all_prefixes</span> <span class="k">else</span> <span class="nb">any</span>
@@ -1255,23 +1244,6 @@
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="k">if</span> <span class="n">rows</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="guess_file_format"><a class="viewcode-back" href="../../sssom.html#sssom.util.guess_file_format">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;This is no longer used and will be removed from the public API.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">guess_file_format</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get file format.</span>
-
-<span class="sd">    :param filename: filename</span>
-<span class="sd">    :raises ValueError: Unrecognized file extension</span>
-<span class="sd">    :return: File extension</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">extension</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
-    <span class="k">elif</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">RDF_FORMATS</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">extension</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File extension </span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2"> does not correspond to a legal file format&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="prepare_context"><a class="viewcode-back" href="../../sssom.html#sssom.util.prepare_context">[docs]</a><span class="k">def</span> <span class="nf">prepare_context</span><span class="p">(</span>
@@ -1306,7 +1278,7 @@
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">prepare_context</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="raise_for_bad_prefix_map_mode"><a class="viewcode-back" href="../../sssom.html#sssom.util.raise_for_bad_prefix_map_mode">[docs]</a><span class="k">def</span> <span class="nf">raise_for_bad_prefix_map_mode</span><span class="p">(</span><span class="n">prefix_map_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="raise_for_bad_prefix_map_mode"><a class="viewcode-back" href="../../sssom.html#sssom.util.raise_for_bad_prefix_map_mode">[docs]</a><span class="k">def</span> <span class="nf">raise_for_bad_prefix_map_mode</span><span class="p">(</span><span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise exception if prefix map mode is invalid.</span>
 
 <span class="sd">    :param prefix_map_mode: The prefix map mode</span>
@@ -1437,7 +1409,7 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="get_all_prefixes"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_all_prefixes">[docs]</a><span class="k">def</span> <span class="nf">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="get_all_prefixes"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_all_prefixes">[docs]</a><span class="k">def</span> <span class="nf">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch all prefixes in the MappingSetDataFrame.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame</span>
@@ -1445,51 +1417,39 @@
 <span class="sd">    :raises ValidationError: If slot is wrong.</span>
 <span class="sd">    :return:  List of all prefixes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">prefix_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
-        <span class="n">metadata_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="n">df_columns_list</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
-        <span class="n">all_keys</span> <span class="o">=</span> <span class="n">metadata_keys</span> <span class="o">+</span> <span class="n">df_columns_list</span>
-        <span class="n">ent_ref_slots</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">all_keys</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span>
-        <span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">ent_ref_slots</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">metadata_keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">])</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                            <span class="c1"># print(</span>
-                            <span class="c1">#     f&quot;Slot &#39;{slot}&#39; has an incorrect value: {msdf.metadata[s]}&quot;</span>
-                            <span class="c1"># )</span>
-                            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;Slot &#39;</span><span class="si">{</span><span class="n">slot</span><span class="si">}</span><span class="s2">&#39; has an incorrect value: </span><span class="si">{</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                            <span class="p">)</span>
-                        <span class="n">prefix_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">])</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                        <span class="c1"># print(</span>
-                        <span class="c1">#     f&quot;Slot &#39;{slot}&#39; has an incorrect value: {msdf.metadata[slot]}&quot;</span>
-                        <span class="c1"># )</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Slot &#39;</span><span class="si">{</span><span class="n">slot</span><span class="si">}</span><span class="s2">&#39; has an incorrect value: </span><span class="si">{</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="p">)</span>
-                    <span class="n">prefix_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">]))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">column_prefixes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                    <span class="nb">set</span><span class="p">(</span>
-                        <span class="p">[</span>
-                            <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()))</span>  <span class="c1"># type: ignore</span>
-                            <span class="k">if</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
-                        <span class="p">]</span>
+    <span class="n">prefixes</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">metadata_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">slot</span>
+        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">itt</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">metadata_keys</span><span class="p">,</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">slot</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metadata_keys</span><span class="p">:</span>
+            <span class="n">prefixes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">prefix</span>
+                <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">prefix</span> <span class="o">:=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">]:</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">prefix</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Slot &#39;</span><span class="si">{</span><span class="n">slot</span><span class="si">}</span><span class="s2">&#39; has an incorrect value: </span><span class="si">{</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">prefix_list</span> <span class="o">=</span> <span class="n">prefix_list</span> <span class="o">+</span> <span class="n">column_prefixes</span>
+                <span class="n">prefixes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_prefix_from_curie</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">prefix</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Slot &#39;</span><span class="si">{</span><span class="n">slot</span><span class="si">}</span><span class="s2">&#39; has an incorrect value: </span><span class="si">{</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">prefixes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
-        <span class="n">prefix_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">prefix_list</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">prefix_list</span></div>
+    <span class="k">return</span> <span class="n">prefixes</span></div>
 
 
 <div class="viewcode-block" id="augment_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.augment_metadata">[docs]</a><span class="k">def</span> <span class="nf">augment_metadata</span><span class="p">(</span>
@@ -1505,28 +1465,27 @@
 <span class="sd">    :return: MSDF with updated metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">are_params_slots</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># If slot is multivalued, add to list.</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace_multivalued</span><span class="p">:</span>
-                <span class="n">tmp_value</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="n">tmp_value</span> <span class="o">=</span> <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
-                    <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="si">}</span><span class="s2"> and </span><span class="se">\</span>
-<span class="s2">                        as of now only slots of type &#39;str&#39; or &#39;list&#39; are handled.&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">tmp_value</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span> <span class="ow">and</span> <span class="n">replace_multivalued</span><span class="p">:</span>
-                <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">msdf</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># If slot is multivalued, add to list.</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">replace_multivalued</span><span class="p">:</span>
+            <span class="n">tmp_value</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">tmp_value</span> <span class="o">=</span> <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="si">}</span><span class="s2"> and </span><span class="se">\</span>
+<span class="s2">                    as of now only slots of type &#39;str&#39; or &#39;list&#39; are handled.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">tmp_value</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span> <span class="ow">and</span> <span class="n">replace_multivalued</span><span class="p">:</span>
+            <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 

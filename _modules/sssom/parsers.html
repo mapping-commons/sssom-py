@@ -76,13 +76,14 @@
 <span></span><span class="sd">&quot;&quot;&quot;SSSOM parsers.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">itt</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">minidom</span>
 <span class="kn">from</span> <span class="nn">xml.dom.minidom</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -91,7 +92,6 @@
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
-<span class="kn">from</span> <span class="nn">deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.loaders.json_loader</span> <span class="kn">import</span> <span class="n">JSONLoader</span>
 <span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
 <span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">URIRef</span>
@@ -146,61 +146,6 @@
     <span class="n">safe_compress</span><span class="p">,</span>
     <span class="n">to_mapping_set_dataframe</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="c1"># * DEPRECATED methods *****************************************</span>
-
-
-<div class="viewcode-block" id="read_sssom_table"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.read_sssom_table">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
-    <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.3.10&quot;</span><span class="p">,</span>
-    <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.3.11&quot;</span><span class="p">,</span>
-    <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use &#39;parse_sssom_table&#39; instead.&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">read_sssom_table</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="read_sssom_rdf"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.read_sssom_rdf">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
-    <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.3.10&quot;</span><span class="p">,</span>
-    <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.3.11&quot;</span><span class="p">,</span>
-    <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use &#39;parse_sssom_rdf&#39; instead.&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">read_sssom_rdf</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">serialisation</span><span class="o">=</span><span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">parse_sssom_rdf</span><span class="p">(</span>
-        <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-        <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span>
-        <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
-        <span class="n">serialisation</span><span class="o">=</span><span class="n">serialisation</span><span class="p">,</span>
-        <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="read_sssom_json"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.read_sssom_json">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
-    <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.3.10&quot;</span><span class="p">,</span>
-    <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.3.11&quot;</span><span class="p">,</span>
-    <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use &#39;parse_sssom_json&#39; instead.&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">read_sssom_json</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-    <span class="c1"># mapping_predicates: Optional[List[str]] = None,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATE.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">parse_sssom_json</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">kwarg</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span></div>
-
 
 <span class="c1"># * *******************************************************</span>
 <span class="c1"># Parsers (from file)</span>
@@ -275,7 +220,7 @@
     <span class="n">table_stream</span><span class="p">,</span> <span class="n">metadata_stream</span> <span class="o">=</span> <span class="n">_separate_metadata_and_table_from_stream</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">table_stream</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">table_stream</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">EmptyDataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seems like the dataframe is empty: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -588,46 +533,51 @@
     <span class="k">for</span> <span class="n">sx</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">ox</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">URI_SSSOM_MAPPINGS</span><span class="p">),</span> <span class="kc">None</span><span class="p">)):</span>
         <span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># TODO replace with g.predicate_objects()</span>
-        <span class="k">for</span> <span class="n">_s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="n">ox</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">p_id</span> <span class="o">=</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
-                    <span class="n">k</span> <span class="o">=</span> <span class="kc">None</span>
-
-                    <span class="k">if</span> <span class="n">p_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sssom:&quot;</span><span class="p">):</span>
-                        <span class="n">k</span> <span class="o">=</span> <span class="n">p_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;sssom:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="n">p_id</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedProperty&quot;</span><span class="p">:</span>
-                        <span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;predicate_id&quot;</span>
-                    <span class="k">elif</span> <span class="n">p_id</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedTarget&quot;</span><span class="p">:</span>
-                        <span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;object_id&quot;</span>
-                    <span class="k">elif</span> <span class="n">p_id</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedSource&quot;</span><span class="p">:</span>
-                        <span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;subject_id&quot;</span>
-
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
-                        <span class="n">v</span><span class="p">:</span> <span class="n">Any</span>
-                        <span class="n">v</span> <span class="o">=</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">v</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">k</span><span class="p">:</span>
-                        <span class="n">v</span> <span class="o">=</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-                        <span class="n">mdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mdict</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">_prepare_mapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">_is_valid_mapping</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-                <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="n">ox</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">predicate_curie</span> <span class="o">=</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">predicate_curie</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sssom:&quot;</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">predicate_curie</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;sssom:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">predicate_curie</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedProperty&quot;</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;predicate_id&quot;</span>
+            <span class="k">elif</span> <span class="n">predicate_curie</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedTarget&quot;</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;object_id&quot;</span>
+            <span class="k">elif</span> <span class="n">predicate_curie</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedSource&quot;</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;subject_id&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;While trying to prepare a mapping for </span><span class="si">{</span><span class="n">mdict</span><span class="si">}</span><span class="s2">, something went wrong. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;One of subject_id, object_id or predicate_id was missing.&quot;</span>
-                <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+                <span class="n">v</span><span class="p">:</span> <span class="n">Any</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
+
+            <span class="n">mdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mdict</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;While trying to prepare a mapping for </span><span class="si">{</span><span class="n">sx</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">px</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ox</span><span class="si">}</span><span class="s2">, something went wrong. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;This usually happens when a critical prefix_map entry is missing.&quot;</span>
             <span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_prepare_mapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_mapping</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;While trying to prepare a mapping for </span><span class="si">{</span><span class="n">mdict</span><span class="si">}</span><span class="s2">, something went wrong. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;One of subject_id, object_id or predicate_id was missing.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 
     <span class="n">ms</span><span class="o">.</span><span class="n">mappings</span> <span class="o">=</span> <span class="n">mlist</span>  <span class="c1"># type: ignore</span>
     <span class="n">_set_metadata_in_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
@@ -790,8 +740,7 @@
                                     <span class="n">mdict</span><span class="p">[</span><span class="n">MAPPING_JUSTIFICATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span>
                                     <span class="n">mlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Mapping</span><span class="p">(</span><span class="o">**</span><span class="n">mdict</span><span class="p">))</span>
                                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                                    <span class="c1"># FIXME this will cause all sorts of ragged Mappings</span>
-                                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                         <span class="k">if</span> <span class="s2">&quot;basicPropertyValues&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">]:</span>
                             <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;basicPropertyValues&quot;</span><span class="p">]:</span>
                                 <span class="n">pred</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;pred&quot;</span><span class="p">]</span>
@@ -857,8 +806,17 @@
     <span class="k">return</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">)</span></div>
 
 
-<span class="c1"># All from_* take as an input a python object (data frame, json, etc) and return a MappingSetDataFrame</span>
-<span class="c1"># All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)</span>
+<span class="c1"># All from_* take as an input a python object (data frame, json, etc.) and return a MappingSetDataFrame</span>
+<span class="c1"># All read_* take as an input a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)</span>
+
+
+<span class="n">PARSING_FUNCTIONS</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;tsv&quot;</span><span class="p">:</span> <span class="n">parse_sssom_table</span><span class="p">,</span>
+    <span class="s2">&quot;obographs-json&quot;</span><span class="p">:</span> <span class="n">parse_obographs_json</span><span class="p">,</span>
+    <span class="s2">&quot;alignment-api-xml&quot;</span><span class="p">:</span> <span class="n">parse_alignment_xml</span><span class="p">,</span>
+    <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="n">parse_sssom_json</span><span class="p">,</span>
+    <span class="s2">&quot;rdf&quot;</span><span class="p">:</span> <span class="n">parse_sssom_rdf</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="get_parsing_function"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.get_parsing_function">[docs]</a><span class="k">def</span> <span class="nf">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
@@ -871,18 +829,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">input_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">input_format</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_sssom_table</span>
-    <span class="k">elif</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_sssom_rdf</span>
-    <span class="k">elif</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_sssom_json</span>
-    <span class="k">elif</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;alignment-api-xml&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_alignment_xml</span>
-    <span class="k">elif</span> <span class="n">input_format</span> <span class="o">==</span> <span class="s2">&quot;obographs-json&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_obographs_json</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown input format: </span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">PARSING_FUNCTIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">input_format</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown input format: </span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">func</span></div>
 
 
 <span class="k">def</span> <span class="nf">_ensure_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
@@ -1037,7 +987,10 @@
 
 
 <div class="viewcode-block" id="split_dataframe_by_prefix"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.split_dataframe_by_prefix">[docs]</a><span class="k">def</span> <span class="nf">split_dataframe_by_prefix</span><span class="p">(</span>
-    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">subject_prefixes</span><span class="p">,</span> <span class="n">object_prefixes</span><span class="p">,</span> <span class="n">relations</span>
+    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
+    <span class="n">subject_prefixes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">object_prefixes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">relations</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a mapping set dataframe by prefix.</span>
 
@@ -1048,35 +1001,39 @@
 <span class="sd">    :return: a dict of SSSOM data frame names to MappingSetDataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
     <span class="n">meta</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
-    <span class="n">splitted</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">pre_subj</span> <span class="ow">in</span> <span class="n">subject_prefixes</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">pre_obj</span> <span class="ow">in</span> <span class="n">object_prefixes</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relations</span><span class="p">:</span>
-                <span class="n">relpre</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">relppost</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">split_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pre_subj</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">relppost</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">pre_obj</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">dfs</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
-                        <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pre_subj</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
-                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">==</span> <span class="n">rel</span><span class="p">)</span>
-                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pre_obj</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
-                    <span class="p">]</span>
-                <span class="k">if</span> <span class="n">pre_subj</span> <span class="ow">in</span> <span class="n">prefix_map</span> <span class="ow">and</span> <span class="n">pre_obj</span> <span class="ow">in</span> <span class="n">prefix_map</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">cm</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="n">pre_subj</span><span class="p">:</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">pre_subj</span><span class="p">],</span>
-                        <span class="n">pre_obj</span><span class="p">:</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">pre_obj</span><span class="p">],</span>
-                        <span class="n">relpre</span><span class="p">:</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">relpre</span><span class="p">],</span>
-                    <span class="p">}</span>
-                    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_dataframe</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">cm</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
-                    <span class="n">splitted</span><span class="p">[</span><span class="n">split_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Not adding </span><span class="si">{</span><span class="n">split_name</span><span class="si">}</span><span class="s2"> because there is a missing prefix (</span><span class="si">{</span><span class="n">pre_subj</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pre_obj</span><span class="si">}</span><span class="s2">), &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;or no matches (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span><span class="si">}</span><span class="s2"> matches found)&quot;</span>
-                    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">splitted</span></div>
+    <span class="n">split_to_msdf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">subject_prefix</span><span class="p">,</span> <span class="n">object_prefix</span><span class="p">,</span> <span class="n">relation</span> <span class="ow">in</span> <span class="n">itt</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+        <span class="n">subject_prefixes</span><span class="p">,</span> <span class="n">object_prefixes</span><span class="p">,</span> <span class="n">relations</span>
+    <span class="p">):</span>
+        <span class="n">relation_prefix</span><span class="p">,</span> <span class="n">relation_id</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subject_prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">relation_id</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">object_prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">subject_prefix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">split</span><span class="si">}</span><span class="s2"> - missing subject prefix - </span><span class="si">{</span><span class="n">subject_prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">object_prefix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">split</span><span class="si">}</span><span class="s2"> - missing object prefix - </span><span class="si">{</span><span class="n">object_prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">df_subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">==</span> <span class="n">relation</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">object_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_subset</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matches (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_subset</span><span class="p">)</span><span class="si">}</span><span class="s2"> matches found)&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">split_prefix_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">subject_prefix</span><span class="p">:</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">subject_prefix</span><span class="p">],</span>
+            <span class="n">object_prefix</span><span class="p">:</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">object_prefix</span><span class="p">],</span>
+            <span class="n">relation_prefix</span><span class="p">:</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">relation_prefix</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">split_to_msdf</span><span class="p">[</span><span class="n">split</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_sssom_dataframe</span><span class="p">(</span>
+            <span class="n">df_subset</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">split_prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">split_to_msdf</span></div>
 </pre></div>
 
            </div>

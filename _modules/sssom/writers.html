@@ -88,8 +88,6 @@
 <span class="kn">from</span> <span class="nn">linkml_runtime.utils.schemaview</span> <span class="kn">import</span> <span class="n">SchemaView</span>
 <span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">URIRef</span>
 <span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">OWL</span><span class="p">,</span> <span class="n">RDF</span>
-
-<span class="c1"># from .sssom_datamodel import slots</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">slots</span>
 
 <span class="kn">from</span> <span class="nn">sssom.validators</span> <span class="kn">import</span> <span class="n">check_all_prefixes_in_curie_map</span>
@@ -108,9 +106,6 @@
     <span class="n">prepare_context_str</span><span class="p">,</span>
     <span class="n">sort_df_rows_columns</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="c1"># from sssom.validators import check_all_prefixes_in_curie_map</span>
-
 
 <span class="c1"># noinspection PyProtectedMember</span>
 
@@ -138,8 +133,6 @@
         <span class="k">raise</span> <span class="ne">TypeError</span>
 
     <span class="n">sep</span> <span class="o">=</span> <span class="n">_get_separator</span><span class="p">(</span><span class="n">serialisation</span><span class="p">)</span>
-
-    <span class="c1"># df = to_dataframe(msdf)</span>
 
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -270,11 +263,6 @@
                 <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="n">axiom</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">OWL</span><span class="o">.</span><span class="n">annotatedTarget</span><span class="p">):</span>
                     <span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">o</span><span class="p">))</span>
 
-    <span class="c1"># if MAPPING_SET_ID in msdf.metadata:</span>
-    <span class="c1">#    mapping_set_id = msdf.metadata[MAPPING_SET_ID]</span>
-    <span class="c1"># else:</span>
-    <span class="c1">#    mapping_set_id = DEFAULT_MAPPING_SET_ID</span>
-
     <span class="n">sparql_prefixes</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;</span>
 <span class="s2">PREFIX owl: &lt;http://www.w3.org/2002/07/owl#&gt;</span>
@@ -362,18 +350,6 @@
 <div class="viewcode-block" id="to_rdf_graph"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_rdf_graph">[docs]</a><span class="k">def</span> <span class="nf">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to an RDF graph.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
-    <span class="c1"># cntxt = prepare_context(doc.prefix_map)</span>
-
-    <span class="c1"># rdflib_dumper.dump(</span>
-    <span class="c1">#     element=doc.mapping_set,</span>
-    <span class="c1">#     schemaview=SchemaView(os.path.join(os.getcwd(), &quot;schema/sssom.yaml&quot;)),</span>
-    <span class="c1">#     prefix_map=msdf.prefix_map,</span>
-    <span class="c1">#     to_file=&quot;sssom.ttl&quot;,</span>
-    <span class="c1"># )</span>
-    <span class="c1"># graph = Graph()</span>
-    <span class="c1"># graph = graph.parse(&quot;sssom.ttl&quot;, format=&quot;ttl&quot;)</span>
-
-    <span class="c1"># os.remove(&quot;sssom.ttl&quot;)  # remove the intermediate file.</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">rdflib_dumper</span><span class="o">.</span><span class="n">as_rdf_graph</span><span class="p">(</span>
         <span class="n">element</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span>
         <span class="n">schemaview</span><span class="o">=</span><span class="n">SchemaView</span><span class="p">(</span><span class="n">SCHEMA_YAML</span><span class="p">),</span>
@@ -600,6 +576,17 @@
 
 <span class="c1"># Support methods</span>
 
+<span class="n">WRITER_FUNCTIONS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;tsv&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">write_table</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="s2">&quot;owl&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">write_owl</span><span class="p">,</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">),</span>
+    <span class="s2">&quot;ontoportal_json&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">write_ontoportal_json</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="s2">&quot;fhir_json&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">write_fhir_json</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">write_json</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="s2">&quot;rdf&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">write_rdf</span><span class="p">,</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">rdf_format</span> <span class="ow">in</span> <span class="n">RDF_FORMATS</span><span class="p">:</span>
+    <span class="n">WRITER_FUNCTIONS</span><span class="p">[</span><span class="n">rdf_format</span><span class="p">]</span> <span class="o">=</span> <span class="n">write_rdf</span><span class="p">,</span> <span class="n">rdf_format</span>
+
 
 <div class="viewcode-block" id="get_writer_function"><a class="viewcode-back" href="../../sssom.html#sssom.writers.get_writer_function">[docs]</a><span class="k">def</span> <span class="nf">get_writer_function</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span>
@@ -613,23 +600,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">output_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">output_format</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_table</span><span class="p">,</span> <span class="n">output_format</span>
-    <span class="k">elif</span> <span class="n">output_format</span> <span class="ow">in</span> <span class="n">RDF_FORMATS</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_rdf</span><span class="p">,</span> <span class="n">output_format</span>
-    <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_rdf</span><span class="p">,</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
-    <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_json</span><span class="p">,</span> <span class="n">output_format</span>
-    <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;fhir_json&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_fhir_json</span><span class="p">,</span> <span class="n">output_format</span>
-    <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;ontoportal_json&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_ontoportal_json</span><span class="p">,</span> <span class="n">output_format</span>
-    <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;owl&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">write_owl</span><span class="p">,</span> <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown output format: </span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">output_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown output format: </span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">func</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">[</span><span class="n">output_format</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">func</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">or</span> <span class="n">output_format</span></div>
 
 
 <div class="viewcode-block" id="write_tables"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_tables">[docs]</a><span class="k">def</span> <span class="nf">write_tables</span><span class="p">(</span><span class="n">sssom_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

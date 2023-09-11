@@ -146,7 +146,7 @@
 <dd class="field-odd"><p>Multivalued slots should be
 replaced or not, defaults to False</p>
 </dd>
-<dt class="field-even">param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs<span class="colon">:</span></dt>
+<dt class="field-even">param kwargs<span class="colon">:</span></dt>
 <dd class="field-even"><p>Options provided by user
 which are added to the metadata (e.g.: –mapping_set_id <a class="reference external" href="http://example.org/abcd">http://example.org/abcd</a>)</p>
 </dd>
@@ -370,7 +370,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dd><p>Desired output format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tsv | rdf | owl | json | fhir | ontoportal_json</p>
+<dd class="field-odd"><p>tsv | owl | ontoportal_json | fhir_json | json | rdf | nt | turtle | xml | ttl</p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,7 +543,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dt class="field-even">param output<span class="colon">:</span></dt>
 <dd class="field-even"><p>Output location.</p>
 </dd>
-<dt class="field-odd">param <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs<span class="colon">:</span></dt>
+<dt class="field-odd">param kwargs<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p>
 </dd>
 </dl>
@@ -900,7 +900,7 @@ prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
 <dd><p>The string denoting the input format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tsv | rdf | owl | alignment-api-xml | obographs-json | json</p>
+<dd class="field-odd"><p>tsv | obographs-json | alignment-api-xml | json | rdf</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1268,7 +1268,7 @@ prefer HumanCurated. If both HumanCurated, prefer negative mapping).</p>
 <span id="cmdoption-sssom-validate-v"></span><span id="cmdoption-sssom-validate-validation-types"></span><span class="sig-name descname"><span class="pre">-V</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--validation-types</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;validation_types&gt;</span></span><a class="headerlink" href="#cmdoption-sssom-validate-V" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p>SchemaValidationType.JsonSchema | SchemaValidationType.Shacl | SchemaValidationType.PrefixMapCompleteness</p>
+<dd class="field-odd"><p>SchemaValidationType.JsonSchema | SchemaValidationType.Shacl | SchemaValidationType.Sparql | SchemaValidationType.PrefixMapCompleteness</p>
 </dd>
 </dl>
 </dd></dl>
