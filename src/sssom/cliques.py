@@ -8,9 +8,6 @@ from typing import DefaultDict, Dict, List, Optional, Set
 
 import networkx as nx
 import pandas as pd
-from curies import Converter
-
-# from .sssom_datamodel import Mapping
 from sssom_schema import Mapping, MappingSet
 
 from sssom.constants import (
