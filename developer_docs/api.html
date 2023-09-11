@@ -11,11 +11,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=525cde36"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -158,21 +158,10 @@
 <span class="target" id="module-sssom.sssom_document"></span><p>Additional SSSOM object models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sssom_document.</span></span><span class="sig-name descname"><span class="pre">MappingSetDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/sssom_document.html#MappingSetDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sssom_document.</span></span><span class="sig-name descname"><span class="pre">MappingSetDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/sssom_document.html#MappingSetDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents a single SSSOM document.</p>
 <p>A document is simply a holder for a MappingSet object plus a CURIE map</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument.empty">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/sssom_document.html#MappingSetDocument.empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.empty" title="Permalink to this definition"></a></dt>
-<dd><p>Get an empty mapping set document with the given prefix map.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument.mapping_set">
 <span class="sig-name descname"><span class="pre">mapping_set</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.mapping_set" title="Permalink to this definition"></a></dt>
@@ -184,12 +173,10 @@
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py property">
 <dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument.prefix_map">
-<span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]</span></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.prefix_map" title="Permalink to this definition"></a></dt>
-<dd><p>Mappings between ID prefixes and URI Bases, used to map CURIEs to URIs.
-Note that the prefix map is not part of the core SSSOM model, hence it belongs here in the document
-object</p>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.prefix_map" title="Permalink to this definition"></a></dt>
+<dd><p>Get a prefix map.</p>
 </dd></dl>
 
 </dd></dl>
@@ -465,6 +452,12 @@ listed in the ‘curie_map’.</p>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.converter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">converter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Converter</span></em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.converter" title="Permalink to this definition"></a></dt>
+<dd><p>Get a converter.</p>
 </dd></dl>
 
 <dl class="py method">
