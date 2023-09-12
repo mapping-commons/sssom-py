@@ -7,7 +7,6 @@ from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
-from deprecation import deprecated
 from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
@@ -153,26 +152,6 @@ def write_ontoportal_json(
 
 # Converters
 # Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)
-
-
-@deprecated(
-    details="Use df variable of 'MappingSetDataFrame' instead (msdf.df).",
-)
-def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
-    """Convert a mapping set dataframe to a dataframe."""
-    data = []
-    doc = to_mapping_set_document(msdf)
-    if doc.mapping_set.mappings is None:
-        raise TypeError
-    for mapping in doc.mapping_set.mappings:
-        mdict = mapping.__dict__
-        m = {}
-        for key in mdict:
-            if mdict[key]:
-                m[key] = mdict[key]
-        data.append(m)
-    df = pd.DataFrame(data=data)
-    return df
 
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
