@@ -884,7 +884,8 @@ def read_metadata(filename: str) -> Metadata:
         metadata = yaml.safe_load(file)
     if PREFIX_MAP_KEY in metadata:
         prefix_map = metadata.pop(PREFIX_MAP_KEY)
-    return Metadata(converter=Converter.from_prefix_map(prefix_map), metadata=metadata)
+    converter = Converter.from_prefix_map(prefix_map)
+    return Metadata(converter=converter, metadata=metadata)
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
