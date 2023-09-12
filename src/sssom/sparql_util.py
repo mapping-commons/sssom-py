@@ -1,7 +1,7 @@
 """Utilities for querying mappings with SPARQL."""
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from textwrap import dedent
 from typing import Dict, List, Optional
 
@@ -25,11 +25,11 @@ class EndpointConfig:
 
     url: str
     graph: URIRef
+    converter: Converter
     predmap: Dict[str, str]
     predicates: Optional[List[str]]
     limit: Optional[int]
     include_object_labels: bool = False
-    converter: Converter = field(default_factory=lambda: Converter([]))
 
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
