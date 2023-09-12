@@ -10,7 +10,19 @@ from dataclasses import dataclass, field
 from functools import reduce
 from pathlib import Path
 from string import punctuation
-from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
+from typing import (
+    Any,
+    ChainMap,
+    DefaultDict,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+)
 
 import curies
 import numpy as np
