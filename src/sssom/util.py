@@ -1,6 +1,5 @@
 """Utility functions."""
 
-import hashlib
 import itertools as itt
 import json
 import logging
@@ -9,11 +8,20 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
-from io import StringIO
 from pathlib import Path
 from string import punctuation
-from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 from urllib.request import urlopen
+from typing import (
+    Any,
+    DefaultDict,
+    Dict,
+    List,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+)
 
 import curies
 import numpy as np
@@ -21,10 +29,8 @@ import pandas as pd
 import validators
 import yaml
 from curies import Converter
-from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
-from pandas.errors import EmptyDataError
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
@@ -352,16 +358,15 @@ def assign_default_confidence(
     :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
     """
     # Get rows having numpy.NaN as confidence
-    if df is not None:
-        new_df = df.copy()
-        if CONFIDENCE not in new_df.columns:
-            new_df[CONFIDENCE] = 0.0  # np.NaN
-            nan_df = pd.DataFrame(columns=new_df.columns)
-        else:
-            new_df = df[~df[CONFIDENCE].isna()]
-            nan_df = df[df[CONFIDENCE].isna()]
-    else:
+    if df is None:
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
+    new_df = df.copy()
+    if CONFIDENCE not in new_df.columns:
+        new_df[CONFIDENCE] = 0.0  # np.NaN
+        nan_df = pd.DataFrame(columns=new_df.columns)
+    else:
+        new_df = df[~df[CONFIDENCE].isna()]
+        nan_df = df[df[CONFIDENCE].isna()]
     return new_df, nan_df
 
 
@@ -589,21 +594,6 @@ PREDICATE_RELATED_MATCH = 5
 # * ########################################
 
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
-
-
-def sha256sum(path: str) -> str:
-    """Calculate the SHA256 hash over the bytes in a file.
-
-    :param path: Filename
-    :return: Hashed value
-    """
-    h = hashlib.sha256()
-    b = bytearray(128 * 1024)
-    mv = memoryview(b)
-    with open(path, "rb", buffering=0) as file:
-        for n in iter(lambda: file.readinto(mv), 0):  # type: ignore
-            h.update(mv[:n])
-    return h.hexdigest()
 
 
 def merge_msdf(
@@ -848,49 +838,6 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-@deprecated(details="Use pandas.read_csv() instead.")
-def read_csv(
-    filename: Union[str, Path, TextIO], comment: str = "#", sep: str = ","
-) -> pd.DataFrame:
-    """Read a CSV that contains frontmatter commented by a specific character.
-
-    :param filename: Either the file path, a URL, or a file object to read as a TSV
-        with frontmatter
-    :param comment: The comment character used for the frontmatter. This isn't the
-        same as the comment keyword in :func:`pandas.read_csv` because it only
-        works on the first charcter in the line
-    :param sep: The separator for the TSV file
-    :returns: A pandas dataframe
-    """
-    if isinstance(filename, TextIO):
-        return pd.read_csv(filename, sep=sep)
-    if isinstance(filename, Path) or not validators.url(filename):
-        with open(filename, "r") as f:
-            lines = "".join([line for line in f if not line.startswith(comment)])
-    else:
-        response = urlopen(filename)
-        lines = "".join(
-            [
-                line.decode("utf-8")
-                for line in response
-                if not line.decode("utf-8").startswith(comment)
-            ]
-        )
-    try:
-        df = pd.read_csv(StringIO(lines), sep=sep, low_memory=False)
-    except EmptyDataError as e:
-        logging.warning(f"Seems like the dataframe is empty: {e}")
-        df = pd.DataFrame(
-            columns=[
-                SUBJECT_ID,
-                SUBJECT_LABEL,
-                PREDICATE_ID,
-                OBJECT_ID,
-                MAPPING_JUSTIFICATION,
-            ]
-        )
-
-    return df
 
 
 def read_metadata(filename: Union[str, Path]) -> Metadata:
@@ -902,26 +849,6 @@ def read_metadata(filename: Union[str, Path]) -> Metadata:
         prefix_map = metadata.pop(PREFIX_MAP_KEY)
     converter = Converter.from_prefix_map(prefix_map)
     return Metadata(converter=converter, metadata=metadata)
-
-
-@deprecated(details="Use pandas.read_csv() instead.")
-def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
-    """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
-
-    :param file: The file to read. If no separator is given, this file should be named.
-    :param sep: File separator for pandas
-    :return: A pandas dataframe
-    """
-    if sep is None:
-        if isinstance(file, Path) or isinstance(file, str):
-            extension = get_file_extension(file)
-            if extension == "tsv":
-                sep = "\t"
-            elif extension == "csv":
-                sep = ","
-            logging.warning(f"Could not guess file extension for {file}")
-    df = read_csv(file, comment="#", sep=sep).fillna("")
-    return sort_df_rows_columns(df)
 
 
 def _extract_global_metadata(msdoc: MappingSetDocument) -> Dict:
