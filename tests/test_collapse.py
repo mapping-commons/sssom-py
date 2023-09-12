@@ -3,7 +3,6 @@
 import unittest
 
 import yaml
-from pansql import sqldf
 
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -61,28 +60,17 @@ class TestCollapse(unittest.TestCase):
         self.assertEqual(0, len(diff.unique_tuples2))
         self.assertEqual(91, len(diff.common_tuples))
         diff_df = diff.combined_dataframe
-        # print(len(diff_df.index))
-        # print(diff_df[0:20])
         self.assertLess(100, len(diff_df.index))
         for c in diff_df["comment"]:
             self.assertTrue(c.startswith("COMMON_TO_BOTH"))
-        output = sqldf("select * from diff_df where comment != ''")
-        print(output)
-        # print(diff)
+        # output = sqldf("select * from diff_df where comment != ''")
 
         df2 = parse(data_dir / "basic2.tsv")
         diff = compare_dataframes(self.df, df2)
-        # print(len(diff.unique_tuples1))
-        # print(len(diff.unique_tuples2))
-        # print(len(diff.common_tuples))
         self.assertEqual(15, len(diff.unique_tuples1))
         self.assertEqual(3, len(diff.unique_tuples2))
         self.assertEqual(76, len(diff.common_tuples))
-        # totlen = len(diff.unique_tuples1) + len(diff.unique_tuples2) + len(diff.common_tuples)
-        # self.assertEqual(totlen, len(self.df.index) + len(df2.index))
         diff_df = diff.combined_dataframe
-        print(len(diff_df.index))
-        # print(diff_df[0:10])
 
     def test_reconcile_prefix(self):
         """Test curie reconciliation is performing as expected."""

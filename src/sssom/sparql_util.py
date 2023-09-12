@@ -1,7 +1,7 @@
 """Utilities for querying mappings with SPARQL."""
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from textwrap import dedent
 from typing import Dict, List, Optional
 
@@ -34,17 +34,19 @@ class EndpointConfig:
 
 def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     """Query a SPARQL endpoint to obtain a set of mappings."""
-    converter = config.converter
     if config.graph is None:
         g = "?g"
     elif isinstance(config.graph, str):
         g = URIRef(config.graph).n3()
     else:
         g = config.graph.n3()
+
     if config.predicates is None:
         predicates = [SKOS.exactMatch, SKOS.closeMatch]
     else:
-        predicates = [URIRef(converter.expand_strict(predicate)) for predicate in config.predicates]
+        predicates = [
+            URIRef(config.converter.expand_strict(predicate)) for predicate in config.predicates
+        ]
     predstr = " ".join(URIRef(predicate).n3() for predicate in predicates)
     if config.limit is not None:
         limitstr = f"LIMIT {config.limit}"
@@ -59,7 +61,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     ]
     if config.include_object_labels:
         cols.insert(-1, "object_label")
-    colstr = " ".join([f"?{c}" for c in cols])
+    colstr = " ".join(f"?{c}" for c in cols)
     olq = "OPTIONAL { ?object_id rdfs:label ?object_label }" if config.include_object_labels else ""
     sparql = dedent(
         f"""\
@@ -83,8 +85,8 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
     results = sparql_wrapper.query().convert()
     df = pd.DataFrame(
         [
-            {key: safe_compress(v["value"], converter) for key, v in result.items()}
+            {key: safe_compress(v["value"], config.converter) for key, v in result.items()}
             for result in results["results"]["bindings"]
         ]
     )
-    return MappingSetDataFrame(df=df, converter=converter)
+    return MappingSetDataFrame(df=df, converter=config.converter)

@@ -14,13 +14,15 @@ later, but that will cause problems--the code will get executed twice:
 import logging
 import os
 import sys
+from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, ChainMap, List, Optional, TextIO, Tuple
 
 import click
 import curies
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
@@ -43,12 +45,10 @@ from .io import (
     split_file,
     validate_file,
 )
-from .parsers import parse_sssom_table
+from .parsers import PARSING_FUNCTIONS, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
-    SSSOM_EXPORT_FORMATS,
-    SSSOM_READ_FORMATS,
     MappingSetDataFrame,
     compare_dataframes,
     dataframe_to_ptable,
@@ -60,7 +60,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .writers import write_table
+from .writers import WRITER_FUNCTIONS, write_table
 
 SSSOM_SV_OBJECT = (
     SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
@@ -73,7 +73,7 @@ input_format_option = click.option(
     "-I",
     "--input-format",
     help="The string denoting the input format.",
-    type=click.Choice(SSSOM_READ_FORMATS),
+    type=click.Choice(PARSING_FUNCTIONS),
 )
 output_option = click.option(
     "-o",
@@ -86,7 +86,7 @@ output_format_option = click.option(
     "-O",
     "--output-format",
     help="Desired output format.",
-    type=click.Choice(SSSOM_EXPORT_FORMATS),
+    type=click.Choice(WRITER_FUNCTIONS),
 )
 output_directory_option = click.option(
     "-d",
@@ -235,7 +235,7 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
-def validate(input: str, validation_types: tuple):
+def validate(input: str, validation_types: List[SchemaValidationType]):
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
     validate_file(input_path=input, validation_types=validation_type_list)
@@ -340,12 +340,12 @@ def sparql(
     graph: str,
     limit: int,
     object_labels: bool,
-    prefix: List[Dict[str, str]],
+    prefix: List[Tuple[str, str]],
     output: TextIO,
 ):
     """Run a SPARQL query."""
     # FIXME this usage needs _serious_ refactoring
-    endpoint = EndpointConfig()  # type: ignore
+    endpoint = EndpointConfig(converter=Converter.from_prefix_map(dict(prefix)))  # type: ignore
     if config is not None:
         for k, v in yaml.safe_load(config).items():
             setattr(endpoint, k, v)
@@ -425,8 +425,6 @@ def partition(inputs: List[str], output_directory: str):
 @click.option("-s", "--statsfile")
 def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
     """Calculate summaries for each clique in a SSSOM file."""
-    import yaml
-
     if metadata is None:
         doc = parse_sssom_table(input)
     else:
@@ -445,10 +443,9 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
 @output_option
 @transpose_option
 @fields_option
-def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
+def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Write sssom summary cross-tabulated by categories."""
     df = remove_unmatched(parse_sssom_table(input).df)
-    # df = parse(input)
     logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
     ct = pd.crosstab(df[f1], df[f2])
@@ -462,11 +459,10 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @transpose_option
 @fields_option
 @input_argument
-def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
+def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Calculate correlations."""
     msdf = parse_sssom_table(input)
     df = remove_unmatched(msdf.df)
-    # df = remove_unmatched(parse(input))
     if len(df) == 0:
         msg = "No matched entities in this dataset!"
         logging.error(msg)
@@ -485,18 +481,16 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     chi2 = chi2_contingency(ct)
 
     logging.info(chi2)
-    _, _, _, ndarray = chi2
-    corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
-    corr.to_csv(output, sep="\t")
+    expected_frequencies_df = pd.DataFrame(chi2[3], index=ct.index, columns=ct.columns)
+    expected_frequencies_df.to_csv(output, sep="\t")
 
-    tups = []
-    for i, row in corr.iterrows():
+    rows = []
+    for i, row in expected_frequencies_df.iterrows():
         for j, v in row.items():
             logging.info(f"{i} x {j} = {v}")
-            tups.append((v, i, j))
-    tups = sorted(tups, key=lambda tx: tx[0])
-    for t in tups:
-        print(f"{t[0]}\t{t[1]}\t{t[2]}")
+            rows.append((v, i, j))
+    for row in sorted(rows, key=itemgetter(0)):
+        print(*row, sep="\t")
 
 
 @main.command()
@@ -665,7 +659,7 @@ def filter(input: str, output: TextIO, **kwargs):
 
     :param input: DataFrame to be queried over.
     :param output: Output location.
-    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     """
     filter_file(input=input, output=output, **kwargs)
 
@@ -674,9 +668,9 @@ def filter(input: str, output: TextIO, **kwargs):
 @input_argument
 @output_option
 # TODO Revist the option below.
-# If a multivalued slot needs to be partially preserved,
-# the users will need to type the ones they need and
-# set --replace-multivalued to True.
+#  If a multivalued slot needs to be partially preserved,
+#  the users will need to type the ones they need and
+#  set --replace-multivalued to True.
 @click.option(
     "--replace-multivalued",
     default=False,
@@ -691,7 +685,7 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     :param output: Output location.
     :param replace_multivalued: Multivalued slots should be
         replaced or not, defaults to False
-    :param **kwargs: Options provided by user
+    :param kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     """
     annotate_file(input=input, output=output, replace_multivalued=replace_multivalued, **kwargs)
