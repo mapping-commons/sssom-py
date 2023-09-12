@@ -181,7 +181,7 @@ def _get_seperator_symbol_from_file_path(file):
 
 def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
-    converter: ConverterHint = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     **kwargs,
 ) -> MappingSetDataFrame:
@@ -197,7 +197,7 @@ def parse_sssom_table(
 
     # If SSSOM external metadata is provided, merge it with the internal metadata
 
-    converter = ensure_converter(converter)
+    converter = ensure_converter(prefix_map)
 
     if sssom_metadata:
         if meta:
@@ -228,19 +228,19 @@ def parse_sssom_table(
 
 def parse_sssom_rdf(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(converter=prefix_map, meta=meta)
+    converter, metadata = _get_prefix_map_and_metadata(converter=prefix_map, meta=meta)
 
     g = Graph()
     g.parse(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, converter=metadata.converter, meta=metadata.metadata)
+    msdf = from_sssom_rdf(g, converter=converter, meta=metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -249,8 +249,8 @@ def parse_sssom_rdf(
 
 def parse_sssom_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -272,8 +272,8 @@ def parse_sssom_json(
 
 def parse_obographs_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
@@ -286,15 +286,15 @@ def parse_obographs_json(
     """
     raise_for_bad_path(file_path)
 
-    _xmetadata = _get_prefix_map_and_metadata(converter=prefix_map, meta=meta)
+    metadata = _get_prefix_map_and_metadata(converter=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
 
     return from_obographs(
         jsondoc,
-        converter=_xmetadata.converter,
-        meta=_xmetadata.metadata,
+        converter=metadata.converter,
+        meta=metadata.metadata,
         mapping_predicates=mapping_predicates,
     )
 

@@ -79,7 +79,7 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
-    df: Optional[pd.DataFrame] = None  # Mappings
+    df: pd.DataFrame
     converter: Converter = field(default_factory=get_converter)
     metadata: MetadataType = field(default_factory=get_default_metadata)
 
@@ -599,8 +599,6 @@ def merge_msdf(
         Defaults to True.
     :returns: Merged MappingSetDataFrame.
     """
-    merged_msdf = MappingSetDataFrame()
-
     # Inject metadata of msdf into df
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
@@ -616,8 +614,9 @@ def merge_msdf(
     ).drop_duplicates(ignore_index=True)
 
     # merge the non DataFrame elements
-    merged_msdf.converter = curies.chain([msdf.converter for msdf in msdf_with_meta])
-    merged_msdf.df = df_merged
+    merged_msdf = MappingSetDataFrame(
+        df=df_merged, converter=curies.chain([msdf.converter for msdf in msdf_with_meta])
+    )
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         if (
@@ -626,7 +625,6 @@ def merge_msdf(
         ):
             merged_msdf.df = deal_with_negation(merged_msdf.df)  # deals with negation
 
-    # TODO: Add default values for license and mapping_set_id.
     return merged_msdf
 
 
@@ -1084,7 +1082,7 @@ def reconcile_prefix_and_data(
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
 
-    prefix_map = msdf.converter.prefix_map
+    prefix_map = dict(msdf.converter.bimap)
     df: pd.DataFrame = msdf.df
     data_switch_dict = dict()
 

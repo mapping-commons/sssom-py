@@ -4,7 +4,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import List, Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union, cast
 
 import pandas as pd
 from curies import Converter
@@ -265,7 +265,8 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
     :return: Filtered MappingSetDataFrame object.
     """
     n = 1
-    new_msdf = MappingSetDataFrame()
+
+    msdf = None
     while len(inputs) >= n:
         fn = inputs[n - 1]
         msdf = parse_sssom_table(fn)
@@ -275,11 +276,14 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
         tn = re.sub("[.].*", "", Path(fn).stem).lower()
         globals()[tn] = df
         n += 1
+    msdf = cast(MappingSetDataFrame, msdf)
 
     new_df = sqldf(query)
-    new_msdf.df = new_df
+    new_msdf = MappingSetDataFrame(
+        df=new_df,
+        metadata=msdf.metadata,
+    )
     new_msdf.backfill_converter_in_place()
-    new_msdf.metadata = msdf.metadata
     write_table(new_msdf, output)
     return new_msdf
 
