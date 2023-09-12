@@ -10,18 +10,7 @@ from dataclasses import dataclass, field
 from functools import reduce
 from pathlib import Path
 from string import punctuation
-from urllib.request import urlopen
-from typing import (
-    Any,
-    DefaultDict,
-    Dict,
-    List,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    Union,
-)
+from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 
 import curies
 import numpy as np
@@ -836,8 +825,6 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
             logging.warning(f"Cannot guess format from {filename}")
     logging.info("Cannot guess format extension for this file, assuming TSV.")
     return "tsv"
-
-
 
 
 def read_metadata(filename: Union[str, Path]) -> Metadata:
