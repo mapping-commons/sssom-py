@@ -4,7 +4,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union
 
 import pandas as pd
 from curies import Converter
@@ -90,9 +90,7 @@ def parse_file(
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(
-            mapping_predicate_filter, metadata.prefix_map
-        )
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
 
     # if mapping_predicates:
     doc = parse_func(
@@ -183,23 +181,23 @@ def get_metadata_and_prefix_map(
     return m
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list:
+def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
     pred_filter_list = list(predicate_filter)
     iri_list = []
     for p in pred_filter_list:
-        p_iri = extract_iri(p, prefix_map)
+        p_iri = extract_iri(p, converter)
         if p_iri:
             iri_list.extend(p_iri)
     return list(set(iri_list))
 
 
-def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
+def extract_iri(input: str, converter: Converter) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
@@ -211,7 +209,6 @@ def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
     if is_iri(input):
         return [input]
     elif is_curie(input):
-        converter = Converter.from_prefix_map(prefix_map)
         p_iri = converter.expand(input)
         if p_iri:
             return [p_iri]
@@ -220,7 +217,7 @@ def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
         pred_list = Path(input).read_text().splitlines()
         iri_list: List[str] = []
         for p in pred_list:
-            p_iri = extract_iri(p, prefix_map)
+            p_iri = extract_iri(p, converter)
             if p_iri:
                 iri_list.extend(p_iri)
         return iri_list

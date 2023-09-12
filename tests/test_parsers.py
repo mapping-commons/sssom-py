@@ -12,7 +12,7 @@ import pandas as pd
 import yaml
 from rdflib import Graph
 
-from sssom.context import _raise_on_invalid_prefix_map, get_default_metadata
+from sssom.context import get_default_metadata
 from sssom.io import parse_file
 from sssom.parsers import (
     from_alignment_minidom,
@@ -64,7 +64,6 @@ class TestParse(unittest.TestCase):
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
         self.metadata = get_default_metadata()
-        _raise_on_invalid_prefix_map(self.metadata.prefix_map)
 
     def test_parse_sssom_dataframe_from_file(self):
         """Test parsing a TSV."""

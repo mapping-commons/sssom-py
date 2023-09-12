@@ -89,13 +89,3 @@ def add_built_in_prefixes_to_prefix_map(
 def get_default_metadata() -> Metadata:
     """Get the default metadata."""
     return Metadata.default()
-
-
-def _raise_on_invalid_prefix_map(prefix_map):
-    """Raise an exception if the prefix map is not bijective.
-
-    This uses :meth:`curies.Converter.from_prefix_map` to try and load a
-    prefix map. If there are any duplicate values (i.e., it is _not_ bijective)
-    then it throws a value error.
-    """
-    Converter.from_prefix_map(prefix_map)
