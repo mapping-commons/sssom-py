@@ -1806,33 +1806,6 @@ Defaults to True.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.read_csv">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.read_csv" title="Permalink to this definition"></a></dt>
-<dd><p>Read a CSV that contains frontmatter commented by a specific character.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Either the file path, a URL, or a file object to read as a TSV
-with frontmatter</p></li>
-<li><p><strong>comment</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The comment character used for the frontmatter. This isn’t the
-same as the comment keyword in <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code> because it only
-works on the first charcter in the line</p></li>
-<li><p><strong>sep</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The separator for the TSV file</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A pandas dataframe</p>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version Use: </span>pandas.read_csv() instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.read_metadata">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">read_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#read_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.read_metadata" title="Permalink to this definition"></a></dt>
 <dd><p>Read a metadata file (yaml) that is supplied separately from a TSV.</p>
@@ -1841,29 +1814,6 @@ works on the first charcter in the line</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.read_pandas">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">read_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#read_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.read_pandas" title="Permalink to this definition"></a></dt>
-<dd><p>Read a tabular data file by wrapping func:<cite>pd.read_csv</cite> to handles comment lines correctly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – The file to read. If no separator is given, this file should be named.</p></li>
-<li><p><strong>sep</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – File separator for pandas</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A pandas dataframe</p>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version Use: </span>pandas.read_csv() instead.</p>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1913,23 +1863,6 @@ works on the first charcter in the line</p></li>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A CURIE</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.sha256sum">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">sha256sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#sha256sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.sha256sum" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the SHA256 hash over the bytes in a file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Filename</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Hashed value</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2100,16 +2033,6 @@ works on the first charcter in the line</p></li>
 <dd class="field-even"><p>Type of writer function</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.writers.to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.to_dataframe" title="Permalink to this definition"></a></dt>
-<dd><p>Convert a mapping set dataframe to a dataframe.
-:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version Use: </span>df variable of ‘MappingSetDataFrame’ instead (msdf.df).</p>
-</div>
 </dd></dl>
 
 <dl class="py function">

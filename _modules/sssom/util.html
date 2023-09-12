@@ -75,7 +75,6 @@
   <h1>Source code for sssom.util</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">itt</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -84,7 +83,6 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
@@ -100,17 +98,14 @@
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">validators</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
-<span class="kn">from</span> <span class="nn">deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
-<span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span> <span class="k">as</span> <span class="n">SSSOM_Mapping</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">slots</span>
 
@@ -332,12 +327,10 @@
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../sssom.html#sssom.util.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../sssom.html#sssom.util.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a pandas frame.&quot;&quot;&quot;</span>
-    <span class="c1"># return from_tsv(filename)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">)</span></div>
-    <span class="c1"># return read_pandas(filename)</span>
 
 
 <div class="viewcode-block" id="collapse"><a class="viewcode-back" href="../../sssom.html#sssom.util.collapse">[docs]</a><span class="k">def</span> <span class="nf">collapse</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
@@ -481,16 +474,15 @@
 <span class="sd">    :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get rows having numpy.NaN as confidence</span>
-    <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># np.NaN</span>
-            <span class="n">nan_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
-            <span class="n">nan_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;DataFrame cannot be empty to &#39;assign_default_confidence&#39;.&quot;</span><span class="p">)</span>
+    <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># np.NaN</span>
+        <span class="n">nan_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+        <span class="n">nan_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
     <span class="k">return</span> <span class="n">new_df</span><span class="p">,</span> <span class="n">nan_df</span></div>
 
 
@@ -718,21 +710,6 @@
 <span class="c1"># * ########################################</span>
 
 <span class="n">RDF_FORMATS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ttl&quot;</span><span class="p">,</span> <span class="s2">&quot;turtle&quot;</span><span class="p">,</span> <span class="s2">&quot;nt&quot;</span><span class="p">,</span> <span class="s2">&quot;xml&quot;</span><span class="p">}</span>
-
-
-<div class="viewcode-block" id="sha256sum"><a class="viewcode-back" href="../../sssom.html#sssom.util.sha256sum">[docs]</a><span class="k">def</span> <span class="nf">sha256sum</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the SHA256 hash over the bytes in a file.</span>
-
-<span class="sd">    :param path: Filename</span>
-<span class="sd">    :return: Hashed value</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
-    <span class="n">mv</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">mv</span><span class="p">),</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-            <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mv</span><span class="p">[:</span><span class="n">n</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="merge_msdf"><a class="viewcode-back" href="../../sssom.html#sssom.util.merge_msdf">[docs]</a><span class="k">def</span> <span class="nf">merge_msdf</span><span class="p">(</span>
@@ -979,51 +956,6 @@
     <span class="k">return</span> <span class="s2">&quot;tsv&quot;</span></div>
 
 
-<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_csv">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use pandas.read_csv() instead.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
-    <span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a CSV that contains frontmatter commented by a specific character.</span>
-
-<span class="sd">    :param filename: Either the file path, a URL, or a file object to read as a TSV</span>
-<span class="sd">        with frontmatter</span>
-<span class="sd">    :param comment: The comment character used for the frontmatter. This isn&#39;t the</span>
-<span class="sd">        same as the comment keyword in :func:`pandas.read_csv` because it only</span>
-<span class="sd">        works on the first charcter in the line</span>
-<span class="sd">    :param sep: The separator for the TSV file</span>
-<span class="sd">    :returns: A pandas dataframe</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">validators</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">comment</span><span class="p">)])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">response</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">EmptyDataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seems like the dataframe is empty: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-            <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">SUBJECT_ID</span><span class="p">,</span>
-                <span class="n">SUBJECT_LABEL</span><span class="p">,</span>
-                <span class="n">PREDICATE_ID</span><span class="p">,</span>
-                <span class="n">OBJECT_ID</span><span class="p">,</span>
-                <span class="n">MAPPING_JUSTIFICATION</span><span class="p">,</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">df</span></div>
-
-
 <div class="viewcode-block" id="read_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_metadata">[docs]</a><span class="k">def</span> <span class="nf">read_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a metadata file (yaml) that is supplied separately from a TSV.&quot;&quot;&quot;</span>
     <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1032,26 +964,6 @@
     <span class="k">if</span> <span class="n">PREFIX_MAP_KEY</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
         <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="read_pandas"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_pandas">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span><span class="n">details</span><span class="o">=</span><span class="s2">&quot;Use pandas.read_csv() instead.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">read_pandas</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="n">sep</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.</span>
-
-<span class="sd">    :param file: The file to read. If no separator is given, this file should be named.</span>
-<span class="sd">    :param sep: File separator for pandas</span>
-<span class="sd">    :return: A pandas dataframe</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">extension</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span><span class="p">:</span>
-                <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
-            <span class="k">elif</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
-                <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not guess file extension for </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">sort_df_rows_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="extract_global_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.extract_global_metadata">[docs]</a><span class="k">def</span> <span class="nf">extract_global_metadata</span><span class="p">(</span><span class="n">msdoc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">]:</span>
