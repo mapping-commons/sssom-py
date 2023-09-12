@@ -8,17 +8,11 @@ from typing import Optional
 import pkg_resources
 from curies import Converter
 
-from .constants import EXTENDED_PREFIX_MAP
-from .typehints import Metadata, MetadataType, PrefixMap
+from .constants import DEFAULT_LICENSE, EXTENDED_PREFIX_MAP, SSSOM_URI_PREFIX
+from .typehints import Metadata, PrefixMap
 
-# HERE = pathlib.Path(__file__).parent.resolve()
-# DEFAULT_CONTEXT_PATH = HERE / "sssom.context.jsonld"
-# EXTERNAL_CONTEXT_PATH = HERE / "obo.epm.json"
-
-SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
-DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 SSSOM_CONTEXT = pkg_resources.resource_filename(
     "sssom_schema", "context/sssom_schema.context.jsonld"
 )
@@ -89,33 +83,8 @@ def add_built_in_prefixes_to_prefix_map(
 
 
 def get_default_metadata() -> Metadata:
-    """Get @context property value from the sssom_context variable in the auto-generated 'internal_context.py' file.
-
-    [Auto generated from sssom.yaml by jsonldcontextgen.py]
-
-    :return: Metadata
-    """
-    contxt = get_jsonld_context()
-    contxt_external = get_extended_prefix_map()
-    prefix_map = {}
-    metadata_dict: MetadataType = {}
-    for key in contxt["@context"]:
-        v = contxt["@context"][key]
-        if isinstance(v, str):
-            prefix_map[key] = v
-        elif isinstance(v, dict):
-            if "@id" in v and "@prefix" in v:
-                if v["@prefix"]:
-                    prefix_map[key] = v["@id"]
-    del prefix_map["@vocab"]
-
-    prefix_map.update({(k, v) for k, v in contxt_external.items() if k not in prefix_map})
-    _raise_on_invalid_prefix_map(prefix_map)
-
-    metadata = Metadata(prefix_map=prefix_map, metadata=metadata_dict)
-    metadata.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
-    metadata.metadata["license"] = DEFAULT_LICENSE
-    return metadata
+    """Get the default metadata."""
+    return Metadata.default()
 
 
 def _raise_on_invalid_prefix_map(prefix_map):

@@ -11,6 +11,7 @@ import pandas as pd
 from sssom_schema import Mapping, MappingSet
 
 from sssom.constants import (
+    DEFAULT_LICENSE,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
     RDFS_SUBCLASS_OF,
@@ -19,9 +20,9 @@ from sssom.constants import (
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
     SSSOM_SUPERCLASS_OF,
+    SSSOM_URI_PREFIX,
 )
 
-from .context import DEFAULT_LICENSE, SSSOM_URI_PREFIX
 from .parsers import to_mapping_set_document
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame

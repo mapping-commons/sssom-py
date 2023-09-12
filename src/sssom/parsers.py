@@ -25,6 +25,7 @@ from sssom_schema import Mapping, MappingSet
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
+    DEFAULT_LICENSE,
     DEFAULT_MAPPING_PROPERTIES,
     LICENSE,
     MAPPING_JUSTIFICATION,
@@ -53,7 +54,6 @@ from sssom.constants import (
 )
 
 from .context import (
-    DEFAULT_LICENSE,
     DEFAULT_MAPPING_SET_ID,
     add_built_in_prefixes_to_prefix_map,
     get_default_metadata,

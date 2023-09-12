@@ -63,6 +63,7 @@ from .constants import (
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
     SSSOM_SUPERCLASS_OF,
+    SSSOM_URI_PREFIX,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
@@ -70,12 +71,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import (
-    SSSOM_BUILT_IN_PREFIXES,
-    SSSOM_URI_PREFIX,
-    get_default_metadata,
-    get_jsonld_context,
-)
+from .context import SSSOM_BUILT_IN_PREFIXES, get_default_metadata, get_jsonld_context
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
