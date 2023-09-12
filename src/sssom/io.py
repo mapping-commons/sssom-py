@@ -13,16 +13,16 @@ from pansql import sqldf
 from sssom.validators import validate
 
 from .constants import (
+    DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
-    DEFAULT_LICENSE,
 )
 from .context import (
+    DEFAULT_MAPPING_SET_ID,
     add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
-    DEFAULT_MAPPING_SET_ID,
 )
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
@@ -172,8 +172,9 @@ def get_metadata_and_prefix_map(
 
     metadata = read_metadata(metadata_path)
     prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
+    converter = Converter.from_prefix_map(prefix_map)
 
-    m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
+    m = Metadata(converter=converter, metadata=metadata.metadata)
     if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
         m.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
     if ("license" not in m.metadata) or (m.metadata["license"] is None):

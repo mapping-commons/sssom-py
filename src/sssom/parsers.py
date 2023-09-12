@@ -328,7 +328,7 @@ def _get_prefix_map_and_metadata(
             )
             prefix_map = cast(PrefixMap, meta[PREFIX_MAP_KEY])
 
-    return Metadata(prefix_map=prefix_map, metadata=meta)
+    return Metadata(converter=Converter.from_prefix_map(prefix_map), metadata=meta)
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:

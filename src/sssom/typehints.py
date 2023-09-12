@@ -5,6 +5,8 @@
 import uuid
 from typing import Any, Dict, NamedTuple
 
+from curies import Converter
+
 from sssom.constants import DEFAULT_LICENSE, SSSOM_URI_PREFIX
 
 __all__ = [
@@ -22,16 +24,21 @@ MetadataType = Dict[str, Any]
 class Metadata(NamedTuple):
     """A pair of a prefix map and associated metadata."""
 
-    prefix_map: PrefixMap
+    converter: Converter
     metadata: MetadataType
+
+    @property
+    def prefix_map(self):
+        """Get the bimap."""
+        return self.converter.bimap
 
     @classmethod
     def default(cls):
         """Get default metadata."""
-        from .context import get_extended_prefix_map
+        from .context import get_converter
 
         return cls(
-            prefix_map=get_extended_prefix_map(),
+            converter=get_converter(),
             metadata=get_default_metadata(),
         )
 

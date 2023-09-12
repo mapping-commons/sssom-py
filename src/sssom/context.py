@@ -1,14 +1,13 @@
 """Utilities for loading JSON-LD contexts."""
 
 import json
-import logging
 import uuid
 from typing import Optional
 
 import pkg_resources
 from curies import Converter
 
-from .constants import DEFAULT_LICENSE, EXTENDED_PREFIX_MAP, SSSOM_URI_PREFIX
+from .constants import EXTENDED_PREFIX_MAP, SSSOM_URI_PREFIX
 from .typehints import Metadata, PrefixMap
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
@@ -31,12 +30,17 @@ def get_jsonld_context():
     return context
 
 
+def get_converter() -> Converter:
+    """Get a converter."""
+    return Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+
+
 def get_extended_prefix_map():
     """Get prefix map from bioregistry (obo.epm.json).
 
     :return: Prefix map.
     """
-    converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    converter = get_converter()
     return {record.prefix: record.uri_prefix for record in converter.records}
 
 
