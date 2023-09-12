@@ -1019,17 +1019,16 @@ def get_prefix_from_curie(curie: str) -> str:
 def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
-    if not df.empty:
-        for col in _get_sssom_schema_object().entity_reference_slots:
-            if col not in df.columns:
-                continue
-            prefixes.update(
-                converter.parse_curie(row).prefix
-                for row in df[col]
-                if not is_iri(row) and is_curie(row)
-            )
-    if "" in prefixes:
-        prefixes.remove("")
+    if df.empty:
+        return prefixes
+    for col in _get_sssom_schema_object().entity_reference_slots:
+        if col not in df.columns:
+            continue
+        prefixes.update(
+            converter.parse_curie(row).prefix
+            for row in df[col]
+            if not is_iri(row) and is_curie(row)
+        )
     return set(prefixes)
 
 

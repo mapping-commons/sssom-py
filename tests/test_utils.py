@@ -1,6 +1,7 @@
 """Test for merging MappingSetDataFrames."""
 
 import unittest
+
 import yaml
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
@@ -11,9 +12,9 @@ from sssom.util import (
     MappingSetDataFrame,
     filter_out_prefixes,
     filter_prefixes,
+    get_prefixes_used_in_table,
     inject_metadata_into_df,
     invert_mappings,
-    get_prefixes_used_in_table,
 )
 from tests.constants import data_dir
 
