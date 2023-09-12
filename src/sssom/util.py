@@ -205,12 +205,10 @@ class MappingSetDiff:
     """
 
 
-def parse(filename: str) -> pd.DataFrame:
+def parse(filename: Union[str, Path]) -> pd.DataFrame:
     """Parse a TSV to a pandas frame."""
-    # return from_tsv(filename)
     logging.info(f"Parsing {filename}")
     return pd.read_csv(filename, sep="\t", comment="#")
-    # return read_pandas(filename)
 
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:

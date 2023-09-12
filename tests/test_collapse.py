@@ -84,5 +84,5 @@ class TestCollapse(unittest.TestCase):
         prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
 
         for pfx, exp in prefix_expansion.items():
-            if pfx in recon_msdf.converter.bimap.keys():
-                self.assertEqual(recon_msdf.converter.bimap[pfx], exp)
+            if pfx in recon_msdf.prefix_map.keys():
+                self.assertEqual(recon_msdf.prefix_map[pfx], exp)

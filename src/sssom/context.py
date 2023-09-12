@@ -13,7 +13,6 @@ from .constants import (
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
 )
-from .typehints import Metadata
 
 ConverterHint = Union[Mapping[str, str], None, Converter]
 
@@ -32,10 +31,9 @@ def get_converter() -> Converter:
 
 
 def ensure_converter(converter: ConverterHint = None) -> Converter:
-    """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
+    """Ensure that a converter with default content is available.
 
     :param converter: A custom prefix map
-    :raises ValueError: If there is a prefix map mismatch.
     :return: A prefix map
     """
     if converter is None:
@@ -47,12 +45,12 @@ def ensure_converter(converter: ConverterHint = None) -> Converter:
     return curies.chain([converter, get_converter()])
 
 
-def merge_converter(metadata: Metadata, prefix_map_mode: str = None) -> Converter:
+def merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:
     """Merge the metadata's converter with the default converter."""
     if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
-        return metadata.converter
+        return converter
     if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
         return get_converter()
     if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-        return curies.chain([metadata.converter, get_converter()])
+        return curies.chain([converter, get_converter()])
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")

@@ -59,7 +59,7 @@ def write_table(
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
         meta.update(msdf.metadata)
-    meta[PREFIX_MAP_KEY] = msdf.converter.bimap
+    meta[PREFIX_MAP_KEY] = msdf.prefix_map
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
@@ -275,7 +275,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
         # TODO upstream converters to linkml, see https://github.com/linkml/linkml-runtime/pull/278
-        prefix_map=msdf.converter.bimap,
+        prefix_map=msdf.prefix_map,
     )
     return graph
 
@@ -461,7 +461,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    context = json.dumps(doc.converter.bimap)
+    context = json.dumps(doc.prefix_map)
     data = JSONDumper().dumps(doc.mapping_set, contexts=context)
     json_obj = json.loads(data)
     return json_obj

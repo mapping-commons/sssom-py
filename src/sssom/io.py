@@ -138,9 +138,9 @@ def get_metadata_and_prefix_map(
     if path is None:
         return Metadata.default()
 
-    metadata = read_metadata(path)
-    converter = merge_converter(metadata=metadata, prefix_map_mode=prefix_map_mode)
-    m = Metadata(converter=converter, metadata=metadata.metadata)
+    converter, metadata = read_metadata(path)
+    converter = merge_converter(converter=converter, prefix_map_mode=prefix_map_mode)
+    m = Metadata(converter=converter, metadata=metadata)
     if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
         m.metadata["mapping_set_id"] = generate_mapping_set_id()
     if ("license" not in m.metadata) or (m.metadata["license"] is None):

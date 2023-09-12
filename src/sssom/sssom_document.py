@@ -16,8 +16,8 @@ class MappingSetDocument:
 
     mapping_set: MappingSet
     """
-   The main part of the document: a set of mappings plus metadata
-   """
+    The main part of the document: a set of mappings plus metadata
+    """
 
     converter: Converter
 

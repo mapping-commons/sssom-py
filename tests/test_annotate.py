@@ -30,7 +30,7 @@ class TestSort(unittest.TestCase):
         validation_msdf = parse_sssom_table(self.validation_file)
 
         self.assertEqual(annotated_msdf.metadata, validation_msdf.metadata)
-        self.assertEqual(annotated_msdf.converter.bimap, validation_msdf.converter.bimap)
+        self.assertEqual(annotated_msdf.prefix_map, validation_msdf.prefix_map)
         self.assertEqual(len(annotated_msdf.df), len(validation_msdf.df))
 
     def test_annotate_multivalued(self):
