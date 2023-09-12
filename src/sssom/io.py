@@ -202,7 +202,7 @@ def extract_iri(input: str, converter: Converter) -> List[str]:
     Recursively extracts a list of IRIs from a string or file.
 
     :param input: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     :rtype: list
     """
