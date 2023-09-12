@@ -17,12 +17,12 @@ from .constants import (
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
+    DEFAULT_LICENSE,
 )
 from .context import (
     add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
-    set_default_license,
-    set_default_mapping_set_id,
+    DEFAULT_MAPPING_SET_ID,
 )
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
@@ -174,8 +174,11 @@ def get_metadata_and_prefix_map(
     prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
 
     m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
-    m = set_default_mapping_set_id(m)
-    m = set_default_license(m)
+    if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
+        m.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
+    if ("license" not in m.metadata) or (m.metadata["license"] is None):
+        m.metadata["license"] = DEFAULT_LICENSE
+        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
     return m
 
 
