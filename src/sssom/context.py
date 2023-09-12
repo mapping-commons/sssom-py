@@ -16,7 +16,7 @@ from .typehints import Metadata, MetadataType, PrefixMap
 # EXTERNAL_CONTEXT_PATH = HERE / "obo.epm.json"
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
-SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
+SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv", "orcid")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 SSSOM_CONTEXT = pkg_resources.resource_filename(

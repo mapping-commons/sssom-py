@@ -1,7 +1,10 @@
 """Test for merging MappingSetDataFrames."""
+
 import unittest
+import yaml
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
+from sssom.context import SSSOM_BUILT_IN_PREFIXES
 from sssom.io import extract_iri
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -10,6 +13,7 @@ from sssom.util import (
     filter_prefixes,
     inject_metadata_into_df,
     invert_mappings,
+    get_prefixes_used_in_table,
 )
 from tests.constants import data_dir
 
@@ -155,3 +159,31 @@ class TestIO(unittest.TestCase):
         msdf_with_meta = inject_metadata_into_df(msdf)
         creator_ids = msdf_with_meta.df["creator_id"].drop_duplicates().values.item()
         self.assertEqual(creator_ids, expected_creators)
+
+
+class TestUtils(unittest.TestCase):
+    """Unit test for utility functions."""
+
+    def test_get_prefixes(self):
+        """Test getting prefixes from a MSDF."""
+        path = data_dir.joinpath("enm_example.tsv")
+        metadata_path = data_dir.joinpath("enm_example.yml")
+        metadata = yaml.safe_load(metadata_path.read_text())
+        msdf = parse_sssom_table(path, meta=metadata)
+        prefixes = get_prefixes_used_in_table(msdf.df, converter=msdf.converter)
+        self.assertNotIn("http", prefixes)
+        self.assertNotIn("https", prefixes)
+        self.assertEqual(
+            {
+                "ENVO",
+                "NPO",
+                "ENM",
+                "CHEBI",
+                "OBI",
+                "IAO",
+                "BAO",
+                "EFO",
+                "BTO",
+            }.union(SSSOM_BUILT_IN_PREFIXES),
+            prefixes,
+        )
