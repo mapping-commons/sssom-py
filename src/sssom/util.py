@@ -1121,7 +1121,11 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
-    for value in meta.values():
+    uri_keys = {"subject_source", "object_source"}
+    for key, value in meta.items():
+        if key in uri_keys:
+            # don't try and parse these since they'll usually be HTTP or HTTPS
+            continue
         if isinstance(value, list):
             prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
         else:
