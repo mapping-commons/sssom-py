@@ -26,6 +26,7 @@ from sssom_schema import Mapping, MappingSet
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
+    DEFAULT_LICENSE,
     DEFAULT_MAPPING_PROPERTIES,
     LICENSE,
     MAPPING_JUSTIFICATION,
@@ -53,15 +54,9 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import (
-    DEFAULT_LICENSE,
-    DEFAULT_MAPPING_SET_ID,
-    ConverterHint,
-    ensure_converter,
-    get_default_metadata,
-)
+from .context import ConverterHint, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType
+from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -309,7 +304,7 @@ def _get_prefix_map_and_metadata(
 ) -> Metadata:
     converter = ensure_converter(converter)
     if meta is None:
-        meta = get_default_metadata().metadata
+        meta = get_default_metadata()
     elif converter is not None and PREFIX_MAP_KEY in meta:
         # use specified directly in function then fall back to
         # what's in the meta
@@ -332,7 +327,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     license = DEFAULT_LICENSE
-    mapping_set_id = DEFAULT_MAPPING_SET_ID
+    mapping_set_id = generate_mapping_set_id()
     if meta is not None:
         if MAPPING_SET_ID in meta.keys():
             mapping_set_id = meta[MAPPING_SET_ID]

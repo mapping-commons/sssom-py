@@ -55,16 +55,18 @@ from .constants import (
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
+    SSSOM_BUILT_IN_PREFIXES,
     SSSOM_SUPERCLASS_OF,
+    SSSOM_URI_PREFIX,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, SSSOM_URI_PREFIX, ensure_converter, get_converter
+from .context import ensure_converter, get_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType
+from .typehints import Metadata, MetadataType, get_default_metadata
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -84,7 +86,7 @@ class MappingSetDataFrame:
 
     df: Optional[pd.DataFrame] = None  # Mappings
     converter: Converter = field(default_factory=get_converter)
-    metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
+    metadata: MetadataType = field(default_factory=get_default_metadata)
 
     def backfill_converter_in_place(self):
         """Add any missing default parts to the converter."""
@@ -893,7 +895,7 @@ def read_csv(
     return df
 
 
-def read_metadata(filename: str) -> Metadata:
+def read_metadata(filename: Union[str, Path]) -> Metadata:
     """Read a metadata file (yaml) that is supplied separately from a TSV."""
     prefix_map = {}
     with open(filename) as file:

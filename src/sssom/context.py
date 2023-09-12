@@ -1,7 +1,5 @@
 """Utilities for loading JSON-LD contexts."""
 
-import logging
-import uuid
 from functools import lru_cache
 from typing import Mapping, Union
 
@@ -16,11 +14,6 @@ from .constants import (
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
 )
 from .typehints import Metadata
-
-SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
-SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
-DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
 
 ConverterHint = Union[Mapping[str, str], None, Converter]
 
@@ -52,43 +45,6 @@ def ensure_converter(converter: ConverterHint = None) -> Converter:
     else:
         converter = Converter.from_prefix_map(converter)
     return curies.chain([converter, get_converter()])
-
-
-def get_default_metadata() -> Metadata:
-    """Get @context property value from the sssom_context variable in the auto-generated 'internal_context.py' file.
-
-    :return: Metadata
-    """
-    return Metadata(
-        converter=get_converter(),
-        metadata={
-            "mapping_set_id": DEFAULT_MAPPING_SET_ID,
-            "license": DEFAULT_LICENSE,
-        },
-    )
-
-
-def set_default_mapping_set_id(meta: Metadata) -> Metadata:
-    """Provide a default mapping_set_id if absent in the MappingSetDataFrame.
-
-    :param meta: Metadata without mapping_set_id
-    :return: Metadata with a default mapping_set_id
-    """
-    if ("mapping_set_id" not in meta.metadata) or (meta.metadata["mapping_set_id"] is None):
-        meta.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
-    return meta
-
-
-def set_default_license(meta: Metadata) -> Metadata:
-    """Provide a default license if absent in the MappingSetDataFrame.
-
-    :param meta: Metadata without license
-    :return: Metadata with a default license
-    """
-    if ("license" not in meta.metadata) or (meta.metadata["license"] is None):
-        meta.metadata["license"] = DEFAULT_LICENSE
-        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
-    return meta
 
 
 def merge_converter(metadata: Metadata, prefix_map_mode: str = None) -> Converter:

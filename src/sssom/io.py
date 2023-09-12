@@ -12,15 +12,10 @@ from pansql import sqldf
 
 from sssom.validators import validate
 
-from .constants import SchemaValidationType
-from .context import (
-    get_default_metadata,
-    merge_converter,
-    set_default_license,
-    set_default_mapping_set_id,
-)
+from .constants import DEFAULT_LICENSE, SchemaValidationType
+from .context import merge_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata
+from .typehints import Metadata, generate_mapping_set_id
 from .util import (
     MappingSetDataFrame,
     are_params_slots,
@@ -77,20 +72,20 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    metadata = get_metadata_and_prefix_map(
-        metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
+    converter, meta = get_metadata_and_prefix_map(
+        path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, converter)
 
     # if mapping_predicates:
     doc = parse_func(
         input_path,
-        converter=metadata.converter,
-        meta=metadata.metadata,
+        converter=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     # else:
@@ -131,23 +126,26 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 
 def get_metadata_and_prefix_map(
-    metadata_path: Optional[str] = None, prefix_map_mode: Optional[str] = None
+    path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
 ) -> Metadata:
     """
     Load SSSOM metadata from a file, and then augments it with default prefixes.
 
-    :param metadata_path: The metadata file in YAML format
+    :param path: The metadata file in YAML format
     :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
     :return: a prefix map dictionary and a metadata object dictionary
     """
-    if metadata_path is None:
-        return get_default_metadata()
+    if path is None:
+        return Metadata.default()
 
-    metadata = read_metadata(metadata_path)
+    metadata = read_metadata(path)
     converter = merge_converter(metadata=metadata, prefix_map_mode=prefix_map_mode)
     m = Metadata(converter=converter, metadata=metadata.metadata)
-    m = set_default_mapping_set_id(m)
-    m = set_default_license(m)
+    if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
+        m.metadata["mapping_set_id"] = generate_mapping_set_id()
+    if ("license" not in m.metadata) or (m.metadata["license"] is None):
+        m.metadata["license"] = DEFAULT_LICENSE
+        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
     return m
 
 

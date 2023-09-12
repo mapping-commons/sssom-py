@@ -32,7 +32,6 @@ from sssom.constants import (
     SchemaValidationType,
     SSSOMSchemaView,
 )
-from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
@@ -384,11 +383,10 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         logging.info(
             f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
         )
-    msdf = MappingSetDataFrame()
-    meta = get_default_metadata()
-    msdf.df = d.combined_dataframe.drop_duplicates()
-    msdf.converter = curies.chain([msdf1.converter, msdf2.converter])
-    msdf.metadata = meta.metadata
+    msdf = MappingSetDataFrame(
+        df=d.combined_dataframe.drop_duplicates(),
+        converter=curies.chain([msdf1.converter, msdf2.converter]),
+    )
     msdf.metadata[
         "comment"
     ] = f"Diff between {input1} and {input2}. See comment column for information."
