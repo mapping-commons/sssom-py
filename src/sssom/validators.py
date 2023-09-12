@@ -1,6 +1,5 @@
 """Validators."""
 
-import logging
 from typing import Callable, List, Mapping
 
 from jsonschema import ValidationError
@@ -8,7 +7,6 @@ from linkml_runtime.processing.referencevalidator import ReferenceValidator
 from linkml_runtime.utils.schemaview import SchemaView
 from sssom_schema import MappingSet
 
-from sssom.context import ensure_converter
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 

@@ -16,7 +16,7 @@ import os
 import sys
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, ChainMap, List, Optional, TextIO, Tuple
+from typing import Any, Callable, List, Optional, TextIO, Tuple
 
 import click
 import curies

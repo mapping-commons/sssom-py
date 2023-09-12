@@ -92,17 +92,8 @@ class MappingSetDataFrame:
 
     @property
     def prefix_map(self):
+        """Get a bijective prefix map."""
         return self.converter.bimap
-
-    @classmethod
-    def with_converter(
-        cls,
-        converter: Converter,
-        df: Optional[pd.DataFrame] = None,
-        metadata: Optional[MetadataType] = None,
-    ) -> "MappingSetDataFrame":
-        """Instantiate with a converter instead of a vanilla prefix map."""
-        return cls(df=df, prefix_map=dict(converter.bimap), metadata=metadata)
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -1138,51 +1129,6 @@ def filter_prefixes(
             rows.append(row)
 
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
-
-
-def prepare_context(
-    prefix_map: Optional[PrefixMap] = None,
-) -> Mapping[str, Any]:
-    """Prepare a JSON-LD context from a prefix map."""
-    context = get_jsonld_context()
-    if prefix_map is None:
-        prefix_map = get_default_metadata().prefix_map
-
-    for k, v in prefix_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return context
-
-
-def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
-    """Prepare a JSON-LD context and dump to a string.
-
-    :param prefix_map: Prefix map, defaults to None
-    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
-    :return: Context in str format
-    """
-    return json.dumps(prepare_context(prefix_map), **kwargs)
-
-
-def raise_for_bad_prefix_map_mode(prefix_map_mode: Optional[str] = None):
-    """Raise exception if prefix map mode is invalid.
-
-    :param prefix_map_mode: The prefix map mode
-    :raises ValueError: Invalid prefix map mode
-    """
-    if prefix_map_mode not in PREFIX_MAP_MODES:
-        raise ValueError(
-            f"{prefix_map_mode} is not a valid prefix map mode, "
-            f"must be one of {' '.join(PREFIX_MAP_MODES)}"
-        )
 
 
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:

@@ -4,7 +4,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union
 
 import pandas as pd
 from curies import Converter
@@ -14,7 +14,6 @@ from sssom.validators import validate
 
 from .constants import SchemaValidationType
 from .context import (
-    ensure_converter,
     get_default_metadata,
     merge_converter,
     set_default_license,
