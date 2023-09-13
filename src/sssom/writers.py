@@ -16,13 +16,12 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import SCHEMA_YAML
+from .constants import SCHEMA_YAML, SSSOM_URI_PREFIX
 from .parsers import to_mapping_set_document
 from .util import (
     PREFIX_MAP_KEY,
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
-    SSSOM_URI_PREFIX,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,

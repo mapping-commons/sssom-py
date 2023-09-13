@@ -3,6 +3,7 @@
 import unittest
 
 import yaml
+from curies import Converter
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
 from sssom.context import SSSOM_BUILT_IN_PREFIXES
@@ -32,9 +33,10 @@ class TestIO(unittest.TestCase):
         """Test merging of multiple msdfs."""
         pred_filter_list = ["skos:relatedMatch", f"{data_dir}/predicate_list3.txt"]
         prefix_map = {"skos": "http://www.w3.org/2004/02/skos/core#"}
+        converter = Converter.from_prefix_map(prefix_map)
         iri_list = []
         for p in pred_filter_list:
-            p_iri = extract_iri(p, prefix_map)
+            p_iri = extract_iri(p, converter)
             if p_iri:
                 iri_list.extend(p_iri)
         self.assertEqual(3, len(iri_list))

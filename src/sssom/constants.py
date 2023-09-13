@@ -257,3 +257,7 @@ class SSSOMSchemaView(object):
     def entity_reference_slots(self) -> List[str]:
         """Return list of entity reference slots."""
         return [c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE]
+
+
+SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
+DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"

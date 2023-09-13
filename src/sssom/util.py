@@ -63,6 +63,7 @@ from .constants import (
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
     SSSOM_SUPERCLASS_OF,
+    SSSOM_URI_PREFIX,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
@@ -70,12 +71,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import (
-    SSSOM_BUILT_IN_PREFIXES,
-    SSSOM_URI_PREFIX,
-    get_default_metadata,
-    get_jsonld_context,
-)
+from .context import SSSOM_BUILT_IN_PREFIXES, get_jsonld_context
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -163,7 +159,7 @@ class MappingSetDataFrame:
 
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
-        default_prefix_map = get_default_metadata().prefix_map
+        default_prefix_map = Metadata.default().prefix_map
         for prefix in prefixes_in_table:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
@@ -888,7 +884,8 @@ def read_metadata(filename: str) -> Metadata:
         metadata = yaml.safe_load(file)
     if PREFIX_MAP_KEY in metadata:
         prefix_map = metadata.pop(PREFIX_MAP_KEY)
-    return Metadata(prefix_map=prefix_map, metadata=metadata)
+    converter = Converter.from_prefix_map(prefix_map)
+    return Metadata(converter=converter, metadata=metadata)
 
 
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
@@ -1108,7 +1105,7 @@ def prepare_context(
     """Prepare a JSON-LD context from a prefix map."""
     context = get_jsonld_context()
     if prefix_map is None:
-        prefix_map = get_default_metadata().prefix_map
+        prefix_map = Metadata.default().prefix_map
 
     for k, v in prefix_map.items():
         if isinstance(v, str):

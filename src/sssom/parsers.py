@@ -25,6 +25,7 @@ from sssom_schema import Mapping, MappingSet
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
+    DEFAULT_LICENSE,
     DEFAULT_MAPPING_PROPERTIES,
     LICENSE,
     MAPPING_JUSTIFICATION,
@@ -52,14 +53,9 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import (
-    DEFAULT_LICENSE,
-    DEFAULT_MAPPING_SET_ID,
-    add_built_in_prefixes_to_prefix_map,
-    get_default_metadata,
-)
+from .context import add_built_in_prefixes_to_prefix_map
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap
+from .typehints import Metadata, MetadataType, PrefixMap, generate_mapping_set_id
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -312,7 +308,7 @@ def parse_obographs_json(
 def _get_prefix_map_and_metadata(
     prefix_map: Optional[PrefixMap] = None, meta: Optional[MetadataType] = None
 ) -> Metadata:
-    default_metadata = get_default_metadata()
+    default_metadata = Metadata.default()
 
     if prefix_map is None:
         logging.warning("No prefix map provided (not recommended), trying to use defaults..")
@@ -328,7 +324,8 @@ def _get_prefix_map_and_metadata(
             )
             prefix_map = cast(PrefixMap, meta[PREFIX_MAP_KEY])
 
-    return Metadata(prefix_map=prefix_map, metadata=meta)
+    converter = Converter.from_prefix_map(prefix_map)
+    return Metadata(converter=converter, metadata=meta)
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
@@ -341,7 +338,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     license = DEFAULT_LICENSE
-    mapping_set_id = DEFAULT_MAPPING_SET_ID
+    mapping_set_id = generate_mapping_set_id()
     if meta is not None:
         if MAPPING_SET_ID in meta.keys():
             mapping_set_id = meta[MAPPING_SET_ID]

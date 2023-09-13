@@ -4,7 +4,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, TextIO, Union
+from typing import List, Optional, TextIO, Union
 
 import pandas as pd
 from curies import Converter
@@ -13,19 +13,15 @@ from pansql import sqldf
 from sssom.validators import validate
 
 from .constants import (
+    DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
 )
-from .context import (
-    add_built_in_prefixes_to_prefix_map,
-    get_default_metadata,
-    set_default_license,
-    set_default_mapping_set_id,
-)
+from .context import add_built_in_prefixes_to_prefix_map
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata
+from .typehints import Metadata, generate_mapping_set_id
 from .util import (
     MappingSetDataFrame,
     are_params_slots,
@@ -90,9 +86,7 @@ def parse_file(
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(
-            mapping_predicate_filter, metadata.prefix_map
-        )
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
 
     # if mapping_predicates:
     doc = parse_func(
@@ -147,7 +141,7 @@ def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
     prefix_map = metadata.prefix_map
 
     if prefix_map_mode != PREFIX_MAP_MODE_METADATA_ONLY:
-        default_metadata: Metadata = get_default_metadata()
+        default_metadata = Metadata.default()
         if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
             prefix_map = default_metadata.prefix_map
         elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
@@ -168,46 +162,49 @@ def get_metadata_and_prefix_map(
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
-        return get_default_metadata()
+        return Metadata.default()
 
     metadata = read_metadata(metadata_path)
     prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
+    converter = Converter.from_prefix_map(prefix_map)
 
-    m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
-    m = set_default_mapping_set_id(m)
-    m = set_default_license(m)
+    m = Metadata(converter=converter, metadata=metadata.metadata)
+    if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
+        m.metadata["mapping_set_id"] = generate_mapping_set_id()
+    if ("license" not in m.metadata) or (m.metadata["license"] is None):
+        m.metadata["license"] = DEFAULT_LICENSE
+        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
     return m
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list:
+def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
     pred_filter_list = list(predicate_filter)
     iri_list = []
     for p in pred_filter_list:
-        p_iri = extract_iri(p, prefix_map)
+        p_iri = extract_iri(p, converter)
         if p_iri:
             iri_list.extend(p_iri)
     return list(set(iri_list))
 
 
-def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
+def extract_iri(input: str, converter: Converter) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
     :param input: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     :rtype: list
     """
     if is_iri(input):
         return [input]
     elif is_curie(input):
-        converter = Converter.from_prefix_map(prefix_map)
         p_iri = converter.expand(input)
         if p_iri:
             return [p_iri]
@@ -216,7 +213,7 @@ def extract_iri(input: str, prefix_map: Dict[str, str]) -> List[str]:
         pred_list = Path(input).read_text().splitlines()
         iri_list: List[str] = []
         for p in pred_list:
-            p_iri = extract_iri(p, prefix_map)
+            p_iri = extract_iri(p, converter)
             if p_iri:
                 iri_list.extend(p_iri)
         return iri_list
