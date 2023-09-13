@@ -129,13 +129,13 @@ class TestIO(unittest.TestCase):
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
         original_curie_map = msdf.prefix_map
         self.assertEqual(
-            {"a", "b", "c", "d"}.union(SSSOM_BUILT_IN_PREFIXES),
+            {"a", "b", "c", "d", "orcid"}.union(SSSOM_BUILT_IN_PREFIXES),
             set(original_curie_map),
         )
         msdf.clean_prefix_map(strict=False)
         new_curie_map = msdf.prefix_map
         self.assertEqual(
-            {"a", "b", "c", "d", "x1", "y1", "z1"}.union(SSSOM_BUILT_IN_PREFIXES),
+            {"a", "b", "c", "d", "orcid", "x1", "y1", "z1"}.union(SSSOM_BUILT_IN_PREFIXES),
             set(new_curie_map),
         )
 
@@ -188,6 +188,7 @@ class TestUtils(unittest.TestCase):
                 "BAO",
                 "EFO",
                 "BTO",
+                "orcid",
             }.union(SSSOM_BUILT_IN_PREFIXES),
             prefixes,
         )

@@ -15,3 +15,4 @@ curie_map:
   BAO: http://www.bioassayontology.org/bao#BAO_
   EFO: http://www.ebi.ac.uk/efo/EFO_
   BTO: http://purl.obolibrary.org/obo/BTO_
+  orcid: https://orcid.org/
