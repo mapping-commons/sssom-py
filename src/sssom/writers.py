@@ -150,10 +150,11 @@ def write_ontoportal_json(
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
     if serialisation != "ontoportal_json":
-        raise ValueError(f"Unknown json format: {serialisation}, currently only ontoportal_json supported")
+        raise ValueError(
+            f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
+        )
     data = to_ontoportal_json(msdf)
     json.dump(data, output, indent=2)
-
 
 
 # Converters
@@ -502,18 +503,29 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
     m_list = []
     for _, row in msdf.df.iterrows():
         mapping_justification = row.get("mapping_justification", "")
+        if "creator_id" in row:
+            creators = row["creator_id"]
+        elif "creator_id" in metadata:
+            creators = metadata["creator_id"]
+        else:
+            creators = []
+
         json_obj = {
-            "classes": [converter.expand(row["subject_id"]), converter.expand(row["object_id"])],
+            "classes": [
+                converter.expand(row["subject_id"]),
+                converter.expand(row["object_id"]),
+            ],
             "subject_source_id": row.get("subject_source", ""),
             "object_source_id": row.get("object_source", ""),
             "source_name": metadata.get("mapping_set_id", ""),
-            "source_contact_info": ",".join(metadata.get("creator_id", "")),
+            "source_contact_info": ",".join(creators),
             "date": metadata.get("mapping_date", row.get("mapping_date", "")),
-            "name": metadata.get("mapping_set_description", ""),
+            "name": metadata.get("mapping_set_title", ""),
             "source": converter.expand(mapping_justification) if mapping_justification else "",
             "comment": row.get("comment", ""),
             "relation": [converter.expand(row["predicate_id"])],
         }
+        json_obj = {k: v for k, v in json_obj.items() if k and v}
         m_list.append(json_obj)
     return m_list
 
