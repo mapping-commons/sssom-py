@@ -229,13 +229,13 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.extract_iri">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#extract_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.extract_iri" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#extract_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.extract_iri" title="Permalink to this definition"></a></dt>
 <dd><p>Recursively extracts a list of IRIs from a string or file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -280,13 +280,13 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.get_list_of_predicate_iri">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_list_of_predicate_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_list_of_predicate_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_list_of_predicate_iri" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_list_of_predicate_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_list_of_predicate_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_list_of_predicate_iri" title="Permalink to this definition"></a></dt>
 <dd><p>Return a list of IRIs for predicate CURIEs passed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>predicate_filter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>

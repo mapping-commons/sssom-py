@@ -76,24 +76,15 @@
 <span></span><span class="sd">&quot;&quot;&quot;Utilities for loading JSON-LD contexts.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">EXTENDED_PREFIX_MAP</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span>
+<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">PrefixMap</span>
 
-<span class="c1"># HERE = pathlib.Path(__file__).parent.resolve()</span>
-<span class="c1"># DEFAULT_CONTEXT_PATH = HERE / &quot;sssom.context.jsonld&quot;</span>
-<span class="c1"># EXTERNAL_CONTEXT_PATH = HERE / &quot;obo.epm.json&quot;</span>
-
-<span class="n">SSSOM_URI_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;https://w3id.org/sssom/&quot;</span>
 <span class="n">SSSOM_BUILT_IN_PREFIXES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;sssom&quot;</span><span class="p">,</span> <span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;rdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">,</span> <span class="s2">&quot;semapv&quot;</span><span class="p">)</span>
-<span class="n">DEFAULT_MAPPING_SET_ID</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings/</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="n">DEFAULT_LICENSE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">license/unspecified&quot;</span>
 <span class="n">SSSOM_CONTEXT</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
     <span class="s2">&quot;sssom_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;context/sssom_schema.context.jsonld&quot;</span>
 <span class="p">)</span>
@@ -112,12 +103,17 @@
     <span class="k">return</span> <span class="n">context</span></div>
 
 
+<div class="viewcode-block" id="get_converter"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_converter">[docs]</a><span class="k">def</span> <span class="nf">get_converter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a converter.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_extended_prefix_map</span><span class="p">(</span><span class="n">EXTENDED_PREFIX_MAP</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="get_extended_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_extended_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_extended_prefix_map</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get prefix map from bioregistry (obo.epm.json).</span>
 
 <span class="sd">    :return: Prefix map.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_extended_prefix_map</span><span class="p">(</span><span class="n">EXTENDED_PREFIX_MAP</span><span class="p">)</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">get_converter</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">record</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">uri_prefix</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">converter</span><span class="o">.</span><span class="n">records</span><span class="p">}</span></div>
 
 
@@ -161,69 +157,6 @@
                     <span class="sa">f</span><span class="s2">&quot;Built-in prefix </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is specified (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) but differs from default (</span><span class="si">{</span><span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
                 <span class="p">)</span>
     <span class="k">return</span> <span class="n">prefix_map</span></div>
-
-
-<div class="viewcode-block" id="get_default_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_default_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get @context property value from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
-
-<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
-
-<span class="sd">    :return: Metadata</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">contxt</span> <span class="o">=</span> <span class="n">get_jsonld_context</span><span class="p">()</span>
-    <span class="n">contxt_external</span> <span class="o">=</span> <span class="n">get_extended_prefix_map</span><span class="p">()</span>
-    <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">metadata_dict</span><span class="p">:</span> <span class="n">MetadataType</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s2">&quot;@id&quot;</span> <span class="ow">in</span> <span class="n">v</span> <span class="ow">and</span> <span class="s2">&quot;@prefix&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;@prefix&quot;</span><span class="p">]:</span>
-                    <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span>
-    <span class="k">del</span> <span class="n">prefix_map</span><span class="p">[</span><span class="s2">&quot;@vocab&quot;</span><span class="p">]</span>
-
-    <span class="n">prefix_map</span><span class="o">.</span><span class="n">update</span><span class="p">({(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">contxt_external</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="p">})</span>
-    <span class="n">_raise_on_invalid_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
-
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">Metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata_dict</span><span class="p">)</span>
-    <span class="n">metadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_MAPPING_SET_ID</span>
-    <span class="n">metadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_LICENSE</span>
-    <span class="k">return</span> <span class="n">metadata</span></div>
-
-
-<span class="k">def</span> <span class="nf">_raise_on_invalid_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise an exception if the prefix map is not bijective.</span>
-
-<span class="sd">    This uses :meth:`curies.Converter.from_prefix_map` to try and load a</span>
-<span class="sd">    prefix map. If there are any duplicate values (i.e., it is _not_ bijective)</span>
-<span class="sd">    then it throws a value error.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="set_default_mapping_set_id"><a class="viewcode-back" href="../../sssom.html#sssom.context.set_default_mapping_set_id">[docs]</a><span class="k">def</span> <span class="nf">set_default_mapping_set_id</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a default mapping_set_id if absent in the MappingSetDataFrame.</span>
-
-<span class="sd">    :param meta: Metadata without mapping_set_id</span>
-<span class="sd">    :return: Metadata with a default mapping_set_id</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_MAPPING_SET_ID</span>
-    <span class="k">return</span> <span class="n">meta</span></div>
-
-
-<div class="viewcode-block" id="set_default_license"><a class="viewcode-back" href="../../sssom.html#sssom.context.set_default_license">[docs]</a><span class="k">def</span> <span class="nf">set_default_license</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a default license if absent in the MappingSetDataFrame.</span>
-
-<span class="sd">    :param meta: Metadata without license</span>
-<span class="sd">    :return: Metadata with a default license</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;license&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">meta</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_LICENSE</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No License provided, using </span><span class="si">{</span><span class="n">DEFAULT_LICENSE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">meta</span></div>
 </pre></div>
 
            </div>

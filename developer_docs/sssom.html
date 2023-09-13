@@ -66,11 +66,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-sssom.context">sssom.context module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.context.add_built_in_prefixes_to_prefix_map"><code class="docutils literal notranslate"><span class="pre">add_built_in_prefixes_to_prefix_map()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_built_in_prefix_map"><code class="docutils literal notranslate"><span class="pre">get_built_in_prefix_map()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_default_metadata"><code class="docutils literal notranslate"><span class="pre">get_default_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_converter"><code class="docutils literal notranslate"><span class="pre">get_converter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_extended_prefix_map"><code class="docutils literal notranslate"><span class="pre">get_extended_prefix_map()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.context.get_jsonld_context"><code class="docutils literal notranslate"><span class="pre">get_jsonld_context()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.context.set_default_license"><code class="docutils literal notranslate"><span class="pre">set_default_license()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.context.set_default_mapping_set_id"><code class="docutils literal notranslate"><span class="pre">set_default_mapping_set_id()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#sssom-io-module">sssom.io module</a></li>
@@ -292,16 +290,12 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="sssom.context.get_default_metadata">
-<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">get_default_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/context.html#get_default_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.get_default_metadata" title="Permalink to this definition"></a></dt>
-<dd><p>Get &#64;context property value from the sssom_context variable in the auto-generated ‘internal_context.py’ file.</p>
-<p>[Auto generated from sssom.yaml by jsonldcontextgen.py]</p>
+<dt class="sig sig-object py" id="sssom.context.get_converter">
+<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">get_converter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/context.html#get_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.get_converter" title="Permalink to this definition"></a></dt>
+<dd><p>Get a converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Metadata</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,40 +319,6 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>JSON-LD context</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.context.set_default_license">
-<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">set_default_license</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/context.html#set_default_license"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.set_default_license" title="Permalink to this definition"></a></dt>
-<dd><p>Provide a default license if absent in the MappingSetDataFrame.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>meta</strong> (<a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a>) – Metadata without license</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Metadata with a default license</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.context.set_default_mapping_set_id">
-<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">set_default_mapping_set_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/context.html#set_default_mapping_set_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.set_default_mapping_set_id" title="Permalink to this definition"></a></dt>
-<dd><p>Provide a default mapping_set_id if absent in the MappingSetDataFrame.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>meta</strong> (<a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a>) – Metadata without mapping_set_id</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Metadata with a default mapping_set_id</p>
 </dd>
 </dl>
 </dd></dl>
@@ -412,13 +372,13 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#extract_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#extract_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Recursively extracts a list of IRIs from a string or file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -463,13 +423,13 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_list_of_predicate_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_list_of_predicate_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_list_of_predicate_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_list_of_predicate_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Return a list of IRIs for predicate CURIEs passed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>predicate_filter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
