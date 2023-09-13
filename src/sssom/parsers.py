@@ -53,9 +53,9 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import DEFAULT_MAPPING_SET_ID, add_built_in_prefixes_to_prefix_map
+from .context import add_built_in_prefixes_to_prefix_map
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap
+from .typehints import Metadata, MetadataType, PrefixMap, generate_mapping_set_id
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -338,7 +338,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     license = DEFAULT_LICENSE
-    mapping_set_id = DEFAULT_MAPPING_SET_ID
+    mapping_set_id = generate_mapping_set_id()
     if meta is not None:
         if MAPPING_SET_ID in meta.keys():
             mapping_set_id = meta[MAPPING_SET_ID]

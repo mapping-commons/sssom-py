@@ -19,9 +19,9 @@ from .constants import (
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
 )
-from .context import DEFAULT_MAPPING_SET_ID, add_built_in_prefixes_to_prefix_map
+from .context import add_built_in_prefixes_to_prefix_map
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata
+from .typehints import Metadata, generate_mapping_set_id
 from .util import (
     MappingSetDataFrame,
     are_params_slots,
@@ -170,7 +170,7 @@ def get_metadata_and_prefix_map(
 
     m = Metadata(converter=converter, metadata=metadata.metadata)
     if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
-        m.metadata["mapping_set_id"] = DEFAULT_MAPPING_SET_ID
+        m.metadata["mapping_set_id"] = generate_mapping_set_id()
     if ("license" not in m.metadata) or (m.metadata["license"] is None):
         m.metadata["license"] = DEFAULT_LICENSE
         logging.warning(f"No License provided, using {DEFAULT_LICENSE}")

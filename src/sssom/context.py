@@ -1,17 +1,15 @@
 """Utilities for loading JSON-LD contexts."""
 
 import json
-import uuid
 from typing import Optional
 
 import pkg_resources
 from curies import Converter
 
-from .constants import EXTENDED_PREFIX_MAP, SSSOM_URI_PREFIX
+from .constants import EXTENDED_PREFIX_MAP
 from .typehints import PrefixMap
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 SSSOM_CONTEXT = pkg_resources.resource_filename(
     "sssom_schema", "context/sssom_schema.context.jsonld"
 )
