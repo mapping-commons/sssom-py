@@ -71,7 +71,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, get_default_metadata, get_jsonld_context
+from .context import SSSOM_BUILT_IN_PREFIXES, get_jsonld_context
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 
@@ -159,7 +159,7 @@ class MappingSetDataFrame:
 
         new_prefixes: PrefixMap = dict()
         missing_prefixes = []
-        default_prefix_map = get_default_metadata().prefix_map
+        default_prefix_map = Metadata.default().prefix_map
         for prefix in prefixes_in_table:
             if prefix in self.prefix_map:
                 new_prefixes[prefix] = self.prefix_map[prefix]
@@ -1101,7 +1101,7 @@ def prepare_context(
     """Prepare a JSON-LD context from a prefix map."""
     context = get_jsonld_context()
     if prefix_map is None:
-        prefix_map = get_default_metadata().prefix_map
+        prefix_map = Metadata.default().prefix_map
 
     for k, v in prefix_map.items():
         if isinstance(v, str):

@@ -19,11 +19,7 @@ from .constants import (
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
 )
-from .context import (
-    DEFAULT_MAPPING_SET_ID,
-    add_built_in_prefixes_to_prefix_map,
-    get_default_metadata,
-)
+from .context import DEFAULT_MAPPING_SET_ID, add_built_in_prefixes_to_prefix_map
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata
 from .util import (
@@ -145,7 +141,7 @@ def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
     prefix_map = metadata.prefix_map
 
     if prefix_map_mode != PREFIX_MAP_MODE_METADATA_ONLY:
-        default_metadata: Metadata = get_default_metadata()
+        default_metadata = Metadata.default()
         if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
             prefix_map = default_metadata.prefix_map
         elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
@@ -166,7 +162,7 @@ def get_metadata_and_prefix_map(
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
-        return get_default_metadata()
+        return Metadata.default()
 
     metadata = read_metadata(metadata_path)
     prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)

@@ -53,11 +53,7 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import (
-    DEFAULT_MAPPING_SET_ID,
-    add_built_in_prefixes_to_prefix_map,
-    get_default_metadata,
-)
+from .context import DEFAULT_MAPPING_SET_ID, add_built_in_prefixes_to_prefix_map
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap
 from .util import (
@@ -312,7 +308,7 @@ def parse_obographs_json(
 def _get_prefix_map_and_metadata(
     prefix_map: Optional[PrefixMap] = None, meta: Optional[MetadataType] = None
 ) -> Metadata:
-    default_metadata = get_default_metadata()
+    default_metadata = Metadata.default()
 
     if prefix_map is None:
         logging.warning("No prefix map provided (not recommended), trying to use defaults..")

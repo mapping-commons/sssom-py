@@ -8,7 +8,7 @@ import pkg_resources
 from curies import Converter
 
 from .constants import EXTENDED_PREFIX_MAP, SSSOM_URI_PREFIX
-from .typehints import Metadata, PrefixMap
+from .typehints import PrefixMap
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 DEFAULT_MAPPING_SET_ID = f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
@@ -84,8 +84,3 @@ def add_built_in_prefixes_to_prefix_map(
                     f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
                 )
     return prefix_map
-
-
-def get_default_metadata() -> Metadata:
-    """Get the default metadata."""
-    return Metadata.default()
