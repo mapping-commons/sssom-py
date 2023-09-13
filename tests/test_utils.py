@@ -2,15 +2,18 @@
 
 import unittest
 
+import yaml
 from curies import Converter
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
+from sssom.context import SSSOM_BUILT_IN_PREFIXES
 from sssom.io import extract_iri
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
     MappingSetDataFrame,
     filter_out_prefixes,
     filter_prefixes,
+    get_prefixes_used_in_table,
     inject_metadata_into_df,
     invert_mappings,
 )
@@ -125,14 +128,17 @@ class TestIO(unittest.TestCase):
 
     def test_clean_prefix_map_not_strict(self):
         """Test clean prefix map with 'strict'=False."""
-        expected_difference = set({"x", "y", "z1", "y1", "z", "x1"})
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
         original_curie_map = msdf.prefix_map
+        self.assertEqual(
+            {"a", "b", "c", "d", "orcid"}.union(SSSOM_BUILT_IN_PREFIXES),
+            set(original_curie_map),
+        )
         msdf.clean_prefix_map(strict=False)
         new_curie_map = msdf.prefix_map
         self.assertEqual(
-            set(new_curie_map.keys()) - set(original_curie_map.keys()),
-            expected_difference,
+            {"a", "b", "c", "d", "orcid", "x1", "y1", "z1"}.union(SSSOM_BUILT_IN_PREFIXES),
+            set(new_curie_map),
         )
 
     def test_invert_nodes(self):
@@ -159,3 +165,32 @@ class TestIO(unittest.TestCase):
         msdf_with_meta = inject_metadata_into_df(msdf)
         creator_ids = msdf_with_meta.df["creator_id"].drop_duplicates().values.item()
         self.assertEqual(creator_ids, expected_creators)
+
+
+class TestUtils(unittest.TestCase):
+    """Unit test for utility functions."""
+
+    def test_get_prefixes(self):
+        """Test getting prefixes from a MSDF."""
+        path = data_dir.joinpath("enm_example.tsv")
+        metadata_path = data_dir.joinpath("enm_example.yml")
+        metadata = yaml.safe_load(metadata_path.read_text())
+        msdf = parse_sssom_table(path, meta=metadata)
+        prefixes = get_prefixes_used_in_table(msdf.df, converter=msdf.converter)
+        self.assertNotIn("http", prefixes)
+        self.assertNotIn("https", prefixes)
+        self.assertEqual(
+            {
+                "ENVO",
+                "NPO",
+                "ENM",
+                "CHEBI",
+                "OBI",
+                "IAO",
+                "BAO",
+                "EFO",
+                "BTO",
+                "orcid",
+            }.union(SSSOM_BUILT_IN_PREFIXES),
+            prefixes,
+        )
