@@ -10,20 +10,9 @@ from dataclasses import dataclass, field
 from functools import reduce
 from pathlib import Path
 from string import punctuation
-from typing import (
-    Any,
-    ChainMap,
-    DefaultDict,
-    Dict,
-    List,
-    Mapping,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    Union,
-)
+from typing import Any, DefaultDict, Dict, List, Mapping, Optional, Set, TextIO, Tuple, Union
 
+import curies
 import numpy as np
 import pandas as pd
 import validators
@@ -73,7 +62,7 @@ from .constants import (
 )
 from .context import SSSOM_BUILT_IN_PREFIXES, get_jsonld_context
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap
+from .typehints import Metadata, MetadataType, PrefixMap, get_default_metadata
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -91,10 +80,9 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
-    df: Optional[pd.DataFrame] = None  # Mappings
-    # maps CURIE prefixes to URI bases
+    df: pd.DataFrame
     prefix_map: PrefixMap = field(default_factory=dict)
-    metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
+    metadata: MetadataType = field(default_factory=get_default_metadata)
 
     @property
     def converter(self) -> Converter:
@@ -105,11 +93,15 @@ class MappingSetDataFrame:
     def with_converter(
         cls,
         converter: Converter,
-        df: Optional[pd.DataFrame] = None,
+        df: pd.DataFrame,
         metadata: Optional[MetadataType] = None,
     ) -> "MappingSetDataFrame":
         """Instantiate with a converter instead of a vanilla prefix map."""
-        return cls(df=df, prefix_map=dict(converter.bimap), metadata=metadata)
+        return cls(
+            df=df,
+            prefix_map=dict(converter.bimap),
+            metadata=metadata or get_default_metadata(),
+        )
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -647,8 +639,6 @@ def merge_msdf(
         Defaults to True.
     :returns: Merged MappingSetDataFrame.
     """
-    merged_msdf = MappingSetDataFrame()
-
     # Inject metadata of msdf into df
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
@@ -663,11 +653,8 @@ def merge_msdf(
         [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
     ).drop_duplicates(ignore_index=True)
 
-    # merge the non DataFrame elements
-    prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
-    # prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}
-    merged_msdf.prefix_map = dict(ChainMap(*prefix_map_list))
-    merged_msdf.df = df_merged
+    converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
+    merged_msdf = MappingSetDataFrame.with_converter(df=df_merged, converter=converter)
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         if (
@@ -935,7 +922,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
     non_double_cols = non_double_cols.replace(np.nan, "")
     df[non_double_cols.columns] = non_double_cols
-    msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
+    msdf = MappingSetDataFrame.with_converter(df=df, converter=doc.converter, metadata=meta)
     msdf.df = sort_df_rows_columns(msdf.df)
     return msdf
 

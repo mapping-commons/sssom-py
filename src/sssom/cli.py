@@ -16,9 +16,10 @@ import os
 import sys
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, ChainMap, List, Optional, TextIO, Tuple
+from typing import Any, Callable, List, Optional, TextIO, Tuple
 
 import click
+import curies
 import pandas as pd
 import yaml
 from curies import Converter
@@ -31,7 +32,6 @@ from sssom.constants import (
     SchemaValidationType,
     SSSOMSchemaView,
 )
-from sssom.typehints import Metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
@@ -276,7 +276,9 @@ def dedupe(input: str, output: TextIO):
     # df = parse(input)
     msdf = parse_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
-    msdf_out = MappingSetDataFrame(df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata)
+    msdf_out = MappingSetDataFrame.with_converter(
+        df=df, converter=msdf.converter, metadata=msdf.metadata
+    )
     # df.to_csv(output, sep="\t", index=False)
     write_table(msdf_out, output)
 
@@ -384,11 +386,12 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         logging.info(
             f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
         )
-    msdf = MappingSetDataFrame()
-    msdf.df = d.combined_dataframe.drop_duplicates()
-    prefix_map_list = [msdf1.prefix_map, msdf2.prefix_map]
-    msdf.prefix_map = dict(ChainMap(*prefix_map_list))
-    msdf.metadata = Metadata.default().metadata
+
+    prefix_map_list = [msdf1, msdf2]
+    converter = curies.chain(m.converter for m in prefix_map_list)
+    msdf = MappingSetDataFrame.with_converter(
+        df=d.combined_dataframe.drop_duplicates(), converter=converter
+    )
     msdf.metadata[  # type:ignore
         "comment"
     ] = f"Diff between {input1} and {input2}. See comment column for information."
