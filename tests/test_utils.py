@@ -4,8 +4,7 @@ import unittest
 
 import yaml
 
-from sssom.constants import OBJECT_ID, SUBJECT_ID
-from sssom.context import SSSOM_BUILT_IN_PREFIXES
+from sssom.constants import OBJECT_ID, SSSOM_BUILT_IN_PREFIXES, SUBJECT_ID
 from sssom.io import extract_iri
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -126,7 +125,6 @@ class TestIO(unittest.TestCase):
 
     def test_clean_prefix_map_not_strict(self):
         """Test clean prefix map with 'strict'=False."""
-        expected_difference = {"x", "y", "z1", "y1", "z", "x1"}
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
         original_curie_map = msdf.prefix_map
         self.assertEqual(
