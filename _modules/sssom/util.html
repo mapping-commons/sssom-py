@@ -232,7 +232,7 @@
 <span class="sd">                       listed in the &#39;curie_map&#39;.</span>
 <span class="sd">        :raises ValueError: If prefixes absent in &#39;curie_map&#39; and strict flag = True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">prefixes_in_table</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">prefixes_in_table</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
             <span class="n">prefixes_in_table</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span>
 
@@ -1091,15 +1091,19 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="get_prefixes_used_in_table"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_table">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_prefixes_used_in_table"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_table">[docs]</a><span class="k">def</span> <span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of prefixes used in CURIEs in key feature columns in a dataframe.&quot;&quot;&quot;</span>
     <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">prefixes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">if</span> <span class="s2">&quot;&quot;</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="p">:</span>
-        <span class="n">prefixes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prefixes</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">entity_reference_slots</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">prefixes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">converter</span><span class="o">.</span><span class="n">parse_curie</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_iri</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">prefixes</span><span class="p">)</span></div>
 
 
