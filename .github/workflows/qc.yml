@@ -39,7 +39,6 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         run: |
-          poetry run pip wheel --use-pep517 "pytest-logging (==2015.11.4)"  
           poetry install --no-interaction
         
 

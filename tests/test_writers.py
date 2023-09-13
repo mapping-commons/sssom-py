@@ -1,9 +1,8 @@
 """Tests for SSSOM writers."""
+
 import json
 import os
 import unittest
-
-from jsonasobj2 import JsonObj
 
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
@@ -75,7 +74,7 @@ class TestWrite(unittest.TestCase):
             write_fhir_json(self.msdf, file)
         # todo: @Joe: after implementing reader/importer, change this to `msdf = parse_sssom_fhir_json()`
         with open(path, "r") as file:
-            d: JsonObj = json.load(file)
+            d = json.load(file)
         # todo: @Joe: What else is worth checking?
         self.assertEqual(
             len(d["group"][0]["element"]),
@@ -88,9 +87,6 @@ class TestWrite(unittest.TestCase):
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_owl.owl")
         with open(tmp_file, "w") as file:
             write_owl(self.msdf, file)
-        # FIXME this test doesn't test anything
-        # TODO implement "read_owl" function
-        self.assertEqual(1, 1)
 
     def test_write_sssom_ontoportal_json(self):
         """Test writing as ontoportal JSON."""
@@ -99,7 +95,7 @@ class TestWrite(unittest.TestCase):
             write_ontoportal_json(self.msdf, file)
 
         with open(path, "r") as file:
-            d: list = json.load(file)
+            d = json.load(file)
 
         self.assertEqual(
             len(d),

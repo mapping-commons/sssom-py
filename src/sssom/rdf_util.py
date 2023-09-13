@@ -3,7 +3,6 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from curies import Converter
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 from sssom_schema import EntityReference, Mapping
@@ -27,7 +26,7 @@ def rewire_graph(
     if mdoc.mapping_set.mappings is None:
         raise TypeError
 
-    converter = Converter.from_prefix_map(mdoc.prefix_map)
+    converter = mdoc.converter
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
