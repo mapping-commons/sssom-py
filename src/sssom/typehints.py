@@ -44,7 +44,7 @@ class Metadata(NamedTuple):
 
 
 def generate_mapping_set_id() -> str:
-    """Getnerate a mapping set ID."""
+    """Generate a mapping set ID."""
     return f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
 
 
