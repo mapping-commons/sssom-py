@@ -18,7 +18,6 @@ from sssom.validators import check_all_prefixes_in_curie_map
 
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
-from .typehints import PrefixMap
 from .util import (
     PREFIX_MAP_KEY,
     RDF_FORMATS,
@@ -138,16 +137,15 @@ def write_owl(
 
 
 def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation="ontoportal_json"
+    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
-    if serialisation == "ontoportal_json":
-        data = to_ontoportal_json(msdf)
-        json.dump(data, output, indent=2)
-    else:
+    if serialisation != "ontoportal_json":
         raise ValueError(
             f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
         )
+    data = to_ontoportal_json(msdf)
+    json.dump(data, output, indent=2)
 
 
 # Converters
@@ -450,31 +448,39 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
 
 
 def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
-    """Convert a mapping set dataframe to a list of ontoportal mapping JSON nbjects."""
-    prefix_map = msdf.prefix_map
+    """Convert a mapping set dataframe to a list of ontoportal mapping JSON objects."""
+    if msdf.df is None:
+        return []
+
+    converter = msdf.converter
     metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
     m_list = []
+    for _, row in msdf.df.iterrows():
+        mapping_justification = row.get("mapping_justification", "")
+        if "creator_id" in row:
+            creators = row["creator_id"]
+        elif "creator_id" in metadata:
+            creators = metadata["creator_id"]
+        else:
+            creators = []
 
-    def resolve(x):
-        """Resolve URL."""
-        return _resolve_url(x, prefix_map)
-
-    if msdf.df is not None:
-        for _, row in msdf.df.iterrows():
-            json_obj = {
-                "classes": [resolve(row["subject_id"]), resolve(row["object_id"])],
-                "subject_source_id": _resolve_prefix(row.get("subject_source", ""), prefix_map),
-                "object_source_id": _resolve_prefix(row.get("object_source", ""), prefix_map),
-                "source_name": metadata.get("mapping_set_id", ""),
-                "source_contact_info": ",".join(metadata.get("creator_id", "")),
-                "date": metadata.get("mapping_date", row.get("mapping_date", "")),
-                "name": metadata.get("mapping_set_description", ""),
-                "source": resolve(row.get("mapping_justification", "")),
-                "comment": row.get("comment", ""),
-                "relation": [resolve(row["predicate_id"])],
-            }
-            m_list.append(json_obj)
-
+        json_obj = {
+            "classes": [
+                converter.expand(row["subject_id"]),
+                converter.expand(row["object_id"]),
+            ],
+            "subject_source_id": row.get("subject_source", ""),
+            "object_source_id": row.get("object_source", ""),
+            "source_name": metadata.get("mapping_set_id", ""),
+            "source_contact_info": ",".join(creators),
+            "date": metadata.get("mapping_date", row.get("mapping_date", "")),
+            "name": metadata.get("mapping_set_title", ""),
+            "source": converter.expand(mapping_justification) if mapping_justification else "",
+            "comment": row.get("comment", ""),
+            "relation": [converter.expand(row["predicate_id"])],
+        }
+        json_obj = {k: v for k, v in json_obj.items() if k and v}
+        m_list.append(json_obj)
     return m_list
 
 
@@ -553,18 +559,3 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
     else:
         raise ValueError(f"Unknown table format: {serialisation}, should be one of tsv or csv")
     return sep
-
-
-def _resolve_url(prefixed_url_str: str, prefix_map: PrefixMap) -> str:
-    if not prefixed_url_str:
-        return prefixed_url_str
-
-    prefix_url = prefixed_url_str.split(":")
-    if len(prefix_url) != 2:
-        return prefixed_url_str
-    else:
-        return _resolve_prefix(prefix_url[0], prefix_map) + prefix_url[1]
-
-
-def _resolve_prefix(prefix_str, prefix_map: PrefixMap) -> str:
-    return prefix_map.get(prefix_str, prefix_str + ":")

@@ -6,12 +6,13 @@ import logging
 import unittest
 from typing import Dict
 
+import pandas as pd
 import yaml
 from rdflib import Graph
 
 from sssom.parsers import get_parsing_function, parse_sssom_table, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
-from sssom.util import to_mapping_set_dataframe
+from sssom.util import MappingSetDataFrame, to_mapping_set_dataframe
 from sssom.writers import (
     to_json,
     to_ontoportal_json,
@@ -203,4 +204,53 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             len(data),
             test.ct_json_elements,
             f"The exported JSON file has less elements than the orginal one for {test.filename}",
+        )
+
+    def test_ontoportal_writer(self):
+        """Test dumping to OntoPortal JSON."""
+        rows = [
+            {
+                "subject_id": "mesh:C067604",
+                "subject_source": "mesh",
+                "predicate_id": "skos:exactMatch",
+                "object_id": "CHEBI:10001",
+                "object_source": "chebi",
+                "mapping_justification": "semapv:ManualMappingCuration",
+                "creator_id": ["orcid:0000-0001-9439-5346"],
+                "mapping_date": "2023-09-13",
+            }
+        ]
+        df = pd.DataFrame(rows)
+        metadata = {
+            "mapping_set_title": "Test Mappings",
+            "mapping_set_id": "https://example.org/test_id",
+        }
+        prefix_map = {
+            "mesh": "http://id.nlm.nih.gov/mesh/",
+            "CHEBI": "http://purl.obolibrary.org/obo/CHEBI_",
+            "semapv": "https://w3id.org/semapv/vocab/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "orcid": "https://orcid.org/",
+        }
+        msdf = MappingSetDataFrame(df=df, metadata=metadata, prefix_map=prefix_map)
+        results = to_ontoportal_json(msdf)
+        self.assertIsInstance(results, list)
+        self.assertEqual(1, len(results))
+        result = results[0]
+        self.assertEqual(
+            {
+                "classes": [
+                    "http://id.nlm.nih.gov/mesh/C067604",
+                    "http://purl.obolibrary.org/obo/CHEBI_10001",
+                ],
+                "subject_source_id": "mesh",
+                "object_source_id": "chebi",
+                "name": "Test Mappings",
+                "source_name": "https://example.org/test_id",
+                "source_contact_info": "orcid:0000-0001-9439-5346",
+                "source": "https://w3id.org/semapv/vocab/ManualMappingCuration",
+                "relation": ["http://www.w3.org/2004/02/skos/core#exactMatch"],
+                "date": "2023-09-13",
+            },
+            result,
         )
