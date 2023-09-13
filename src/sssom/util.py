@@ -139,8 +139,14 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
-        """Remove unused prefixes from the internal prefix map based on the internal dataframe."""
-        prefixes = get_prefixes_used_in_table(self.df)
+        """
+        Remove unused prefixes from the internal prefix map based on the internal dataframe.
+
+        :param strict: Boolean if True, errors out if all prefixes in dataframe are not
+                       listed in the 'curie_map'.
+        :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
+        """
+        prefixes = get_prefixes_used_in_table(self.df, converter=self.converter)
         if self.metadata:
             prefixes.update(get_prefixes_used_in_metadata(self.metadata))
         self.converter = self.converter.get_subconverter(prefixes)
@@ -973,15 +979,19 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
-def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
+def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
-    if not df.empty:
-        for col in _get_sssom_schema_object().entity_reference_slots:
-            if col in df.columns:
-                prefixes.update(df[col].str.split(":", n=1, expand=True)[0])
-    if "" in prefixes:
-        prefixes.remove("")
+    if df.empty:
+        return prefixes
+    for col in _get_sssom_schema_object().entity_reference_slots:
+        if col not in df.columns:
+            continue
+        prefixes.update(
+            converter.parse_curie(row).prefix
+            for row in df[col]
+            if not is_iri(row) and is_curie(row)
+        )
     return set(prefixes)
 
 
