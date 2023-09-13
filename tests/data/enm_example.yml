@@ -1,0 +1,18 @@
+mapping_set_id: https://example.org/enm_example.tsv
+license: https://creativecommons.org/share-your-work/public-domain/cc0
+mapping_set_version: "2023-09-12"
+mapping_set_description: "Manually curated alignment of the redundant classes removed from the eNanoMapper Ontology (ENMO) via Slimmer to the classes they were redundant for. Intended to be used for ontological analysis and explainability of the ENMO."
+curie_map:
+  ENVO: http://purl.obolibrary.org/obo/ENVO_
+  NPO: http://purl.bioontology.org/ontology/npo#
+  ENM: http://enanomapper.github.io/ontologies/enanomapper.owl
+  CHEBI: http://purl.obolibrary.org/obo/CHEBI_
+  OBI: http://purl.obolibrary.org/obo/OBI_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  semapv: https://w3id.org/semapv/vocab/
+  skos: http://www.w3.org/2004/02/skos/core#
+  sssom: https://w3id.org/sssom/
+  BAO: http://www.bioassayontology.org/bao#BAO_
+  EFO: http://www.ebi.ac.uk/efo/EFO_
+  BTO: http://purl.obolibrary.org/obo/BTO_
+  orcid: https://orcid.org/
