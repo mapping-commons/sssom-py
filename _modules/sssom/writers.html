@@ -93,7 +93,6 @@
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">SCHEMA_YAML</span>
 <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">PrefixMap</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">PREFIX_MAP_KEY</span><span class="p">,</span>
     <span class="n">RDF_FORMATS</span><span class="p">,</span>
@@ -213,16 +212,15 @@
 
 
 <div class="viewcode-block" id="write_ontoportal_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.write_ontoportal_json">[docs]</a><span class="k">def</span> <span class="nf">write_ontoportal_json</span><span class="p">(</span>
-    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="o">=</span><span class="s2">&quot;ontoportal_json&quot;</span>
+    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">serialisation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ontoportal_json&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a mapping set dataframe to the file as the ontoportal mapping JSON model.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">serialisation</span> <span class="o">==</span> <span class="s2">&quot;ontoportal_json&quot;</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">serialisation</span> <span class="o">!=</span> <span class="s2">&quot;ontoportal_json&quot;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Unknown json format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, currently only ontoportal_json supported&quot;</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <span class="c1"># Converters</span>
@@ -525,31 +523,39 @@
 
 
 <div class="viewcode-block" id="to_ontoportal_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_ontoportal_json">[docs]</a><span class="k">def</span> <span class="nf">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a list of ontoportal mapping JSON nbjects.&quot;&quot;&quot;</span>
-    <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a list of ontoportal mapping JSON objects.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
     <span class="n">m_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">mapping_justification</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;creator_id&quot;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="n">creators</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s2">&quot;creator_id&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="n">creators</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">creators</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve URL.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_resolve_url</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-            <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;classes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">resolve</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]),</span> <span class="n">resolve</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">])],</span>
-                <span class="s2">&quot;subject_source_id&quot;</span><span class="p">:</span> <span class="n">_resolve_prefix</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">prefix_map</span><span class="p">),</span>
-                <span class="s2">&quot;object_source_id&quot;</span><span class="p">:</span> <span class="n">_resolve_prefix</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">prefix_map</span><span class="p">),</span>
-                <span class="s2">&quot;source_name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;source_contact_info&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;creator_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-                <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">resolve</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-                <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;relation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">resolve</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">])],</span>
-            <span class="p">}</span>
-            <span class="n">m_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
-
+        <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;classes&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]),</span>
+                <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]),</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;subject_source_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;object_source_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;source_name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;source_contact_info&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">creators</span><span class="p">),</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">mapping_justification</span><span class="p">)</span> <span class="k">if</span> <span class="n">mapping_justification</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;relation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">])],</span>
+        <span class="p">}</span>
+        <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">and</span> <span class="n">v</span><span class="p">}</span>
+        <span class="n">m_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">m_list</span></div>
 
 
@@ -628,21 +634,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown table format: </span><span class="si">{</span><span class="n">serialisation</span><span class="si">}</span><span class="s2">, should be one of tsv or csv&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sep</span>
-
-
-<span class="k">def</span> <span class="nf">_resolve_url</span><span class="p">(</span><span class="n">prefixed_url_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="n">PrefixMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">prefixed_url_str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">prefixed_url_str</span>
-
-    <span class="n">prefix_url</span> <span class="o">=</span> <span class="n">prefixed_url_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix_url</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">prefixed_url_str</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_resolve_prefix</span><span class="p">(</span><span class="n">prefix_url</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">prefix_map</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix_url</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">_resolve_prefix</span><span class="p">(</span><span class="n">prefix_str</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="n">PrefixMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prefix_str</span><span class="p">,</span> <span class="n">prefix_str</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>
