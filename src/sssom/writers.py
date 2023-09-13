@@ -18,7 +18,6 @@ from sssom.validators import check_all_prefixes_in_curie_map
 
 from .constants import SCHEMA_YAML
 from .parsers import to_mapping_set_document
-from .typehints import PrefixMap
 from .util import (
     PREFIX_MAP_KEY,
     RDF_FORMATS,
