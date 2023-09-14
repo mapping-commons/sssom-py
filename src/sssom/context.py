@@ -1,6 +1,7 @@
 """Utilities for loading JSON-LD contexts."""
 
 import json
+from functools import lru_cache
 from typing import Optional
 
 import pkg_resources
@@ -15,6 +16,7 @@ SSSOM_CONTEXT = pkg_resources.resource_filename(
 )
 
 
+@lru_cache(1)
 def get_jsonld_context():
     """Get JSON-LD form of sssom_context variable from auto-generated 'internal_context.py' file.
 
@@ -28,11 +30,13 @@ def get_jsonld_context():
     return context
 
 
+@lru_cache(1)
 def get_converter() -> Converter:
     """Get a converter."""
     return Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
 
 
+@lru_cache(1)
 def get_extended_prefix_map():
     """Get prefix map from bioregistry (obo.epm.json).
 
@@ -42,6 +46,7 @@ def get_extended_prefix_map():
     return {record.prefix: record.uri_prefix for record in converter.records}
 
 
+@lru_cache(1)
 def get_built_in_prefix_map() -> PrefixMap:
     """Get built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
 
