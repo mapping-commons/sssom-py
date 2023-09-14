@@ -149,29 +149,17 @@ class MappingSetDataFrame:
         if self.metadata:
             prefixes_in_table.update(get_prefixes_used_in_metadata(self.metadata))
 
-        new_prefixes: PrefixMap = dict()
-        missing_prefixes = []
-        default_prefix_map = Metadata.default().prefix_map
-        for prefix in prefixes_in_table:
-            if prefix in self.prefix_map:
-                new_prefixes[prefix] = self.prefix_map[prefix]
-            elif prefix in default_prefix_map:
-                new_prefixes[prefix] = default_prefix_map[prefix]
-            else:
-                logging.warning(
-                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
-                )
-                if prefix != "":
-                    missing_prefixes.append(prefix)
-                    if not strict:
-                        new_prefixes[prefix] = UNKNOWN_IRI + prefix.lower() + "/"
-
+        missing_prefixes = prefixes_in_table - self.converter.get_prefixes()
         if missing_prefixes and strict:
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
             )
-            # self.df = filter_out_prefixes(self.df, missing_prefixes)
-        self.prefix_map = new_prefixes
+
+        subconverter = self.converter.get_subconverter(prefixes_in_table)
+        for prefix in missing_prefixes:
+            subconverter.add_prefix(prefix, f"{UNKNOWN_IRI}{prefix.lower()}/")
+
+        self.prefix_map = dict(subconverter.bimap)
 
     def remove_mappings(self, msdf: "MappingSetDataFrame") -> None:
         """Remove mappings in right msdf from left msdf.
