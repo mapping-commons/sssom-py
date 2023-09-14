@@ -17,20 +17,6 @@ SSSOM_CONTEXT = pkg_resources.resource_filename(
 
 
 @lru_cache(1)
-def get_jsonld_context():
-    """Get JSON-LD form of sssom_context variable from auto-generated 'internal_context.py' file.
-
-    [Auto generated from sssom.yaml by jsonldcontextgen.py]
-
-    :return: JSON-LD context
-    """
-    with open(SSSOM_CONTEXT, "r") as c:
-        context = json.load(c, strict=False)
-
-    return context
-
-
-@lru_cache(1)
 def get_converter() -> Converter:
     """Get a converter."""
     return Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
@@ -48,20 +34,14 @@ def get_extended_prefix_map():
 
 @lru_cache(1)
 def get_built_in_prefix_map() -> PrefixMap:
-    """Get built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
-
-    [Auto generated from sssom.yaml by jsonldcontextgen.py]
-
-    :return: Prefix map
-    """
-    contxt = get_jsonld_context()
-    prefix_map = {}
-    for key in contxt["@context"]:
-        if key in list(SSSOM_BUILT_IN_PREFIXES):
-            v = contxt["@context"][key]
-            if isinstance(v, str):
-                prefix_map[key] = v
-    return prefix_map
+    """Get URI prefixes for built-in prefixes."""
+    with open(SSSOM_CONTEXT) as file:
+        context = json.load(file, strict=False)
+    return {
+        prefix: uri_prefix
+        for prefix, uri_prefix in context["@context"].items()
+        if prefix in SSSOM_BUILT_IN_PREFIXES and isinstance(uri_prefix, str)
+    }
 
 
 def add_built_in_prefixes_to_prefix_map(
@@ -69,21 +49,21 @@ def add_built_in_prefixes_to_prefix_map(
 ) -> PrefixMap:
     """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
 
-    [Auto generated from sssom.yaml by jsonldcontextgen.py]
-
     :param prefix_map: A custom prefix map
     :raises ValueError: If there is a prefix map mismatch.
     :return: A prefix map
     """
     builtinmap = get_built_in_prefix_map()
     if not prefix_map:
-        prefix_map = builtinmap
-    else:
-        for k, v in builtinmap.items():
-            if k not in prefix_map and v not in prefix_map.values():
-                prefix_map[k] = v
-            elif builtinmap[k] != prefix_map[k]:
-                raise ValueError(
-                    f"Built-in prefix {k} is specified ({prefix_map[k]}) but differs from default ({builtinmap[k]})"
-                )
+        return builtinmap.copy()
+    for prefix, uri_prefix in builtinmap.items():
+        if prefix in prefix_map and prefix_map[prefix] != uri_prefix:
+            raise ValueError(
+                f"Built-in prefix {prefix} is specified ({prefix_map[prefix]}) but differs from default ({uri_prefix})"
+            )
+        if prefix not in prefix_map and uri_prefix in prefix_map.values():
+            raise ValueError(
+                f"Built-in URI prefix {uri_prefix} is specified but not for builtin prefix {prefix}"
+            )
+        prefix_map[prefix] = uri_prefix
     return prefix_map
