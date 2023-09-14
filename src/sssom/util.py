@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from functools import reduce
 from pathlib import Path
 from string import punctuation
-from typing import Any, DefaultDict, Dict, List, Mapping, Optional, Set, TextIO, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 
 import curies
 import numpy as np
@@ -60,7 +60,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, get_jsonld_context
+from .context import SSSOM_BUILT_IN_PREFIXES
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap, get_default_metadata
 
@@ -1084,38 +1084,6 @@ def filter_prefixes(
             rows.append(row)
 
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
-
-
-def prepare_context(
-    prefix_map: Optional[PrefixMap] = None,
-) -> Mapping[str, Any]:
-    """Prepare a JSON-LD context from a prefix map."""
-    context = get_jsonld_context()
-    if prefix_map is None:
-        prefix_map = Metadata.default().prefix_map
-
-    for k, v in prefix_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return context
-
-
-def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
-    """Prepare a JSON-LD context and dump to a string.
-
-    :param prefix_map: Prefix map, defaults to None
-    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
-    :return: Context in str format
-    """
-    return json.dumps(prepare_context(prefix_map), **kwargs)
 
 
 def raise_for_bad_prefix_map_mode(prefix_map_mode: Optional[str] = None):

@@ -25,7 +25,6 @@ from .util import (
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
-    prepare_context_str,
     sort_df_rows_columns,
 )
 
@@ -440,8 +439,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    context = prepare_context_str(doc.prefix_map)
-    data = JSONDumper().dumps(doc.mapping_set, contexts=context)
+    data = JSONDumper().dumps(doc.mapping_set, contexts=doc.prefix_map)
     json_obj = json.loads(data)
     return json_obj
 
