@@ -11,7 +11,7 @@
 #  d: "http://example.org/d/"
 #  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
 #  owl: "http://www.w3.org/2002/07/owl#"
-#  orcid: "https://orcid.org/my-orcid?orcid="
+#  orcid: "https://orcid.org/"
 #  semapv: "https://w3id.org/semapv/vocab/"
 #  skos: "http://www.w3.org/2004/02/skos/core#"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
