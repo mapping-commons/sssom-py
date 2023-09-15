@@ -2,8 +2,6 @@
 
 import unittest
 
-import yaml
-
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
     collapse,
@@ -14,7 +12,7 @@ from sssom.util import (
     parse,
     reconcile_prefix_and_data,
 )
-from tests.constants import data_dir, prefix_recon_yaml
+from tests.constants import data_dir
 
 
 class TestCollapse(unittest.TestCase):
@@ -76,13 +74,51 @@ class TestCollapse(unittest.TestCase):
         """Test curie reconciliation is performing as expected."""
         msdf = parse_sssom_table(data_dir / "basic3.tsv")
 
-        with open(prefix_recon_yaml) as pref_rec:
-            prefix_reconciliation = yaml.safe_load(pref_rec)
+        self.assertEqual(
+            {
+                "a": "http://example.org/a/",
+                "b": "http://example.org/b/",
+                "c": "http://example.org/c/",
+                "d": "http://example.org/d/",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "orcid": "https://orcid.org/",
+                "semapv": "https://w3id.org/semapv/vocab/",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sssom": "https://w3id.org/sssom/",
+            },
+            msdf.prefix_map,
+        )
+        prefix_reconciliation = {
+            "prefix_synonyms": {
+                "a": "c",
+                "b": "bravo",
+                "r": "rdfs",
+                "o": "owl",
+            },
+            "prefix_expansion_reconciliation": {
+                "c": "http://test.owl/c/",
+                "bravo": "http://test.owl/bravo",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+            },
+        }
 
         recon_msdf = reconcile_prefix_and_data(msdf, prefix_reconciliation)
-
-        prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
-
-        for pfx, exp in prefix_expansion.items():
-            if pfx in recon_msdf.prefix_map.keys():
-                self.assertEqual(recon_msdf.prefix_map[pfx], exp)
+        self.assertEqual(
+            {
+                "a": "http://example.org/a/",
+                "bravo": "http://test.owl/bravo",
+                "c": "http://test.owl/c/",
+                "d": "http://example.org/d/",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "orcid": "https://orcid.org/",
+                "semapv": "https://w3id.org/semapv/vocab/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "sssom": "https://w3id.org/sssom/",
+            },
+            recon_msdf.prefix_map,
+        )

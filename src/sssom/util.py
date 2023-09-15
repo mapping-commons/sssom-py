@@ -1105,62 +1105,25 @@ def reconcile_prefix_and_data(
     """
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
+    converter = msdf.converter
+    converter = curies.upgrade_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
+    converter = curies.upgrade_uri_prefixes(
+        converter, prefix_reconciliation["prefix_expansion_reconciliation"]
+    )
 
-    prefix_map = msdf.prefix_map
-    df: pd.DataFrame = msdf.df
-    data_switch_dict = dict()
+    def _upgrade(curie_or_iri: str) -> str:
+        if not is_iri(curie_or_iri) and is_curie(curie_or_iri):
+            return converter.standardize_curie(curie_or_iri) or curie_or_iri
+        return curie_or_iri
 
-    prefix_synonyms = prefix_reconciliation["prefix_synonyms"]
-    prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
+    for column, values in _get_sssom_schema_object().dict["slots"].items():
+        if values["range"] != "EntityReference":
+            continue
+        if column not in msdf.df.columns:
+            continue
+        msdf.df[column] = msdf.df[column].map(_upgrade)
 
-    # The prefix exists but the expansion needs to be updated.
-    expansion_replace = {
-        k: v for k, v in prefix_expansion.items() if k in prefix_map.keys() and v != prefix_map[k]
-    }
-
-    # Updates expansions in prefix_map
-    prefix_map.update(expansion_replace)
-
-    # Prefixes that need to be replaced
-    # IF condition:
-    #   1. Key OR Value in prefix_synonyms are keys in prefix_map
-    #       e.g.: ICD10: ICD10CM - either should be present within
-    #           the prefix_map.
-    #   AND
-    #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
-    #      In other words, the existing expansion do not match the YAML.
-
-    prefix_replace = [
-        k
-        for k, v in prefix_synonyms.items()
-        if (k in prefix_map.keys() or v in prefix_map.keys()) and v not in expansion_replace.keys()
-    ]
-
-    if len(prefix_replace) > 0:
-        for pr in prefix_replace:
-            correct_prefix = prefix_synonyms[pr]
-            correct_expansion = prefix_expansion[correct_prefix]
-            prefix_map[correct_prefix] = correct_expansion
-            logging.info(f"Adding prefix_map {correct_prefix}: {correct_expansion}")
-            if pr in prefix_map.keys():
-                prefix_map.pop(pr, None)
-                data_switch_dict[pr] = correct_prefix
-
-                logging.warning(f"Replacing prefix {pr} with {correct_prefix}")
-
-    # Data editing
-    if len(data_switch_dict) > 0:
-        # Read schema file
-        slots = _get_sssom_schema_object().dict["slots"]
-        entity_reference_columns = [k for k, v in slots.items() if v["range"] == "EntityReference"]
-        update_columns = [c for c in df.columns if c in entity_reference_columns]
-        for k, v in data_switch_dict.items():
-            df[update_columns] = df[update_columns].replace(k + ":", v + ":", regex=True)
-
-    msdf.df = df
-    msdf.prefix_map = prefix_map
-
-    # TODO: When expansion of 2 prefixes in the prefix_map are the same.
+    msdf.prefix_map = dict(converter.bimap)
     return msdf
 
 
