@@ -75,7 +75,6 @@
   <h1>Source code for sssom.validators</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Validators.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span>
 
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
@@ -138,19 +137,8 @@
 <span class="sd">    :param msdf: MappingSetDataFrame</span>
 <span class="sd">    :raises ValidationError: If all prefixes not in curie_map.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">prefixes</span> <span class="o">=</span> <span class="n">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
-    <span class="n">prefixes_including_builtins</span> <span class="o">=</span> <span class="n">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
-    <span class="n">added_built_in</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefixes_including_builtins</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">added_built_in</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adding prefixes: </span><span class="si">{</span><span class="n">added_built_in</span><span class="si">}</span><span class="s2"> to the MapingSetDataFrame.&quot;</span><span class="p">)</span>
-    <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">prefixes_including_builtins</span>
-
-    <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">pref</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">pref</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">pref</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">missing_prefixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pref</span><span class="p">)</span>
+    <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
+    <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="n">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">missing_prefixes</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The prefixes in </span><span class="si">{</span><span class="n">missing_prefixes</span><span class="si">}</span><span class="s2"> are missing from &#39;curie_map&#39;.&quot;</span><span class="p">)</span></div>
 

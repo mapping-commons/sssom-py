@@ -354,7 +354,6 @@ Implemented via PR: <a class="reference external" href="https://github.com/mappi
 <dt class="sig sig-object py" id="sssom.context.add_built_in_prefixes_to_prefix_map">
 <span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">add_built_in_prefixes_to_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/context.html#add_built_in_prefixes_to_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.add_built_in_prefixes_to_prefix_map" title="Permalink to this definition"></a></dt>
 <dd><p>Add built-in prefix map from the sssom_context variable in the auto-generated ‘internal_context.py’ file.</p>
-<p>[Auto generated from sssom.yaml by jsonldcontextgen.py]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – A custom prefix map</p>
@@ -367,21 +366,6 @@ Implemented via PR: <a class="reference external" href="https://github.com/mappi
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A prefix map</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.context.get_built_in_prefix_map">
-<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">get_built_in_prefix_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/context.html#get_built_in_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.get_built_in_prefix_map" title="Permalink to this definition"></a></dt>
-<dd><p>Get built-in prefix map from the sssom_context variable in the auto-generated ‘internal_context.py’ file.</p>
-<p>[Auto generated from sssom.yaml by jsonldcontextgen.py]</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Prefix map</p>
 </dd>
 </dl>
 </dd></dl>
@@ -404,18 +388,6 @@ Implemented via PR: <a class="reference external" href="https://github.com/mappi
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Prefix map.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.context.get_jsonld_context">
-<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">get_jsonld_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/context.html#get_jsonld_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.get_jsonld_context" title="Permalink to this definition"></a></dt>
-<dd><p>Get JSON-LD form of sssom_context variable from auto-generated ‘internal_context.py’ file.</p>
-<p>[Auto generated from sssom.yaml by jsonldcontextgen.py]</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>JSON-LD context</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1086,7 +1058,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A collection of mappings represented as a DataFrame, together with additional metadata.</p>
 <dl class="py method">
@@ -1115,7 +1087,7 @@ listed in the ‘curie_map’.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.df">
-<span class="sig-name descname"><span class="pre">df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.df" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.df" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1141,7 +1113,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code><span class="pre">]]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code><span class="pre">]</span></em><a class="headerlink" href="#sssom.util.MappingSetDataFrame.metadata" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1165,7 +1137,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.with_converter">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame.with_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.with_converter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#MappingSetDataFrame.with_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.with_converter" title="Permalink to this definition"></a></dt>
 <dd><p>Instantiate with a converter instead of a vanilla prefix map.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -1713,37 +1685,6 @@ Defaults to True.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.prepare_context">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">prepare_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#prepare_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.prepare_context" title="Permalink to this definition"></a></dt>
-<dd><p>Prepare a JSON-LD context from a prefix map.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.prepare_context_str">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">prepare_context_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#prepare_context_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.prepare_context_str" title="Permalink to this definition"></a></dt>
-<dd><p>Prepare a JSON-LD context and dump to a string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Prefix map, defaults to None</p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments to pass through to <code class="xref py py-func docutils literal notranslate"><span class="pre">json.dumps()</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Context in str format</p>
 </dd>
 </dl>
 </dd></dl>

@@ -76,8 +76,10 @@
 <span></span><span class="sd">&quot;&quot;&quot;Utilities for loading JSON-LD contexts.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">import</span> <span class="nn">curies</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
 
@@ -90,25 +92,14 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_jsonld_context"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_jsonld_context">[docs]</a><span class="k">def</span> <span class="nf">get_jsonld_context</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get JSON-LD form of sssom_context variable from auto-generated &#39;internal_context.py&#39; file.</span>
-
-<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
-
-<span class="sd">    :return: JSON-LD context</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SSSOM_CONTEXT</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">context</span></div>
-
-
-<div class="viewcode-block" id="get_converter"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_converter">[docs]</a><span class="k">def</span> <span class="nf">get_converter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
+<div class="viewcode-block" id="get_converter"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_converter">[docs]</a><span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_converter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a converter.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_extended_prefix_map</span><span class="p">(</span><span class="n">EXTENDED_PREFIX_MAP</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_extended_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_extended_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_extended_prefix_map</span><span class="p">():</span>
+<div class="viewcode-block" id="get_extended_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_extended_prefix_map">[docs]</a><span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_extended_prefix_map</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get prefix map from bioregistry (obo.epm.json).</span>
 
 <span class="sd">    :return: Prefix map.</span>
@@ -117,21 +108,17 @@
     <span class="k">return</span> <span class="p">{</span><span class="n">record</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">uri_prefix</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">converter</span><span class="o">.</span><span class="n">records</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="get_built_in_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.get_built_in_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_built_in_prefix_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get built-in prefix map from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
-
-<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
-
-<span class="sd">    :return: Prefix map</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">contxt</span> <span class="o">=</span> <span class="n">get_jsonld_context</span><span class="p">()</span>
-    <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">):</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">contxt</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">prefix_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-    <span class="k">return</span> <span class="n">prefix_map</span></div>
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_get_built_in_prefix_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get URI prefixes for built-in prefixes.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SSSOM_CONTEXT</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">prefix</span><span class="p">:</span> <span class="n">uri_prefix</span>
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">uri_prefix</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">uri_prefix</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="add_built_in_prefixes_to_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.context.add_built_in_prefixes_to_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span>
@@ -139,24 +126,15 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrefixMap</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add built-in prefix map from the sssom_context variable in the auto-generated &#39;internal_context.py&#39; file.</span>
 
-<span class="sd">    [Auto generated from sssom.yaml by jsonldcontextgen.py]</span>
-
 <span class="sd">    :param prefix_map: A custom prefix map</span>
 <span class="sd">    :raises ValueError: If there is a prefix map mismatch.</span>
 <span class="sd">    :return: A prefix map</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">builtinmap</span> <span class="o">=</span> <span class="n">get_built_in_prefix_map</span><span class="p">()</span>
+    <span class="n">default_converter</span> <span class="o">=</span> <span class="n">_get_built_in_prefix_map</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">prefix_map</span><span class="p">:</span>
-        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">builtinmap</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">builtinmap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">elif</span> <span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Built-in prefix </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is specified (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) but differs from default (</span><span class="si">{</span><span class="n">builtinmap</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
-                <span class="p">)</span>
-    <span class="k">return</span> <span class="n">prefix_map</span></div>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">default_converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span>
+    <span class="n">new_converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">default_converter</span><span class="p">,</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new_converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

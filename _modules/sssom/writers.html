@@ -100,7 +100,6 @@
     <span class="n">URI_SSSOM_MAPPINGS</span><span class="p">,</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">get_file_extension</span><span class="p">,</span>
-    <span class="n">prepare_context_str</span><span class="p">,</span>
     <span class="n">sort_df_rows_columns</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -515,8 +514,7 @@
 <div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../sssom.html#sssom.writers.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">prepare_context_str</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">JSONDumper</span><span class="p">()</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">JSONDumper</span><span class="p">()</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
     <span class="n">json_obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">json_obj</span></div>
 

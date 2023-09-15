@@ -85,20 +85,9 @@
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">ChainMap</span><span class="p">,</span>
-    <span class="n">DefaultDict</span><span class="p">,</span>
-    <span class="n">Dict</span><span class="p">,</span>
-    <span class="n">List</span><span class="p">,</span>
-    <span class="n">Mapping</span><span class="p">,</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Set</span><span class="p">,</span>
-    <span class="n">TextIO</span><span class="p">,</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">DefaultDict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span> <span class="nn">curies</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">validators</span>
@@ -146,9 +135,9 @@
     <span class="n">UNKNOWN_IRI</span><span class="p">,</span>
     <span class="n">SSSOMSchemaView</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">,</span> <span class="n">get_jsonld_context</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span>
+<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">get_default_metadata</span>
 
 <span class="c1">#: The key that&#39;s used in the YAML section of an SSSOM file</span>
 <span class="n">PREFIX_MAP_KEY</span> <span class="o">=</span> <span class="s2">&quot;curie_map&quot;</span>
@@ -166,10 +155,9 @@
 <span class="k">class</span> <span class="nc">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of mappings represented as a DataFrame, together with additional metadata.&quot;&quot;&quot;</span>
 
-    <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Mappings</span>
-    <span class="c1"># maps CURIE prefixes to URI bases</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">PrefixMap</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># header metadata excluding prefixes</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">MetadataType</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_default_metadata</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
@@ -180,11 +168,15 @@
     <span class="k">def</span> <span class="nf">with_converter</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">,</span>
-        <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate with a converter instead of a vanilla prefix map.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">),</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+            <span class="n">prefix_map</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">),</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">get_default_metadata</span><span class="p">(),</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.merge"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two MappingSetDataframes.</span>
@@ -232,29 +224,17 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
             <span class="n">prefixes_in_table</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span>
 
-        <span class="n">new_prefixes</span><span class="p">:</span> <span class="n">PrefixMap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">default_prefix_map</span> <span class="o">=</span> <span class="n">Metadata</span><span class="o">.</span><span class="n">default</span><span class="p">()</span><span class="o">.</span><span class="n">prefix_map</span>
-        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes_in_table</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
-                <span class="n">new_prefixes</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">default_prefix_map</span><span class="p">:</span>
-                <span class="n">new_prefixes</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_prefix_map</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2"> is used in the SSSOM mapping set but it does not exist in the prefix map&quot;</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="n">missing_prefixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">strict</span><span class="p">:</span>
-                        <span class="n">new_prefixes</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="n">UNKNOWN_IRI</span> <span class="o">+</span> <span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
-
+        <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="n">prefixes_in_table</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">get_prefixes</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">missing_prefixes</span> <span class="ow">and</span> <span class="n">strict</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">missing_prefixes</span><span class="si">}</span><span class="s2"> are used in the SSSOM mapping set but it does not exist in the prefix map&quot;</span>
             <span class="p">)</span>
-            <span class="c1"># self.df = filter_out_prefixes(self.df, missing_prefixes)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">new_prefixes</span></div>
+
+        <span class="n">subconverter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">get_subconverter</span><span class="p">(</span><span class="n">prefixes_in_table</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">missing_prefixes</span><span class="p">:</span>
+            <span class="n">subconverter</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">UNKNOWN_IRI</span><span class="si">}{</span><span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">subconverter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.remove_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">remove_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove mappings in right msdf from left msdf.</span>
@@ -722,8 +702,6 @@
 <span class="sd">        Defaults to True.</span>
 <span class="sd">    :returns: Merged MappingSetDataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">merged_msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="p">()</span>
-
     <span class="c1"># Inject metadata of msdf into df</span>
     <span class="n">msdf_with_meta</span> <span class="o">=</span> <span class="p">[</span><span class="n">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdfs</span><span class="p">]</span>
 
@@ -738,11 +716,8 @@
         <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span> <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">],</span>
     <span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># merge the non DataFrame elements</span>
-    <span class="n">prefix_map_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span><span class="p">]</span>
-    <span class="c1"># prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}</span>
-    <span class="n">merged_msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ChainMap</span><span class="p">(</span><span class="o">*</span><span class="n">prefix_map_list</span><span class="p">))</span>
-    <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df_merged</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">converter</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span><span class="p">)</span>
+    <span class="n">merged_msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="o">.</span><span class="n">with_converter</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_merged</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">reconcile</span><span class="p">:</span>
         <span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">filter_redundant_rows</span><span class="p">(</span><span class="n">merged_msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
@@ -1010,7 +985,7 @@
     <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">slots_with_double_as_range</span><span class="p">)]</span>
     <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">non_double_cols</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">df</span><span class="p">[</span><span class="n">non_double_cols</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_double_cols</span>
-    <span class="n">msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="o">.</span><span class="n">with_converter</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">sort_df_rows_columns</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
@@ -1172,38 +1147,6 @@
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="k">if</span> <span class="n">rows</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="prepare_context"><a class="viewcode-back" href="../../sssom.html#sssom.util.prepare_context">[docs]</a><span class="k">def</span> <span class="nf">prepare_context</span><span class="p">(</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare a JSON-LD context from a prefix map.&quot;&quot;&quot;</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">get_jsonld_context</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">prefix_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">Metadata</span><span class="o">.</span><span class="n">default</span><span class="p">()</span><span class="o">.</span><span class="n">prefix_map</span>
-
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]:</span>
-                <span class="n">context</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> namespace is already in the context, (</span><span class="si">{</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;@context&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;but with a different value than </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">. Overwriting!&quot;</span>
-                    <span class="p">)</span>
-                    <span class="n">context</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-    <span class="k">return</span> <span class="n">context</span></div>
-
-
-<div class="viewcode-block" id="prepare_context_str"><a class="viewcode-back" href="../../sssom.html#sssom.util.prepare_context_str">[docs]</a><span class="k">def</span> <span class="nf">prepare_context_str</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare a JSON-LD context and dump to a string.</span>
-
-<span class="sd">    :param prefix_map: Prefix map, defaults to None</span>
-<span class="sd">    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`</span>
-<span class="sd">    :return: Context in str format</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">prepare_context</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="raise_for_bad_prefix_map_mode"><a class="viewcode-back" href="../../sssom.html#sssom.util.raise_for_bad_prefix_map_mode">[docs]</a><span class="k">def</span> <span class="nf">raise_for_bad_prefix_map_mode</span><span class="p">(</span><span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
