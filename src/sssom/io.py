@@ -147,7 +147,8 @@ def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
             for prefix, uri_prefix in default_metadata.prefix_map.items():
                 if prefix not in prefix_map:
                     prefix_map[prefix] = uri_prefix
-    return prefix_map
+
+    return Converter.from_prefix_map(prefix_map)
 
 
 def get_metadata_and_prefix_map(
@@ -164,8 +165,8 @@ def get_metadata_and_prefix_map(
         return Metadata.default()
 
     metadata = read_metadata(metadata_path)
-    prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
-    converter = Converter.from_prefix_map(prefix_map)
+    # FIXME @cthoyt
+    converter = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
 
     m = Metadata(converter=converter, metadata=metadata.metadata)
     if ("mapping_set_id" not in m.metadata) or (m.metadata["mapping_set_id"] is None):
