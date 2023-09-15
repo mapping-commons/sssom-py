@@ -2,11 +2,12 @@
 
 import json
 from functools import lru_cache
-from typing import Optional
+from typing import Union
 
 import curies
 import pkg_resources
 from curies import Converter
+from rdflib.namespace import is_ncname
 
 from .constants import EXTENDED_PREFIX_MAP
 from .typehints import PrefixMap
@@ -20,17 +21,19 @@ SSSOM_CONTEXT = pkg_resources.resource_filename(
 @lru_cache(1)
 def get_converter() -> Converter:
     """Get a converter."""
-    return Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    return curies.chain([_get_built_in_prefix_map(), _get_default_converter()])
 
 
 @lru_cache(1)
-def get_extended_prefix_map():
-    """Get prefix map from bioregistry (obo.epm.json).
-
-    :return: Prefix map.
-    """
-    converter = get_converter()
-    return {record.prefix: record.uri_prefix for record in converter.records}
+def _get_default_converter() -> Converter:
+    converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    records = []
+    for record in converter.records:
+        if not is_ncname(record.prefix):
+            continue
+        record.prefix_synonyms = [s for s in record.prefix_synonyms if is_ncname(s)]
+        records.append(record)
+    return Converter(records)
 
 
 @lru_cache(1)
@@ -46,17 +49,13 @@ def _get_built_in_prefix_map() -> Converter:
     return Converter.from_prefix_map(prefix_map)
 
 
-def add_built_in_prefixes_to_prefix_map(
-    prefix_map: Optional[PrefixMap] = None,
-) -> PrefixMap:
-    """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
+HINT = Union[None, PrefixMap, Converter]
 
-    :param prefix_map: A custom prefix map
-    :raises ValueError: If there is a prefix map mismatch.
-    :return: A prefix map
-    """
-    default_converter = _get_built_in_prefix_map()
+
+def ensure_converter(prefix_map: HINT = None) -> Converter:
+    """Ensure a converter is available."""
     if not prefix_map:
-        return dict(default_converter.bimap)
-    new_converter = curies.chain([default_converter, Converter.from_prefix_map(prefix_map)])
-    return dict(new_converter.bimap)
+        return get_converter()
+    if not isinstance(prefix_map, Converter):
+        prefix_map = Converter.from_prefix_map(prefix_map)
+    return curies.chain([_get_built_in_prefix_map(), prefix_map])

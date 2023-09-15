@@ -42,7 +42,6 @@ from .constants import (
     PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
-    PREFIX_MAP_MODES,
     RDFS_SUBCLASS_OF,
     SCHEMA_YAML,
     SEMAPV,
@@ -60,9 +59,9 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES
+from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap, get_default_metadata
+from .typehints import MetadataType, PrefixMap, get_default_metadata
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
@@ -102,6 +101,11 @@ class MappingSetDataFrame:
             prefix_map=dict(converter.bimap),
             metadata=metadata or get_default_metadata(),
         )
+
+    def clean_context(self) -> None:
+        """Clean up the context."""
+        c = curies.chain([_get_built_in_prefix_map(), self.converter])
+        self.prefix_map = dict(c.bimap)
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -852,17 +856,6 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-def read_metadata(filename: str) -> Metadata:
-    """Read a metadata file (yaml) that is supplied separately from a TSV."""
-    prefix_map = {}
-    with open(filename) as file:
-        metadata = yaml.safe_load(file)
-    if PREFIX_MAP_KEY in metadata:
-        prefix_map = metadata.pop(PREFIX_MAP_KEY)
-    converter = Converter.from_prefix_map(prefix_map)
-    return Metadata(converter=converter, metadata=metadata)
-
-
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     """Extract metadata.
 
@@ -1072,19 +1065,6 @@ def filter_prefixes(
             rows.append(row)
 
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
-
-
-def raise_for_bad_prefix_map_mode(prefix_map_mode: Optional[str] = None):
-    """Raise exception if prefix map mode is invalid.
-
-    :param prefix_map_mode: The prefix map mode
-    :raises ValueError: Invalid prefix map mode
-    """
-    if prefix_map_mode not in PREFIX_MAP_MODES:
-        raise ValueError(
-            f"{prefix_map_mode} is not a valid prefix map mode, "
-            f"must be one of {' '.join(PREFIX_MAP_MODES)}"
-        )
 
 
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:
