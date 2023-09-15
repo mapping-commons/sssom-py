@@ -53,7 +53,7 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import add_built_in_prefixes_to_prefix_map
+from .context import HINT, ensure_converter
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap, generate_mapping_set_id
 from .util import (
@@ -181,7 +181,7 @@ def _get_seperator_symbol_from_file_path(file):
 
 def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
     **kwargs,
 ) -> MappingSetDataFrame:
@@ -234,8 +234,8 @@ def parse_sssom_table(
 
 def parse_sssom_rdf(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: HINT = None,
+    meta: Optional[MetadataType] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
@@ -255,8 +255,8 @@ def parse_sssom_rdf(
 
 def parse_sssom_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: HINT = None,
+    meta: Optional[MetadataType] = None,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -278,8 +278,8 @@ def parse_sssom_json(
 
 def parse_obographs_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: HINT = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
@@ -376,8 +376,8 @@ def _get_mdict_ms_and_bad_attrs(row: pd.Series, bad_attrs: Counter) -> Tuple[dic
 
 def parse_alignment_xml(
     file_path: str,
-    prefix_map: Dict[str, str],
-    meta: Dict[str, str],
+    prefix_map: HINT = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
@@ -410,8 +410,7 @@ def from_sssom_dataframe(
     :param meta: A metadata dictionary
     :return: MappingSetDataFrame
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
 
     # Need to revisit this solution.
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
@@ -448,8 +447,7 @@ def from_sssom_rdf(
     :param meta: Potentially additional metadata, defaults to None
     :return: MappingSetDataFrame object
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
@@ -510,8 +508,8 @@ def from_sssom_rdf(
 
 def from_sssom_json(
     jsondoc: Union[str, dict, TextIO],
-    prefix_map: Dict[str, str],
-    meta: Dict[str, str] = None,
+    prefix_map: HINT = None,
+    meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Load a mapping set dataframe from a JSON object.
 
@@ -520,8 +518,7 @@ def from_sssom_json(
     :param meta: metadata
     :return: MappingSetDataFrame object
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
     mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
@@ -531,8 +528,8 @@ def from_sssom_json(
 
 def from_alignment_minidom(
     dom: Document,
-    prefix_map: PrefixMap,
-    meta: MetadataType,
+    prefix_map: HINT = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Read a minidom Document object.
@@ -544,9 +541,7 @@ def from_alignment_minidom(
     :return: MappingSetDocument
     :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
     """
-    # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
-    _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -602,7 +597,7 @@ def _get_obographs_predicate_id(obographs_predicate: str):
 
 def from_obographs(
     jsondoc: Dict,
-    prefix_map: PrefixMap,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -615,8 +610,7 @@ def from_obographs(
     :raises Exception: When there is no CURIE
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
-    _ensure_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map, strict=False)
+    converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -757,13 +751,6 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
     if func is None:
         raise Exception(f"Unknown input format: {input_format}")
     return func
-
-
-def _ensure_prefix_map(prefix_map: Optional[PrefixMap] = None) -> PrefixMap:
-    if not prefix_map:
-        raise Exception("No valid prefix_map provided")
-    else:
-        return add_built_in_prefixes_to_prefix_map(prefix_map)
 
 
 def _prepare_mapping(mapping: Mapping) -> Mapping:

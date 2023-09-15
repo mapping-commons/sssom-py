@@ -2,7 +2,7 @@
 
 import json
 from functools import lru_cache
-from typing import Optional
+from typing import Optional, Union
 
 import curies
 import pkg_resources
@@ -60,3 +60,19 @@ def add_built_in_prefixes_to_prefix_map(
         return dict(default_converter.bimap)
     new_converter = curies.chain([default_converter, Converter.from_prefix_map(prefix_map)])
     return dict(new_converter.bimap)
+
+
+HINT = Union[None, PrefixMap, Converter]
+
+
+def ensure_converter(prefix_map: HINT = None) -> Converter:
+    """Ensure a converter is available."""
+    if not prefix_map:
+        return get_converter()
+
+    if isinstance(prefix_map, Converter):
+        return curies.chain([get_converter(), prefix_map])
+
+    prefix_map = add_built_in_prefixes_to_prefix_map(prefix_map)
+    converter = Converter.from_prefix_map(prefix_map)
+    return converter
