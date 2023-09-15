@@ -19,7 +19,6 @@ from .constants import (
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
 )
-from .context import add_built_in_prefixes_to_prefix_map
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata, generate_mapping_set_id
 from .util import (
@@ -305,7 +304,7 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
 
     new_df = sqldf(query)
 
-    add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    msdf.clean_context()
     new_msdf = MappingSetDataFrame.with_converter(
         df=new_df, converter=msdf.converter, metadata=msdf.metadata
     )

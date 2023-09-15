@@ -60,7 +60,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES
+from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, PrefixMap, get_default_metadata
 
@@ -102,6 +102,11 @@ class MappingSetDataFrame:
             prefix_map=dict(converter.bimap),
             metadata=metadata or get_default_metadata(),
         )
+
+    def clean_context(self) -> None:
+        """Clean up the context."""
+        c = curies.chain([_get_built_in_prefix_map(), self.converter])
+        self.prefix_map = dict(c.bimap)
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.

@@ -7,7 +7,6 @@ from linkml_runtime.processing.referencevalidator import ReferenceValidator
 from linkml_runtime.utils.schemaview import SchemaView
 from sssom_schema import MappingSet
 
-from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 
@@ -62,7 +61,7 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     :param msdf: MappingSetDataFrame
     :raises ValidationError: If all prefixes not in curie_map.
     """
-    msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    msdf.clean_context()
     missing_prefixes = get_all_prefixes(msdf).difference(msdf.converter.bimap)
     if missing_prefixes:
         raise ValidationError(f"The prefixes in {missing_prefixes} are missing from 'curie_map'.")

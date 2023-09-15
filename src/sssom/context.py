@@ -2,7 +2,7 @@
 
 import json
 from functools import lru_cache
-from typing import Optional, Union
+from typing import Union
 
 import curies
 import pkg_resources
@@ -46,22 +46,6 @@ def _get_built_in_prefix_map() -> Converter:
     return Converter.from_prefix_map(prefix_map)
 
 
-def add_built_in_prefixes_to_prefix_map(
-    prefix_map: Optional[PrefixMap] = None,
-) -> PrefixMap:
-    """Add built-in prefix map from the sssom_context variable in the auto-generated 'internal_context.py' file.
-
-    :param prefix_map: A custom prefix map
-    :raises ValueError: If there is a prefix map mismatch.
-    :return: A prefix map
-    """
-    default_converter = _get_built_in_prefix_map()
-    if not prefix_map:
-        return dict(default_converter.bimap)
-    new_converter = curies.chain([default_converter, Converter.from_prefix_map(prefix_map)])
-    return dict(new_converter.bimap)
-
-
 HINT = Union[None, PrefixMap, Converter]
 
 
@@ -71,8 +55,6 @@ def ensure_converter(prefix_map: HINT = None) -> Converter:
         return get_converter()
 
     if isinstance(prefix_map, Converter):
-        return curies.chain([get_converter(), prefix_map])
+        return curies.chain([_get_built_in_prefix_map(), get_converter(), prefix_map])
 
-    prefix_map = add_built_in_prefixes_to_prefix_map(prefix_map)
-    converter = Converter.from_prefix_map(prefix_map)
-    return converter
+    return curies.chain([_get_built_in_prefix_map(), Converter.from_prefix_map(prefix_map)])
