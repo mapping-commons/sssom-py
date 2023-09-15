@@ -306,25 +306,17 @@ def parse_obographs_json(
 
 
 def _get_prefix_map_and_metadata(
-    prefix_map: Optional[PrefixMap] = None, meta: Optional[MetadataType] = None
+    prefix_map: HINT = None, meta: Optional[MetadataType] = None
 ) -> Metadata:
-    default_metadata = Metadata.default()
-
-    if prefix_map is None:
-        logging.warning("No prefix map provided (not recommended), trying to use defaults..")
-        prefix_map = default_metadata.prefix_map
-
+    if prefix_map and meta and PREFIX_MAP_KEY in meta:
+        logging.info(
+            "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
+            "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
+        )
+        prefix_map = meta[PREFIX_MAP_KEY]
+    converter = ensure_converter(prefix_map)
     if meta is None:
-        meta = default_metadata.metadata
-    else:
-        if prefix_map and PREFIX_MAP_KEY in meta:
-            logging.info(
-                "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
-                "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
-            )
-            prefix_map = cast(PrefixMap, meta[PREFIX_MAP_KEY])
-
-    converter = Converter.from_prefix_map(prefix_map)
+        meta = Metadata.default().metadata
     return Metadata(converter=converter, metadata=meta)
 
 
