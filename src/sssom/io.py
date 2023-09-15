@@ -293,7 +293,6 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
     :return: Filtered MappingSetDataFrame object.
     """
     n = 1
-    new_msdf = MappingSetDataFrame()
     while len(inputs) >= n:
         fn = inputs[n - 1]
         msdf = parse_sssom_table(fn)
@@ -305,9 +304,11 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
         n += 1
 
     new_df = sqldf(query)
-    new_msdf.df = new_df
-    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
-    new_msdf.metadata = msdf.metadata
+
+    add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
+    new_msdf = MappingSetDataFrame.with_converter(
+        df=new_df, converter=msdf.converter, metadata=msdf.metadata
+    )
     write_table(new_msdf, output)
     return new_msdf
 

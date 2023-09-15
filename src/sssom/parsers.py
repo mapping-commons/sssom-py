@@ -927,7 +927,6 @@ def split_dataframe_by_prefix(
     df = msdf.df
     if df is None:
         raise ValueError
-    prefix_map = msdf.prefix_map
     meta = msdf.metadata
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
     for subject_prefix, object_prefix, relation in itt.product(
@@ -935,10 +934,10 @@ def split_dataframe_by_prefix(
     ):
         relation_prefix, relation_id = relation.split(":")
         split = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
-        if subject_prefix not in prefix_map:
+        if subject_prefix not in msdf.converter.bimap:
             logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
             continue
-        if object_prefix not in prefix_map:
+        if object_prefix not in msdf.converter.bimap:
             logging.warning(f"{split} - missing object prefix - {object_prefix}")
             continue
         df_subset = df[
@@ -949,12 +948,10 @@ def split_dataframe_by_prefix(
         if 0 == len(df_subset):
             logging.warning(f"No matches ({len(df_subset)} matches found)")
             continue
-        split_prefix_map = {
-            subject_prefix: prefix_map[subject_prefix],
-            object_prefix: prefix_map[object_prefix],
-            relation_prefix: prefix_map[relation_prefix],
-        }
+        subconverter = msdf.converter.get_subconverter(
+            [subject_prefix, object_prefix, relation_prefix]
+        )
         split_to_msdf[split] = from_sssom_dataframe(
-            df_subset, prefix_map=split_prefix_map, meta=meta
+            df_subset, prefix_map=dict(subconverter.bimap), meta=meta
         )
     return split_to_msdf

@@ -94,9 +94,9 @@ class TestIO(unittest.TestCase):
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
         filtered_df = filter_out_prefixes(original_msdf.df, prefix_filter_list, self.features)
-        new_msdf = MappingSetDataFrame(
+        new_msdf = MappingSetDataFrame.with_converter(
             df=filtered_df,
-            prefix_map=original_msdf.prefix_map,
+            converter=original_msdf.converter,
             metadata=original_msdf.metadata,
         )
         original_length = len(original_msdf.df)
@@ -109,9 +109,9 @@ class TestIO(unittest.TestCase):
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
         filtered_df = filter_out_prefixes(original_msdf.df, prefix_filter_list, self.features)
-        new_msdf = MappingSetDataFrame(
+        new_msdf = MappingSetDataFrame.with_converter(
             df=filtered_df,
-            prefix_map=original_msdf.prefix_map,
+            converter=original_msdf.converter,
             metadata=original_msdf.metadata,
         )
         new_msdf.clean_prefix_map()
