@@ -7,6 +7,7 @@ from typing import Union
 import curies
 import pkg_resources
 from curies import Converter
+from rdflib.namespace import is_ncname
 
 from .constants import EXTENDED_PREFIX_MAP
 from .typehints import PrefixMap
@@ -20,17 +21,19 @@ SSSOM_CONTEXT = pkg_resources.resource_filename(
 @lru_cache(1)
 def get_converter() -> Converter:
     """Get a converter."""
-    return Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    return curies.chain([_get_built_in_prefix_map(), _get_default_converter()])
 
 
 @lru_cache(1)
-def get_extended_prefix_map():
-    """Get prefix map from bioregistry (obo.epm.json).
-
-    :return: Prefix map.
-    """
-    converter = get_converter()
-    return {record.prefix: record.uri_prefix for record in converter.records}
+def _get_default_converter() -> Converter:
+    converter = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
+    records = []
+    for record in converter.records:
+        if not is_ncname(record.prefix):
+            continue
+        record.prefix_synonyms = [s for s in record.prefix_synonyms if is_ncname(s)]
+        records.append(record)
+    return Converter(records)
 
 
 @lru_cache(1)
@@ -53,8 +56,6 @@ def ensure_converter(prefix_map: HINT = None) -> Converter:
     """Ensure a converter is available."""
     if not prefix_map:
         return get_converter()
-
-    if isinstance(prefix_map, Converter):
-        return curies.chain([_get_built_in_prefix_map(), get_converter(), prefix_map])
-
-    return curies.chain([_get_built_in_prefix_map(), Converter.from_prefix_map(prefix_map)])
+    if not isinstance(prefix_map, Converter):
+        prefix_map = Converter.from_prefix_map(prefix_map)
+    return curies.chain([_get_built_in_prefix_map(), prefix_map])
