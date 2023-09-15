@@ -102,8 +102,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.merge_msdf"><code class="docutils literal notranslate"><span class="pre">merge_msdf()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.raise_for_bad_path"><code class="docutils literal notranslate"><span class="pre">raise_for_bad_path()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.util.raise_for_bad_prefix_map_mode"><code class="docutils literal notranslate"><span class="pre">raise_for_bad_prefix_map_mode()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.util.read_metadata"><code class="docutils literal notranslate"><span class="pre">read_metadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.reconcile_prefix_and_data"><code class="docutils literal notranslate"><span class="pre">reconcile_prefix_and_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.remove_unmatched"><code class="docutils literal notranslate"><span class="pre">remove_unmatched()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.safe_compress"><code class="docutils literal notranslate"><span class="pre">safe_compress()</span></code></a></li>
@@ -303,7 +301,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>metadata_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The metadata file in YAML format</p></li>
+<li><p><strong>metadata_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – The metadata file in YAML format</p></li>
 <li><p><strong>prefix_map_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – one of metadata_only, sssom_default_only, merged</p></li>
 </ul>
 </dd>
@@ -431,6 +429,17 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A collection of mappings represented as a DataFrame, together with additional metadata.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.clean_context">
+<span class="sig-name descname"><span class="pre">clean_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.clean_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_context" title="Permalink to this definition"></a></dt>
+<dd><p>Clean up the context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.clean_prefix_map">
 <span class="sig-name descname"><span class="pre">clean_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.clean_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_prefix_map" title="Permalink to this definition"></a></dt>
@@ -1042,31 +1051,6 @@ Defaults to True.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.raise_for_bad_prefix_map_mode">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">raise_for_bad_prefix_map_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#raise_for_bad_prefix_map_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.raise_for_bad_prefix_map_mode" title="Permalink to this definition"></a></dt>
-<dd><p>Raise exception if prefix map mode is invalid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>prefix_map_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The prefix map mode</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Invalid prefix map mode</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.read_metadata">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">read_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#read_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.read_metadata" title="Permalink to this definition"></a></dt>
-<dd><p>Read a metadata file (yaml) that is supplied separately from a TSV.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

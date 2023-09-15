@@ -82,7 +82,6 @@
 <span class="kn">from</span> <span class="nn">linkml_runtime.utils.schemaview</span> <span class="kn">import</span> <span class="n">SchemaView</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">MappingSet</span>
 
-<span class="kn">from</span> <span class="nn">sssom.context</span> <span class="kn">import</span> <span class="n">add_built_in_prefixes_to_prefix_map</span>
 <span class="kn">from</span> <span class="nn">sssom.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
 <span class="kn">from</span> <span class="nn">sssom.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">get_all_prefixes</span>
 
@@ -137,7 +136,7 @@
 <span class="sd">    :param msdf: MappingSetDataFrame</span>
 <span class="sd">    :raises ValidationError: If all prefixes not in curie_map.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">add_built_in_prefixes_to_prefix_map</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
+    <span class="n">msdf</span><span class="o">.</span><span class="n">clean_context</span><span class="p">()</span>
     <span class="n">missing_prefixes</span> <span class="o">=</span> <span class="n">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">missing_prefixes</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The prefixes in </span><span class="si">{</span><span class="n">missing_prefixes</span><span class="si">}</span><span class="s2"> are missing from &#39;curie_map&#39;.&quot;</span><span class="p">)</span></div>

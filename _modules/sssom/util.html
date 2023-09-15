@@ -117,7 +117,6 @@
     <span class="n">PREDICATE_LIST</span><span class="p">,</span>
     <span class="n">PREDICATE_MODIFIER</span><span class="p">,</span>
     <span class="n">PREDICATE_MODIFIER_NOT</span><span class="p">,</span>
-    <span class="n">PREFIX_MAP_MODES</span><span class="p">,</span>
     <span class="n">RDFS_SUBCLASS_OF</span><span class="p">,</span>
     <span class="n">SCHEMA_YAML</span><span class="p">,</span>
     <span class="n">SEMAPV</span><span class="p">,</span>
@@ -135,9 +134,9 @@
     <span class="n">UNKNOWN_IRI</span><span class="p">,</span>
     <span class="n">SSSOMSchemaView</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">,</span> <span class="n">_get_built_in_prefix_map</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">get_default_metadata</span>
+<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">get_default_metadata</span>
 
 <span class="c1">#: The key that&#39;s used in the YAML section of an SSSOM file</span>
 <span class="n">PREFIX_MAP_KEY</span> <span class="o">=</span> <span class="s2">&quot;curie_map&quot;</span>
@@ -177,6 +176,11 @@
             <span class="n">prefix_map</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">),</span>
             <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">get_default_metadata</span><span class="p">(),</span>
         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.clean_context"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.clean_context">[docs]</a>    <span class="k">def</span> <span class="nf">clean_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the context.&quot;&quot;&quot;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">_get_built_in_prefix_map</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.merge"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two MappingSetDataframes.</span>
@@ -927,17 +931,6 @@
     <span class="k">return</span> <span class="s2">&quot;tsv&quot;</span></div>
 
 
-<div class="viewcode-block" id="read_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.read_metadata">[docs]</a><span class="k">def</span> <span class="nf">read_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a metadata file (yaml) that is supplied separately from a TSV.&quot;&quot;&quot;</span>
-    <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">PREFIX_MAP_KEY</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">)</span>
-    <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Metadata</span><span class="p">(</span><span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="extract_global_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.util.extract_global_metadata">[docs]</a><span class="k">def</span> <span class="nf">extract_global_metadata</span><span class="p">(</span><span class="n">msdoc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract metadata.</span>
 
@@ -1147,19 +1140,6 @@
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="k">if</span> <span class="n">rows</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="raise_for_bad_prefix_map_mode"><a class="viewcode-back" href="../../sssom.html#sssom.util.raise_for_bad_prefix_map_mode">[docs]</a><span class="k">def</span> <span class="nf">raise_for_bad_prefix_map_mode</span><span class="p">(</span><span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise exception if prefix map mode is invalid.</span>
-
-<span class="sd">    :param prefix_map_mode: The prefix map mode</span>
-<span class="sd">    :raises ValueError: Invalid prefix map mode</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">prefix_map_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PREFIX_MAP_MODES</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix_map_mode</span><span class="si">}</span><span class="s2"> is not a valid prefix map mode, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;must be one of </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PREFIX_MAP_MODES</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="raise_for_bad_path"><a class="viewcode-back" href="../../sssom.html#sssom.util.raise_for_bad_path">[docs]</a><span class="k">def</span> <span class="nf">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

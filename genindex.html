@@ -1085,8 +1085,6 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="developer_docs/sssom.html#sssom.context.add_built_in_prefixes_to_prefix_map">add_built_in_prefixes_to_prefix_map() (in module sssom.context)</a>, <a href="sssom.html#sssom.context.add_built_in_prefixes_to_prefix_map">[1]</a>
-</li>
       <li><a href="developer_docs/api.html#sssom.util.add_default_confidence">add_default_confidence() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.add_default_confidence">[1]</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.io.annotate_file">annotate_file() (in module sssom.io)</a>, <a href="sssom.html#sssom.io.annotate_file">[1]</a>
@@ -1107,6 +1105,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sssom.html#sssom.validators.check_all_prefixes_in_curie_map">check_all_prefixes_in_curie_map() (in module sssom.validators)</a>
 </li>
+      <li><a href="developer_docs/api.html#sssom.util.MappingSetDataFrame.clean_context">clean_context() (sssom.util.MappingSetDataFrame method)</a>, <a href="sssom.html#sssom.util.MappingSetDataFrame.clean_context">[1]</a>
+</li>
       <li><a href="developer_docs/api.html#sssom.util.MappingSetDataFrame.clean_prefix_map">clean_prefix_map() (sssom.util.MappingSetDataFrame method)</a>, <a href="sssom.html#sssom.util.MappingSetDataFrame.clean_prefix_map">[1]</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.util.collapse">collapse() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.collapse">[1]</a>
@@ -1119,10 +1119,10 @@
 </li>
       <li><a href="sssom.html#sssom.constants.SEMAPV.CompositeMatching">CompositeMatching (sssom.constants.SEMAPV attribute)</a>
 </li>
-      <li><a href="developer_docs/api.html#sssom.io.convert_file">convert_file() (in module sssom.io)</a>, <a href="sssom.html#sssom.io.convert_file">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="developer_docs/api.html#sssom.io.convert_file">convert_file() (in module sssom.io)</a>, <a href="sssom.html#sssom.io.convert_file">[1]</a>
+</li>
       <li><a href="sssom.html#sssom.sparql_util.EndpointConfig.converter">converter (sssom.sparql_util.EndpointConfig attribute)</a>
 
       <ul>
@@ -1168,6 +1168,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sssom.html#sssom.sparql_util.EndpointConfig">EndpointConfig (class in sssom.sparql_util)</a>
+</li>
+      <li><a href="developer_docs/sssom.html#sssom.context.ensure_converter">ensure_converter() (in module sssom.context)</a>, <a href="sssom.html#sssom.context.ensure_converter">[1]</a>
 </li>
       <li><a href="sssom.html#sssom.constants.SSSOMSchemaView.entity_reference_slots">entity_reference_slots (sssom.constants.SSSOMSchemaView property)</a>
 </li>
@@ -1217,8 +1219,6 @@
 </li>
       <li><a href="developer_docs/api.html#sssom.util.get_dict_from_mapping">get_dict_from_mapping() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.get_dict_from_mapping">[1]</a>
 </li>
-      <li><a href="developer_docs/sssom.html#sssom.context.get_extended_prefix_map">get_extended_prefix_map() (in module sssom.context)</a>, <a href="sssom.html#sssom.context.get_extended_prefix_map">[1]</a>
-</li>
       <li><a href="developer_docs/api.html#sssom.util.get_file_extension">get_file_extension() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.get_file_extension">[1]</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.io.get_list_of_predicate_iri">get_list_of_predicate_iri() (in module sssom.io)</a>, <a href="sssom.html#sssom.io.get_list_of_predicate_iri">[1]</a>
@@ -1227,10 +1227,10 @@
 </li>
       <li><a href="developer_docs/sssom.html#sssom.parsers.get_parsing_function">get_parsing_function() (in module sssom.parsers)</a>, <a href="sssom.html#sssom.parsers.get_parsing_function">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="developer_docs/api.html#sssom.util.get_prefix_from_curie">get_prefix_from_curie() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.get_prefix_from_curie">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="developer_docs/api.html#sssom.util.get_prefixes_used_in_metadata">get_prefixes_used_in_metadata() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.get_prefixes_used_in_metadata">[1]</a>
 </li>
       <li><a href="developer_docs/api.html#sssom.util.get_prefixes_used_in_table">get_prefixes_used_in_table() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.get_prefixes_used_in_table">[1]</a>
@@ -1490,16 +1490,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="developer_docs/api.html#sssom.util.raise_for_bad_path">raise_for_bad_path() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.raise_for_bad_path">[1]</a>
 </li>
-      <li><a href="developer_docs/api.html#sssom.util.raise_for_bad_prefix_map_mode">raise_for_bad_prefix_map_mode() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.raise_for_bad_prefix_map_mode">[1]</a>
-</li>
-      <li><a href="developer_docs/api.html#sssom.util.read_metadata">read_metadata() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.read_metadata">[1]</a>
-</li>
       <li><a href="developer_docs/api.html#sssom.util.reconcile_prefix_and_data">reconcile_prefix_and_data() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.reconcile_prefix_and_data">[1]</a>
+</li>
+      <li><a href="developer_docs/api.html#sssom.util.MappingSetDataFrame.remove_mappings">remove_mappings() (sssom.util.MappingSetDataFrame method)</a>, <a href="sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="developer_docs/api.html#sssom.util.MappingSetDataFrame.remove_mappings">remove_mappings() (sssom.util.MappingSetDataFrame method)</a>, <a href="sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[1]</a>
-</li>
       <li><a href="developer_docs/api.html#sssom.util.remove_unmatched">remove_unmatched() (in module sssom.util)</a>, <a href="sssom.html#sssom.util.remove_unmatched">[1]</a>
 </li>
       <li><a href="sssom.html#sssom.rdf_util.rewire_graph">rewire_graph() (in module sssom.rdf_util)</a>
