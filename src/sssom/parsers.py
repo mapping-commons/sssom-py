@@ -193,11 +193,10 @@ def parse_sssom_table(
 
     converter = ensure_converter(prefix_map)
 
-    zzz = Metadata.default().metadata
-    if meta is not None:
-        zzz.update(meta)
+    combine_meta = Metadata.default().metadata
+    combine_meta.update(meta or {})
     # prioritize internal metadata over external metadata
-    zzz.update(sssom_metadata)
+    combine_meta.update(sssom_metadata)
 
     internal_prefix_map = sssom_metadata.get(CURIE_MAP)
     if internal_prefix_map:
@@ -206,7 +205,7 @@ def parse_sssom_table(
             Converter.from_prefix_map(internal_prefix_map)
         ])
 
-    msdf = from_sssom_dataframe(df, prefix_map=converter, meta=zzz)
+    msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
     msdf.clean_prefix_map()
     return msdf
 
