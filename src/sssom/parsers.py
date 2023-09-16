@@ -131,7 +131,7 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
     return table_component, metadata_component
 
 
-def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
+def _read_pandas_and_metadata(input: io.StringIO, sep: str = None) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param input: The file to read. If no separator is given, this file should be named.
@@ -155,11 +155,8 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
             ]
         )
 
-    if isinstance(df, pd.DataFrame):
-        sssom_metadata = _read_metadata_from_table(metadata_stream)
-        return df, sssom_metadata
-
-    return None, None
+    sssom_metadata = _read_metadata_from_table(metadata_stream)
+    return df, sssom_metadata
 
 
 def _get_seperator_symbol_from_file_path(file):
@@ -186,49 +183,29 @@ def parse_sssom_table(
     **kwargs,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
-    if isinstance(file_path, Path) or isinstance(file_path, str):
+    if isinstance(file_path, (str, Path)):
         raise_for_bad_path(file_path)
     stream: io.StringIO = _open_input(file_path)
     sep_new = _get_seperator_symbol_from_file_path(file_path)
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
-    # if mapping_predicates:
-    #     # Filter rows based on presence of predicate_id list provided.
-    #     df = df[df["predicate_id"].isin(mapping_predicates)]
 
-    # If SSSOM external metadata is provided, merge it with the internal metadata
+    converter = ensure_converter(prefix_map)
 
-    if sssom_metadata:
-        if meta:
-            for k, v in meta.items():
-                if k in sssom_metadata:
-                    if sssom_metadata[k] != v:
-                        logging.warning(
-                            f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
-                            f"conflicts with provided ({meta[k]})."
-                        )
-                else:
-                    logging.info(f"Externally provided metadata {k}:{v} is added to metadata set.")
-                    sssom_metadata[k] = v
-        meta = sssom_metadata
+    zzz = Metadata.default().metadata
+    if meta is not None:
+        zzz.update(meta)
+    # prioritize internal metadata over external metadata
+    zzz.update(sssom_metadata)
 
-        if "curie_map" in sssom_metadata:
-            if prefix_map:
-                for k, v in prefix_map.items():
-                    if k in sssom_metadata[CURIE_MAP]:
-                        if sssom_metadata[CURIE_MAP][k] != v:
-                            logging.warning(
-                                f"SSSOM prefix map {k} ({sssom_metadata[CURIE_MAP][k]}) "
-                                f"conflicts with provided ({prefix_map[k]})."
-                            )
-                    else:
-                        logging.info(
-                            f"Externally provided metadata {k}:{v} is added to metadata set."
-                        )
-                        sssom_metadata[CURIE_MAP][k] = v
-            prefix_map = sssom_metadata[CURIE_MAP]
+    internal_prefix_map = sssom_metadata.get(CURIE_MAP)
+    if internal_prefix_map:
+        converter = curies.chain([
+            converter,
+            Converter.from_prefix_map(internal_prefix_map)
+        ])
 
-    meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    msdf = from_sssom_dataframe(df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata)
+    msdf = from_sssom_dataframe(df, prefix_map=converter, meta=zzz)
+    msdf.clean_prefix_map()
     return msdf
 
 
