@@ -92,7 +92,7 @@ def parse_file(
     # if mapping_predicates:
     doc = parse_func(
         input_path,
-        prefix_map=metadata.prefix_map,
+        prefix_map=metadata.prefix_map,  # TODO need to address parse_sssom_table() to switch to converter
         meta=metadata.metadata,
         mapping_predicates=mapping_predicates,
     )
