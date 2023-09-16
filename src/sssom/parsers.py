@@ -16,6 +16,8 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
+
+import curies
 from curies import Converter
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
@@ -55,7 +57,7 @@ from sssom.constants import (
 
 from .context import HINT, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap, generate_mapping_set_id
+from .typehints import Metadata, MetadataType, generate_mapping_set_id
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -369,7 +371,7 @@ def parse_alignment_xml(
 
 def from_sssom_dataframe(
     df: pd.DataFrame,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
@@ -406,7 +408,7 @@ def from_sssom_dataframe(
 
 def from_sssom_rdf(
     g: Graph,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
