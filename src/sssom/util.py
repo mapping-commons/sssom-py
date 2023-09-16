@@ -2,7 +2,7 @@
 
 import itertools as itt
 import json
-import logging
+import logging as _logging
 import os
 import re
 from collections import defaultdict
@@ -62,6 +62,8 @@ from .constants import (
 from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map
 from .sssom_document import MappingSetDocument
 from .typehints import MetadataType, PrefixMap, get_default_metadata
+
+logging = _logging.getLogger(__name__)
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
