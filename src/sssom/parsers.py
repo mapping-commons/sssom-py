@@ -12,12 +12,11 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple,
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
+import curies
 import numpy as np
 import pandas as pd
 import requests
 import yaml
-
-import curies
 from curies import Converter
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
@@ -133,7 +132,9 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
     return table_component, metadata_component
 
 
-def _read_pandas_and_metadata(input: io.StringIO, sep: str = None) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+def _read_pandas_and_metadata(
+    input: io.StringIO, sep: str = None
+) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param input: The file to read. If no separator is given, this file should be named.
@@ -200,10 +201,7 @@ def parse_sssom_table(
 
     internal_prefix_map = sssom_metadata.get(CURIE_MAP)
     if internal_prefix_map:
-        converter = curies.chain([
-            converter,
-            Converter.from_prefix_map(internal_prefix_map)
-        ])
+        converter = curies.chain([converter, Converter.from_prefix_map(internal_prefix_map)])
 
     msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
     msdf.clean_prefix_map()
