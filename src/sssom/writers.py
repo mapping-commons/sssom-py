@@ -1,7 +1,7 @@
 """Serialization functions for SSSOM."""
 
 import json
-import logging
+import logging as _logging
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
@@ -27,6 +27,8 @@ from .util import (
     get_file_extension,
     sort_df_rows_columns,
 )
+
+logging = _logging.getLogger(__name__)
 
 # noinspection PyProtectedMember
 

@@ -1,12 +1,9 @@
 """Test for annotating MappingSetDataFrame metadata."""
 
-import sys
 import unittest
 from os.path import join
 
 from sssom.io import annotate_file
-
-# from sssom.io import filter_file
 from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir
 
@@ -26,7 +23,7 @@ class TestSort(unittest.TestCase):
             "mapping_set_id": ("http://w3id.org/my/mapping.sssom.tsv",),
             "mapping_set_version": ("2021-01-01",),
         }
-        annotated_msdf = annotate_file(input=self.input, output=sys.stdout, **kwargs)
+        annotated_msdf = annotate_file(input=self.input, **kwargs)
         validation_msdf = parse_sssom_table(self.validation_file)
 
         self.assertEqual(annotated_msdf.metadata, validation_msdf.metadata)
@@ -38,7 +35,7 @@ class TestSort(unittest.TestCase):
         kwargs = {
             "creator_id": ("orcid:0123",),
         }
-        annotated_msdf = annotate_file(input=self.input, output=sys.stdout, **kwargs)
+        annotated_msdf = annotate_file(input=self.input, **kwargs)
 
         self.assertTrue(len(annotated_msdf.metadata["creator_id"]), 3)
 
@@ -46,11 +43,11 @@ class TestSort(unittest.TestCase):
         kwargs = {
             "creator_id": ("orcid:1234",),
         }
-        annotated_msdf_2 = annotate_file(input=self.input, output=sys.stdout, **kwargs)
+        annotated_msdf_2 = annotate_file(input=self.input, **kwargs)
         self.assertTrue(len(annotated_msdf_2.metadata["creator_id"]), 2)
 
     def test_annotate_fail(self):
         """Pass invalid param to see if it fails."""
         kwargs = {"abcd": ("x:%", "y:%")}
         with self.assertRaises(ValueError):
-            annotate_file(input=self.input, output=sys.stdout, **kwargs)
+            annotate_file(input=self.input, **kwargs)

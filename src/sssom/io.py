@@ -270,7 +270,9 @@ def extract_iri(input: str, converter: Converter) -> List[str]:
 #     return new_msdf
 
 
-def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDataFrame:
+def run_sql_query(
+    query: str, inputs: List[str], output: Optional[TextIO] = None
+) -> MappingSetDataFrame:
     """Run a SQL query over one or more SSSOM files.
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
@@ -307,11 +309,12 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
     new_msdf = MappingSetDataFrame.with_converter(
         df=new_df, converter=msdf.converter, metadata=msdf.metadata
     )
-    write_table(new_msdf, output)
+    if output is not None:
+        write_table(new_msdf, output)
     return new_msdf
 
 
-def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
+def filter_file(input: str, output: Optional[TextIO] = None, **kwargs) -> MappingSetDataFrame:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -323,7 +326,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 
     :param input: DataFrame to be queried over.
     :param output: Output location.
-    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     :raises ValueError: If parameter provided is invalid.
     :return: Filtered MappingSetDataFrame object.
     """
@@ -358,7 +361,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 
 
 def annotate_file(
-    input: str, output: TextIO, replace_multivalued: bool = False, **kwargs
+    input: str, output: Optional[TextIO] = None, replace_multivalued: bool = False, **kwargs
 ) -> MappingSetDataFrame:
     """Annotate a file i.e. add custom metadata to the mapping set.
 
@@ -366,7 +369,7 @@ def annotate_file(
     :param output: Output location.
     :param replace_multivalued: Multivalued slots should be
         replaced or not, defaults to False
-    :param **kwargs: Options provided by user
+    :param kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     :return: Annotated MappingSetDataFrame object.
     """
@@ -374,5 +377,6 @@ def annotate_file(
     are_params_slots(params)
     input_msdf = parse_sssom_table(input)
     msdf = augment_metadata(input_msdf, params, replace_multivalued)
-    write_table(msdf, output)
+    if output is not None:
+        write_table(msdf, output)
     return msdf

@@ -87,7 +87,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
         if result.exit_code:
-            raise RuntimeError(f"failed: {obj}") from result.exception
+            raise RuntimeError(f"{obj} failed") from result.exception
 
     def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the convert test."""
@@ -140,7 +140,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_ptable(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the ptable test."""
-        params = [test_case.filepath]
+        params = [test_case.filepath, "--output", test_case.get_out_file("ptable.tsv")]
         result = runner.invoke(ptable, params)
         self.run_successful(result, test_case)
         return result
