@@ -1106,11 +1106,11 @@ def reconcile_prefix_and_data(
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
     converter = msdf.converter
-    converter = curies.upgrade_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
-    converter = curies.upgrade_uri_prefixes(
-        converter, prefix_reconciliation["prefix_expansion_reconciliation"]
-    )
+    converter = curies.remap_curie_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
+    converter = curies.rewire(converter, prefix_reconciliation["prefix_expansion_reconciliation"])
 
+    # TODO make this standardization code directly part of msdf after
+    #  switching to native converter
     def _upgrade(curie_or_iri: str) -> str:
         if not is_iri(curie_or_iri) and is_curie(curie_or_iri):
             return converter.standardize_curie(curie_or_iri) or curie_or_iri
