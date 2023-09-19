@@ -87,12 +87,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
         if result.exit_code:
-            raise RuntimeError from result.exception
-        self.assertEqual(
-            result.exit_code,
-            0,
-            f"{obj} did not perform as expected: {result.exception}",
-        )
+            raise RuntimeError(f"failed: {obj}") from result.exception
 
     def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the convert test."""
