@@ -140,7 +140,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_ptable(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the ptable test."""
-        params = [test_case.filepath, "--output", "/dev/null"]
+        params = [test_case.filepath, "--output", test_case.get_out_file("ptable.tsv")]
         result = runner.invoke(ptable, params)
         self.run_successful(result, test_case)
         return result
