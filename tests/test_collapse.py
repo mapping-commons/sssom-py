@@ -92,16 +92,16 @@ class TestCollapse(unittest.TestCase):
         )
         prefix_reconciliation = {
             "prefix_synonyms": {
-                "a": "c",
+                "a": "c",  # prefix remapping is skipped since "c" is already present in the prefix map
                 "b": "bravo",
-                "r": "rdfs",
-                "o": "owl",
+                "r": "rdfs",  # does not do anything, since "r" is not already in the prefix map
+                "o": "owl",  # does not do anything, since "o" is not already in the prefix map
             },
             "prefix_expansion_reconciliation": {
                 "c": "http://test.owl/c/",
                 "bravo": "http://test.owl/bravo",
-                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",  # matches what's already there
+                "owl": "http://www.w3.org/2002/07/owl#",  # matches what's already there
             },
         }
 
