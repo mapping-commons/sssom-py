@@ -345,7 +345,9 @@
 <span class="c1">#     return new_msdf</span>
 
 
-<div class="viewcode-block" id="run_sql_query"><a class="viewcode-back" href="../../sssom.html#sssom.io.run_sql_query">[docs]</a><span class="k">def</span> <span class="nf">run_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="run_sql_query"><a class="viewcode-back" href="../../sssom.html#sssom.io.run_sql_query">[docs]</a><span class="k">def</span> <span class="nf">run_sql_query</span><span class="p">(</span>
+    <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a SQL query over one or more SSSOM files.</span>
 
 <span class="sd">    Each of the N inputs is assigned a table name df1, df2, ..., dfN</span>
@@ -382,11 +384,12 @@
     <span class="n">new_msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="o">.</span><span class="n">with_converter</span><span class="p">(</span>
         <span class="n">df</span><span class="o">=</span><span class="n">new_df</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
     <span class="p">)</span>
-    <span class="n">write_table</span><span class="p">(</span><span class="n">new_msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">write_table</span><span class="p">(</span><span class="n">new_msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_msdf</span></div>
 
 
-<div class="viewcode-block" id="filter_file"><a class="viewcode-back" href="../../sssom.html#sssom.io.filter_file">[docs]</a><span class="k">def</span> <span class="nf">filter_file</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="filter_file"><a class="viewcode-back" href="../../sssom.html#sssom.io.filter_file">[docs]</a><span class="k">def</span> <span class="nf">filter_file</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a dataframe by dynamically generating queries based on user input.</span>
 
 <span class="sd">    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv</span>
@@ -398,7 +401,7 @@
 
 <span class="sd">    :param input: DataFrame to be queried over.</span>
 <span class="sd">    :param output: Output location.</span>
-<span class="sd">    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).</span>
+<span class="sd">    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).</span>
 <span class="sd">    :raises ValueError: If parameter provided is invalid.</span>
 <span class="sd">    :return: Filtered MappingSetDataFrame object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -433,7 +436,7 @@
 
 
 <div class="viewcode-block" id="annotate_file"><a class="viewcode-back" href="../../sssom.html#sssom.io.annotate_file">[docs]</a><span class="k">def</span> <span class="nf">annotate_file</span><span class="p">(</span>
-    <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Annotate a file i.e. add custom metadata to the mapping set.</span>
 
@@ -441,7 +444,7 @@
 <span class="sd">    :param output: Output location.</span>
 <span class="sd">    :param replace_multivalued: Multivalued slots should be</span>
 <span class="sd">        replaced or not, defaults to False</span>
-<span class="sd">    :param **kwargs: Options provided by user</span>
+<span class="sd">    :param kwargs: Options provided by user</span>
 <span class="sd">        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)</span>
 <span class="sd">    :return: Annotated MappingSetDataFrame object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -449,7 +452,8 @@
     <span class="n">are_params_slots</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="n">input_msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">augment_metadata</span><span class="p">(</span><span class="n">input_msdf</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">)</span>
-    <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 </pre></div>
 

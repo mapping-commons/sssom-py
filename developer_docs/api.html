@@ -182,18 +182,17 @@
 <span class="target" id="module-sssom.io"></span><p>I/O utilities for SSSOM.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.annotate_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">annotate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#annotate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.annotate_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">annotate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#annotate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.annotate_file" title="Permalink to this definition"></a></dt>
 <dd><p>Annotate a file i.e. add custom metadata to the mapping set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – SSSOM tsv file to be queried over.</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – Output location.</p></li>
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Output location.</p></li>
 <li><p><strong>replace_multivalued</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Multivalued slots should be
 replaced or not, defaults to False</p></li>
-<li><p><strong>**kwargs</strong> – <p>Options provided by user
-which are added to the metadata (e.g.: –mapping_set_id <a class="reference external" href="http://example.org/abcd">http://example.org/abcd</a>)</p>
-</p></li>
+<li><p><strong>kwargs</strong> – Options provided by user
+which are added to the metadata (e.g.: –mapping_set_id <a class="reference external" href="http://example.org/abcd">http://example.org/abcd</a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -245,7 +244,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.filter_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">filter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#filter_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.filter_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">filter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#filter_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.filter_file" title="Permalink to this definition"></a></dt>
 <dd><p>Filter a dataframe by dynamically generating queries based on user input.</p>
 <p>e.g. sssom filter –subject_id x:% –subject_id y:% –object_id y:% –object_id z:% tests/data/basic.tsv</p>
 <p>yields the query:</p>
@@ -257,9 +256,8 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – DataFrame to be queried over.</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – Output location.</p></li>
-<li><p><strong>**kwargs</strong> – <p>Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p>
-</p></li>
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Output location.</p></li>
+<li><p><strong>kwargs</strong> – Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -343,7 +341,7 @@ the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.run_sql_query">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">run_sql_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#run_sql_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.run_sql_query" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">run_sql_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#run_sql_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.run_sql_query" title="Permalink to this definition"></a></dt>
 <dd><p>Run a SQL query over one or more SSSOM files.</p>
 <p>Each of the N inputs is assigned a table name df1, df2, …, dfN</p>
 <p>Alternatively, the filenames can be used as table names - these are first stemmed
@@ -359,7 +357,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Query to be executed over a pandas DataFrame (msdf.df).</p></li>
 <li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Input files that form the source tables for query.</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – Output.</p></li>
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
