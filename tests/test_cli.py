@@ -86,6 +86,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
+        if result.exit_code:
+            raise RuntimeError from result.exception
         self.assertEqual(
             result.exit_code,
             0,
