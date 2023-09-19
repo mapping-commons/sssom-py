@@ -11,7 +11,7 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
-import logging
+import logging as _logging
 import os
 import sys
 from operator import itemgetter
@@ -60,6 +60,8 @@ from .util import (
     to_mapping_set_dataframe,
 )
 from .writers import WRITER_FUNCTIONS, write_table
+
+logging = _logging.getLogger(__name__)
 
 SSSOM_SV_OBJECT = (
     SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
@@ -124,15 +126,15 @@ predicate_filter_option = click.option(
 @click.version_option(__version__)
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
-    logger = logging.getLogger()
+    logger = _logging.getLogger()
     if verbose >= 2:
-        logger.setLevel(level=logging.DEBUG)
+        logger.setLevel(level=_logging.DEBUG)
     elif verbose == 1:
-        logger.setLevel(level=logging.INFO)
+        logger.setLevel(level=_logging.INFO)
     else:
-        logger.setLevel(level=logging.WARNING)
+        logger.setLevel(level=_logging.WARNING)
     if quiet:
-        logger.setLevel(level=logging.ERROR)
+        logger.setLevel(level=_logging.ERROR)
 
 
 @main.command()
