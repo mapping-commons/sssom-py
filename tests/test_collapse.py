@@ -109,7 +109,6 @@ class TestCollapse(unittest.TestCase):
         recon_msdf = reconcile_prefix_and_data(msdf, prefix_reconciliation)
         self.assertEqual(
             {
-                "a": "http://example.org/a/",
                 "bravo": "http://test.owl/bravo",
                 "c": "http://test.owl/c/",
                 "c2": "http://example.org/c/",
