@@ -219,13 +219,13 @@ files = [
 
 [[package]]
 name = "curies"
-version = "0.6.3"
+version = "0.6.4"
 description = "Idiomatic conversion between URIs and compact URIs (CURIEs)."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "curies-0.6.3-py3-none-any.whl", hash = "sha256:fb4e99b011f34fb61f7aa38e0bb32c6c6c529c252d27ad2c8a7031687c6894ea"},
-    {file = "curies-0.6.3.tar.gz", hash = "sha256:37f4763c387a674adcfa5e93d222315d646647a2df198a60382ff877b72963df"},
+    {file = "curies-0.6.4-py3-none-any.whl", hash = "sha256:d19e2f61d8a37560e96a5676a5f98cf056f4e2206e281bdcca74934e7623b9d8"},
+    {file = "curies-0.6.4.tar.gz", hash = "sha256:c896e6d8d7f469c9ce52f781c8c35d25c46619e977cc6c932f34d98bf33e3749"},
 ]
 
 [package.dependencies]
@@ -479,21 +479,21 @@ testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs
 
 [[package]]
 name = "importlib-resources"
-version = "6.0.1"
+version = "6.1.0"
 description = "Read resources from Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "importlib_resources-6.0.1-py3-none-any.whl", hash = "sha256:134832a506243891221b88b4ae1213327eea96ceb4e407a00d790bb0626f45cf"},
-    {file = "importlib_resources-6.0.1.tar.gz", hash = "sha256:4359457e42708462b9626a04657c6208ad799ceb41e5c58c57ffa0e6a098a5d4"},
+    {file = "importlib_resources-6.1.0-py3-none-any.whl", hash = "sha256:aa50258bbfa56d4e33fbd8aa3ef48ded10d1735f11532b8df95388cc6bdb7e83"},
+    {file = "importlib_resources-6.1.0.tar.gz", hash = "sha256:9d48dcccc213325e810fd723e7fbb45ccb39f6cf5c31f00cf2b965f5f10f3cb9"},
 ]
 
 [package.dependencies]
 zipp = {version = ">=3.1.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
-testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff", "zipp (>=3.17)"]
 
 [[package]]
 name = "iniconfig"
@@ -582,13 +582,13 @@ hbreader = "*"
 
 [[package]]
 name = "jsonschema"
-version = "4.19.0"
+version = "4.19.1"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.19.0-py3-none-any.whl", hash = "sha256:043dc26a3845ff09d20e4420d6012a9c91c9aa8999fa184e7efcfeccb41e32cb"},
-    {file = "jsonschema-4.19.0.tar.gz", hash = "sha256:6e1e7569ac13be8139b2dd2c21a55d350066ee3f80df06c608b398cdc6f30e8f"},
+    {file = "jsonschema-4.19.1-py3-none-any.whl", hash = "sha256:cd5f1f9ed9444e554b38ba003af06c0a8c2868131e56bfbef0550fb450c0330e"},
+    {file = "jsonschema-4.19.1.tar.gz", hash = "sha256:ec84cc37cfa703ef7cd4928db24f9cb31428a5d0fa77747b8b51a847458e0bbf"},
 ]
 
 [package.dependencies]
@@ -620,13 +620,13 @@ referencing = ">=0.28.0"
 
 [[package]]
 name = "linkml-runtime"
-version = "1.5.6"
+version = "1.5.7"
 description = "Runtime environment for LinkML, the Linked open data modeling language"
 optional = false
 python-versions = ">=3.7.6,<4.0.0"
 files = [
-    {file = "linkml_runtime-1.5.6-py3-none-any.whl", hash = "sha256:b869f7adf340b7df73f4fefa28a402de5719bbd7d172590e8a7ae9c25e179d77"},
-    {file = "linkml_runtime-1.5.6.tar.gz", hash = "sha256:eb5f506f7ec08c44e49578d0ecc80e2d3d922756c2430e06906ee9502cca1b4c"},
+    {file = "linkml_runtime-1.5.7-py3-none-any.whl", hash = "sha256:8ea32b5f0de3637c2339edfbb88008bb08a9e2ff36d1aada20e002058263418f"},
+    {file = "linkml_runtime-1.5.7.tar.gz", hash = "sha256:c202799f01571b0c202bb521957f281b1052fabad106419c8e1368802088d6a4"},
 ]
 
 [package.dependencies]
@@ -829,13 +829,13 @@ min-versions = ["babel (==2.9.0)", "click (==7.0)", "colorama (==0.4)", "ghp-imp
 
 [[package]]
 name = "mkdocs-material"
-version = "9.3.2"
+version = "9.4.1"
 description = "Documentation that simply works"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mkdocs_material-9.3.2-py3-none-any.whl", hash = "sha256:f2fd5cef6f0266b4caad6414f31c6a51e3183dbdd341995ad8fa7f33bc998c3d"},
-    {file = "mkdocs_material-9.3.2.tar.gz", hash = "sha256:7b3a35a7731af02d70d120224fcec053ce09bebbf83dff3366ab72abc4d5fc89"},
+    {file = "mkdocs_material-9.4.1-py3-none-any.whl", hash = "sha256:27e74b5b14b8b797074759beb85876ca6425e60c78f70e76be0c209627eb5199"},
+    {file = "mkdocs_material-9.4.1.tar.gz", hash = "sha256:1495273cfce13ab52bcfcc49fa6fac779ae75818dfe566ed149d9d3aea7d8439"},
 ]
 
 [package.dependencies]
@@ -843,8 +843,8 @@ babel = ">=2.10,<3.0"
 colorama = ">=0.4,<1.0"
 jinja2 = ">=3.0,<4.0"
 markdown = ">=3.2,<4.0"
-mkdocs = ">=1.5,<2.0"
-mkdocs-material-extensions = ">=1.1,<2.0"
+mkdocs = ">=1.5.3,<2.0"
+mkdocs-material-extensions = ">=1.2,<2.0"
 paginate = ">=0.5,<1.0"
 pygments = ">=2.16,<3.0"
 pymdown-extensions = ">=10.2,<11.0"
@@ -858,13 +858,13 @@ recommended = ["mkdocs-minify-plugin (>=0.7,<1.0)", "mkdocs-redirects (>=1.2,<2.
 
 [[package]]
 name = "mkdocs-material-extensions"
-version = "1.1.1"
+version = "1.2"
 description = "Extension pack for Python Markdown and MkDocs Material."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mkdocs_material_extensions-1.1.1-py3-none-any.whl", hash = "sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945"},
-    {file = "mkdocs_material_extensions-1.1.1.tar.gz", hash = "sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93"},
+    {file = "mkdocs_material_extensions-1.2-py3-none-any.whl", hash = "sha256:c767bd6d6305f6420a50f0b541b0c9966d52068839af97029be14443849fb8a1"},
+    {file = "mkdocs_material_extensions-1.2.tar.gz", hash = "sha256:27e2d1ed2d031426a6e10d5ea06989d67e90bb02acd588bc5673106b5ee5eedf"},
 ]
 
 [[package]]
@@ -2237,13 +2237,13 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.0.4"
+version = "2.0.5"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "urllib3-2.0.4-py3-none-any.whl", hash = "sha256:de7df1803967d2c2a98e4b11bb7d6bd9210474c46e8a0401514e3a42a75ebde4"},
-    {file = "urllib3-2.0.4.tar.gz", hash = "sha256:8d22f86aae8ef5e410d4f539fde9ce6b2113a001bb4d189e0aed70642d602b11"},
+    {file = "urllib3-2.0.5-py3-none-any.whl", hash = "sha256:ef16afa8ba34a1f989db38e1dbbe0c302e4289a47856990d0682e374563ce35e"},
+    {file = "urllib3-2.0.5.tar.gz", hash = "sha256:13abf37382ea2ce6fb744d4dad67838eec857c9f4f57009891805e0b5e123594"},
 ]
 
 [package.extras]
@@ -2435,4 +2435,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "310cde5afd64339ec04e297d4ada4f7cba80d4bf2cf2c52d0d2ed8fbc6a583f7"
+content-hash = "31f973682b94249df95b0ffba4f3693b536dc9eb5cf006f2520dd07fed4b13bc"
