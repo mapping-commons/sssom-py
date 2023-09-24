@@ -1104,6 +1104,12 @@ def reconcile_prefix_and_data(
     :param msdf: Mapping Set DataFrame.
     :param prefix_reconciliation: Prefix reconcilation dictionary from a YAML file
     :return: Mapping Set DataFrame with reconciled prefix_map and data.
+
+    This method is build on :func:`curies.remap_curie_prefixes` and
+    :func:`curies.rewire`. Note that if you want to overwrite a CURIE prefix in the Bioregistry
+    extended prefix map, you need to provide a place for the old one to go as in
+    ``{"geo": "ncbi.geo", "geogeo": "geo"}``.
+    Just doing ``{"geogeo": "geo"}`` would not work since `geo` already exists.
     """
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
