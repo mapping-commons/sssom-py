@@ -92,7 +92,8 @@ class TestCollapse(unittest.TestCase):
         )
         prefix_reconciliation = {
             "prefix_synonyms": {
-                "a": "c",  # prefix remapping is skipped since "c" is already present in the prefix map
+                "a": "c",
+                "c": "c2",
                 "b": "bravo",
                 "r": "rdfs",  # does not do anything, since "r" is not already in the prefix map
                 "o": "owl",  # does not do anything, since "o" is not already in the prefix map
@@ -111,6 +112,7 @@ class TestCollapse(unittest.TestCase):
                 "a": "http://example.org/a/",
                 "bravo": "http://test.owl/bravo",
                 "c": "http://test.owl/c/",
+                "c2": "http://example.org/c/",
                 "d": "http://example.org/d/",
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "owl": "http://www.w3.org/2002/07/owl#",

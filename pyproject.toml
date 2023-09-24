@@ -13,7 +13,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.8"
 click = ">=8.1.6"
-curies = ">=0.6.3"
+curies = ">=0.6.4"
 linkml-runtime = ">=1.5.5"
 importlib-metadata = ">=6.8.0"
 pandas = ">=2.0.3"
