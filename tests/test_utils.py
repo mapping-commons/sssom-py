@@ -130,7 +130,6 @@ class TestIO(unittest.TestCase):
         with self.assertRaises(ValueError):
             msdf.clean_prefix_map(strict=True)
 
-
     def test_clean_prefix_map_not_strict(self):
         """Test clean prefix map with 'strict'=False."""
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
