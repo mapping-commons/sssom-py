@@ -149,8 +149,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         path = test.get_out_file("roundtrip.tsv")
         with open(path, "w") as file:
             write_table(msdf, file=file)
-        # data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        data = parse_sssom_table(test.get_out_file("roundtrip.tsv")).df
+        data = parse_sssom_table(path).df
         self.assertEqual(
             len(data),
             test.ct_data_frame_rows,

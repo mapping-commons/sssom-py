@@ -223,7 +223,6 @@ def parse_sssom_table(
     )
 
     msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
-    msdf.clean_prefix_map(strict=False)
     return msdf
 
 
