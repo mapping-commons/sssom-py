@@ -82,13 +82,13 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: pd.DataFrame
-    prefix_map: PrefixMap = field(default_factory=dict)
+    converter: Converter
     metadata: MetadataType = field(default_factory=get_default_metadata)
 
     @property
-    def converter(self) -> Converter:
-        """Get a converter."""
-        return Converter.from_prefix_map(self.prefix_map)
+    def prefix_map(self):
+        """Get a simple, bijective prefix map."""
+        return self.converter.bimap
 
     @classmethod
     def with_converter(
@@ -98,16 +98,16 @@ class MappingSetDataFrame:
         metadata: Optional[MetadataType] = None,
     ) -> "MappingSetDataFrame":
         """Instantiate with a converter instead of a vanilla prefix map."""
+        # TODO replace with regular instantiation
         return cls(
             df=df,
-            prefix_map=dict(converter.bimap),
+            converter=converter,
             metadata=metadata or get_default_metadata(),
         )
 
     def clean_context(self) -> None:
         """Clean up the context."""
-        c = curies.chain([_get_built_in_prefix_map(), self.converter])
-        self.prefix_map = dict(c.bimap)
+        self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -120,7 +120,7 @@ class MappingSetDataFrame:
         msdf = merge_msdf(self, *msdfs)
         if inplace:
             self.df = msdf.df
-            self.prefix_map = msdf.prefix_map
+            self.converter = msdf.converter
             self.metadata = msdf.metadata
             return self
         else:
@@ -128,7 +128,7 @@ class MappingSetDataFrame:
 
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
-        description += f"Number of prefixes: {len(self.prefix_map)} \n"
+        description += f"Number of extended prefix map records: {len(self.converter.records)} \n"
         if self.metadata is None:
             description += "No metadata available \n"
         else:
@@ -165,7 +165,7 @@ class MappingSetDataFrame:
         for prefix in missing_prefixes:
             subconverter.add_prefix(prefix, f"{UNKNOWN_IRI}{prefix.lower()}/")
 
-        self.prefix_map = dict(subconverter.bimap)
+        self.converter = subconverter
 
     def remove_mappings(self, msdf: "MappingSetDataFrame") -> None:
         """Remove mappings in right msdf from left msdf.
@@ -1131,7 +1131,7 @@ def reconcile_prefix_and_data(
             continue
         msdf.df[column] = msdf.df[column].map(_upgrade)
 
-    msdf.prefix_map = dict(converter.bimap)
+    msdf.converter = converter
     return msdf
 
 
