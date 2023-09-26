@@ -56,13 +56,7 @@ from sssom.constants import (
 
 from .context import HINT, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import (
-    Metadata,
-    MetadataType,
-    PrefixMap,
-    generate_mapping_set_id,
-    get_default_metadata,
-)
+from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -430,7 +424,7 @@ def from_sssom_dataframe(
 
 def from_sssom_rdf(
     g: Graph,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
@@ -847,9 +841,6 @@ def _cell_element_values(cell_node, converter: Converter, mapping_predicates) ->
 
 def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     """Convert a MappingSetDataFrame to a MappingSetDocument."""
-    if not msdf.prefix_map:
-        raise Exception("No valid prefix_map provided")
-
     mlist: List[Mapping] = []
     ms = _init_mapping_set(msdf.metadata)
     bad_attrs: Counter = Counter()

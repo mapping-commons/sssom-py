@@ -60,8 +60,7 @@ def write_table(
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
         meta.update(msdf.metadata)
-    if msdf.prefix_map is not None:
-        meta[PREFIX_MAP_KEY] = msdf.prefix_map
+    meta[PREFIX_MAP_KEY] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
@@ -255,7 +254,8 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
-        prefix_map=msdf.prefix_map,
+        # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
+        prefix_map=msdf.converter.bimap,
     )
     return graph
 
