@@ -146,7 +146,9 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_data_frame_rows,
             f"The pandas data frame has less elements than the orginal one for {test.filename}",
         )
-        df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
+        path = test.get_out_file("roundtrip.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file=file)
         # data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
         data = parse_sssom_table(test.get_out_file("roundtrip.tsv")).df
         self.assertEqual(
