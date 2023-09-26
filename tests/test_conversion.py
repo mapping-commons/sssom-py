@@ -8,6 +8,7 @@ from typing import Dict
 
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 
 from sssom.parsers import get_parsing_function, parse_sssom_table, to_mapping_set_document
@@ -232,7 +233,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             "skos": "http://www.w3.org/2004/02/skos/core#",
             "orcid": "https://orcid.org/",
         }
-        msdf = MappingSetDataFrame(df=df, metadata=metadata, prefix_map=prefix_map)
+        converter = Converter.from_prefix_map(prefix_map)
+        msdf = MappingSetDataFrame(df=df, metadata=metadata, converter=converter)
         results = to_ontoportal_json(msdf)
         self.assertIsInstance(results, list)
         self.assertEqual(1, len(results))
