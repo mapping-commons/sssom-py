@@ -135,8 +135,7 @@
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">meta</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">meta</span><span class="p">[</span><span class="n">PREFIX_MAP_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
+    <span class="n">meta</span><span class="p">[</span><span class="n">PREFIX_MAP_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span>
     <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
         <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">sort_df_rows_columns</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -330,7 +329,8 @@
     <span class="n">graph</span> <span class="o">=</span> <span class="n">rdflib_dumper</span><span class="o">.</span><span class="n">as_rdf_graph</span><span class="p">(</span>
         <span class="n">element</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span>
         <span class="n">schemaview</span><span class="o">=</span><span class="n">SchemaView</span><span class="p">(</span><span class="n">SCHEMA_YAML</span><span class="p">),</span>
-        <span class="n">prefix_map</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span>
+        <span class="c1"># TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278</span>
+        <span class="n">prefix_map</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">graph</span></div>
 

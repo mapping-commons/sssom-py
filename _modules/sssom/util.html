@@ -157,13 +157,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of mappings represented as a DataFrame, together with additional metadata.&quot;&quot;&quot;</span>
 
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">PrefixMap</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">MetadataType</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_default_metadata</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a converter.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a simple, bijective prefix map.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span>
 
 <div class="viewcode-block" id="MappingSetDataFrame.with_converter"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.with_converter">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">with_converter</span><span class="p">(</span>
@@ -173,16 +173,16 @@
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate with a converter instead of a vanilla prefix map.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO replace with regular instantiation</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
-            <span class="n">prefix_map</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">),</span>
+            <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span>
             <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">get_default_metadata</span><span class="p">(),</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.clean_context"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.clean_context">[docs]</a>    <span class="k">def</span> <span class="nf">clean_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the context.&quot;&quot;&quot;</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">_get_built_in_prefix_map</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">_get_built_in_prefix_map</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.merge"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two MappingSetDataframes.</span>
@@ -195,7 +195,7 @@
         <span class="n">msdf</span> <span class="o">=</span> <span class="n">merge_msdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
@@ -203,7 +203,7 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
         <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;SSSOM data table </span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of prefixes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of extended prefix map records: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;No metadata available </span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -240,7 +240,7 @@
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">missing_prefixes</span><span class="p">:</span>
             <span class="n">subconverter</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">UNKNOWN_IRI</span><span class="si">}{</span><span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">subconverter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">subconverter</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.remove_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">remove_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove mappings in right msdf from left msdf.</span>
@@ -1206,7 +1206,7 @@
             <span class="k">continue</span>
         <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_upgrade</span><span class="p">)</span>
 
-    <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span>
+    <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">converter</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 

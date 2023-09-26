@@ -130,7 +130,7 @@
 
 <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">HINT</span><span class="p">,</span> <span class="n">ensure_converter</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">generate_mapping_set_id</span>
+<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">generate_mapping_set_id</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">PREFIX_MAP_KEY</span><span class="p">,</span>
     <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
@@ -288,7 +288,7 @@
                     <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="n">sssom_metadata</span>
 
-        <span class="k">if</span> <span class="s2">&quot;curie_map&quot;</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">PREFIX_MAP_KEY</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">prefix_map</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]:</span>
@@ -469,7 +469,7 @@
 
 <div class="viewcode-block" id="from_sssom_dataframe"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_sssom_dataframe">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_dataframe</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">HINT</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a dataframe to a MappingSetDataFrame.</span>
@@ -506,7 +506,7 @@
 
 <div class="viewcode-block" id="from_sssom_rdf"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.from_sssom_rdf">[docs]</a><span class="k">def</span> <span class="nf">from_sssom_rdf</span><span class="p">(</span>
     <span class="n">g</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefixMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">HINT</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an SSSOM RDF graph into a SSSOM data table.</span>
@@ -923,9 +923,6 @@
 
 <div class="viewcode-block" id="to_mapping_set_document"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.to_mapping_set_document">[docs]</a><span class="k">def</span> <span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDocument</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a MappingSetDataFrame to a MappingSetDocument.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No valid prefix_map provided&quot;</span><span class="p">)</span>
-
     <span class="n">mlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">ms</span> <span class="o">=</span> <span class="n">_init_mapping_set</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
     <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
