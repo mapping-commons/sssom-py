@@ -249,10 +249,12 @@ class TestParse(unittest.TestCase):
 
     def test_tsv_to_json_and_back(self):
         """Test converting SSSOM TSV => JSON => SSSOM TSV such that it is reproducible."""
-        sample_tsv = f"{test_data_dir}/sample1.sssom.tsv"
-        json_outfile = f"{test_out_dir}/sample1.json"
+        sample_tsv = test_data_dir / "sample1.sssom.tsv"
+        json_outfile = test_out_dir / "sample1.json"
         msdf1 = parse_sssom_table(sample_tsv)
+        self.assertIn("ORCID", msdf1.prefix_map)
         msdf1.clean_prefix_map()
+        self.assertIn("ORCID", msdf1.prefix_map)
         json_doc = to_json(msdf1)
 
         self.assertEqual(msdf1.prefix_map, json_doc["@context"])
@@ -261,5 +263,7 @@ class TestParse(unittest.TestCase):
             write_json(msdf1, file)
 
         msdf2 = parse_sssom_json(json_outfile)
+        self.assertIn("ORCID", msdf2.prefix_map)
         msdf2.clean_prefix_map()
+        self.assertIn("ORCID", msdf2.prefix_map)
         self.assertEqual(msdf1.prefix_map, msdf2.prefix_map)
