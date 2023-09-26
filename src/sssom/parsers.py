@@ -6,12 +6,13 @@ import json
 import logging as _logging
 import re
 import typing
-from collections import Counter
+from collections import ChainMap, Counter
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
+import curies
 import numpy as np
 import pandas as pd
 import requests
@@ -55,7 +56,13 @@ from sssom.constants import (
 
 from .context import HINT, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap, generate_mapping_set_id
+from .typehints import (
+    Metadata,
+    MetadataType,
+    PrefixMap,
+    generate_mapping_set_id,
+    get_default_metadata,
+)
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -193,44 +200,36 @@ def parse_sssom_table(
     stream: io.StringIO = _open_input(file_path)
     sep_new = _get_seperator_symbol_from_file_path(file_path)
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
-    # if mapping_predicates:
-    #     # Filter rows based on presence of predicate_id list provided.
-    #     df = df[df["predicate_id"].isin(mapping_predicates)]
+    if meta is None:
+        meta = {}
 
-    # If SSSOM external metadata is provided, merge it with the internal metadata
+    # The priority order for combining prefix maps are:
+    #  1. Internal prefix map inside the document
+    #  2. Prefix map passed through this function inside the ``meta``
+    #  3. Prefix map passed through this function to ``prefix_map``
+    #  4. Default prefix map (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            Converter.from_prefix_map(sssom_metadata.pop(CURIE_MAP, {})),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map),
+        ]
+    )
 
-    if sssom_metadata:
-        if meta:
-            for k, v in meta.items():
-                if k in sssom_metadata:
-                    if sssom_metadata[k] != v:
-                        logging.warning(
-                            f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
-                            f"conflicts with provided ({meta[k]})."
-                        )
-                else:
-                    logging.info(f"Externally provided metadata {k}:{v} is added to metadata set.")
-                    sssom_metadata[k] = v
-        meta = sssom_metadata
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
+    combine_meta = dict(
+        ChainMap(
+            sssom_metadata,
+            meta,
+            get_default_metadata(),
+        )
+    )
 
-        if "curie_map" in sssom_metadata:
-            if prefix_map:
-                for k, v in prefix_map.items():
-                    if k in sssom_metadata[CURIE_MAP]:
-                        if sssom_metadata[CURIE_MAP][k] != v:
-                            logging.warning(
-                                f"SSSOM prefix map {k} ({sssom_metadata[CURIE_MAP][k]}) "
-                                f"conflicts with provided ({prefix_map[k]})."
-                            )
-                    else:
-                        logging.info(
-                            f"Externally provided metadata {k}:{v} is added to metadata set."
-                        )
-                        sssom_metadata[CURIE_MAP][k] = v
-            prefix_map = sssom_metadata[CURIE_MAP]
-
-    meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    msdf = from_sssom_dataframe(df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata)
+    msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
+    msdf.clean_prefix_map()
     return msdf
 
 
@@ -394,7 +393,7 @@ def parse_alignment_xml(
 
 def from_sssom_dataframe(
     df: pd.DataFrame,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
