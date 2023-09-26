@@ -1,0 +1,8 @@
+#curie_map:
+#  FBbt: "http://purl.obolibrary.org/obo/FBbt_"
+#  ORCID: "https://orcid.org/"
+#  UBERON: "http://purl.obolibrary.org/obo/UBERON_"
+#creator_id:
+#  - "ORCID:0000-0002-6095-8718"
+subject_id	subject_label	predicate_id	object_id	mapping_justification
+FBbt:00000001	organism	semapv:crossSpeciesExactMatch	UBERON:0000468	semapv:ManualMappingCuration

@@ -19,11 +19,12 @@ from sssom.parsers import (
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
+    parse_sssom_json,
     parse_sssom_table,
 )
 from sssom.typehints import Metadata
 from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns
-from sssom.writers import write_table
+from sssom.writers import to_json, write_json, write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
 
@@ -245,3 +246,20 @@ class TestParse(unittest.TestCase):
             )
         msdf = parse_sssom_table(outfile)
         self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
+
+    def test_tsv_to_json_and_back(self):
+        """Test converting SSSOM TSV => JSON => SSSOM TSV such that it is reproducible."""
+        sample_tsv = f"{test_data_dir}/sample1.sssom.tsv"
+        json_outfile = f"{test_out_dir}/sample1.json"
+        msdf1 = parse_sssom_table(sample_tsv)
+        msdf1.clean_prefix_map()
+        json_doc = to_json(msdf1)
+
+        self.assertEqual(msdf1.prefix_map, json_doc["@context"])
+
+        with open(json_outfile, "w") as file:
+            write_json(msdf1, file)
+
+        msdf2 = parse_sssom_json(json_outfile)
+        msdf2.clean_prefix_map()
+        self.assertEqual(msdf1.prefix_map, msdf2.prefix_map)

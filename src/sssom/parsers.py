@@ -212,21 +212,28 @@ def parse_sssom_table(
                     logging.info(f"Externally provided metadata {k}:{v} is added to metadata set.")
                     sssom_metadata[k] = v
         meta = sssom_metadata
-
-        if "curie_map" in sssom_metadata:
+        if CURIE_MAP in sssom_metadata:
             if prefix_map:
+                # Convert sssom_metadata[CURIE_MAP] keys to lowercase for case-insensitive comparison
+                curie_map_lower = {k.lower(): k for k in sssom_metadata[CURIE_MAP].keys()}
+
                 for k, v in prefix_map.items():
-                    if k in sssom_metadata[CURIE_MAP]:
-                        if sssom_metadata[CURIE_MAP][k] != v:
+                    k_lower = k.lower()
+
+                    if k_lower in curie_map_lower:
+                        original_key = curie_map_lower[k_lower]
+                        if sssom_metadata[CURIE_MAP][original_key] != v:
                             logging.warning(
-                                f"SSSOM prefix map {k} ({sssom_metadata[CURIE_MAP][k]}) "
-                                f"conflicts with provided ({prefix_map[k]})."
+                                f"SSSOM prefix map {original_key} ({sssom_metadata[CURIE_MAP][original_key]}) "
+                                f"conflicts with provided ({v})."
                             )
+                            sssom_metadata[CURIE_MAP][original_key] = v
                     else:
                         logging.info(
                             f"Externally provided metadata {k}:{v} is added to metadata set."
                         )
                         sssom_metadata[CURIE_MAP][k] = v
+
             prefix_map = sssom_metadata[CURIE_MAP]
 
     meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
@@ -264,10 +271,32 @@ def parse_sssom_json(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
+
+    # Get prefix map from jsondoc and update metadata.
+    # This takes priority over default prefix_map in case of a tie.
+    jsondoc_prefix_map = jsondoc["@context"]
+
+    # Convert keys in both maps to lower case for comparison
+    if prefix_map:
+        lowercase_prefix_map = {k.lower(): v for k, v in prefix_map.items()}
+
+        # Iterate over jsondoc_prefix_map
+        for key, value in jsondoc_prefix_map.items():
+            # If lowercase key exists in lowercase_prefix_map, update the value and key
+            if key.lower() in lowercase_prefix_map:
+                # Remove the old key-value pair
+                if key in prefix_map:
+                    del prefix_map[key]
+                elif key.lower() in prefix_map:
+                    del prefix_map[key.lower()]
+                # Add the new key-value pair
+                prefix_map[key] = value
+
+    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
