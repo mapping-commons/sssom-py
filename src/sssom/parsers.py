@@ -198,7 +198,7 @@ def parse_sssom_table(
         meta = {}
 
     # The priority order for combining prefix maps are:
-    #  1. Internal prefix map inside the document inside
+    #  1. Internal prefix map inside the document
     #  2. Prefix map passed through this function inside the ``meta``
     #  3. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
     #  4. Default prefix map (handled with ensure_converter)
