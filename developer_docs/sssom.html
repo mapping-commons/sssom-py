@@ -1559,6 +1559,11 @@ Defaults to True.</p></li>
 <dd class="field-odd"><p>Mapping Set DataFrame with reconciled prefix_map and data.</p>
 </dd>
 </dl>
+<p>This method is build on <code class="xref py py-func docutils literal notranslate"><span class="pre">curies.remap_curie_prefixes()</span></code> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">curies.rewire()</span></code>. Note that if you want to overwrite a CURIE prefix in the Bioregistry
+extended prefix map, you need to provide a place for the old one to go as in
+<code class="docutils literal notranslate"><span class="pre">{&quot;geo&quot;:</span> <span class="pre">&quot;ncbi.geo&quot;,</span> <span class="pre">&quot;geogeo&quot;:</span> <span class="pre">&quot;geo&quot;}</span></code>.
+Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;geogeo&quot;:</span> <span class="pre">&quot;geo&quot;}</span></code> would not work since <cite>geo</cite> already exists.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -1179,65 +1179,34 @@
 <span class="sd">    :param msdf: Mapping Set DataFrame.</span>
 <span class="sd">    :param prefix_reconciliation: Prefix reconcilation dictionary from a YAML file</span>
 <span class="sd">    :return: Mapping Set DataFrame with reconciled prefix_map and data.</span>
+
+<span class="sd">    This method is build on :func:`curies.remap_curie_prefixes` and</span>
+<span class="sd">    :func:`curies.rewire`. Note that if you want to overwrite a CURIE prefix in the Bioregistry</span>
+<span class="sd">    extended prefix map, you need to provide a place for the old one to go as in</span>
+<span class="sd">    ``{&quot;geo&quot;: &quot;ncbi.geo&quot;, &quot;geogeo&quot;: &quot;geo&quot;}``.</span>
+<span class="sd">    Just doing ``{&quot;geogeo&quot;: &quot;geo&quot;}`` would not work since `geo` already exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Discussion about this found here:</span>
     <span class="c1"># https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">remap_curie_prefixes</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_synonyms&quot;</span><span class="p">])</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">rewire</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_expansion_reconciliation&quot;</span><span class="p">])</span>
 
-    <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span>
-    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
-    <span class="n">data_switch_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="c1"># TODO make this standardization code directly part of msdf after</span>
+    <span class="c1">#  switching to native converter</span>
+    <span class="k">def</span> <span class="nf">_upgrade</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_iri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">)</span> <span class="ow">or</span> <span class="n">curie_or_iri</span>
+        <span class="k">return</span> <span class="n">curie_or_iri</span>
 
-    <span class="n">prefix_synonyms</span> <span class="o">=</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_synonyms&quot;</span><span class="p">]</span>
-    <span class="n">prefix_expansion</span> <span class="o">=</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_expansion_reconciliation&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;EntityReference&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_upgrade</span><span class="p">)</span>
 
-    <span class="c1"># The prefix exists but the expansion needs to be updated.</span>
-    <span class="n">expansion_replace</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_expansion</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-    <span class="p">}</span>
-
-    <span class="c1"># Updates expansions in prefix_map</span>
-    <span class="n">prefix_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">expansion_replace</span><span class="p">)</span>
-
-    <span class="c1"># Prefixes that need to be replaced</span>
-    <span class="c1"># IF condition:</span>
-    <span class="c1">#   1. Key OR Value in prefix_synonyms are keys in prefix_map</span>
-    <span class="c1">#       e.g.: ICD10: ICD10CM - either should be present within</span>
-    <span class="c1">#           the prefix_map.</span>
-    <span class="c1">#   AND</span>
-    <span class="c1">#   2. Value in prefix_synonyms is NOT a value in expansion_replace.</span>
-    <span class="c1">#      In other words, the existing expansion do not match the YAML.</span>
-
-    <span class="n">prefix_replace</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">k</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_synonyms</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">expansion_replace</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="p">]</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix_replace</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">prefix_replace</span><span class="p">:</span>
-            <span class="n">correct_prefix</span> <span class="o">=</span> <span class="n">prefix_synonyms</span><span class="p">[</span><span class="n">pr</span><span class="p">]</span>
-            <span class="n">correct_expansion</span> <span class="o">=</span> <span class="n">prefix_expansion</span><span class="p">[</span><span class="n">correct_prefix</span><span class="p">]</span>
-            <span class="n">prefix_map</span><span class="p">[</span><span class="n">correct_prefix</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct_expansion</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adding prefix_map </span><span class="si">{</span><span class="n">correct_prefix</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">correct_expansion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">prefix_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="n">data_switch_dict</span><span class="p">[</span><span class="n">pr</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct_prefix</span>
-
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replacing prefix </span><span class="si">{</span><span class="n">pr</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">correct_prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Data editing</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_switch_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1"># Read schema file</span>
-        <span class="n">slots</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
-        <span class="n">entity_reference_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">slots</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EntityReference&quot;</span><span class="p">]</span>
-        <span class="n">update_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">entity_reference_columns</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data_switch_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">df</span><span class="p">[</span><span class="n">update_columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">update_columns</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">v</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
-    <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="n">prefix_map</span>
-
-    <span class="c1"># TODO: When expansion of 2 prefixes in the prefix_map are the same.</span>
+    <span class="n">msdf</span><span class="o">.</span><span class="n">prefix_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
