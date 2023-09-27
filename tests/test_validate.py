@@ -29,20 +29,22 @@ class TestValidate(unittest.TestCase):
         """
         self.assertIsNone(validate(self.correct_msdf1, self.validation_types))
 
-    @unittest.skip(reason="""
-    
+    @unittest.skip(
+        reason="""\
+
     This test did not previously do what was expected. It was raising a validation error
     not because of the text below suggesting the validator was able to identify an issue
     with the `mapping_justification` slot, but because `orcid` was missing from the prefix map.
     The error actually thrown was::
-    
+
       jsonschema.exceptions.ValidationError: The prefixes in {'orcid'} are missing from 'curie_map'.
-    
+
     With updates in https://github.com/mapping-commons/sssom-py/pull/431, the default prefix map
     which includes `orcid` is added on parse, and this error goes away. Therefore, this test
     now fails, but again, this is a sporadic failure since the test was not correct in the first
     place. Therefore, this test is now skipped and marked for FIXME.
-    """)
+    """
+    )
     def test_validate_json_fail(self):
         """
         Test if JSONSchemaValidation fail is as expected.
