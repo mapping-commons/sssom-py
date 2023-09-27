@@ -371,14 +371,16 @@ def get_row_based_on_hierarchy(df: pd.DataFrame):
         if not hierarchical_df.empty:
             return hierarchical_df
 
+
 def rewire_sssom_table(df_rewire: pd.DataFrame, df_mapping: pd.DataFrame):
-    # 1. Standardise subject and object id columns using 
+    # 1. Standardise subject and object id columns using
     # https://curies.readthedocs.io/en/latest/api/curies.Converter.html#curies.Converter.pd_standardize_curie
     # 2. Perform the rewiring
     # 3. Store some metadata in the "other" field?
     # 4. Return back out
     result_df = ...
     return result_df
+
 
 def assign_default_confidence(
     df: pd.DataFrame,
