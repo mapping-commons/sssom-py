@@ -1,0 +1,59 @@
+{
+  "graphs" : [ {
+    "nodes" : [ {
+      "id" : "http://example/obo/HP_0011770",
+      "meta" : {
+        "definition" : {
+          "val" : "A type of hyperparathyroidism that occurs following kidney transplantation, which is a treatment for secondary hyperparathyroidism. Although kidney transplantation leads to a normalization of serum calcium and parathyroid hormone in most patients. The state of persistent hypercalcemia and hyperparathyroidism is referred to as tertiary hyperparathyroidism.",
+          "xrefs" : [ "DDD:spark" ]
+        },
+        "xrefs" : [ {
+          "val" : "SNOMEDCT_US:78200003"
+        }, {
+          "val" : "UMLS:C0271858"
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "peter"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2012-04-22T04:38:20Z"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Tertiary hyperparathyroidism"
+    }, {
+      "id" : "http://example/obo/HP_0009450",
+      "meta" : {
+        "definition" : {
+          "val" : "Increased width of the proximal phalanx of the 3rd finger.",
+          "xrefs" : [ "HPO:curators" ]
+        },
+        "xrefs" : [ {
+          "val" : "UMLS:C4024355"
+        } ],
+        "synonyms" : [ {
+          "pred" : "hasExactSynonym",
+          "val" : "Broad innermost bone of middle finger",
+          "xrefs" : [ "ORCID:0000-0001-5208-3432" ],
+          "synonymType" : "http://purl.obolibrary.org/obo/hp#layperson"
+        } ],
+        "basicPropertyValues" : [ {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#hasOBONamespace",
+          "val" : "human_phenotype"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#created_by",
+          "val" : "doelkens"
+        }, {
+          "pred" : "http://www.geneontology.org/formats/oboInOwl#creation_date",
+          "val" : "2009-01-14T04:33:41Z"
+        } ]
+      },
+      "type" : "CLASS",
+      "lbl" : "Broad proximal phalanx of the 3rd finger"
+    } ]
+    } ]
+}

@@ -12,7 +12,7 @@ import pandas as pd
 import yaml
 from rdflib import Graph
 
-from sssom.context import _raise_on_invalid_prefix_map, get_default_metadata
+from sssom.io import parse_file
 from sssom.parsers import (
     from_alignment_minidom,
     from_obographs,
@@ -21,6 +21,7 @@ from sssom.parsers import (
     from_sssom_rdf,
     parse_sssom_table,
 )
+from sssom.typehints import Metadata
 from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
@@ -62,8 +63,7 @@ class TestParse(unittest.TestCase):
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
-        self.metadata = get_default_metadata()
-        _raise_on_invalid_prefix_map(self.metadata.prefix_map)
+        self.metadata = Metadata.default()
 
     def test_parse_sssom_dataframe_from_file(self):
         """Test parsing a TSV."""
@@ -223,3 +223,25 @@ class TestParse(unittest.TestCase):
                         self.assertEqual(imported_df.iloc[idx][k], v)
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)
+
+    def test_parse_obographs_merged(self):
+        """Test parsing OBO Graph JSON using custom prefix_map."""
+        hp_json = f"{test_data_dir}/hp-subset.json"
+        hp_meta = f"{test_data_dir}/hp-subset-metadata.yml"
+        outfile = f"{test_out_dir}/hp-subset-parse.tsv"
+
+        with open(hp_meta, "r") as f:
+            data = yaml.safe_load(f)
+            custom_curie_map = data["curie_map"]
+
+        with open(outfile, "w") as f:
+            parse_file(
+                input_path=hp_json,
+                prefix_map_mode="merged",
+                clean_prefixes=True,
+                input_format="obographs-json",
+                metadata_path=hp_meta,
+                output=f,
+            )
+        msdf = parse_sssom_table(outfile)
+        self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())

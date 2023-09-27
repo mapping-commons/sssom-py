@@ -2,16 +2,16 @@
 
 import hashlib
 import statistics
+import uuid
 from collections import defaultdict
 from typing import DefaultDict, Dict, List, Optional, Set
 
 import networkx as nx
 import pandas as pd
-
-# from .sssom_datamodel import Mapping
-from sssom_schema import Mapping
+from sssom_schema import Mapping, MappingSet
 
 from sssom.constants import (
+    DEFAULT_LICENSE,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
     RDFS_SUBCLASS_OF,
@@ -20,6 +20,7 @@ from sssom.constants import (
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
     SSSOM_SUPERCLASS_OF,
+    SSSOM_URI_PREFIX,
 )
 
 from .parsers import to_mapping_set_document
@@ -89,7 +90,14 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
         for curie in component:
             curie_to_component[curie] = i
     documents = [
-        MappingSetDocument.empty(prefix_map=doc.prefix_map) for _ in range(len(components))
+        MappingSetDocument(
+            converter=doc.converter,
+            mapping_set=MappingSet(
+                mapping_set_id=f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}",
+                license=doc.mapping_set.license or DEFAULT_LICENSE,
+            ),
+        )
+        for _ in components
     ]
 
     if not isinstance(doc.mapping_set.mappings, list):

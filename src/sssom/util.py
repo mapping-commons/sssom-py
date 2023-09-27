@@ -1,40 +1,25 @@
 """Utility functions."""
 
-import hashlib
+import itertools as itt
 import json
-import logging
+import logging as _logging
 import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
-from io import StringIO
 from pathlib import Path
 from string import punctuation
-from typing import (
-    Any,
-    ChainMap,
-    DefaultDict,
-    Dict,
-    List,
-    Mapping,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    Union,
-)
-from urllib.request import urlopen
+from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
 
+import curies
 import numpy as np
 import pandas as pd
 import validators
 import yaml
 from curies import Converter
-from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
-from pandas.errors import EmptyDataError
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots
 
@@ -57,7 +42,6 @@ from .constants import (
     PREDICATE_LIST,
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
-    PREFIX_MAP_MODES,
     RDFS_SUBCLASS_OF,
     SCHEMA_YAML,
     SEMAPV,
@@ -67,6 +51,7 @@ from .constants import (
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
     SSSOM_SUPERCLASS_OF,
+    SSSOM_URI_PREFIX,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
     SUBJECT_LABEL,
@@ -74,27 +59,14 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import (
-    SSSOM_BUILT_IN_PREFIXES,
-    SSSOM_URI_PREFIX,
-    get_default_metadata,
-    get_jsonld_context,
-)
+from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap
+from .typehints import MetadataType, PrefixMap, get_default_metadata
+
+logging = _logging.getLogger(__name__)
 
 #: The key that's used in the YAML section of an SSSOM file
 PREFIX_MAP_KEY = "curie_map"
-
-SSSOM_READ_FORMATS = [
-    "tsv",
-    "rdf",
-    "owl",
-    "alignment-api-xml",
-    "obographs-json",
-    "json",
-]
-SSSOM_EXPORT_FORMATS = ["tsv", "rdf", "owl", "json", "fhir", "ontoportal_json"]
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
@@ -109,10 +81,33 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
-    df: Optional[pd.DataFrame] = None  # Mappings
-    # maps CURIE prefixes to URI bases
-    prefix_map: PrefixMap = field(default_factory=dict)
-    metadata: Optional[MetadataType] = None  # header metadata excluding prefixes
+    df: pd.DataFrame
+    converter: Converter
+    metadata: MetadataType = field(default_factory=get_default_metadata)
+
+    @property
+    def prefix_map(self):
+        """Get a simple, bijective prefix map."""
+        return self.converter.bimap
+
+    @classmethod
+    def with_converter(
+        cls,
+        converter: Converter,
+        df: pd.DataFrame,
+        metadata: Optional[MetadataType] = None,
+    ) -> "MappingSetDataFrame":
+        """Instantiate with a converter instead of a vanilla prefix map."""
+        # TODO replace with regular instantiation
+        return cls(
+            df=df,
+            converter=converter,
+            metadata=metadata or get_default_metadata(),
+        )
+
+    def clean_context(self) -> None:
+        """Clean up the context."""
+        self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -125,7 +120,7 @@ class MappingSetDataFrame:
         msdf = merge_msdf(self, *msdfs)
         if inplace:
             self.df = msdf.df
-            self.prefix_map = msdf.prefix_map
+            self.converter = msdf.converter
             self.metadata = msdf.metadata
             return self
         else:
@@ -133,7 +128,7 @@ class MappingSetDataFrame:
 
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
-        description += f"Number of prefixes: {len(self.prefix_map)} \n"
+        description += f"Number of extended prefix map records: {len(self.converter.records)} \n"
         if self.metadata is None:
             description += "No metadata available \n"
         else:
@@ -156,37 +151,21 @@ class MappingSetDataFrame:
                        listed in the 'curie_map'.
         :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
         """
-        all_prefixes = []
-        prefixes_in_table = get_prefixes_used_in_table(self.df)
+        prefixes_in_table = get_prefixes_used_in_table(self.df, converter=self.converter)
         if self.metadata:
-            prefixes_in_metadata = get_prefixes_used_in_metadata(self.metadata)
-            all_prefixes = list(set(prefixes_in_table + prefixes_in_metadata))
-        else:
-            all_prefixes = prefixes_in_table
+            prefixes_in_table.update(get_prefixes_used_in_metadata(self.metadata))
 
-        new_prefixes: PrefixMap = dict()
-        missing_prefixes = []
-        default_prefix_map = get_default_metadata().prefix_map
-        for prefix in all_prefixes:
-            if prefix in self.prefix_map:
-                new_prefixes[prefix] = self.prefix_map[prefix]
-            elif prefix in default_prefix_map:
-                new_prefixes[prefix] = default_prefix_map[prefix]
-            else:
-                logging.warning(
-                    f"{prefix} is used in the SSSOM mapping set but it does not exist in the prefix map"
-                )
-                if prefix != "":
-                    missing_prefixes.append(prefix)
-                    if not strict:
-                        new_prefixes[prefix] = UNKNOWN_IRI + prefix.lower() + "/"
-
+        missing_prefixes = prefixes_in_table - self.converter.get_prefixes()
         if missing_prefixes and strict:
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
             )
-            # self.df = filter_out_prefixes(self.df, missing_prefixes)
-        self.prefix_map = new_prefixes
+
+        subconverter = self.converter.get_subconverter(prefixes_in_table)
+        for prefix in missing_prefixes:
+            subconverter.add_prefix(prefix, f"{UNKNOWN_IRI}{prefix.lower()}/")
+
+        self.converter = subconverter
 
     def remove_mappings(self, msdf: "MappingSetDataFrame") -> None:
         """Remove mappings in right msdf from left msdf.
@@ -255,12 +234,10 @@ class MappingSetDiff:
     """
 
 
-def parse(filename: str) -> pd.DataFrame:
+def parse(filename: Union[str, Path]) -> pd.DataFrame:
     """Parse a TSV to a pandas frame."""
-    # return from_tsv(filename)
     logging.info(f"Parsing {filename}")
     return pd.read_csv(filename, sep="\t", comment="#")
-    # return read_pandas(filename)
 
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
@@ -412,16 +389,15 @@ def assign_default_confidence(
     :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
     """
     # Get rows having numpy.NaN as confidence
-    if df is not None:
-        new_df = df.copy()
-        if CONFIDENCE not in new_df.columns:
-            new_df[CONFIDENCE] = 0.0  # np.NaN
-            nan_df = pd.DataFrame(columns=new_df.columns)
-        else:
-            new_df = df[~df[CONFIDENCE].isna()]
-            nan_df = df[df[CONFIDENCE].isna()]
-    else:
+    if df is None:
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
+    new_df = df.copy()
+    if CONFIDENCE not in new_df.columns:
+        new_df[CONFIDENCE] = 0.0  # np.NaN
+        nan_df = pd.DataFrame(columns=new_df.columns)
+    else:
+        new_df = df[~df[CONFIDENCE].isna()]
+        nan_df = df[df[CONFIDENCE].isna()]
     return new_df, nan_df
 
 
@@ -651,21 +627,6 @@ PREDICATE_RELATED_MATCH = 5
 RDF_FORMATS = {"ttl", "turtle", "nt", "xml"}
 
 
-def sha256sum(path: str) -> str:
-    """Calculate the SHA256 hash over the bytes in a file.
-
-    :param path: Filename
-    :return: Hashed value
-    """
-    h = hashlib.sha256()
-    b = bytearray(128 * 1024)
-    mv = memoryview(b)
-    with open(path, "rb", buffering=0) as file:
-        for n in iter(lambda: file.readinto(mv), 0):  # type: ignore
-            h.update(mv[:n])
-    return h.hexdigest()
-
-
 def merge_msdf(
     *msdfs: MappingSetDataFrame,
     reconcile: bool = False,
@@ -680,8 +641,6 @@ def merge_msdf(
         Defaults to True.
     :returns: Merged MappingSetDataFrame.
     """
-    merged_msdf = MappingSetDataFrame()
-
     # Inject metadata of msdf into df
     msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
 
@@ -696,11 +655,8 @@ def merge_msdf(
         [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
     ).drop_duplicates(ignore_index=True)
 
-    # merge the non DataFrame elements
-    prefix_map_list = [msdf.prefix_map for msdf in msdf_with_meta]
-    # prefix_map_merged = {k: v for d in prefix_map_list for k, v in d.items()}
-    merged_msdf.prefix_map = dict(ChainMap(*prefix_map_list))
-    merged_msdf.df = df_merged
+    converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
+    merged_msdf = MappingSetDataFrame.with_converter(df=df_merged, converter=converter)
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
         if (
@@ -910,81 +866,6 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-@deprecated(details="Use pandas.read_csv() instead.")
-def read_csv(
-    filename: Union[str, Path, TextIO], comment: str = "#", sep: str = ","
-) -> pd.DataFrame:
-    """Read a CSV that contains frontmatter commented by a specific character.
-
-    :param filename: Either the file path, a URL, or a file object to read as a TSV
-        with frontmatter
-    :param comment: The comment character used for the frontmatter. This isn't the
-        same as the comment keyword in :func:`pandas.read_csv` because it only
-        works on the first charcter in the line
-    :param sep: The separator for the TSV file
-    :returns: A pandas dataframe
-    """
-    if isinstance(filename, TextIO):
-        return pd.read_csv(filename, sep=sep)
-    if isinstance(filename, Path) or not validators.url(filename):
-        with open(filename, "r") as f:
-            lines = "".join([line for line in f if not line.startswith(comment)])
-    else:
-        response = urlopen(filename)
-        lines = "".join(
-            [
-                line.decode("utf-8")
-                for line in response
-                if not line.decode("utf-8").startswith(comment)
-            ]
-        )
-    try:
-        df = pd.read_csv(StringIO(lines), sep=sep, low_memory=False)
-    except EmptyDataError as e:
-        logging.warning(f"Seems like the dataframe is empty: {e}")
-        df = pd.DataFrame(
-            columns=[
-                SUBJECT_ID,
-                SUBJECT_LABEL,
-                PREDICATE_ID,
-                OBJECT_ID,
-                MAPPING_JUSTIFICATION,
-            ]
-        )
-
-    return df
-
-
-def read_metadata(filename: str) -> Metadata:
-    """Read a metadata file (yaml) that is supplied separately from a TSV."""
-    prefix_map = {}
-    with open(filename) as file:
-        metadata = yaml.safe_load(file)
-    if PREFIX_MAP_KEY in metadata:
-        prefix_map = metadata.pop(PREFIX_MAP_KEY)
-    return Metadata(prefix_map=prefix_map, metadata=metadata)
-
-
-@deprecated(details="Use pandas.read_csv() instead.")
-def read_pandas(file: Union[str, Path, TextIO], sep: Optional[str] = None) -> pd.DataFrame:
-    """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
-
-    :param file: The file to read. If no separator is given, this file should be named.
-    :param sep: File separator for pandas
-    :return: A pandas dataframe
-    """
-    if sep is None:
-        if isinstance(file, Path) or isinstance(file, str):
-            extension = get_file_extension(file)
-            if extension == "tsv":
-                sep = "\t"
-            elif extension == "csv":
-                sep = ","
-            logging.warning(f"Could not guess file extension for {file}")
-    df = read_csv(file, comment="#", sep=sep).fillna("")
-    return sort_df_rows_columns(df)
-
-
 def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     """Extract metadata.
 
@@ -1032,7 +913,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
     non_double_cols = non_double_cols.replace(np.nan, "")
     df[non_double_cols.columns] = non_double_cols
-    msdf = MappingSetDataFrame(df=df, prefix_map=doc.prefix_map, metadata=meta)
+    msdf = MappingSetDataFrame.with_converter(df=df, converter=doc.converter, metadata=meta)
     msdf.df = sort_df_rows_columns(msdf.df)
     return msdf
 
@@ -1110,38 +991,40 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
-def get_prefixes_used_in_table(df: pd.DataFrame) -> List[str]:
+def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
-    prefixes = list(SSSOM_BUILT_IN_PREFIXES)
-    if not df.empty:
-        for col in _get_sssom_schema_object().entity_reference_slots:
-            if col in df.columns:
-                prefixes.extend(list(set(df[col].str.split(":", n=1, expand=True)[0])))
-    if "" in prefixes:
-        prefixes.remove("")
-    return list(set(prefixes))
+    prefixes = set(SSSOM_BUILT_IN_PREFIXES)
+    if df.empty:
+        return prefixes
+    for col in _get_sssom_schema_object().entity_reference_slots:
+        if col not in df.columns:
+            continue
+        prefixes.update(
+            converter.parse_curie(row).prefix
+            for row in df[col]
+            if not is_iri(row) and is_curie(row)
+        )
+    return set(prefixes)
 
 
-def get_prefixes_used_in_metadata(meta: MetadataType) -> List[str]:
-    """Get a list of prefixes used in CURIEs in the metadata."""
-    prefixes = list(SSSOM_BUILT_IN_PREFIXES)
-    if meta:
-        for v in meta.values():
-            if type(v) is list:
-                prefixes.extend(
-                    [get_prefix_from_curie(x) for x in v if get_prefix_from_curie(x) != ""]
-                )
-            else:
-                pref = get_prefix_from_curie(str(v))
-                if pref != "" and not None:
-                    prefixes.append(pref)
-    return list(set(prefixes))
+def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
+    """Get a set of prefixes used in CURIEs in the metadata."""
+    prefixes = set(SSSOM_BUILT_IN_PREFIXES)
+    if not meta:
+        return prefixes
+    for value in meta.values():
+        if isinstance(value, list):
+            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
+        else:
+            if prefix := get_prefix_from_curie(str(value)):
+                prefixes.add(prefix)
+    return prefixes
 
 
 def filter_out_prefixes(
     df: pd.DataFrame,
     filter_prefixes: List[str],
-    features: list = KEY_FEATURES,
+    features: Optional[list] = None,
     require_all_prefixes: bool = False,
 ) -> pd.DataFrame:
     """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
@@ -1152,6 +1035,8 @@ def filter_out_prefixes(
     :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
     :return: Pandas Dataframe
     """
+    if features is None:
+        features = KEY_FEATURES
     filter_prefix_set = set(filter_prefixes)
     rows = []
     selection = all if require_all_prefixes else any
@@ -1167,7 +1052,7 @@ def filter_out_prefixes(
 def filter_prefixes(
     df: pd.DataFrame,
     filter_prefixes: List[str],
-    features: list = KEY_FEATURES,
+    features: Optional[list] = None,
     require_all_prefixes: bool = True,
 ) -> pd.DataFrame:
     """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
@@ -1178,6 +1063,8 @@ def filter_prefixes(
     :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
     :return: Pandas Dataframe
     """
+    if features is None:
+        features = KEY_FEATURES
     filter_prefix_set = set(filter_prefixes)
     rows = []
     selection = all if require_all_prefixes else any
@@ -1188,68 +1075,6 @@ def filter_prefixes(
             rows.append(row)
 
     return pd.DataFrame(rows) if rows else pd.DataFrame(columns=features)
-
-
-@deprecated(details="This is no longer used and will be removed from the public API.")
-def guess_file_format(filename: Union[str, TextIO]) -> str:
-    """Get file format.
-
-    :param filename: filename
-    :raises ValueError: Unrecognized file extension
-    :return: File extension
-    """
-    extension = get_file_extension(filename)
-    if extension in ["owl", "rdf"]:
-        return SSSOM_DEFAULT_RDF_SERIALISATION
-    elif extension in RDF_FORMATS:
-        return extension
-    else:
-        raise ValueError(f"File extension {extension} does not correspond to a legal file format")
-
-
-def prepare_context(
-    prefix_map: Optional[PrefixMap] = None,
-) -> Mapping[str, Any]:
-    """Prepare a JSON-LD context from a prefix map."""
-    context = get_jsonld_context()
-    if prefix_map is None:
-        prefix_map = get_default_metadata().prefix_map
-
-    for k, v in prefix_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return context
-
-
-def prepare_context_str(prefix_map: Optional[PrefixMap] = None, **kwargs) -> str:
-    """Prepare a JSON-LD context and dump to a string.
-
-    :param prefix_map: Prefix map, defaults to None
-    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
-    :return: Context in str format
-    """
-    return json.dumps(prepare_context(prefix_map), **kwargs)
-
-
-def raise_for_bad_prefix_map_mode(prefix_map_mode: str = None):
-    """Raise exception if prefix map mode is invalid.
-
-    :param prefix_map_mode: The prefix map mode
-    :raises ValueError: Invalid prefix map mode
-    """
-    if prefix_map_mode not in PREFIX_MAP_MODES:
-        raise ValueError(
-            f"{prefix_map_mode} is not a valid prefix map mode, "
-            f"must be one of {' '.join(PREFIX_MAP_MODES)}"
-        )
 
 
 def raise_for_bad_path(file_path: Union[str, Path]) -> None:
@@ -1287,65 +1112,34 @@ def reconcile_prefix_and_data(
     :param msdf: Mapping Set DataFrame.
     :param prefix_reconciliation: Prefix reconcilation dictionary from a YAML file
     :return: Mapping Set DataFrame with reconciled prefix_map and data.
+
+    This method is build on :func:`curies.remap_curie_prefixes` and
+    :func:`curies.rewire`. Note that if you want to overwrite a CURIE prefix in the Bioregistry
+    extended prefix map, you need to provide a place for the old one to go as in
+    ``{"geo": "ncbi.geo", "geogeo": "geo"}``.
+    Just doing ``{"geogeo": "geo"}`` would not work since `geo` already exists.
     """
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
+    converter = msdf.converter
+    converter = curies.remap_curie_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
+    converter = curies.rewire(converter, prefix_reconciliation["prefix_expansion_reconciliation"])
 
-    prefix_map = msdf.prefix_map
-    df: pd.DataFrame = msdf.df
-    data_switch_dict = dict()
+    # TODO make this standardization code directly part of msdf after
+    #  switching to native converter
+    def _upgrade(curie_or_iri: str) -> str:
+        if not is_iri(curie_or_iri) and is_curie(curie_or_iri):
+            return converter.standardize_curie(curie_or_iri) or curie_or_iri
+        return curie_or_iri
 
-    prefix_synonyms = prefix_reconciliation["prefix_synonyms"]
-    prefix_expansion = prefix_reconciliation["prefix_expansion_reconciliation"]
+    for column, values in _get_sssom_schema_object().dict["slots"].items():
+        if values["range"] != "EntityReference":
+            continue
+        if column not in msdf.df.columns:
+            continue
+        msdf.df[column] = msdf.df[column].map(_upgrade)
 
-    # The prefix exists but the expansion needs to be updated.
-    expansion_replace = {
-        k: v for k, v in prefix_expansion.items() if k in prefix_map.keys() and v != prefix_map[k]
-    }
-
-    # Updates expansions in prefix_map
-    prefix_map.update(expansion_replace)
-
-    # Prefixes that need to be replaced
-    # IF condition:
-    #   1. Key OR Value in prefix_synonyms are keys in prefix_map
-    #       e.g.: ICD10: ICD10CM - either should be present within
-    #           the prefix_map.
-    #   AND
-    #   2. Value in prefix_synonyms is NOT a value in expansion_replace.
-    #      In other words, the existing expansion do not match the YAML.
-
-    prefix_replace = [
-        k
-        for k, v in prefix_synonyms.items()
-        if (k in prefix_map.keys() or v in prefix_map.keys()) and v not in expansion_replace.keys()
-    ]
-
-    if len(prefix_replace) > 0:
-        for pr in prefix_replace:
-            correct_prefix = prefix_synonyms[pr]
-            correct_expansion = prefix_expansion[correct_prefix]
-            prefix_map[correct_prefix] = correct_expansion
-            logging.info(f"Adding prefix_map {correct_prefix}: {correct_expansion}")
-            if pr in prefix_map.keys():
-                prefix_map.pop(pr, None)
-                data_switch_dict[pr] = correct_prefix
-
-                logging.warning(f"Replacing prefix {pr} with {correct_prefix}")
-
-    # Data editing
-    if len(data_switch_dict) > 0:
-        # Read schema file
-        slots = _get_sssom_schema_object().dict["slots"]
-        entity_reference_columns = [k for k, v in slots.items() if v["range"] == "EntityReference"]
-        update_columns = [c for c in df.columns if c in entity_reference_columns]
-        for k, v in data_switch_dict.items():
-            df[update_columns] = df[update_columns].replace(k + ":", v + ":", regex=True)
-
-    msdf.df = df
-    msdf.prefix_map = prefix_map
-
-    # TODO: When expansion of 2 prefixes in the prefix_map are the same.
+    msdf.converter = converter
     return msdf
 
 
@@ -1370,7 +1164,7 @@ def sort_df_rows_columns(
     return df
 
 
-def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
+def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
     """Fetch all prefixes in the MappingSetDataFrame.
 
     :param msdf: MappingSetDataFrame
@@ -1378,51 +1172,39 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> list:
     :raises ValidationError: If slot is wrong.
     :return:  List of all prefixes.
     """
-    prefix_list = []
-    if msdf.metadata and not msdf.df.empty:  # type: ignore
-        metadata_keys = list(msdf.metadata.keys())
-        df_columns_list = msdf.df.columns.to_list()  # type: ignore
-        all_keys = metadata_keys + df_columns_list
-        ent_ref_slots = [
-            s for s in all_keys if s in _get_sssom_schema_object().entity_reference_slots
-        ]
+    if not msdf.metadata or msdf.df is None or msdf.df.empty:
+        return set()
 
-        for slot in ent_ref_slots:
-            if slot in metadata_keys:
-                if type(msdf.metadata[slot]) == list:
-                    for s in msdf.metadata[slot]:
-                        if get_prefix_from_curie(s) == "":
-                            # print(
-                            #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
-                            # )
-                            raise ValidationError(
-                                f"Slot '{slot}' has an incorrect value: {msdf.metadata[s]}"
-                            )
-                        prefix_list.append(get_prefix_from_curie(s))
-                else:
-                    if get_prefix_from_curie(msdf.metadata[slot]) == "":
-                        # print(
-                        #     f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
-                        # )
-                        logging.warning(
-                            f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
-                        )
-                    prefix_list.append(get_prefix_from_curie(msdf.metadata[slot]))
-            else:
-                column_prefixes = list(
-                    set(
-                        [
-                            get_prefix_from_curie(s)
-                            for s in list(set(msdf.df[slot].to_list()))  # type: ignore
-                            if get_prefix_from_curie(s) != ""
-                        ]
+    prefixes: Set[str] = set()
+    metadata_keys = set(msdf.metadata.keys())
+    keys = {
+        slot
+        for slot in itt.chain(metadata_keys, msdf.df.columns.to_list())
+        if slot in _get_sssom_schema_object().entity_reference_slots
+    }
+    for slot in keys:
+        if slot not in metadata_keys:
+            prefixes.update(
+                prefix
+                for curie in msdf.df[slot].unique()
+                if (prefix := get_prefix_from_curie(curie))
+            )
+        elif isinstance(msdf.metadata[slot], list):
+            for curie in msdf.metadata[slot]:
+                prefix = get_prefix_from_curie(curie)
+                if not prefix:
+                    raise ValidationError(
+                        f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
                     )
-                )
-                prefix_list = prefix_list + column_prefixes
+                prefixes.add(prefix)
+        else:
+            prefix = get_prefix_from_curie(msdf.metadata[slot])
+            if not prefix:
+                logging.warning(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
+                continue
+            prefixes.add(prefix)
 
-        prefix_list = list(set(prefix_list))
-
-    return prefix_list
+    return prefixes
 
 
 def augment_metadata(
@@ -1438,28 +1220,27 @@ def augment_metadata(
     :return: MSDF with updated metadata.
     """
     are_params_slots(meta)
-
-    if msdf.metadata:
-        for k, v in meta.items():
-            # If slot is multivalued, add to list.
-            if k in _get_sssom_schema_object().multivalued_slots and not replace_multivalued:
-                tmp_value: list = []
-                if isinstance(msdf.metadata[k], str):
-                    tmp_value = [msdf.metadata[k]]
-                elif isinstance(msdf.metadata[k], list):
-                    tmp_value = msdf.metadata[k]
-                else:
-                    raise ValueError(
-                        f"{k} is of type {type(msdf.metadata[k])} and \
-                        as of now only slots of type 'str' or 'list' are handled."
-                    )
-                tmp_value.extend(v)
-                msdf.metadata[k] = list(set(tmp_value))
-            elif k in _get_sssom_schema_object().multivalued_slots and replace_multivalued:
-                msdf.metadata[k] = list(v)
+    if not msdf.metadata:
+        return msdf
+    for k, v in meta.items():
+        # If slot is multivalued, add to list.
+        if k in _get_sssom_schema_object().multivalued_slots and not replace_multivalued:
+            tmp_value: list = []
+            if isinstance(msdf.metadata[k], str):
+                tmp_value = [msdf.metadata[k]]
+            elif isinstance(msdf.metadata[k], list):
+                tmp_value = msdf.metadata[k]
             else:
-                msdf.metadata[k] = v[0]
-
+                raise TypeError(
+                    f"{k} is of type {type(msdf.metadata[k])} and \
+                    as of now only slots of type 'str' or 'list' are handled."
+                )
+            tmp_value.extend(v)
+            msdf.metadata[k] = list(set(tmp_value))
+        elif k in _get_sssom_schema_object().multivalued_slots and replace_multivalued:
+            msdf.metadata[k] = list(v)
+        else:
+            msdf.metadata[k] = v[0]
     return msdf
 
 

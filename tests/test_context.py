@@ -2,7 +2,7 @@
 
 import unittest
 
-from sssom.context import get_extended_prefix_map
+from sssom.context import get_converter
 
 
 class TestContext(unittest.TestCase):
@@ -10,8 +10,8 @@ class TestContext(unittest.TestCase):
 
     def test_minimum(self):
         """Test the minimum important prefixes are available through the default context."""
-        external_context = get_extended_prefix_map()
-        prefixes = external_context.keys()
+        external_context = get_converter()
+        prefixes = external_context.bimap.keys()
         expected_prefixes = {
             "FlyBase",
             "NCBITaxon",

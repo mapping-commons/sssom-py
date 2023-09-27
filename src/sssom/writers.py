@@ -1,41 +1,34 @@
 """Serialization functions for SSSOM."""
 
 import json
-import logging
+import logging as _logging
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
-from deprecation import deprecated
 from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
-
-# from .sssom_datamodel import slots
 from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import SCHEMA_YAML
+from .constants import SCHEMA_YAML, SSSOM_URI_PREFIX
 from .parsers import to_mapping_set_document
-from .typehints import PrefixMap
 from .util import (
     PREFIX_MAP_KEY,
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
-    SSSOM_URI_PREFIX,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
-    prepare_context_str,
     sort_df_rows_columns,
 )
 
-# from sssom.validators import check_all_prefixes_in_curie_map
-
+logging = _logging.getLogger(__name__)
 
 # noinspection PyProtectedMember
 
@@ -64,13 +57,10 @@ def write_table(
 
     sep = _get_separator(serialisation)
 
-    # df = to_dataframe(msdf)
-
     meta: Dict[str, Any] = {}
     if msdf.metadata is not None:
         meta.update(msdf.metadata)
-    if msdf.prefix_map is not None:
-        meta[PREFIX_MAP_KEY] = msdf.prefix_map
+    meta[PREFIX_MAP_KEY] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
@@ -146,40 +136,19 @@ def write_owl(
 
 
 def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation="ontoportal_json"
+    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
-    if serialisation == "ontoportal_json":
-        data = to_ontoportal_json(msdf)
-        json.dump(data, output, indent=2)
-    else:
+    if serialisation != "ontoportal_json":
         raise ValueError(
             f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
         )
+    data = to_ontoportal_json(msdf)
+    json.dump(data, output, indent=2)
 
 
 # Converters
 # Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)
-
-
-@deprecated(
-    details="Use df variable of 'MappingSetDataFrame' instead (msdf.df).",
-)
-def to_dataframe(msdf: MappingSetDataFrame) -> pd.DataFrame:
-    """Convert a mapping set dataframe to a dataframe."""
-    data = []
-    doc = to_mapping_set_document(msdf)
-    if doc.mapping_set.mappings is None:
-        raise TypeError
-    for mapping in doc.mapping_set.mappings:
-        mdict = mapping.__dict__
-        m = {}
-        for key in mdict:
-            if mdict[key]:
-                m[key] = mdict[key]
-        data.append(m)
-    df = pd.DataFrame(data=data)
-    return df
 
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
@@ -194,11 +163,6 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
             for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
                 for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
                     graph.add((s, p, o))
-
-    # if MAPPING_SET_ID in msdf.metadata:
-    #    mapping_set_id = msdf.metadata[MAPPING_SET_ID]
-    # else:
-    #    mapping_set_id = DEFAULT_MAPPING_SET_ID
 
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -287,22 +251,11 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
-    # cntxt = prepare_context(doc.prefix_map)
-
-    # rdflib_dumper.dump(
-    #     element=doc.mapping_set,
-    #     schemaview=SchemaView(os.path.join(os.getcwd(), "schema/sssom.yaml")),
-    #     prefix_map=msdf.prefix_map,
-    #     to_file="sssom.ttl",
-    # )
-    # graph = Graph()
-    # graph = graph.parse("sssom.ttl", format="ttl")
-
-    # os.remove("sssom.ttl")  # remove the intermediate file.
     graph = rdflib_dumper.as_rdf_graph(
         element=doc.mapping_set,
         schemaview=SchemaView(SCHEMA_YAML),
-        prefix_map=msdf.prefix_map,
+        # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
+        prefix_map=msdf.converter.bimap,
     )
     return graph
 
@@ -488,42 +441,60 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    context = prepare_context_str(doc.prefix_map)
-    data = JSONDumper().dumps(doc.mapping_set, contexts=context)
+    data = JSONDumper().dumps(doc.mapping_set, contexts=doc.prefix_map)
     json_obj = json.loads(data)
     return json_obj
 
 
 def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
-    """Convert a mapping set dataframe to a list of ontoportal mapping JSON nbjects."""
-    prefix_map = msdf.prefix_map
+    """Convert a mapping set dataframe to a list of ontoportal mapping JSON objects."""
+    if msdf.df is None:
+        return []
+
+    converter = msdf.converter
     metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
     m_list = []
+    for _, row in msdf.df.iterrows():
+        mapping_justification = row.get("mapping_justification", "")
+        if "creator_id" in row:
+            creators = row["creator_id"]
+        elif "creator_id" in metadata:
+            creators = metadata["creator_id"]
+        else:
+            creators = []
 
-    def resolve(x):
-        """Resolve URL."""
-        return _resolve_url(x, prefix_map)
-
-    if msdf.df is not None:
-        for _, row in msdf.df.iterrows():
-            json_obj = {
-                "classes": [resolve(row["subject_id"]), resolve(row["object_id"])],
-                "subject_source_id": _resolve_prefix(row.get("subject_source", ""), prefix_map),
-                "object_source_id": _resolve_prefix(row.get("object_source", ""), prefix_map),
-                "source_name": metadata.get("mapping_set_id", ""),
-                "source_contact_info": ",".join(metadata.get("creator_id", "")),
-                "date": metadata.get("mapping_date", row.get("mapping_date", "")),
-                "name": metadata.get("mapping_set_description", ""),
-                "source": resolve(row.get("mapping_justification", "")),
-                "comment": row.get("comment", ""),
-                "relation": [resolve(row["predicate_id"])],
-            }
-            m_list.append(json_obj)
-
+        json_obj = {
+            "classes": [
+                converter.expand(row["subject_id"]),
+                converter.expand(row["object_id"]),
+            ],
+            "subject_source_id": row.get("subject_source", ""),
+            "object_source_id": row.get("object_source", ""),
+            "source_name": metadata.get("mapping_set_id", ""),
+            "source_contact_info": ",".join(creators),
+            "date": metadata.get("mapping_date", row.get("mapping_date", "")),
+            "name": metadata.get("mapping_set_title", ""),
+            "source": converter.expand(mapping_justification) if mapping_justification else "",
+            "comment": row.get("comment", ""),
+            "relation": [converter.expand(row["predicate_id"])],
+        }
+        json_obj = {k: v for k, v in json_obj.items() if k and v}
+        m_list.append(json_obj)
     return m_list
 
 
 # Support methods
+
+WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
+    "tsv": (write_table, None),
+    "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
+    "ontoportal_json": (write_ontoportal_json, None),
+    "fhir_json": (write_fhir_json, None),
+    "json": (write_json, None),
+    "rdf": (write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION),
+}
+for rdf_format in RDF_FORMATS:
+    WRITER_FUNCTIONS[rdf_format] = write_rdf, rdf_format
 
 
 def get_writer_function(
@@ -538,23 +509,10 @@ def get_writer_function(
     """
     if output_format is None:
         output_format = get_file_extension(output)
-
-    if output_format == "tsv":
-        return write_table, output_format
-    elif output_format in RDF_FORMATS:
-        return write_rdf, output_format
-    elif output_format == "rdf":
-        return write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION
-    elif output_format == "json":
-        return write_json, output_format
-    elif output_format == "fhir_json":
-        return write_fhir_json, output_format
-    elif output_format == "ontoportal_json":
-        return write_ontoportal_json, output_format
-    elif output_format == "owl":
-        return write_owl, SSSOM_DEFAULT_RDF_SERIALISATION
-    else:
+    if output_format not in WRITER_FUNCTIONS:
         raise ValueError(f"Unknown output format: {output_format}")
+    func, tag = WRITER_FUNCTIONS[output_format]
+    return func, tag or output_format
 
 
 def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[str, Path]) -> None:
@@ -600,18 +558,3 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
     else:
         raise ValueError(f"Unknown table format: {serialisation}, should be one of tsv or csv")
     return sep
-
-
-def _resolve_url(prefixed_url_str: str, prefix_map: PrefixMap) -> str:
-    if not prefixed_url_str:
-        return prefixed_url_str
-
-    prefix_url = prefixed_url_str.split(":")
-    if len(prefix_url) != 2:
-        return prefixed_url_str
-    else:
-        return _resolve_prefix(prefix_url[0], prefix_map) + prefix_url[1]
-
-
-def _resolve_prefix(prefix_str, prefix_map: PrefixMap) -> str:
-    return prefix_map.get(prefix_str, prefix_str + ":")

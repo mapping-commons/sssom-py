@@ -3,7 +3,8 @@
 import os
 import subprocess  # noqa
 import unittest
-from typing import Mapping
+from pathlib import Path
+from typing import Any, Mapping, Optional, cast
 
 from click.testing import CliRunner, Result
 
@@ -83,13 +84,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
         self.assertTrue(len(test_cases) >= 2)
 
-    def run_successful(self, result: Result, test_case: SSSOMTestCase) -> None:
+    def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
-        self.assertEqual(
-            result.exit_code,
-            0,
-            f"{test_case} did not perform as expected: {result.exception}",
-        )
+        if result.exit_code:
+            raise RuntimeError(f"{obj} failed") from result.exception
 
     def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the convert test."""
@@ -142,7 +140,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_ptable(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the ptable test."""
-        params = [test_case.filepath]
+        params = [test_case.filepath, "--output", test_case.get_out_file("ptable.tsv")]
         result = runner.invoke(ptable, params)
         self.run_successful(result, test_case)
         return result
@@ -183,12 +181,16 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def run_partition(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the partition test."""
         params = []
-        primary_test_case = None
+        primary_test_case: Optional[SSSOMTestCase] = None
         for t in test_cases.values():
             if not primary_test_case:
                 primary_test_case = t
             params.append(t.filepath)
-        params.extend(["--output-directory", test_out_dir.as_posix()])
+        primary_test_case = cast(SSSOMTestCase, primary_test_case)
+        name = Path(primary_test_case.filepath).stem
+        directory = test_out_dir.joinpath(name)
+        directory.mkdir(exist_ok=True, parents=True)
+        params.extend(["--output-directory", directory.as_posix()])
         result = runner.invoke(partition, params)
         self.run_successful(result, primary_test_case)
         return result
@@ -351,15 +353,15 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def test_convert_cli(self) -> Result:
+    @unittest.skip("this test doesn't actually test anything, just runs help")
+    def test_convert_cli(self):
         """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
         test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
-        command = [
+        args = [
             "sssom",
             "convert",
             test_sssom,
             "--output-format",
             "owl",
         ]
-        result = subprocess.run(command, shell=True)  # noqa
-        self.assertEqual(result.returncode, 0)
+        result = subprocess.check_output(args, shell=True)  # noqa

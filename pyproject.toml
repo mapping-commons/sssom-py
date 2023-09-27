@@ -13,19 +13,18 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.8"
 click = ">=8.1.6"
-curies = ">=0.5.7"
+curies = ">=0.6.4"
 linkml-runtime = ">=1.5.5"
 importlib-metadata = ">=6.8.0"
 pandas = ">=2.0.3"
 pansql = ">=0.0.1"
 sssom-schema = ">=0.14.0"
-bioregistry = ">=0.9.87"
 networkx = ">=3.1"
 sparqlwrapper = ">=2.0.0"
 validators = ">=0.20.0"
 deprecation = "^2.1.0"
 pyyaml = "^6.0.1"
-rdflib = ">=6.3.2"
+rdflib = ">=6.0.0"
 scipy = {version = "*", extras = ["scipy"]}
 
 [tool.poetry.group.dev.dependencies]

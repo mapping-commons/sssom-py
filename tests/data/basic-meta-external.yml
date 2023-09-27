@@ -13,4 +13,4 @@ curie_map:
   b: "http://example.org/b/"
   c: "http://example.org/c/"
   d: "http://example.org/d/"
-  oio: "http://www.geneontology.org/formats/oboInOwl#"
+  oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"

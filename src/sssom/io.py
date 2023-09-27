@@ -6,35 +6,32 @@ import re
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
+import curies
 import pandas as pd
-from bioregistry import get_iri
+import yaml
+from curies import Converter
 from pansql import sqldf
 
 from sssom.validators import validate
 
 from .constants import (
+    DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
 )
-from .context import (
-    add_built_in_prefixes_to_prefix_map,
-    get_default_metadata,
-    set_default_license,
-    set_default_mapping_set_id,
-)
+from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata
+from .typehints import Metadata, generate_mapping_set_id
 from .util import (
+    PREFIX_MAP_KEY,
     MappingSetDataFrame,
     are_params_slots,
     augment_metadata,
     is_curie,
     is_iri,
     raise_for_bad_path,
-    raise_for_bad_prefix_map_mode,
-    read_metadata,
 )
 from .writers import get_writer_function, write_table, write_tables
 
@@ -48,7 +45,7 @@ def convert_file(
 
     :param input_path: The path to the input SSSOM tsv file
     :param output: The path to the output file. If none is given, will default to using stdout.
-    :param output_format: The format to which the the SSSOM TSV should be converted.
+    :param output_format: The format to which the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
     doc = parse_sssom_table(input_path)
@@ -90,9 +87,7 @@ def parse_file(
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(
-            mapping_predicate_filter, metadata.prefix_map
-        )
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
 
     # if mapping_predicates:
     doc = parse_func(
@@ -138,27 +133,8 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
-    if prefix_map_mode is None:
-        prefix_map_mode = PREFIX_MAP_MODE_METADATA_ONLY
-
-    raise_for_bad_prefix_map_mode(prefix_map_mode=prefix_map_mode)
-
-    prefix_map = metadata.prefix_map
-
-    if prefix_map_mode != PREFIX_MAP_MODE_METADATA_ONLY:
-        default_metadata: Metadata = get_default_metadata()
-        if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
-            prefix_map = default_metadata.prefix_map
-        elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-            for prefix, uri_prefix in default_metadata.prefix_map.items():
-                if prefix not in prefix_map:
-                    prefix_map[prefix] = uri_prefix
-    return prefix_map
-
-
 def get_metadata_and_prefix_map(
-    metadata_path: Optional[str] = None, prefix_map_mode: Optional[str] = None
+    metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
 ) -> Metadata:
     """
     Load SSSOM metadata from a file, and then augments it with default prefixes.
@@ -168,60 +144,74 @@ def get_metadata_and_prefix_map(
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
-        return get_default_metadata()
+        return Metadata.default()
 
-    metadata = read_metadata(metadata_path)
-    prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
+    with Path(metadata_path).resolve().open() as file:
+        metadata = yaml.safe_load(file)
+    if not metadata.get("mapping_set_id"):
+        metadata["mapping_set_id"] = generate_mapping_set_id()
+    if not metadata.get("license"):
+        metadata["license"] = DEFAULT_LICENSE
+        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
 
-    m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
-    m = set_default_mapping_set_id(m)
-    m = set_default_license(m)
-    return m
+    if PREFIX_MAP_KEY in metadata:
+        prefix_map = metadata.pop(PREFIX_MAP_KEY)
+    else:
+        prefix_map = {}
+    converter = Converter.from_prefix_map(prefix_map)
+    converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
+
+    return Metadata(converter=converter, metadata=metadata)
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list:
+def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:
+    """Merge the metadata's converter with the default converter."""
+    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
+        return converter
+    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+        return get_converter()
+    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+        return curies.chain([converter, get_converter()])
+    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+
+
+def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
     pred_filter_list = list(predicate_filter)
     iri_list = []
     for p in pred_filter_list:
-        p_iri = extract_iri(p, prefix_map)
+        p_iri = extract_iri(p, converter)
         if p_iri:
             iri_list.extend(p_iri)
     return list(set(iri_list))
 
 
-def extract_iri(input, prefix_map) -> list:
+def extract_iri(input: str, converter: Converter) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
     :param input: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     :rtype: list
     """
     if is_iri(input):
         return [input]
     elif is_curie(input):
-        p_iri = get_iri(input, prefix_map=prefix_map, use_bioregistry_io=False)
-        if not p_iri:
-            p_iri = get_iri(input)
+        p_iri = converter.expand(input)
         if p_iri:
             return [p_iri]
-        else:
-            logging.warning(
-                f"{input} is a curie but could not be resolved to an IRI, "
-                f"neither with the provided prefix map nor with bioregistry."
-            )
+
     elif os.path.isfile(input):
         pred_list = Path(input).read_text().splitlines()
-        iri_list = []
+        iri_list: List[str] = []
         for p in pred_list:
-            p_iri = extract_iri(p, prefix_map)
+            p_iri = extract_iri(p, converter)
             if p_iri:
                 iri_list.extend(p_iri)
         return iri_list
@@ -280,7 +270,9 @@ def extract_iri(input, prefix_map) -> list:
 #     return new_msdf
 
 
-def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDataFrame:
+def run_sql_query(
+    query: str, inputs: List[str], output: Optional[TextIO] = None
+) -> MappingSetDataFrame:
     """Run a SQL query over one or more SSSOM files.
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
@@ -301,7 +293,6 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
     :return: Filtered MappingSetDataFrame object.
     """
     n = 1
-    new_msdf = MappingSetDataFrame()
     while len(inputs) >= n:
         fn = inputs[n - 1]
         msdf = parse_sssom_table(fn)
@@ -313,14 +304,17 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
         n += 1
 
     new_df = sqldf(query)
-    new_msdf.df = new_df
-    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
-    new_msdf.metadata = msdf.metadata
-    write_table(new_msdf, output)
+
+    msdf.clean_context()
+    new_msdf = MappingSetDataFrame.with_converter(
+        df=new_df, converter=msdf.converter, metadata=msdf.metadata
+    )
+    if output is not None:
+        write_table(new_msdf, output)
     return new_msdf
 
 
-def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
+def filter_file(input: str, output: Optional[TextIO] = None, **kwargs) -> MappingSetDataFrame:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -332,7 +326,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 
     :param input: DataFrame to be queried over.
     :param output: Output location.
-    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     :raises ValueError: If parameter provided is invalid.
     :return: Filtered MappingSetDataFrame object.
     """
@@ -367,7 +361,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 
 
 def annotate_file(
-    input: str, output: TextIO, replace_multivalued: bool = False, **kwargs
+    input: str, output: Optional[TextIO] = None, replace_multivalued: bool = False, **kwargs
 ) -> MappingSetDataFrame:
     """Annotate a file i.e. add custom metadata to the mapping set.
 
@@ -375,7 +369,7 @@ def annotate_file(
     :param output: Output location.
     :param replace_multivalued: Multivalued slots should be
         replaced or not, defaults to False
-    :param **kwargs: Options provided by user
+    :param kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     :return: Annotated MappingSetDataFrame object.
     """
@@ -383,5 +377,6 @@ def annotate_file(
     are_params_slots(params)
     input_msdf = parse_sssom_table(input)
     msdf = augment_metadata(input_msdf, params, replace_multivalued)
-    write_table(msdf, output)
+    if output is not None:
+        write_table(msdf, output)
     return msdf
