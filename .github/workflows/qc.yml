@@ -57,5 +57,5 @@ jobs:
       #----------------------------------------------
       - name: Test with pandas<2.0.0
         run: |
-          poetry add pandas<2.0.0
+          poetry add "pandas<2.0.0"
           poetry run pytest
