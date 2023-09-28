@@ -22,8 +22,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry dependencies
-        run: python -m pip install -U pip setuptools
+      - name: Update pip and setuptools
+        run: pip install -U pip setuptools
 
       #----------------------------------------------
       #          install & configure poetry
