@@ -54,7 +54,7 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import HINT, ensure_converter
+from .context import HINT, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
 from .util import (
@@ -198,12 +198,14 @@ def parse_sssom_table(
         meta = {}
 
     # The priority order for combining prefix maps are:
-    #  1. Internal prefix map inside the document
-    #  2. Prefix map passed through this function inside the ``meta``
-    #  3. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
-    #  4. Default prefix map (handled with ensure_converter)
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    #  5. Default prefix map (handled with ensure_converter)
     converter = curies.chain(
         [
+            _get_built_in_prefix_map(),
             Converter.from_prefix_map(sssom_metadata.pop(CURIE_MAP, {})),
             Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
             ensure_converter(prefix_map),
