@@ -4,7 +4,9 @@ import io
 import json
 import math
 import os
+import tempfile
 import unittest
+from pathlib import Path
 from xml.dom import minidom
 
 import numpy as np
@@ -12,8 +14,12 @@ import pandas as pd
 import yaml
 from rdflib import Graph
 
+from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX
+from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import parse_file
 from sssom.parsers import (
+    _open_input,
+    _read_pandas_and_metadata,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
@@ -22,7 +28,7 @@ from sssom.parsers import (
     parse_sssom_table,
 )
 from sssom.typehints import Metadata
-from sssom.util import PREFIX_MAP_KEY, sort_df_rows_columns
+from sssom.util import PREFIX_MAP_KEY, MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
@@ -245,3 +251,64 @@ class TestParse(unittest.TestCase):
             )
         msdf = parse_sssom_table(outfile)
         self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
+
+
+class TestParseExplicit(unittest.TestCase):
+    """This test case contains explicit tests for parsing."""
+
+    def test_round_trip(self):
+        """Explicitly test round tripping."""
+        rows = [
+            (
+                "DOID:0050601",
+                "ADULT syndrome",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                "ADULT SYNDROME",
+                "semapv:ManualMappingCuration",
+                "orcid:0000-0003-4423-4370",
+            )
+        ]
+        columns = [
+            "subject_id",
+            "subject_label",
+            "predicate_id",
+            "object_id",
+            "object_label",
+            "mapping_justification",
+            "creator_id",
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
+        msdf.clean_prefix_map(strict=True)
+        self.assertEqual(
+            {"DOID", "semapv", "orcid", "skos", "UMLS"}.union(SSSOM_BUILT_IN_PREFIXES),
+            set(msdf.prefix_map),
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            path = directory.joinpath("test.sssom.tsv")
+            with path.open("w") as file:
+                write_table(msdf, file)
+
+            _, read_metadata = _read_pandas_and_metadata(_open_input(path))
+
+        # This tests what's actually in the file after it's written out
+        self.assertEqual({CURIE_MAP, "license", "mapping_set_id"}, set(read_metadata))
+        self.assertEqual(DEFAULT_LICENSE, read_metadata["license"])
+        self.assertTrue(read_metadata["mapping_set_id"].startswith(f"{SSSOM_URI_PREFIX}mappings/"))
+        self.assertEqual(
+            {
+                "DOID": "http://purl.obolibrary.org/obo/DOID_",
+                "UMLS": "http://linkedlifedata.com/resource/umls/id/",
+                "orcid": "https://orcid.org/",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "semapv": "https://w3id.org/semapv/vocab/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sssom": "https://w3id.org/sssom/",
+            },
+            read_metadata[CURIE_MAP],
+        )
