@@ -58,7 +58,7 @@ def ensure_converter(prefix_map: HINT = None, *, use_bioregistry: bool = True) -
         if use_bioregistry:
             return get_converter()
         else:
-            return Converter([])
+            return _get_built_in_prefix_map()
     if not isinstance(prefix_map, Converter):
         prefix_map = Converter.from_prefix_map(prefix_map)
     return curies.chain([_get_built_in_prefix_map(), prefix_map])
