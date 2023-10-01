@@ -293,22 +293,28 @@ class TestParseExplicit(unittest.TestCase):
                 write_table(msdf, file)
 
             _, read_metadata = _read_pandas_and_metadata(_open_input(path))
+            reconsitited_msdf = parse_sssom_table(path)
 
         # This tests what's actually in the file after it's written out
         self.assertEqual({CURIE_MAP, "license", "mapping_set_id"}, set(read_metadata))
         self.assertEqual(DEFAULT_LICENSE, read_metadata["license"])
         self.assertTrue(read_metadata["mapping_set_id"].startswith(f"{SSSOM_URI_PREFIX}mappings/"))
+
+        expected_prefix_map = {
+            "DOID": "http://purl.obolibrary.org/obo/DOID_",
+            "UMLS": "http://linkedlifedata.com/resource/umls/id/",
+            "orcid": "https://orcid.org/",
+            "owl": "http://www.w3.org/2002/07/owl#",
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            "semapv": "https://w3id.org/semapv/vocab/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "sssom": "https://w3id.org/sssom/",
+        }
         self.assertEqual(
-            {
-                "DOID": "http://purl.obolibrary.org/obo/DOID_",
-                "UMLS": "http://linkedlifedata.com/resource/umls/id/",
-                "orcid": "https://orcid.org/",
-                "owl": "http://www.w3.org/2002/07/owl#",
-                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                "semapv": "https://w3id.org/semapv/vocab/",
-                "skos": "http://www.w3.org/2004/02/skos/core#",
-                "sssom": "https://w3id.org/sssom/",
-            },
+            expected_prefix_map,
             read_metadata[CURIE_MAP],
         )
+
+        # This checks that nothing funny gets added unexpectedly
+        self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
