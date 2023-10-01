@@ -73,7 +73,6 @@ class TestCollapse(unittest.TestCase):
     def test_reconcile_prefix(self):
         """Test curie reconciliation is performing as expected."""
         msdf = parse_sssom_table(data_dir / "basic3.tsv")
-        msdf.clean_prefix_map()
 
         self.assertEqual(
             {
