@@ -52,10 +52,13 @@ def _get_built_in_prefix_map() -> Converter:
 HINT = Union[None, PrefixMap, Converter]
 
 
-def ensure_converter(prefix_map: HINT = None) -> Converter:
+def ensure_converter(prefix_map: HINT = None, *, use_bioregistry: bool = True) -> Converter:
     """Ensure a converter is available."""
     if not prefix_map:
-        return get_converter()
+        if use_bioregistry:
+            return get_converter()
+        else:
+            return Converter([])
     if not isinstance(prefix_map, Converter):
         prefix_map = Converter.from_prefix_map(prefix_map)
     return curies.chain([_get_built_in_prefix_map(), prefix_map])

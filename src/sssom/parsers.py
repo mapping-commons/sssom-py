@@ -202,13 +202,12 @@ def parse_sssom_table(
     #  2. Internal prefix map inside the document
     #  3. Prefix map passed through this function inside the ``meta``
     #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
-    #  5. Default prefix map (handled with ensure_converter)
     converter = curies.chain(
         [
             _get_built_in_prefix_map(),
             Converter.from_prefix_map(sssom_metadata.pop(CURIE_MAP, {})),
             Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
-            ensure_converter(prefix_map),
+            ensure_converter(prefix_map, use_bioregistry=False),
         ]
     )
 
