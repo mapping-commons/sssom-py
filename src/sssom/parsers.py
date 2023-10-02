@@ -207,7 +207,7 @@ def parse_sssom_table(
             _get_built_in_prefix_map(),
             Converter.from_prefix_map(sssom_metadata.pop(CURIE_MAP, {})),
             Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
-            ensure_converter(prefix_map, use_bioregistry=False),
+            ensure_converter(prefix_map, use_defaults=False),
         ]
     )
 
