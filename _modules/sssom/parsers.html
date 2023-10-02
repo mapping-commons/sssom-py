@@ -81,12 +81,13 @@
 <span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">typing</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">minidom</span>
 <span class="kn">from</span> <span class="nn">xml.dom.minidom</span> <span class="kn">import</span> <span class="n">Document</span>
 
+<span class="kn">import</span> <span class="nn">curies</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -128,9 +129,9 @@
     <span class="n">SSSOMSchemaView</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">HINT</span><span class="p">,</span> <span class="n">ensure_converter</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">HINT</span><span class="p">,</span> <span class="n">_get_built_in_prefix_map</span><span class="p">,</span> <span class="n">ensure_converter</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">generate_mapping_set_id</span>
+<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">generate_mapping_set_id</span><span class="p">,</span> <span class="n">get_default_metadata</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">PREFIX_MAP_KEY</span><span class="p">,</span>
     <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
@@ -268,44 +269,36 @@
     <span class="n">stream</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span> <span class="o">=</span> <span class="n">_open_input</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">sep_new</span> <span class="o">=</span> <span class="n">_get_seperator_symbol_from_file_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">df</span><span class="p">,</span> <span class="n">sssom_metadata</span> <span class="o">=</span> <span class="n">_read_pandas_and_metadata</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">sep_new</span><span class="p">)</span>
-    <span class="c1"># if mapping_predicates:</span>
-    <span class="c1">#     # Filter rows based on presence of predicate_id list provided.</span>
-    <span class="c1">#     df = df[df[&quot;predicate_id&quot;].isin(mapping_predicates)]</span>
+    <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="c1"># If SSSOM external metadata is provided, merge it with the internal metadata</span>
+    <span class="c1"># The priority order for combining prefix maps are:</span>
+    <span class="c1">#  1. Built-in prefix map</span>
+    <span class="c1">#  2. Internal prefix map inside the document</span>
+    <span class="c1">#  3. Prefix map passed through this function inside the ``meta``</span>
+    <span class="c1">#  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">_get_built_in_prefix_map</span><span class="p">(),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{})),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{})),</span>
+            <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">sssom_metadata</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">meta</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;SSSOM internal metadata </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">sssom_metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;conflicts with provided (</span><span class="si">{</span><span class="n">meta</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">).&quot;</span>
-                        <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Externally provided metadata </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is added to metadata set.&quot;</span><span class="p">)</span>
-                    <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="n">meta</span> <span class="o">=</span> <span class="n">sssom_metadata</span>
+    <span class="c1"># The priority order for combining metadata is:</span>
+    <span class="c1">#  1. Metadata appearing in the SSSOM document</span>
+    <span class="c1">#  2. Metadata passed through ``meta`` to this function</span>
+    <span class="c1">#  3. Default metadata</span>
+    <span class="n">combine_meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">ChainMap</span><span class="p">(</span>
+            <span class="n">sssom_metadata</span><span class="p">,</span>
+            <span class="n">meta</span><span class="p">,</span>
+            <span class="n">get_default_metadata</span><span class="p">(),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">PREFIX_MAP_KEY</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">prefix_map</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">prefix_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">:</span>
-                            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;SSSOM prefix map </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">) &quot;</span>
-                                <span class="sa">f</span><span class="s2">&quot;conflicts with provided (</span><span class="si">{</span><span class="n">prefix_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">).&quot;</span>
-                            <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Externally provided metadata </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> is added to metadata set.&quot;</span>
-                        <span class="p">)</span>
-                        <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]</span>
-
-    <span class="n">meta_all</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
-    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">meta_all</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta_all</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">combine_meta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
