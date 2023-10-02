@@ -285,7 +285,7 @@ class TestParseExplicit(unittest.TestCase):
         #: example. SSSOM-py also adds the remaining builtin prefixes from
         #: :data:`sssom.context.SSSOM_BUILT_IN_PREFIXES`, which is reflected
         #: in the formulation of the test expectation below
-        explicit_prefixes ={"DOID", "semapv", "orcid", "skos", "UMLS"}
+        explicit_prefixes = {"DOID", "semapv", "orcid", "skos", "UMLS"}
         self.assertEqual(
             explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES),
             set(msdf.prefix_map),
