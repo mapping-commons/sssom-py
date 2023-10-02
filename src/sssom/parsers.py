@@ -144,7 +144,7 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
 
     try:
-        df = pd.read_csv(table_stream, sep=sep, dtype=str)
+        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
         df.fillna("", inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
