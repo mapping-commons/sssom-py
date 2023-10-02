@@ -281,8 +281,13 @@ class TestParseExplicit(unittest.TestCase):
         df = pd.DataFrame(rows, columns=columns)
         msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
         msdf.clean_prefix_map(strict=True)
+        #: This is a set of the prefixes that explicitly are used in this
+        #: example. SSSOM-py also adds the remaining builtin prefixes from
+        #: :data:`sssom.context.SSSOM_BUILT_IN_PREFIXES`, which is reflected
+        #: in the formulation of the test expectation below
+        explicit_prefixes ={"DOID", "semapv", "orcid", "skos", "UMLS"}
         self.assertEqual(
-            {"DOID", "semapv", "orcid", "skos", "UMLS"}.union(SSSOM_BUILT_IN_PREFIXES),
+            explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES),
             set(msdf.prefix_map),
         )
 
