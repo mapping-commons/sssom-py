@@ -156,62 +156,76 @@ class TestParse(unittest.TestCase):
             f"{self.alignmentxml_file} has the wrong number of mappings.",
         )
 
-    def test_parse_alignment_minidom2(self):
-        """Test parsing an alignment XML."""
-        alignment_api_xml = """<?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+    def test_parse_alignment_xml(self):
+        """Test parsing an alignment XML.
 
-<Alignment>
-<xml>yes</xml>
-<level>0</level>
-<type>??</type>
-<onto1>Optional.of(http://purl.obolibrary.org/obo/fbbt.owl)</onto1>
-<onto2>Optional.of(http://purl.obolibrary.org/obo/fbbt.owl)</onto2>
-<uri1>Optional.of(http://purl.obolibrary.org/obo/fbbt.owl)</uri1>
-<uri2>Optional.of(http://purl.obolibrary.org/obo/fbbt.owl)</uri2>
-<map>
-	<Cell>
-		<entity1 rdf:resource="http://purl.obolibrary.org/obo/FBbt_00004924"/>
-		<entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0006760"/>
-		<measure rdf:datatype="xsd:float">0.75</measure>
-		<relation>=</relation>
-	</Cell>
-</map>
-<map>
-	<Cell>
-		<entity1 rdf:resource="http://flybase.org/reports/FBgn0001981"/>
-		<entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0005815"/>
-		<measure rdf:datatype="xsd:float">0.5</measure>
-		<relation>=</relation>
-	</Cell>
-</map>
-</Alignment>
-</rdf:RDF>
-"""
+        This issue should fail because entity 1 of the second mapping
+        is not in prefix map.
+        """
+        alignment_api_xml = (
+            '<?xml version="1.0" encoding="utf-8"?>'
+            '<rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"'
+            ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"'
+            ' xmlns:xsd="http://www.w3.org/2001/XMLSchema#">'
+            "<Alignment>"
+            "<xml>yes</xml>"
+            "<level>0</level>"
+            "<type>??</type>"
+            "<onto1>http://purl.obolibrary.org/obo/fbbt.owl</onto1>"
+            "<onto2>http://purl.obolibrary.org/obo/wbbt.owl</onto2>"
+            "<uri1>http://purl.obolibrary.org/obo/fbbt.owl</uri1>"
+            "<uri2>http://purl.obolibrary.org/obo/wbbt.owl</uri2>"
+            "<map>"
+            "    <Cell>"
+            '        <entity1 rdf:resource="http://purl.obolibrary.org/obo/FBbt_00004924"/>'
+            '        <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0006760"/>'
+            '        <measure rdf:datatype="xsd:float">0.75</measure>'
+            "        <relation>=</relation>"
+            "    </Cell>"
+            "</map>"
+            "<map>"
+            "    <Cell>"
+            '        <entity1 rdf:resource="http://randomurlwithnochancetobeinprefixmap.org/ID_123"/>'
+            '        <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0005815"/>'
+            '        <measure rdf:datatype="xsd:float">0.5</measure>'
+            "        <relation>=</relation>"
+            "    </Cell>"
+            "</map>"
+            "</Alignment>"
+            "</rdf:RDF>"
+        )
         alignmentxml = minidom.parseString(alignment_api_xml)
+
+        prefix_map_without_prefix = {
+            "WBbt": "http://purl.obolibrary.org/obo/WBbt_",
+            "FBbt": "http://purl.obolibrary.org/obo/FBbt_",
+        }
+
+        prefix_map_with_prefix = {
+            "WBbt": "http://purl.obolibrary.org/obo/WBbt_",
+            "FBbt": "http://purl.obolibrary.org/obo/FBbt_",
+            "ID": "http://randomurlwithnochancetobeinprefixmap.org/ID_",
+        }
+
+        msdf_with_broken_prefixmap = from_alignment_minidom(
+            dom=alignmentxml,
+            prefix_map=prefix_map_without_prefix,
+        )
 
         msdf_with_prefixmap = from_alignment_minidom(
             dom=alignmentxml,
-            prefix_map=self.metadata.prefix_map,
+            prefix_map=prefix_map_with_prefix,
         )
 
         msdf_without_prefixmap = from_alignment_minidom(
             dom=alignmentxml,
         )
 
-        self.assertEqual(
-            len(msdf_with_prefixmap.df),
-            2,
-            f"{self.alignmentxml_file} has the wrong number of mappings.",
-        )
+        self.assertEqual(len(msdf_with_broken_prefixmap.df), 1)
 
-        self.assertEqual(
-            len(msdf_without_prefixmap.df),
-            1,
-            f"{self.alignmentxml_file} has the wrong number of mappings.",
-        )
+        self.assertEqual(len(msdf_with_prefixmap.df), 2)
+
+        self.assertEqual(len(msdf_without_prefixmap.df), 1)
 
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
