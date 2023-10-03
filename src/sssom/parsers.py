@@ -836,6 +836,7 @@ def _cell_element_values(cell_node, converter: Converter, mapping_predicates) ->
         logging.warning(
             f"One mapping in the mapping set is not well-formed, and therfore not included in the mapping set ({mdict}). Error: {e}"
         )
+    return None
 
 
 # The following methods dont really belong in the parser package..
