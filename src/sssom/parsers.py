@@ -828,12 +828,14 @@ def _cell_element_values(cell_node, converter: Converter, mapping_predicates) ->
                 logging.warning(e)
 
     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-
-    m = Mapping(**mdict)
-    if _is_valid_mapping(m):
-        return m
-    else:
-        return None
+    try:
+        m = Mapping(**mdict)
+        if _is_valid_mapping(m):
+            return m
+    except ValueError as e:
+        logging.warning(
+            f"One mapping in the mapping set is not well-formed, and therfore not included in the mapping set ({mdict}). Error: {e}"
+        )
 
 
 # The following methods dont really belong in the parser package..
