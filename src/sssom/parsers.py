@@ -6,12 +6,13 @@ import json
 import logging as _logging
 import re
 import typing
-from collections import Counter
+from collections import ChainMap, Counter
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
+import curies
 import numpy as np
 import pandas as pd
 import requests
@@ -53,9 +54,9 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import HINT, ensure_converter
+from .context import HINT, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap, generate_mapping_set_id
+from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -143,7 +144,7 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
 
     try:
-        df = pd.read_csv(table_stream, sep=sep, dtype=str)
+        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
         df.fillna("", inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
@@ -193,51 +194,36 @@ def parse_sssom_table(
     stream: io.StringIO = _open_input(file_path)
     sep_new = _get_seperator_symbol_from_file_path(file_path)
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
-    # if mapping_predicates:
-    #     # Filter rows based on presence of predicate_id list provided.
-    #     df = df[df["predicate_id"].isin(mapping_predicates)]
+    if meta is None:
+        meta = {}
 
-    # If SSSOM external metadata is provided, merge it with the internal metadata
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_prefix_map(sssom_metadata.pop(CURIE_MAP, {})),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
 
-    if sssom_metadata:
-        if meta:
-            for k, v in meta.items():
-                if k in sssom_metadata:
-                    if sssom_metadata[k] != v:
-                        logging.warning(
-                            f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
-                            f"conflicts with provided ({meta[k]})."
-                        )
-                else:
-                    logging.info(f"Externally provided metadata {k}:{v} is added to metadata set.")
-                    sssom_metadata[k] = v
-        meta = sssom_metadata
-        if CURIE_MAP in sssom_metadata:
-            if prefix_map:
-                # Convert sssom_metadata[CURIE_MAP] keys to lowercase for case-insensitive comparison
-                curie_map_lower = {k.lower(): k for k in sssom_metadata[CURIE_MAP].keys()}
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
+    combine_meta = dict(
+        ChainMap(
+            sssom_metadata,
+            meta,
+            get_default_metadata(),
+        )
+    )
 
-                for k, v in prefix_map.items():
-                    k_lower = k.lower()
-
-                    if k_lower in curie_map_lower:
-                        original_key = curie_map_lower[k_lower]
-                        if sssom_metadata[CURIE_MAP][original_key] != v:
-                            logging.warning(
-                                f"SSSOM prefix map {original_key} ({sssom_metadata[CURIE_MAP][original_key]}) "
-                                f"conflicts with provided ({v})."
-                            )
-                            sssom_metadata[CURIE_MAP][original_key] = v
-                    else:
-                        logging.info(
-                            f"Externally provided metadata {k}:{v} is added to metadata set."
-                        )
-                        sssom_metadata[CURIE_MAP][k] = v
-
-            prefix_map = sssom_metadata[CURIE_MAP]
-
-    meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    msdf = from_sssom_dataframe(df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata)
+    msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
     return msdf
 
 
@@ -271,32 +257,10 @@ def parse_sssom_json(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
+    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-
-    # Get prefix map from jsondoc and update metadata.
-    # This takes priority over default prefix_map in case of a tie.
-    jsondoc_prefix_map = jsondoc["@context"]
-
-    # Convert keys in both maps to lower case for comparison
-    if prefix_map:
-        lowercase_prefix_map = {k.lower(): v for k, v in prefix_map.items()}
-
-        # Iterate over jsondoc_prefix_map
-        for key, value in jsondoc_prefix_map.items():
-            # If lowercase key exists in lowercase_prefix_map, update the value and key
-            if key.lower() in lowercase_prefix_map:
-                # Remove the old key-value pair
-                if key in prefix_map:
-                    del prefix_map[key]
-                elif key.lower() in prefix_map:
-                    del prefix_map[key.lower()]
-                # Add the new key-value pair
-                prefix_map[key] = value
-
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
@@ -423,7 +387,7 @@ def parse_alignment_xml(
 
 def from_sssom_dataframe(
     df: pd.DataFrame,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
@@ -460,7 +424,7 @@ def from_sssom_dataframe(
 
 def from_sssom_rdf(
     g: Graph,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: HINT = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
@@ -877,9 +841,6 @@ def _cell_element_values(cell_node, converter: Converter, mapping_predicates) ->
 
 def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     """Convert a MappingSetDataFrame to a MappingSetDocument."""
-    if not msdf.prefix_map:
-        raise Exception("No valid prefix_map provided")
-
     mlist: List[Mapping] = []
     ms = _init_mapping_set(msdf.metadata)
     bad_attrs: Counter = Counter()

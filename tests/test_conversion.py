@@ -8,6 +8,7 @@ from typing import Dict
 
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 
 from sssom.parsers import get_parsing_function, parse_sssom_table, to_mapping_set_document
@@ -145,9 +146,10 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_data_frame_rows,
             f"The pandas data frame has less elements than the orginal one for {test.filename}",
         )
-        df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        # data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        data = parse_sssom_table(test.get_out_file("roundtrip.tsv")).df
+        path = test.get_out_file("roundtrip.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file=file)
+        data = parse_sssom_table(path).df
         self.assertEqual(
             len(data),
             test.ct_data_frame_rows,
@@ -232,7 +234,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             "skos": "http://www.w3.org/2004/02/skos/core#",
             "orcid": "https://orcid.org/",
         }
-        msdf = MappingSetDataFrame(df=df, metadata=metadata, prefix_map=prefix_map)
+        converter = Converter.from_prefix_map(prefix_map)
+        msdf = MappingSetDataFrame(df=df, metadata=metadata, converter=converter)
         results = to_ontoportal_json(msdf)
         self.assertIsInstance(results, list)
         self.assertEqual(1, len(results))
