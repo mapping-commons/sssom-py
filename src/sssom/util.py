@@ -164,6 +164,12 @@ class MappingSetDataFrame:
         df = sort_df_rows_columns(df)
         return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
 
+    def to_mapping_set_document(self) -> "MappingSetDocument":
+        """Get a mapping set document."""
+        from .parsers import to_mapping_set_document
+
+        return to_mapping_set_document(self)
+
     def clean_context(self) -> None:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
