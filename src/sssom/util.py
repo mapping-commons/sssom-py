@@ -1264,6 +1264,7 @@ def augment_metadata(
     :raises ValueError: If type of slot is neither str nor list.
     :return: MSDF with updated metadata.
     """
+    # TODO this now partially redundant of the MSDF built-in standardize functionality
     are_params_slots(meta)
     if not msdf.metadata:
         return msdf
