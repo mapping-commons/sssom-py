@@ -109,12 +109,12 @@ class MappingSetDataFrame:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
 
-    def standardize(self) -> None:
+    def standardize_references(self) -> None:
         """Standardize this MSDF's dataframe and metadata with respect to its converter."""
-        self._standardize_metadata()
-        self._standardize_df()
+        self._standardize_metadata_references()
+        self._standardize_df_references()
 
-    def _standardize_df(self) -> None:
+    def _standardize_df_references(self) -> None:
         """Standardize this MSDF's dataframe with respect to its converter."""
         func = partial(_standardize_curie_or_iri, converter=self.converter)
         for column, schema_data in _get_sssom_schema_object().dict["slots"].items():
@@ -124,7 +124,7 @@ class MappingSetDataFrame:
                 continue
             self.df[column] = self.df[column].map(func)
 
-    def _standardize_metadata(self) -> None:
+    def _standardize_metadata_references(self) -> None:
         """Standardize this MSDF's metadata with respect to its converter."""
         _standardize_metadata(converter=self.converter, metadata=self.metadata)
 
@@ -1184,7 +1184,7 @@ def reconcile_prefix_and_data(
     converter = curies.remap_curie_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
     converter = curies.rewire(converter, prefix_reconciliation["prefix_expansion_reconciliation"])
     msdf.converter = converter
-    msdf.standardize()
+    msdf.standardize_references()
     return msdf
 
 

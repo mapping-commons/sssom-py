@@ -209,7 +209,7 @@ class TestUtils(unittest.TestCase):
             ]
         )
         msdf = MappingSetDataFrame(df=df, converter=converter)
-        msdf._standardize_df()
+        msdf._standardize_df_references()
         self.assertEqual(
             ("new.a:1", "new.b:2", "new.c:3"),
             tuple(df.iloc[0]),
@@ -219,21 +219,21 @@ class TestUtils(unittest.TestCase):
         """Test standardizing leaves correct fields."""
         metadata = {"license": "https://example.org/test-license"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual({"license": "https://example.org/test-license"}, msdf.metadata)
 
     def test_standardize_metadata_upgrade_multivalued_single(self):
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual({"creator_id": ["orcid:0000-0003-4423-4370"]}, msdf.metadata)
 
     def test_standardize_metadata_upgrade_multivalued_multiple(self):
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370 | orcid:0000-0002-6601-2165"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual(
             {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
             msdf.metadata,
@@ -243,7 +243,7 @@ class TestUtils(unittest.TestCase):
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual(
             {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
             msdf.metadata,
@@ -254,32 +254,32 @@ class TestUtils(unittest.TestCase):
         metadata = {"creator_id": object()}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(TypeError):
-            msdf._standardize_metadata()
+            msdf._standardize_metadata_references()
 
     def test_standardize_error_non_list(self):
         """Test that a type error is raised when metadata is presented that should not be a list."""
         metadata = {"mapping_registry_id": ["https://example.org/r1", "https://example.org/r2"]}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(TypeError):
-            msdf._standardize_metadata()
+            msdf._standardize_metadata_references()
 
     def test_standardize_coerce_list(self):
         """Test that a metadata field that should not be a list gets coerced to a single element."""
         metadata = {"mapping_registry_id": ["https://example.org/r1"]}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual({"mapping_registry_id": "https://example.org/r1"}, msdf.metadata)
 
     def test_standardize_metdata_delete_empty(self):
         """Test that an element that should not be a list but is empty just gets deleted."""
         metadata = {"mapping_registry_id": []}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual({}, msdf.metadata)
 
     def test_standardize_metadata_single(self):
         """Test standardizing a single valued slot."""
         metadata = {"mapping_registry_id": "https://example.org/r1"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
-        msdf._standardize_metadata()
+        msdf._standardize_metadata_references()
         self.assertEqual({"mapping_registry_id": "https://example.org/r1"}, msdf.metadata)
