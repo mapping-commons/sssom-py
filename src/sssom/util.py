@@ -248,7 +248,7 @@ def _standardize_metadata(converter, metadata) -> None:
             elif not isinstance(value, list):
                 raise TypeError
             else:
-                metadata[key] = [_standardize_curie_or_iri(value, converter=converter)]
+                metadata[key] = [_standardize_curie_or_iri(v, converter=converter) for v in value]
         elif isinstance(value, list):
             if len(value) > 1:
                 raise TypeError(

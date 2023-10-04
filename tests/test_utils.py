@@ -222,14 +222,14 @@ class TestUtils(unittest.TestCase):
         msdf._standardize_metadata()
         self.assertEqual({"license": "https://example.org/test-license"}, msdf.metadata)
 
-    def test_standardize_upgrade_list_single(self):
+    def test_standardize_metadata_upgrade_multivalued_single(self):
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata()
         self.assertEqual({"creator_id": ["orcid:0000-0003-4423-4370"]}, msdf.metadata)
 
-    def test_standardize_upgrade_list_multiple(self):
+    def test_standardize_metadata_upgrade_multivalued_multiple(self):
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370 | orcid:0000-0002-6601-2165"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
@@ -238,6 +238,23 @@ class TestUtils(unittest.TestCase):
             {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
             msdf.metadata,
         )
+
+    def test_standardize_metadata_multivalued(self):
+        """Test standardizing upgrades a string to a list."""
+        metadata = {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata()
+        self.assertEqual(
+            {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
+            msdf.metadata,
+        )
+
+    def test_standardize_metadata_multivalued_type_error(self):
+        """Test raising on a  non-string, non-list object given to a multivalued slot."""
+        metadata = {"creator_id": object()}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        with self.assertRaises(TypeError):
+            msdf._standardize_metadata()
 
     def test_standardize_error_non_list(self):
         """Test that a type error is raised when metadata is presented that should not be a list."""
@@ -253,26 +270,16 @@ class TestUtils(unittest.TestCase):
         msdf._standardize_metadata()
         self.assertEqual({"mapping_registry_id": "https://example.org/r1"}, msdf.metadata)
 
-    def test_standardize_delete_empty(self):
+    def test_standardize_metdata_delete_empty(self):
         """Test that an element that should not be a list but is empty just gets deleted."""
         metadata = {"mapping_registry_id": []}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata()
         self.assertEqual({}, msdf.metadata)
 
-    def standardize_metadata(self):
-        """Test standardizing an MSDF's metadata."""
-        metadata = {
-            "license": "https://example.org/test-license",  # This will not get touched
-            "creator_id": "orcid:0000-0003-4423-4370",  # this will get upgraded to a list
-        }
-        converter = Converter(
-            [
-                Record(prefix="new.a", prefix_synonyms=["a"], uri_prefix="https://example.org/a/"),
-                Record(prefix="new.b", prefix_synonyms=["b"], uri_prefix="https://example.org/b/"),
-                Record(prefix="new.c", prefix_synonyms=["c"], uri_prefix="https://example.org/c/"),
-            ]
-        )
-        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter)
+    def test_standardize_metadata_single(self):
+        """Test standardizing a single valued slot."""
+        metadata = {"mapping_registry_id": "https://example.org/r1"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata()
-        self.assertEqual({}, msdf.metadata)
+        self.assertEqual({"mapping_registry_id": "https://example.org/r1"}, msdf.metadata)
