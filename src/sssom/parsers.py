@@ -934,6 +934,6 @@ def _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=False):
     mapping = _ensure_valid_mapping_from_dict(mdict)
     if mapping:
         if flip_superclass_assertions:
-            mlist.append(_flip_superclass_assertion(mdict))
+            mlist.append(_flip_superclass_assertion(mapping))
         else:
             mlist.append(mapping)
