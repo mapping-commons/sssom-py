@@ -7,6 +7,7 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
+from textwrap import dedent
 from xml.dom import minidom
 
 import numpy as np
@@ -155,6 +156,91 @@ class TestParse(unittest.TestCase):
             646,
             f"{self.alignmentxml_file} has the wrong number of mappings.",
         )
+
+    def test_parse_alignment_xml(self):
+        """Test parsing an alignment XML.
+
+        This issue should fail because entity 1 of the second mapping
+        is not in prefix map.
+        """
+        alignment_api_xml = dedent(
+            """\
+            <?xml version="1.0" encoding="utf-8"?>
+            <rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+                <Alignment>
+                    <xml>yes</xml>
+                    <level>0</level>
+                    <type>??</type>
+                    <onto1>http://purl.obolibrary.org/obo/fbbt.owl</onto1>
+                    <onto2>http://purl.obolibrary.org/obo/wbbt.owl</onto2>
+                    <uri1>http://purl.obolibrary.org/obo/fbbt.owl</uri1>
+                    <uri2>http://purl.obolibrary.org/obo/wbbt.owl</uri2>
+                    <map>
+                        <Cell>
+                            <entity1 rdf:resource="http://purl.obolibrary.org/obo/FBbt_00004924"/>
+                            <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0006760"/>
+                            <measure rdf:datatype="xsd:float">0.75</measure>
+                            <relation>=</relation>
+                        </Cell>
+                    </map>
+                    <map>
+                        <Cell>"
+                            <entity1 rdf:resource="http://randomurlwithnochancetobeinprefixmap.org/ID_123"/>
+                            <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0005815"/>
+                            <measure rdf:datatype="xsd:float">0.5</measure>
+                            <relation>=</relation>
+                        </Cell>
+                    </map>
+                </Alignment>
+            </rdf:RDF>
+            """
+        )
+        alignmentxml = minidom.parseString(alignment_api_xml)
+
+        prefix_map_without_prefix = {
+            "WBbt": "http://purl.obolibrary.org/obo/WBbt_",
+            "FBbt": "http://purl.obolibrary.org/obo/FBbt_",
+        }
+
+        prefix_map_with_prefix = {
+            "WBbt": "http://purl.obolibrary.org/obo/WBbt_",
+            "FBbt": "http://purl.obolibrary.org/obo/FBbt_",
+            "ID": "http://randomurlwithnochancetobeinprefixmap.org/ID_",
+        }
+
+        msdf_with_broken_prefixmap = from_alignment_minidom(
+            dom=alignmentxml,
+            prefix_map=prefix_map_without_prefix,
+        )
+        expected_row_values = [
+            "FBbt:00004924",
+            "skos:exactMatch",
+            "WBbt:0006760",
+            "semapv:UnspecifiedMatching",
+            0.75,
+        ]
+        self.assertEqual(expected_row_values, msdf_with_broken_prefixmap.df.iloc[0].tolist())
+
+        msdf_with_prefixmap = from_alignment_minidom(
+            dom=alignmentxml,
+            prefix_map=prefix_map_with_prefix,
+        )
+        expected_row_values2 = [
+            "ID:123",
+            "skos:exactMatch",
+            "WBbt:0005815",
+            "semapv:UnspecifiedMatching",
+            0.5,
+        ]
+        self.assertEqual(expected_row_values, msdf_with_prefixmap.df.iloc[0].tolist())
+        self.assertEqual(expected_row_values2, msdf_with_prefixmap.df.iloc[1].tolist())
+
+        msdf_without_prefixmap = from_alignment_minidom(
+            dom=alignmentxml,
+        )
+        self.assertEqual(expected_row_values, msdf_without_prefixmap.df.iloc[0].tolist())
 
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
