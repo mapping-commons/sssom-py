@@ -7,7 +7,7 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from functools import reduce
+from functools import lru_cache, reduce
 from pathlib import Path
 from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
@@ -1256,6 +1256,7 @@ def are_params_slots(params: dict) -> bool:
     return True
 
 
+@lru_cache(1)
 def _get_sssom_schema_object() -> SSSOMSchemaView:
     sssom_sv_object = (
         SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
