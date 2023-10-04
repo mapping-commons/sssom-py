@@ -7,7 +7,7 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from functools import reduce
+from functools import partial, reduce
 from pathlib import Path
 from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
@@ -109,21 +109,6 @@ class MappingSetDataFrame:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
 
-    def _standardize_curie_or_iri(self, curie_or_iri: str) -> str:
-        """Standardize a CURIE or IRI, returning the original if not possible.
-
-        :param curie_or_iri: Either a string representing a CURIE or an IRI
-        :returns:
-            - If the string represents an IRI, tries to standardize it. If not possible, returns the original value
-            - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
-            - Otherwise, return the original value
-        """
-        if is_iri(curie_or_iri):
-            return self.converter.standardize_uri(curie_or_iri) or curie_or_iri
-        if is_curie(curie_or_iri):
-            return self.converter.standardize_curie(curie_or_iri) or curie_or_iri
-        return curie_or_iri
-
     def standardize(self) -> None:
         """Standardize this MSDF's dataframe and metadata with respect to its converter."""
         self._standardize_metadata()
@@ -131,16 +116,17 @@ class MappingSetDataFrame:
 
     def _standardize_df(self) -> None:
         """Standardize this MSDF's dataframe with respect to its converter."""
-        for column, values in _get_sssom_schema_object().dict["slots"].items():
-            if values["range"] != "EntityReference":
+        func = partial(_standardize_curie_or_iri, converter=self.converter)
+        for column, schema_data in _get_sssom_schema_object().dict["slots"].items():
+            if schema_data["range"] != "EntityReference":
                 continue
             if column not in self.df.columns:
                 continue
-            self.df[column] = self.df[column].map(self._standardize_curie_or_iri)
+            self.df[column] = self.df[column].map(func)
 
     def _standardize_metadata(self) -> None:
         """Standardize this MSDF's metadata with respect to its converter."""
-        raise NotImplementedError
+        _standardize_metadata(converter=self.converter, metadata=self.metadata)
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -225,6 +211,54 @@ class MappingSetDataFrame:
 
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
+
+
+def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
+    """Standardize a CURIE or IRI, returning the original if not possible.
+
+    :param curie_or_iri: Either a string representing a CURIE or an IRI
+    :returns:
+        - If the string represents an IRI, tries to standardize it. If not possible, returns the original value
+        - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
+        - Otherwise, return the original value
+    """
+    if is_iri(curie_or_iri):
+        return converter.standardize_uri(curie_or_iri) or curie_or_iri
+    if is_curie(curie_or_iri):
+        return converter.standardize_curie(curie_or_iri) or curie_or_iri
+    return curie_or_iri
+
+
+def _standardize_metadata(converter, metadata) -> None:
+    schema_object = _get_sssom_schema_object()
+    for key, schema_data in schema_object.dict["slots"].items():
+        if schema_data["range"] != "EntityReference":
+            continue
+        value = metadata.pop(key, None)
+        if not value:
+            # this not only skips missing entries, but also
+            # removes empty strings and empty lists
+            continue
+        if key in schema_object.multivalued_slots:
+            if isinstance(value, str):
+                metadata[key] = [
+                    _standardize_curie_or_iri(v.strip(), converter=converter)
+                    for v in value.split("|")
+                ]
+            elif not isinstance(value, list):
+                raise TypeError
+            else:
+                metadata[key] = [_standardize_curie_or_iri(value, converter=converter)]
+        elif isinstance(value, list):
+            if len(value) > 1:
+                raise TypeError(
+                    f"value for {key} should have been a single value, but got a list: {value}"
+                )
+            # note that the scenario len(value) == 0 is already
+            # taken care ofby the "if not value:" line above
+            metadata[key] = _standardize_curie_or_iri(value[0], converter=converter)
+        else:
+            metadata[key] = _standardize_curie_or_iri(value, converter=converter)
 
 
 @dataclass

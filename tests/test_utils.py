@@ -197,7 +197,7 @@ class TestUtils(unittest.TestCase):
         )
 
     def test_standardize_df(self):
-        """Test standardizing a dataframe."""
+        """Test standardizing a MSDF's dataframe."""
         rows = [("a:1", "b:2", "c:3")]
         columns = ["subject_id", "predicate_id", "object_id"]
         df = pd.DataFrame(rows, columns=columns)
@@ -214,3 +214,65 @@ class TestUtils(unittest.TestCase):
             ("new.a:1", "new.b:2", "new.c:3"),
             tuple(df.iloc[0]),
         )
+
+    def test_standardize_idempotent(self):
+        """Test standardizing leaves correct fields."""
+        metadata = {"license": "https://example.org/test-license"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata()
+        self.assertEqual({"license": "https://example.org/test-license"}, msdf.metadata)
+
+    def test_standardize_upgrade_list_single(self):
+        """Test standardizing upgrades a string to a list."""
+        metadata = {"creator_id": "orcid:0000-0003-4423-4370"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata()
+        self.assertEqual({"creator_id": ["orcid:0000-0003-4423-4370"]}, msdf.metadata)
+
+    def test_standardize_upgrade_list_multiple(self):
+        """Test standardizing upgrades a string to a list."""
+        metadata = {"creator_id": "orcid:0000-0003-4423-4370 | orcid:0000-0002-6601-2165"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata()
+        self.assertEqual(
+            {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
+            msdf.metadata,
+        )
+
+    def test_standardize_error_non_list(self):
+        """Test that a type error is raised when metadata is presented that should not be a list."""
+        metadata = {"mapping_registry_id": ["https://example.org/r1", "https://example.org/r2"]}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        with self.assertRaises(TypeError):
+            msdf._standardize_metadata()
+
+    def test_standardize_coerce_list(self):
+        """Test that a metadata field that should not be a list gets coerced to a single element."""
+        metadata = {"mapping_registry_id": ["https://example.org/r1"]}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata()
+        self.assertEqual({"mapping_registry_id": "https://example.org/r1"}, msdf.metadata)
+
+    def test_standardize_delete_empty(self):
+        """Test that an element that should not be a list but is empty just gets deleted."""
+        metadata = {"mapping_registry_id": []}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata()
+        self.assertEqual({}, msdf.metadata)
+
+    def standardize_metadata(self):
+        """Test standardizing an MSDF's metadata."""
+        metadata = {
+            "license": "https://example.org/test-license",  # This will not get touched
+            "creator_id": "orcid:0000-0003-4423-4370",  # this will get upgraded to a list
+        }
+        converter = Converter(
+            [
+                Record(prefix="new.a", prefix_synonyms=["a"], uri_prefix="https://example.org/a/"),
+                Record(prefix="new.b", prefix_synonyms=["b"], uri_prefix="https://example.org/b/"),
+                Record(prefix="new.c", prefix_synonyms=["c"], uri_prefix="https://example.org/c/"),
+            ]
+        )
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter)
+        msdf._standardize_metadata()
+        self.assertEqual({}, msdf.metadata)
