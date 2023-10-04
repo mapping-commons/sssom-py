@@ -109,6 +109,23 @@ class MappingSetDataFrame:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
 
+    def _standardize_curie_or_iri(self, curie_or_iri: str) -> str:
+        """Standardize a CURIE or IRI, returning the original if not possible."""
+        if is_iri(curie_or_iri):
+            return self.converter.standardize_uri(curie_or_iri) or curie_or_iri
+        if is_curie(curie_or_iri):
+            return self.converter.standardize_curie(curie_or_iri) or curie_or_iri
+        return curie_or_iri
+
+    def standardize(self) -> None:
+        """Standardize this MSDF."""
+        for column, values in _get_sssom_schema_object().dict["slots"].items():
+            if values["range"] != "EntityReference":
+                continue
+            if column not in self.df.columns:
+                continue
+            self.df[column] = self.df[column].map(self._standardize_curie_or_iri)
+
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
 
@@ -370,6 +387,16 @@ def get_row_based_on_hierarchy(df: pd.DataFrame):
         hierarchical_df = df[df[PREDICATE_ID] == pred]
         if not hierarchical_df.empty:
             return hierarchical_df
+
+
+def rewire_sssom_table(df_rewire: pd.DataFrame, df_mapping: pd.DataFrame):
+    # 1. Standardise subject and object id columns using
+    # https://curies.readthedocs.io/en/latest/api/curies.Converter.html#curies.Converter.pd_standardize_curie
+    # 2. Perform the rewiring
+    # 3. Store some metadata in the "other" field?
+    # 4. Return back out
+    result_df = ...
+    return result_df
 
 
 def assign_default_confidence(
@@ -1116,22 +1143,8 @@ def reconcile_prefix_and_data(
     converter = msdf.converter
     converter = curies.remap_curie_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
     converter = curies.rewire(converter, prefix_reconciliation["prefix_expansion_reconciliation"])
-
-    # TODO make this standardization code directly part of msdf after
-    #  switching to native converter
-    def _upgrade(curie_or_iri: str) -> str:
-        if not is_iri(curie_or_iri) and is_curie(curie_or_iri):
-            return converter.standardize_curie(curie_or_iri) or curie_or_iri
-        return curie_or_iri
-
-    for column, values in _get_sssom_schema_object().dict["slots"].items():
-        if values["range"] != "EntityReference":
-            continue
-        if column not in msdf.df.columns:
-            continue
-        msdf.df[column] = msdf.df[column].map(_upgrade)
-
     msdf.converter = converter
+    msdf.standardize()
     return msdf
 
 
