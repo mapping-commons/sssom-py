@@ -221,7 +221,7 @@ class TestParse(unittest.TestCase):
             "semapv:UnspecifiedMatching",
             0.75,
         ]
-        self.assertEqual(msdf_with_broken_prefixmap.df.iloc[0].tolist(), expected_row_values)
+        self.assertEqual(expected_row_values, msdf_with_broken_prefixmap.df.iloc[0].tolist())
 
         msdf_with_prefixmap = from_alignment_minidom(
             dom=alignmentxml,
@@ -234,13 +234,13 @@ class TestParse(unittest.TestCase):
             "semapv:UnspecifiedMatching",
             0.5,
         ]
-        self.assertEqual(msdf_with_prefixmap.df.iloc[0].tolist(), expected_row_values)
-        self.assertEqual(msdf_with_prefixmap.df.iloc[1].tolist(), expected_row_values2)
+        self.assertEqual(expected_row_values, msdf_with_prefixmap.df.iloc[0].tolist())
+        self.assertEqual(expected_row_values2, msdf_with_prefixmap.df.iloc[1].tolist())
 
         msdf_without_prefixmap = from_alignment_minidom(
             dom=alignmentxml,
         )
-        self.assertEqual(msdf_without_prefixmap.df.iloc[0].tolist(), expected_row_values)
+        self.assertEqual(expected_row_values, msdf_without_prefixmap.df.iloc[0].tolist())
 
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
