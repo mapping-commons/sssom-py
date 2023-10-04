@@ -117,11 +117,11 @@ class MappingSetDataFrame:
         # This combines multiple pieces of metadata in the following priority order:
         #  1. The explicitly given metadata passed to from_mappings()
         #  2. The default metadata (which includes a dummy license and mapping set URI)
-        metadata = ChainMap(
+        chained_metadata = ChainMap(
             metadata or {},
             get_default_metadata(),
         )
-        mapping_set = MappingSet(mappings=mappings, **metadata)
+        mapping_set = MappingSet(mappings=mappings, **chained_metadata)
         return cls.from_mapping_set(mapping_set=mapping_set, converter=converter)
 
     @classmethod
