@@ -130,30 +130,31 @@ class MappingSetDataFrame:
         :returns: A mapping set dataframe
         """
         doc = MappingSetDocument(converter=ensure_converter(converter), mapping_set=mapping_set)
-        return cls.from_mapping_set_doc(doc)
+        return cls.from_mapping_set_document(doc)
 
     @classmethod
-    def from_mapping_set_doc(cls, doc: MappingSetDocument) -> "MappingSetDataFrame":
+    def from_mapping_set_document(cls, doc: MappingSetDocument) -> "MappingSetDataFrame":
         """Instantiate from a mapping set document."""
         if doc.mapping_set.mappings is None:
             return cls(df=pd.DataFrame(), converter=doc.converter)
 
-        slots_with_double_as_range = [
-            s
-            for s in _get_sssom_schema_object().dict["slots"].keys()
-            if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
-        ]
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = extract_global_metadata(doc)
         meta.pop(PREFIX_MAP_KEY, None)
 
-        # The following 3 lines are to remove columns where all values are blank.
+        # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
-        non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
 
+        slots_with_double_as_range = {
+            slot
+            for slot, slot_metadata in _get_sssom_schema_object().dict["slots"].items()
+            if slot_metadata["range"] == "double"
+        }
+        non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
         non_double_cols = non_double_cols.replace(np.nan, "")
         df[non_double_cols.columns] = non_double_cols
+
         df = sort_df_rows_columns(df)
         return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
 
@@ -916,6 +917,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     :param msdoc: MappingSetDocument object
     :return: Dictionary containing metadata
     """
+    # TODO mark as private
     meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
     for key in [
@@ -937,7 +939,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     :param doc: MappingSetDocument object
     :return: MappingSetDataFrame object
     """
-    return MappingSetDataFrame.from_mapping_set_doc(doc)
+    return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
 def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
