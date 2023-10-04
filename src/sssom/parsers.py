@@ -729,9 +729,8 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
 def _flip_superclass_assertion(mapping: Mapping) -> Mapping:
     if mapping.predicate_id != "sssom:superClassOf":
         return mapping
-    else:
-        mapping.predicate_id = "rdfs:subClassOf"
-        return _swap_object_subject(mapping)
+    mapping.predicate_id = "rdfs:subClassOf"
+    return _swap_object_subject(mapping)
 
 
 def _swap_object_subject(mapping: Mapping) -> Mapping:
