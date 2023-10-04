@@ -124,9 +124,11 @@ class MappingSetDataFrame:
                 continue
             self.df[column] = self.df[column].map(func)
 
-    def _standardize_metadata_references(self) -> None:
+    def _standardize_metadata_references(self, *, raise_on_invalid: bool = False) -> None:
         """Standardize this MSDF's metadata with respect to its converter."""
-        _standardize_metadata(converter=self.converter, metadata=self.metadata)
+        _standardize_metadata(
+            converter=self.converter, metadata=self.metadata, raise_on_invalid=raise_on_invalid
+        )
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -229,33 +231,48 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
     return curie_or_iri
 
 
-def _standardize_metadata(converter, metadata) -> None:
+def _standardize_metadata(
+    converter: Converter, metadata: Dict[str, Any], *, raise_on_invalid: bool = False
+) -> None:
     schema_object = _get_sssom_schema_object()
-    for key, schema_data in schema_object.dict["slots"].items():
-        if schema_data["range"] != "EntityReference":
+    slots_dict = schema_object.dict["slots"]
+
+    # remove all falsy values. This has to be
+    # done this way and not by making a new object
+    # since we work in place
+    for k, v in list(metadata.items()):
+        if not k or not v:
+            del metadata[k]
+
+    for key, value in metadata.items():
+        slot_metadata = slots_dict.get(key)
+        if slot_metadata is None:
+            text = f"invalid metadata key {key}"
+            if raise_on_invalid:
+                raise ValueError(text)
+            logging.warning(text)
             continue
-        value = metadata.pop(key, None)
-        if not value:
-            # this not only skips missing entries, but also
-            # removes empty strings and empty lists
+        if slot_metadata["range"] != "EntityReference":
             continue
-        if key in schema_object.multivalued_slots:
+        if is_multivalued_slot(key):
             if isinstance(value, str):
                 metadata[key] = [
                     _standardize_curie_or_iri(v.strip(), converter=converter)
                     for v in value.split("|")
                 ]
-            elif not isinstance(value, list):
-                raise TypeError
-            else:
+            elif isinstance(value, list):
                 metadata[key] = [_standardize_curie_or_iri(v, converter=converter) for v in value]
+            else:
+                raise TypeError(f"{key} requires either a string or a list, got: {value}")
         elif isinstance(value, list):
+            print("here")
             if len(value) > 1:
                 raise TypeError(
                     f"value for {key} should have been a single value, but got a list: {value}"
                 )
+            print("also here")
             # note that the scenario len(value) == 0 is already
-            # taken care ofby the "if not value:" line above
+            # taken care of by the "if not value:" line above
             metadata[key] = _standardize_curie_or_iri(value[0], converter=converter)
         else:
             metadata[key] = _standardize_curie_or_iri(value, converter=converter)
