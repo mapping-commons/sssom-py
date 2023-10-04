@@ -2,8 +2,9 @@
 
 import unittest
 
+import pandas as pd
 import yaml
-from curies import Converter
+from curies import Converter, Record
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
 from sssom.context import SSSOM_BUILT_IN_PREFIXES
@@ -193,4 +194,23 @@ class TestUtils(unittest.TestCase):
                 "orcid",
             }.union(SSSOM_BUILT_IN_PREFIXES),
             prefixes,
+        )
+
+    def test_standardize_df(self):
+        """Test standardizing a dataframe."""
+        rows = [("a:1", "b:2", "c:3")]
+        columns = ["subject_id", "predicate_id", "object_id"]
+        df = pd.DataFrame(rows, columns=columns)
+        converter = Converter(
+            [
+                Record(prefix="new.a", prefix_synonyms=["a"], uri_prefix="https://example.org/a/"),
+                Record(prefix="new.b", prefix_synonyms=["b"], uri_prefix="https://example.org/b/"),
+                Record(prefix="new.c", prefix_synonyms=["c"], uri_prefix="https://example.org/c/"),
+            ]
+        )
+        msdf = MappingSetDataFrame(df=df, converter=converter)
+        msdf._standardize_df()
+        self.assertEqual(
+            ("new.a:1", "new.b:2", "new.c:3"),
+            tuple(df.iloc[0]),
         )
