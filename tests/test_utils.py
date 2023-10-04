@@ -301,4 +301,4 @@ class TestUtils(unittest.TestCase):
         # Test the logs actually get through
         with self.assertLogs("sssom.util") as cm:
             msdf._standardize_metadata_references()
-            self.assertIn("invalid metadata key xxxx", cm.output)
+            self.assertIn("invalid metadata key xxxx", "".join(cm.output))
