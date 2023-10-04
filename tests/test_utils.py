@@ -332,10 +332,14 @@ class TestUtils(unittest.TestCase):
         msd = msdf.to_mapping_set_document()
 
         new_msdf = MappingSetDataFrame.from_mappings(
-            mappings=msd.mapping_set.mappings, converter=msd.converter, metadata={}
+            mappings=msd.mapping_set.mappings,
+            converter=msd.converter,
+            metadata={
+                "license": msdf.metadata["license"],
+                "mapping_set_id": msdf.metadata["mapping_set_id"],
+            },
         )
 
         self.assertEqual(1, len(new_msdf.df.index))
         self.assertEqual(rows[0], tuple(msdf.df.iloc[0]))
-
-        # TODO check metadata¬
+        self.assertEqual(new_msdf.metadata, msdf.metadata)
