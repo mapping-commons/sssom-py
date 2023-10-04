@@ -779,11 +779,6 @@ def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
         return meta
     return {}
 
-
-def _is_valid_mapping(m: Mapping) -> bool:
-    return bool(m.predicate_id and m.object_id and m.subject_id)
-
-
 def _set_metadata_in_mapping_set(
     mapping_set: MappingSet, metadata: Optional[MetadataType] = None
 ) -> None:
