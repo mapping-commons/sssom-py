@@ -59,7 +59,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map
+from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map, get_converter
 from .sssom_document import MappingSetDocument
 from .typehints import MetadataType, PrefixMap, get_default_metadata
 
@@ -82,7 +82,7 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: pd.DataFrame
-    converter: Converter
+    converter: Converter = field(default_factory=get_converter)
     metadata: MetadataType = field(default_factory=get_default_metadata)
 
     @property
