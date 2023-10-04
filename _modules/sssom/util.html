@@ -82,7 +82,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">DefaultDict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
@@ -184,6 +184,27 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the context.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">_get_built_in_prefix_map</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">])</span></div>
 
+<div class="viewcode-block" id="MappingSetDataFrame.standardize_references"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.standardize_references">[docs]</a>    <span class="k">def</span> <span class="nf">standardize_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardize this MSDF&#39;s dataframe and metadata with respect to its converter.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_metadata_references</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_df_references</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_standardize_df_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardize this MSDF&#39;s dataframe with respect to its converter.&quot;&quot;&quot;</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_standardize_curie_or_iri</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">schema_data</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">schema_data</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;EntityReference&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_standardize_metadata_references</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardize this MSDF&#39;s metadata with respect to its converter.&quot;&quot;&quot;</span>
+        <span class="n">_standardize_metadata</span><span class="p">(</span>
+            <span class="n">converter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="o">=</span><span class="n">raise_on_invalid</span>
+        <span class="p">)</span>
+
 <div class="viewcode-block" id="MappingSetDataFrame.merge"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two MappingSetDataframes.</span>
 
@@ -267,6 +288,69 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;_2&quot;</span><span class="p">)))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clean_prefix_map</span><span class="p">()</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardize a CURIE or IRI, returning the original if not possible.</span>
+
+<span class="sd">    :param curie_or_iri: Either a string representing a CURIE or an IRI</span>
+<span class="sd">    :returns:</span>
+<span class="sd">        - If the string represents an IRI, tries to standardize it. If not possible, returns the original value</span>
+<span class="sd">        - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value</span>
+<span class="sd">        - Otherwise, return the original value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_iri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_uri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">)</span> <span class="ow">or</span> <span class="n">curie_or_iri</span>
+    <span class="k">if</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">)</span> <span class="ow">or</span> <span class="n">curie_or_iri</span>
+    <span class="k">return</span> <span class="n">curie_or_iri</span>
+
+
+<span class="k">def</span> <span class="nf">_standardize_metadata</span><span class="p">(</span>
+    <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">schema_object</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span>
+    <span class="n">slots_dict</span> <span class="o">=</span> <span class="n">schema_object</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
+
+    <span class="c1"># remove all falsy values. This has to be</span>
+    <span class="c1"># done this way and not by making a new object</span>
+    <span class="c1"># since we work in place</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">slot_metadata</span> <span class="o">=</span> <span class="n">slots_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slot_metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;invalid metadata key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">raise_on_invalid</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">slot_metadata</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;EntityReference&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">is_multivalued_slot</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> requires either a string or a list, got: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;here&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;value for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> should have been a single value, but got a list: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;also here&quot;</span><span class="p">)</span>
+            <span class="c1"># note that the scenario len(value) == 0 is already</span>
+            <span class="c1"># taken care of by the &quot;if not value:&quot; line above</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="EntityPair"><a class="viewcode-back" href="../../sssom.html#sssom.util.EntityPair">[docs]</a><span class="nd">@dataclass</span>
@@ -1191,22 +1275,8 @@
     <span class="n">converter</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">remap_curie_prefixes</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_synonyms&quot;</span><span class="p">])</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">rewire</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">prefix_reconciliation</span><span class="p">[</span><span class="s2">&quot;prefix_expansion_reconciliation&quot;</span><span class="p">])</span>
-
-    <span class="c1"># TODO make this standardization code directly part of msdf after</span>
-    <span class="c1">#  switching to native converter</span>
-    <span class="k">def</span> <span class="nf">_upgrade</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_iri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">)</span> <span class="ow">or</span> <span class="n">curie_or_iri</span>
-        <span class="k">return</span> <span class="n">curie_or_iri</span>
-
-    <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;EntityReference&quot;</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_upgrade</span><span class="p">)</span>
-
     <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">converter</span>
+    <span class="n">msdf</span><span class="o">.</span><span class="n">standardize_references</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
@@ -1286,6 +1356,7 @@
 <span class="sd">    :raises ValueError: If type of slot is neither str nor list.</span>
 <span class="sd">    :return: MSDF with updated metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO this now partially redundant of the MSDF built-in standardize functionality</span>
     <span class="n">are_params_slots</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">msdf</span>
