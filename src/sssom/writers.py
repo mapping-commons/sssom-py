@@ -441,7 +441,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    data = JSONDumper().dumps(doc.mapping_set, contexts=doc.prefix_map)
+    data = JSONDumper().dumps(doc.mapping_set, contexts={"@context": doc.prefix_map})
     json_obj = json.loads(data)
     return json_obj
 
