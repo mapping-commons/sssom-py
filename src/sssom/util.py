@@ -1155,6 +1155,8 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
     :raises ValidationError: If slot is wrong.
     :return:  List of all prefixes.
     """
+    # FIXME investigate the logic for this function -
+    #  some of the falsy checks don't make sense
     if not msdf.metadata or msdf.df.empty:
         return set()
 
