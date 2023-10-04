@@ -7,6 +7,7 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
+from textwrap import dedent
 from xml.dom import minidom
 
 import numpy as np
@@ -162,37 +163,39 @@ class TestParse(unittest.TestCase):
         This issue should fail because entity 1 of the second mapping
         is not in prefix map.
         """
-        alignment_api_xml = (
-            '<?xml version="1.0" encoding="utf-8"?>'
-            '<rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"'
-            ' xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"'
-            ' xmlns:xsd="http://www.w3.org/2001/XMLSchema#">'
-            "<Alignment>"
-            "<xml>yes</xml>"
-            "<level>0</level>"
-            "<type>??</type>"
-            "<onto1>http://purl.obolibrary.org/obo/fbbt.owl</onto1>"
-            "<onto2>http://purl.obolibrary.org/obo/wbbt.owl</onto2>"
-            "<uri1>http://purl.obolibrary.org/obo/fbbt.owl</uri1>"
-            "<uri2>http://purl.obolibrary.org/obo/wbbt.owl</uri2>"
-            "<map>"
-            "    <Cell>"
-            '        <entity1 rdf:resource="http://purl.obolibrary.org/obo/FBbt_00004924"/>'
-            '        <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0006760"/>'
-            '        <measure rdf:datatype="xsd:float">0.75</measure>'
-            "        <relation>=</relation>"
-            "    </Cell>"
-            "</map>"
-            "<map>"
-            "    <Cell>"
-            '        <entity1 rdf:resource="http://randomurlwithnochancetobeinprefixmap.org/ID_123"/>'
-            '        <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0005815"/>'
-            '        <measure rdf:datatype="xsd:float">0.5</measure>'
-            "        <relation>=</relation>"
-            "    </Cell>"
-            "</map>"
-            "</Alignment>"
-            "</rdf:RDF>"
+        alignment_api_xml = dedent(
+            """\
+            <?xml version="1.0" encoding="utf-8"?>
+            <rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+                <Alignment>
+                    <xml>yes</xml>
+                    <level>0</level>
+                    <type>??</type>
+                    <onto1>http://purl.obolibrary.org/obo/fbbt.owl</onto1>
+                    <onto2>http://purl.obolibrary.org/obo/wbbt.owl</onto2>
+                    <uri1>http://purl.obolibrary.org/obo/fbbt.owl</uri1>
+                    <uri2>http://purl.obolibrary.org/obo/wbbt.owl</uri2>
+                    <map>
+                        <Cell>
+                            <entity1 rdf:resource="http://purl.obolibrary.org/obo/FBbt_00004924"/>
+                            <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0006760"/>
+                            <measure rdf:datatype="xsd:float">0.75</measure>
+                            <relation>=</relation>
+                        </Cell>
+                    </map>
+                    <map>
+                        <Cell>"
+                            <entity1 rdf:resource="http://randomurlwithnochancetobeinprefixmap.org/ID_123"/>
+                            <entity2 rdf:resource="http://purl.obolibrary.org/obo/WBbt_0005815"/>
+                            <measure rdf:datatype="xsd:float">0.5</measure>
+                            <relation>=</relation>
+                        </Cell>
+                    </map>
+                </Alignment>
+            </rdf:RDF>
+            """
         )
         alignmentxml = minidom.parseString(alignment_api_xml)
 
