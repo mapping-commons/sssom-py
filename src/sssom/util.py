@@ -7,7 +7,7 @@ import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-from functools import reduce
+from functools import lru_cache, partial, reduce
 from pathlib import Path
 from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
@@ -109,6 +109,27 @@ class MappingSetDataFrame:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
 
+    def standardize_references(self) -> None:
+        """Standardize this MSDF's dataframe and metadata with respect to its converter."""
+        self._standardize_metadata_references()
+        self._standardize_df_references()
+
+    def _standardize_df_references(self) -> None:
+        """Standardize this MSDF's dataframe with respect to its converter."""
+        func = partial(_standardize_curie_or_iri, converter=self.converter)
+        for column, schema_data in _get_sssom_schema_object().dict["slots"].items():
+            if schema_data["range"] != "EntityReference":
+                continue
+            if column not in self.df.columns:
+                continue
+            self.df[column] = self.df[column].map(func)
+
+    def _standardize_metadata_references(self, *, raise_on_invalid: bool = False) -> None:
+        """Standardize this MSDF's metadata with respect to its converter."""
+        _standardize_metadata(
+            converter=self.converter, metadata=self.metadata, raise_on_invalid=raise_on_invalid
+        )
+
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
 
@@ -186,6 +207,69 @@ class MappingSetDataFrame:
 
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
+
+
+def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
+    """Standardize a CURIE or IRI, returning the original if not possible.
+
+    :param curie_or_iri: Either a string representing a CURIE or an IRI
+    :returns:
+        - If the string represents an IRI, tries to standardize it. If not possible, returns the original value
+        - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
+        - Otherwise, return the original value
+    """
+    if is_iri(curie_or_iri):
+        return converter.standardize_uri(curie_or_iri) or curie_or_iri
+    if is_curie(curie_or_iri):
+        return converter.standardize_curie(curie_or_iri) or curie_or_iri
+    return curie_or_iri
+
+
+def _standardize_metadata(
+    converter: Converter, metadata: Dict[str, Any], *, raise_on_invalid: bool = False
+) -> None:
+    schema_object = _get_sssom_schema_object()
+    slots_dict = schema_object.dict["slots"]
+
+    # remove all falsy values. This has to be
+    # done this way and not by making a new object
+    # since we work in place
+    for k, v in list(metadata.items()):
+        if not k or not v:
+            del metadata[k]
+
+    for key, value in metadata.items():
+        slot_metadata = slots_dict.get(key)
+        if slot_metadata is None:
+            text = f"invalid metadata key {key}"
+            if raise_on_invalid:
+                raise ValueError(text)
+            logging.warning(text)
+            continue
+        if slot_metadata["range"] != "EntityReference":
+            continue
+        if is_multivalued_slot(key):
+            if isinstance(value, str):
+                metadata[key] = [
+                    _standardize_curie_or_iri(v.strip(), converter=converter)
+                    for v in value.split("|")
+                ]
+            elif isinstance(value, list):
+                metadata[key] = [_standardize_curie_or_iri(v, converter=converter) for v in value]
+            else:
+                raise TypeError(f"{key} requires either a string or a list, got: {value}")
+        elif isinstance(value, list):
+            print("here")
+            if len(value) > 1:
+                raise TypeError(
+                    f"value for {key} should have been a single value, but got a list: {value}"
+                )
+            print("also here")
+            # note that the scenario len(value) == 0 is already
+            # taken care of by the "if not value:" line above
+            metadata[key] = _standardize_curie_or_iri(value[0], converter=converter)
+        else:
+            metadata[key] = _standardize_curie_or_iri(value, converter=converter)
 
 
 @dataclass
@@ -1107,22 +1191,8 @@ def reconcile_prefix_and_data(
     converter = msdf.converter
     converter = curies.remap_curie_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
     converter = curies.rewire(converter, prefix_reconciliation["prefix_expansion_reconciliation"])
-
-    # TODO make this standardization code directly part of msdf after
-    #  switching to native converter
-    def _upgrade(curie_or_iri: str) -> str:
-        if not is_iri(curie_or_iri) and is_curie(curie_or_iri):
-            return converter.standardize_curie(curie_or_iri) or curie_or_iri
-        return curie_or_iri
-
-    for column, values in _get_sssom_schema_object().dict["slots"].items():
-        if values["range"] != "EntityReference":
-            continue
-        if column not in msdf.df.columns:
-            continue
-        msdf.df[column] = msdf.df[column].map(_upgrade)
-
     msdf.converter = converter
+    msdf.standardize_references()
     return msdf
 
 
@@ -1204,6 +1274,7 @@ def augment_metadata(
     :raises ValueError: If type of slot is neither str nor list.
     :return: MSDF with updated metadata.
     """
+    # TODO this now partially redundant of the MSDF built-in standardize functionality
     are_params_slots(meta)
     if not msdf.metadata:
         return msdf
@@ -1249,6 +1320,7 @@ def are_params_slots(params: dict) -> bool:
     return True
 
 
+@lru_cache(1)
 def _get_sssom_schema_object() -> SSSOMSchemaView:
     sssom_sv_object = (
         SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
