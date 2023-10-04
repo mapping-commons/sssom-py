@@ -62,8 +62,6 @@ from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
-    add_valid_mapping_to_list,
-    ensure_valid_mapping_from_dict,
     get_file_extension,
     is_multivalued_slot,
     raise_for_bad_path,
@@ -413,7 +411,7 @@ def from_sssom_dataframe(
     bad_attrs: typing.Counter[str] = Counter()
     for _, row in df.iterrows():
         mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
-        mapping = ensure_valid_mapping_from_dict(mdict)
+        mapping = _ensure_valid_mapping_from_dict(mdict)
         if mapping:
             mlist.append(_prepare_mapping(mapping))
     for k, v in bad_attrs.most_common():
@@ -482,7 +480,7 @@ def from_sssom_rdf(
                 f"This usually happens when a critical prefix_map entry is missing."
             )
             continue
-        mapping = ensure_valid_mapping_from_dict(mdict)
+        mapping = _ensure_valid_mapping_from_dict(mdict)
         if mapping:
             mlist.append(_prepare_mapping(mapping))
 
@@ -642,7 +640,7 @@ def from_obographs(
                                     mdict[SUBJECT_LABEL] = label
                                     mdict[PREDICATE_ID] = "oboInOwl:hasDbXref"
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                    mapping = ensure_valid_mapping_from_dict(mdict)
+                                    mapping = _ensure_valid_mapping_from_dict(mdict)
                                     if mapping:
                                         mlist.append(mapping)
                                 except ValueError as e:
@@ -661,7 +659,7 @@ def from_obographs(
                                         mdict[
                                             MAPPING_JUSTIFICATION
                                         ] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                        add_valid_mapping_to_list(mdict, mlist)
+                                        _add_valid_mapping_to_list(mdict, mlist)
                                     except ValueError as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
@@ -682,7 +680,7 @@ def from_obographs(
                         )
                         mdict[PREDICATE_ID] = safe_compress(predicate_id, converter)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                        add_valid_mapping_to_list(mdict, mlist)
+                        _add_valid_mapping_to_list(mdict, mlist)
             if "equivalentNodesSets" in g and OWL_EQUIV_CLASS_URI in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
                     if "nodeIds" in equivalents:
@@ -702,7 +700,7 @@ def from_obographs(
                                     mdict[OBJECT_LABEL] = (
                                         labels[ec2] if ec2 in labels.keys() else ""
                                     )
-                                    add_valid_mapping_to_list(mdict, mlist)
+                                    _add_valid_mapping_to_list(mdict, mlist)
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
 
@@ -825,7 +823,7 @@ def _cell_element_values(cell_node, converter: Converter, mapping_predicates) ->
                 logging.warning(e)
 
     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-    return ensure_valid_mapping_from_dict(mdict)
+    return _ensure_valid_mapping_from_dict(mdict)
 
 
 # The following methods dont really belong in the parser package..
@@ -839,7 +837,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     if msdf.df is not None:
         for _, row in msdf.df.iterrows():
             mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
-            add_valid_mapping_to_list(mdict, mlist)
+            _add_valid_mapping_to_list(mdict, mlist)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
     ms.mappings = mlist  # type: ignore
@@ -917,3 +915,34 @@ def split_dataframe_by_prefix(
             df_subset, prefix_map=dict(subconverter.bimap), meta=meta
         )
     return split_to_msdf
+
+
+def _ensure_valid_mapping_from_dict(mdict):
+    """
+    Return a valid mapping object if it can be constructed, else None.
+
+    :param mdict: A dictionary containing the mapping metadata.
+    :return: A valid Mapping object, or None.
+    """
+    try:
+        m = Mapping(**mdict)
+        return m
+    except ValueError as e:
+        logging.warning(
+            f"One mapping in the mapping set is not well-formed, "
+            f"and therfore not included in the mapping set ({mdict}). Error: {e}"
+        )
+    return None
+
+
+def _add_valid_mapping_to_list(mdict, mlist):
+    """
+    Validate the mapping and append to the list if valid.
+
+    Parameters:
+    - mdict (dict): A dictionary containing the mapping metadata.
+    - mlist (list): The list to which the valid mapping should be appended.
+    """
+    mapping = _ensure_valid_mapping_from_dict(mdict)
+    if mapping:
+        mlist.append(mapping)
