@@ -779,6 +779,7 @@ def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
         return meta
     return {}
 
+
 def _set_metadata_in_mapping_set(
     mapping_set: MappingSet, metadata: Optional[MetadataType] = None
 ) -> None:
