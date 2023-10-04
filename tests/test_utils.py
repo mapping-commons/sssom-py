@@ -2,8 +2,9 @@
 
 import unittest
 
+import pandas as pd
 import yaml
-from curies import Converter
+from curies import Converter, Record
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
 from sssom.context import SSSOM_BUILT_IN_PREFIXES
@@ -16,6 +17,7 @@ from sssom.util import (
     get_prefixes_used_in_table,
     inject_metadata_into_df,
     invert_mappings,
+    is_multivalued_slot,
 )
 from tests.constants import data_dir
 
@@ -194,3 +196,109 @@ class TestUtils(unittest.TestCase):
             }.union(SSSOM_BUILT_IN_PREFIXES),
             prefixes,
         )
+
+    def test_standardize_df(self):
+        """Test standardizing a MSDF's dataframe."""
+        rows = [("a:1", "b:2", "c:3")]
+        columns = ["subject_id", "predicate_id", "object_id"]
+        df = pd.DataFrame(rows, columns=columns)
+        converter = Converter(
+            [
+                Record(prefix="new.a", prefix_synonyms=["a"], uri_prefix="https://example.org/a/"),
+                Record(prefix="new.b", prefix_synonyms=["b"], uri_prefix="https://example.org/b/"),
+                Record(prefix="new.c", prefix_synonyms=["c"], uri_prefix="https://example.org/c/"),
+            ]
+        )
+        msdf = MappingSetDataFrame(df=df, converter=converter)
+        msdf._standardize_df_references()
+        self.assertEqual(
+            ("new.a:1", "new.b:2", "new.c:3"),
+            tuple(df.iloc[0]),
+        )
+
+    def test_standardize_idempotent(self):
+        """Test standardizing leaves correct fields."""
+        metadata = {"license": "https://example.org/test-license"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertEqual({"license": "https://example.org/test-license"}, msdf.metadata)
+
+    def test_standardize_metadata_upgrade_multivalued_single(self):
+        """Test standardizing upgrades a string to a list."""
+        metadata = {"creator_id": "orcid:0000-0003-4423-4370"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertEqual({"creator_id": ["orcid:0000-0003-4423-4370"]}, msdf.metadata)
+
+    def test_standardize_metadata_upgrade_multivalued_multiple(self):
+        """Test standardizing upgrades a string to a list."""
+        metadata = {"creator_id": "orcid:0000-0003-4423-4370 | orcid:0000-0002-6601-2165"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertEqual(
+            {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
+            msdf.metadata,
+        )
+
+    def test_standardize_metadata_multivalued(self):
+        """Test standardizing upgrades a string to a list."""
+        metadata = {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertEqual(
+            {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
+            msdf.metadata,
+        )
+
+    def test_standardize_metadata_multivalued_type_error(self):
+        """Test raising on a  non-string, non-list object given to a multivalued slot."""
+        metadata = {"creator_id": object()}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        with self.assertRaises(TypeError):
+            msdf._standardize_metadata_references(raise_on_invalid=True)
+
+    def test_standardize_error_non_list(self):
+        """Test that a type error is raised when metadata is presented that should not be a list."""
+        metadata = {"mapping_source": ["https://example.org/r1", "https://example.org/r2"]}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        with self.assertRaises(TypeError):
+            msdf._standardize_metadata_references(raise_on_invalid=True)
+
+    def test_standardize_coerce_list(self):
+        """Test that a metadata field that should not be a list gets coerced to a single element."""
+        self.assertFalse(is_multivalued_slot("mapping_source"))
+        metadata = {"mapping_source": ["https://example.org/r1"]}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertIn("mapping_source", msdf.metadata)
+        mapping_source = msdf.metadata["mapping_source"]
+        self.assertIsInstance(
+            mapping_source, str, msg="Mapping source should have been coerced into a string"
+        )
+        self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
+
+    def test_standardize_metdata_delete_empty(self):
+        """Test that an element that should not be a list but is empty just gets deleted."""
+        metadata = {"mapping_source": []}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertEqual({}, msdf.metadata)
+
+    def test_standardize_metadata_single(self):
+        """Test standardizing a single valued slot."""
+        metadata = {"mapping_source": "https://example.org/r1"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        msdf._standardize_metadata_references(raise_on_invalid=True)
+        self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
+
+    def test_standardize_metadata_raise_on_missing(self):
+        """Test that an exception is raised for a metadata key that's not in the schema."""
+        metadata = {"xxxx": "https://example.org/r1"}
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        with self.assertRaises(ValueError):
+            msdf._standardize_metadata_references(raise_on_invalid=True)
+
+        # Test the logs actually get through
+        with self.assertLogs("sssom.util") as cm:
+            msdf._standardize_metadata_references()
+            self.assertIn("invalid metadata key xxxx", "".join(cm.output))
