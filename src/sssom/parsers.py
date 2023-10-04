@@ -537,7 +537,7 @@ def from_alignment_minidom(
                 if node_name == "map":
                     cell = e.getElementsByTagName("Cell")
                     for c_node in cell:
-                        mdict = _cell_element_values(
+                        mdict: Dict[str, Any] = _cell_element_values(
                             c_node, converter, mapping_predicates=mapping_predicates
                         )
                         _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
@@ -775,7 +775,7 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = v
 
 
-def _cell_element_values(cell_node, converter: Converter, mapping_predicates) -> Optional[Dict]:
+def _cell_element_values(cell_node, converter: Converter, mapping_predicates) -> Dict[str, Any]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
@@ -903,7 +903,7 @@ def split_dataframe_by_prefix(
     return split_to_msdf
 
 
-def _ensure_valid_mapping_from_dict(mdict):
+def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
     """
     Return a valid mapping object if it can be constructed, else None.
 
@@ -914,16 +914,18 @@ def _ensure_valid_mapping_from_dict(mdict):
 
     try:
         m = Mapping(**mdict)
-        return m
     except ValueError as e:
         logging.warning(
             f"One mapping in the mapping set is not well-formed, "
             f"and therfore not included in the mapping set ({mdict}). Error: {e}"
         )
-    return None
+        return None
+    return m
 
 
-def _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=False):
+def _add_valid_mapping_to_list(
+    mdict: Dict[str, Any], mlist: List[Mapping], *, flip_superclass_assertions=False
+):
     """
     Validate the mapping and append to the list if valid.
 
