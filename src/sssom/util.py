@@ -5,13 +5,12 @@ import json
 import logging as _logging
 import os
 import re
-from collections import defaultdict
+from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import reduce
 from pathlib import Path
 from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
-from collections import ChainMap
 
 import curies
 import numpy as np
@@ -21,8 +20,8 @@ import yaml
 from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
-from sssom_schema import Mapping as SSSOM_Mapping, MappingSet
-from sssom_schema import slots
+from sssom_schema import Mapping as SSSOM_Mapping
+from sssom_schema import MappingSet, slots
 
 from .constants import (
     COLUMN_INVERT_DICTIONARY,
@@ -60,7 +59,7 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map, ensure_converter, HINT
+from .context import HINT, SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
 from .typehints import MetadataType, PrefixMap, get_default_metadata
 
