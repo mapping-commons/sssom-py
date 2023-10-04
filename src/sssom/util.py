@@ -1358,3 +1358,34 @@ def safe_compress(uri: str, converter: Converter) -> str:
             f"CURIE appeared where there should be a URI, and could not be standardized: {uri}"
         )
     return rv
+
+
+def ensure_valid_mapping_from_dict(mdict):
+    """
+    Return a valid mapping object if it can be constructed, else None.
+
+    :param mdict: A dictionary containing the mapping metadata.
+    :return: A valid Mapping object, or None.
+    """
+    try:
+        m = SSSOM_Mapping(**mdict)
+        return m
+    except ValueError as e:
+        logging.warning(
+            f"One mapping in the mapping set is not well-formed, "
+            f"and therfore not included in the mapping set ({mdict}). Error: {e}"
+        )
+    return None
+
+
+def add_valid_mapping_to_list(mdict, mlist):
+    """
+    Validate the mapping and append to the list if valid.
+
+    Parameters:
+    - mdict (dict): A dictionary containing the mapping metadata.
+    - mlist (list): The list to which the valid mapping should be appended.
+    """
+    mapping = ensure_valid_mapping_from_dict(mdict)
+    if mapping:
+        mlist.append(mapping)
