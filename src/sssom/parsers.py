@@ -727,10 +727,11 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
 
 
 def _flip_superclass_assertion(mapping: Mapping) -> Mapping:
-    if mapping.predicate_id == "sssom:superClassOf":
+    if mapping.predicate_id != "sssom:superClassOf":
+        return mapping
+    else:
         mapping.predicate_id = "rdfs:subClassOf"
         return _swap_object_subject(mapping)
-    return mapping
 
 
 def _swap_object_subject(mapping: Mapping) -> Mapping:
@@ -920,7 +921,8 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
             f"and therfore not included in the mapping set ({mdict}). Error: {e}"
         )
         return None
-    return m
+    else:
+        return m
 
 
 def _add_valid_mapping_to_list(
