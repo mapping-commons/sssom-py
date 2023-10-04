@@ -272,7 +272,7 @@ class TestUtils(unittest.TestCase):
 
     def test_standardize_metdata_delete_empty(self):
         """Test that an element that should not be a list but is empty just gets deleted."""
-        metadata = {"mapping_registry_id": []}
+        metadata = {"mapping_set_id": []}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references()
         self.assertEqual({}, msdf.metadata)
