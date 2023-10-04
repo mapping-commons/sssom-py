@@ -22,9 +22,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Update pip and setuptools
-        run: pip install -U pip setuptools
-
       #----------------------------------------------
       #          install & configure poetry
       #----------------------------------------------
@@ -37,13 +34,15 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           echo "${HOME}/.local/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          pip wheel --use-pep517 "paginate (==0.5.6)" "pytrie (==0.4.0)"
+          # pip wheel --use-pep517 "paginate (==0.5.6)" "pytrie (==0.4.0)"
 
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
       - name: Install dependencies
-        run: poetry install --no-interaction
+        run: |
+          poetry self add setuptools
+          poetry install --no-interaction
 
       - name: Check code quality with flake8
         run: poetry run tox -e flake8
