@@ -110,6 +110,7 @@ class MappingSetDataFrame:
     def from_mappings(
         cls,
         mappings: List[SSSOM_Mapping],
+        *,
         converter: HINT = None,
         metadata: Optional[MetadataType] = None,
     ) -> "MappingSetDataFrame":
@@ -120,7 +121,7 @@ class MappingSetDataFrame:
 
     @classmethod
     def from_mapping_set(
-        cls, mapping_set: MappingSet, converter: HINT = None
+        cls, mapping_set: MappingSet, *, converter: HINT = None
     ) -> "MappingSetDataFrame":
         """Instantiate from a mapping set and an optional converter.
 
