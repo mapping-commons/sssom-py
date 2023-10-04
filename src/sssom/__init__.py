@@ -10,6 +10,7 @@ except importlib_metadata.PackageNotFoundError:
 from sssom_schema import Mapping, MappingSet, slots  # noqa:401
 
 from sssom.util import (  # noqa:401
+    MappingSetDataFrame,
     collapse,
     compare_dataframes,
     dataframe_to_ptable,
