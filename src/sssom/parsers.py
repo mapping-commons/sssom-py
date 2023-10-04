@@ -844,18 +844,16 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     mlist: List[Mapping] = []
     ms = _init_mapping_set(msdf.metadata)
     bad_attrs: Counter = Counter()
-    if msdf.df is not None:
-        for _, row in msdf.df.iterrows():
-            mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
-            m = _prepare_mapping(Mapping(**mdict))
-            mlist.append(m)
+    for _, row in msdf.df.iterrows():
+        mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
+        m = _prepare_mapping(Mapping(**mdict))
+        mlist.append(m)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
     ms.mappings = mlist  # type: ignore
-    if msdf.metadata is not None:
-        for k, v in msdf.metadata.items():
-            if k != PREFIX_MAP_KEY:
-                ms[k] = _address_multivalued_slot(k, v)
+    for k, v in msdf.metadata.items():
+        if k != PREFIX_MAP_KEY:
+            ms[k] = _address_multivalued_slot(k, v)
     return MappingSetDocument(mapping_set=ms, converter=msdf.converter)
 
 
@@ -868,8 +866,6 @@ def split_dataframe(
     :raises RuntimeError: DataFrame object within MappingSetDataFrame is None
     :return: Mapping object
     """
-    if msdf.df is None:
-        raise RuntimeError
     subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", n=1, expand=True)[0])
     object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", n=1, expand=True)[0])
     relations = set(msdf.df[PREDICATE_ID])
@@ -896,8 +892,6 @@ def split_dataframe_by_prefix(
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
     df = msdf.df
-    if df is None:
-        raise ValueError
     meta = msdf.metadata
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
     for subject_prefix, object_prefix, relation in itt.product(
