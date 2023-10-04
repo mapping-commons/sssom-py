@@ -170,6 +170,14 @@ class MappingSetDataFrame:
 
         return to_mapping_set_document(self)
 
+    def to_mapping_set(self) -> MappingSet:
+        """Get a mapping set."""
+        return self.to_mapping_set_document().mapping_set
+
+    def to_mappings(self) -> List[SSSOM_Mapping]:
+        """Get a mapping set."""
+        return self.to_mapping_set().mappings
+
     def clean_context(self) -> None:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
