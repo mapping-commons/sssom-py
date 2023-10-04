@@ -930,10 +930,11 @@ def _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=False):
     Parameters:
     - mdict (dict): A dictionary containing the mapping metadata.
     - mlist (list): The list to which the valid mapping should be appended.
+    - flip_superclass_assertions (bool): an optional paramter that flips sssom:superClassOf to rdfs:subClassOf
     """
     mapping = _ensure_valid_mapping_from_dict(mdict)
-    if mapping:
-        if flip_superclass_assertions:
-            mlist.append(_flip_superclass_assertion(mapping))
-        else:
-            mlist.append(mapping)
+    if not mapping:
+        return None
+    if flip_superclass_assertions:
+        mapping = _flip_superclass_assertion(mapping)
+    mlist.append(mapping)
