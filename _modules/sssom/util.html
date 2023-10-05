@@ -304,18 +304,12 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
         <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;SSSOM data table </span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of extended prefix map records: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;No metadata available </span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Metadata: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;No dataframe available&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of mappings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First rows of data: </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Last rows of data: </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="n">description</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Metadata: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of mappings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First rows of data: </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Last rows of data: </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">description</span>
 
 <div class="viewcode-block" id="MappingSetDataFrame.clean_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.clean_prefix_map">[docs]</a>    <span class="k">def</span> <span class="nf">clean_prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -348,7 +342,7 @@
 <span class="sd">        :param msdf: MappingSetDataframe object to be removed from primary msdf object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">merge_on</span> <span class="o">=</span> <span class="n">KEY_FEATURES</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">PREDICATE_MODIFIER</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">PREDICATE_MODIFIER</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">merge_on</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">PREDICATE_MODIFIER</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
@@ -877,12 +871,12 @@
     <span class="c1"># merge df [# &#39;outer&#39; join in pandas == FULL JOIN in SQL]</span>
     <span class="c1"># df_merged = reduce(</span>
     <span class="c1">#     lambda left, right: left.merge(right, how=&quot;outer&quot;, on=list(left.columns)),</span>
-    <span class="c1">#     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],</span>
+    <span class="c1">#     [msdf.df for msdf in msdf_with_meta],</span>
     <span class="c1"># )</span>
     <span class="c1"># Concat is an alternative to merge when columns are not the same.</span>
     <span class="n">df_merged</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span> <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span><span class="p">],</span>
     <span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">converter</span> <span class="k">for</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">msdf_with_meta</span><span class="p">)</span>
@@ -928,10 +922,6 @@
     <span class="c1"># Handle DataFrames with no &#39;confidence&#39; column (basically adding a np.NaN to all non-numeric confidences)</span>
     <span class="n">confidence_in_original</span> <span class="o">=</span> <span class="n">CONFIDENCE</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
     <span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span> <span class="o">=</span> <span class="n">assign_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;The dataframe, after assigning default confidence, appears empty (deal_with_negation)&quot;</span>
-        <span class="p">)</span>
 
     <span class="c1">#  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###</span>
     <span class="n">negation_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
@@ -1056,18 +1046,19 @@
 
 <span class="sd">    :return: MappingSetDataFrame with metadata as columns</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO add this into the &quot;standardize&quot; function introduced in</span>
+    <span class="c1">#  https://github.com/mapping-commons/sssom-py/pull/438</span>
     <span class="c1"># TODO Check if &#39;k&#39; is a valid &#39;slot&#39; for &#39;mapping&#39; [sssom.yaml]</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SCHEMA_YAML</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="n">slots</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;classes&quot;</span><span class="p">][</span><span class="s2">&quot;mapping&quot;</span><span class="p">][</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">slots</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">MAPPING_SET_ID</span><span class="p">:</span>
-                    <span class="n">k</span> <span class="o">=</span> <span class="n">MAPPING_SET_SOURCE</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
-                <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">slots</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">MAPPING_SET_ID</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">MAPPING_SET_SOURCE</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
+            <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
@@ -1367,7 +1358,9 @@
 <span class="sd">    :raises ValidationError: If slot is wrong.</span>
 <span class="sd">    :return:  List of all prefixes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="c1"># FIXME investigate the logic for this function -</span>
+    <span class="c1">#  some of the falsy checks don&#39;t make sense</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="n">prefixes</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
