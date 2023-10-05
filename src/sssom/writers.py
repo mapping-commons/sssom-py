@@ -16,10 +16,9 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import SCHEMA_YAML, SSSOM_URI_PREFIX
+from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
 from .parsers import to_mapping_set_document
 from .util import (
-    PREFIX_MAP_KEY,
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -56,7 +55,7 @@ def write_table(
 
     meta: Dict[str, Any] = {}
     meta.update(msdf.metadata)
-    meta[PREFIX_MAP_KEY] = msdf.converter.bimap
+    meta[CURIE_MAP] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
