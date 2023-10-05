@@ -28,7 +28,7 @@ from sssom.parsers import (
     from_sssom_rdf,
     parse_sssom_table,
 )
-from sssom.typehints import Metadata
+from sssom.typehints import _MetadataPair
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
@@ -70,7 +70,7 @@ class TestParse(unittest.TestCase):
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
-        self.metadata = Metadata.default()
+        self.metadata = _MetadataPair.default()
 
     def test_parse_sssom_dataframe_from_file(self):
         """Test parsing a TSV."""
