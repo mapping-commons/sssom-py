@@ -7,7 +7,7 @@ import yaml
 from curies import Converter, Record
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
-from sssom.context import SSSOM_BUILT_IN_PREFIXES
+from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iri
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -302,3 +302,44 @@ class TestUtils(unittest.TestCase):
         with self.assertLogs("sssom.util") as cm:
             msdf._standardize_metadata_references()
             self.assertIn("invalid metadata key xxxx", "".join(cm.output))
+
+    def test_msdf_from_mappings(self):
+        """Test round tripping to SSSOM classes."""
+        rows = [
+            (
+                "DOID:0050601",
+                "ADULT syndrome",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                "ADULT SYNDROME",
+                "semapv:ManualMappingCuration",
+                "orcid:0000-0003-4423-4370",
+            )
+        ]
+        columns = [
+            "subject_id",
+            "subject_label",
+            "predicate_id",
+            "object_id",
+            "object_label",
+            "mapping_justification",
+            "creator_id",
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
+        msdf.clean_prefix_map(strict=True)
+
+        msd = msdf.to_mapping_set_document()
+
+        new_msdf = MappingSetDataFrame.from_mappings(
+            mappings=msd.mapping_set.mappings,
+            converter=msd.converter,
+            metadata={
+                "license": msdf.metadata["license"],
+                "mapping_set_id": msdf.metadata["mapping_set_id"],
+            },
+        )
+
+        self.assertEqual(1, len(new_msdf.df.index))
+        self.assertEqual(rows[0], tuple(msdf.df.iloc[0]))
+        self.assertEqual(new_msdf.metadata, msdf.metadata)
