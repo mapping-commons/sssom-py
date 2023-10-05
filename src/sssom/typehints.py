@@ -5,15 +5,20 @@
 import uuid
 from collections import ChainMap
 from pathlib import Path
-from typing import Any, Dict, NamedTuple, Optional, TYPE_CHECKING, Union
-
-import yaml
+from typing import TYPE_CHECKING, Any, Dict, NamedTuple, Optional, Union
 
 import curies
+import yaml
 from curies import Converter
 
-from sssom.constants import DEFAULT_LICENSE, SSSOM_URI_PREFIX, CURIE_MAP, PREFIX_MAP_MODE_METADATA_ONLY, \
-    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY, PREFIX_MAP_MODE_MERGED
+from sssom.constants import (
+    CURIE_MAP,
+    DEFAULT_LICENSE,
+    PREFIX_MAP_MODE_MERGED,
+    PREFIX_MAP_MODE_METADATA_ONLY,
+    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    SSSOM_URI_PREFIX,
+)
 
 if TYPE_CHECKING:
     from .context import HINT, get_converter
