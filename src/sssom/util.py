@@ -5,7 +5,7 @@ import json
 import logging as _logging
 import os
 import re
-from collections import defaultdict
+from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import lru_cache, partial, reduce
 from pathlib import Path
@@ -21,7 +21,7 @@ from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
-from sssom_schema import slots
+from sssom_schema import MappingSet, slots
 
 from .constants import (
     COLUMN_INVERT_DICTIONARY,
@@ -59,7 +59,13 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map, get_converter
+from .context import (
+    HINT,
+    SSSOM_BUILT_IN_PREFIXES,
+    _get_built_in_prefix_map,
+    ensure_converter,
+    get_converter,
+)
 from .sssom_document import MappingSetDocument
 from .typehints import MetadataType, PrefixMap, get_default_metadata
 
@@ -104,6 +110,79 @@ class MappingSetDataFrame:
             converter=converter,
             metadata=metadata or get_default_metadata(),
         )
+
+    @classmethod
+    def from_mappings(
+        cls,
+        mappings: List[SSSOM_Mapping],
+        *,
+        converter: HINT = None,
+        metadata: Optional[MetadataType] = None,
+    ) -> "MappingSetDataFrame":
+        """Instantiate from a list of mappings, mapping set metadata, and an optional converter."""
+        # This combines multiple pieces of metadata in the following priority order:
+        #  1. The explicitly given metadata passed to from_mappings()
+        #  2. The default metadata (which includes a dummy license and mapping set URI)
+        chained_metadata = ChainMap(
+            metadata or {},
+            get_default_metadata(),
+        )
+        mapping_set = MappingSet(mappings=mappings, **chained_metadata)
+        return cls.from_mapping_set(mapping_set=mapping_set, converter=converter)
+
+    @classmethod
+    def from_mapping_set(
+        cls, mapping_set: MappingSet, *, converter: HINT = None
+    ) -> "MappingSetDataFrame":
+        """Instantiate from a mapping set and an optional converter.
+
+        :param mapping_set: A mapping set
+        :param converter: A prefix map or pre-instantiated converter. If none given, uses a default
+            prefix map derived from the Bioregistry.
+        :returns: A mapping set dataframe
+        """
+        doc = MappingSetDocument(converter=ensure_converter(converter), mapping_set=mapping_set)
+        return cls.from_mapping_set_document(doc)
+
+    @classmethod
+    def from_mapping_set_document(cls, doc: MappingSetDocument) -> "MappingSetDataFrame":
+        """Instantiate from a mapping set document."""
+        if doc.mapping_set.mappings is None:
+            return cls(df=pd.DataFrame(), converter=doc.converter)
+
+        df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
+        meta = extract_global_metadata(doc)
+        meta.pop(PREFIX_MAP_KEY, None)
+
+        # remove columns where all values are blank.
+        df.replace("", np.nan, inplace=True)
+        df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
+
+        slots_with_double_as_range = {
+            slot
+            for slot, slot_metadata in _get_sssom_schema_object().dict["slots"].items()
+            if slot_metadata["range"] == "double"
+        }
+        non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
+        non_double_cols = non_double_cols.replace(np.nan, "")
+        df[non_double_cols.columns] = non_double_cols
+
+        df = sort_df_rows_columns(df)
+        return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
+
+    def to_mapping_set_document(self) -> "MappingSetDocument":
+        """Get a mapping set document."""
+        from .parsers import to_mapping_set_document
+
+        return to_mapping_set_document(self)
+
+    def to_mapping_set(self) -> MappingSet:
+        """Get a mapping set."""
+        return self.to_mapping_set_document().mapping_set
+
+    def to_mappings(self) -> List[SSSOM_Mapping]:
+        """Get a mapping set."""
+        return self.to_mapping_set().mappings
 
     def clean_context(self) -> None:
         """Clean up the context."""
@@ -948,6 +1027,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     :param msdoc: MappingSetDocument object
     :return: Dictionary containing metadata
     """
+    # TODO mark as private
     meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
     for key in [
@@ -969,29 +1049,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     :param doc: MappingSetDocument object
     :return: MappingSetDataFrame object
     """
-    data = []
-    slots_with_double_as_range = [
-        s
-        for s in _get_sssom_schema_object().dict["slots"].keys()
-        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
-    ]
-    if doc.mapping_set.mappings is not None:
-        for mapping in doc.mapping_set.mappings:
-            m = get_dict_from_mapping(mapping)
-            data.append(m)
-    df = pd.DataFrame(data=data)
-    meta = extract_global_metadata(doc)
-    meta.pop(PREFIX_MAP_KEY, None)
-    # The following 3 lines are to remove columns
-    # where all values are blank.
-    df.replace("", np.nan, inplace=True)
-    df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
-    non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
-    non_double_cols = non_double_cols.replace(np.nan, "")
-    df[non_double_cols.columns] = non_double_cols
-    msdf = MappingSetDataFrame.with_converter(df=df, converter=doc.converter, metadata=meta)
-    msdf.df = sort_df_rows_columns(msdf.df)
-    return msdf
+    return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
 def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
