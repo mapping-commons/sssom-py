@@ -15,6 +15,7 @@ from pansql import sqldf
 from sssom.validators import validate
 
 from .constants import (
+    CURIE_MAP,
     DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
@@ -25,7 +26,6 @@ from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import Metadata, generate_mapping_set_id
 from .util import (
-    PREFIX_MAP_KEY,
     MappingSetDataFrame,
     are_params_slots,
     augment_metadata,
@@ -154,8 +154,8 @@ def get_metadata_and_prefix_map(
         metadata["license"] = DEFAULT_LICENSE
         logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
 
-    if PREFIX_MAP_KEY in metadata:
-        prefix_map = metadata.pop(PREFIX_MAP_KEY)
+    if CURIE_MAP in metadata:
+        prefix_map = metadata.pop(CURIE_MAP)
     else:
         prefix_map = {}
     converter = Converter.from_prefix_map(prefix_map)

@@ -29,7 +29,7 @@ from sssom.parsers import (
     parse_sssom_table,
 )
 from sssom.typehints import Metadata
-from sssom.util import PREFIX_MAP_KEY, MappingSetDataFrame, sort_df_rows_columns
+from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
@@ -65,7 +65,7 @@ class TestParse(unittest.TestCase):
 
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
             df_meta = yaml.safe_load(file)
-            self.df_prefix_map = df_meta.pop(PREFIX_MAP_KEY)
+            self.df_prefix_map = df_meta.pop(CURIE_MAP)
             self.df_meta = df_meta
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
