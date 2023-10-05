@@ -6,26 +6,18 @@ import re
 from pathlib import Path
 from typing import List, Optional, TextIO, Union
 
-import curies
 import pandas as pd
-import yaml
 from curies import Converter
 from pansql import sqldf
 
 from sssom.validators import validate
 
 from .constants import (
-    DEFAULT_LICENSE,
-    PREFIX_MAP_MODE_MERGED,
-    PREFIX_MAP_MODE_METADATA_ONLY,
-    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     SchemaValidationType,
 )
-from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata, generate_mapping_set_id
+from .typehints import get_metadata_and_prefix_map
 from .util import (
-    PREFIX_MAP_KEY,
     MappingSetDataFrame,
     are_params_slots,
     augment_metadata,
@@ -131,48 +123,6 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     msdf = parse_sssom_table(input_path)
     splitted = split_dataframe(msdf)
     write_tables(splitted, output_directory)
-
-
-def get_metadata_and_prefix_map(
-    metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
-) -> Metadata:
-    """
-    Load SSSOM metadata from a file, and then augments it with default prefixes.
-
-    :param metadata_path: The metadata file in YAML format
-    :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: a prefix map dictionary and a metadata object dictionary
-    """
-    if metadata_path is None:
-        return Metadata.default()
-
-    with Path(metadata_path).resolve().open() as file:
-        metadata = yaml.safe_load(file)
-    if not metadata.get("mapping_set_id"):
-        metadata["mapping_set_id"] = generate_mapping_set_id()
-    if not metadata.get("license"):
-        metadata["license"] = DEFAULT_LICENSE
-        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
-
-    if PREFIX_MAP_KEY in metadata:
-        prefix_map = metadata.pop(PREFIX_MAP_KEY)
-    else:
-        prefix_map = {}
-    converter = Converter.from_prefix_map(prefix_map)
-    converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
-
-    return Metadata(converter=converter, metadata=metadata)
-
-
-def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:
-    """Merge the metadata's converter with the default converter."""
-    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
-        return converter
-    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
-        return get_converter()
-    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-        return curies.chain([converter, get_converter()])
-    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
 def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:

@@ -56,7 +56,12 @@ from sssom.constants import (
 
 from .context import HINT, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
+from .typehints import (
+    MetadataType,
+    generate_mapping_set_id,
+    get_default_metadata,
+    _get_prefix_map_and_metadata,
+)
 from .util import (
     PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -298,21 +303,6 @@ def parse_obographs_json(
         meta=_xmetadata.metadata,
         mapping_predicates=mapping_predicates,
     )
-
-
-def _get_prefix_map_and_metadata(
-    prefix_map: HINT = None, meta: Optional[MetadataType] = None
-) -> Metadata:
-    if prefix_map and meta and PREFIX_MAP_KEY in meta:
-        logging.info(
-            "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
-            "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
-        )
-        prefix_map = meta[PREFIX_MAP_KEY]
-    converter = ensure_converter(prefix_map)
-    if meta is None:
-        meta = Metadata.default().metadata
-    return Metadata(converter=converter, metadata=meta)
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
