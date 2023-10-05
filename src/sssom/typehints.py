@@ -22,12 +22,10 @@ from .constants import (
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter, get_converter
 
 __all__ = [
-    "PrefixMap",
     "MetadataType",
+    "generate_mapping_set_id",
+    "get_default_metadata",
 ]
-
-
-PrefixMap = Dict[str, str]
 
 #: TODO replace this with something more specific
 MetadataType = Dict[str, Any]
@@ -47,8 +45,6 @@ class _MetadataPair(NamedTuple):
     @classmethod
     def default(cls):
         """Get default metadata."""
-        from .context import get_converter
-
         return cls(
             converter=get_converter(),
             metadata=get_default_metadata(),
@@ -83,7 +79,7 @@ def _get_prefix_map_and_metadata(
     return _MetadataPair(converter=converter, metadata=meta)
 
 
-def get_metadata_and_prefix_map(
+def _parse_file_metadata_helper(
     metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
 ) -> _MetadataPair:
     """

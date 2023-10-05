@@ -14,7 +14,7 @@ from sssom.validators import validate
 
 from .constants import SchemaValidationType
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import get_metadata_and_prefix_map
+from .typehints import _parse_file_metadata_helper
 from .util import (
     MappingSetDataFrame,
     are_params_slots,
@@ -70,7 +70,7 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    metadata = get_metadata_and_prefix_map(
+    metadata = _parse_file_metadata_helper(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
