@@ -52,14 +52,10 @@ def write_table(
     sort=False,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
-    if msdf.df is None:
-        raise TypeError
-
     sep = _get_separator(serialisation)
 
     meta: Dict[str, Any] = {}
-    if msdf.metadata is not None:
-        meta.update(msdf.metadata)
+    meta.update(msdf.metadata)
     meta[PREFIX_MAP_KEY] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
@@ -280,7 +276,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     """
     df: pd.DataFrame = msdf.df
     # Intermediary variables
-    metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
+    metadata: Dict[str, Any] = msdf.metadata
     mapping_set_id = metadata.get("mapping_set_id", "")
     name: str = mapping_set_id.split("/")[-1].replace(".sssom.tsv", "")
     # Construct JSON
@@ -448,11 +444,8 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
 
 def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
     """Convert a mapping set dataframe to a list of ontoportal mapping JSON objects."""
-    if msdf.df is None:
-        return []
-
     converter = msdf.converter
-    metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
+    metadata: Dict[str, Any] = msdf.metadata
     m_list = []
     for _, row in msdf.df.iterrows():
         mapping_justification = row.get("mapping_justification", "")

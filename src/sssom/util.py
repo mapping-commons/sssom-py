@@ -5,7 +5,7 @@ import json
 import logging as _logging
 import os
 import re
-from collections import defaultdict
+from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import lru_cache, partial, reduce
 from pathlib import Path
@@ -21,7 +21,7 @@ from curies import Converter
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
-from sssom_schema import slots
+from sssom_schema import MappingSet, slots
 
 from .constants import (
     COLUMN_INVERT_DICTIONARY,
@@ -59,7 +59,13 @@ from .constants import (
     UNKNOWN_IRI,
     SSSOMSchemaView,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map, get_converter
+from .context import (
+    HINT,
+    SSSOM_BUILT_IN_PREFIXES,
+    _get_built_in_prefix_map,
+    ensure_converter,
+    get_converter,
+)
 from .sssom_document import MappingSetDocument
 from .typehints import MetadataType, PrefixMap, get_default_metadata
 
@@ -104,6 +110,79 @@ class MappingSetDataFrame:
             converter=converter,
             metadata=metadata or get_default_metadata(),
         )
+
+    @classmethod
+    def from_mappings(
+        cls,
+        mappings: List[SSSOM_Mapping],
+        *,
+        converter: HINT = None,
+        metadata: Optional[MetadataType] = None,
+    ) -> "MappingSetDataFrame":
+        """Instantiate from a list of mappings, mapping set metadata, and an optional converter."""
+        # This combines multiple pieces of metadata in the following priority order:
+        #  1. The explicitly given metadata passed to from_mappings()
+        #  2. The default metadata (which includes a dummy license and mapping set URI)
+        chained_metadata = ChainMap(
+            metadata or {},
+            get_default_metadata(),
+        )
+        mapping_set = MappingSet(mappings=mappings, **chained_metadata)
+        return cls.from_mapping_set(mapping_set=mapping_set, converter=converter)
+
+    @classmethod
+    def from_mapping_set(
+        cls, mapping_set: MappingSet, *, converter: HINT = None
+    ) -> "MappingSetDataFrame":
+        """Instantiate from a mapping set and an optional converter.
+
+        :param mapping_set: A mapping set
+        :param converter: A prefix map or pre-instantiated converter. If none given, uses a default
+            prefix map derived from the Bioregistry.
+        :returns: A mapping set dataframe
+        """
+        doc = MappingSetDocument(converter=ensure_converter(converter), mapping_set=mapping_set)
+        return cls.from_mapping_set_document(doc)
+
+    @classmethod
+    def from_mapping_set_document(cls, doc: MappingSetDocument) -> "MappingSetDataFrame":
+        """Instantiate from a mapping set document."""
+        if doc.mapping_set.mappings is None:
+            return cls(df=pd.DataFrame(), converter=doc.converter)
+
+        df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
+        meta = extract_global_metadata(doc)
+        meta.pop(PREFIX_MAP_KEY, None)
+
+        # remove columns where all values are blank.
+        df.replace("", np.nan, inplace=True)
+        df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
+
+        slots_with_double_as_range = {
+            slot
+            for slot, slot_metadata in _get_sssom_schema_object().dict["slots"].items()
+            if slot_metadata["range"] == "double"
+        }
+        non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
+        non_double_cols = non_double_cols.replace(np.nan, "")
+        df[non_double_cols.columns] = non_double_cols
+
+        df = sort_df_rows_columns(df)
+        return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
+
+    def to_mapping_set_document(self) -> "MappingSetDocument":
+        """Get a mapping set document."""
+        from .parsers import to_mapping_set_document
+
+        return to_mapping_set_document(self)
+
+    def to_mapping_set(self) -> MappingSet:
+        """Get a mapping set."""
+        return self.to_mapping_set_document().mapping_set
+
+    def to_mappings(self) -> List[SSSOM_Mapping]:
+        """Get a mapping set."""
+        return self.to_mapping_set().mappings
 
     def clean_context(self) -> None:
         """Clean up the context."""
@@ -150,18 +229,12 @@ class MappingSetDataFrame:
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
         description += f"Number of extended prefix map records: {len(self.converter.records)} \n"
-        if self.metadata is None:
-            description += "No metadata available \n"
-        else:
-            description += f"Metadata: {json.dumps(self.metadata)} \n"
-        if self.df is None:
-            description += "No dataframe available"
-        else:
-            description += f"Number of mappings: {len(self.df.index)} \n"
-            description += "\nFirst rows of data: \n"
-            description += self.df.head().to_string() + "\n"
-            description += "\nLast rows of data: \n"
-            description += self.df.tail().to_string() + "\n"
+        description += f"Metadata: {json.dumps(self.metadata)} \n"
+        description += f"Number of mappings: {len(self.df.index)} \n"
+        description += "\nFirst rows of data: \n"
+        description += self.df.head().to_string() + "\n"
+        description += "\nLast rows of data: \n"
+        description += self.df.tail().to_string() + "\n"
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
@@ -194,7 +267,7 @@ class MappingSetDataFrame:
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
         """
         merge_on = KEY_FEATURES.copy()
-        if self.df is not None and PREDICATE_MODIFIER not in self.df.columns:
+        if PREDICATE_MODIFIER not in self.df.columns:
             merge_on.remove(PREDICATE_MODIFIER)
 
         self.df = (
@@ -723,12 +796,12 @@ def merge_msdf(
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
     # df_merged = reduce(
     #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-    #     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    #     [msdf.df for msdf in msdf_with_meta],
     # )
     # Concat is an alternative to merge when columns are not the same.
     df_merged = reduce(
         lambda left, right: pd.concat([left, right], axis=0, ignore_index=True),
-        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+        [msdf.df for msdf in msdf_with_meta],
     ).drop_duplicates(ignore_index=True)
 
     converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
@@ -774,10 +847,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
-    if df is None:
-        raise ValueError(
-            "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
-        )
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
@@ -902,18 +971,19 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
     :return: MappingSetDataFrame with metadata as columns
     """
+    # TODO add this into the "standardize" function introduced in
+    #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
     with open(SCHEMA_YAML) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
-    if msdf.metadata is not None and msdf.df is not None:
-        for k, v in msdf.metadata.items():
-            if k not in msdf.df.columns and k in slots:
-                if k == MAPPING_SET_ID:
-                    k = MAPPING_SET_SOURCE
-                if isinstance(v, list):
-                    v = "|".join(x for x in v)
-                msdf.df[k] = str(v)
+    for k, v in msdf.metadata.items():
+        if k not in msdf.df.columns and k in slots:
+            if k == MAPPING_SET_ID:
+                k = MAPPING_SET_SOURCE
+            if isinstance(v, list):
+                v = "|".join(x for x in v)
+            msdf.df[k] = str(v)
     return msdf
 
 
@@ -948,6 +1018,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     :param msdoc: MappingSetDocument object
     :return: Dictionary containing metadata
     """
+    # TODO mark as private
     meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
     for key in [
@@ -969,29 +1040,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     :param doc: MappingSetDocument object
     :return: MappingSetDataFrame object
     """
-    data = []
-    slots_with_double_as_range = [
-        s
-        for s in _get_sssom_schema_object().dict["slots"].keys()
-        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
-    ]
-    if doc.mapping_set.mappings is not None:
-        for mapping in doc.mapping_set.mappings:
-            m = get_dict_from_mapping(mapping)
-            data.append(m)
-    df = pd.DataFrame(data=data)
-    meta = extract_global_metadata(doc)
-    meta.pop(PREFIX_MAP_KEY, None)
-    # The following 3 lines are to remove columns
-    # where all values are blank.
-    df.replace("", np.nan, inplace=True)
-    df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
-    non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
-    non_double_cols = non_double_cols.replace(np.nan, "")
-    df[non_double_cols.columns] = non_double_cols
-    msdf = MappingSetDataFrame.with_converter(df=df, converter=doc.converter, metadata=meta)
-    msdf.df = sort_df_rows_columns(msdf.df)
-    return msdf
+    return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
 def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
@@ -1234,7 +1283,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
     :raises ValidationError: If slot is wrong.
     :return:  List of all prefixes.
     """
-    if not msdf.metadata or msdf.df is None or msdf.df.empty:
+    # FIXME investigate the logic for this function -
+    #  some of the falsy checks don't make sense
+    if not msdf.metadata or msdf.df.empty:
         return set()
 
     prefixes: Set[str] = set()
