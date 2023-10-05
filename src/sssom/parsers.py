@@ -54,11 +54,10 @@ from sssom.constants import (
     SSSOMSchemaView,
 )
 
-from .context import HINT, _get_built_in_prefix_map, ensure_converter
+from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
 from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
 from .util import (
-    PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
@@ -184,7 +183,7 @@ def _get_seperator_symbol_from_file_path(file):
 
 def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     **kwargs,
 ) -> MappingSetDataFrame:
@@ -229,7 +228,7 @@ def parse_sssom_table(
 
 def parse_sssom_rdf(
     file_path: str,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
     **kwargs
@@ -250,7 +249,7 @@ def parse_sssom_rdf(
 
 def parse_sssom_json(
     file_path: str,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
@@ -273,7 +272,7 @@ def parse_sssom_json(
 
 def parse_obographs_json(
     file_path: str,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -301,14 +300,14 @@ def parse_obographs_json(
 
 
 def _get_prefix_map_and_metadata(
-    prefix_map: HINT = None, meta: Optional[MetadataType] = None
+    prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
 ) -> Metadata:
-    if prefix_map and meta and PREFIX_MAP_KEY in meta:
+    if prefix_map and meta and CURIE_MAP in meta:
         logging.info(
             "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
             "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
         )
-        prefix_map = meta[PREFIX_MAP_KEY]
+        prefix_map = meta[CURIE_MAP]
     converter = ensure_converter(prefix_map)
     if meta is None:
         meta = Metadata.default().metadata
@@ -363,7 +362,7 @@ def _get_mdict_ms_and_bad_attrs(row: pd.Series, bad_attrs: Counter) -> Tuple[dic
 
 def parse_alignment_xml(
     file_path: str,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -387,7 +386,7 @@ def parse_alignment_xml(
 
 def from_sssom_dataframe(
     df: pd.DataFrame,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
@@ -424,7 +423,7 @@ def from_sssom_dataframe(
 
 def from_sssom_rdf(
     g: Graph,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
@@ -488,7 +487,7 @@ def from_sssom_rdf(
 
 def from_sssom_json(
     jsondoc: Union[str, dict, TextIO],
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Load a mapping set dataframe from a JSON object.
@@ -508,7 +507,7 @@ def from_sssom_json(
 
 def from_alignment_minidom(
     dom: Document,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -570,7 +569,7 @@ def _get_obographs_predicate_id(obographs_predicate: str):
 
 def from_obographs(
     jsondoc: Dict,
-    prefix_map: HINT = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -771,7 +770,7 @@ def _set_metadata_in_mapping_set(
         logging.info("Tried setting metadata but none provided.")
     else:
         for k, v in metadata.items():
-            if k != PREFIX_MAP_KEY:
+            if k != CURIE_MAP:
                 mapping_set[k] = v
 
 
@@ -827,7 +826,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
         logging.warning(f"No attr for {k} [{v} instances]")
     ms.mappings = mlist  # type: ignore
     for k, v in msdf.metadata.items():
-        if k != PREFIX_MAP_KEY:
+        if k != CURIE_MAP:
             ms[k] = _address_multivalued_slot(k, v)
     return MappingSetDocument(mapping_set=ms, converter=msdf.converter)
 
