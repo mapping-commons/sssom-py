@@ -80,7 +80,7 @@
 <span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -96,7 +96,7 @@
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span> <span class="k">as</span> <span class="n">SSSOM_Mapping</span>
-<span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">slots</span>
+<span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">slots</span>
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">COLUMN_INVERT_DICTIONARY</span><span class="p">,</span>
@@ -134,7 +134,13 @@
     <span class="n">UNKNOWN_IRI</span><span class="p">,</span>
     <span class="n">SSSOMSchemaView</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">,</span> <span class="n">_get_built_in_prefix_map</span><span class="p">,</span> <span class="n">get_converter</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HINT</span><span class="p">,</span>
+    <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">,</span>
+    <span class="n">_get_built_in_prefix_map</span><span class="p">,</span>
+    <span class="n">ensure_converter</span><span class="p">,</span>
+    <span class="n">get_converter</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">get_default_metadata</span>
 
@@ -179,6 +185,79 @@
             <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span>
             <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">get_default_metadata</span><span class="p">(),</span>
         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.from_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.from_mappings">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_mappings</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">mappings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SSSOM_Mapping</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">converter</span><span class="p">:</span> <span class="n">HINT</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate from a list of mappings, mapping set metadata, and an optional converter.&quot;&quot;&quot;</span>
+        <span class="c1"># This combines multiple pieces of metadata in the following priority order:</span>
+        <span class="c1">#  1. The explicitly given metadata passed to from_mappings()</span>
+        <span class="c1">#  2. The default metadata (which includes a dummy license and mapping set URI)</span>
+        <span class="n">chained_metadata</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span>
+            <span class="n">metadata</span> <span class="ow">or</span> <span class="p">{},</span>
+            <span class="n">get_default_metadata</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="n">mapping_set</span> <span class="o">=</span> <span class="n">MappingSet</span><span class="p">(</span><span class="n">mappings</span><span class="o">=</span><span class="n">mappings</span><span class="p">,</span> <span class="o">**</span><span class="n">chained_metadata</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.from_mapping_set"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.from_mapping_set">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_mapping_set</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">mapping_set</span><span class="p">:</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">HINT</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate from a mapping set and an optional converter.</span>
+
+<span class="sd">        :param mapping_set: A mapping set</span>
+<span class="sd">        :param converter: A prefix map or pre-instantiated converter. If none given, uses a default</span>
+<span class="sd">            prefix map derived from the Bioregistry.</span>
+<span class="sd">        :returns: A mapping set dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">MappingSetDocument</span><span class="p">(</span><span class="n">converter</span><span class="o">=</span><span class="n">ensure_converter</span><span class="p">(</span><span class="n">converter</span><span class="p">),</span> <span class="n">mapping_set</span><span class="o">=</span><span class="n">mapping_set</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_mapping_set_document</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.from_mapping_set_document"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.from_mapping_set_document">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_mapping_set_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate from a mapping set document.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">converter</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">get_dict_from_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">extract_global_metadata</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># remove columns where all values are blank.</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># remove columns with all row = &#39;None&#39;-s.</span>
+
+        <span class="n">slots_with_double_as_range</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">slot</span>
+            <span class="k">for</span> <span class="n">slot</span><span class="p">,</span> <span class="n">slot_metadata</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">slot_metadata</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
+        <span class="p">}</span>
+        <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">slots_with_double_as_range</span><span class="p">)]</span>
+        <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">non_double_cols</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">non_double_cols</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_double_cols</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">sort_df_rows_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">with_converter</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.to_mapping_set_document"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.to_mapping_set_document">[docs]</a>    <span class="k">def</span> <span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDocument&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping set document.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
+
+        <span class="k">return</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.to_mapping_set"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.to_mapping_set">[docs]</a>    <span class="k">def</span> <span class="nf">to_mapping_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping set.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_mapping_set_document</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_set</span></div>
+
+<div class="viewcode-block" id="MappingSetDataFrame.to_mappings"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.to_mappings">[docs]</a>    <span class="k">def</span> <span class="nf">to_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SSSOM_Mapping</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping set.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_mapping_set</span><span class="p">()</span><span class="o">.</span><span class="n">mappings</span></div>
 
 <div class="viewcode-block" id="MappingSetDataFrame.clean_context"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.clean_context">[docs]</a>    <span class="k">def</span> <span class="nf">clean_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the context.&quot;&quot;&quot;</span>
@@ -1023,6 +1102,7 @@
 <span class="sd">    :param msdoc: MappingSetDocument object</span>
 <span class="sd">    :return: Dictionary containing metadata</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO mark as private</span>
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="n">PREFIX_MAP_KEY</span><span class="p">:</span> <span class="n">msdoc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">}</span>
     <span class="n">ms_meta</span> <span class="o">=</span> <span class="n">msdoc</span><span class="o">.</span><span class="n">mapping_set</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
@@ -1044,29 +1124,7 @@
 <span class="sd">    :param doc: MappingSetDocument object</span>
 <span class="sd">    :return: MappingSetDataFrame object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">slots_with_double_as_range</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">s</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
-    <span class="p">]</span>
-    <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">get_dict_from_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">meta</span> <span class="o">=</span> <span class="n">extract_global_metadata</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-    <span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="c1"># The following 3 lines are to remove columns</span>
-    <span class="c1"># where all values are blank.</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># remove columns with all row = &#39;None&#39;-s.</span>
-    <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">slots_with_double_as_range</span><span class="p">)]</span>
-    <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">non_double_cols</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">non_double_cols</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_double_cols</span>
-    <span class="n">msdf</span> <span class="o">=</span> <span class="n">MappingSetDataFrame</span><span class="o">.</span><span class="n">with_converter</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
-    <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">sort_df_rows_columns</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">msdf</span></div>
+    <span class="k">return</span> <span class="n">MappingSetDataFrame</span><span class="o">.</span><span class="n">from_mapping_set_document</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_dict_from_mapping"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_dict_from_mapping">[docs]</a><span class="k">def</span> <span class="nf">get_dict_from_mapping</span><span class="p">(</span><span class="n">map_obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">SSSOM_Mapping</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>

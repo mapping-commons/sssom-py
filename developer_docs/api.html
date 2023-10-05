@@ -457,6 +457,49 @@ listed in the ‘curie_map’.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.from_mapping_set">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mapping_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mapping_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mapping_set" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate from a mapping set and an optional converter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mapping_set</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code>) – A mapping set</p></li>
+<li><p><strong>converter</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – A prefix map or pre-instantiated converter. If none given, uses a default
+prefix map derived from the Bioregistry.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A mapping set dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.from_mapping_set_document">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mapping_set_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mapping_set_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mapping_set_document" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate from a mapping set document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.from_mappings">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mappings</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mappings" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate from a list of mappings, mapping set metadata, and an optional converter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.merge">
 <span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.merge" title="Permalink to this definition"></a></dt>
 <dd><p>Merge two MappingSetDataframes.</p>
@@ -504,6 +547,39 @@ if false, it simply return the merged data frame.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.to_mapping_set">
+<span class="sig-name descname"><span class="pre">to_mapping_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mapping_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mapping_set" title="Permalink to this definition"></a></dt>
+<dd><p>Get a mapping set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.to_mapping_set_document">
+<span class="sig-name descname"><span class="pre">to_mapping_set_document</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mapping_set_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mapping_set_document" title="Permalink to this definition"></a></dt>
+<dd><p>Get a mapping set document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.to_mappings">
+<span class="sig-name descname"><span class="pre">to_mappings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mappings" title="Permalink to this definition"></a></dt>
+<dd><p>Get a mapping set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
