@@ -60,8 +60,8 @@ from .constants import (
     SSSOMSchemaView,
 )
 from .context import (
-    HINT,
     SSSOM_BUILT_IN_PREFIXES,
+    ConverterHint,
     _get_built_in_prefix_map,
     ensure_converter,
     get_converter,
@@ -116,7 +116,7 @@ class MappingSetDataFrame:
         cls,
         mappings: List[SSSOM_Mapping],
         *,
-        converter: HINT = None,
+        converter: ConverterHint = None,
         metadata: Optional[MetadataType] = None,
     ) -> "MappingSetDataFrame":
         """Instantiate from a list of mappings, mapping set metadata, and an optional converter."""
@@ -132,7 +132,7 @@ class MappingSetDataFrame:
 
     @classmethod
     def from_mapping_set(
-        cls, mapping_set: MappingSet, *, converter: HINT = None
+        cls, mapping_set: MappingSet, *, converter: ConverterHint = None
     ) -> "MappingSetDataFrame":
         """Instantiate from a mapping set and an optional converter.
 
