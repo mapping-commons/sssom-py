@@ -229,18 +229,12 @@ class MappingSetDataFrame:
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
         description += f"Number of extended prefix map records: {len(self.converter.records)} \n"
-        if self.metadata is None:
-            description += "No metadata available \n"
-        else:
-            description += f"Metadata: {json.dumps(self.metadata)} \n"
-        if self.df is None:
-            description += "No dataframe available"
-        else:
-            description += f"Number of mappings: {len(self.df.index)} \n"
-            description += "\nFirst rows of data: \n"
-            description += self.df.head().to_string() + "\n"
-            description += "\nLast rows of data: \n"
-            description += self.df.tail().to_string() + "\n"
+        description += f"Metadata: {json.dumps(self.metadata)} \n"
+        description += f"Number of mappings: {len(self.df.index)} \n"
+        description += "\nFirst rows of data: \n"
+        description += self.df.head().to_string() + "\n"
+        description += "\nLast rows of data: \n"
+        description += self.df.tail().to_string() + "\n"
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
@@ -273,7 +267,7 @@ class MappingSetDataFrame:
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
         """
         merge_on = KEY_FEATURES.copy()
-        if self.df is not None and PREDICATE_MODIFIER not in self.df.columns:
+        if PREDICATE_MODIFIER not in self.df.columns:
             merge_on.remove(PREDICATE_MODIFIER)
 
         self.df = (
@@ -802,12 +796,12 @@ def merge_msdf(
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
     # df_merged = reduce(
     #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-    #     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    #     [msdf.df for msdf in msdf_with_meta],
     # )
     # Concat is an alternative to merge when columns are not the same.
     df_merged = reduce(
         lambda left, right: pd.concat([left, right], axis=0, ignore_index=True),
-        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+        [msdf.df for msdf in msdf_with_meta],
     ).drop_duplicates(ignore_index=True)
 
     converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
@@ -853,10 +847,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
-    if df is None:
-        raise ValueError(
-            "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
-        )
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
@@ -981,18 +971,19 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
     :return: MappingSetDataFrame with metadata as columns
     """
+    # TODO add this into the "standardize" function introduced in
+    #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
     with open(SCHEMA_YAML) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
-    if msdf.metadata is not None and msdf.df is not None:
-        for k, v in msdf.metadata.items():
-            if k not in msdf.df.columns and k in slots:
-                if k == MAPPING_SET_ID:
-                    k = MAPPING_SET_SOURCE
-                if isinstance(v, list):
-                    v = "|".join(x for x in v)
-                msdf.df[k] = str(v)
+    for k, v in msdf.metadata.items():
+        if k not in msdf.df.columns and k in slots:
+            if k == MAPPING_SET_ID:
+                k = MAPPING_SET_SOURCE
+            if isinstance(v, list):
+                v = "|".join(x for x in v)
+            msdf.df[k] = str(v)
     return msdf
 
 
@@ -1292,7 +1283,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
     :raises ValidationError: If slot is wrong.
     :return:  List of all prefixes.
     """
-    if not msdf.metadata or msdf.df is None or msdf.df.empty:
+    # FIXME investigate the logic for this function -
+    #  some of the falsy checks don't make sense
+    if not msdf.metadata or msdf.df.empty:
         return set()
 
     prefixes: Set[str] = set()
