@@ -12,9 +12,7 @@ from pansql import sqldf
 
 from sssom.validators import validate
 
-from .constants import (
-    SchemaValidationType,
-)
+from .constants import SchemaValidationType
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .typehints import get_metadata_and_prefix_map
 from .util import (

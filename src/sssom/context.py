@@ -2,7 +2,7 @@
 
 import json
 from functools import lru_cache
-from typing import Union
+from typing import Mapping, Union
 
 import curies
 import pkg_resources
@@ -10,7 +10,13 @@ from curies import Converter
 from rdflib.namespace import is_ncname
 
 from .constants import EXTENDED_PREFIX_MAP
-from .typehints import PrefixMap
+
+__all__ = [
+    "SSSOM_BUILT_IN_PREFIXES",
+    "get_converter",
+    "ConverterHint",
+    "ensure_converter",
+]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 SSSOM_CONTEXT = pkg_resources.resource_filename(
@@ -49,10 +55,16 @@ def _get_built_in_prefix_map() -> Converter:
     return Converter.from_prefix_map(prefix_map)
 
 
-HINT = Union[None, PrefixMap, Converter]
+#: A type hint that specifies a place where one of three options can be given:
+#:   1. a legacy prefix mapping dictionary can be given, which will get upgraded
+#:      into a :class:`curies.Converter`,
+#:   2. a converter can be given, which might get modified. In SSSOM-py, this typically
+#:      means chaining behind the "default" prefix map
+#:   3. None, which means a default converter is loaded
+ConverterHint = Union[None, Mapping[str, str], Converter]
 
 
-def ensure_converter(prefix_map: HINT = None, *, use_defaults: bool = True) -> Converter:
+def ensure_converter(prefix_map: ConverterHint = None, *, use_defaults: bool = True) -> Converter:
     """Ensure a converter is available.
 
     :param prefix_map: One of the following:

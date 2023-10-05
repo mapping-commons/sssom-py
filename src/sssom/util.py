@@ -27,6 +27,7 @@ from .constants import (
     COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
+    CURIE_MAP,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
@@ -60,8 +61,8 @@ from .constants import (
     SSSOMSchemaView,
 )
 from .context import (
-    HINT,
     SSSOM_BUILT_IN_PREFIXES,
+    ConverterHint,
     _get_built_in_prefix_map,
     ensure_converter,
     get_converter,
@@ -70,9 +71,6 @@ from .sssom_document import MappingSetDocument
 from .typehints import MetadataType, PrefixMap, get_default_metadata
 
 logging = _logging.getLogger(__name__)
-
-#: The key that's used in the YAML section of an SSSOM file
-PREFIX_MAP_KEY = "curie_map"
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
@@ -116,7 +114,7 @@ class MappingSetDataFrame:
         cls,
         mappings: List[SSSOM_Mapping],
         *,
-        converter: HINT = None,
+        converter: ConverterHint = None,
         metadata: Optional[MetadataType] = None,
     ) -> "MappingSetDataFrame":
         """Instantiate from a list of mappings, mapping set metadata, and an optional converter."""
@@ -132,7 +130,7 @@ class MappingSetDataFrame:
 
     @classmethod
     def from_mapping_set(
-        cls, mapping_set: MappingSet, *, converter: HINT = None
+        cls, mapping_set: MappingSet, *, converter: ConverterHint = None
     ) -> "MappingSetDataFrame":
         """Instantiate from a mapping set and an optional converter.
 
@@ -152,7 +150,7 @@ class MappingSetDataFrame:
 
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = extract_global_metadata(doc)
-        meta.pop(PREFIX_MAP_KEY, None)
+        meta.pop(CURIE_MAP, None)
 
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
@@ -1019,7 +1017,7 @@ def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
     :return: Dictionary containing metadata
     """
     # TODO mark as private
-    meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
+    meta = {CURIE_MAP: msdoc.prefix_map}
     ms_meta = msdoc.mapping_set
     for key in [
         slot
