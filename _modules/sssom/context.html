@@ -77,7 +77,7 @@
 
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">curies</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
@@ -85,7 +85,13 @@
 <span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">is_ncname</span>
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">EXTENDED_PREFIX_MAP</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">PrefixMap</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;SSSOM_BUILT_IN_PREFIXES&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_converter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ConverterHint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ensure_converter&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="n">SSSOM_BUILT_IN_PREFIXES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;sssom&quot;</span><span class="p">,</span> <span class="s2">&quot;owl&quot;</span><span class="p">,</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="s2">&quot;rdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">,</span> <span class="s2">&quot;semapv&quot;</span><span class="p">)</span>
 <span class="n">SSSOM_CONTEXT</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
@@ -124,10 +130,16 @@
     <span class="k">return</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
 
 
-<span class="n">HINT</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">Converter</span><span class="p">]</span>
+<span class="c1">#: A type hint that specifies a place where one of three options can be given:</span>
+<span class="c1">#:   1. a legacy prefix mapping dictionary can be given, which will get upgraded</span>
+<span class="c1">#:      into a :class:`curies.Converter`,</span>
+<span class="c1">#:   2. a converter can be given, which might get modified. In SSSOM-py, this typically</span>
+<span class="c1">#:      means chaining behind the &quot;default&quot; prefix map</span>
+<span class="c1">#:   3. None, which means a default converter is loaded</span>
+<span class="n">ConverterHint</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Converter</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ensure_converter"><a class="viewcode-back" href="../../sssom.html#sssom.context.ensure_converter">[docs]</a><span class="k">def</span> <span class="nf">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">:</span> <span class="n">HINT</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">use_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
+<div class="viewcode-block" id="ensure_converter"><a class="viewcode-back" href="../../sssom.html#sssom.context.ensure_converter">[docs]</a><span class="k">def</span> <span class="nf">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">use_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure a converter is available.</span>
 
 <span class="sd">    :param prefix_map: One of the following:</span>
