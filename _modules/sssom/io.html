@@ -90,6 +90,7 @@
 <span class="kn">from</span> <span class="nn">sssom.validators</span> <span class="kn">import</span> <span class="n">validate</span>
 
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CURIE_MAP</span><span class="p">,</span>
     <span class="n">DEFAULT_LICENSE</span><span class="p">,</span>
     <span class="n">PREFIX_MAP_MODE_MERGED</span><span class="p">,</span>
     <span class="n">PREFIX_MAP_MODE_METADATA_ONLY</span><span class="p">,</span>
@@ -100,7 +101,6 @@
 <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parsing_function</span><span class="p">,</span> <span class="n">parse_sssom_table</span><span class="p">,</span> <span class="n">split_dataframe</span>
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">generate_mapping_set_id</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">PREFIX_MAP_KEY</span><span class="p">,</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">are_params_slots</span><span class="p">,</span>
     <span class="n">augment_metadata</span><span class="p">,</span>
@@ -229,8 +229,8 @@
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_LICENSE</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No License provided, using </span><span class="si">{</span><span class="n">DEFAULT_LICENSE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">PREFIX_MAP_KEY</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">CURIE_MAP</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>

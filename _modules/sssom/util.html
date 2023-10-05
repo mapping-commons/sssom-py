@@ -102,6 +102,7 @@
     <span class="n">COLUMN_INVERT_DICTIONARY</span><span class="p">,</span>
     <span class="n">COMMENT</span><span class="p">,</span>
     <span class="n">CONFIDENCE</span><span class="p">,</span>
+    <span class="n">CURIE_MAP</span><span class="p">,</span>
     <span class="n">MAPPING_JUSTIFICATION</span><span class="p">,</span>
     <span class="n">MAPPING_SET_ID</span><span class="p">,</span>
     <span class="n">MAPPING_SET_SOURCE</span><span class="p">,</span>
@@ -145,9 +146,6 @@
 <span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">PrefixMap</span><span class="p">,</span> <span class="n">get_default_metadata</span>
 
 <span class="n">logging</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-<span class="c1">#: The key that&#39;s used in the YAML section of an SSSOM file</span>
-<span class="n">PREFIX_MAP_KEY</span> <span class="o">=</span> <span class="s2">&quot;curie_map&quot;</span>
 
 <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span> <span class="o">=</span> <span class="s2">&quot;turtle&quot;</span>
 
@@ -227,7 +225,7 @@
 
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">get_dict_from_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">)</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="n">extract_global_metadata</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">PREFIX_MAP_KEY</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># remove columns where all values are blank.</span>
         <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1094,7 +1092,7 @@
 <span class="sd">    :return: Dictionary containing metadata</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO mark as private</span>
-    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="n">PREFIX_MAP_KEY</span><span class="p">:</span> <span class="n">msdoc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">}</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="n">CURIE_MAP</span><span class="p">:</span> <span class="n">msdoc</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">}</span>
     <span class="n">ms_meta</span> <span class="o">=</span> <span class="n">msdoc</span><span class="o">.</span><span class="n">mapping_set</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
         <span class="n">slot</span>
