@@ -30,7 +30,7 @@ from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODES,
     SchemaValidationType,
-    SSSOMSchemaView,
+    _get_sssom_schema_object,
 )
 
 from . import __version__
@@ -63,9 +63,8 @@ from .writers import WRITER_FUNCTIONS, write_table
 
 logging = _logging.getLogger(__name__)
 
-SSSOM_SV_OBJECT = (
-    SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
-)
+SSSOM_SV_OBJECT = _get_sssom_schema_object()
+
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())

@@ -51,7 +51,7 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
-    SSSOMSchemaView,
+    _get_sssom_schema_object,
 )
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
@@ -335,9 +335,7 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
 
 def _get_mdict_ms_and_bad_attrs(row: pd.Series, bad_attrs: Counter) -> Tuple[dict, Counter]:
     mdict = {}
-    sssom_schema_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
-    )
+    sssom_schema_object = _get_sssom_schema_object()
     for k, v in row.items():
         if v and v == v:
             ok = False
