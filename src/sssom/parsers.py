@@ -333,7 +333,7 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     return MappingSet(mapping_set_id=mapping_set_id, license=license)
 
 
-def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> dict[str, Any]:
+def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
     mdict = {}
     sssom_schema_object = (
         SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
