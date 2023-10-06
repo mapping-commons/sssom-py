@@ -77,6 +77,7 @@
 
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
@@ -332,6 +333,15 @@
     <span class="k">def</span> <span class="nf">entity_reference_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of entity reference slots.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">all_slots</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_slot</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">==</span> <span class="n">ENTITY_REFERENCE</span><span class="p">]</span></div>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_get_sssom_schema_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SSSOMSchemaView</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a view over the SSSOM schema.&quot;&quot;&quot;</span>
+    <span class="n">sssom_sv_object</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">sssom_sv_object</span>
 
 
 <span class="n">SSSOM_URI_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;https://w3id.org/sssom/&quot;</span>
