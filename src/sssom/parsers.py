@@ -26,12 +26,9 @@ from sssom_schema import Mapping, MappingSet
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
-    DEFAULT_LICENSE,
     DEFAULT_MAPPING_PROPERTIES,
-    LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
-    MAPPING_SET_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -59,7 +56,6 @@ from .sssom_document import MappingSetDocument
 from .typehints import (
     MetadataType,
     _get_prefix_map_and_metadata,
-    generate_mapping_set_id,
     get_default_metadata,
 )
 from .util import (
@@ -312,15 +308,9 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
         return v
 
 
-def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
-    license = DEFAULT_LICENSE
-    mapping_set_id = generate_mapping_set_id()
-    if meta is not None:
-        if MAPPING_SET_ID in meta.keys():
-            mapping_set_id = meta[MAPPING_SET_ID]
-        if LICENSE in meta.keys():
-            license = meta[LICENSE]
-    return MappingSet(mapping_set_id=mapping_set_id, license=license)
+def _init_mapping_set(meta: Optional[MetadataType] = None) -> MappingSet:
+    _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
+    return MappingSet(mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"])
 
 
 def _get_mdict_ms_and_bad_attrs(row: pd.Series, bad_attrs: Counter) -> Tuple[dict, Counter]:
