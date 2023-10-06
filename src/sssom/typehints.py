@@ -2,10 +2,9 @@
 
 """Type hints for SSSOM."""
 
-import uuid
 from collections import ChainMap
 from pathlib import Path
-from typing import Any, Dict, NamedTuple, Optional, Union
+from typing import NamedTuple, Optional, Union
 
 import curies
 import yaml
@@ -13,25 +12,20 @@ from curies import Converter
 
 from .constants import (
     CURIE_MAP,
-    DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
-    SSSOM_URI_PREFIX,
+    MetadataType,
+    get_default_metadata,
 )
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter, get_converter
 
 __all__ = [
-    "MetadataType",
-    "generate_mapping_set_id",
-    "get_default_metadata",
+    "Metadata",
 ]
 
-#: TODO replace this with something more specific
-MetadataType = Dict[str, Any]
 
-
-class _MetadataPair(NamedTuple):
+class Metadata(NamedTuple):
     """A pair of a prefix map and associated metadata."""
 
     converter: Converter
@@ -51,22 +45,9 @@ class _MetadataPair(NamedTuple):
         )
 
 
-def generate_mapping_set_id() -> str:
-    """Generate a mapping set ID."""
-    return f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
-
-
-def get_default_metadata() -> MetadataType:
-    """Get default metadata."""
-    return {
-        "mapping_set_id": generate_mapping_set_id(),
-        "license": DEFAULT_LICENSE,
-    }
-
-
 def _get_prefix_map_and_metadata(
     prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
-) -> _MetadataPair:
+) -> Metadata:
     if meta is None:
         meta = get_default_metadata()
     converter = curies.chain(
@@ -76,12 +57,12 @@ def _get_prefix_map_and_metadata(
             ensure_converter(prefix_map, use_defaults=False),
         ]
     )
-    return _MetadataPair(converter=converter, metadata=meta)
+    return Metadata(converter=converter, metadata=meta)
 
 
 def _parse_file_metadata_helper(
     metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
-) -> _MetadataPair:
+) -> Metadata:
     """
     Load SSSOM metadata from a file, and then augments it with default prefixes.
 
@@ -90,7 +71,7 @@ def _parse_file_metadata_helper(
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
-        return _MetadataPair.default()
+        return Metadata.default()
 
     with Path(metadata_path).resolve().open() as file:
         metadata = yaml.safe_load(file)
@@ -100,7 +81,7 @@ def _parse_file_metadata_helper(
     converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
     converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
 
-    return _MetadataPair(converter=converter, metadata=metadata)
+    return Metadata(converter=converter, metadata=metadata)
 
 
 def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:

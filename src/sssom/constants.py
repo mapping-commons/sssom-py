@@ -1,8 +1,9 @@
 """Constants."""
 
 import pathlib
+import uuid
 from enum import Enum
-from typing import List
+from typing import Any, Dict, List
 
 import pkg_resources
 import yaml
@@ -261,3 +262,19 @@ class SSSOMSchemaView(object):
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
+
+#: The type for metadata that gets passed around in many places
+MetadataType = Dict[str, Any]
+
+
+def generate_mapping_set_id() -> str:
+    """Generate a mapping set ID."""
+    return f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
+
+
+def get_default_metadata() -> MetadataType:
+    """Get default metadata."""
+    return {
+        "mapping_set_id": generate_mapping_set_id(),
+        "license": DEFAULT_LICENSE,
+    }

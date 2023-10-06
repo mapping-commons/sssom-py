@@ -48,16 +48,14 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
+    MetadataType,
     SSSOMSchemaView,
+    get_default_metadata,
 )
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import (
-    MetadataType,
-    _get_prefix_map_and_metadata,
-    get_default_metadata,
-)
+from .typehints import _get_prefix_map_and_metadata
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
