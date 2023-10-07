@@ -80,27 +80,27 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    metadata = get_metadata_and_prefix_map(
+    converter, meta = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, converter)
 
     # if mapping_predicates:
     doc = parse_func(
         input_path,
-        prefix_map=metadata.prefix_map,
-        meta=metadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     # else:
     #     doc = parse_func(
     #         input_path,
-    #         prefix_map=metadata.prefix_map,
-    #         meta=metadata.metadata,
+    #         prefix_map=converter,
+    #         meta=meta,
     #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!

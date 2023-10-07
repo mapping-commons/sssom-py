@@ -13,10 +13,11 @@ from xml.dom import minidom
 import numpy as np
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 
 from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX
-from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
+from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
     _open_input,
@@ -28,7 +29,7 @@ from sssom.parsers import (
     from_sssom_rdf,
     parse_sssom_table,
 )
-from sssom.typehints import Metadata
+from sssom.typehints import get_default_metadata
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir
@@ -65,12 +66,13 @@ class TestParse(unittest.TestCase):
 
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
             df_meta = yaml.safe_load(file)
-            self.df_prefix_map = df_meta.pop(CURIE_MAP)
+            self.df_converter = Converter.from_prefix_map(df_meta.pop(CURIE_MAP))
             self.df_meta = df_meta
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
         self.alignmentxml = minidom.parse(self.alignmentxml_file)
-        self.metadata = Metadata.default()
+        self.metadata = get_default_metadata()
+        self.converter = get_converter()
 
     def test_parse_sssom_dataframe_from_file(self):
         """Test parsing a TSV."""
@@ -117,8 +119,8 @@ class TestParse(unittest.TestCase):
         """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs,
-            prefix_map=self.metadata.prefix_map,
-            meta=self.metadata.metadata,
+            prefix_map=self.converter,
+            meta=self.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
         with open(path, "w") as file:
@@ -131,7 +133,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_tsv(self):
         """Test parsing TSV."""
-        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta)
+        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_converter, meta=self.df_meta)
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
@@ -145,8 +147,8 @@ class TestParse(unittest.TestCase):
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml,
-            prefix_map=self.metadata.prefix_map,
-            meta=self.metadata.metadata,
+            prefix_map=self.converter,
+            meta=self.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
         with open(path, "w") as file:
@@ -244,9 +246,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
-        msdf = from_sssom_rdf(
-            g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata.metadata
-        )
+        msdf = from_sssom_rdf(g=self.rdf_graph, prefix_map=self.df_converter, meta=self.metadata)
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
@@ -260,8 +260,8 @@ class TestParse(unittest.TestCase):
         """Test parsing JSON."""
         msdf = from_sssom_json(
             jsondoc=self.json,
-            prefix_map=self.df_prefix_map,
-            meta=self.metadata.metadata,
+            prefix_map=self.df_converter,
+            meta=self.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")
         with open(path, "w") as file:
