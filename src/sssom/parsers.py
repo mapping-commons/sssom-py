@@ -8,7 +8,7 @@ import re
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Union, cast
+from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -55,7 +55,6 @@ from sssom.constants import (
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import _get_prefix_map_and_metadata
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -296,6 +295,21 @@ def parse_obographs_json(
         meta=meta,
         mapping_predicates=mapping_predicates,
     )
+
+
+def _get_prefix_map_and_metadata(
+    prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
+) -> Tuple[Converter, MetadataType]:
+    if meta is None:
+        meta = get_default_metadata()
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
+    return converter, meta
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:

@@ -18,22 +18,7 @@ from .constants import (
     MetadataType,
     get_default_metadata,
 )
-from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter, get_converter
-
-
-def _get_prefix_map_and_metadata(
-    prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
-) -> Tuple[Converter, MetadataType]:
-    if meta is None:
-        meta = get_default_metadata()
-    converter = curies.chain(
-        [
-            _get_built_in_prefix_map(),
-            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
-            ensure_converter(prefix_map, use_defaults=False),
-        ]
-    )
-    return converter, meta
+from .context import get_converter
 
 
 def _parse_file_metadata_helper(
