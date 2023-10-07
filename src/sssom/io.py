@@ -81,7 +81,7 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    converter, meta = _parse_file_metadata_helper(
+    converter, meta = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
@@ -134,11 +134,11 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-def _parse_file_metadata_helper(
+def get_metadata_and_prefix_map(
     metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
 ) -> Tuple[Converter, MetadataType]:
     """
-    Load SSSOM metadata from a file, and then augments it with default prefixes.
+    Load SSSOM metadata from a file, and then augment it with default prefixes.
 
     :param metadata_path: The metadata file in YAML format
     :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
@@ -153,7 +153,6 @@ def _parse_file_metadata_helper(
     metadata = dict(ChainMap(metadata, get_default_metadata()))
 
     converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
-
     # FIXME just remove this functionality and use the same chain as everywhere else
     if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
         pass
@@ -163,6 +162,7 @@ def _parse_file_metadata_helper(
         converter = curies.chain([converter, get_converter()])
     else:
         raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+
     return converter, metadata
 
 
