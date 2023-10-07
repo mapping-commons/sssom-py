@@ -149,8 +149,7 @@ class MappingSetDataFrame:
             return cls(df=pd.DataFrame(), converter=doc.converter)
 
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
-        meta = extract_global_metadata(doc)
-        meta.pop(CURIE_MAP, None)
+        meta = _extract_global_metadata(doc)
 
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
@@ -1010,14 +1009,13 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
+def _extract_global_metadata(msdoc: MappingSetDocument) -> MetadataType:
     """Extract metadata.
 
     :param msdoc: MappingSetDocument object
     :return: Dictionary containing metadata
     """
-    # TODO mark as private
-    meta = {CURIE_MAP: msdoc.prefix_map}
+    meta = {}
     ms_meta = msdoc.mapping_set
     for key in [
         slot
