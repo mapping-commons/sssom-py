@@ -329,7 +329,7 @@ class TestParse(unittest.TestCase):
         with open(outfile, "w") as f:
             parse_file(
                 input_path=hp_json,
-                prefix_map_mode="merged",
+                merge_mode="merged",
                 clean_prefixes=True,
                 input_format="obographs-json",
                 metadata_path=hp_meta,
