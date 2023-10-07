@@ -7,7 +7,7 @@ import os
 import re
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
-from functools import lru_cache, partial, reduce
+from functools import partial, reduce
 from pathlib import Path
 from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
@@ -58,7 +58,7 @@ from .constants import (
     SUBJECT_SOURCE,
     UNKNOWN_IRI,
     MetadataType,
-    SSSOMSchemaView,
+    _get_sssom_schema_object,
     get_default_metadata,
 )
 from .context import (
@@ -1372,14 +1372,6 @@ def are_params_slots(params: dict) -> bool:
             f"The params are invalid: {invalids}. Should be any of the following: {_get_sssom_schema_object().mapping_set_slots}"
         )
     return True
-
-
-@lru_cache(1)
-def _get_sssom_schema_object() -> SSSOMSchemaView:
-    sssom_sv_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
-    )
-    return sssom_sv_object
 
 
 def invert_mappings(

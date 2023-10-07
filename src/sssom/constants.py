@@ -3,6 +3,7 @@
 import pathlib
 import uuid
 from enum import Enum
+from functools import lru_cache
 from typing import Any, Dict, List
 
 import pkg_resources
@@ -258,6 +259,15 @@ class SSSOMSchemaView(object):
     def entity_reference_slots(self) -> List[str]:
         """Return list of entity reference slots."""
         return [c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE]
+
+
+@lru_cache(1)
+def _get_sssom_schema_object() -> SSSOMSchemaView:
+    """Get a view over the SSSOM schema."""
+    sssom_sv_object = (
+        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
+    )
+    return sssom_sv_object
 
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
