@@ -126,8 +126,10 @@ class TestParse(unittest.TestCase):
         with open(path, "w") as file:
             write_table(msdf, file)
         self.assertEqual(
+            # this number went up from 8099 when the curies.Converter was introduced
+            # since it was able to handle CURIE prefix and URI prefix synonyms
+            8488,
             len(msdf.df),
-            8099,
             f"{self.obographs_file} has the wrong number of mappings.",
         )
 
