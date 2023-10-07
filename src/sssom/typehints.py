@@ -31,11 +31,6 @@ class Metadata(NamedTuple):
     converter: Converter
     metadata: MetadataType
 
-    @property
-    def prefix_map(self):
-        """Get the bimap."""
-        return self.converter.bimap
-
 
 def _get_prefix_map_and_metadata(
     prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None

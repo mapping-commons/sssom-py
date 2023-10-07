@@ -239,7 +239,7 @@ def parse_sssom_rdf(
 
     g = Graph()
     g.parse(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_rdf(g, prefix_map=metadata.converter, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -259,7 +259,7 @@ def parse_sssom_json(
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.converter, meta=metadata.metadata)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -292,7 +292,7 @@ def parse_obographs_json(
 
     return from_obographs(
         jsondoc,
-        prefix_map=_xmetadata.prefix_map,
+        prefix_map=_xmetadata.converter,
         meta=_xmetadata.metadata,
         mapping_predicates=mapping_predicates,
     )
@@ -342,7 +342,7 @@ def parse_alignment_xml(
     xmldoc = minidom.parse(file_path)
     msdf = from_alignment_minidom(
         xmldoc,
-        prefix_map=metadata.prefix_map,
+        prefix_map=metadata.converter,
         meta=metadata.metadata,
         mapping_predicates=mapping_predicates,
     )
