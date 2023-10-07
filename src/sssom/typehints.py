@@ -55,17 +55,14 @@ def _parse_file_metadata_helper(
     metadata = dict(ChainMap(metadata, get_default_metadata()))
 
     converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
-    converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
 
-    return converter, metadata
-
-
-def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:
-    """Merge the metadata's converter with the default converter."""
+    # FIXME just remove this functionality and use the same chain as everywhere else
     if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
-        return converter
-    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
-        return get_converter()
-    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-        return curies.chain([converter, get_converter()])
-    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+        pass
+    elif prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+        converter = get_converter()
+    elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+        converter = curies.chain([converter, get_converter()])
+    else:
+        raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+    return converter, metadata
