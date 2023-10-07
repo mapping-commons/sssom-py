@@ -36,14 +36,6 @@ class Metadata(NamedTuple):
         """Get the bimap."""
         return self.converter.bimap
 
-    @classmethod
-    def default(cls):
-        """Get default metadata."""
-        return cls(
-            converter=get_converter(),
-            metadata=get_default_metadata(),
-        )
-
 
 def _get_prefix_map_and_metadata(
     prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
@@ -71,7 +63,10 @@ def _parse_file_metadata_helper(
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
-        return Metadata.default()
+        return Metadata(
+            converter=get_converter(),
+            metadata=get_default_metadata(),
+        )
 
     with Path(metadata_path).resolve().open() as file:
         metadata = yaml.safe_load(file)
