@@ -21,10 +21,11 @@ from .constants import (
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     MetadataType,
+    PrefixMapModeType,
     SchemaValidationType,
     get_default_metadata,
 )
-from .context import get_converter
+from .context import _get_built_in_prefix_map, get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .util import (
     MappingSetDataFrame,
@@ -60,7 +61,7 @@ def parse_file(
     output: TextIO,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
-    prefix_map_mode: Optional[str] = None,
+    prefix_map_mode: Optional[PrefixMapModeType] = None,
     clean_prefixes: bool = True,
     strict_clean_prefixes: bool = True,
     embedded_mode: bool = True,
@@ -74,16 +75,14 @@ def parse_file(
     :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
         to be used during parse.
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
-        the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
+        the SSSOM default prefix map.
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
     :param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    converter, meta = get_metadata_and_prefix_map(
-        metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
-    )
+    converter, meta = read_metadata(path=metadata_path, mode=prefix_map_mode)
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
@@ -134,34 +133,33 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-def get_metadata_and_prefix_map(
-    metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
+def read_metadata(
+    path: Union[None, str, Path] = None, *, mode: Optional[PrefixMapModeType] = None
 ) -> Tuple[Converter, MetadataType]:
     """
-    Load SSSOM metadata from a file, and then augment it with default prefixes.
+    Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
 
-    :param metadata_path: The metadata file in YAML format
-    :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: a prefix map dictionary and a metadata object dictionary
+    :param path: The metadata file in YAML format
+    :param mode: one of metadata_only, sssom_default_only, merged
+    :return: A converter and remaining metadata from the YAML file
     """
-    if metadata_path is None:
+    if path is None:
         return get_converter(), get_default_metadata()
 
-    with Path(metadata_path).resolve().open() as file:
+    with Path(path).resolve().open() as file:
         metadata = yaml.safe_load(file)
 
     metadata = dict(ChainMap(metadata, get_default_metadata()))
-
     converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
-    # FIXME just remove this functionality and use the same chain as everywhere else
-    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
-        pass
-    elif prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+
+    if mode is None or mode == PREFIX_MAP_MODE_METADATA_ONLY:
+        converter = curies.chain([_get_built_in_prefix_map(), converter])
+    elif mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
         converter = get_converter()
-    elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-        converter = curies.chain([converter, get_converter()])
+    elif mode == PREFIX_MAP_MODE_MERGED:
+        converter = curies.chain([_get_built_in_prefix_map(), converter, get_converter()])
     else:
-        raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+        raise ValueError(f"Invalid prefix map mode: {mode}")
 
     return converter, metadata
 

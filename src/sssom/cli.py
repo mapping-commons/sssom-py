@@ -174,7 +174,7 @@ def convert(input: str, output: TextIO, output_format: str):
     required=True,
     type=click.Choice(PREFIX_MAP_MODES, case_sensitive=False),
     help="Defines whether the prefix map in the metadata should be extended or replaced with "
-    "the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged",
+    "the SSSOM default prefix map.",
 )
 @click.option(
     "-p",
