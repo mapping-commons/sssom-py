@@ -283,7 +283,29 @@ def generate_mapping_set_id() -> str:
 
 
 def get_default_metadata() -> MetadataType:
-    """Get default metadata."""
+    """Get default metadata.
+
+    :returns: A metadata dictionary containing a default
+        license with value :data:`DEFAULT_LICENSE` and an
+        auto-generated mapping set ID
+
+    If you want to combine some metadata you loaded
+    but ensure that there is also default metadata,
+    the best tool is :class:`collections.ChainMap`.
+    You can do:
+
+    .. code-block:: python
+
+        my_metadata: dict | None = ...
+
+        from collections import ChainMap
+        from sssom import get_default_metadata
+
+        metadata = dict(ChainMap(
+            my_metadata or {},
+            get_default_metadata()
+        ))
+    """
     return {
         "mapping_set_id": generate_mapping_set_id(),
         "license": DEFAULT_LICENSE,
