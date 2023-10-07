@@ -4,7 +4,7 @@
 
 from collections import ChainMap
 from pathlib import Path
-from typing import NamedTuple, Optional, Union
+from typing import Optional, Tuple, Union
 
 import curies
 import yaml
@@ -20,21 +20,10 @@ from .constants import (
 )
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter, get_converter
 
-__all__ = [
-    "Metadata",
-]
-
-
-class Metadata(NamedTuple):
-    """A pair of a prefix map and associated metadata."""
-
-    converter: Converter
-    metadata: MetadataType
-
 
 def _get_prefix_map_and_metadata(
     prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
-) -> Metadata:
+) -> Tuple[Converter, MetadataType]:
     if meta is None:
         meta = get_default_metadata()
     converter = curies.chain(
@@ -44,12 +33,12 @@ def _get_prefix_map_and_metadata(
             ensure_converter(prefix_map, use_defaults=False),
         ]
     )
-    return Metadata(converter=converter, metadata=meta)
+    return converter, meta
 
 
 def _parse_file_metadata_helper(
     metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
-) -> Metadata:
+) -> Tuple[Converter, MetadataType]:
     """
     Load SSSOM metadata from a file, and then augments it with default prefixes.
 
@@ -58,10 +47,7 @@ def _parse_file_metadata_helper(
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
-        return Metadata(
-            converter=get_converter(),
-            metadata=get_default_metadata(),
-        )
+        return get_converter(), get_default_metadata()
 
     with Path(metadata_path).resolve().open() as file:
         metadata = yaml.safe_load(file)
@@ -71,7 +57,7 @@ def _parse_file_metadata_helper(
     converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
     converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
 
-    return Metadata(converter=converter, metadata=metadata)
+    return converter, metadata
 
 
 def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:
