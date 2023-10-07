@@ -26,12 +26,9 @@ from sssom_schema import Mapping, MappingSet
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
-    DEFAULT_LICENSE,
     DEFAULT_MAPPING_PROPERTIES,
-    LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
-    MAPPING_SET_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -56,7 +53,7 @@ from sssom.constants import (
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
+from .typehints import Metadata, MetadataType, get_default_metadata
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -323,14 +320,12 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
-    license = DEFAULT_LICENSE
-    mapping_set_id = generate_mapping_set_id()
-    if meta is not None:
-        if MAPPING_SET_ID in meta.keys():
-            mapping_set_id = meta[MAPPING_SET_ID]
-        if LICENSE in meta.keys():
-            license = meta[LICENSE]
-    return MappingSet(mapping_set_id=mapping_set_id, license=license)
+    _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
+    mapping_set = MappingSet(
+        mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
+    )
+    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
+    return mapping_set
 
 
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
@@ -459,7 +454,6 @@ def from_sssom_rdf(
         _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
@@ -535,7 +529,6 @@ def from_alignment_minidom(
                     ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mapping_set_document = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
@@ -670,7 +663,6 @@ def from_obographs(
         raise Exception("No graphs element in obographs file, wrong format?")
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
@@ -807,7 +799,6 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
         _add_valid_mapping_to_list(mapping_dict, mapping_set.mappings)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
-    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
 
