@@ -134,6 +134,38 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
+def _parse_file_metadata_helper(
+    metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
+) -> Tuple[Converter, MetadataType]:
+    """
+    Load SSSOM metadata from a file, and then augments it with default prefixes.
+
+    :param metadata_path: The metadata file in YAML format
+    :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
+    :return: a prefix map dictionary and a metadata object dictionary
+    """
+    if metadata_path is None:
+        return get_converter(), get_default_metadata()
+
+    with Path(metadata_path).resolve().open() as file:
+        metadata = yaml.safe_load(file)
+
+    metadata = dict(ChainMap(metadata, get_default_metadata()))
+
+    converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
+
+    # FIXME just remove this functionality and use the same chain as everywhere else
+    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
+        pass
+    elif prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+        converter = get_converter()
+    elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+        converter = curies.chain([converter, get_converter()])
+    else:
+        raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+    return converter, metadata
+
+
 def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
@@ -339,35 +371,3 @@ def annotate_file(
     if output is not None:
         write_table(msdf, output)
     return msdf
-
-
-def _parse_file_metadata_helper(
-    metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
-) -> Tuple[Converter, MetadataType]:
-    """
-    Load SSSOM metadata from a file, and then augments it with default prefixes.
-
-    :param metadata_path: The metadata file in YAML format
-    :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: a prefix map dictionary and a metadata object dictionary
-    """
-    if metadata_path is None:
-        return get_converter(), get_default_metadata()
-
-    with Path(metadata_path).resolve().open() as file:
-        metadata = yaml.safe_load(file)
-
-    metadata = dict(ChainMap(metadata, get_default_metadata()))
-
-    converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
-
-    # FIXME just remove this functionality and use the same chain as everywhere else
-    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
-        pass
-    elif prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
-        converter = get_converter()
-    elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-        converter = curies.chain([converter, get_converter()])
-    else:
-        raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
-    return converter, metadata
