@@ -165,9 +165,7 @@ def get_metadata_and_prefix_map(
     return Metadata(converter=converter, metadata=metadata)
 
 
-def _merge_converter(
-    converter: Converter, mode: Optional[MergeMode] = None
-) -> Converter:
+def _merge_converter(converter: Converter, mode: Optional[MergeMode] = None) -> Converter:
     """Merge the metadata's converter with the default converter."""
     if mode is None or mode == PREFIX_MAP_MODE_METADATA_ONLY:
         return converter
