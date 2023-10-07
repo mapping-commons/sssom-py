@@ -27,7 +27,6 @@ from .constants import (
     COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
-    CURIE_MAP,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
@@ -68,7 +67,7 @@ from .context import (
     get_converter,
 )
 from .sssom_document import MappingSetDocument
-from .typehints import MetadataType, PrefixMap, get_default_metadata
+from .typehints import MetadataType, get_default_metadata
 
 logging = _logging.getLogger(__name__)
 
