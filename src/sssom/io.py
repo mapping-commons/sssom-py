@@ -72,9 +72,9 @@ def parse_file(
     :param output: The path to the output file.
     :param input_format: The string denoting the input format.
     :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
-        to be used during parse. Must be one of metadata_only, sssom_default_only, merged
+        to be used during parse.
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
-        the SSSOM default prefix map.
+        the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
     :param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
