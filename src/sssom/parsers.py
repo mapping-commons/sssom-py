@@ -233,11 +233,11 @@ def parse_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
     g.parse(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_rdf(g, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -253,11 +253,11 @@ def parse_sssom_json(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -283,15 +283,15 @@ def parse_obographs_json(
     """
     raise_for_bad_path(file_path)
 
-    _xmetadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
 
     return from_obographs(
         jsondoc,
-        prefix_map=_xmetadata.prefix_map,
-        meta=_xmetadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
 
@@ -354,13 +354,13 @@ def parse_alignment_xml(
     """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
     raise_for_bad_path(file_path)
 
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(file_path)
     msdf = from_alignment_minidom(
         xmldoc,
-        prefix_map=metadata.prefix_map,
-        meta=metadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     return msdf
