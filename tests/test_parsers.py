@@ -13,6 +13,7 @@ from xml.dom import minidom
 import numpy as np
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 
 from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
@@ -64,7 +65,7 @@ class TestParse(unittest.TestCase):
 
         with open(f"{test_data_dir}/basic-meta-external.yml") as file:
             df_meta = yaml.safe_load(file)
-            self.df_prefix_map = df_meta.pop(CURIE_MAP)
+            self.df_converter = Converter.from_prefix_map(df_meta.pop(CURIE_MAP))
             self.df_meta = df_meta
 
         self.alignmentxml_file = f"{test_data_dir}/oaei-ordo-hp.rdf"
@@ -117,21 +118,23 @@ class TestParse(unittest.TestCase):
         """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs,
-            prefix_map=self.converter.bimap,
+            prefix_map=self.converter,
             meta=self.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_obographs.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
         self.assertEqual(
+            # this number went up from 8099 when the curies.Converter was introduced
+            # since it was able to handle CURIE prefix and URI prefix synonyms
+            8488,
             len(msdf.df),
-            8099,
             f"{self.obographs_file} has the wrong number of mappings.",
         )
 
     def test_parse_tsv(self):
         """Test parsing TSV."""
-        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_prefix_map, meta=self.df_meta)
+        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_converter, meta=self.df_meta)
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
@@ -145,7 +148,7 @@ class TestParse(unittest.TestCase):
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml,
-            prefix_map=self.converter.bimap,
+            prefix_map=self.converter,
             meta=self.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_alignment_minidom.tsv")
@@ -244,7 +247,7 @@ class TestParse(unittest.TestCase):
 
     def test_parse_sssom_rdf(self):
         """Test parsing RDF."""
-        msdf = from_sssom_rdf(g=self.rdf_graph, prefix_map=self.df_prefix_map, meta=self.metadata)
+        msdf = from_sssom_rdf(g=self.rdf_graph, prefix_map=self.df_converter, meta=self.metadata)
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
         with open(path, "w") as file:
             write_table(msdf, file)
@@ -258,7 +261,7 @@ class TestParse(unittest.TestCase):
         """Test parsing JSON."""
         msdf = from_sssom_json(
             jsondoc=self.json,
-            prefix_map=self.df_prefix_map,
+            prefix_map=self.df_converter,
             meta=self.metadata,
         )
         path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")

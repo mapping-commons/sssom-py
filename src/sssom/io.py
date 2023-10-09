@@ -99,8 +99,8 @@ def parse_file(
     # else:
     #     doc = parse_func(
     #         input_path,
-    #         prefix_map=metadata.prefix_map,
-    #         meta=metadata.metadata,
+    #         prefix_map=converter,
+    #         meta=meta,
     #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!

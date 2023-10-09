@@ -1009,7 +1009,7 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-def _extract_global_metadata(msdoc: MappingSetDocument):
+def _extract_global_metadata(msdoc: MappingSetDocument) -> MetadataType:
     """Extract metadata.
 
     :param msdoc: MappingSetDocument object

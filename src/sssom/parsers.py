@@ -322,7 +322,11 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType] = None) -> MappingSet:
     _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
-    return MappingSet(mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"])
+    mapping_set = MappingSet(
+        mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
+    )
+    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
+    return mapping_set
 
 
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
@@ -451,7 +455,6 @@ def from_sssom_rdf(
         _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
@@ -527,7 +530,6 @@ def from_alignment_minidom(
                     ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mapping_set_document = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
@@ -662,7 +664,6 @@ def from_obographs(
         raise Exception("No graphs element in obographs file, wrong format?")
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
@@ -799,7 +800,6 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
         _add_valid_mapping_to_list(mapping_dict, mapping_set.mappings)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
-    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
 
