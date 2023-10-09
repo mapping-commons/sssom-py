@@ -4,7 +4,7 @@ import pathlib
 import uuid
 from enum import Enum
 from functools import lru_cache
-from typing import Any, Dict, List, Literal, get_args
+from typing import Any, Dict, List
 
 import pkg_resources
 import yaml
@@ -38,11 +38,14 @@ DEFAULT_MAPPING_PROPERTIES = [
 ]
 
 UNKNOWN_IRI = "http://w3id.org/sssom/unknown_prefix/"
-PrefixMapModeType = Literal["metadata_only", "sssom_default_only", "merged"]
-PREFIX_MAP_MODE_METADATA_ONLY: PrefixMapModeType = "metadata_only"
-PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY: PrefixMapModeType = "sssom_default_only"
-PREFIX_MAP_MODE_MERGED: PrefixMapModeType = "merged"
-PREFIX_MAP_MODES = get_args(PrefixMapModeType)
+PREFIX_MAP_MODE_METADATA_ONLY = "metadata_only"
+PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY = "sssom_default_only"
+PREFIX_MAP_MODE_MERGED = "merged"
+PREFIX_MAP_MODES = [
+    PREFIX_MAP_MODE_METADATA_ONLY,
+    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    PREFIX_MAP_MODE_MERGED,
+]
 ENTITY_REFERENCE = "EntityReference"
 
 # Slot Constants
