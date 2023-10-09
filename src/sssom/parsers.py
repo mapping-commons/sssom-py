@@ -320,7 +320,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
         return v
 
 
-def _init_mapping_set(meta: Optional[MetadataType] = None) -> MappingSet:
+def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
     mapping_set = MappingSet(
         mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
