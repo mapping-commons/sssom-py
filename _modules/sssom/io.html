@@ -155,27 +155,27 @@
 <span class="sd">    :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_metadata_and_prefix_map</span><span class="p">(</span>
+    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">get_metadata_and_prefix_map</span><span class="p">(</span>
         <span class="n">metadata_path</span><span class="o">=</span><span class="n">metadata_path</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="o">=</span><span class="n">prefix_map_mode</span>
     <span class="p">)</span>
     <span class="n">parse_func</span> <span class="o">=</span> <span class="n">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">,</span> <span class="n">input_path</span><span class="p">)</span>
     <span class="n">mapping_predicates</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># Get list of predicates of interest.</span>
     <span class="k">if</span> <span class="n">mapping_predicate_filter</span><span class="p">:</span>
-        <span class="n">mapping_predicates</span> <span class="o">=</span> <span class="n">get_list_of_predicate_iri</span><span class="p">(</span><span class="n">mapping_predicate_filter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
+        <span class="n">mapping_predicates</span> <span class="o">=</span> <span class="n">get_list_of_predicate_iri</span><span class="p">(</span><span class="n">mapping_predicate_filter</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
 
     <span class="c1"># if mapping_predicates:</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">parse_func</span><span class="p">(</span>
         <span class="n">input_path</span><span class="p">,</span>
-        <span class="n">prefix_map</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span>
-        <span class="n">meta</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span>
+        <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
         <span class="n">mapping_predicates</span><span class="o">=</span><span class="n">mapping_predicates</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="c1"># else:</span>
     <span class="c1">#     doc = parse_func(</span>
     <span class="c1">#         input_path,</span>
-    <span class="c1">#         prefix_map=metadata.prefix_map,</span>
-    <span class="c1">#         meta=metadata.metadata,</span>
+    <span class="c1">#         prefix_map=converter,</span>
+    <span class="c1">#         meta=meta,</span>
     <span class="c1">#     )</span>
     <span class="k">if</span> <span class="n">clean_prefixes</span><span class="p">:</span>
         <span class="c1"># We do this because we got a lot of prefixes from the default SSSOM prefixes!</span>

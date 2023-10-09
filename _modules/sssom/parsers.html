@@ -308,11 +308,11 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
     <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
     <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">serialisation</span><span class="p">)</span>
-    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_rdf</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_rdf</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="c1"># df: pd.DataFrame = msdf.df</span>
     <span class="c1"># if mapping_predicates and not df.empty():</span>
     <span class="c1">#     msdf.df = df[df[&quot;predicate_id&quot;].isin(mapping_predicates)]</span>
@@ -328,11 +328,11 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
         <span class="n">jsondoc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
-    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_json</span><span class="p">(</span><span class="n">jsondoc</span><span class="o">=</span><span class="n">jsondoc</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_json</span><span class="p">(</span><span class="n">jsondoc</span><span class="o">=</span><span class="n">jsondoc</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="c1"># df: pd.DataFrame = msdf.df</span>
     <span class="c1"># if mapping_predicates and not df.empty():</span>
     <span class="c1">#     msdf.df = df[df[&quot;predicate_id&quot;].isin(mapping_predicates)]</span>
@@ -358,15 +358,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 
-    <span class="n">_xmetadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
         <span class="n">jsondoc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">from_obographs</span><span class="p">(</span>
         <span class="n">jsondoc</span><span class="p">,</span>
-        <span class="n">prefix_map</span><span class="o">=</span><span class="n">_xmetadata</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span>
-        <span class="n">meta</span><span class="o">=</span><span class="n">_xmetadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span>
+        <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
         <span class="n">mapping_predicates</span><span class="o">=</span><span class="n">mapping_predicates</span><span class="p">,</span>
     <span class="p">)</span></div>
 
@@ -429,13 +429,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading from alignment API&quot;</span><span class="p">)</span>
     <span class="n">xmldoc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_alignment_minidom</span><span class="p">(</span>
         <span class="n">xmldoc</span><span class="p">,</span>
-        <span class="n">prefix_map</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">prefix_map</span><span class="p">,</span>
-        <span class="n">meta</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span>
+        <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span>
         <span class="n">mapping_predicates</span><span class="o">=</span><span class="n">mapping_predicates</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
