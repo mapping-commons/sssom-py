@@ -24,7 +24,7 @@ from .constants import (
     SchemaValidationType,
     get_default_metadata,
 )
-from .context import _get_built_in_prefix_map, get_converter
+from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .util import (
     MappingSetDataFrame,
