@@ -152,8 +152,7 @@ def get_metadata_and_prefix_map(
 
     metadata = dict(ChainMap(metadata, get_default_metadata()))
     converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
-    converter = _merge_converter(converter, prefix_map_mode)
-
+    converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
     return converter, metadata
 
 
