@@ -292,8 +292,8 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.get_metadata_and_prefix_map">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Permalink to this definition"></a></dt>
-<dd><p>Load SSSOM metadata from a file, and then augments it with default prefixes.</p>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Permalink to this definition"></a></dt>
+<dd><p>Load SSSOM metadata from a YAML file, and then augment it with default prefixes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -302,10 +302,10 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a prefix map dictionary and a metadata object dictionary</p>
+<dd class="field-odd"><p>A converter and remaining metadata from the YAML file</p>
 </dd>
 </dl>
 </dd></dl>

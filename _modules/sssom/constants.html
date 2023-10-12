@@ -76,9 +76,10 @@
 <span></span><span class="sd">&quot;&quot;&quot;Constants.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
@@ -346,6 +347,44 @@
 
 <span class="n">SSSOM_URI_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;https://w3id.org/sssom/&quot;</span>
 <span class="n">DEFAULT_LICENSE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">license/unspecified&quot;</span>
+
+<span class="c1">#: The type for metadata that gets passed around in many places</span>
+<span class="n">MetadataType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="generate_mapping_set_id"><a class="viewcode-back" href="../../sssom.html#sssom.constants.generate_mapping_set_id">[docs]</a><span class="k">def</span> <span class="nf">generate_mapping_set_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mapping set ID.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings/</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_default_metadata"><a class="viewcode-back" href="../../sssom.html#sssom.constants.get_default_metadata">[docs]</a><span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">MetadataType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get default metadata.</span>
+
+<span class="sd">    :returns: A metadata dictionary containing a default</span>
+<span class="sd">        license with value :data:`DEFAULT_LICENSE` and an</span>
+<span class="sd">        auto-generated mapping set ID</span>
+
+<span class="sd">    If you want to combine some metadata you loaded</span>
+<span class="sd">    but ensure that there is also default metadata,</span>
+<span class="sd">    the best tool is :class:`collections.ChainMap`.</span>
+<span class="sd">    You can do:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        my_metadata: dict | None = ...</span>
+
+<span class="sd">        from collections import ChainMap</span>
+<span class="sd">        from sssom import get_default_metadata</span>
+
+<span class="sd">        metadata = dict(ChainMap(</span>
+<span class="sd">            my_metadata or {},</span>
+<span class="sd">            get_default_metadata()</span>
+<span class="sd">        ))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;mapping_set_id&quot;</span><span class="p">:</span> <span class="n">generate_mapping_set_id</span><span class="p">(),</span>
+        <span class="s2">&quot;license&quot;</span><span class="p">:</span> <span class="n">DEFAULT_LICENSE</span><span class="p">,</span>
+    <span class="p">}</span></div>
 </pre></div>
 
            </div>

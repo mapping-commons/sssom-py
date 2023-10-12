@@ -84,14 +84,6 @@ sssom.sssom\_document module
    :undoc-members:
    :show-inheritance:
 
-sssom.typehints module
-----------------------
-
-.. automodule:: sssom.typehints
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 sssom.util module
 -----------------
 

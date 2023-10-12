@@ -83,7 +83,7 @@
 <span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">minidom</span>
 <span class="kn">from</span> <span class="nn">xml.dom.minidom</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -123,12 +123,13 @@
     <span class="n">SUBJECT_LABEL</span><span class="p">,</span>
     <span class="n">SUBJECT_SOURCE</span><span class="p">,</span>
     <span class="n">SUBJECT_SOURCE_ID</span><span class="p">,</span>
+    <span class="n">MetadataType</span><span class="p">,</span>
     <span class="n">_get_sssom_schema_object</span><span class="p">,</span>
+    <span class="n">get_default_metadata</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">ConverterHint</span><span class="p">,</span> <span class="n">_get_built_in_prefix_map</span><span class="p">,</span> <span class="n">ensure_converter</span>
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
-<span class="kn">from</span> <span class="nn">.typehints</span> <span class="kn">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">,</span> <span class="n">get_default_metadata</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
     <span class="n">URI_SSSOM_MAPPINGS</span><span class="p">,</span>
@@ -373,17 +374,17 @@
 
 <span class="k">def</span> <span class="nf">_get_prefix_map_and_metadata</span><span class="p">(</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">prefix_map</span> <span class="ow">and</span> <span class="n">meta</span> <span class="ow">and</span> <span class="n">CURIE_MAP</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Prefix map provided as parameter, but SSSOM file provides its own prefix map. &quot;</span>
-            <span class="s2">&quot;Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file.&quot;</span>
-        <span class="p">)</span>
-        <span class="n">prefix_map</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]</span>
-    <span class="n">converter</span> <span class="o">=</span> <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Converter</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">meta</span> <span class="o">=</span> <span class="n">Metadata</span><span class="o">.</span><span class="n">default</span><span class="p">()</span><span class="o">.</span><span class="n">metadata</span>
-    <span class="k">return</span> <span class="n">Metadata</span><span class="p">(</span><span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">get_default_metadata</span><span class="p">()</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">_get_built_in_prefix_map</span><span class="p">(),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{})),</span>
+            <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span>
 
 
 <span class="k">def</span> <span class="nf">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>

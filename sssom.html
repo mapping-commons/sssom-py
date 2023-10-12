@@ -190,6 +190,13 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <section id="module-sssom.constants">
 <span id="sssom-constants-module"></span><h2>sssom.constants module<a class="headerlink" href="#module-sssom.constants" title="Permalink to this heading"></a></h2>
 <p>Constants.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="sssom.constants.MetadataType">
+<span class="sig-prename descclassname"><span class="pre">sssom.constants.</span></span><span class="sig-name descname"><span class="pre">MetadataType</span></span><a class="headerlink" href="#sssom.constants.MetadataType" title="Permalink to this definition"></a></dt>
+<dd><p>The type for metadata that gets passed around in many places</p>
+<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.constants.SEMAPV">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.constants.</span></span><span class="sig-name descname"><span class="pre">SEMAPV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/constants.html#SEMAPV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.constants.SEMAPV" title="Permalink to this definition"></a></dt>
@@ -344,6 +351,48 @@ Implemented via PR: <a class="reference external" href="https://github.com/mappi
 <span class="sig-name descname"><span class="pre">Sparql</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Sparql'</span></em><a class="headerlink" href="#sssom.constants.SchemaValidationType.Sparql" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.constants.generate_mapping_set_id">
+<span class="sig-prename descclassname"><span class="pre">sssom.constants.</span></span><span class="sig-name descname"><span class="pre">generate_mapping_set_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/constants.html#generate_mapping_set_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.constants.generate_mapping_set_id" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a mapping set ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.constants.get_default_metadata">
+<span class="sig-prename descclassname"><span class="pre">sssom.constants.</span></span><span class="sig-name descname"><span class="pre">get_default_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/constants.html#get_default_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.constants.get_default_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Get default metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A metadata dictionary containing a default
+license with value <code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_LICENSE</span></code> and an
+auto-generated mapping set ID</p>
+</dd>
+</dl>
+<p>If you want to combine some metadata you loaded
+but ensure that there is also default metadata,
+the best tool is <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.ChainMap</span></code>.
+You can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
+<span class="kn">from</span> <span class="nn">sssom</span> <span class="kn">import</span> <span class="n">get_default_metadata</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ChainMap</span><span class="p">(</span>
+    <span class="n">my_metadata</span> <span class="ow">or</span> <span class="p">{},</span>
+    <span class="n">get_default_metadata</span><span class="p">()</span>
+<span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -531,8 +580,8 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.get_metadata_and_prefix_map">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Permalink to this definition"></a></dt>
-<dd><p>Load SSSOM metadata from a file, and then augments it with default prefixes.</p>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Permalink to this definition"></a></dt>
+<dd><p>Load SSSOM metadata from a YAML file, and then augment it with default prefixes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -541,10 +590,10 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#sssom.typehints.Metadata" title="sssom.typehints.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a prefix map dictionary and a metadata object dictionary</p>
+<dd class="field-odd"><p>A converter and remaining metadata from the YAML file</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1003,42 +1052,6 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Get a prefix map.</p>
 </dd></dl>
 
-</dd></dl>
-
-</section>
-<section id="module-sssom.typehints">
-<span id="sssom-typehints-module"></span><h2>sssom.typehints module<a class="headerlink" href="#module-sssom.typehints" title="Permalink to this heading"></a></h2>
-<p>Type hints for SSSOM.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="sssom.typehints.Metadata">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.typehints.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/typehints.html#Metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.typehints.Metadata" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
-<p>A pair of a prefix map and associated metadata.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sssom.typehints.Metadata.converter">
-<span class="sig-name descname"><span class="pre">converter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></em><a class="headerlink" href="#sssom.typehints.Metadata.converter" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sssom.typehints.Metadata.default">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/typehints.html#Metadata.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.typehints.Metadata.default" title="Permalink to this definition"></a></dt>
-<dd><p>Get default metadata.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sssom.typehints.Metadata.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code><span class="pre">]</span></em><a class="headerlink" href="#sssom.typehints.Metadata.metadata" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="sssom.typehints.MetadataType">
-<span class="sig-prename descclassname"><span class="pre">sssom.typehints.</span></span><span class="sig-name descname"><span class="pre">MetadataType</span></span><a class="headerlink" href="#sssom.typehints.MetadataType" title="Permalink to this definition"></a></dt>
-<dd><p>TODO replace this with something more specific</p>
-<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>]</p>
 </dd></dl>
 
 </section>
