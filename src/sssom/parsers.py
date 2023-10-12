@@ -8,7 +8,7 @@ import re
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Union, cast
+from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -48,12 +48,13 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
+    MetadataType,
     _get_sssom_schema_object,
+    get_default_metadata,
 )
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, get_default_metadata
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -298,17 +299,17 @@ def parse_obographs_json(
 
 def _get_prefix_map_and_metadata(
     prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
-) -> Metadata:
-    if prefix_map and meta and CURIE_MAP in meta:
-        logging.info(
-            "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
-            "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
-        )
-        prefix_map = meta[CURIE_MAP]
-    converter = ensure_converter(prefix_map)
+) -> Tuple[Converter, MetadataType]:
     if meta is None:
-        meta = Metadata.default().metadata
-    return Metadata(converter=converter, metadata=meta)
+        meta = get_default_metadata()
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
+    return converter, meta
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:

@@ -3,8 +3,9 @@
 import logging
 import os
 import re
+from collections import ChainMap
 from pathlib import Path
-from typing import List, Optional, TextIO, Union
+from typing import List, Optional, TextIO, Tuple, Union
 
 import curies
 import pandas as pd
@@ -16,15 +17,15 @@ from sssom.validators import validate
 
 from .constants import (
     CURIE_MAP,
-    DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    MetadataType,
     SchemaValidationType,
+    get_default_metadata,
 )
 from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata, generate_mapping_set_id
 from .util import (
     MappingSetDataFrame,
     are_params_slots,
@@ -134,34 +135,25 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 
 def get_metadata_and_prefix_map(
-    metadata_path: Union[None, str, Path] = None, prefix_map_mode: Optional[str] = None
-) -> Metadata:
+    metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[str] = None
+) -> Tuple[Converter, MetadataType]:
     """
-    Load SSSOM metadata from a file, and then augments it with default prefixes.
+    Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
 
     :param metadata_path: The metadata file in YAML format
     :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: a prefix map dictionary and a metadata object dictionary
+    :return: A converter and remaining metadata from the YAML file
     """
     if metadata_path is None:
-        return Metadata.default()
+        return get_converter(), get_default_metadata()
 
     with Path(metadata_path).resolve().open() as file:
         metadata = yaml.safe_load(file)
-    if not metadata.get("mapping_set_id"):
-        metadata["mapping_set_id"] = generate_mapping_set_id()
-    if not metadata.get("license"):
-        metadata["license"] = DEFAULT_LICENSE
-        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
 
-    if CURIE_MAP in metadata:
-        prefix_map = metadata.pop(CURIE_MAP)
-    else:
-        prefix_map = {}
-    converter = Converter.from_prefix_map(prefix_map)
+    metadata = dict(ChainMap(metadata, get_default_metadata()))
+    converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
     converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
-
-    return Metadata(converter=converter, metadata=metadata)
+    return converter, metadata
 
 
 def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:

@@ -16,7 +16,7 @@ import yaml
 from curies import Converter
 from rdflib import Graph
 
-from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX
+from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
@@ -29,7 +29,6 @@ from sssom.parsers import (
     from_sssom_rdf,
     parse_sssom_table,
 )
-from sssom.typehints import get_default_metadata
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import write_table
 from tests.test_data import data_dir as test_data_dir

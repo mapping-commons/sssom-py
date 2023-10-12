@@ -57,7 +57,9 @@ from .constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     UNKNOWN_IRI,
+    MetadataType,
     _get_sssom_schema_object,
+    get_default_metadata,
 )
 from .context import (
     SSSOM_BUILT_IN_PREFIXES,
@@ -67,7 +69,6 @@ from .context import (
     get_converter,
 )
 from .sssom_document import MappingSetDocument
-from .typehints import MetadataType, get_default_metadata
 
 logging = _logging.getLogger(__name__)
 

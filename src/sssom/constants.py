@@ -1,9 +1,10 @@
 """Constants."""
 
 import pathlib
+import uuid
 from enum import Enum
 from functools import lru_cache
-from typing import List
+from typing import Any, Dict, List
 
 import pkg_resources
 import yaml
@@ -271,3 +272,41 @@ def _get_sssom_schema_object() -> SSSOMSchemaView:
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
+
+#: The type for metadata that gets passed around in many places
+MetadataType = Dict[str, Any]
+
+
+def generate_mapping_set_id() -> str:
+    """Generate a mapping set ID."""
+    return f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
+
+
+def get_default_metadata() -> MetadataType:
+    """Get default metadata.
+
+    :returns: A metadata dictionary containing a default
+        license with value :data:`DEFAULT_LICENSE` and an
+        auto-generated mapping set ID
+
+    If you want to combine some metadata you loaded
+    but ensure that there is also default metadata,
+    the best tool is :class:`collections.ChainMap`.
+    You can do:
+
+    .. code-block:: python
+
+        my_metadata: dict | None = ...
+
+        from collections import ChainMap
+        from sssom import get_default_metadata
+
+        metadata = dict(ChainMap(
+            my_metadata or {},
+            get_default_metadata()
+        ))
+    """
+    return {
+        "mapping_set_id": generate_mapping_set_id(),
+        "license": DEFAULT_LICENSE,
+    }
