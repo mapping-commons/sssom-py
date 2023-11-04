@@ -245,9 +245,7 @@ class MappingSetDataFrame:
         """
         prefixes_in_table = get_prefixes_used_in_table(self.df, converter=self.converter)
         if self.metadata:
-            prefixes_in_table.update(
-                get_prefixes_used_in_metadata(self.metadata, converter=self.converter)
-            )
+            prefixes_in_table.update(get_prefixes_used_in_metadata(self.metadata))
 
         missing_prefixes = prefixes_in_table - self.converter.get_prefixes()
         if missing_prefixes and strict:
@@ -298,9 +296,10 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
         - Otherwise, return the original value
     """
     if converter.is_uri(curie_or_iri):
-        return converter.standardize_uri(curie_or_iri, passthrough=True)
+        # TODO switch to compress
+        return converter.standardize_uri(curie_or_iri, strict=True)
     if converter.is_curie(curie_or_iri):
-        return converter.standardize_curie(curie_or_iri, passthrough=True)
+        return converter.standardize_curie(curie_or_iri, strict=True)
     return curie_or_iri
 
 
@@ -1099,11 +1098,6 @@ CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
 def is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
-    warnings.warn(
-        "Use :meth:`curies.Converter.is_curie` via a well-defined Converter instance",
-        DeprecationWarning,
-        stacklevel=2,
-    )
     return bool(CURIE_RE.match(string))
 
 
@@ -1117,12 +1111,12 @@ def is_iri(string: str) -> bool:
     return validators.url(string)
 
 
-def get_prefix_from_curie(curie: str, converter: Converter) -> str:
+def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
-    if not converter.is_curie(curie):
+    if is_curie(curie):
+        return curie.split(":")[0]
+    else:
         return ""
-    prefix, _identifier = converter.parse_curie(curie)
-    return prefix
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[str]:
@@ -1141,20 +1135,16 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
     return set(prefixes)
 
 
-def get_prefixes_used_in_metadata(meta: MetadataType, converter: Converter) -> Set[str]:
+def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     """Get a set of prefixes used in CURIEs in the metadata."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
     for value in meta.values():
         if isinstance(value, list):
-            prefixes.update(
-                prefix
-                for curie in value
-                if (prefix := get_prefix_from_curie(curie, converter=converter))
-            )
+            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
         else:
-            if prefix := get_prefix_from_curie(str(value), converter=converter):
+            if prefix := get_prefix_from_curie(str(value)):
                 prefixes.add(prefix)
     return prefixes
 
@@ -1182,7 +1172,7 @@ def filter_out_prefixes(
     selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
-        prefixes = {get_prefix_from_curie(curie, converter=converter) for curie in row[features]}
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
         if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
 
@@ -1211,14 +1201,8 @@ def filter_prefixes(
     rows = []
     selection = all if require_all_prefixes else any
 
-    # TODO check that filter prefixes are all valid against the converter
-
     for _, row in df.iterrows():
-        prefixes = {
-            get_prefix_from_curie(curie, converter=converter)
-            for curie in row[features]
-            if curie is not None
-        }
+        prefixes = {get_prefix_from_curie(curie) for curie in row[features] if curie is not None}
         if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
 
@@ -1323,18 +1307,18 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
             prefixes.update(
                 prefix
                 for curie in msdf.df[slot].unique()
-                if (prefix := get_prefix_from_curie(curie, converter=msdf.converter))
+                if (prefix := get_prefix_from_curie(curie))
             )
         elif isinstance(msdf.metadata[slot], list):
             for curie in msdf.metadata[slot]:
-                prefix = get_prefix_from_curie(curie, converter=msdf.converter)
+                prefix = get_prefix_from_curie(curie)
                 if not prefix:
                     raise ValidationError(
                         f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
                     )
                 prefixes.add(prefix)
         else:
-            prefix = get_prefix_from_curie(msdf.metadata[slot], converter=msdf.converter)
+            prefix = get_prefix_from_curie(msdf.metadata[slot])
             if not prefix:
                 logging.warning(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
                 continue
