@@ -52,6 +52,7 @@ class TestIO(unittest.TestCase):
             prefix_filter_list,
             self.features,
             require_all_prefixes=False,
+            converter=original_msdf.converter,
         )
         self.assertEqual(len(filtered_df), 136)
 
@@ -60,10 +61,11 @@ class TestIO(unittest.TestCase):
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
         filtered_df = filter_prefixes(
-            original_msdf.df,
+            original_msdf,
             prefix_filter_list,
             self.features,
             require_all_prefixes=True,
+            converter=original_msdf.converter,
         )
         self.assertEqual(len(filtered_df), 40)
 
@@ -76,6 +78,7 @@ class TestIO(unittest.TestCase):
             prefix_filter_list,
             self.features,
             require_all_prefixes=False,
+            converter=original_msdf.converter,
         )
         self.assertEqual(len(filtered_df), 5)
 
@@ -88,6 +91,7 @@ class TestIO(unittest.TestCase):
             prefix_filter_list,
             self.features,
             require_all_prefixes=True,
+            converter=original_msdf.converter,
         )
         self.assertEqual(len(filtered_df), 101)
 
@@ -95,7 +99,9 @@ class TestIO(unittest.TestCase):
         """Test remove mappings."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
-        filtered_df = filter_out_prefixes(original_msdf.df, prefix_filter_list, self.features)
+        filtered_df = filter_out_prefixes(
+            original_msdf.df, prefix_filter_list, self.features, converter=original_msdf.converter
+        )
         new_msdf = MappingSetDataFrame.with_converter(
             df=filtered_df,
             converter=original_msdf.converter,
@@ -110,7 +116,9 @@ class TestIO(unittest.TestCase):
         """Test clean prefix map."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
-        filtered_df = filter_out_prefixes(original_msdf.df, prefix_filter_list, self.features)
+        filtered_df = filter_out_prefixes(
+            original_msdf.df, prefix_filter_list, self.features, converter=original_msdf.converter
+        )
         new_msdf = MappingSetDataFrame.with_converter(
             df=filtered_df,
             converter=original_msdf.converter,

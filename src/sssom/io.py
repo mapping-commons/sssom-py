@@ -26,14 +26,7 @@ from .constants import (
 )
 from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .util import (
-    MappingSetDataFrame,
-    are_params_slots,
-    augment_metadata,
-    is_curie,
-    is_iri,
-    raise_for_bad_path,
-)
+from .util import MappingSetDataFrame, are_params_slots, augment_metadata, raise_for_bad_path
 from .writers import get_writer_function, write_table, write_tables
 
 
@@ -192,9 +185,9 @@ def extract_iri(input: str, converter: Converter) -> List[str]:
     :return: A list of IRIs.
     :rtype: list
     """
-    if is_iri(input):
+    if converter.is_uri(input):
         return [input]
-    elif is_curie(input):
+    elif converter.is_curie(input):
         p_iri = converter.expand(input)
         if p_iri:
             return [p_iri]

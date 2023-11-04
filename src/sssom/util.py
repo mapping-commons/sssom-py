@@ -5,6 +5,7 @@ import json
 import logging as _logging
 import os
 import re
+import warnings
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
@@ -244,7 +245,9 @@ class MappingSetDataFrame:
         """
         prefixes_in_table = get_prefixes_used_in_table(self.df, converter=self.converter)
         if self.metadata:
-            prefixes_in_table.update(get_prefixes_used_in_metadata(self.metadata))
+            prefixes_in_table.update(
+                get_prefixes_used_in_metadata(self.metadata, converter=self.converter)
+            )
 
         missing_prefixes = prefixes_in_table - self.converter.get_prefixes()
         if missing_prefixes and strict:
@@ -294,10 +297,10 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
         - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
         - Otherwise, return the original value
     """
-    if is_iri(curie_or_iri):
-        return converter.standardize_uri(curie_or_iri) or curie_or_iri
-    if is_curie(curie_or_iri):
-        return converter.standardize_curie(curie_or_iri) or curie_or_iri
+    if converter.is_uri(curie_or_iri):
+        return converter.standardize_uri(curie_or_iri, passthrough=True)
+    if converter.is_curie(curie_or_iri):
+        return converter.standardize_curie(curie_or_iri, passthrough=True)
     return curie_or_iri
 
 
@@ -1096,20 +1099,30 @@ CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
 
 def is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
+    warnings.warn(
+        "Use :meth:`curies.Converter.is_curie` via a well-defined Converter instance",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return bool(CURIE_RE.match(string))
 
 
 def is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
+    warnings.warn(
+        "Use :meth:`curies.Converter.is_uri` via a well-defined Converter instance",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return validators.url(string)
 
 
-def get_prefix_from_curie(curie: str) -> str:
+def get_prefix_from_curie(curie: str, converter: Converter) -> str:
     """Get the prefix from a CURIE."""
-    if is_curie(curie):
-        return curie.split(":")[0]
-    else:
+    if not converter.is_curie(curie):
         return ""
+    prefix, _identifier = converter.parse_curie(curie)
+    return prefix
 
 
 def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[str]:
@@ -1123,21 +1136,25 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
         prefixes.update(
             converter.parse_curie(row).prefix
             for row in df[col]
-            if not is_iri(row) and is_curie(row)
+            if not converter.is_uri(row) and converter.is_curie(row)
         )
     return set(prefixes)
 
 
-def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
+def get_prefixes_used_in_metadata(meta: MetadataType, converter: Converter) -> Set[str]:
     """Get a set of prefixes used in CURIEs in the metadata."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
     for value in meta.values():
         if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
+            prefixes.update(
+                prefix
+                for curie in value
+                if (prefix := get_prefix_from_curie(curie, converter=converter))
+            )
         else:
-            if prefix := get_prefix_from_curie(str(value)):
+            if prefix := get_prefix_from_curie(str(value), converter=converter):
                 prefixes.add(prefix)
     return prefixes
 
@@ -1147,6 +1164,8 @@ def filter_out_prefixes(
     filter_prefixes: List[str],
     features: Optional[list] = None,
     require_all_prefixes: bool = False,
+    *,
+    converter: Converter,
 ) -> pd.DataFrame:
     """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
 
@@ -1163,7 +1182,7 @@ def filter_out_prefixes(
     selection = all if require_all_prefixes else any
 
     for _, row in df.iterrows():
-        prefixes = {get_prefix_from_curie(curie) for curie in row[features]}
+        prefixes = {get_prefix_from_curie(curie, converter=converter) for curie in row[features]}
         if not selection(prefix in prefixes for prefix in filter_prefix_set):
             rows.append(row)
 
@@ -1175,6 +1194,8 @@ def filter_prefixes(
     filter_prefixes: List[str],
     features: Optional[list] = None,
     require_all_prefixes: bool = True,
+    *,
+    converter: Converter,
 ) -> pd.DataFrame:
     """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
 
@@ -1190,8 +1211,14 @@ def filter_prefixes(
     rows = []
     selection = all if require_all_prefixes else any
 
+    # TODO check that filter prefixes are all valid against the converter
+
     for _, row in df.iterrows():
-        prefixes = {get_prefix_from_curie(curie) for curie in row[features] if curie is not None}
+        prefixes = {
+            get_prefix_from_curie(curie, converter=converter)
+            for curie in row[features]
+            if curie is not None
+        }
         if selection(prefix in filter_prefix_set for prefix in prefixes):
             rows.append(row)
 
@@ -1296,18 +1323,18 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
             prefixes.update(
                 prefix
                 for curie in msdf.df[slot].unique()
-                if (prefix := get_prefix_from_curie(curie))
+                if (prefix := get_prefix_from_curie(curie, converter=msdf.converter))
             )
         elif isinstance(msdf.metadata[slot], list):
             for curie in msdf.metadata[slot]:
-                prefix = get_prefix_from_curie(curie)
+                prefix = get_prefix_from_curie(curie, converter=msdf.converter)
                 if not prefix:
                     raise ValidationError(
                         f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
                     )
                 prefixes.add(prefix)
         else:
-            prefix = get_prefix_from_curie(msdf.metadata[slot])
+            prefix = get_prefix_from_curie(msdf.metadata[slot], converter=msdf.converter)
             if not prefix:
                 logging.warning(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
                 continue
@@ -1461,7 +1488,7 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param converter: Converter used for compression
     :return: A CURIE
     """
-    if not is_curie(uri):
+    if not converter.is_curie(uri):
         return converter.compress_strict(uri)
     rv = converter.standardize_curie(uri)
     if rv is None:
