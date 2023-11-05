@@ -1130,7 +1130,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
         prefixes.update(
             converter.parse_curie(row).prefix
             for row in df[col]
-            if not converter.is_uri(row) and converter.is_curie(row)
+            if converter.is_curie(row)
         )
     return set(prefixes)
 
@@ -1154,8 +1154,6 @@ def filter_out_prefixes(
     filter_prefixes: List[str],
     features: Optional[list] = None,
     require_all_prefixes: bool = False,
-    *,
-    converter: Converter,
 ) -> pd.DataFrame:
     """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
 
@@ -1184,8 +1182,6 @@ def filter_prefixes(
     filter_prefixes: List[str],
     features: Optional[list] = None,
     require_all_prefixes: bool = True,
-    *,
-    converter: Converter,
 ) -> pd.DataFrame:
     """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
 
