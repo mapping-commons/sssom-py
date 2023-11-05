@@ -1128,9 +1128,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
         if col not in df.columns:
             continue
         prefixes.update(
-            converter.parse_curie(row).prefix
-            for row in df[col]
-            if converter.is_curie(row)
+            converter.parse_curie(row).prefix for row in df[col] if converter.is_curie(row)
         )
     return set(prefixes)
 
