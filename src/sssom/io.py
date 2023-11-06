@@ -6,7 +6,7 @@ import re
 from collections import ChainMap
 from itertools import chain
 from pathlib import Path
-from typing import List, Optional, TextIO, Tuple, Union
+from typing import Iterable, List, Optional, TextIO, Tuple, Union
 
 import curies
 import pandas as pd
@@ -161,7 +161,7 @@ def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Conve
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:
+def get_list_of_predicate_iri(predicate_filter: Iterable[str], converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
