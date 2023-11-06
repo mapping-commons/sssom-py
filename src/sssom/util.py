@@ -5,6 +5,7 @@ import json
 import logging as _logging
 import os
 import re
+import warnings
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
@@ -1092,22 +1093,49 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
+CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
+CURIE_RE = re.compile(CURIE_PATTERN)
 
 
 def is_curie(string: str) -> bool:
+    """Check if the string is a CURIE."""
+    warnings.warn(
+        "sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from "
+        "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
+        "your context's prefix map and using curies.Converter.is_curie(). If you're looking for global syntax "
+        f"checking for CURIEs, try matching against {CURIE_PATTERN}",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _is_curie(string)
+
+
+def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     return bool(CURIE_RE.match(string))
 
 
 def is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
+    warnings.warn(
+        "sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from "
+        "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
+        "your context's prefix map and using curies.Converter.is_uri(). If you're looking for a globally valid "
+        "URI checker, use validators.url()",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _is_iri(string)
+
+
+def _is_iri(string: str) -> bool:
+    """Check if the string is an IRI."""
     return validators.url(string)
 
 
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
-    if is_curie(curie):
+    if _is_curie(curie):
         return curie.split(":")[0]
     else:
         return ""
@@ -1127,7 +1155,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
             # we don't use the converter here since get_prefixes_used_in_table
             # is often used to identify prefixes that are not properly registered
             # in the converter
-            if not is_iri(row) and is_curie(row)
+            if not _is_iri(row) and _is_curie(row)
         )
     return set(prefixes)
 
