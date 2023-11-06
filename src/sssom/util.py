@@ -1103,11 +1103,6 @@ def is_curie(string: str) -> bool:
 
 def is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
-    warnings.warn(
-        "Use :meth:`curies.Converter.is_uri` via a well-defined Converter instance",
-        DeprecationWarning,
-        stacklevel=2,
-    )
     return validators.url(string)
 
 
@@ -1128,7 +1123,12 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
         if col not in df.columns:
             continue
         prefixes.update(
-            converter.parse_curie(row).prefix for row in df[col] if converter.is_curie(row)
+            converter.parse_curie(row).prefix
+            for row in df[col]
+            # we don't use the converter here since get_prefixes_used_in_table
+            # is often used to identify prefixes that are not properly registered
+            # in the converter
+            if not is_iri(row) and is_curie(row)
         )
     return set(prefixes)
 
