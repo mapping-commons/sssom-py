@@ -18,6 +18,7 @@ import pandas as pd
 import validators
 import yaml
 from curies import Converter
+from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
@@ -294,10 +295,12 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
         - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
         - Otherwise, return the original value
     """
-    if is_iri(curie_or_iri):
-        return converter.standardize_uri(curie_or_iri) or curie_or_iri
-    if is_curie(curie_or_iri):
-        return converter.standardize_curie(curie_or_iri) or curie_or_iri
+    if converter.is_uri(curie_or_iri):
+        # TODO switch to compress, or fully replace _standardize_curie_or_iri with
+        #  https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression
+        return converter.standardize_uri(curie_or_iri, strict=True)
+    if converter.is_curie(curie_or_iri):
+        return converter.standardize_curie(curie_or_iri, strict=True)
     return curie_or_iri
 
 
@@ -1091,22 +1094,47 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
+CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
+CURIE_RE = re.compile(CURIE_PATTERN)
 
 
+@deprecated(
+    deprecated_in="0.4.0",
+    details="sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from "
+    "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
+    "your context's prefix map and using curies.Converter.is_curie(). If you're looking for global syntax "
+    f"checking for CURIEs, try matching against {CURIE_PATTERN}",
+)
 def is_curie(string: str) -> bool:
+    """Check if the string is a CURIE."""
+    return _is_curie(string)
+
+
+def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     return bool(CURIE_RE.match(string))
 
 
+@deprecated(
+    deprecated_in="0.4.0",
+    details="sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from "
+    "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
+    "your context's prefix map and using curies.Converter.is_uri(). If you're looking for a globally valid "
+    "URI checker, use validators.url()",
+)
 def is_iri(string: str) -> bool:
+    """Check if the string is an IRI."""
+    return _is_iri(string)
+
+
+def _is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
     return validators.url(string)
 
 
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
-    if is_curie(curie):
+    if _is_curie(curie):
         return curie.split(":")[0]
     else:
         return ""
@@ -1123,7 +1151,10 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
         prefixes.update(
             converter.parse_curie(row).prefix
             for row in df[col]
-            if not is_iri(row) and is_curie(row)
+            # we don't use the converter here since get_prefixes_used_in_table
+            # is often used to identify prefixes that are not properly registered
+            # in the converter
+            if not _is_iri(row) and _is_curie(row)
         )
     return set(prefixes)
 
@@ -1461,7 +1492,9 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param converter: Converter used for compression
     :return: A CURIE
     """
-    if not is_curie(uri):
+    # TODO replace with https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression
+    #  when it's available
+    if not converter.is_curie(uri):
         return converter.compress_strict(uri)
     rv = converter.standardize_curie(uri)
     if rv is None:
