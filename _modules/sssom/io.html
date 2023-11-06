@@ -79,8 +79,9 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">curies</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -101,14 +102,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">get_converter</span>
 <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parsing_function</span><span class="p">,</span> <span class="n">parse_sssom_table</span><span class="p">,</span> <span class="n">split_dataframe</span>
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">MappingSetDataFrame</span><span class="p">,</span>
-    <span class="n">are_params_slots</span><span class="p">,</span>
-    <span class="n">augment_metadata</span><span class="p">,</span>
-    <span class="n">is_curie</span><span class="p">,</span>
-    <span class="n">is_iri</span><span class="p">,</span>
-    <span class="n">raise_for_bad_path</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">are_params_slots</span><span class="p">,</span> <span class="n">augment_metadata</span><span class="p">,</span> <span class="n">raise_for_bad_path</span>
 <span class="kn">from</span> <span class="nn">.writers</span> <span class="kn">import</span> <span class="n">get_writer_function</span><span class="p">,</span> <span class="n">write_table</span><span class="p">,</span> <span class="n">write_tables</span>
 
 
@@ -242,20 +236,14 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid prefix map mode: </span><span class="si">{</span><span class="n">prefix_map_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_list_of_predicate_iri"><a class="viewcode-back" href="../../sssom.html#sssom.io.get_list_of_predicate_iri">[docs]</a><span class="k">def</span> <span class="nf">get_list_of_predicate_iri</span><span class="p">(</span><span class="n">predicate_filter</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="get_list_of_predicate_iri"><a class="viewcode-back" href="../../sssom.html#sssom.io.get_list_of_predicate_iri">[docs]</a><span class="k">def</span> <span class="nf">get_list_of_predicate_iri</span><span class="p">(</span><span class="n">predicate_filter</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of IRIs for predicate CURIEs passed.</span>
 
 <span class="sd">    :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.</span>
 <span class="sd">    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</span>
 <span class="sd">    :return: A list of IRIs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pred_filter_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">predicate_filter</span><span class="p">)</span>
-    <span class="n">iri_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pred_filter_list</span><span class="p">:</span>
-        <span class="n">p_iri</span> <span class="o">=</span> <span class="n">extract_iri</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">p_iri</span><span class="p">:</span>
-            <span class="n">iri_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">p_iri</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">iri_list</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">extract_iri</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">predicate_filter</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="extract_iri"><a class="viewcode-back" href="../../sssom.html#sssom.io.extract_iri">[docs]</a><span class="k">def</span> <span class="nf">extract_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -267,25 +255,18 @@
 <span class="sd">    :return: A list of IRIs.</span>
 <span class="sd">    :rtype: list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">is_iri</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">input</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">is_curie</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-        <span class="n">p_iri</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">p_iri</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">p_iri</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">converter</span><span class="o">.</span><span class="n">is_uri</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">converter</span><span class="o">.</span><span class="n">standardize_uri</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">converter</span><span class="o">.</span><span class="n">is_curie</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
 
     <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
         <span class="n">pred_list</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">iri_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pred_list</span><span class="p">:</span>
-            <span class="n">p_iri</span> <span class="o">=</span> <span class="n">extract_iri</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">p_iri</span><span class="p">:</span>
-                <span class="n">iri_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">p_iri</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">iri_list</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">extract_iri</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pred_list</span><span class="p">)))</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2"> is neither a valid curie, nor an IRI, nor a local file path, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2"> is neither a local file path nor a valid CURIE or URI w.r.t. the given converter. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;skipped from processing.&quot;</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="p">[]</span></div>

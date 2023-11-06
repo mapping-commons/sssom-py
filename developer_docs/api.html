@@ -277,7 +277,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>predicate_filter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
+<li><p><strong>predicate_filter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
 <li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
@@ -1027,23 +1027,21 @@ just return inverted data.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.is_curie">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_curie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#is_curie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.is_curie" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the string is a CURIE.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
+<dd><p>Check if the string is a CURIE.
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on your context’s prefix map and using curies.Converter.is_curie(). If you’re looking for global syntax checking for CURIEs, try matching against [<a href="#id1"><span class="problematic" id="id2">A-Za-z0-9_</span></a>.]+[:][<a href="#id3"><span class="problematic" id="id4">A-Za-z0-9_</span></a>]</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.is_iri">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#is_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.is_iri" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the string is an IRI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
+<dd><p>Check if the string is an IRI.
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on your context’s prefix map and using curies.Converter.is_uri(). If you’re looking for a globally valid URI checker, use validators.url()</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
