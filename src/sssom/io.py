@@ -58,6 +58,7 @@ def convert_file(
 def parse_file(
     input_path: str,
     output: TextIO,
+    *,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
     prefix_map_mode: Optional[MergeMode] = None,
