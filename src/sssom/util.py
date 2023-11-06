@@ -5,7 +5,6 @@ import json
 import logging as _logging
 import os
 import re
-import warnings
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce

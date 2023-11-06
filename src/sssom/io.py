@@ -4,6 +4,7 @@ import logging
 import os
 import re
 from collections import ChainMap
+from itertools import chain
 from pathlib import Path
 from typing import List, Optional, TextIO, Tuple, Union
 
@@ -167,13 +168,7 @@ def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> 
     :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
-    pred_filter_list = list(predicate_filter)
-    iri_list = []
-    for p in pred_filter_list:
-        p_iri = extract_iri(p, converter)
-        if p_iri:
-            iri_list.extend(p_iri)
-    return list(set(iri_list))
+    return sorted(set(chain.from_iterable(extract_iri(p, converter) for p in predicate_filter)))
 
 
 def extract_iri(input: str, converter: Converter) -> List[str]:
@@ -186,20 +181,13 @@ def extract_iri(input: str, converter: Converter) -> List[str]:
     :rtype: list
     """
     if converter.is_uri(input):
-        return [input]
+        return [converter.standardize_uri(input, strict=True)]
     elif converter.is_curie(input):
-        p_iri = converter.expand(input)
-        if p_iri:
-            return [p_iri]
+        return [converter.expand(input, strict=True)]
 
     elif os.path.isfile(input):
         pred_list = Path(input).read_text().splitlines()
-        iri_list: List[str] = []
-        for p in pred_list:
-            p_iri = extract_iri(p, converter)
-            if p_iri:
-                iri_list.extend(p_iri)
-        return iri_list
+        return sorted(set(chain.from_iterable(extract_iri(p, converter) for p in pred_list)))
 
     else:
         logging.warning(
