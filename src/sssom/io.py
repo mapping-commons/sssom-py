@@ -60,7 +60,7 @@ def parse_file(
     output: TextIO,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
-    merge_mode: Optional[MergeMode] = None,
+    prefix_map_mode: Optional[MergeMode] = None,
     clean_prefixes: bool = True,
     strict_clean_prefixes: bool = True,
     embedded_mode: bool = True,
@@ -73,7 +73,7 @@ def parse_file(
     :param input_format: The string denoting the input format.
     :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
         to be used during parse.
-    :param merge_mode: Defines whether the prefix map in the metadata should be extended or replaced with
+    :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
         the SSSOM default prefix map derived from the :mod:`bioregistry`.
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
@@ -81,7 +81,9 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    metadata = get_metadata_and_prefix_map(metadata_path=metadata_path, merge_mode=merge_mode)
+    metadata = get_metadata_and_prefix_map(
+        metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
+    )
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
@@ -135,13 +137,13 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 def get_metadata_and_prefix_map(
     metadata_path: Union[None, str, Path] = None,
     *,
-    merge_mode: Optional[MergeMode] = None,
+    prefix_map_mode: Optional[MergeMode] = None,
 ) -> Metadata:
     """
     Load SSSOM metadata from a file, and then augments it with default prefixes.
 
     :param metadata_path: The metadata file in YAML format
-    :param merge_mode: one of metadata_only, sssom_default_only, merged
+    :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
     :return: a prefix map dictionary and a metadata object dictionary
     """
     if metadata_path is None:
@@ -160,20 +162,22 @@ def get_metadata_and_prefix_map(
     else:
         prefix_map = {}
     converter = Converter.from_prefix_map(prefix_map)
-    converter = _merge_converter(converter, mode=merge_mode)
+    converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
 
     return Metadata(converter=converter, metadata=metadata)
 
 
-def _merge_converter(converter: Converter, mode: Optional[MergeMode] = None) -> Converter:
+def _merge_converter(
+    converter: Converter, prefix_map_mode: Optional[MergeMode] = None
+) -> Converter:
     """Merge the metadata's converter with the default converter."""
-    if mode is None or mode == PREFIX_MAP_MODE_METADATA_ONLY:
+    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
         return converter
-    if mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
         return get_converter()
-    if mode == PREFIX_MAP_MODE_MERGED:
+    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
         return curies.chain([converter, get_converter()])
-    raise ValueError(f"Invalid prefix map mode: {mode}")
+    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
 def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:

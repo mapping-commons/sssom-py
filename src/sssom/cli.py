@@ -218,7 +218,7 @@ def parse(
         output=output,
         input_format=input_format,
         metadata_path=metadata,
-        merge_mode=prefix_map_mode,
+        prefix_map_mode=prefix_map_mode,
         clean_prefixes=clean_prefixes,
         strict_clean_prefixes=strict_clean_prefixes,
         embedded_mode=embedded_mode,
