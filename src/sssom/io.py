@@ -21,6 +21,7 @@ from .constants import (
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    MergeMode,
     MetadataType,
     SchemaValidationType,
     get_default_metadata,
@@ -52,9 +53,10 @@ def convert_file(
 def parse_file(
     input_path: str,
     output: TextIO,
+    *,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
-    prefix_map_mode: Optional[str] = None,
+    prefix_map_mode: Optional[MergeMode] = None,
     clean_prefixes: bool = True,
     strict_clean_prefixes: bool = True,
     embedded_mode: bool = True,
@@ -68,7 +70,7 @@ def parse_file(
     :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
         to be used during parse.
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
-        the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
+        the SSSOM default prefix map derived from the :mod:`bioregistry`.
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
     :param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
@@ -129,7 +131,7 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 
 def get_metadata_and_prefix_map(
-    metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[str] = None
+    metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
 ) -> Tuple[Converter, MetadataType]:
     """
     Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
@@ -150,7 +152,9 @@ def get_metadata_and_prefix_map(
     return converter, metadata
 
 
-def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Converter:
+def _merge_converter(
+    converter: Converter, prefix_map_mode: Optional[MergeMode] = None
+) -> Converter:
     """Merge the metadata's converter with the default converter."""
     if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
         return converter
