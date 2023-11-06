@@ -91,7 +91,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">get_args</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">import</span> <span class="nn">curies</span>
@@ -103,7 +103,7 @@
 
 <span class="kn">from</span> <span class="nn">sssom.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DEFAULT_VALIDATION_TYPES</span><span class="p">,</span>
-    <span class="n">PREFIX_MAP_MODES</span><span class="p">,</span>
+    <span class="n">MergeMode</span><span class="p">,</span>
     <span class="n">SchemaValidationType</span><span class="p">,</span>
     <span class="n">_get_sssom_schema_object</span><span class="p">,</span>
 <span class="p">)</span>
@@ -247,9 +247,9 @@
     <span class="n">default</span><span class="o">=</span><span class="s2">&quot;metadata_only&quot;</span><span class="p">,</span>
     <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">PREFIX_MAP_MODES</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">MergeMode</span><span class="p">),</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Defines whether the prefix map in the metadata should be extended or replaced with &quot;</span>
-    <span class="s2">&quot;the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;the SSSOM default prefix map.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
     <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
@@ -280,7 +280,7 @@
     <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">input_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">prefix_map_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">MergeMode</span><span class="p">,</span>
     <span class="n">clean_prefixes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">strict_clean_prefixes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
