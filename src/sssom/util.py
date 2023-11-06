@@ -1494,6 +1494,8 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param converter: Converter used for compression
     :return: A CURIE
     """
+    # TODO replace with https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression
+    #  when it's available
     if not converter.is_curie(uri):
         return converter.compress_strict(uri)
     rv = converter.standardize_curie(uri)
