@@ -82,7 +82,7 @@ def parse_file(
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, converter)
+        mapping_predicates = extract_iris(mapping_predicate_filter, converter)
 
     # if mapping_predicates:
     doc = parse_func(
@@ -161,39 +161,29 @@ def _merge_converter(converter: Converter, prefix_map_mode: str = None) -> Conve
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
-def get_list_of_predicate_iri(predicate_filter: Iterable[str], converter: Converter) -> list:
-    """Return a list of IRIs for predicate CURIEs passed.
-
-    :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
-    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
-    :return: A list of IRIs.
-    """
-    return sorted(set(chain.from_iterable(extract_iri(p, converter) for p in predicate_filter)))
-
-
-def extract_iri(input: str, converter: Converter) -> List[str]:
+def extract_iris(
+    input: Union[str, Path, Iterable[Union[str, Path]]], converter: Converter
+) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
     :param input: CURIE OR list of CURIEs OR file path containing the same.
     :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
-    :rtype: list
     """
+    if isinstance(input, (str, Path)) and os.path.isfile(input):
+        pred_list = Path(input).read_text().splitlines()
+        return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in pred_list)))
+    if isinstance(input, list):
+        return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in input)))
     if converter.is_uri(input):
         return [converter.standardize_uri(input, strict=True)]
-    elif converter.is_curie(input):
+    if converter.is_curie(input):
         return [converter.expand(input, strict=True)]
-
-    elif os.path.isfile(input):
-        pred_list = Path(input).read_text().splitlines()
-        return sorted(set(chain.from_iterable(extract_iri(p, converter) for p in pred_list)))
-
-    else:
-        logging.warning(
-            f"{input} is neither a local file path nor a valid CURIE or URI w.r.t. the given converter. "
-            f"skipped from processing."
-        )
+    logging.warning(
+        f"{input} is neither a local file path nor a valid CURIE or URI w.r.t. the given converter. "
+        f"skipped from processing."
+    )
     return []
 
 

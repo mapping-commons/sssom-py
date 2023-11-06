@@ -8,7 +8,7 @@ from curies import Converter, Record
 
 from sssom.constants import OBJECT_ID, SUBJECT_ID
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
-from sssom.io import get_list_of_predicate_iri
+from sssom.io import extract_iris
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
     MappingSetDataFrame,
@@ -33,10 +33,10 @@ class TestIO(unittest.TestCase):
 
     def test_broken_predicate_list(self):
         """Test merging of multiple msdfs."""
-        predicate_filter = ["skos:relatedMatch", f"{data_dir}/predicate_list3.txt"]
+        predicate_filter = ["skos:relatedMatch", [f"{data_dir}/predicate_list3.txt"]]
         prefix_map = {"skos": "http://www.w3.org/2004/02/skos/core#"}
         converter = Converter.from_prefix_map(prefix_map)
-        iri_list = get_list_of_predicate_iri(converter=converter, predicate_filter=predicate_filter)
+        iri_list = extract_iris(predicate_filter, converter=converter)
         self.assertEqual(
             [
                 "http://www.w3.org/2004/02/skos/core#narrowMatch",
