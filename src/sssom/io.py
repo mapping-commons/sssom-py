@@ -191,7 +191,7 @@ def extract_iri(input: str, converter: Converter) -> List[str]:
 
     else:
         logging.warning(
-            f"{input} is neither a valid curie, nor an IRI, nor a local file path, "
+            f"{input} is neither a local file path nor a valid CURIE or URI w.r.t. the given converter. "
             f"skipped from processing."
         )
     return []
