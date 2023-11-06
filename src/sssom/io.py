@@ -3,8 +3,10 @@
 import logging
 import os
 import re
+from collections import ChainMap
+from itertools import chain
 from pathlib import Path
-from typing import List, Optional, TextIO, Union
+from typing import Iterable, List, Optional, TextIO, Tuple, Union
 
 import curies
 import pandas as pd
@@ -16,24 +18,17 @@ from sssom.validators import validate
 
 from .constants import (
     CURIE_MAP,
-    DEFAULT_LICENSE,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
     MergeMode,
+    MetadataType,
     SchemaValidationType,
+    get_default_metadata,
 )
 from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata, generate_mapping_set_id
-from .util import (
-    MappingSetDataFrame,
-    are_params_slots,
-    augment_metadata,
-    is_curie,
-    is_iri,
-    raise_for_bad_path,
-)
+from .util import MappingSetDataFrame, are_params_slots, augment_metadata, raise_for_bad_path
 from .writers import get_writer_function, write_table, write_tables
 
 
@@ -82,27 +77,27 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    metadata = get_metadata_and_prefix_map(
+    converter, meta = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, metadata.converter)
+        mapping_predicates = get_list_of_predicate_iri(mapping_predicate_filter, converter)
 
     # if mapping_predicates:
     doc = parse_func(
         input_path,
-        prefix_map=metadata.prefix_map,
-        meta=metadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     # else:
     #     doc = parse_func(
     #         input_path,
-    #         prefix_map=metadata.prefix_map,
-    #         meta=metadata.metadata,
+    #         prefix_map=converter,
+    #         meta=meta,
     #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
@@ -136,36 +131,25 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 
 def get_metadata_and_prefix_map(
-    metadata_path: Union[None, str, Path] = None,
-    *,
-    prefix_map_mode: Optional[MergeMode] = None,
-) -> Metadata:
+    metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
+) -> Tuple[Converter, MetadataType]:
     """
-    Load SSSOM metadata from a file, and then augments it with default prefixes.
+    Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
 
     :param metadata_path: The metadata file in YAML format
     :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: a prefix map dictionary and a metadata object dictionary
+    :return: A converter and remaining metadata from the YAML file
     """
     if metadata_path is None:
-        return Metadata.default()
+        return get_converter(), get_default_metadata()
 
     with Path(metadata_path).resolve().open() as file:
         metadata = yaml.safe_load(file)
-    if not metadata.get("mapping_set_id"):
-        metadata["mapping_set_id"] = generate_mapping_set_id()
-    if not metadata.get("license"):
-        metadata["license"] = DEFAULT_LICENSE
-        logging.warning(f"No License provided, using {DEFAULT_LICENSE}")
 
-    if CURIE_MAP in metadata:
-        prefix_map = metadata.pop(CURIE_MAP)
-    else:
-        prefix_map = {}
-    converter = Converter.from_prefix_map(prefix_map)
+    metadata = dict(ChainMap(metadata, get_default_metadata()))
+    converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
     converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
-
-    return Metadata(converter=converter, metadata=metadata)
+    return converter, metadata
 
 
 def _merge_converter(
@@ -181,20 +165,14 @@ def _merge_converter(
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple, converter: Converter) -> list:
+def get_list_of_predicate_iri(predicate_filter: Iterable[str], converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
     :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
-    pred_filter_list = list(predicate_filter)
-    iri_list = []
-    for p in pred_filter_list:
-        p_iri = extract_iri(p, converter)
-        if p_iri:
-            iri_list.extend(p_iri)
-    return list(set(iri_list))
+    return sorted(set(chain.from_iterable(extract_iri(p, converter) for p in predicate_filter)))
 
 
 def extract_iri(input: str, converter: Converter) -> List[str]:
@@ -206,25 +184,18 @@ def extract_iri(input: str, converter: Converter) -> List[str]:
     :return: A list of IRIs.
     :rtype: list
     """
-    if is_iri(input):
-        return [input]
-    elif is_curie(input):
-        p_iri = converter.expand(input)
-        if p_iri:
-            return [p_iri]
+    if converter.is_uri(input):
+        return [converter.standardize_uri(input, strict=True)]
+    elif converter.is_curie(input):
+        return [converter.expand(input, strict=True)]
 
     elif os.path.isfile(input):
         pred_list = Path(input).read_text().splitlines()
-        iri_list: List[str] = []
-        for p in pred_list:
-            p_iri = extract_iri(p, converter)
-            if p_iri:
-                iri_list.extend(p_iri)
-        return iri_list
+        return sorted(set(chain.from_iterable(extract_iri(p, converter) for p in pred_list)))
 
     else:
         logging.warning(
-            f"{input} is neither a valid curie, nor an IRI, nor a local file path, "
+            f"{input} is neither a local file path nor a valid CURIE or URI w.r.t. the given converter. "
             f"skipped from processing."
         )
     return []

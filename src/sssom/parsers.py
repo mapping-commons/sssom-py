@@ -8,7 +8,7 @@ import re
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Union, cast
+from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -26,12 +26,9 @@ from sssom_schema import Mapping, MappingSet
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
-    DEFAULT_LICENSE,
     DEFAULT_MAPPING_PROPERTIES,
-    LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
-    MAPPING_SET_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -51,12 +48,13 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
+    MetadataType,
     _get_sssom_schema_object,
+    get_default_metadata,
 )
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, generate_mapping_set_id, get_default_metadata
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -236,11 +234,11 @@ def parse_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
     g.parse(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_rdf(g, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -256,11 +254,11 @@ def parse_sssom_json(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -286,32 +284,32 @@ def parse_obographs_json(
     """
     raise_for_bad_path(file_path)
 
-    _xmetadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
 
     return from_obographs(
         jsondoc,
-        prefix_map=_xmetadata.prefix_map,
-        meta=_xmetadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
 
 
 def _get_prefix_map_and_metadata(
     prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
-) -> Metadata:
-    if prefix_map and meta and CURIE_MAP in meta:
-        logging.info(
-            "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
-            "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
-        )
-        prefix_map = meta[CURIE_MAP]
-    converter = ensure_converter(prefix_map)
+) -> Tuple[Converter, MetadataType]:
     if meta is None:
-        meta = Metadata.default().metadata
-    return Metadata(converter=converter, metadata=meta)
+        meta = get_default_metadata()
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
+    return converter, meta
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
@@ -323,14 +321,12 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
-    license = DEFAULT_LICENSE
-    mapping_set_id = generate_mapping_set_id()
-    if meta is not None:
-        if MAPPING_SET_ID in meta.keys():
-            mapping_set_id = meta[MAPPING_SET_ID]
-        if LICENSE in meta.keys():
-            license = meta[LICENSE]
-    return MappingSet(mapping_set_id=mapping_set_id, license=license)
+    _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
+    mapping_set = MappingSet(
+        mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
+    )
+    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
+    return mapping_set
 
 
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
@@ -359,13 +355,13 @@ def parse_alignment_xml(
     """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
     raise_for_bad_path(file_path)
 
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(file_path)
     msdf = from_alignment_minidom(
         xmldoc,
-        prefix_map=metadata.prefix_map,
-        meta=metadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     return msdf
@@ -459,7 +455,6 @@ def from_sssom_rdf(
         _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
@@ -535,7 +530,6 @@ def from_alignment_minidom(
                     ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mapping_set_document = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
@@ -670,7 +664,6 @@ def from_obographs(
         raise Exception("No graphs element in obographs file, wrong format?")
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
@@ -807,7 +800,6 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
         _add_valid_mapping_to_list(mapping_dict, mapping_set.mappings)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
-    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
 
