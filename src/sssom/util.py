@@ -296,7 +296,8 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
         - Otherwise, return the original value
     """
     if converter.is_uri(curie_or_iri):
-        # TODO switch to compress
+        # TODO switch to compress, or fully replace _standardize_curie_or_iri with
+        #  https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression
         return converter.standardize_uri(curie_or_iri, strict=True)
     if converter.is_curie(curie_or_iri):
         return converter.standardize_curie(curie_or_iri, strict=True)
