@@ -509,21 +509,21 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="sssom.io.extract_iri">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#extract_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.extract_iri" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sssom.io.extract_iris">
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#extract_iris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.extract_iris" title="Permalink to this definition"></a></dt>
 <dd><p>Recursively extracts a list of IRIs from a string or file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
+<li><p><strong>input</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]]]) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
 <li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of IRIs.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of IRIs.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -576,6 +576,9 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dd class="field-odd"><p>A list of IRIs.</p>
 </dd>
 </dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>Use sssom.io.extract_iris() directly</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
