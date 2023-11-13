@@ -1053,7 +1053,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     slots = sssom_schema_object["slots"]
     enums_keys = sssom_schema_object["enums"].keys()
 
-    slots_with_double_as_range = [s for s in slots.keys() if slots[s]["range"] == "double"]
+    slots_with_double_as_range = [k for k, v in slots.items() if v["range"] == "double"]
 
     for property in map_obj:
         if map_obj[property] is not None:
