@@ -148,27 +148,24 @@ class MappingSetDataFrame:
         """Instantiate from a mapping set document."""
         if doc.mapping_set.mappings is None:
             return cls(df=pd.DataFrame(), converter=doc.converter)
-    
+
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = _extract_global_metadata(doc)
-    
+
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
-    
+
         slots = _get_sssom_schema_object().dict["slots"]
         slots_with_double_as_range = {
-            slot
-            for slot, slot_metadata in slots.items()
-            if slot_metadata["range"] == "double"
+            slot for slot, slot_metadata in slots.items() if slot_metadata["range"] == "double"
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
         non_double_cols = non_double_cols.replace(np.nan, "")
         df[non_double_cols.columns] = non_double_cols
-    
+
         df = sort_df_rows_columns(df)
         return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
-    
 
     def to_mapping_set_document(self) -> "MappingSetDocument":
         """Get a mapping set document."""
@@ -1056,11 +1053,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     slots = sssom_schema_object["slots"]
     enums_keys = sssom_schema_object["enums"].keys()
 
-    slots_with_double_as_range = [
-        s
-        for s in slots.keys()
-        if slots[s]["range"] == "double"
-    ]
+    slots_with_double_as_range = [s for s in slots.keys() if slots[s]["range"] == "double"]
 
     for property in map_obj:
         if map_obj[property] is not None:
@@ -1093,7 +1086,6 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
                 map_dict[property] = ""
 
     return map_dict
-
 
 
 CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
