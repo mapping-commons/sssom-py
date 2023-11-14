@@ -795,11 +795,17 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = None) -> MappingSet:
     mapping_set = _init_mapping_set(meta)
     bad_attrs: Counter = Counter()
-    for _, row in df.iterrows():
-        mapping_dict = _get_mapping_dict(row, bad_attrs)
-        _add_valid_mapping_to_list(mapping_dict, mapping_set.mappings)
+
+    df.apply(
+        lambda row: _add_valid_mapping_to_list(
+            _get_mapping_dict(row, bad_attrs), mapping_set.mappings
+        ),
+        axis=1,
+    )
+
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
+
     return mapping_set
 
 
