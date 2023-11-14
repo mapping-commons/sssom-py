@@ -4,7 +4,7 @@ import pathlib
 import uuid
 from enum import Enum
 from functools import lru_cache
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Set
 
 import pkg_resources
 import yaml
@@ -247,14 +247,14 @@ class SSSOMSchemaView(object):
         return self.view.get_class("mapping set").slots
 
     @property
-    def multivalued_slots(self) -> List[str]:
+    def multivalued_slots(self) -> Set[str]:
         """Return list of multivalued slots."""
-        return [c for c in self.view.all_slots() if self.view.get_slot(c).multivalued]
+        return {c for c in self.view.all_slots() if self.view.get_slot(c).multivalued}
 
     @property
-    def entity_reference_slots(self) -> List[str]:
+    def entity_reference_slots(self) -> Set[str]:
         """Return list of entity reference slots."""
-        return [c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE]
+        return {c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE}
 
 
 @lru_cache(1)

@@ -1140,7 +1140,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
     if df.empty:
         return prefixes
     sssom_schema_object = _get_sssom_schema_object()
-    entity_reference_slots = set(sssom_schema_object.entity_reference_slots) & set(df.columns)
+    entity_reference_slots = sssom_schema_object.entity_reference_slots & set(df.columns)
     new_prefixes = {
         converter.parse_curie(row).prefix
         for col in entity_reference_slots
