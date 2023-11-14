@@ -295,13 +295,7 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
         - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
         - Otherwise, return the original value
     """
-    if converter.is_uri(curie_or_iri):
-        # TODO switch to compress, or fully replace _standardize_curie_or_iri with
-        #  https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression
-        return converter.standardize_uri(curie_or_iri, strict=True)
-    if converter.is_curie(curie_or_iri):
-        return converter.standardize_curie(curie_or_iri, strict=True)
-    return curie_or_iri
+    return converter.compress_or_standardize(curie_or_iri, passthrough=True)
 
 
 def _standardize_metadata(
@@ -1492,13 +1486,4 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param converter: Converter used for compression
     :return: A CURIE
     """
-    # TODO replace with https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression
-    #  when it's available
-    if not converter.is_curie(uri):
-        return converter.compress_strict(uri)
-    rv = converter.standardize_curie(uri)
-    if rv is None:
-        raise ValueError(
-            f"CURIE appeared where there should be a URI, and could not be standardized: {uri}"
-        )
-    return rv
+    return converter.compress_or_standardize(uri, strict=True)
