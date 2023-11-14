@@ -803,8 +803,9 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
         axis=1,
     )
 
-    for k, v in bad_attrs.items():
-        logging.warning(f"No attr for {k} [{v} instances]")
+    if bad_attrs:
+        for k, v in bad_attrs.items():
+            logging.warning(f"No attr for {k} [{v} instances]")
 
     return mapping_set
 
