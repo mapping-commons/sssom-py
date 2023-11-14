@@ -1139,18 +1139,21 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if df.empty:
         return prefixes
-    for col in _get_sssom_schema_object().entity_reference_slots:
-        if col not in df.columns:
-            continue
-        prefixes.update(
-            converter.parse_curie(row).prefix
-            for row in df[col]
-            # we don't use the converter here since get_prefixes_used_in_table
-            # is often used to identify prefixes that are not properly registered
-            # in the converter
-            if not _is_iri(row) and _is_curie(row)
-        )
-    return set(prefixes)
+    sssom_schema_object = _get_sssom_schema_object()
+    entity_reference_slots = set(sssom_schema_object.entity_reference_slots) & set(df.columns)
+    new_prefixes = {
+        converter.parse_curie(row).prefix
+        for col in entity_reference_slots
+        for row in df[col]
+        if not _is_iri(row) and _is_curie(row)
+        # we don't use the converter here since get_prefixes_used_in_table
+        # is often used to identify prefixes that are not properly registered
+        # in the converter
+    }
+
+    prefixes.update(new_prefixes)
+
+    return prefixes
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
