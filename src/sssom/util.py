@@ -161,8 +161,8 @@ class MappingSetDataFrame:
             slot for slot, slot_metadata in slots.items() if slot_metadata["range"] == "double"
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
-        non_double_cols = non_double_cols.replace(np.nan, "")
-        df[non_double_cols.columns] = non_double_cols
+        non_double_cols.replace(np.nan, "", inplace=True)
+        df.update(non_double_cols)
 
         df = sort_df_rows_columns(df)
         return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
