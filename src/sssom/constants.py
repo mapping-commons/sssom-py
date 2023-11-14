@@ -3,7 +3,7 @@
 import pathlib
 import uuid
 from enum import Enum
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from typing import Any, Dict, List, Literal, Set
 
 import pkg_resources
@@ -213,64 +213,41 @@ class SSSOMSchemaView(object):
     Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    _view = None
-    _dict = None
-    _mapping_slots = None
-    _mapping_set_slots = None
-    _multivalued_slots = None
-    _entity_reference_slots = None
-
     def __new__(cls):
         """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
         return cls.instance
 
-    @property
+    @cached_property
     def view(self) -> SchemaView:
         """Return SchemaView object."""
-        if self._view is None:
-            self._view = SchemaView(SCHEMA_YAML)
-        return self._view
+        return SchemaView(SCHEMA_YAML)
 
-    @property
+    @cached_property
     def dict(self) -> dict:
         """Return SchemaView as a dictionary."""
-        if self._dict is None:
-            self._dict = schema_as_dict(self.view.schema)
-        return self._dict
+        return schema_as_dict(self.view.schema)
 
-    @property
+    @cached_property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        if self._mapping_slots is None:
-            self._mapping_slots = self.view.get_class("mapping").slots
-        return self._mapping_slots
+        return self.view.get_class("mapping").slots
 
-    @property
+    @cached_property
     def mapping_set_slots(self) -> List[str]:
         """Return list of mapping set slots."""
-        if self._mapping_set_slots is None:
-            self._mapping_set_slots = self.view.get_class("mapping set").slots
-        return self._mapping_set_slots
+        return self.view.get_class("mapping set").slots
 
-    @property
+    @cached_property
     def multivalued_slots(self) -> Set[str]:
         """Return list of multivalued slots."""
-        if self._multivalued_slots is None:
-            self._multivalued_slots = {
-                c for c in self.view.all_slots() if self.view.get_slot(c).multivalued
-            }
-        return self._multivalued_slots
+        return {c for c in self.view.all_slots() if self.view.get_slot(c).multivalued}
 
-    @property
+    @cached_property
     def entity_reference_slots(self) -> Set[str]:
         """Return list of entity reference slots."""
-        if self._entity_reference_slots is None:
-            self._entity_reference_slots = {
-                c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE
-            }
-        return self._entity_reference_slots
+        return {c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE}
 
 
 @lru_cache(1)
