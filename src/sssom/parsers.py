@@ -332,17 +332,19 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
     mdict = {}
     sssom_schema_object = _get_sssom_schema_object()
-    for k, v in row.items():
-        if not v or pd.isna(v):
-            continue
+    mapping_slots = set(sssom_schema_object.mapping_slots)
+
+    # Use items() with notnull() to iterate over non-null values only
+    for k, v in row[row.notnull()].items():
         k = cast(str, k)
-        if k in sssom_schema_object.mapping_slots:
+        if k in mapping_slots:
             mdict[k] = _address_multivalued_slot(k, v)
         else:
             # There's the possibility that the key is in
             # sssom_schema_object.mapping_set_slots, but
             # this is skipped for now
             bad_attrs[k] += 1
+
     return mdict
 
 
