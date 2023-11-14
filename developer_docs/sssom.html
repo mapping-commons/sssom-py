@@ -166,7 +166,7 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <dd class="field-odd"><p><strong>options</strong> – List of all possible options.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Click options deduced from user input into parameters.</p>
@@ -185,8 +185,8 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>src</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Source</p></li>
-<li><p><strong>curie</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – CURIE</p></li>
+<li><p><strong>src</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Source</p></li>
+<li><p><strong>curie</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – CURIE</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -201,7 +201,7 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <dd><p>Group all keys in the dictionary that share the same value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -212,7 +212,7 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <dd><p>Split a MappingSetDataFrames documents corresponding to a strongly connected components of the associated graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataFrame object</p>
+<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame object</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -222,7 +222,7 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of MappingSetDocument objects</p>
@@ -242,7 +242,7 @@ there’s no <code class="docutils literal notranslate"><span class="pre">sssom.
 <dd><p>Convert to a graph where the nodes are entities’ CURIEs and edges are their mappings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DiGraph</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiGraph</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -274,7 +274,7 @@ means chaining behind the “default” prefix map</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – <p>One of the following:</p>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – <p>One of the following:</p>
 <ol class="arabic simple">
 <li><p>An empty dictionary or <code class="docutils literal notranslate"><span class="pre">None</span></code>. This results in using the default
 extended prefix map (currently based on a variant of the Bioregistry)
@@ -289,13 +289,13 @@ map passed into this function, this is chained behind the builtin prefix
 map</p></li>
 </ol>
 </p></li>
-<li><p><strong>use_defaults</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If an empty dictionary or None is passed to this function,
+<li><p><strong>use_defaults</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If an empty dictionary or None is passed to this function,
 this parameter chooses if the extended prefix map (currently based on a
 variant of the Bioregistry) gets loaded.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A re-usable converter</p>
@@ -309,7 +309,7 @@ variant of the Bioregistry) gets loaded.</p></li>
 <dd><p>Get a converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,16 +325,16 @@ variant of the Bioregistry) gets loaded.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – SSSOM tsv file to be queried over.</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Output location.</p></li>
-<li><p><strong>replace_multivalued</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Multivalued slots should be
+<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – SSSOM tsv file to be queried over.</p></li>
+<li><p><strong>output</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]</span>) – Output location.</p></li>
+<li><p><strong>replace_multivalued</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Multivalued slots should be
 replaced or not, defaults to False</p></li>
 <li><p><strong>kwargs</strong> – Options provided by user
 which are added to the metadata (e.g.: –mapping_set_id <a class="reference external" href="http://example.org/abcd">http://example.org/abcd</a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Annotated MappingSetDataFrame object.</p>
@@ -349,13 +349,13 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the input SSSOM tsv file</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – The path to the output file. If none is given, will default to using stdout.</p></li>
-<li><p><strong>output_format</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The format to which the SSSOM TSV should be converted.</p></li>
+<li><p><strong>input_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The path to the input SSSOM tsv file</p></li>
+<li><p><strong>output</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code></span>) – The path to the output file. If none is given, will default to using stdout.</p></li>
+<li><p><strong>output_format</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The format to which the SSSOM TSV should be converted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -367,12 +367,12 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]]]) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]]]</span>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
+<li><p><strong>converter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></span>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of IRIs.</p>
@@ -393,8 +393,8 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – DataFrame to be queried over.</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Output location.</p></li>
+<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – DataFrame to be queried over.</p></li>
+<li><p><strong>output</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]</span>) – Output location.</p></li>
 <li><p><strong>kwargs</strong> – Filter options provided by user which generate queries (e.g.: –subject_id x:%).</p></li>
 </ul>
 </dd>
@@ -402,7 +402,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dd class="field-even"><p><strong>ValueError</strong> – If parameter provided is invalid.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Filtered MappingSetDataFrame object.</p>
@@ -417,12 +417,12 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>predicate_filter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
+<li><p><strong>predicate_filter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
+<li><p><strong>converter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></span>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of IRIs.</p>
@@ -440,12 +440,12 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>metadata_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – The metadata file in YAML format</p></li>
-<li><p><strong>prefix_map_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'metadata_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sssom_default_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'merged'</span></code>]]) – one of metadata_only, sssom_default_only, merged</p></li>
+<li><p><strong>metadata_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span>) – The metadata file in YAML format</p></li>
+<li><p><strong>prefix_map_mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'metadata_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sssom_default_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'merged'</span></code>]]</span>) – one of metadata_only, sssom_default_only, merged</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A converter and remaining metadata from the YAML file</p>
@@ -460,23 +460,23 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – The path to the output file.</p></li>
-<li><p><strong>input_format</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The string denoting the input format.</p></li>
-<li><p><strong>metadata_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The path to a file containing the sssom metadata (including prefix_map)
+<li><p><strong>input_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
+<li><p><strong>output</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code></span>) – The path to the output file.</p></li>
+<li><p><strong>input_format</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The string denoting the input format.</p></li>
+<li><p><strong>metadata_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The path to a file containing the sssom metadata (including prefix_map)
 to be used during parse.</p></li>
-<li><p><strong>prefix_map_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'metadata_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sssom_default_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'merged'</span></code>]]) – Defines whether the prefix map in the metadata should be extended or replaced with
+<li><p><strong>prefix_map_mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'metadata_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sssom_default_only'</span></code>, <code class="docutils literal notranslate"><span class="pre">'merged'</span></code>]]</span>) – Defines whether the prefix map in the metadata should be extended or replaced with
 the SSSOM default prefix map derived from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">bioregistry</span></code>.</p></li>
-<li><p><strong>clean_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True (default), records with unknown prefixes are removed from the SSSOM file.</p></li>
-<li><p><strong>strict_clean_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True (default), clean_prefixes() will be in strict mode.</p></li>
+<li><p><strong>clean_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True (default), records with unknown prefixes are removed from the SSSOM file.</p></li>
+<li><p><strong>strict_clean_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True (default), clean_prefixes() will be in strict mode.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 <p>:param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
-:type mapping_predicate_filter: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>]
+:type mapping_predicate_filter: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>]</span>
 :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.</p>
 </dd></dl>
 
@@ -496,13 +496,13 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Query to be executed over a pandas DataFrame (msdf.df).</p></li>
-<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Input files that form the source tables for query.</p></li>
-<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Output.</p></li>
+<li><p><strong>query</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Query to be executed over a pandas DataFrame (msdf.df).</p></li>
+<li><p><strong>inputs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Input files that form the source tables for query.</p></li>
+<li><p><strong>output</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]</span>) – Output.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Filtered MappingSetDataFrame object.</p>
@@ -517,12 +517,12 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
-<li><p><strong>output_directory</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – The directory to which the split file should be exported.</p></li>
+<li><p><strong>input_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
+<li><p><strong>output_directory</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span>) – The directory to which the split file should be exported.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -534,12 +534,12 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
-<li><p><strong>validation_types</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../sssom.html#sssom.constants.SchemaValidationType" title="sssom.constants.SchemaValidationType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaValidationType</span></code></a>]) – A list of validation types to run.</p></li>
+<li><p><strong>input_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
+<li><p><strong>validation_types</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../sssom.html#sssom.constants.SchemaValidationType" title="sssom.constants.SchemaValidationType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaValidationType</span></code></a>]</span>) – A list of validation types to run.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -555,14 +555,14 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dom</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>) – XML (minidom) object</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – A prefix map</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Optional meta data</p></li>
-<li><p><strong>mapping_predicates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Optional list of mapping predicates to extract</p></li>
+<li><p><strong>dom</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></span>) – XML (minidom) object</p></li>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – A prefix map</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – Optional meta data</p></li>
+<li><p><strong>mapping_predicates</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Optional list of mapping predicates to extract</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MappingSetDocument</p>
@@ -580,17 +580,17 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>jsondoc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – The JSON object representing the ontology in obographs format</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – The prefix map to be used</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None</p></li>
-<li><p><strong>mapping_predicates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Optional list of mapping predicates to extract</p></li>
+<li><p><strong>jsondoc</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></span>) – The JSON object representing the ontology in obographs format</p></li>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – The prefix map to be used</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None</p></li>
+<li><p><strong>mapping_predicates</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Optional list of mapping predicates to extract</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – When there is no CURIE</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An SSSOM data frame (MappingSetDataFrame)</p>
@@ -605,13 +605,13 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – A mappings dataframe</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – A prefix map</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A metadata dictionary</p></li>
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – A mappings dataframe</p></li>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – A prefix map</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – A metadata dictionary</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MappingSetDataFrame</p>
@@ -626,13 +626,13 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>jsondoc</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – JSON document</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – Prefix map</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – metadata</p></li>
+<li><p><strong>jsondoc</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]</span>) – JSON document</p></li>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – Prefix map</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – metadata</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MappingSetDataFrame object</p>
@@ -647,13 +647,13 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>g</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code>) – the Graph (rdflib)</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – A dictionary containing the prefix map, defaults to None</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Potentially additional metadata, defaults to None</p></li>
+<li><p><strong>g</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></span>) – the Graph (rdflib)</p></li>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – A dictionary containing the prefix map, defaults to None</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – Potentially additional metadata, defaults to None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MappingSetDataFrame object</p>
@@ -668,15 +668,15 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_format</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – File format</p></li>
-<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Filename</p></li>
+<li><p><strong>input_format</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – File format</p></li>
+<li><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Filename</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – Unknown file format</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Appropriate ‘read’ function</p>
@@ -690,7 +690,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Parse a TSV -&gt; MappingSetDocument -&gt; MappingSetDataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -702,14 +702,14 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>file_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to the obographs file</p></li>
-<li><p><strong>prefix_map</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – an optional prefix map</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – an optional dictionary of metadata elements</p></li>
-<li><p><strong>mapping_predicates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – an optional list of mapping predicates that should be extracted</p></li>
+<li><p><strong>file_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The path to the obographs file</p></li>
+<li><p><strong>prefix_map</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – an optional prefix map</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – an optional dictionary of metadata elements</p></li>
+<li><p><strong>mapping_predicates</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – an optional list of mapping predicates that should be extracted</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A SSSOM MappingSetDataFrame</p>
@@ -723,7 +723,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Parse a TSV to a <code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code> to a  :class`MappingSetDataFrame`.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -734,7 +734,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Parse a TSV to a <code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code> to a <code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -745,7 +745,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Parse a TSV to a <code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code> to a <code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -756,13 +756,13 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Group the mapping set dataframe into several subdataframes by prefix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataFrame object</p>
+<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame object</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>RuntimeError</strong> – DataFrame object within MappingSetDataFrame is None</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Mapping object</p>
@@ -777,14 +777,14 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – An SSSOM MappingSetDataFrame</p></li>
-<li><p><strong>subject_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a list of prefixes pertaining to the subject</p></li>
-<li><p><strong>object_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a list of prefixes pertaining to the object</p></li>
-<li><p><strong>relations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a list of relations of interest</p></li>
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – An SSSOM MappingSetDataFrame</p></li>
+<li><p><strong>subject_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – a list of prefixes pertaining to the subject</p></li>
+<li><p><strong>object_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – a list of prefixes pertaining to the object</p></li>
+<li><p><strong>relations</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – a list of relations of interest</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a dict of SSSOM data frame names to MappingSetDataFrame</p>
@@ -798,7 +798,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Convert a MappingSetDataFrame to a MappingSetDocument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -855,7 +855,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Query a SPARQL endpoint to obtain a set of mappings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -936,7 +936,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Clean up the context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -947,14 +947,14 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd><p>Remove unused prefixes from the internal prefix map based on the internal dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>strict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Boolean if True, errors out if all prefixes in dataframe are not
+<dd class="field-odd"><p><strong>strict</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Boolean if True, errors out if all prefixes in dataframe are not
 listed in the ‘curie_map’.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If prefixes absent in ‘curie_map’ and strict flag = True</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -976,13 +976,13 @@ listed in the ‘curie_map’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mapping_set</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code>) – A mapping set</p></li>
-<li><p><strong>converter</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]) – A prefix map or pre-instantiated converter. If none given, uses a default
+<li><p><strong>mapping_set</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></span>) – A mapping set</p></li>
+<li><p><strong>converter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>]</span>) – A prefix map or pre-instantiated converter. If none given, uses a default
 prefix map derived from the Bioregistry.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A mapping set dataframe</p>
@@ -996,7 +996,7 @@ prefix map derived from the Bioregistry.</p></li>
 <dd><p>Instantiate from a mapping set document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1007,7 +1007,7 @@ prefix map derived from the Bioregistry.</p></li>
 <dd><p>Instantiate from a list of mappings, mapping set metadata, and an optional converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1019,13 +1019,13 @@ prefix map derived from the Bioregistry.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msdfs</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – Multiple/Single MappingSetDataFrame(s) to merge with self</p></li>
-<li><p><strong>inplace</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true, msdf2 is merged into the calling MappingSetDataFrame,
+<li><p><strong>msdfs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – Multiple/Single MappingSetDataFrame(s) to merge with self</p></li>
+<li><p><strong>inplace</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, msdf2 is merged into the calling MappingSetDataFrame,
 if false, it simply return the merged data frame.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Merged MappingSetDataFrame</p>
@@ -1050,10 +1050,10 @@ if false, it simply return the merged data frame.</p></li>
 <dd><p>Remove mappings in right msdf from left msdf.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataframe object to be removed from primary msdf object.</p>
+<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataframe object to be removed from primary msdf object.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1064,7 +1064,7 @@ if false, it simply return the merged data frame.</p></li>
 <dd><p>Standardize this MSDF’s dataframe and metadata with respect to its converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1075,7 +1075,7 @@ if false, it simply return the merged data frame.</p></li>
 <dd><p>Get a mapping set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1086,7 +1086,7 @@ if false, it simply return the merged data frame.</p></li>
 <dd><p>Get a mapping set document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1097,7 +1097,7 @@ if false, it simply return the merged data frame.</p></li>
 <dd><p>Get a mapping set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1108,7 +1108,7 @@ if false, it simply return the merged data frame.</p></li>
 <dd><p>Instantiate with a converter instead of a vanilla prefix map.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1154,10 +1154,10 @@ the comment column</p>
 <p>If <cite>confidence</cite> column already exists, only fill in the None ones by 0.95.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – DataFrame whose <cite>confidence</cite> column needs to be filled.</p>
+<dd class="field-odd"><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – DataFrame whose <cite>confidence</cite> column needs to be filled.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>DataFrame with a complete <cite>confidence</cite> column.</p>
@@ -1171,13 +1171,13 @@ the comment column</p>
 <dd><p>Check if parameters conform to the slots in MAPPING_SET_SLOTS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Dictionary of parameters.</p>
+<dd class="field-odd"><p><strong>params</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Dictionary of parameters.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If params are not slots.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True/False</p>
@@ -1191,10 +1191,10 @@ the comment column</p>
 <dd><p>Assign <code class="xref py py-data docutils literal notranslate"><span class="pre">numpy.nan</span></code> to confidence that are blank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – SSSOM DataFrame</p>
+<dd class="field-odd"><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – SSSOM DataFrame</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.</p>
@@ -1209,9 +1209,9 @@ the comment column</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataFrame (MSDF) object.</p></li>
-<li><p><strong>meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Dictionary that needs to be added/updated to the metadata of the MSDF.</p></li>
-<li><p><strong>replace_multivalued</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Multivalued slots should be
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame (MSDF) object.</p></li>
+<li><p><strong>meta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Dictionary that needs to be added/updated to the metadata of the MSDF.</p></li>
+<li><p><strong>replace_multivalued</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Multivalued slots should be
 replaced or not, defaults to False.</p></li>
 </ul>
 </dd>
@@ -1219,7 +1219,7 @@ replaced or not, defaults to False.</p></li>
 <dd class="field-even"><p><strong>ValueError</strong> – If type of slot is neither str nor list.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>MSDF with updated metadata.</p>
@@ -1233,7 +1233,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Collapse rows with same S/P/O and combines confidence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1245,12 +1245,12 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – A mapping dataframe</p></li>
-<li><p><strong>df2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – A mapping dataframe</p></li>
+<li><p><strong>df1</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – A mapping dataframe</p></li>
+<li><p><strong>df2</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – A mapping dataframe</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDiff" title="sssom.util.MappingSetDiff"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDiff</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDiff" title="sssom.util.MappingSetDiff"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDiff</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A mapping set diff</p>
@@ -1269,12 +1269,12 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>identifier</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Entity Id</p></li>
-<li><p><strong>mappings</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – Mapping dictionary</p></li>
+<li><p><strong>identifier</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Entity Id</p></li>
+<li><p><strong>mappings</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – Mapping dictionary</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Uriorcurie</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Uriorcurie</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>An Entity object</p>
@@ -1289,9 +1289,9 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame</p></li>
-<li><p><strong>inverse_factor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Multiplier to (1 - confidence), defaults to 0.5</p></li>
-<li><p><strong>default_confidence</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Default confidence to be assigned if absent.</p></li>
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas DataFrame</p></li>
+<li><p><strong>inverse_factor</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – Multiplier to (1 - confidence), defaults to 0.5</p></li>
+<li><p><strong>default_confidence</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – Default confidence to be assigned if absent.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -1313,10 +1313,10 @@ replaced or not, defaults to False.</p></li>
 <p>Rule: negative trumps positive if modulus of confidence values are equal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Merged Pandas DataFrame</p>
+<dd class="field-odd"><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Merged Pandas DataFrame</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pandas DataFrame with negations addressed</p>
@@ -1334,14 +1334,14 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame of SSSOM Mapping</p></li>
-<li><p><strong>filter_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of prefixes</p></li>
-<li><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]) – List of dataframe column names dataframe to consider</p></li>
-<li><p><strong>require_all_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, all prefixes must be present in a row to be filtered out</p></li>
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas DataFrame of SSSOM Mapping</p></li>
+<li><p><strong>filter_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of prefixes</p></li>
+<li><p><strong>features</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]</span>) – List of dataframe column names dataframe to consider</p></li>
+<li><p><strong>require_all_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, all prefixes must be present in a row to be filtered out</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pandas Dataframe</p>
@@ -1356,14 +1356,14 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame of SSSOM Mapping</p></li>
-<li><p><strong>filter_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of prefixes</p></li>
-<li><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]) – List of dataframe column names dataframe to consider</p></li>
-<li><p><strong>require_all_prefixes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, all prefixes must be present in a row to be filtered out</p></li>
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas DataFrame of SSSOM Mapping</p></li>
+<li><p><strong>filter_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of prefixes</p></li>
+<li><p><strong>features</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]</span>) – List of dataframe column names dataframe to consider</p></li>
+<li><p><strong>require_all_prefixes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, all prefixes must be present in a row to be filtered out</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pandas Dataframe</p>
@@ -1378,12 +1378,12 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame to filter</p></li>
-<li><p><strong>ignore_predicate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true, the predicate_id column is ignored, defaults to False</p></li>
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas DataFrame to filter</p></li>
+<li><p><strong>ignore_predicate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, the predicate_id column is ignored, defaults to False</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Filtered pandas DataFrame</p>
@@ -1397,7 +1397,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Fetch all prefixes in the MappingSetDataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataFrame</p>
+<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -1406,7 +1406,7 @@ replaced or not, defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of all prefixes.</p>
@@ -1420,10 +1420,10 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>map_obj</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>]) – Mapping object</p>
+<dd class="field-odd"><p><strong>map_obj</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>]</span>) – Mapping object</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dictionary</p>
@@ -1437,10 +1437,10 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Get file extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – File path</p>
+<dd class="field-odd"><p><strong>file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]</span>) – File path</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>format of the file passed, default tsv</p>
@@ -1454,7 +1454,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Get the prefix from a CURIE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1465,7 +1465,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Get a set of prefixes used in CURIEs in the metadata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1476,7 +1476,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Get a list of prefixes used in CURIEs in key feature columns in a dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1500,7 +1500,7 @@ replaced or not, defaults to False.</p></li>
 # rdfs:seeAlso</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Dataframe containing multiple predicates for same subject and object.</p>
+<dd class="field-odd"><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Dataframe containing multiple predicates for same subject and object.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dataframe with a single row which ranks higher in the hierarchy.</p>
@@ -1514,7 +1514,7 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Group mappings by EntityPairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<a class="reference internal" href="../sssom.html#sssom.util.EntityPair" title="sssom.util.EntityPair"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntityPair</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<a class="reference internal" href="../sssom.html#sssom.util.EntityPair" title="sssom.util.EntityPair"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntityPair</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1525,10 +1525,10 @@ replaced or not, defaults to False.</p></li>
 <dd><p>Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataFrame with metadata separate.</p>
+<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame with metadata separate.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MappingSetDataFrame with metadata as columns</p>
@@ -1543,15 +1543,15 @@ replaced or not, defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas dataframe.</p></li>
-<li><p><strong>subject_prefix</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Prefix of subjects desired.</p></li>
-<li><p><strong>merge_inverted</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True (default), add inverted dataframe to input else,
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas dataframe.</p></li>
+<li><p><strong>subject_prefix</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Prefix of subjects desired.</p></li>
+<li><p><strong>merge_inverted</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True (default), add inverted dataframe to input else,
 just return inverted data.</p></li>
-<li><p><strong>predicate_invert_dictionary</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – YAML file providing the inverse mapping for predicates.</p></li>
+<li><p><strong>predicate_invert_dictionary</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</span>) – YAML file providing the inverse mapping for predicates.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pandas dataframe with all subject IDs having the same prefix.</p>
@@ -1563,7 +1563,7 @@ just return inverted data.</p></li>
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_curie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#is_curie"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Check if the string is a CURIE.
-:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on your context’s prefix map and using curies.Converter.is_curie(). If you’re looking for global syntax checking for CURIEs, try matching against [<a href="#id1"><span class="problematic" id="id2">A-Za-z0-9_</span></a>.]+[:][<a href="#id3"><span class="problematic" id="id4">A-Za-z0-9_</span></a>]</p>
 </div>
@@ -1573,7 +1573,7 @@ just return inverted data.</p></li>
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#is_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Check if the string is an IRI.
-:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on your context’s prefix map and using curies.Converter.is_uri(). If you’re looking for a globally valid URI checker, use validators.url()</p>
 </div>
@@ -1585,10 +1585,10 @@ just return inverted data.</p></li>
 <dd><p>Check whether the slot is multivalued according to the SSSOM specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>slot</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Slot name</p>
+<dd class="field-odd"><p><strong>slot</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Slot name</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Slot is multivalued or no</p>
@@ -1603,8 +1603,8 @@ just return inverted data.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msdfs</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – A Tuple of MappingSetDataFrames to be merged</p></li>
-<li><p><strong>reconcile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If reconcile=True, then dedupe(remove redundant lower confidence mappings)
+<li><p><strong>msdfs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – A Tuple of MappingSetDataFrames to be merged</p></li>
+<li><p><strong>reconcile</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If reconcile=True, then dedupe(remove redundant lower confidence mappings)
 and reconcile (if msdf contains a higher confidence _negative_ mapping,
 then remove lower confidence positive one. If confidence is the same,
 prefer HumanCurated. If both HumanCurated, prefer negative mapping).
@@ -1612,7 +1612,7 @@ Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Merged MappingSetDataFrame.</p>
@@ -1626,7 +1626,7 @@ Defaults to True.</p></li>
 <dd><p>Parse a TSV to a pandas frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1637,13 +1637,13 @@ Defaults to True.</p></li>
 <dd><p>Raise exception if file path is invalid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – File path</p>
+<dd class="field-odd"><p><strong>file_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span>) – File path</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>FileNotFoundError</strong> – Invalid file path</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1655,12 +1655,12 @@ Defaults to True.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – Mapping Set DataFrame.</p></li>
-<li><p><strong>prefix_reconciliation</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Prefix reconcilation dictionary from a YAML file</p></li>
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – Mapping Set DataFrame.</p></li>
+<li><p><strong>prefix_reconciliation</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Prefix reconcilation dictionary from a YAML file</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Mapping Set DataFrame with reconciled prefix_map and data.</p>
@@ -1678,9 +1678,9 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">remove_unmatched</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#remove_unmatched"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Remove rows where no match is found.</p>
 <p>TODO: <a class="reference external" href="https://github.com/OBOFoundry/SSSOM/issues/28">https://github.com/OBOFoundry/SSSOM/issues/28</a>
-:type df: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>
+:type df: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>
 :param df: Pandas DataFrame
-:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>
 :return: Pandas DataFrame with ‘PREDICATE_ID’ not ‘noMatch’.</p>
 </dd></dl>
 
@@ -1691,12 +1691,12 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>uri</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The URI to parse. If this is already a CURIE, return directly.</p></li>
-<li><p><strong>converter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>) – Converter used for compression</p></li>
+<li><p><strong>uri</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The URI to parse. If this is already a CURIE, return directly.</p></li>
+<li><p><strong>converter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></span>) – Converter used for compression</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A CURIE</p>
@@ -1711,13 +1711,13 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Pandas DataFrame with random column sequence.</p></li>
-<li><p><strong>by_columns</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Boolean flag to sort columns canonically.</p></li>
-<li><p><strong>by_rows</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Boolean flag to sort rows by column #1 (ascending order).</p></li>
+<li><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas DataFrame with random column sequence.</p></li>
+<li><p><strong>by_columns</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Boolean flag to sort columns canonically.</p></li>
+<li><p><strong>by_rows</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Boolean flag to sort rows by column #1 (ascending order).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Pandas DataFrame columns sorted canonically.</p>
@@ -1731,10 +1731,10 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dd><p>Sort SSSOM by columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – SSSOM DataFrame to be sorted.</p>
+<dd class="field-odd"><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – SSSOM DataFrame to be sorted.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Sorted SSSOM DataFrame</p>
@@ -1748,10 +1748,10 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dd><p>Convert MappingSetDocument into MappingSetDataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>doc</strong> (<a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a>) – MappingSetDocument object</p>
+<dd class="field-odd"><p><strong>doc</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDocument</span></code></a></span>) – MappingSetDocument object</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MappingSetDataFrame object</p>
@@ -1770,15 +1770,15 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>) – Output file</p></li>
-<li><p><strong>output_format</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Output file format, defaults to None</p></li>
+<li><p><strong>output</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code></span>) – Output file</p></li>
+<li><p><strong>output_format</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Output file format, defaults to None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – Unknown output format</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Type of writer function</p>
@@ -1792,10 +1792,10 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dd><p>Convert a mapping set dataframe to a JSON object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>) – MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</p>
+<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict: A Dictionary serializable as JSON.</p>
@@ -1833,7 +1833,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Convert a mapping set dataframe to a JSON object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonObj</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonObj</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1844,7 +1844,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Convert a mapping set dataframe to a list of ontoportal mapping JSON objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1855,7 +1855,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Convert a mapping set dataframe to OWL in an RDF graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1866,7 +1866,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Convert a mapping set dataframe to an RDF graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1877,7 +1877,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Write a mapping set dataframe to the file as FHIR ConceptMap JSON.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1888,7 +1888,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Write a mapping set dataframe to the file as JSON.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1899,7 +1899,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Write a mapping set dataframe to the file as the ontoportal mapping JSON model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1910,7 +1910,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Write a mapping set dataframe to the file as OWL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1921,7 +1921,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Write a mapping set dataframe to the file as RDF.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1932,7 +1932,7 @@ TODO: Add additional fields from both specs</p>
 <dd><p>Write a mapping set dataframe to the file as a table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1944,12 +1944,12 @@ TODO: Add additional fields from both specs</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sssom_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>]) – Dictionary of MappingSetDataframes</p></li>
-<li><p><strong>output_dir</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – The directory in which the derived SSSOM files are written</p></li>
+<li><p><strong>sssom_dict</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a>]</span>) – Dictionary of MappingSetDataframes</p></li>
+<li><p><strong>output_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span>) – The directory in which the derived SSSOM files are written</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>

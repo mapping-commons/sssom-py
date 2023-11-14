@@ -370,13 +370,7 @@
 <span class="sd">        - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value</span>
 <span class="sd">        - Otherwise, return the original value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">converter</span><span class="o">.</span><span class="n">is_uri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">):</span>
-        <span class="c1"># TODO switch to compress, or fully replace _standardize_curie_or_iri with</span>
-        <span class="c1">#  https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression</span>
-        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_uri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">converter</span><span class="o">.</span><span class="n">is_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_curie</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">curie_or_iri</span>
+    <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">compress_or_standardize</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">,</span> <span class="n">passthrough</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_standardize_metadata</span><span class="p">(</span>
@@ -1567,16 +1561,7 @@
 <span class="sd">    :param converter: Converter used for compression</span>
 <span class="sd">    :return: A CURIE</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO replace with https://curies.readthedocs.io/en/latest/tutorial.html#extended-expansion-and-compression</span>
-    <span class="c1">#  when it&#39;s available</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">converter</span><span class="o">.</span><span class="n">is_curie</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">compress_strict</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-    <span class="n">rv</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">standardize_curie</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">rv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;CURIE appeared where there should be a URI, and could not be standardized: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">rv</span></div>
+    <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">compress_or_standardize</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
