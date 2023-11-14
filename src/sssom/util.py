@@ -1051,41 +1051,40 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     map_dict = {}
     sssom_schema_object = _get_sssom_schema_object().dict
     slots = sssom_schema_object["slots"]
-    enums_keys = sssom_schema_object["enums"].keys()
+    enums_keys = set(sssom_schema_object["enums"].keys())
 
-    slots_with_double_as_range = [k for k, v in slots.items() if v["range"] == "double"]
+    slots_with_double_as_range = {s for s in slots.keys() if slots[s]["range"] == "double"}
 
-    for property in map_obj:
-        if map_obj[property] is not None:
-            if isinstance(map_obj[property], list):
+    for property, value in map_obj.items():
+        if value is not None:
+            slot = slots[property]
+            is_enum = slot["range"] in enums_keys
+
+            if isinstance(value, list):
                 # IF object is an enum
-                if slots[property]["range"] in enums_keys:
+                if is_enum:
                     # IF object is a multivalued enum
-                    if slots[property]["multivalued"]:
-                        map_dict[property] = "|".join(
-                            enum_value.code.text for enum_value in map_obj[property]
-                        )
+                    if slot["multivalued"]:
+                        map_dict[property] = "|".join(enum_value.code.text for enum_value in value)
                     # If object is NOT multivalued BUT an enum.
                     else:
-                        map_dict[property] = map_obj[property].code.text
+                        map_dict[property] = value.code.text
                 # IF object is NOT an enum but a list
                 else:
-                    map_dict[property] = "|".join(enum_value for enum_value in map_obj[property])
+                    map_dict[property] = "|".join(enum_value for enum_value in value)
             # IF object NOT a list
             else:
                 # IF object is an enum
-                if slots[property]["range"] in enums_keys:
-                    map_dict[property] = map_obj[property].code.text
+                if is_enum:
+                    map_dict[property] = value.code.text
                 else:
-                    map_dict[property] = map_obj[property]
+                    map_dict[property] = value
         else:
             # IF map_obj[property] is None:
-            if property in slots_with_double_as_range:
-                map_dict[property] = np.nan
-            else:
-                map_dict[property] = ""
+            map_dict[property] = np.nan if property in slots_with_double_as_range else ""
 
     return map_dict
+
 
 
 CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
