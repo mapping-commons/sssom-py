@@ -1053,38 +1053,39 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     slots = sssom_schema_object["slots"]
     enums_keys = set(sssom_schema_object["enums"].keys())
 
-    slots_with_double_as_range = {s for s in slots.keys() if slots[s]["range"] == "double"}
+    slots_with_double_as_range = {k for k, v in slots.items() if v["range"] == "double"}
 
-    for property, value in map_obj.items():
-        if value is not None:
-            slot = slots[property]
-            is_enum = slot["range"] in enums_keys
-
-            if isinstance(value, list):
-                # IF object is an enum
-                if is_enum:
-                    # IF object is a multivalued enum
-                    if slot["multivalued"]:
-                        map_dict[property] = "|".join(enum_value.code.text for enum_value in value)
-                    # If object is NOT multivalued BUT an enum.
-                    else:
-                        map_dict[property] = value.code.text
-                # IF object is NOT an enum but a list
-                else:
-                    map_dict[property] = "|".join(enum_value for enum_value in value)
-            # IF object NOT a list
-            else:
-                # IF object is an enum
-                if is_enum:
-                    map_dict[property] = value.code.text
-                else:
-                    map_dict[property] = value
-        else:
-            # IF map_obj[property] is None:
+    for property in map_obj:
+        mapping_property = map_obj[property]
+        if mapping_property is None:
             map_dict[property] = np.nan if property in slots_with_double_as_range else ""
+            continue
+
+        slot_of_interest = slots[property]
+        is_enum = slot_of_interest["range"] in enums_keys
+
+        # Check if the mapping_property is a list
+        if isinstance(mapping_property, list):
+            # If the property is an enumeration and it allows multiple values
+            if is_enum and slot_of_interest["multivalued"]:
+                # Join all the enum values into a string separated by '|'
+                map_dict[property] = "|".join(
+                    enum_value.code.text for enum_value in mapping_property
+                )
+            else:
+                # If the property is not an enumeration or doesn't allow multiple values,
+                # join all the values into a string separated by '|'
+                map_dict[property] = "|".join(enum_value for enum_value in mapping_property)
+        # If the mapping_property is not a list but an enumeration
+        elif is_enum:
+            # Assign the text of the enumeration code to the property in the dictionary
+            map_dict[property] = mapping_property.code.text
+        else:
+            # If the mapping_property is neither a list nor an enumeration,
+            # assign the value directly to the property in the dictionary
+            map_dict[property] = mapping_property
 
     return map_dict
-
 
 
 CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
