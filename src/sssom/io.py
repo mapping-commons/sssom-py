@@ -3,39 +3,33 @@
 import logging
 import os
 import re
+from collections import ChainMap
+from itertools import chain
 from pathlib import Path
-from typing import List, Optional, TextIO, Union
+from typing import Iterable, List, Optional, TextIO, Tuple, Union
 
+import curies
 import pandas as pd
-from bioregistry import get_iri
+import yaml
+from curies import Converter
+from deprecation import deprecated
 from pansql import sqldf
 
 from sssom.validators import validate
 
 from .constants import (
+    CURIE_MAP,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
+    MergeMode,
+    MetadataType,
     SchemaValidationType,
-)
-from .context import (
-    add_built_in_prefixes_to_prefix_map,
     get_default_metadata,
-    set_default_license,
-    set_default_mapping_set_id,
 )
+from .context import get_converter
 from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
-from .typehints import Metadata
-from .util import (
-    MappingSetDataFrame,
-    are_params_slots,
-    augment_metadata,
-    is_curie,
-    is_iri,
-    raise_for_bad_path,
-    raise_for_bad_prefix_map_mode,
-    read_metadata,
-)
+from .util import MappingSetDataFrame, are_params_slots, augment_metadata, raise_for_bad_path
 from .writers import get_writer_function, write_table, write_tables
 
 
@@ -48,7 +42,7 @@ def convert_file(
 
     :param input_path: The path to the input SSSOM tsv file
     :param output: The path to the output file. If none is given, will default to using stdout.
-    :param output_format: The format to which the the SSSOM TSV should be converted.
+    :param output_format: The format to which the SSSOM TSV should be converted.
     """
     raise_for_bad_path(input_path)
     doc = parse_sssom_table(input_path)
@@ -60,9 +54,10 @@ def convert_file(
 def parse_file(
     input_path: str,
     output: TextIO,
+    *,
     input_format: Optional[str] = None,
     metadata_path: Optional[str] = None,
-    prefix_map_mode: Optional[str] = None,
+    prefix_map_mode: Optional[MergeMode] = None,
     clean_prefixes: bool = True,
     strict_clean_prefixes: bool = True,
     embedded_mode: bool = True,
@@ -76,36 +71,34 @@ def parse_file(
     :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
         to be used during parse.
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
-        the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged
+        the SSSOM default prefix map derived from the :mod:`bioregistry`.
     :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
     :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
     :param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    metadata = get_metadata_and_prefix_map(
+    converter, meta = get_metadata_and_prefix_map(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
     mapping_predicates = None
     # Get list of predicates of interest.
     if mapping_predicate_filter:
-        mapping_predicates = get_list_of_predicate_iri(
-            mapping_predicate_filter, metadata.prefix_map
-        )
+        mapping_predicates = extract_iris(mapping_predicate_filter, converter)
 
     # if mapping_predicates:
     doc = parse_func(
         input_path,
-        prefix_map=metadata.prefix_map,
-        meta=metadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     # else:
     #     doc = parse_func(
     #         input_path,
-    #         prefix_map=metadata.prefix_map,
-    #         meta=metadata.metadata,
+    #         prefix_map=converter,
+    #         meta=meta,
     #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
@@ -138,99 +131,75 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-def _get_prefix_map(metadata: Metadata, prefix_map_mode: str = None):
-    if prefix_map_mode is None:
-        prefix_map_mode = PREFIX_MAP_MODE_METADATA_ONLY
-
-    raise_for_bad_prefix_map_mode(prefix_map_mode=prefix_map_mode)
-
-    prefix_map = metadata.prefix_map
-
-    if prefix_map_mode != PREFIX_MAP_MODE_METADATA_ONLY:
-        default_metadata: Metadata = get_default_metadata()
-        if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
-            prefix_map = default_metadata.prefix_map
-        elif prefix_map_mode == PREFIX_MAP_MODE_MERGED:
-            for prefix, uri_prefix in default_metadata.prefix_map.items():
-                if prefix not in prefix_map:
-                    prefix_map[prefix] = uri_prefix
-    return prefix_map
-
-
 def get_metadata_and_prefix_map(
-    metadata_path: Optional[str] = None, prefix_map_mode: Optional[str] = None
-) -> Metadata:
+    metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
+) -> Tuple[Converter, MetadataType]:
     """
-    Load SSSOM metadata from a file, and then augments it with default prefixes.
+    Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
 
     :param metadata_path: The metadata file in YAML format
     :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: a prefix map dictionary and a metadata object dictionary
+    :return: A converter and remaining metadata from the YAML file
     """
     if metadata_path is None:
-        return get_default_metadata()
+        return get_converter(), get_default_metadata()
 
-    metadata = read_metadata(metadata_path)
-    prefix_map = _get_prefix_map(metadata=metadata, prefix_map_mode=prefix_map_mode)
+    with Path(metadata_path).resolve().open() as file:
+        metadata = yaml.safe_load(file)
 
-    m = Metadata(prefix_map=prefix_map, metadata=metadata.metadata)
-    m = set_default_mapping_set_id(m)
-    m = set_default_license(m)
-    return m
+    metadata = dict(ChainMap(metadata, get_default_metadata()))
+    converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
+    converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
+    return converter, metadata
 
 
-def get_list_of_predicate_iri(predicate_filter: tuple, prefix_map: dict) -> list:
+def _merge_converter(
+    converter: Converter, prefix_map_mode: Optional[MergeMode] = None
+) -> Converter:
+    """Merge the metadata's converter with the default converter."""
+    if prefix_map_mode is None or prefix_map_mode == PREFIX_MAP_MODE_METADATA_ONLY:
+        return converter
+    if prefix_map_mode == PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY:
+        return get_converter()
+    if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
+        return curies.chain([converter, get_converter()])
+    raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
+
+
+@deprecated(deprecated_in="0.4.0", details="Use sssom.io.extract_iris() directly")
+def get_list_of_predicate_iri(predicate_filter: Iterable[str], converter: Converter) -> list:
     """Return a list of IRIs for predicate CURIEs passed.
 
     :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
     """
-    pred_filter_list = list(predicate_filter)
-    iri_list = []
-    for p in pred_filter_list:
-        p_iri = extract_iri(p, prefix_map)
-        if p_iri:
-            iri_list.extend(p_iri)
-    return list(set(iri_list))
+    return extract_iris(predicate_filter, converter)
 
 
-def extract_iri(input, prefix_map) -> list:
+def extract_iris(
+    input: Union[str, Path, Iterable[Union[str, Path]]], converter: Converter
+) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
     :param input: CURIE OR list of CURIEs OR file path containing the same.
-    :param prefix_map: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
+    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
     :return: A list of IRIs.
-    :rtype: list
     """
-    if is_iri(input):
-        return [input]
-    elif is_curie(input):
-        p_iri = get_iri(input, prefix_map=prefix_map, use_bioregistry_io=False)
-        if not p_iri:
-            p_iri = get_iri(input)
-        if p_iri:
-            return [p_iri]
-        else:
-            logging.warning(
-                f"{input} is a curie but could not be resolved to an IRI, "
-                f"neither with the provided prefix map nor with bioregistry."
-            )
-    elif os.path.isfile(input):
+    if isinstance(input, (str, Path)) and os.path.isfile(input):
         pred_list = Path(input).read_text().splitlines()
-        iri_list = []
-        for p in pred_list:
-            p_iri = extract_iri(p, prefix_map)
-            if p_iri:
-                iri_list.extend(p_iri)
-        return iri_list
-
-    else:
-        logging.warning(
-            f"{input} is neither a valid curie, nor an IRI, nor a local file path, "
-            f"skipped from processing."
-        )
+        return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in pred_list)))
+    if isinstance(input, list):
+        return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in input)))
+    if converter.is_uri(input):
+        return [converter.standardize_uri(input, strict=True)]
+    if converter.is_curie(input):
+        return [converter.expand(input, strict=True)]
+    logging.warning(
+        f"{input} is neither a local file path nor a valid CURIE or URI w.r.t. the given converter. "
+        f"skipped from processing."
+    )
     return []
 
 
@@ -280,7 +249,9 @@ def extract_iri(input, prefix_map) -> list:
 #     return new_msdf
 
 
-def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDataFrame:
+def run_sql_query(
+    query: str, inputs: List[str], output: Optional[TextIO] = None
+) -> MappingSetDataFrame:
     """Run a SQL query over one or more SSSOM files.
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
@@ -301,7 +272,6 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
     :return: Filtered MappingSetDataFrame object.
     """
     n = 1
-    new_msdf = MappingSetDataFrame()
     while len(inputs) >= n:
         fn = inputs[n - 1]
         msdf = parse_sssom_table(fn)
@@ -313,14 +283,17 @@ def run_sql_query(query: str, inputs: List[str], output: TextIO) -> MappingSetDa
         n += 1
 
     new_df = sqldf(query)
-    new_msdf.df = new_df
-    new_msdf.prefix_map = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
-    new_msdf.metadata = msdf.metadata
-    write_table(new_msdf, output)
+
+    msdf.clean_context()
+    new_msdf = MappingSetDataFrame.with_converter(
+        df=new_df, converter=msdf.converter, metadata=msdf.metadata
+    )
+    if output is not None:
+        write_table(new_msdf, output)
     return new_msdf
 
 
-def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
+def filter_file(input: str, output: Optional[TextIO] = None, **kwargs) -> MappingSetDataFrame:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -332,7 +305,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 
     :param input: DataFrame to be queried over.
     :param output: Output location.
-    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     :raises ValueError: If parameter provided is invalid.
     :return: Filtered MappingSetDataFrame object.
     """
@@ -367,7 +340,7 @@ def filter_file(input: str, output: TextIO, **kwargs) -> MappingSetDataFrame:
 
 
 def annotate_file(
-    input: str, output: TextIO, replace_multivalued: bool = False, **kwargs
+    input: str, output: Optional[TextIO] = None, replace_multivalued: bool = False, **kwargs
 ) -> MappingSetDataFrame:
     """Annotate a file i.e. add custom metadata to the mapping set.
 
@@ -375,7 +348,7 @@ def annotate_file(
     :param output: Output location.
     :param replace_multivalued: Multivalued slots should be
         replaced or not, defaults to False
-    :param **kwargs: Options provided by user
+    :param kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     :return: Annotated MappingSetDataFrame object.
     """
@@ -383,5 +356,6 @@ def annotate_file(
     are_params_slots(params)
     input_msdf = parse_sssom_table(input)
     msdf = augment_metadata(input_msdf, params, replace_multivalued)
-    write_table(msdf, output)
+    if output is not None:
+        write_table(msdf, output)
     return msdf

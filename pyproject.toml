@@ -1,31 +1,30 @@
 [tool.poetry]
 name = "sssom"
-version = "0.3.33rc1.post1.dev0+968123b"
+version = "0.0.0"
 description = "Operations on SSSOM mapping tables"
 authors = [
     "Chris Mungall <cjmungall@lbl.gov>",
     "Nicolas Matentzoglu <nicolas.matentzoglu@gmail.com>",
     "Harshad Hegde <hhegde@lbl.gov>"
-    ]
+]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-click = "*"
-importlib-metadata = ">=4.8.0"
-pyparsing = "^3.0.9"
-bioregistry = ">=0.9.43"
-deprecation = ">=2.1.0"
-linkml-runtime = ">=1.5.3"
+click = ">=8.1.6"
+curies = ">=0.7.3"
+linkml-runtime = ">=1.5.5"
+importlib-metadata = ">=6.8.0"
+pandas = ">1.0.3"
+pansql = ">=0.0.1"
+sssom-schema = ">=0.14.0"
 networkx = ">=3.1"
-pandas = ">=2.0.2"
-pansql = "^0.0.1"
-pyyaml = ">=6.0"
-rdflib = ">=6.3.2"
 sparqlwrapper = ">=2.0.0"
-sssom-schema = ">=0.13.0"
 validators = ">=0.20.0"
+deprecation = "^2.1.0"
+pyyaml = "^6.0.1"
+rdflib = ">=6.0.0"
 scipy = {version = "*", extras = ["scipy"]}
 
 [tool.poetry.group.dev.dependencies]

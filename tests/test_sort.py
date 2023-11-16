@@ -2,12 +2,12 @@
 
 import unittest
 
-from sssom.constants import SSSOMSchemaView
+from sssom.constants import _get_sssom_schema_object
 from sssom.parsers import parse_sssom_table
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
 
-SCHEMA_DICT = SSSOMSchemaView.instance.dict
+SCHEMA_DICT = _get_sssom_schema_object().dict
 
 
 class TestSort(unittest.TestCase):

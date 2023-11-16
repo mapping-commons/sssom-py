@@ -1,25 +1,20 @@
 """Constants."""
 
 import pathlib
+import uuid
 from enum import Enum
-from typing import List
+from functools import lru_cache
+from typing import Any, Dict, List, Literal
 
 import pkg_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 
-# from curies import Converter
-
-
-# from linkml_runtime.utils.introspection import package_schemaview
-
 HERE = pathlib.Path(__file__).parent.resolve()
 
 SCHEMA_YAML = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
-
-# SCHEMA_VIEW = package_schemaview("sssom_schema")
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF_URI = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
@@ -43,14 +38,10 @@ DEFAULT_MAPPING_PROPERTIES = [
 ]
 
 UNKNOWN_IRI = "http://w3id.org/sssom/unknown_prefix/"
-PREFIX_MAP_MODE_METADATA_ONLY = "metadata_only"
-PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY = "sssom_default_only"
-PREFIX_MAP_MODE_MERGED = "merged"
-PREFIX_MAP_MODES = [
-    PREFIX_MAP_MODE_METADATA_ONLY,
-    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
-    PREFIX_MAP_MODE_MERGED,
-]
+MergeMode = Literal["metadata_only", "sssom_default_only", "merged"]
+PREFIX_MAP_MODE_METADATA_ONLY: MergeMode = "metadata_only"
+PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY: MergeMode = "sssom_default_only"
+PREFIX_MAP_MODE_MERGED: MergeMode = "merged"
 ENTITY_REFERENCE = "EntityReference"
 
 # Slot Constants
@@ -176,12 +167,12 @@ COLUMN_INVERT_DICTIONARY = {
     OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
 }
 
-# TODO: Implement this for all CURIE prefix <=> URI prefix conversions.
-# OBO_EXTENDED_PREFIX_MAP_CONVERTER = Converter.from_extended_prefix_map(EXTENDED_PREFIX_MAP)
-
 
 class SEMAPV(Enum):
-    """SEMAPV Enum containing different mapping_justification."""
+    """SEMAPV Enum containing different mapping_justification.
+
+    See also: https://mapping-commons.github.io/semantic-mapping-vocabulary/#matchingprocess
+    """
 
     LexicalMatching = "semapv:LexicalMatching"
     LogicalReasoning = "semapv:LogicalReasoning"
@@ -201,8 +192,10 @@ class SEMAPV(Enum):
 class SchemaValidationType(str, Enum):
     """Schema validation types."""
 
+    # TODO move this class into validators.py
     JsonSchema = "JsonSchema"
     Shacl = "Shacl"
+    Sparql = "Sparql"
     PrefixMapCompleteness = "PrefixMapCompleteness"
 
 
@@ -262,3 +255,54 @@ class SSSOMSchemaView(object):
     def entity_reference_slots(self) -> List[str]:
         """Return list of entity reference slots."""
         return [c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE]
+
+
+@lru_cache(1)
+def _get_sssom_schema_object() -> SSSOMSchemaView:
+    """Get a view over the SSSOM schema."""
+    sssom_sv_object = (
+        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
+    )
+    return sssom_sv_object
+
+
+SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
+DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
+
+#: The type for metadata that gets passed around in many places
+MetadataType = Dict[str, Any]
+
+
+def generate_mapping_set_id() -> str:
+    """Generate a mapping set ID."""
+    return f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
+
+
+def get_default_metadata() -> MetadataType:
+    """Get default metadata.
+
+    :returns: A metadata dictionary containing a default
+        license with value :data:`DEFAULT_LICENSE` and an
+        auto-generated mapping set ID
+
+    If you want to combine some metadata you loaded
+    but ensure that there is also default metadata,
+    the best tool is :class:`collections.ChainMap`.
+    You can do:
+
+    .. code-block:: python
+
+        my_metadata: dict | None = ...
+
+        from collections import ChainMap
+        from sssom import get_default_metadata
+
+        metadata = dict(ChainMap(
+            my_metadata or {},
+            get_default_metadata()
+        ))
+    """
+    return {
+        "mapping_set_id": generate_mapping_set_id(),
+        "license": DEFAULT_LICENSE,
+    }

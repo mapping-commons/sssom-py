@@ -1,21 +1,23 @@
 """SSSOM parsers."""
 
 import io
+import itertools as itt
 import json
-import logging
+import logging as _logging
 import re
 import typing
-from collections import Counter
+from collections import ChainMap, Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union, cast
+from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
+import curies
 import numpy as np
 import pandas as pd
 import requests
 import yaml
-from deprecation import deprecated
+from curies import Converter
 from linkml_runtime.loaders.json_loader import JSONLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph, URIRef
@@ -25,10 +27,8 @@ from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
     DEFAULT_MAPPING_PROPERTIES,
-    LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
-    MAPPING_SET_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -48,84 +48,25 @@ from sssom.constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
-    SSSOMSchemaView,
-)
-
-from .context import (
-    DEFAULT_LICENSE,
-    DEFAULT_MAPPING_SET_ID,
-    add_built_in_prefixes_to_prefix_map,
+    MetadataType,
+    _get_sssom_schema_object,
     get_default_metadata,
 )
+
+from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
-from .typehints import Metadata, MetadataType, PrefixMap
 from .util import (
-    PREFIX_MAP_KEY,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
-    NoCURIEException,
-    curie_from_uri,
     get_file_extension,
     is_multivalued_slot,
     raise_for_bad_path,
+    safe_compress,
     to_mapping_set_dataframe,
 )
 
-# * DEPRECATED methods *****************************************
-
-
-@deprecated(
-    deprecated_in="0.3.10",
-    removed_in="0.3.11",
-    details="Use 'parse_sssom_table' instead.",
-)
-def read_sssom_table(
-    file_path: Union[str, Path],
-    prefix_map: Optional[PrefixMap] = None,
-    meta: Optional[MetadataType] = None,
-) -> MappingSetDataFrame:
-    """DEPRECATE."""
-    return parse_sssom_table(file_path=file_path, prefix_map=prefix_map, meta=meta)
-
-
-@deprecated(
-    deprecated_in="0.3.10",
-    removed_in="0.3.11",
-    details="Use 'parse_sssom_rdf' instead.",
-)
-def read_sssom_rdf(
-    file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
-    **kwargs,
-) -> MappingSetDataFrame:
-    """DEPRECATE."""
-    return parse_sssom_rdf(
-        file_path=file_path,
-        prefix_map=prefix_map,
-        meta=meta,
-        serialisation=serialisation,
-        kwargs=kwargs,
-    )
-
-
-@deprecated(
-    deprecated_in="0.3.10",
-    removed_in="0.3.11",
-    details="Use 'parse_sssom_json' instead.",
-)
-def read_sssom_json(
-    file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
-    **kwargs
-    # mapping_predicates: Optional[List[str]] = None,
-) -> MappingSetDataFrame:
-    """DEPRECATE."""
-    return parse_sssom_json(file_path=file_path, prefix_map=prefix_map, meta=meta, kwarg=kwargs)
-
+logging = _logging.getLogger(__name__)
 
 # * *******************************************************
 # Parsers (from file)
@@ -200,7 +141,7 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
     table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
 
     try:
-        df = pd.read_csv(table_stream, sep=sep)
+        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
         df.fillna("", inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
@@ -240,7 +181,7 @@ def _get_seperator_symbol_from_file_path(file):
 
 def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     **kwargs,
 ) -> MappingSetDataFrame:
@@ -250,62 +191,54 @@ def parse_sssom_table(
     stream: io.StringIO = _open_input(file_path)
     sep_new = _get_seperator_symbol_from_file_path(file_path)
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
-    # if mapping_predicates:
-    #     # Filter rows based on presence of predicate_id list provided.
-    #     df = df[df["predicate_id"].isin(mapping_predicates)]
+    if meta is None:
+        meta = {}
 
-    # If SSSOM external metadata is provided, merge it with the internal metadata
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_prefix_map(sssom_metadata.pop(CURIE_MAP, {})),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
 
-    if sssom_metadata:
-        if meta:
-            for k, v in meta.items():
-                if k in sssom_metadata:
-                    if sssom_metadata[k] != v:
-                        logging.warning(
-                            f"SSSOM internal metadata {k} ({sssom_metadata[k]}) "
-                            f"conflicts with provided ({meta[k]})."
-                        )
-                else:
-                    logging.info(f"Externally provided metadata {k}:{v} is added to metadata set.")
-                    sssom_metadata[k] = v
-        meta = sssom_metadata
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
+    combine_meta = dict(
+        ChainMap(
+            sssom_metadata,
+            meta,
+            get_default_metadata(),
+        )
+    )
 
-        if "curie_map" in sssom_metadata:
-            if prefix_map:
-                for k, v in prefix_map.items():
-                    if k in sssom_metadata[CURIE_MAP]:
-                        if sssom_metadata[CURIE_MAP][k] != v:
-                            logging.warning(
-                                f"SSSOM prefix map {k} ({sssom_metadata[CURIE_MAP][k]}) "
-                                f"conflicts with provided ({prefix_map[k]})."
-                            )
-                    else:
-                        logging.info(
-                            f"Externally provided metadata {k}:{v} is added to metadata set."
-                        )
-                        sssom_metadata[CURIE_MAP][k] = v
-            prefix_map = sssom_metadata[CURIE_MAP]
-
-    meta_all = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    msdf = from_sssom_dataframe(df, prefix_map=meta_all.prefix_map, meta=meta_all.metadata)
+    msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
     return msdf
 
 
 def parse_sssom_rdf(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
     g.parse(file_path, format=serialisation)
-    msdf = from_sssom_rdf(g, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_rdf(g, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -314,18 +247,18 @@ def parse_sssom_rdf(
 
 def parse_sssom_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     **kwargs
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
-    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=metadata.prefix_map, meta=metadata.metadata)
+    msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -337,8 +270,8 @@ def parse_sssom_json(
 
 def parse_obographs_json(
     file_path: str,
-    prefix_map: Dict[str, str] = None,
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
@@ -351,39 +284,32 @@ def parse_obographs_json(
     """
     raise_for_bad_path(file_path)
 
-    _xmetadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
 
     return from_obographs(
         jsondoc,
-        prefix_map=_xmetadata.prefix_map,
-        meta=_xmetadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
 
 
 def _get_prefix_map_and_metadata(
-    prefix_map: Optional[PrefixMap] = None, meta: Optional[MetadataType] = None
-) -> Metadata:
-    default_metadata = get_default_metadata()
-
-    if prefix_map is None:
-        logging.warning("No prefix map provided (not recommended), trying to use defaults..")
-        prefix_map = default_metadata.prefix_map
-
+    prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None
+) -> Tuple[Converter, MetadataType]:
     if meta is None:
-        meta = default_metadata.metadata
-    else:
-        if prefix_map and PREFIX_MAP_KEY in meta:
-            logging.info(
-                "Prefix map provided as parameter, but SSSOM file provides its own prefix map. "
-                "Prefix map provided externally is disregarded in favour of the prefix map in the SSSOM file."
-            )
-            prefix_map = cast(PrefixMap, meta[PREFIX_MAP_KEY])
-
-    return Metadata(prefix_map=prefix_map, metadata=meta)
+        meta = get_default_metadata()
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
+    return converter, meta
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
@@ -395,59 +321,47 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
-    license = DEFAULT_LICENSE
-    mapping_set_id = DEFAULT_MAPPING_SET_ID
-    if meta is not None:
-        if MAPPING_SET_ID in meta.keys():
-            mapping_set_id = meta[MAPPING_SET_ID]
-        if LICENSE in meta.keys():
-            license = meta[LICENSE]
-    return MappingSet(mapping_set_id=mapping_set_id, license=license)
-
-
-def _get_mdict_ms_and_bad_attrs(row: pd.Series, bad_attrs: Counter) -> Tuple[dict, Counter]:
-    mdict = {}
-    sssom_schema_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
+    _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
+    mapping_set = MappingSet(
+        mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
     )
+    _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
+    return mapping_set
+
+
+def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
+    mdict = {}
+    sssom_schema_object = _get_sssom_schema_object()
     for k, v in row.items():
-        if v and v == v:
-            ok = False
-            if k:
-                k = str(k)
-            v = _address_multivalued_slot(k, v)
-
-            if k in sssom_schema_object.mapping_slots:
-                mdict[k] = v
-                ok = True
-
-            # ! This causes propogation of
-            # ! mappings level metadata to the mapping set
-            # ! which is not desirable atm.
-            # if k in sssom_schema_object.mapping_set_slots:
-            #     ms[k] = v
-            #     ok = True
-            if not ok:
-                bad_attrs[k] += 1
-    return (mdict, bad_attrs)
+        if not v or pd.isna(v):
+            continue
+        k = cast(str, k)
+        if k in sssom_schema_object.mapping_slots:
+            mdict[k] = _address_multivalued_slot(k, v)
+        else:
+            # There's the possibility that the key is in
+            # sssom_schema_object.mapping_set_slots, but
+            # this is skipped for now
+            bad_attrs[k] += 1
+    return mdict
 
 
 def parse_alignment_xml(
     file_path: str,
-    prefix_map: Dict[str, str],
-    meta: Dict[str, str],
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
     raise_for_bad_path(file_path)
 
-    metadata = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
     logging.info("Loading from alignment API")
     xmldoc = minidom.parse(file_path)
     msdf = from_alignment_minidom(
         xmldoc,
-        prefix_map=metadata.prefix_map,
-        meta=metadata.metadata,
+        prefix_map=converter,
+        meta=meta,
         mapping_predicates=mapping_predicates,
     )
     return msdf
@@ -458,7 +372,7 @@ def parse_alignment_xml(
 
 def from_sssom_dataframe(
     df: pd.DataFrame,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert a dataframe to a MappingSetDataFrame.
@@ -468,7 +382,7 @@ def from_sssom_dataframe(
     :param meta: A metadata dictionary
     :return: MappingSetDataFrame
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
 
     # Need to revisit this solution.
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
@@ -477,25 +391,14 @@ def from_sssom_dataframe(
         df2[CONFIDENCE].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
         df = df2
 
-    mlist: List[Mapping] = []
-    ms = _init_mapping_set(meta)
-    bad_attrs: typing.Counter[str] = Counter()
-    for _, row in df.iterrows():
-        mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
-        mlist.append(_prepare_mapping(Mapping(**mdict)))
-    for k, v in bad_attrs.most_common():
-        logging.warning(f"No attr for {k} [{v} instances]")
-    # the autogenerated code's type annotations are _really_ messy. This is in fact okay,
-    # so with a heavy heart we employ type:ignore
-    ms.mappings = mlist  # type:ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    doc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mapping_set = _get_mapping_set_from_df(df=df, meta=meta)
+    doc = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(doc)
 
 
 def from_sssom_rdf(
     g: Graph,
-    prefix_map: Optional[PrefixMap] = None,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Convert an SSSOM RDF graph into a SSSOM data table.
@@ -505,64 +408,61 @@ def from_sssom_rdf(
     :param meta: Potentially additional metadata, defaults to None
     :return: MappingSetDataFrame object
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
 
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         mdict: Dict[str, Any] = {}
         # TODO replace with g.predicate_objects()
-        for _s, p, o in g.triples((ox, None, None)):
-            if isinstance(p, URIRef):
-                try:
-                    p_id = curie_from_uri(p, prefix_map)
-                    k = None
-
-                    if p_id.startswith("sssom:"):
-                        k = p_id.replace("sssom:", "")
-                    elif p_id == "owl:annotatedProperty":
-                        k = "predicate_id"
-                    elif p_id == "owl:annotatedTarget":
-                        k = "object_id"
-                    elif p_id == "owl:annotatedSource":
-                        k = "subject_id"
-
-                    if isinstance(o, URIRef):
-                        v: Any
-                        v = curie_from_uri(o, prefix_map)
-                    else:
-                        v = o.toPython()
-                    if k:
-                        v = _address_multivalued_slot(k, v)
-                        mdict[k] = v
-
-                except NoCURIEException as e:
-                    logging.warning(e)
-        if mdict:
-            m = _prepare_mapping(Mapping(**mdict))
-            if _is_valid_mapping(m):
-                mlist.append(m)
+        for _, predicate, o in g.triples((ox, None, None)):
+            if not isinstance(predicate, URIRef):
+                continue
+            try:
+                predicate_curie = safe_compress(predicate, converter)
+            except ValueError as e:
+                logging.debug(e)
+                continue
+            if predicate_curie.startswith("sssom:"):
+                key = predicate_curie.replace("sssom:", "")
+            elif predicate_curie == "owl:annotatedProperty":
+                key = "predicate_id"
+            elif predicate_curie == "owl:annotatedTarget":
+                key = "object_id"
+            elif predicate_curie == "owl:annotatedSource":
+                key = "subject_id"
             else:
-                logging.warning(
-                    f"While trying to prepare a mapping for {mdict}, something went wrong. "
-                    f"One of subject_id, object_id or predicate_id was missing."
-                )
-        else:
+                continue
+
+            if isinstance(o, URIRef):
+                v: Any
+                try:
+                    v = safe_compress(o, converter)
+                except ValueError as e:
+                    logging.debug(e)
+                    continue
+            else:
+                v = o.toPython()
+
+            mdict[key] = _address_multivalued_slot(key, v)
+
+        if not mdict:
             logging.warning(
                 f"While trying to prepare a mapping for {sx},{px}, {ox}, something went wrong. "
                 f"This usually happens when a critical prefix_map entry is missing."
             )
+            continue
+        _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mdoc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
 
 def from_sssom_json(
     jsondoc: Union[str, dict, TextIO],
-    prefix_map: Dict[str, str],
-    meta: Dict[str, str] = None,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
 ) -> MappingSetDataFrame:
     """Load a mapping set dataframe from a JSON object.
 
@@ -571,18 +471,18 @@ def from_sssom_json(
     :param meta: metadata
     :return: MappingSetDataFrame object
     """
-    prefix_map = _ensure_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
     mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
     _set_metadata_in_mapping_set(mapping_set, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
 
 def from_alignment_minidom(
     dom: Document,
-    prefix_map: PrefixMap,
-    meta: MetadataType,
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Read a minidom Document object.
@@ -594,8 +494,7 @@ def from_alignment_minidom(
     :return: MappingSetDocument
     :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
     """
-    # FIXME: should be prefix_map =  _check_prefix_map(prefix_map)
-    _ensure_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -611,17 +510,10 @@ def from_alignment_minidom(
                 if node_name == "map":
                     cell = e.getElementsByTagName("Cell")
                     for c_node in cell:
-                        mdict = _cell_element_values(
-                            c_node, prefix_map, mapping_predicates=mapping_predicates
+                        mdict: Dict[str, Any] = _cell_element_values(
+                            c_node, converter, mapping_predicates=mapping_predicates
                         )
-                        if mdict:
-                            m = _prepare_mapping(mdict)
-                            mlist.append(m)
-                        else:
-                            logging.warning(
-                                f"While trying to prepare a mapping for {c_node}, something went wrong. "
-                                f"This usually happens when a critical prefix_map entry is missing."
-                            )
+                        _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":
@@ -638,8 +530,7 @@ def from_alignment_minidom(
                     ms[OBJECT_SOURCE] = e.firstChild.nodeValue
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mapping_set_document = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mapping_set_document = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -651,7 +542,7 @@ def _get_obographs_predicate_id(obographs_predicate: str):
 
 def from_obographs(
     jsondoc: Dict,
-    prefix_map: PrefixMap,
+    prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -664,7 +555,7 @@ def from_obographs(
     :raises Exception: When there is no CURIE
     :return: An SSSOM data frame (MappingSetDataFrame)
     """
-    _ensure_prefix_map(prefix_map)
+    converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
     # bad_attrs = {}
@@ -705,15 +596,14 @@ def from_obographs(
                                 xref_id = xref["val"]
                                 mdict: Dict[str, Any] = {}
                                 try:
-                                    mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
-                                    mdict[OBJECT_ID] = curie_from_uri(xref_id, prefix_map)
+                                    mdict[SUBJECT_ID] = safe_compress(nid, converter)
+                                    mdict[OBJECT_ID] = safe_compress(xref_id, converter)
                                     mdict[SUBJECT_LABEL] = label
                                     mdict[PREDICATE_ID] = "oboInOwl:hasDbXref"
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                    mlist.append(Mapping(**mdict))
-                                except NoCURIEException as e:
-                                    # FIXME this will cause all sorts of ragged Mappings
-                                    logging.warning(e)
+                                    _add_valid_mapping_to_list(mdict, mlist)
+                                except ValueError as e:
+                                    logging.debug(e)
                         if "basicPropertyValues" in n["meta"]:
                             for value in n["meta"]["basicPropertyValues"]:
                                 pred = value["pred"]
@@ -721,15 +611,15 @@ def from_obographs(
                                     xref_id = value["val"]
                                     mdict = {}
                                     try:
-                                        mdict[SUBJECT_ID] = curie_from_uri(nid, prefix_map)
-                                        mdict[OBJECT_ID] = curie_from_uri(xref_id, prefix_map)
+                                        mdict[SUBJECT_ID] = safe_compress(nid, converter)
+                                        mdict[OBJECT_ID] = safe_compress(xref_id, converter)
                                         mdict[SUBJECT_LABEL] = label
-                                        mdict[PREDICATE_ID] = curie_from_uri(pred, prefix_map)
+                                        mdict[PREDICATE_ID] = safe_compress(pred, converter)
                                         mdict[
                                             MAPPING_JUSTIFICATION
                                         ] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                        mlist.append(Mapping(**mdict))
-                                    except NoCURIEException as e:
+                                        _add_valid_mapping_to_list(mdict, mlist)
+                                    except ValueError as e:
                                         # FIXME this will cause ragged mappings
                                         logging.warning(e)
             if "edges" in g:
@@ -739,17 +629,17 @@ def from_obographs(
                     predicate_id = _get_obographs_predicate_id(edge["pred"])
                     object_id = edge["obj"]
                     if predicate_id in mapping_predicates:
-                        mdict[SUBJECT_ID] = curie_from_uri(subject_id, prefix_map)
-                        mdict[OBJECT_ID] = curie_from_uri(object_id, prefix_map)
+                        mdict[SUBJECT_ID] = safe_compress(subject_id, converter)
+                        mdict[OBJECT_ID] = safe_compress(object_id, converter)
                         mdict[SUBJECT_LABEL] = (
                             labels[subject_id] if subject_id in labels.keys() else ""
                         )
                         mdict[OBJECT_LABEL] = (
                             labels[object_id] if object_id in labels.keys() else ""
                         )
-                        mdict[PREDICATE_ID] = curie_from_uri(predicate_id, prefix_map)
+                        mdict[PREDICATE_ID] = safe_compress(predicate_id, converter)
                         mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                        mlist.append(Mapping(**mdict))
+                        _add_valid_mapping_to_list(mdict, mlist)
             if "equivalentNodesSets" in g and OWL_EQUIV_CLASS_URI in mapping_predicates:
                 for equivalents in g["equivalentNodesSets"]:
                     if "nodeIds" in equivalents:
@@ -757,10 +647,10 @@ def from_obographs(
                             for ec2 in equivalents["nodeIds"]:
                                 if ec1 != ec2:
                                     mdict = {}
-                                    mdict[SUBJECT_ID] = curie_from_uri(ec1, prefix_map)
-                                    mdict[OBJECT_ID] = curie_from_uri(ec2, prefix_map)
-                                    mdict[PREDICATE_ID] = curie_from_uri(
-                                        OWL_EQUIV_CLASS_URI, prefix_map
+                                    mdict[SUBJECT_ID] = safe_compress(ec1, converter)
+                                    mdict[OBJECT_ID] = safe_compress(ec2, converter)
+                                    mdict[PREDICATE_ID] = safe_compress(
+                                        OWL_EQUIV_CLASS_URI, converter
                                     )
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     mdict[SUBJECT_LABEL] = (
@@ -769,18 +659,26 @@ def from_obographs(
                                     mdict[OBJECT_LABEL] = (
                                         labels[ec2] if ec2 in labels.keys() else ""
                                     )
-                                    mlist.append(Mapping(**mdict))
+                                    _add_valid_mapping_to_list(mdict, mlist)
     else:
         raise Exception("No graphs element in obographs file, wrong format?")
 
     ms.mappings = mlist  # type: ignore
-    _set_metadata_in_mapping_set(mapping_set=ms, metadata=meta)
-    mdoc = MappingSetDocument(mapping_set=ms, prefix_map=prefix_map)
+    mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
 
-# All from_* take as an input a python object (data frame, json, etc) and return a MappingSetDataFrame
-# All read_* take as an input a a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
+# All from_* take as an input a python object (data frame, json, etc.) and return a MappingSetDataFrame
+# All read_* take as an input a file handle and return a MappingSetDataFrame (usually wrapping a from_* method)
+
+
+PARSING_FUNCTIONS: typing.Mapping[str, Callable] = {
+    "tsv": parse_sssom_table,
+    "obographs-json": parse_obographs_json,
+    "alignment-api-xml": parse_alignment_xml,
+    "json": parse_sssom_json,
+    "rdf": parse_sssom_rdf,
+}
 
 
 def get_parsing_function(input_format: Optional[str], filename: str) -> Callable:
@@ -793,33 +691,17 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
     """
     if input_format is None:
         input_format = get_file_extension(filename)
-    if input_format == "tsv":
-        return parse_sssom_table
-    elif input_format == "rdf":
-        return parse_sssom_rdf
-    elif input_format == "json":
-        return parse_sssom_json
-    elif input_format == "alignment-api-xml":
-        return parse_alignment_xml
-    elif input_format == "obographs-json":
-        return parse_obographs_json
-    else:
+    func = PARSING_FUNCTIONS.get(input_format)
+    if func is None:
         raise Exception(f"Unknown input format: {input_format}")
+    return func
 
 
-def _ensure_prefix_map(prefix_map: Optional[PrefixMap] = None) -> PrefixMap:
-    if not prefix_map:
-        raise Exception("No valid prefix_map provided")
-    else:
-        return add_built_in_prefixes_to_prefix_map(prefix_map)
-
-
-def _prepare_mapping(mapping: Mapping) -> Mapping:
-    p = mapping.predicate_id
-    if p == "sssom:superClassOf":
-        mapping.predicate_id = "rdfs:subClassOf"
-        return _swap_object_subject(mapping)
-    return mapping
+def _flip_superclass_assertion(mapping: Mapping) -> Mapping:
+    if mapping.predicate_id != "sssom:superClassOf":
+        return mapping
+    mapping.predicate_id = "rdfs:subClassOf"
+    return _swap_object_subject(mapping)
 
 
 def _swap_object_subject(mapping: Mapping) -> Mapping:
@@ -853,10 +735,6 @@ def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
     return {}
 
 
-def _is_valid_mapping(m: Mapping) -> bool:
-    return bool(m.predicate_id and m.object_id and m.subject_id)
-
-
 def _set_metadata_in_mapping_set(
     mapping_set: MappingSet, metadata: Optional[MetadataType] = None
 ) -> None:
@@ -864,23 +742,19 @@ def _set_metadata_in_mapping_set(
         logging.info("Tried setting metadata but none provided.")
     else:
         for k, v in metadata.items():
-            if k != PREFIX_MAP_KEY:
-                mapping_set[k] = v
+            if k != CURIE_MAP:
+                mapping_set[k] = _address_multivalued_slot(k, v)
 
 
-def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -> Optional[Mapping]:
+def _cell_element_values(cell_node, converter: Converter, mapping_predicates) -> Dict[str, Any]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
             try:
                 if child.nodeName == "entity1":
-                    mdict[SUBJECT_ID] = curie_from_uri(
-                        child.getAttribute("rdf:resource"), prefix_map
-                    )
+                    mdict[SUBJECT_ID] = safe_compress(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "entity2":
-                    mdict[OBJECT_ID] = curie_from_uri(
-                        child.getAttribute("rdf:resource"), prefix_map
-                    )
+                    mdict[OBJECT_ID] = safe_compress(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "measure":
                     mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
@@ -902,16 +776,11 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
                     logging.warning(f"Unsupported alignment api element: {child.nodeName}")
-            except NoCURIEException as e:
+            except ValueError as e:
                 logging.warning(e)
 
     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-
-    m = Mapping(**mdict)
-    if _is_valid_mapping(m):
-        return m
-    else:
-        return None
+    return mdict
 
 
 # The following methods dont really belong in the parser package..
@@ -919,25 +788,19 @@ def _cell_element_values(cell_node, prefix_map: PrefixMap, mapping_predicates) -
 
 def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     """Convert a MappingSetDataFrame to a MappingSetDocument."""
-    if not msdf.prefix_map:
-        raise Exception("No valid prefix_map provided")
+    ms = _get_mapping_set_from_df(df=msdf.df, meta=msdf.metadata)
+    return MappingSetDocument(mapping_set=ms, converter=msdf.converter)
 
-    mlist: List[Mapping] = []
-    ms = _init_mapping_set(msdf.metadata)
+
+def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = None) -> MappingSet:
+    mapping_set = _init_mapping_set(meta)
     bad_attrs: Counter = Counter()
-    if msdf.df is not None:
-        for _, row in msdf.df.iterrows():
-            mdict, bad_attrs = _get_mdict_ms_and_bad_attrs(row, bad_attrs)
-            m = _prepare_mapping(Mapping(**mdict))
-            mlist.append(m)
+    for _, row in df.iterrows():
+        mapping_dict = _get_mapping_dict(row, bad_attrs)
+        _add_valid_mapping_to_list(mapping_dict, mapping_set.mappings)
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
-    ms.mappings = mlist  # type: ignore
-    if msdf.metadata is not None:
-        for k, v in msdf.metadata.items():
-            if k != PREFIX_MAP_KEY:
-                ms[k] = _address_multivalued_slot(k, v)
-    return MappingSetDocument(mapping_set=ms, prefix_map=msdf.prefix_map)
+    return mapping_set
 
 
 def split_dataframe(
@@ -949,8 +812,6 @@ def split_dataframe(
     :raises RuntimeError: DataFrame object within MappingSetDataFrame is None
     :return: Mapping object
     """
-    if msdf.df is None:
-        raise RuntimeError
     subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", n=1, expand=True)[0])
     object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", n=1, expand=True)[0])
     relations = set(msdf.df[PREDICATE_ID])
@@ -963,7 +824,10 @@ def split_dataframe(
 
 
 def split_dataframe_by_prefix(
-    msdf: MappingSetDataFrame, subject_prefixes, object_prefixes, relations
+    msdf: MappingSetDataFrame,
+    subject_prefixes: Iterable[str],
+    object_prefixes: Iterable[str],
+    relations: Iterable[str],
 ) -> Dict[str, MappingSetDataFrame]:
     """Split a mapping set dataframe by prefix.
 
@@ -974,32 +838,71 @@ def split_dataframe_by_prefix(
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
     df = msdf.df
-    prefix_map = msdf.prefix_map
     meta = msdf.metadata
-    splitted = {}
-    for pre_subj in subject_prefixes:
-        for pre_obj in object_prefixes:
-            for rel in relations:
-                relpre = rel.split(":")[0]
-                relppost = rel.split(":")[1]
-                split_name = f"{pre_subj.lower()}_{relppost.lower()}_{pre_obj.lower()}"
-                if df is not None:
-                    dfs = df[
-                        (df[SUBJECT_ID].str.startswith(pre_subj + ":"))
-                        & (df[PREDICATE_ID] == rel)
-                        & (df[OBJECT_ID].str.startswith(pre_obj + ":"))
-                    ]
-                if pre_subj in prefix_map and pre_obj in prefix_map and len(dfs) > 0:
-                    cm = {
-                        pre_subj: prefix_map[pre_subj],
-                        pre_obj: prefix_map[pre_obj],
-                        relpre: prefix_map[relpre],
-                    }
-                    msdf = from_sssom_dataframe(dfs, prefix_map=cm, meta=meta)
-                    splitted[split_name] = msdf
-                else:
-                    logging.warning(
-                        f"Not adding {split_name} because there is a missing prefix ({pre_subj}, {pre_obj}), "
-                        f"or no matches ({len(dfs)} matches found)"
-                    )
-    return splitted
+    split_to_msdf: Dict[str, MappingSetDataFrame] = {}
+    for subject_prefix, object_prefix, relation in itt.product(
+        subject_prefixes, object_prefixes, relations
+    ):
+        relation_prefix, relation_id = relation.split(":")
+        split = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
+        if subject_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
+            continue
+        if object_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing object prefix - {object_prefix}")
+            continue
+        df_subset = df[
+            (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
+            & (df[PREDICATE_ID] == relation)
+            & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
+        ]
+        if 0 == len(df_subset):
+            logging.debug(f"No matches ({len(df_subset)} matches found)")
+            continue
+        subconverter = msdf.converter.get_subconverter(
+            [subject_prefix, object_prefix, relation_prefix]
+        )
+        split_to_msdf[split] = from_sssom_dataframe(
+            df_subset, prefix_map=dict(subconverter.bimap), meta=meta
+        )
+    return split_to_msdf
+
+
+def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
+    """
+    Return a valid mapping object if it can be constructed, else None.
+
+    :param mdict: A dictionary containing the mapping metadata.
+    :return: A valid Mapping object, or None.
+    """
+    mdict.setdefault(MAPPING_JUSTIFICATION, MAPPING_JUSTIFICATION_UNSPECIFIED)
+
+    try:
+        m = Mapping(**mdict)
+    except ValueError as e:
+        logging.warning(
+            f"One mapping in the mapping set is not well-formed, "
+            f"and therfore not included in the mapping set ({mdict}). Error: {e}"
+        )
+        return None
+    else:
+        return m
+
+
+def _add_valid_mapping_to_list(
+    mdict: Dict[str, Any], mlist: List[Mapping], *, flip_superclass_assertions=False
+):
+    """
+    Validate the mapping and append to the list if valid.
+
+    Parameters:
+    - mdict (dict): A dictionary containing the mapping metadata.
+    - mlist (list): The list to which the valid mapping should be appended.
+    - flip_superclass_assertions (bool): an optional paramter that flips sssom:superClassOf to rdfs:subClassOf
+    """
+    mapping = _ensure_valid_mapping_from_dict(mdict)
+    if not mapping:
+        return None
+    if flip_superclass_assertions:
+        mapping = _flip_superclass_assertion(mapping)
+    mlist.append(mapping)

@@ -1,17 +1,12 @@
 """Validators."""
 
-import logging
-from typing import List
+from typing import Callable, List, Mapping
 
 from jsonschema import ValidationError
-
-# from linkml.validators.jsonschemavalidator import JsonSchemaDataValidator
-# from linkml.validators.sparqlvalidator import SparqlDataValidator  # noqa: F401
 from linkml_runtime.processing.referencevalidator import ReferenceValidator
 from linkml_runtime.utils.schemaview import SchemaView
 from sssom_schema import MappingSet
 
-from sssom.context import add_built_in_prefixes_to_prefix_map
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 
@@ -24,13 +19,8 @@ def validate(msdf: MappingSetDataFrame, validation_types: List[SchemaValidationT
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
     """
-    validation_methods = {
-        SchemaValidationType.JsonSchema: validate_json_schema,
-        SchemaValidationType.Shacl: validate_shacl,
-        SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
-    }
     for vt in validation_types:
-        validation_methods[vt](msdf)
+        VALIDATION_METHODS[vt](msdf)
 
 
 def validate_json_schema(msdf: MappingSetDataFrame) -> None:
@@ -71,18 +61,15 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame) -> None:
     :param msdf: MappingSetDataFrame
     :raises ValidationError: If all prefixes not in curie_map.
     """
-    prefixes = get_all_prefixes(msdf)
-    prefixes_including_builtins = add_built_in_prefixes_to_prefix_map(msdf.prefix_map)
-    added_built_in = {
-        k: v for k, v in prefixes_including_builtins.items() if k not in msdf.prefix_map.keys()
-    }
-    if len(added_built_in) > 0:
-        logging.info(f"Adding prefixes: {added_built_in} to the MapingSetDataFrame.")
-    msdf.prefix_map = prefixes_including_builtins
-
-    missing_prefixes = []
-    for pref in prefixes:
-        if pref != "" and pref not in list(msdf.prefix_map.keys()):
-            missing_prefixes.append(pref)
+    msdf.clean_context()
+    missing_prefixes = get_all_prefixes(msdf).difference(msdf.converter.bimap)
     if missing_prefixes:
         raise ValidationError(f"The prefixes in {missing_prefixes} are missing from 'curie_map'.")
+
+
+VALIDATION_METHODS: Mapping[SchemaValidationType, Callable] = {
+    SchemaValidationType.JsonSchema: validate_json_schema,
+    SchemaValidationType.Shacl: validate_shacl,
+    SchemaValidationType.Sparql: validate_sparql,
+    SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
+}

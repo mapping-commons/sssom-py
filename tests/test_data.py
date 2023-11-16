@@ -5,7 +5,7 @@ from typing import Any, List, Mapping
 
 import yaml
 
-from sssom.util import PREFIX_MAP_KEY
+from sssom.constants import CURIE_MAP
 from tests.constants import cwd, data_dir, test_out_dir
 
 test_validate_dir = os.path.join(cwd, "validate_data")
@@ -41,7 +41,7 @@ class SSSOMTestCase:
         self.inputformat = config.get("inputformat")
         self.ct_graph_queries_owl = self._query_tuple(config, "ct_graph_queries_owl", queries)
         self.ct_graph_queries_rdf = self._query_tuple(config, "ct_graph_queries_rdf", queries)
-        self.prefix_map = config.get(PREFIX_MAP_KEY)
+        self.prefix_map = config.get(CURIE_MAP)
 
     @staticmethod
     def _query_tuple(config, tuple_id, queries_dict):

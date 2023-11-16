@@ -11,25 +11,27 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
-import logging
+import logging as _logging
 import os
 import sys
+from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, ChainMap, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Callable, List, Optional, TextIO, Tuple, get_args
 
 import click
+import curies
 import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
-    PREFIX_MAP_MODES,
+    MergeMode,
     SchemaValidationType,
-    SSSOMSchemaView,
+    _get_sssom_schema_object,
 )
-from sssom.context import get_default_metadata
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
@@ -42,12 +44,10 @@ from .io import (
     split_file,
     validate_file,
 )
-from .parsers import parse_sssom_table
+from .parsers import PARSING_FUNCTIONS, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
-    SSSOM_EXPORT_FORMATS,
-    SSSOM_READ_FORMATS,
     MappingSetDataFrame,
     compare_dataframes,
     dataframe_to_ptable,
@@ -59,11 +59,12 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .writers import write_table
+from .writers import WRITER_FUNCTIONS, write_table
 
-SSSOM_SV_OBJECT = (
-    SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
-)
+logging = _logging.getLogger(__name__)
+
+SSSOM_SV_OBJECT = _get_sssom_schema_object()
+
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
@@ -72,7 +73,7 @@ input_format_option = click.option(
     "-I",
     "--input-format",
     help="The string denoting the input format.",
-    type=click.Choice(SSSOM_READ_FORMATS),
+    type=click.Choice(PARSING_FUNCTIONS),
 )
 output_option = click.option(
     "-o",
@@ -85,7 +86,7 @@ output_format_option = click.option(
     "-O",
     "--output-format",
     help="Desired output format.",
-    type=click.Choice(SSSOM_EXPORT_FORMATS),
+    type=click.Choice(WRITER_FUNCTIONS),
 )
 output_directory_option = click.option(
     "-d",
@@ -124,15 +125,15 @@ predicate_filter_option = click.option(
 @click.version_option(__version__)
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
-    logger = logging.getLogger()
+    logger = _logging.getLogger()
     if verbose >= 2:
-        logger.setLevel(level=logging.DEBUG)
+        logger.setLevel(level=_logging.DEBUG)
     elif verbose == 1:
-        logger.setLevel(level=logging.INFO)
+        logger.setLevel(level=_logging.INFO)
     else:
-        logger.setLevel(level=logging.WARNING)
+        logger.setLevel(level=_logging.WARNING)
     if quiet:
-        logger.setLevel(level=logging.ERROR)
+        logger.setLevel(level=_logging.ERROR)
 
 
 @main.command()
@@ -171,9 +172,9 @@ def convert(input: str, output: TextIO, output_format: str):
     default="metadata_only",
     show_default=True,
     required=True,
-    type=click.Choice(PREFIX_MAP_MODES, case_sensitive=False),
+    type=click.Choice(get_args(MergeMode), case_sensitive=False),
     help="Defines whether the prefix map in the metadata should be extended or replaced with "
-    "the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged",
+    "the SSSOM default prefix map.",
 )
 @click.option(
     "-p",
@@ -204,7 +205,7 @@ def parse(
     input: str,
     input_format: str,
     metadata: str,
-    prefix_map_mode: str,
+    prefix_map_mode: MergeMode,
     clean_prefixes: bool,
     strict_clean_prefixes: bool,
     output: TextIO,
@@ -234,7 +235,7 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
-def validate(input: str, validation_types: tuple):
+def validate(input: str, validation_types: List[SchemaValidationType]):
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
     validate_file(input_path=input, validation_types=validation_type_list)
@@ -276,7 +277,9 @@ def dedupe(input: str, output: TextIO):
     # df = parse(input)
     msdf = parse_sssom_table(input)
     df = filter_redundant_rows(msdf.df)
-    msdf_out = MappingSetDataFrame(df=df, prefix_map=msdf.prefix_map, metadata=msdf.metadata)
+    msdf_out = MappingSetDataFrame.with_converter(
+        df=df, converter=msdf.converter, metadata=msdf.metadata
+    )
     # df.to_csv(output, sep="\t", index=False)
     write_table(msdf_out, output)
 
@@ -339,12 +342,12 @@ def sparql(
     graph: str,
     limit: int,
     object_labels: bool,
-    prefix: List[Dict[str, str]],
+    prefix: List[Tuple[str, str]],
     output: TextIO,
 ):
     """Run a SPARQL query."""
     # FIXME this usage needs _serious_ refactoring
-    endpoint = EndpointConfig()  # type: ignore
+    endpoint = EndpointConfig(converter=Converter.from_prefix_map(dict(prefix)))  # type: ignore
     if config is not None:
         for k, v in yaml.safe_load(config).items():
             setattr(endpoint, k, v)
@@ -356,11 +359,7 @@ def sparql(
         endpoint.limit = limit
     if object_labels is not None:
         endpoint.include_object_labels = object_labels
-    if prefix is not None:
-        if endpoint.prefix_map is None:
-            endpoint.prefix_map = {}
-        for k, v in prefix:
-            endpoint.prefix_map[k] = v
+
     msdf = query_mappings(endpoint)
     write_table(msdf, output)
 
@@ -388,13 +387,13 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         logging.info(
             f"COMMON: {len(d.common_tuples)} UNIQUE_1: {len(d.unique_tuples1)} UNIQUE_2: {len(d.unique_tuples2)}"
         )
-    msdf = MappingSetDataFrame()
-    meta = get_default_metadata()
-    msdf.df = d.combined_dataframe.drop_duplicates()
-    prefix_map_list = [msdf1.prefix_map, msdf2.prefix_map]
-    msdf.prefix_map = dict(ChainMap(*prefix_map_list))
-    msdf.metadata = meta.metadata
-    msdf.metadata[
+
+    prefix_map_list = [msdf1, msdf2]
+    converter = curies.chain(m.converter for m in prefix_map_list)
+    msdf = MappingSetDataFrame.with_converter(
+        df=d.combined_dataframe.drop_duplicates(), converter=converter
+    )
+    msdf.metadata[  # type:ignore
         "comment"
     ] = f"Diff between {input1} and {input2}. See comment column for information."
     write_table(msdf, output)
@@ -428,8 +427,6 @@ def partition(inputs: List[str], output_directory: str):
 @click.option("-s", "--statsfile")
 def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
     """Calculate summaries for each clique in a SSSOM file."""
-    import yaml
-
     if metadata is None:
         doc = parse_sssom_table(input)
     else:
@@ -448,10 +445,9 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
 @output_option
 @transpose_option
 @fields_option
-def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
+def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Write sssom summary cross-tabulated by categories."""
     df = remove_unmatched(parse_sssom_table(input).df)
-    # df = parse(input)
     logging.info(f"#CROSSTAB ON {fields}")
     (f1, f2) = fields
     ct = pd.crosstab(df[f1], df[f2])
@@ -465,11 +461,10 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple):
 @transpose_option
 @fields_option
 @input_argument
-def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
+def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Calculate correlations."""
     msdf = parse_sssom_table(input)
     df = remove_unmatched(msdf.df)
-    # df = remove_unmatched(parse(input))
     if len(df) == 0:
         msg = "No matched entities in this dataset!"
         logging.error(msg)
@@ -488,18 +483,16 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple):
     chi2 = chi2_contingency(ct)
 
     logging.info(chi2)
-    _, _, _, ndarray = chi2
-    corr = pd.DataFrame(ndarray, index=ct.index, columns=ct.columns)
-    corr.to_csv(output, sep="\t")
+    expected_frequencies_df = pd.DataFrame(chi2[3], index=ct.index, columns=ct.columns)
+    expected_frequencies_df.to_csv(output, sep="\t")
 
-    tups = []
-    for i, row in corr.iterrows():
+    rows = []
+    for i, row in expected_frequencies_df.iterrows():
         for j, v in row.items():
             logging.info(f"{i} x {j} = {v}")
-            tups.append((v, i, j))
-    tups = sorted(tups, key=lambda tx: tx[0])
-    for t in tups:
-        print(f"{t[0]}\t{t[1]}\t{t[2]}")
+            rows.append((v, i, j))
+    for row in sorted(rows, key=itemgetter(0)):
+        print(*row, sep="\t")
 
 
 @main.command()
@@ -668,7 +661,7 @@ def filter(input: str, output: TextIO, **kwargs):
 
     :param input: DataFrame to be queried over.
     :param output: Output location.
-    :param **kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+    :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     """
     filter_file(input=input, output=output, **kwargs)
 
@@ -677,9 +670,9 @@ def filter(input: str, output: TextIO, **kwargs):
 @input_argument
 @output_option
 # TODO Revist the option below.
-# If a multivalued slot needs to be partially preserved,
-# the users will need to type the ones they need and
-# set --replace-multivalued to True.
+#  If a multivalued slot needs to be partially preserved,
+#  the users will need to type the ones they need and
+#  set --replace-multivalued to True.
 @click.option(
     "--replace-multivalued",
     default=False,
@@ -694,7 +687,7 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     :param output: Output location.
     :param replace_multivalued: Multivalued slots should be
         replaced or not, defaults to False
-    :param **kwargs: Options provided by user
+    :param kwargs: Options provided by user
         which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
     """
     annotate_file(input=input, output=output, replace_multivalued=replace_multivalued, **kwargs)

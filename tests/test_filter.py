@@ -1,13 +1,10 @@
 """Test for filtering MappingSetDataFrame columns."""
 
-import sys
 import unittest
 from os.path import join
 
 from sssom.constants import PREDICATE_MODIFIER
 from sssom.io import filter_file
-
-# from sssom.io import filter_file
 from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir
 
@@ -25,7 +22,7 @@ class TestSort(unittest.TestCase):
     def test_filter(self):
         """Test filtering of rows."""
         kwargs = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%", "a:%")}
-        filtered_msdf = filter_file(input=self.input, output=sys.stdout, **kwargs)
+        filtered_msdf = filter_file(input=self.input, **kwargs)
         validation_msdf = parse_sssom_table(self.validation_file)
 
         # Drop empty columns since read_sssom_table drops them by default.
@@ -41,4 +38,4 @@ class TestSort(unittest.TestCase):
         """Pass invalid param to see if it fails."""
         kwargs = {"subject_ids": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
         with self.assertRaises(ValueError):
-            filter_file(input=self.input, output=sys.stdout, **kwargs)
+            filter_file(input=self.input, **kwargs)

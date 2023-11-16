@@ -6,12 +6,14 @@ import logging
 import unittest
 from typing import Dict
 
+import pandas as pd
 import yaml
+from curies import Converter
 from rdflib import Graph
 
 from sssom.parsers import get_parsing_function, parse_sssom_table, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
-from sssom.util import to_mapping_set_dataframe
+from sssom.util import MappingSetDataFrame, to_mapping_set_dataframe
 from sssom.writers import (
     to_json,
     to_ontoportal_json,
@@ -88,11 +90,12 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         jsonob = to_ontoportal_json(msdf)
         self.assertEqual(len(jsonob), test.ct_data_frame_rows)
         first_ob: Dict = jsonob[0]
-        self.assertTrue("classes" in first_ob)
-        self.assertTrue(len(first_ob.get("classes")) == 2)
-        self.assertTrue("relation" in first_ob)
-        self.assertIsInstance(first_ob.get("relation"), list)
-        self.assertGreater(len(first_ob.get("relation")), 0)
+        self.assertIn("classes", first_ob)
+        self.assertIsInstance(first_ob["classes"], list)
+        self.assertEqual(2, len(first_ob["classes"]))
+        self.assertIn("relation", first_ob)
+        self.assertIsInstance(first_ob["relation"], list)
+        self.assertGreater(len(first_ob["relation"]), 0)
 
     def _test_to_rdf_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -143,9 +146,10 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.ct_data_frame_rows,
             f"The pandas data frame has less elements than the orginal one for {test.filename}",
         )
-        df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        # data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        data = parse_sssom_table(test.get_out_file("roundtrip.tsv")).df
+        path = test.get_out_file("roundtrip.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file=file)
+        data = parse_sssom_table(path).df
         self.assertEqual(
             len(data),
             test.ct_data_frame_rows,
@@ -173,9 +177,11 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             f"JSON document has less elements than the orginal one for {test.filename}. Json: {json.dumps(json_dict)}",
         )
 
+        self.assertIsNotNone(msdf.df)
+        self.assertIsInstance(json_dict["mappings"], list)
         self.assertEqual(
             len(json_dict["mappings"]),
-            len(msdf.df),
+            len(msdf.df.index),  # type:ignore
             f"JSON document has less mappings than the orginal ({test.filename}). Json: {json.dumps(json_dict)}",
         )
 
@@ -200,4 +206,54 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             len(data),
             test.ct_json_elements,
             f"The exported JSON file has less elements than the orginal one for {test.filename}",
+        )
+
+    def test_ontoportal_writer(self):
+        """Test dumping to OntoPortal JSON."""
+        rows = [
+            {
+                "subject_id": "mesh:C067604",
+                "subject_source": "mesh",
+                "predicate_id": "skos:exactMatch",
+                "object_id": "CHEBI:10001",
+                "object_source": "chebi",
+                "mapping_justification": "semapv:ManualMappingCuration",
+                "creator_id": ["orcid:0000-0001-9439-5346"],
+                "mapping_date": "2023-09-13",
+            }
+        ]
+        df = pd.DataFrame(rows)
+        metadata = {
+            "mapping_set_title": "Test Mappings",
+            "mapping_set_id": "https://example.org/test_id",
+        }
+        prefix_map = {
+            "mesh": "http://id.nlm.nih.gov/mesh/",
+            "CHEBI": "http://purl.obolibrary.org/obo/CHEBI_",
+            "semapv": "https://w3id.org/semapv/vocab/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "orcid": "https://orcid.org/",
+        }
+        converter = Converter.from_prefix_map(prefix_map)
+        msdf = MappingSetDataFrame(df=df, metadata=metadata, converter=converter)
+        results = to_ontoportal_json(msdf)
+        self.assertIsInstance(results, list)
+        self.assertEqual(1, len(results))
+        result = results[0]
+        self.assertEqual(
+            {
+                "classes": [
+                    "http://id.nlm.nih.gov/mesh/C067604",
+                    "http://purl.obolibrary.org/obo/CHEBI_10001",
+                ],
+                "subject_source_id": "mesh",
+                "object_source_id": "chebi",
+                "name": "Test Mappings",
+                "source_name": "https://example.org/test_id",
+                "source_contact_info": "orcid:0000-0001-9439-5346",
+                "source": "https://w3id.org/semapv/vocab/ManualMappingCuration",
+                "relation": ["http://www.w3.org/2004/02/skos/core#exactMatch"],
+                "date": "2023-09-13",
+            },
+            result,
         )
