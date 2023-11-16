@@ -12,22 +12,17 @@ jobs:
         
       - name: Work around permission issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      
-      - name: Install Black
-        run: |
-          pip install --upgrade pip
-          pip install black
 
       - name: Update sssom context
         run: |
-          make deploy-dm
+          make deploy-dm -B
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         if: ${{ success() }}
         with:
-          commit-message: Update sssom.context
-          title: 'Update sssom.context'
+          commit-message: Update SSSOM Extended Prefix Map
+          title: 'Update SSSOM Extended Prefix Map'
           body: |
-            This pull request updates sssom.context. Make sure you run make tests manually.
+            This pull request updates sssom extended prefix map (epm). Make sure you run make tests manually.
           assignees: matentzn
