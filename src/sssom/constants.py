@@ -230,9 +230,9 @@ class SSSOMSchemaView(object):
         return schema_as_dict(self.view.schema)
 
     @cached_property
-    def mapping_slots(self) -> Set[str]:
+    def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        return set(self.view.get_class("mapping").slots)
+        return self.view.get_class("mapping").slots
 
     @cached_property
     def mapping_set_slots(self) -> List[str]:

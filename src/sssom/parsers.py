@@ -329,7 +329,7 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     return mapping_set
 
 
-MAPPING_SLOTS = _get_sssom_schema_object().mapping_slots
+MAPPING_SLOTS = set(_get_sssom_schema_object().mapping_slots)
 
 
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
