@@ -365,7 +365,7 @@ class TestUtils(unittest.TestCase):
             predicate_id="skos:exactMatch",
             object_id="UMLS:C1863204",
             mapping_justification=SEMAPV.ManualMappingCuration.value,
-            author_id=["orcid:xxxxxxxx", "orcid:yyyyyyyy"],
+            author_id=["orcid:0000-0002-2411-565X", "orcid:0000-0002-7356-1779"],
             confidence=0.5,
         )
         mapping_dict = mapping_obj.__dict__
