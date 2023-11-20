@@ -1061,6 +1061,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
         if isinstance(mapping_property, list):
             # If the property is an enumeration and it allows multiple values
             if is_enum and slot_of_interest["multivalued"]:
+                # FIXME needs test
                 # Join all the enum values into a string separated by '|'
                 map_dict[property] = "|".join(
                     enum_value.code.text for enum_value in mapping_property
@@ -1069,8 +1070,8 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
                 # If the property is not an enumeration or doesn't allow multiple values,
                 # join all the values into a string separated by '|'
                 map_dict[property] = "|".join(enum_value for enum_value in mapping_property)
-        # If the mapping_property is not a list but an enumeration
         elif is_enum:
+            # FIXME needs test
             # Assign the text of the enumeration code to the property in the dictionary
             map_dict[property] = mapping_property.code.text
         else:
