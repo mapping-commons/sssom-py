@@ -381,7 +381,7 @@ class TestUtils(unittest.TestCase):
             "predicate_modifier": "",
             "object_label": "",
             "object_category": "",
-            "author_id": "orcid:xxxxxxxx|orcid:yyyyyyyy",
+            "author_id": "orcid:0000-0002-2411-565X|orcid:0000-0002-7356-1779",
             "author_label": "",
             "reviewer_id": "",
             "reviewer_label": "",
