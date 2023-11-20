@@ -18,7 +18,7 @@ linkml-runtime = ">=1.5.5"
 pandas = ">1.0.3"
 pansql = { version = ">=0.0.1", extras = ["pansql"] }
 sssom-schema = ">=0.14.0"
-networkx = ">=3.1"
+networkx = { version = ">=3.1", extras = ["networkx"] }
 sparqlwrapper = ">=2.0.0"
 validators = ">=0.20.0"
 deprecation = "^2.1.0"
