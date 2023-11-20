@@ -256,7 +256,7 @@ class SSSOMSchemaView(object):
 
     @cached_property
     def slots(self) -> Dict[str, str]:
-        """Return the slot names for SSSOMSchemaView object as a set."""
+        """Return the slots for SSSOMSchemaView object."""
         return self.dict["slots"]
 
     @cached_property

@@ -1051,12 +1051,12 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
             continue
 
         slot_of_interest = sssom_schema_object.slots[property]
-        is_enum = slot_of_interest["range"] in sssom_schema_object.mapping_enum_keys
+        is_enum = slot_of_interest["range"] in sssom_schema_object.mapping_enum_keys  # type:ignore
 
         # Check if the mapping_property is a list
         if isinstance(mapping_property, list):
             # If the property is an enumeration and it allows multiple values
-            if is_enum and slot_of_interest["multivalued"]:
+            if is_enum and slot_of_interest["multivalued"]:  # type:ignore
                 # Join all the enum values into a string separated by '|'
                 map_dict[property] = "|".join(
                     enum_value.code.text for enum_value in mapping_property
