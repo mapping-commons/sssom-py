@@ -329,29 +329,28 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     return mapping_set
 
 
+MAPPING_SLOTS = _get_sssom_schema_object().mapping_slots
+
+
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
-    """
-    Generate a mapping dictionary from a given row of data.
+    """Generate a mapping dictionary from a given row of data.
 
     It also updates the 'bad_attrs' counter for keys that are not present
     in the sssom_schema_object's mapping_slots.
     """
-    mdict = {}
-    sssom_schema_object = _get_sssom_schema_object()
-
     # Populate the mapping dictionary with key-value pairs from the row,
     # only if the value exists, is not NaN, and the key is in the schema's mapping slots.
     # The value could be a string or a list and is handled accordingly via _address_multivalued_slot().
     mdict = {
         k: _address_multivalued_slot(k, v)
         for k, v in row.items()
-        if v and pd.notna(v) and k in sssom_schema_object.mapping_slots
+        if v and pd.notna(v) and k in MAPPING_SLOTS
     }
 
     # Update bad_attrs for keys not in mapping_slots
-    bad_keys = set(row.keys()) - set(sssom_schema_object.mapping_slots)
-    for k in bad_keys:
-        bad_attrs[k] += 1
+    bad_keys = set(row.keys()) - MAPPING_SLOTS
+    for bad_key in bad_keys:
+        bad_attrs[bad_key] += 1
     return mdict
 
 

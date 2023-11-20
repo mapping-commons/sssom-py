@@ -1035,6 +1035,11 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
+DICT_FROM_MAPPING_ENUM_KEYS = set(_get_sssom_schema_object().dict["enums"].keys())
+SLOTS = _get_sssom_schema_object().dict["slots"]
+DOUBLE_SLOTS = {k for k, v in SLOTS.items() if v["range"] == "double"}
+
+
 def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
     """
     Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
@@ -1043,20 +1048,14 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :return: Dictionary
     """
     map_dict = {}
-    sssom_schema_object = _get_sssom_schema_object().dict
-    slots = sssom_schema_object["slots"]
-    enums_keys = set(sssom_schema_object["enums"].keys())
-
-    slots_with_double_as_range = {k for k, v in slots.items() if v["range"] == "double"}
-
     for property in map_obj:
         mapping_property = map_obj[property]
         if mapping_property is None:
-            map_dict[property] = np.nan if property in slots_with_double_as_range else ""
+            map_dict[property] = np.nan if property in DOUBLE_SLOTS else ""
             continue
 
-        slot_of_interest = slots[property]
-        is_enum = slot_of_interest["range"] in enums_keys
+        slot_of_interest = SLOTS[property]
+        is_enum = slot_of_interest["range"] in DICT_FROM_MAPPING_ENUM_KEYS
 
         # Check if the mapping_property is a list
         if isinstance(mapping_property, list):
