@@ -164,9 +164,8 @@ class MappingSetDataFrame:
         non_double_cols.replace(np.nan, "", inplace=True)
         df.update(non_double_cols)
 
-        return cls.with_converter(
-            df=sort_df_rows_columns(df), converter=doc.converter, metadata=meta
-        )
+        df = sort_df_rows_columns(df)
+        return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
 
     def to_mapping_set_document(self) -> "MappingSetDocument":
         """Get a mapping set document."""
