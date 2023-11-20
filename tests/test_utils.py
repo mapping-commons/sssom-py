@@ -425,8 +425,8 @@ class TestUtils(unittest.TestCase):
         # equals the corresponding key in result_with_mapping_object (except lists)
         for key, value in expected_result.items():
             if value is None or value == [] or value is np.nan:
-                self.assertTrue(result_with_mapping_object[key] in [np.nan, ""])
-                self.assertTrue(result_with_dict[key] in [np.nan, ""])
+                self.assertIn(result_with_mapping_object[key], [np.nan, ""])
+                self.assertIn(result_with_dict[key], [np.nan, ""])
             else:
                 self.assertEqual(value, result_with_mapping_object[key])
                 self.assertEqual(value, result_with_dict[key])
