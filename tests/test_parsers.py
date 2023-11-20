@@ -127,7 +127,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             # this number went up from 8099 when the curies.Converter was introduced
             # since it was able to handle CURIE prefix and URI prefix synonyms
-            8488,
+            8489,
             len(msdf.df),
             f"{self.obographs_file} has the wrong number of mappings.",
         )
