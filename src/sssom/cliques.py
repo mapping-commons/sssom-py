@@ -84,6 +84,8 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     :raises TypeError: If Mappings is not of type List
     :return: List of MappingSetDocument objects
     """
+    import networkx as nx
+
     doc = to_mapping_set_document(msdf)
     graph = to_digraph(msdf)
     components_it = nx.algorithms.components.strongly_connected_components(graph)
