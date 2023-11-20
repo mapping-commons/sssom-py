@@ -16,7 +16,7 @@ click = ">=8.1.6"
 curies = ">=0.7.3"
 linkml-runtime = ">=1.5.5"
 pandas = ">1.0.3"
-pansql = ">=0.0.1"
+pansql = { version = ">=0.0.1", extras = ["pansql"] }
 sssom-schema = ">=0.14.0"
 networkx = ">=3.1"
 sparqlwrapper = ">=2.0.0"
