@@ -2,11 +2,21 @@
 
 import unittest
 
+import numpy as np
 import pandas as pd
 import yaml
 from curies import Converter, Record
+from sssom_schema import Mapping as SSSOM_Mapping
 
-from sssom.constants import OBJECT_ID, SUBJECT_ID
+from sssom.constants import (
+    CREATOR_ID,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    PREDICATE_ID,
+    SEMAPV,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+)
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iris
 from sssom.parsers import parse_sssom_table
@@ -14,6 +24,7 @@ from sssom.util import (
     MappingSetDataFrame,
     filter_out_prefixes,
     filter_prefixes,
+    get_dict_from_mapping,
     get_prefixes_used_in_table,
     inject_metadata_into_df,
     invert_mappings,
@@ -30,6 +41,7 @@ class TestIO(unittest.TestCase):
         self.msdf = parse_sssom_table(f"{data_dir}/basic.tsv")
         self.msdf2 = parse_sssom_table(f"{data_dir}/basic7.tsv")
         self.features = [SUBJECT_ID, OBJECT_ID]
+        self.mapping_justification = SEMAPV.ManualMappingCuration.value
 
     def test_broken_predicate_list(self):
         """Test merging of multiple msdfs."""
@@ -314,18 +326,18 @@ class TestUtils(unittest.TestCase):
                 "skos:exactMatch",
                 "UMLS:C1863204",
                 "ADULT SYNDROME",
-                "semapv:ManualMappingCuration",
+                SEMAPV.ManualMappingCuration.value,
                 "orcid:0000-0003-4423-4370",
             )
         ]
         columns = [
-            "subject_id",
-            "subject_label",
-            "predicate_id",
-            "object_id",
-            "object_label",
-            "mapping_justification",
-            "creator_id",
+            SUBJECT_ID,
+            SUBJECT_LABEL,
+            PREDICATE_ID,
+            OBJECT_ID,
+            OBJECT_LABEL,
+            SEMAPV.ManualMappingCuration.value,
+            CREATOR_ID,
         ]
         df = pd.DataFrame(rows, columns=columns)
         msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
@@ -345,3 +357,76 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(1, len(new_msdf.df.index))
         self.assertEqual(rows[0], tuple(msdf.df.iloc[0]))
         self.assertEqual(new_msdf.metadata, msdf.metadata)
+
+    def test_get_dict_from_mapping(self):
+        """Test getting dict from a SSSOM mapping object or a dictionary."""
+        mapping_obj = SSSOM_Mapping(
+            subject_id="DOID:0050601",
+            predicate_id="skos:exactMatch",
+            object_id="UMLS:C1863204",
+            mapping_justification=SEMAPV.ManualMappingCuration.value,
+            author_id=["orcid:0000-0002-2411-565X", "orcid:0000-0002-7356-1779"],
+            confidence=0.5,
+        )
+        mapping_dict = mapping_obj.__dict__
+
+        expected_result = {
+            "subject_id": "DOID:0050601",
+            "predicate_id": "skos:exactMatch",
+            "object_id": "UMLS:C1863204",
+            "mapping_justification": "semapv:ManualMappingCuration",
+            "subject_label": "",
+            "subject_category": "",
+            "predicate_label": "",
+            "predicate_modifier": "",
+            "object_label": "",
+            "object_category": "",
+            "author_id": "orcid:0000-0002-2411-565X|orcid:0000-0002-7356-1779",
+            "author_label": "",
+            "reviewer_id": "",
+            "reviewer_label": "",
+            "creator_id": "",
+            "creator_label": "",
+            "license": "",
+            "subject_type": "",
+            "subject_source": "",
+            "subject_source_version": "",
+            "object_type": "",
+            "object_source": "",
+            "object_source_version": "",
+            "mapping_provider": "",
+            "mapping_source": "",
+            "mapping_cardinality": "",
+            "mapping_tool": "",
+            "mapping_tool_version": "",
+            "mapping_date": "",
+            "publication_date": "",
+            "confidence": 0.5,
+            "curation_rule": "",
+            "curation_rule_text": "",
+            "subject_match_field": "",
+            "object_match_field": "",
+            "match_string": "",
+            "subject_preprocessing": "",
+            "object_preprocessing": "",
+            "semantic_similarity_score": np.nan,
+            "semantic_similarity_measure": "",
+            "see_also": "",
+            "issue_tracker_item": "",
+            "other": "",
+            "comment": "",
+        }
+
+        result_with_mapping_object = get_dict_from_mapping(mapping_obj)
+        result_with_dict = get_dict_from_mapping(mapping_dict)
+        self.assertEqual(result_with_mapping_object, result_with_dict)
+
+        # Assert that every attribute value in expected_result
+        # equals the corresponding key in result_with_mapping_object (except lists)
+        for key, value in expected_result.items():
+            if value is None or value == [] or value is np.nan:
+                self.assertIn(result_with_mapping_object[key], [np.nan, ""])
+                self.assertIn(result_with_dict[key], [np.nan, ""])
+            else:
+                self.assertEqual(value, result_with_mapping_object[key])
+                self.assertEqual(value, result_with_dict[key])

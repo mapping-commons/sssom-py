@@ -238,13 +238,13 @@ files = [
 
 [[package]]
 name = "curies"
-version = "0.7.3"
+version = "0.7.4"
 description = "Idiomatic conversion between URIs and compact URIs (CURIEs)."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "curies-0.7.3-py3-none-any.whl", hash = "sha256:011d0695f45ae52e51a4d611235e444a1acae7ea3ba95f73ec8e039fbed08004"},
-    {file = "curies-0.7.3.tar.gz", hash = "sha256:1cb13d04d63410ea7068a6c9e006e3d40e849003a34f397420b58c03ac594d5a"},
+    {file = "curies-0.7.4-py3-none-any.whl", hash = "sha256:478f1818345988933d8bc6060f80a985401331f856ff8cf9bd98fa00d178ad39"},
+    {file = "curies-0.7.4.tar.gz", hash = "sha256:d3aaf16644b26ac2605ff83c565ec7df0ba0b5f7425516047666e609ec5fb718"},
 ]
 
 [package.dependencies]
@@ -2454,4 +2454,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "972153808613ca75c4312c68d918a1994adde178b3d3ec258c6ac6a193765bc1"
+content-hash = "640bd51021bffca9663cb0562c7e8d897bdd56735ee885c4a6720075964a7276"
