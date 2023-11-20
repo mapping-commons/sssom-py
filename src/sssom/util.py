@@ -164,9 +164,8 @@ class MappingSetDataFrame:
         non_double_cols.replace(np.nan, "", inplace=True)
         df.update(non_double_cols)
 
-        return cls.with_converter(
-            df=sort_df_rows_columns(df), converter=doc.converter, metadata=meta
-        )
+        df = sort_df_rows_columns(df)
+        return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
 
     def to_mapping_set_document(self) -> "MappingSetDocument":
         """Get a mapping set document."""
@@ -1036,6 +1035,11 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
+DICT_FROM_MAPPING_ENUM_KEYS = set(_get_sssom_schema_object().dict["enums"].keys())
+SLOTS = _get_sssom_schema_object().dict["slots"]
+DOUBLE_SLOTS = {k for k, v in SLOTS.items() if v["range"] == "double"}
+
+
 def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
     """
     Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
@@ -1044,25 +1048,20 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :return: Dictionary
     """
     map_dict = {}
-    sssom_schema_object = _get_sssom_schema_object().dict
-    slots = sssom_schema_object["slots"]
-    enums_keys = set(sssom_schema_object["enums"].keys())
-
-    slots_with_double_as_range = {k for k, v in slots.items() if v["range"] == "double"}
-
     for property in map_obj:
         mapping_property = map_obj[property]
         if mapping_property is None:
-            map_dict[property] = np.nan if property in slots_with_double_as_range else ""
+            map_dict[property] = np.nan if property in DOUBLE_SLOTS else ""
             continue
 
-        slot_of_interest = slots[property]
-        is_enum = slot_of_interest["range"] in enums_keys
+        slot_of_interest = SLOTS[property]
+        is_enum = slot_of_interest["range"] in DICT_FROM_MAPPING_ENUM_KEYS
 
         # Check if the mapping_property is a list
         if isinstance(mapping_property, list):
             # If the property is an enumeration and it allows multiple values
             if is_enum and slot_of_interest["multivalued"]:
+                # FIXME needs test
                 # Join all the enum values into a string separated by '|'
                 map_dict[property] = "|".join(
                     enum_value.code.text for enum_value in mapping_property
@@ -1071,8 +1070,8 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
                 # If the property is not an enumeration or doesn't allow multiple values,
                 # join all the values into a string separated by '|'
                 map_dict[property] = "|".join(enum_value for enum_value in mapping_property)
-        # If the mapping_property is not a list but an enumeration
         elif is_enum:
+            # FIXME needs test
             # Assign the text of the enumeration code to the property in the dictionary
             map_dict[property] = mapping_property.code.text
         else:
