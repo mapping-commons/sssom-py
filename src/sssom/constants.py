@@ -241,13 +241,28 @@ class SSSOMSchemaView(object):
 
     @cached_property
     def multivalued_slots(self) -> Set[str]:
-        """Return list of multivalued slots."""
+        """Return set of multivalued slots."""
         return {c for c in self.view.all_slots() if self.view.get_slot(c).multivalued}
 
     @cached_property
     def entity_reference_slots(self) -> Set[str]:
-        """Return list of entity reference slots."""
+        """Return set of entity reference slots."""
         return {c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE}
+
+    @cached_property
+    def mapping_enum_keys(self) -> Set[str]:
+        """Return a set of mapping enum keys."""
+        return set(_get_sssom_schema_object().dict["enums"].keys())
+
+    @cached_property
+    def slots(self) -> Dict[str, str]:
+        """Return the slot names for SSSOMSchemaView object as a set."""
+        return self.dict["slots"]
+
+    @cached_property
+    def double_slots(self) -> Set[str]:
+        """Return the slot names for SSSOMSchemaView object."""
+        return {k for k, v in self.dict["slots"].items() if v["range"] == "double"}
 
 
 @lru_cache(1)
