@@ -388,7 +388,7 @@
 
 
 <span class="k">def</span> <span class="nf">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-    <span class="k">if</span> <span class="n">is_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
         <span class="c1"># IF k is multivalued, then v = List[values]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -404,20 +404,28 @@
     <span class="k">return</span> <span class="n">mapping_set</span>
 
 
+<span class="n">MAPPING_SLOTS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_slots</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">_get_mapping_dict</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="n">mdict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">sssom_schema_object</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-            <span class="k">continue</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sssom_schema_object</span><span class="o">.</span><span class="n">mapping_slots</span><span class="p">:</span>
-            <span class="n">mdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># There&#39;s the possibility that the key is in</span>
-            <span class="c1"># sssom_schema_object.mapping_set_slots, but</span>
-            <span class="c1"># this is skipped for now</span>
-            <span class="n">bad_attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mapping dictionary from a given row of data.</span>
+
+<span class="sd">    It also updates the &#39;bad_attrs&#39; counter for keys that are not present</span>
+<span class="sd">    in the sssom_schema_object&#39;s mapping_slots.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Populate the mapping dictionary with key-value pairs from the row,</span>
+    <span class="c1"># only if the value exists, is not NaN, and the key is in the schema&#39;s mapping slots.</span>
+    <span class="c1"># The value could be a string or a list and is handled accordingly via _address_multivalued_slot().</span>
+    <span class="n">mdict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">MAPPING_SLOTS</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Update bad_attrs for keys not in mapping_slots</span>
+    <span class="n">bad_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="n">MAPPING_SLOTS</span>
+    <span class="k">for</span> <span class="n">bad_key</span> <span class="ow">in</span> <span class="n">bad_keys</span><span class="p">:</span>
+        <span class="n">bad_attrs</span><span class="p">[</span><span class="n">bad_key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">mdict</span>
 
 
@@ -870,9 +878,14 @@
 <span class="k">def</span> <span class="nf">_get_mapping_set_from_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSet</span><span class="p">:</span>
     <span class="n">mapping_set</span> <span class="o">=</span> <span class="n">_init_mapping_set</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">bad_attrs</span><span class="p">:</span> <span class="n">Counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="n">mapping_dict</span> <span class="o">=</span> <span class="n">_get_mapping_dict</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">)</span>
-        <span class="n">_add_valid_mapping_to_list</span><span class="p">(</span><span class="n">mapping_dict</span><span class="p">,</span> <span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">)</span>
+
+    <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">_add_valid_mapping_to_list</span><span class="p">(</span>
+            <span class="n">_get_mapping_dict</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">bad_attrs</span><span class="p">),</span> <span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span>
+        <span class="p">),</span>
+        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bad_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No attr for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> instances]&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mapping_set</span>
