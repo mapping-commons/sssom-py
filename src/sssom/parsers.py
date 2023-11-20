@@ -890,8 +890,8 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
     :param mdict: A dictionary containing the mapping metadata.
     :return: A valid Mapping object, or None.
     """
+    mdict.setdefault(MAPPING_JUSTIFICATION, MAPPING_JUSTIFICATION_UNSPECIFIED)
     try:
-        mdict.setdefault(MAPPING_JUSTIFICATION, MAPPING_JUSTIFICATION_UNSPECIFIED)
         m = Mapping(**mdict)
     except ValueError as e:
         logging.warning(
