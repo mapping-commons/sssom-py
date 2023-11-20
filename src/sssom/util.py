@@ -156,14 +156,13 @@ class MappingSetDataFrame:
         df.replace("", np.nan, inplace=True)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
+        slots = _get_sssom_schema_object().dict["slots"]
         slots_with_double_as_range = {
-            slot
-            for slot, slot_metadata in _get_sssom_schema_object().dict["slots"].items()
-            if slot_metadata["range"] == "double"
+            slot for slot, slot_metadata in slots.items() if slot_metadata["range"] == "double"
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
-        non_double_cols = non_double_cols.replace(np.nan, "")
-        df[non_double_cols.columns] = non_double_cols
+        non_double_cols.replace(np.nan, "", inplace=True)
+        df.update(non_double_cols)
 
         df = sort_df_rows_columns(df)
         return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
@@ -1044,46 +1043,35 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :return: Dictionary
     """
     map_dict = {}
-    slots_with_double_as_range = [
-        s
-        for s in _get_sssom_schema_object().dict["slots"].keys()
-        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
-    ]
+    sssom_schema_object = _get_sssom_schema_object()
     for property in map_obj:
-        if map_obj[property] is not None:
-            if isinstance(map_obj[property], list):
-                # IF object is an enum
-                if (
-                    _get_sssom_schema_object().dict["slots"][property]["range"]
-                    in _get_sssom_schema_object().dict["enums"].keys()
-                ):
-                    # IF object is a multivalued enum
-                    if _get_sssom_schema_object().dict["slots"][property]["multivalued"]:
-                        map_dict[property] = "|".join(
-                            enum_value.code.text for enum_value in map_obj[property]
-                        )
-                    # If object is NOT multivalued BUT an enum.
-                    else:
-                        map_dict[property] = map_obj[property].code.text
-                # IF object is NOT an enum but a list
-                else:
-                    map_dict[property] = "|".join(enum_value for enum_value in map_obj[property])
-            # IF object NOT a list
+        mapping_property = map_obj[property]
+        if mapping_property is None:
+            map_dict[property] = np.nan if property in sssom_schema_object.double_slots else ""
+            continue
+
+        slot_of_interest = sssom_schema_object.slots[property]
+        is_enum = slot_of_interest["range"] in sssom_schema_object.mapping_enum_keys  # type:ignore
+
+        # Check if the mapping_property is a list
+        if isinstance(mapping_property, list):
+            # If the property is an enumeration and it allows multiple values
+            if is_enum and slot_of_interest["multivalued"]:  # type:ignore
+                # Join all the enum values into a string separated by '|'
+                map_dict[property] = "|".join(
+                    enum_value.code.text for enum_value in mapping_property
+                )
             else:
-                # IF object is an enum
-                if (
-                    _get_sssom_schema_object().dict["slots"][property]["range"]
-                    in _get_sssom_schema_object().dict["enums"].keys()
-                ):
-                    map_dict[property] = map_obj[property].code.text
-                else:
-                    map_dict[property] = map_obj[property]
+                # If the property is not an enumeration or doesn't allow multiple values,
+                # join all the values into a string separated by '|'
+                map_dict[property] = "|".join(enum_value for enum_value in mapping_property)
+        elif is_enum:
+            # Assign the text of the enumeration code to the property in the dictionary
+            map_dict[property] = mapping_property.code.text
         else:
-            # IF map_obj[property] is None:
-            if property in slots_with_double_as_range:
-                map_dict[property] = np.nan
-            else:
-                map_dict[property] = ""
+            # If the mapping_property is neither a list nor an enumeration,
+            # assign the value directly to the property in the dictionary
+            map_dict[property] = mapping_property
 
     return map_dict
 
@@ -1139,18 +1127,21 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if df.empty:
         return prefixes
-    for col in _get_sssom_schema_object().entity_reference_slots:
-        if col not in df.columns:
-            continue
-        prefixes.update(
-            converter.parse_curie(row).prefix
-            for row in df[col]
-            # we don't use the converter here since get_prefixes_used_in_table
-            # is often used to identify prefixes that are not properly registered
-            # in the converter
-            if not _is_iri(row) and _is_curie(row)
-        )
-    return set(prefixes)
+    sssom_schema_object = _get_sssom_schema_object()
+    entity_reference_slots = sssom_schema_object.entity_reference_slots & set(df.columns)
+    new_prefixes = {
+        converter.parse_curie(row).prefix
+        for col in entity_reference_slots
+        for row in df[col]
+        if not _is_iri(row) and _is_curie(row)
+        # we don't use the converter here since get_prefixes_used_in_table
+        # is often used to identify prefixes that are not properly registered
+        # in the converter
+    }
+
+    prefixes.update(new_prefixes)
+
+    return prefixes
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:

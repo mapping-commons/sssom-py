@@ -313,7 +313,7 @@ def _get_prefix_map_and_metadata(
 
 
 def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
-    if is_multivalued_slot(k) and v is not None and isinstance(v, str):
+    if isinstance(v, str) and is_multivalued_slot(k):
         # IF k is multivalued, then v = List[values]
         return [s.strip() for s in v.split("|")]
     else:
@@ -329,20 +329,28 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     return mapping_set
 
 
+MAPPING_SLOTS = set(_get_sssom_schema_object().mapping_slots)
+
+
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
-    mdict = {}
-    sssom_schema_object = _get_sssom_schema_object()
-    for k, v in row.items():
-        if not v or pd.isna(v):
-            continue
-        k = cast(str, k)
-        if k in sssom_schema_object.mapping_slots:
-            mdict[k] = _address_multivalued_slot(k, v)
-        else:
-            # There's the possibility that the key is in
-            # sssom_schema_object.mapping_set_slots, but
-            # this is skipped for now
-            bad_attrs[k] += 1
+    """Generate a mapping dictionary from a given row of data.
+
+    It also updates the 'bad_attrs' counter for keys that are not present
+    in the sssom_schema_object's mapping_slots.
+    """
+    # Populate the mapping dictionary with key-value pairs from the row,
+    # only if the value exists, is not NaN, and the key is in the schema's mapping slots.
+    # The value could be a string or a list and is handled accordingly via _address_multivalued_slot().
+    mdict = {
+        k: _address_multivalued_slot(k, v)
+        for k, v in row.items()
+        if v and pd.notna(v) and k in MAPPING_SLOTS
+    }
+
+    # Update bad_attrs for keys not in mapping_slots
+    bad_keys = set(row.keys()) - MAPPING_SLOTS
+    for bad_key in bad_keys:
+        bad_attrs[bad_key] += 1
     return mdict
 
 
@@ -795,9 +803,14 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
 def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = None) -> MappingSet:
     mapping_set = _init_mapping_set(meta)
     bad_attrs: Counter = Counter()
-    for _, row in df.iterrows():
-        mapping_dict = _get_mapping_dict(row, bad_attrs)
-        _add_valid_mapping_to_list(mapping_dict, mapping_set.mappings)
+
+    df.apply(
+        lambda row: _add_valid_mapping_to_list(
+            _get_mapping_dict(row, bad_attrs), mapping_set.mappings
+        ),
+        axis=1,
+    )
+
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
     return mapping_set
