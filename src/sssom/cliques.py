@@ -4,8 +4,7 @@ import hashlib
 import statistics
 import uuid
 from collections import defaultdict
-from typing import DefaultDict, Dict, List, Optional, Set, TYPE_CHECKING
-
+from typing import TYPE_CHECKING, DefaultDict, Dict, List, Optional, Set
 
 import pandas as pd
 from sssom_schema import Mapping, MappingSet
@@ -29,6 +28,7 @@ from .util import MappingSetDataFrame
 
 if TYPE_CHECKING:
     import networkx
+
 
 def to_digraph(msdf: MappingSetDataFrame) -> "networkx.DiGraph":
     """Convert to a graph where the nodes are entities' CURIEs and edges are their mappings."""
