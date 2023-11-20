@@ -813,7 +813,6 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
 
     for k, v in bad_attrs.items():
         logging.warning(f"No attr for {k} [{v} instances]")
-
     return mapping_set
 
 
@@ -890,6 +889,7 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
     :return: A valid Mapping object, or None.
     """
     mdict.setdefault(MAPPING_JUSTIFICATION, MAPPING_JUSTIFICATION_UNSPECIFIED)
+
     try:
         m = Mapping(**mdict)
     except ValueError as e:
