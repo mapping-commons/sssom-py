@@ -13,7 +13,6 @@ import pandas as pd
 import yaml
 from curies import Converter
 from deprecation import deprecated
-from pansql import sqldf
 
 from sssom.validators import validate
 
@@ -271,6 +270,8 @@ def run_sql_query(
     :param output: Output.
     :return: Filtered MappingSetDataFrame object.
     """
+    from pansql import sqldf
+
     n = 1
     while len(inputs) >= n:
         fn = inputs[n - 1]

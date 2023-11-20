@@ -4,9 +4,8 @@ import hashlib
 import statistics
 import uuid
 from collections import defaultdict
-from typing import DefaultDict, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, DefaultDict, Dict, List, Optional, Set
 
-import networkx as nx
 import pandas as pd
 from sssom_schema import Mapping, MappingSet
 
@@ -27,9 +26,14 @@ from .parsers import to_mapping_set_document
 from .sssom_document import MappingSetDocument
 from .util import MappingSetDataFrame
 
+if TYPE_CHECKING:
+    import networkx
 
-def to_digraph(msdf: MappingSetDataFrame) -> nx.DiGraph:
+
+def to_digraph(msdf: MappingSetDataFrame) -> "networkx.DiGraph":
     """Convert to a graph where the nodes are entities' CURIEs and edges are their mappings."""
+    import networkx as nx
+
     doc = to_mapping_set_document(msdf)
     g = nx.DiGraph()
     if doc.mapping_set.mappings is not None:
@@ -80,6 +84,8 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     :raises TypeError: If Mappings is not of type List
     :return: List of MappingSetDocument objects
     """
+    import networkx as nx
+
     doc = to_mapping_set_document(msdf)
     graph = to_digraph(msdf)
     components_it = nx.algorithms.components.strongly_connected_components(graph)
