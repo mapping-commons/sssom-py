@@ -410,3 +410,14 @@ class TestParseExplicit(unittest.TestCase):
 
         # This checks that nothing funny gets added unexpectedly
         self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
+
+    def test_bimap(self):
+        epm = [{
+        "prefix": "Orphanet",
+        "prefix_synonyms": [
+            "orphanet.ordo"
+        ],
+        "uri_prefix": "http://www.orpha.net/ORDO/Orphanet_" }]
+        converter = Converter.from_extended_prefix_map(epm)
+        self.assertTrue('Orphanet' in converter.bimap)
+        self.assertFalse('orphanet.ordo' in converter.bimap)
