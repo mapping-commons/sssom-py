@@ -607,7 +607,9 @@ def from_obographs(
                                     mdict[SUBJECT_ID] = safe_compress(nid, converter)
                                     mdict[OBJECT_ID] = safe_compress(xref_id, converter)
                                     mdict[SUBJECT_LABEL] = label
-                                    mdict[PREDICATE_ID] = "oboInOwl:hasDbXref"
+                                    mdict[PREDICATE_ID] = converter.compress(
+                                        "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
+                                    )
                                     mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
                                     _add_valid_mapping_to_list(mdict, mlist)
                                 except ValueError as e:
