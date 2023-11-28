@@ -432,8 +432,14 @@ class TestUtils(unittest.TestCase):
                 self.assertEqual(value, result_with_dict[key])
 
     def test_curiechain_with_conflicts(self):
-        PREFIXMAP = {
+        PREFIXMAP_BOTH = {
             "SCTID": "http://identifiers.org/snomedct/",
+            "SCTID__2": "http://snomed.info/id/",
+        }
+        PREFIXMAP_FIRST = {
+            "SCTID": "http://identifiers.org/snomedct/",
+        }
+        PREFIXMAP_SECOND = {
             "SCTID__2": "http://snomed.info/id/",
         }
 
@@ -443,7 +449,13 @@ class TestUtils(unittest.TestCase):
                 "prefix_synonyms": ["snomed"],
                 "uri_prefix": "http://snomed.info/id/",
             },
+
         ]
 
-        conv = chain([Converter.from_prefix_map(PREFIXMAP), Converter.from_extended_prefix_map(EPM)])
-        self.assertIn("SCTID__2",conv.bimap)
+        converter = chain([Converter.from_prefix_map(PREFIXMAP_FIRST), Converter.from_extended_prefix_map(EPM)])
+        self.assertIn("SCTID", converter.prefix_map)
+        converter = chain([Converter.from_prefix_map(PREFIXMAP_SECOND), Converter.from_extended_prefix_map(EPM)])
+        self.assertIn("SCTID", converter.prefix_map)
+        # Fails here:
+        converter = chain([Converter.from_prefix_map(PREFIXMAP_BOTH), Converter.from_extended_prefix_map(EPM)])
+        self.assertIn("SCTID", converter.prefix_map)
