@@ -13,11 +13,11 @@ from xml.dom import minidom
 import numpy as np
 import pandas as pd
 import yaml
-from curies import Converter
+from curies import Converter, chain
 from rdflib import Graph
 
-from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
-from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
+from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata, EXTENDED_PREFIX_MAP
+from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter, _get_built_in_prefix_map
 from sssom.io import parse_file
 from sssom.parsers import (
     _open_input,
@@ -423,3 +423,51 @@ class TestParseExplicit(unittest.TestCase):
         converter = Converter.from_extended_prefix_map(epm)
         self.assertTrue("Orphanet" in converter.bimap)
         self.assertFalse("orphanet.ordo" in converter.bimap)
+
+    def test_bimap(self):
+        epm = [{
+        "prefix": "Orphanet",
+        "prefix_synonyms": [
+            "orphanet.ordo"
+        ],
+        "uri_prefix": "http://www.orpha.net/ORDO/Orphanet_" }]
+        converter = Converter.from_extended_prefix_map(epm)
+        self.assertTrue('Orphanet' in converter.prefix_map)
+        compressed = converter.compress("http://www.orpha.net/ORDO/Orphanet_123")
+        self.assertEqual(compressed,"Orphanet:123")
+
+    def test_bimap2(self):
+        """Explicitly test round tripping."""
+
+        json_string = """{
+          "graphs" : [ {
+            "id" : "http://purl.obolibrary.org/obo/mondo.owl",
+            "meta" : {
+              "version" : "http://purl.obolibrary.org/obo/mondo/releases/2023-09-12/mondo.owl"
+            },
+            "nodes" : [ {
+              "id" : "http://purl.obolibrary.org/obo/MONDO_0009650",
+              "lbl" : "Some label",
+              "type" : "CLASS",
+              "meta" : {
+                "definition" : {
+                  "val" : "Some def"
+                },
+                "xrefs" : [ {
+                  "val" : "Orphanet:576"
+                }],
+                "basicPropertyValues" : [ {
+                  "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+                  "val" : "http://www.orpha.net/ORDO/Orphanet_576"
+             } ] }
+          } ]
+          } ]
+        }"""
+        input = json.loads(json_string)
+        msdf = from_obographs(
+            jsondoc=input,
+        )
+        msdf.clean_prefix_map(strict=True)
+
+        ordo_id = msdf.df['object_id'].iloc[0]
+        self.assertTrue(ordo_id.startswith("Orphanet:"))
