@@ -436,6 +436,14 @@ class TestUtils(unittest.TestCase):
             "SCTID": "http://identifiers.org/snomedct/",
             "SCTID__2": "http://snomed.info/id/",
         }
-        converter = Converter.from_prefix_map(PREFIXMAP)
-        conv = chain([converter, get_converter()])
+
+        EPM = [
+            {
+                "prefix": "SCTID",
+                "prefix_synonyms": ["snomed"],
+                "uri_prefix": "http://snomed.info/id/",
+            },
+        ]
+
+        conv = chain([Converter.from_prefix_map(PREFIXMAP), Converter.from_extended_prefix_map(EPM)])
         self.assertIn("SCTID__2",conv.bimap)
