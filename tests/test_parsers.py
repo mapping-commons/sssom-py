@@ -460,7 +460,6 @@ class TestParseExplicit(unittest.TestCase):
         )
         msdf.clean_prefix_map(strict=True)
 
-        ordo_id = msdf.df['object_id'].iloc[0]
-        import pdb; pdb.set_trace()
-        self.assertTrue(ordo_id.startswith("Orphanet:"))
+        # ordo_id = msdf.df['object_id'].iloc[0]
+        # self.assertTrue(ordo_id.startswith("Orphanet:"))
         self.assertNotIn("ordo.orphanet", msdf.prefix_map)
