@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import yaml
-from curies import Converter, Record
+from curies import Converter, Record, chain
 from sssom_schema import Mapping as SSSOM_Mapping
 
 from sssom.constants import (
@@ -17,7 +17,7 @@ from sssom.constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
 )
-from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
+from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import extract_iris
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -430,3 +430,12 @@ class TestUtils(unittest.TestCase):
             else:
                 self.assertEqual(value, result_with_mapping_object[key])
                 self.assertEqual(value, result_with_dict[key])
+
+    def test_curiechain_with_conflicts(self):
+        PREFIXMAP = {
+            "SCTID": "http://identifiers.org/snomedct/",
+            "SCTID__2": "http://snomed.info/id/",
+        }
+        converter = Converter.from_prefix_map(PREFIXMAP)
+        conv = chain([converter, get_converter()])
+        self.assertIn("SCTID__2",conv.bimap)
