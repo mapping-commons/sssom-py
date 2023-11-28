@@ -426,30 +426,30 @@ class TestParseExplicit(unittest.TestCase):
     def test_bimap2(self):
         """Explicitly test round tripping."""
 
-        json_string = """{
-          "graphs" : [ {
-            "id" : "http://purl.obolibrary.org/obo/mondo.owl",
-            "meta" : {
-              "version" : "http://purl.obolibrary.org/obo/mondo/releases/2023-09-12/mondo.owl"
-            },
-            "nodes" : [ {
-              "id" : "http://purl.obolibrary.org/obo/MONDO_0009650",
-              "lbl" : "Some label",
-              "type" : "CLASS",
-              "meta" : {
-                "definition" : {
-                  "val" : "Some def"
-                },
-                "xrefs" : [ {
-                  "val" : "Orphanet:576"
-                }],
-                "basicPropertyValues" : [ {
-                  "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
-                  "val" : "http://www.orpha.net/ORDO/Orphanet_576"
-             } ] }
-          } ]
-          } ]
-        }"""
+        # json_string = """{
+        #   "graphs" : [ {
+        #     "id" : "http://purl.obolibrary.org/obo/mondo.owl",
+        #     "meta" : {
+        #       "version" : "http://purl.obolibrary.org/obo/mondo/releases/2023-09-12/mondo.owl"
+        #     },
+        #     "nodes" : [ {
+        #       "id" : "http://purl.obolibrary.org/obo/MONDO_0009650",
+        #       "lbl" : "Some label",
+        #       "type" : "CLASS",
+        #       "meta" : {
+        #         "definition" : {
+        #           "val" : "Some def"
+        #         },
+        #         "xrefs" : [ {
+        #           "val" : "Orphanet:576"
+        #         }],
+        #         "basicPropertyValues" : [ {
+        #           "pred" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+        #           "val" : "http://www.orpha.net/ORDO/Orphanet_576"
+        #      } ] }
+        #   } ]
+        #   } ]
+        # }"""
         # input = json.loads(json_string)
         json_file = f"{test_data_dir}/mirror-mondo.json"
         with open(json_file) as f:
@@ -461,5 +461,6 @@ class TestParseExplicit(unittest.TestCase):
         msdf.clean_prefix_map(strict=True)
 
         ordo_id = msdf.df['object_id'].iloc[0]
+        import pdb; pdb.set_trace()
         self.assertTrue(ordo_id.startswith("Orphanet:"))
         self.assertNotIn("ordo.orphanet", msdf.prefix_map)
