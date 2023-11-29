@@ -641,21 +641,21 @@ def _make_mdict(
     try:
         subject_curie = safe_compress(subject_id, converter)
     except ValueError as e:
-        logging.debug("could not parse subject: %s", subject_id)
+        logging.debug("could not parse subject %s - %s", subject_id, e)
     else:
         mdict[SUBJECT_ID] = subject_curie
 
     try:
         predicate_curie = safe_compress(predicate_id, converter)
     except ValueError as e:
-        logging.debug("could not parse object: %s", object_id)
+        logging.debug("could not parse object %s - %s", object_id, e)
     else:
         mdict[PREDICATE_ID] = predicate_curie
 
     try:
         object_curie = safe_compress(object_id, converter)
     except ValueError as e:
-        logging.debug("could not parse object: %s", object_id)
+        logging.debug("could not parse object %s - %s", object_id, e)
     else:
         mdict[OBJECT_ID] = object_curie
 
