@@ -68,6 +68,8 @@ from .util import (
 
 logging = _logging.getLogger(__name__)
 
+DBXREF_URI = "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
+
 # * *******************************************************
 # Parsers (from file)
 
@@ -566,116 +568,102 @@ def from_obographs(
     converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
     mlist: List[Mapping] = []
-    # bad_attrs = {}
 
     if not mapping_predicates:
         mapping_predicates = DEFAULT_MAPPING_PROPERTIES
 
-    labels = {}
-
-    # Build a dictionary of labels to populate _label columns
-    if "graphs" in jsondoc:
-        for g in jsondoc["graphs"]:
-            if "nodes" in g:
-                for n in g["nodes"]:
-                    nid = n["id"]
-                    if "lbl" in n:
-                        label = n["lbl"]
-                    else:
-                        label = ""
-                    labels[nid] = label
-
-    if "graphs" in jsondoc:
-        for g in jsondoc["graphs"]:
-            if "nodes" in g:
-                for n in g["nodes"]:
-                    nid = n["id"]
-                    if "lbl" in n:
-                        label = n["lbl"]
-                    else:
-                        label = ""
-                    if "meta" in n:
-                        if (
-                            "xrefs" in n["meta"]
-                            and "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
-                            in mapping_predicates
-                        ):
-                            for xref in n["meta"]["xrefs"]:
-                                xref_id = xref["val"]
-                                mdict: Dict[str, Any] = {}
-                                try:
-                                    mdict[SUBJECT_ID] = safe_compress(nid, converter)
-                                    mdict[OBJECT_ID] = safe_compress(xref_id, converter)
-                                    mdict[SUBJECT_LABEL] = label
-                                    mdict[PREDICATE_ID] = converter.compress(
-                                        "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
-                                    )
-                                    mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                    _add_valid_mapping_to_list(mdict, mlist)
-                                except ValueError as e:
-                                    logging.debug(e)
-                        if "basicPropertyValues" in n["meta"]:
-                            for value in n["meta"]["basicPropertyValues"]:
-                                pred = value["pred"]
-                                if pred in mapping_predicates:
-                                    xref_id = value["val"]
-                                    mdict = {}
-                                    try:
-                                        mdict[SUBJECT_ID] = safe_compress(nid, converter)
-                                        mdict[OBJECT_ID] = safe_compress(xref_id, converter)
-                                        mdict[SUBJECT_LABEL] = label
-                                        mdict[PREDICATE_ID] = safe_compress(pred, converter)
-                                        mdict[
-                                            MAPPING_JUSTIFICATION
-                                        ] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                        _add_valid_mapping_to_list(mdict, mlist)
-                                    except ValueError as e:
-                                        # FIXME this will cause ragged mappings
-                                        logging.warning(e)
-            if "edges" in g:
-                for edge in g["edges"]:
-                    mdict = {}
-                    subject_id = edge["sub"]
-                    predicate_id = _get_obographs_predicate_id(edge["pred"])
-                    object_id = edge["obj"]
-                    if predicate_id in mapping_predicates:
-                        mdict[SUBJECT_ID] = safe_compress(subject_id, converter)
-                        mdict[OBJECT_ID] = safe_compress(object_id, converter)
-                        mdict[SUBJECT_LABEL] = (
-                            labels[subject_id] if subject_id in labels.keys() else ""
-                        )
-                        mdict[OBJECT_LABEL] = (
-                            labels[object_id] if object_id in labels.keys() else ""
-                        )
-                        mdict[PREDICATE_ID] = safe_compress(predicate_id, converter)
-                        mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                        _add_valid_mapping_to_list(mdict, mlist)
-            if "equivalentNodesSets" in g and OWL_EQUIV_CLASS_URI in mapping_predicates:
-                for equivalents in g["equivalentNodesSets"]:
-                    if "nodeIds" in equivalents:
-                        for ec1 in equivalents["nodeIds"]:
-                            for ec2 in equivalents["nodeIds"]:
-                                if ec1 != ec2:
-                                    mdict = {}
-                                    mdict[SUBJECT_ID] = safe_compress(ec1, converter)
-                                    mdict[OBJECT_ID] = safe_compress(ec2, converter)
-                                    mdict[PREDICATE_ID] = safe_compress(
-                                        OWL_EQUIV_CLASS_URI, converter
-                                    )
-                                    mdict[MAPPING_JUSTIFICATION] = MAPPING_JUSTIFICATION_UNSPECIFIED
-                                    mdict[SUBJECT_LABEL] = (
-                                        labels[ec1] if ec1 in labels.keys() else ""
-                                    )
-                                    mdict[OBJECT_LABEL] = (
-                                        labels[ec2] if ec2 in labels.keys() else ""
-                                    )
-                                    _add_valid_mapping_to_list(mdict, mlist)
-    else:
+    graphs = jsondoc.get("graphs")
+    if not graphs:
         raise Exception("No graphs element in obographs file, wrong format?")
+
+    #: A dictionary of node URIs to node labels
+    labels: Mapping[str, str] = {
+        node["id"]: node.get("lbl")
+        for graph in graphs
+        for node in graph.get("nodes", [])
+        if node.get("lbl")
+    }
+
+    for graph in graphs:
+        for node in graph.get("nodes", []):
+            meta = node.get("meta")
+            if not meta:
+                continue
+
+            node_uri = node["id"]
+            if DBXREF_URI in mapping_predicates:
+                for xref in meta.get("xrefs", []):
+                    mdict = _make_mdict(node_uri, DBXREF_URI, xref["val"], converter, labels)
+                    _add_valid_mapping_to_list(mdict, mlist)
+
+            for value in meta.get("basicPropertyValues", []):
+                predicate_uri = value["pred"]
+                if predicate_uri not in mapping_predicates:
+                    continue
+                mdict = _make_mdict(node_uri, predicate_uri, value["val"], converter, labels)
+                _add_valid_mapping_to_list(mdict, mlist)
+
+        for edge in graph.get("edges", []):
+            predicate_uri = _get_obographs_predicate_id(edge["pred"])
+            if predicate_uri not in mapping_predicates:
+                continue
+            mdict = _make_mdict(edge["sub"], predicate_uri, edge["obj"], converter, labels)
+            _add_valid_mapping_to_list(mdict, mlist)
+
+        if OWL_EQUIV_CLASS_URI in mapping_predicates:
+            for equivalents in graph.get("equivalentNodesSets", []):
+                node_ids = equivalents.get("nodeIds")
+                if not node_ids:
+                    continue
+                for subject_uri, object_uri in itt.product(node_ids, repeat=2):
+                    if subject_uri == object_uri:
+                        continue
+                    mdict = _make_mdict(
+                        subject_uri, OWL_EQUIV_CLASS_URI, object_uri, converter, labels
+                    )
+                    _add_valid_mapping_to_list(mdict, mlist)
 
     ms.mappings = mlist  # type: ignore
     mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
     return to_mapping_set_dataframe(mdoc)
+
+
+def _make_mdict(
+    subject_id: str,
+    predicate_id: str,
+    object_id: str,
+    converter: Converter,
+    labels: typing.Mapping[str, str],
+):
+    mdict = {
+        MAPPING_JUSTIFICATION: MAPPING_JUSTIFICATION_UNSPECIFIED,
+    }
+    try:
+        subject_curie = safe_compress(subject_id, converter)
+    except ValueError as e:
+        logging.debug("could not parse subject: %s", subject_id)
+    else:
+        mdict[SUBJECT_ID] = subject_curie
+
+    try:
+        predicate_curie = safe_compress(predicate_id, converter)
+    except ValueError as e:
+        logging.debug("could not parse object: %s", object_id)
+    else:
+        mdict[PREDICATE_ID] = predicate_curie
+
+    try:
+        object_curie = safe_compress(object_id, converter)
+    except ValueError as e:
+        logging.debug("could not parse object: %s", object_id)
+    else:
+        mdict[OBJECT_ID] = object_curie
+
+    if subject_id in labels:
+        mdict[SUBJECT_LABEL] = labels[subject_id]
+    if object_id in labels:
+        mdict[OBJECT_LABEL] = labels[object_id]
+    return mdict
 
 
 # All from_* take as an input a python object (data frame, json, etc.) and return a MappingSetDataFrame
