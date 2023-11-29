@@ -613,10 +613,10 @@ def from_obographs(
 
         if OWL_EQUIV_CLASS_URI in mapping_predicates:
             for equivalents in graph.get("equivalentNodesSets", []):
-                node_ids = equivalents.get("nodeIds")
-                if not node_ids:
+                node_uris = equivalents.get("nodeIds")
+                if not node_uris:
                     continue
-                for subject_uri, object_uri in itt.product(node_ids, repeat=2):
+                for subject_uri, object_uri in itt.product(node_uris, repeat=2):
                     if subject_uri == object_uri:
                         continue
                     mdict = _make_mdict(
