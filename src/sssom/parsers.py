@@ -33,6 +33,7 @@ from sssom.constants import (
     OBJECT_LABEL,
     OBJECT_SOURCE,
     OBJECT_SOURCE_ID,
+    OBO_HAS_DB_XREF_URI,
     OWL_EQUIV_CLASS_URI,
     PREDICATE_ID,
     RDF_TYPE,
@@ -67,8 +68,6 @@ from .util import (
 )
 
 logging = _logging.getLogger(__name__)
-
-DBXREF_URI = "http://www.geneontology.org/formats/oboInOwl#hasDbXref"
 
 # * *******************************************************
 # Parsers (from file)
@@ -591,9 +590,11 @@ def from_obographs(
                 continue
 
             node_uri = node["id"]
-            if DBXREF_URI in mapping_predicates:
+            if OBO_HAS_DB_XREF_URI in mapping_predicates:
                 for xref in meta.get("xrefs", []):
-                    mdict = _make_mdict(node_uri, DBXREF_URI, xref["val"], converter, labels)
+                    mdict = _make_mdict(
+                        node_uri, OBO_HAS_DB_XREF_URI, xref["val"], converter, labels
+                    )
                     _add_valid_mapping_to_list(mdict, mlist)
 
             for value in meta.get("basicPropertyValues", []):
