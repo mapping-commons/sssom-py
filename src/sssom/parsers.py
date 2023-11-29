@@ -648,7 +648,7 @@ def _make_mdict(
     try:
         predicate_curie = safe_compress(predicate_id, converter)
     except ValueError as e:
-        logging.debug("could not parse object %s - %s", object_id, e)
+        logging.debug("could not parse predicate %s - %s", predicate_id, e)
     else:
         mdict[PREDICATE_ID] = predicate_curie
 
