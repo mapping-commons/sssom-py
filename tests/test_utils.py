@@ -17,7 +17,7 @@ from sssom.constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
 )
-from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
+from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iris
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -432,6 +432,7 @@ class TestUtils(unittest.TestCase):
                 self.assertEqual(value, result_with_dict[key])
 
     def test_curiechain_with_conflicts(self):
+        """Test curie map with CURIE/URI clashes."""
         PREFIXMAP_BOTH = {
             "SCTID": "http://identifiers.org/snomedct/",
             "SCTID__2": "http://snomed.info/id/",
@@ -449,16 +450,20 @@ class TestUtils(unittest.TestCase):
                 "prefix_synonyms": ["snomed"],
                 "uri_prefix": "http://snomed.info/id/",
             },
-
         ]
 
-        converter = chain([Converter.from_prefix_map(PREFIXMAP_FIRST), Converter.from_extended_prefix_map(EPM)])
+        converter = chain(
+            [Converter.from_prefix_map(PREFIXMAP_FIRST), Converter.from_extended_prefix_map(EPM)]
+        )
         self.assertIn("SCTID", converter.prefix_map)
-        converter = chain([Converter.from_prefix_map(PREFIXMAP_SECOND), Converter.from_extended_prefix_map(EPM)])
+        converter = chain(
+            [Converter.from_prefix_map(PREFIXMAP_SECOND), Converter.from_extended_prefix_map(EPM)]
+        )
         self.assertIn("SCTID", converter.prefix_map)
         # Fails here:
         with self.assertRaises(ValueError):
-            chain([Converter.from_prefix_map(PREFIXMAP_BOTH), Converter.from_extended_prefix_map(EPM)])
-        
+            chain(
+                [Converter.from_prefix_map(PREFIXMAP_BOTH), Converter.from_extended_prefix_map(EPM)]
+            )
 
         # self.assertIn("SCTID", converter.prefix_map)
