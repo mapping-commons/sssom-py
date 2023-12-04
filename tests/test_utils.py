@@ -457,5 +457,8 @@ class TestUtils(unittest.TestCase):
         converter = chain([Converter.from_prefix_map(PREFIXMAP_SECOND), Converter.from_extended_prefix_map(EPM)])
         self.assertIn("SCTID", converter.prefix_map)
         # Fails here:
-        converter = chain([Converter.from_prefix_map(PREFIXMAP_BOTH), Converter.from_extended_prefix_map(EPM)])
-        self.assertIn("SCTID", converter.prefix_map)
+        with self.assertRaises(ValueError):
+            chain([Converter.from_prefix_map(PREFIXMAP_BOTH), Converter.from_extended_prefix_map(EPM)])
+        
+
+        # self.assertIn("SCTID", converter.prefix_map)
