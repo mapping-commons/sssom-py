@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import yaml
-from curies import Converter, Record
+from curies import Converter, Record, chain
 from sssom_schema import Mapping as SSSOM_Mapping
 
 from sssom.constants import (
@@ -430,3 +430,40 @@ class TestUtils(unittest.TestCase):
             else:
                 self.assertEqual(value, result_with_mapping_object[key])
                 self.assertEqual(value, result_with_dict[key])
+
+    def test_curiechain_with_conflicts(self):
+        """Test curie map with CURIE/URI clashes."""
+        PREFIXMAP_BOTH = {
+            "SCTID": "http://identifiers.org/snomedct/",
+            "SCTID__2": "http://snomed.info/id/",
+        }
+        PREFIXMAP_FIRST = {
+            "SCTID": "http://identifiers.org/snomedct/",
+        }
+        PREFIXMAP_SECOND = {
+            "SCTID__2": "http://snomed.info/id/",
+        }
+
+        EPM = [
+            {
+                "prefix": "SCTID",
+                "prefix_synonyms": ["snomed"],
+                "uri_prefix": "http://snomed.info/id/",
+            },
+        ]
+
+        converter = chain(
+            [Converter.from_prefix_map(PREFIXMAP_FIRST), Converter.from_extended_prefix_map(EPM)]
+        )
+        self.assertIn("SCTID", converter.prefix_map)
+        converter = chain(
+            [Converter.from_prefix_map(PREFIXMAP_SECOND), Converter.from_extended_prefix_map(EPM)]
+        )
+        self.assertIn("SCTID", converter.prefix_map)
+        # Fails here:
+        with self.assertRaises(ValueError):
+            chain(
+                [Converter.from_prefix_map(PREFIXMAP_BOTH), Converter.from_extended_prefix_map(EPM)]
+            )
+
+        # self.assertIn("SCTID", converter.prefix_map)
