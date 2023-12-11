@@ -17,7 +17,6 @@ from sssom.constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
 )
-from sssom.context import ensure_converter
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
     _update_sssom_context_with_prefixmap,
@@ -106,26 +105,28 @@ class TestWrite(unittest.TestCase):
             CREATOR_ID,
         ]
         df = pd.DataFrame(rows, columns=columns)
-        msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
+        msdf = MappingSetDataFrame(df)
         msdf.clean_prefix_map()
         json_object = to_json(msdf)
-        self.assertTrue("DOID" in json_object["@context"])
-        self.assertTrue("mapping_set_id" in json_object["@context"])
+        self.assertIn("@context", json_object)
+        self.assertIn("DOID", json_object["@context"])
+        self.assertIn("mapping_set_id", json_object["@context"])
 
     def test_update_sssom_context_with_prefixmap(self):
         """Test when writing to JSON, the context is correctly written as well."""
-        EPM = [
+        records = [
             {
                 "prefix": "SCTID",
                 "prefix_synonyms": ["snomed"],
                 "uri_prefix": "http://snomed.info/id/",
             },
         ]
-        converter = Converter.from_extended_prefix_map(EPM)
-        context_str = _update_sssom_context_with_prefixmap(converter)
-        context = json.loads(context_str)
-        self.assertTrue("SCTID" in context["@context"])
-        self.assertTrue("mapping_set_id" in context["@context"])
+        converter = Converter.from_extended_prefix_map(records)
+        context = _update_sssom_context_with_prefixmap(converter)
+        self.assertIn("@context", context)
+        self.assertIn("SCTID", context["@context"])
+        self.assertNotIn("snomed", context["@context"])
+        self.assertIn("mapping_set_id", context["@context"])
 
     def test_write_sssom_fhir(self):
         """Test writing as FHIR ConceptMap JSON."""

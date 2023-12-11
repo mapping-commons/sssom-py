@@ -435,7 +435,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     return json_obj
 
 
-def _update_sssom_context_with_prefixmap(converter: Converter) -> str:
+def _update_sssom_context_with_prefixmap(converter: Converter):
     """Prepare a JSON-LD context and dump to a string."""
     context = _load_sssom_context()
     for k, v in dict(converter.bimap).items():
@@ -449,15 +449,14 @@ def _update_sssom_context_with_prefixmap(converter: Converter) -> str:
                         f"but with a different value than {v}. Overwriting!"
                     )
                     context["@context"][k] = v
-    return json.dumps(context)
+    return context
 
 
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    data = JSONDumper().dumps(
-        doc.mapping_set, contexts=_update_sssom_context_with_prefixmap(doc.converter)
-    )
+    context = _update_sssom_context_with_prefixmap(doc.converter)
+    data = JSONDumper().dumps(doc.mapping_set, contexts=json.dumps(context))
     json_obj = json.loads(data)
     return json_obj
 
