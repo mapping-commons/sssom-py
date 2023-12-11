@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
+from curies import Converter
 from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
@@ -17,6 +18,7 @@ from sssom_schema import slots
 from sssom.validators import check_all_prefixes_in_curie_map
 
 from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
+from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
     RDF_FORMATS,
@@ -433,10 +435,24 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     return json_obj
 
 
+def _update_sssom_context_with_prefixmap(converter: Converter):
+    """Prepare a JSON-LD context and dump to a string."""
+    context = _load_sssom_context()
+    for k, v in converter.bimap.items():
+        if k in context["@context"] and context["@context"][k] != v:
+            logging.info(
+                f"{k} namespace is already in the context, ({context['@context'][k]}, "
+                f"but with a different value than {v}. Overwriting!"
+            )
+        context["@context"][k] = v
+    return context
+
+
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    data = JSONDumper().dumps(doc.mapping_set, contexts={"@context": doc.prefix_map})
+    context = _update_sssom_context_with_prefixmap(doc.converter)
+    data = JSONDumper().dumps(doc.mapping_set, contexts=json.dumps(context))
     json_obj = json.loads(data)
     return json_obj
 
