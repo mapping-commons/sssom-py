@@ -108,8 +108,7 @@ class TestWrite(unittest.TestCase):
         df = pd.DataFrame(rows, columns=columns)
         msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
         msdf.clean_prefix_map()
-        json_string = to_json(msdf)
-        json_object = json.loads(json_string)
+        json_object = to_json(msdf)
         self.assertTrue("DOID" in json_object["@context"])
         self.assertTrue("mapping_set_id" in json_object["@context"])
 
