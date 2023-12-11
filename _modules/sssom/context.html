@@ -117,11 +117,15 @@
     <span class="k">return</span> <span class="n">Converter</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_load_sssom_context</span><span class="p">():</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SSSOM_CONTEXT</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_get_built_in_prefix_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Converter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get URI prefixes for built-in prefixes.&quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SSSOM_CONTEXT</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">_load_sssom_context</span><span class="p">()</span>
     <span class="n">prefix_map</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">prefix</span><span class="p">:</span> <span class="n">uri_prefix</span>
         <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">uri_prefix</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s2">&quot;@context&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
