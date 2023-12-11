@@ -18,7 +18,7 @@ from sssom_schema import slots
 from sssom.validators import check_all_prefixes_in_curie_map
 
 from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
-from .context import SSSOM_CONTEXT, _load_sssom_context
+from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
     RDF_FORMATS,
