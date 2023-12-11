@@ -42,11 +42,15 @@ def _get_default_converter() -> Converter:
     return Converter(records)
 
 
+def _load_sssom_context():
+    with open(SSSOM_CONTEXT) as file:
+        return json.load(file, strict=False)
+
+
 @lru_cache(1)
 def _get_built_in_prefix_map() -> Converter:
     """Get URI prefixes for built-in prefixes."""
-    with open(SSSOM_CONTEXT) as file:
-        context = json.load(file, strict=False)
+    context = _load_sssom_context()
     prefix_map = {
         prefix: uri_prefix
         for prefix, uri_prefix in context["@context"].items()

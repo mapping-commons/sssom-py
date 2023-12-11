@@ -1228,28 +1228,6 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     elif not validators.url(file_path) and not os.path.exists(file_path):
         raise FileNotFoundError(f"{file_path} is not a valid file path or url.")
 
-def prepare_jsonld_context_str_from_prefixmap(prefix_map: Dict[str, str] = None, **kwargs) -> str:
-    """Prepare a JSON-LD context and dump to a string.
-
-    :param prefix_map: Prefix map, defaults to None
-    :param kwargs: Keyword arguments to pass through to :func:`json.dumps`
-    :return: Context in str format
-    """
-    context=get_jsonld_context()
-    if prefix_map is None:
-        prefix_map = dict()
-    for k, v in prefix_map.items():
-        if isinstance(v, str):
-            if k not in context["@context"]:
-                context["@context"][k] = v
-            else:
-                if context["@context"][k] != v:
-                    logging.info(
-                        f"{k} namespace is already in the context, ({context['@context'][k]}, "
-                        f"but with a different value than {v}. Overwriting!"
-                    )
-                    context["@context"][k] = v
-    return json.dumps(context, **kwargs)
 
 def is_multivalued_slot(slot: str) -> bool:
     """Check whether the slot is multivalued according to the SSSOM specification.
