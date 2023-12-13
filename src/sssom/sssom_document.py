@@ -1,11 +1,10 @@
 """Additional SSSOM object models."""
 
 from dataclasses import dataclass
+from typing import Dict
 
 from curies import Converter
 from sssom_schema import MappingSet
-
-from .typehints import PrefixMap
 
 __all__ = [
     "MappingSetDocument",
@@ -28,6 +27,6 @@ class MappingSetDocument:
     converter: Converter
 
     @property
-    def prefix_map(self) -> PrefixMap:
+    def prefix_map(self) -> Dict[str, str]:
         """Get a prefix map."""
         return dict(self.converter.bimap)

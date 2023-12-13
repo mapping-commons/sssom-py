@@ -16,7 +16,7 @@ import os
 import sys
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, TextIO, Tuple
+from typing import Any, Callable, List, Optional, TextIO, Tuple, get_args
 
 import click
 import curies
@@ -28,9 +28,9 @@ from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
-    PREFIX_MAP_MODES,
+    MergeMode,
     SchemaValidationType,
-    SSSOMSchemaView,
+    _get_sssom_schema_object,
 )
 
 from . import __version__
@@ -63,9 +63,8 @@ from .writers import WRITER_FUNCTIONS, write_table
 
 logging = _logging.getLogger(__name__)
 
-SSSOM_SV_OBJECT = (
-    SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
-)
+SSSOM_SV_OBJECT = _get_sssom_schema_object()
+
 
 # Click input options common across commands
 input_argument = click.argument("input", required=True, type=click.Path())
@@ -173,9 +172,9 @@ def convert(input: str, output: TextIO, output_format: str):
     default="metadata_only",
     show_default=True,
     required=True,
-    type=click.Choice(PREFIX_MAP_MODES, case_sensitive=False),
+    type=click.Choice(get_args(MergeMode), case_sensitive=False),
     help="Defines whether the prefix map in the metadata should be extended or replaced with "
-    "the SSSOM default prefix map. Must be one of metadata_only, sssom_default_only, merged",
+    "the SSSOM default prefix map.",
 )
 @click.option(
     "-p",
@@ -206,7 +205,7 @@ def parse(
     input: str,
     input_format: str,
     metadata: str,
-    prefix_map_mode: str,
+    prefix_map_mode: MergeMode,
     clean_prefixes: bool,
     strict_clean_prefixes: bool,
     output: TextIO,

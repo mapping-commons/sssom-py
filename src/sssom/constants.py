@@ -1,8 +1,10 @@
 """Constants."""
 
 import pathlib
+import uuid
 from enum import Enum
-from typing import List
+from functools import cached_property, lru_cache
+from typing import Any, Dict, List, Literal, Set
 
 import pkg_resources
 import yaml
@@ -36,14 +38,10 @@ DEFAULT_MAPPING_PROPERTIES = [
 ]
 
 UNKNOWN_IRI = "http://w3id.org/sssom/unknown_prefix/"
-PREFIX_MAP_MODE_METADATA_ONLY = "metadata_only"
-PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY = "sssom_default_only"
-PREFIX_MAP_MODE_MERGED = "merged"
-PREFIX_MAP_MODES = [
-    PREFIX_MAP_MODE_METADATA_ONLY,
-    PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
-    PREFIX_MAP_MODE_MERGED,
-]
+MergeMode = Literal["metadata_only", "sssom_default_only", "merged"]
+PREFIX_MAP_MODE_METADATA_ONLY: MergeMode = "metadata_only"
+PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY: MergeMode = "sssom_default_only"
+PREFIX_MAP_MODE_MERGED: MergeMode = "merged"
 ENTITY_REFERENCE = "EntityReference"
 
 # Slot Constants
@@ -215,49 +213,104 @@ class SSSOMSchemaView(object):
     Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    _view = None
-    _dict = None
-
     def __new__(cls):
         """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
-            return cls.instance
+        return cls.instance
 
-    @property
+    @cached_property
     def view(self) -> SchemaView:
         """Return SchemaView object."""
-        if self._view is None:
-            self._view = SchemaView(SCHEMA_YAML)
-        return self._view
+        return SchemaView(SCHEMA_YAML)
 
-    @property
+    @cached_property
     def dict(self) -> dict:
         """Return SchemaView as a dictionary."""
-        if self._dict is None:
-            self._dict = schema_as_dict(self.view.schema)
-        return self._dict
+        return schema_as_dict(self.view.schema)
 
-    @property
+    @cached_property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
         return self.view.get_class("mapping").slots
 
-    @property
+    @cached_property
     def mapping_set_slots(self) -> List[str]:
         """Return list of mapping set slots."""
         return self.view.get_class("mapping set").slots
 
-    @property
-    def multivalued_slots(self) -> List[str]:
-        """Return list of multivalued slots."""
-        return [c for c in self.view.all_slots() if self.view.get_slot(c).multivalued]
+    @cached_property
+    def multivalued_slots(self) -> Set[str]:
+        """Return set of multivalued slots."""
+        return {c for c in self.view.all_slots() if self.view.get_slot(c).multivalued}
 
-    @property
-    def entity_reference_slots(self) -> List[str]:
-        """Return list of entity reference slots."""
-        return [c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE]
+    @cached_property
+    def entity_reference_slots(self) -> Set[str]:
+        """Return set of entity reference slots."""
+        return {c for c in self.view.all_slots() if self.view.get_slot(c).range == ENTITY_REFERENCE}
+
+    @cached_property
+    def mapping_enum_keys(self) -> Set[str]:
+        """Return a set of mapping enum keys."""
+        return set(_get_sssom_schema_object().dict["enums"].keys())
+
+    @cached_property
+    def slots(self) -> Dict[str, str]:
+        """Return the slots for SSSOMSchemaView object."""
+        return self.dict["slots"]
+
+    @cached_property
+    def double_slots(self) -> Set[str]:
+        """Return the slot names for SSSOMSchemaView object."""
+        return {k for k, v in self.dict["slots"].items() if v["range"] == "double"}
+
+
+@lru_cache(1)
+def _get_sssom_schema_object() -> SSSOMSchemaView:
+    """Get a view over the SSSOM schema."""
+    sssom_sv_object = (
+        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
+    )
+    return sssom_sv_object
 
 
 SSSOM_URI_PREFIX = "https://w3id.org/sssom/"
 DEFAULT_LICENSE = f"{SSSOM_URI_PREFIX}license/unspecified"
+
+#: The type for metadata that gets passed around in many places
+MetadataType = Dict[str, Any]
+
+
+def generate_mapping_set_id() -> str:
+    """Generate a mapping set ID."""
+    return f"{SSSOM_URI_PREFIX}mappings/{uuid.uuid4()}"
+
+
+def get_default_metadata() -> MetadataType:
+    """Get default metadata.
+
+    :returns: A metadata dictionary containing a default
+        license with value :data:`DEFAULT_LICENSE` and an
+        auto-generated mapping set ID
+
+    If you want to combine some metadata you loaded
+    but ensure that there is also default metadata,
+    the best tool is :class:`collections.ChainMap`.
+    You can do:
+
+    .. code-block:: python
+
+        my_metadata: dict | None = ...
+
+        from collections import ChainMap
+        from sssom import get_default_metadata
+
+        metadata = dict(ChainMap(
+            my_metadata or {},
+            get_default_metadata()
+        ))
+    """
+    return {
+        "mapping_set_id": generate_mapping_set_id(),
+        "license": DEFAULT_LICENSE,
+    }

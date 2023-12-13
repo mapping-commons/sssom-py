@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
+from curies import Converter
 from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
@@ -16,10 +17,10 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import SCHEMA_YAML, SSSOM_URI_PREFIX
+from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
+from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
-    PREFIX_MAP_KEY,
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
     URI_SSSOM_MAPPINGS,
@@ -52,15 +53,11 @@ def write_table(
     sort=False,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
-    if msdf.df is None:
-        raise TypeError
-
     sep = _get_separator(serialisation)
 
     meta: Dict[str, Any] = {}
-    if msdf.metadata is not None:
-        meta.update(msdf.metadata)
-    meta[PREFIX_MAP_KEY] = msdf.converter.bimap
+    meta.update(msdf.metadata)
+    meta[CURIE_MAP] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
     lines = yaml.safe_dump(meta).split("\n")
@@ -280,7 +277,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     """
     df: pd.DataFrame = msdf.df
     # Intermediary variables
-    metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
+    metadata: Dict[str, Any] = msdf.metadata
     mapping_set_id = metadata.get("mapping_set_id", "")
     name: str = mapping_set_id.split("/")[-1].replace(".sssom.tsv", "")
     # Construct JSON
@@ -438,21 +435,32 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     return json_obj
 
 
+def _update_sssom_context_with_prefixmap(converter: Converter):
+    """Prepare a JSON-LD context and dump to a string."""
+    context = _load_sssom_context()
+    for k, v in converter.bimap.items():
+        if k in context["@context"] and context["@context"][k] != v:
+            logging.info(
+                f"{k} namespace is already in the context, ({context['@context'][k]}, "
+                f"but with a different value than {v}. Overwriting!"
+            )
+        context["@context"][k] = v
+    return context
+
+
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    data = JSONDumper().dumps(doc.mapping_set, contexts={"@context": doc.prefix_map})
+    context = _update_sssom_context_with_prefixmap(doc.converter)
+    data = JSONDumper().dumps(doc.mapping_set, contexts=json.dumps(context))
     json_obj = json.loads(data)
     return json_obj
 
 
 def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
     """Convert a mapping set dataframe to a list of ontoportal mapping JSON objects."""
-    if msdf.df is None:
-        return []
-
     converter = msdf.converter
-    metadata: Dict[str, Any] = msdf.metadata if msdf.metadata is not None else {}
+    metadata: Dict[str, Any] = msdf.metadata
     m_list = []
     for _, row in msdf.df.iterrows():
         mapping_justification = row.get("mapping_justification", "")

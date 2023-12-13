@@ -4,8 +4,23 @@ import json
 import os
 import unittest
 
+import pandas as pd
+from curies import Converter
+
+from sssom import MappingSetDataFrame
+from sssom.constants import (
+    CREATOR_ID,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    PREDICATE_ID,
+    SEMAPV,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+)
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
+    _update_sssom_context_with_prefixmap,
+    to_json,
     write_fhir_json,
     write_json,
     write_ontoportal_json,
@@ -66,6 +81,52 @@ class TestWrite(unittest.TestCase):
             self.mapping_count,
             f"{path} has the wrong number of mappings.",
         )
+
+    def test_write_sssom_json_context(self):
+        """Test when writing to JSON, the context is correctly written as well."""
+        rows = [
+            (
+                "DOID:0050601",
+                "ADULT syndrome",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                "ADULT SYNDROME",
+                SEMAPV.ManualMappingCuration.value,
+                "orcid:0000-0003-4423-4370",
+            )
+        ]
+        columns = [
+            SUBJECT_ID,
+            SUBJECT_LABEL,
+            PREDICATE_ID,
+            OBJECT_ID,
+            OBJECT_LABEL,
+            SEMAPV.ManualMappingCuration.value,
+            CREATOR_ID,
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        msdf = MappingSetDataFrame(df)
+        msdf.clean_prefix_map()
+        json_object = to_json(msdf)
+        self.assertIn("@context", json_object)
+        self.assertIn("DOID", json_object["@context"])
+        self.assertIn("mapping_set_id", json_object["@context"])
+
+    def test_update_sssom_context_with_prefixmap(self):
+        """Test when writing to JSON, the context is correctly written as well."""
+        records = [
+            {
+                "prefix": "SCTID",
+                "prefix_synonyms": ["snomed"],
+                "uri_prefix": "http://snomed.info/id/",
+            },
+        ]
+        converter = Converter.from_extended_prefix_map(records)
+        context = _update_sssom_context_with_prefixmap(converter)
+        self.assertIn("@context", context)
+        self.assertIn("SCTID", context["@context"])
+        self.assertNotIn("snomed", context["@context"])
+        self.assertIn("mapping_set_id", context["@context"])
 
     def test_write_sssom_fhir(self):
         """Test writing as FHIR ConceptMap JSON."""

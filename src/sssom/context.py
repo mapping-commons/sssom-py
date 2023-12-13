@@ -2,7 +2,7 @@
 
 import json
 from functools import lru_cache
-from typing import Union
+from typing import Mapping, Union
 
 import curies
 import pkg_resources
@@ -10,7 +10,13 @@ from curies import Converter
 from rdflib.namespace import is_ncname
 
 from .constants import EXTENDED_PREFIX_MAP
-from .typehints import PrefixMap
+
+__all__ = [
+    "SSSOM_BUILT_IN_PREFIXES",
+    "get_converter",
+    "ConverterHint",
+    "ensure_converter",
+]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
 SSSOM_CONTEXT = pkg_resources.resource_filename(
@@ -36,11 +42,15 @@ def _get_default_converter() -> Converter:
     return Converter(records)
 
 
+def _load_sssom_context():
+    with open(SSSOM_CONTEXT) as file:
+        return json.load(file, strict=False)
+
+
 @lru_cache(1)
 def _get_built_in_prefix_map() -> Converter:
     """Get URI prefixes for built-in prefixes."""
-    with open(SSSOM_CONTEXT) as file:
-        context = json.load(file, strict=False)
+    context = _load_sssom_context()
     prefix_map = {
         prefix: uri_prefix
         for prefix, uri_prefix in context["@context"].items()
@@ -49,10 +59,16 @@ def _get_built_in_prefix_map() -> Converter:
     return Converter.from_prefix_map(prefix_map)
 
 
-HINT = Union[None, PrefixMap, Converter]
+#: A type hint that specifies a place where one of three options can be given:
+#:   1. a legacy prefix mapping dictionary can be given, which will get upgraded
+#:      into a :class:`curies.Converter`,
+#:   2. a converter can be given, which might get modified. In SSSOM-py, this typically
+#:      means chaining behind the "default" prefix map
+#:   3. None, which means a default converter is loaded
+ConverterHint = Union[None, Mapping[str, str], Converter]
 
 
-def ensure_converter(prefix_map: HINT = None, *, use_defaults: bool = True) -> Converter:
+def ensure_converter(prefix_map: ConverterHint = None, *, use_defaults: bool = True) -> Converter:
     """Ensure a converter is available.
 
     :param prefix_map: One of the following:

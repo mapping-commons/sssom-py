@@ -5,9 +5,9 @@ import json
 import logging as _logging
 import os
 import re
-from collections import defaultdict
+from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
-from functools import reduce
+from functools import partial, reduce
 from pathlib import Path
 from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
@@ -18,10 +18,11 @@ import pandas as pd
 import validators
 import yaml
 from curies import Converter
+from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
-from sssom_schema import slots
+from sssom_schema import MappingSet, slots
 
 from .constants import (
     COLUMN_INVERT_DICTIONARY,
@@ -57,16 +58,20 @@ from .constants import (
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
     UNKNOWN_IRI,
-    SSSOMSchemaView,
+    MetadataType,
+    _get_sssom_schema_object,
+    get_default_metadata,
 )
-from .context import SSSOM_BUILT_IN_PREFIXES, _get_built_in_prefix_map
+from .context import (
+    SSSOM_BUILT_IN_PREFIXES,
+    ConverterHint,
+    _get_built_in_prefix_map,
+    ensure_converter,
+    get_converter,
+)
 from .sssom_document import MappingSetDocument
-from .typehints import MetadataType, PrefixMap, get_default_metadata
 
 logging = _logging.getLogger(__name__)
-
-#: The key that's used in the YAML section of an SSSOM file
-PREFIX_MAP_KEY = "curie_map"
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
@@ -82,7 +87,7 @@ class MappingSetDataFrame:
     """A collection of mappings represented as a DataFrame, together with additional metadata."""
 
     df: pd.DataFrame
-    converter: Converter
+    converter: Converter = field(default_factory=get_converter)
     metadata: MetadataType = field(default_factory=get_default_metadata)
 
     @property
@@ -105,9 +110,101 @@ class MappingSetDataFrame:
             metadata=metadata or get_default_metadata(),
         )
 
+    @classmethod
+    def from_mappings(
+        cls,
+        mappings: List[SSSOM_Mapping],
+        *,
+        converter: ConverterHint = None,
+        metadata: Optional[MetadataType] = None,
+    ) -> "MappingSetDataFrame":
+        """Instantiate from a list of mappings, mapping set metadata, and an optional converter."""
+        # This combines multiple pieces of metadata in the following priority order:
+        #  1. The explicitly given metadata passed to from_mappings()
+        #  2. The default metadata (which includes a dummy license and mapping set URI)
+        chained_metadata = ChainMap(
+            metadata or {},
+            get_default_metadata(),
+        )
+        mapping_set = MappingSet(mappings=mappings, **chained_metadata)
+        return cls.from_mapping_set(mapping_set=mapping_set, converter=converter)
+
+    @classmethod
+    def from_mapping_set(
+        cls, mapping_set: MappingSet, *, converter: ConverterHint = None
+    ) -> "MappingSetDataFrame":
+        """Instantiate from a mapping set and an optional converter.
+
+        :param mapping_set: A mapping set
+        :param converter: A prefix map or pre-instantiated converter. If none given, uses a default
+            prefix map derived from the Bioregistry.
+        :returns: A mapping set dataframe
+        """
+        doc = MappingSetDocument(converter=ensure_converter(converter), mapping_set=mapping_set)
+        return cls.from_mapping_set_document(doc)
+
+    @classmethod
+    def from_mapping_set_document(cls, doc: MappingSetDocument) -> "MappingSetDataFrame":
+        """Instantiate from a mapping set document."""
+        if doc.mapping_set.mappings is None:
+            return cls(df=pd.DataFrame(), converter=doc.converter)
+
+        df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
+        meta = _extract_global_metadata(doc)
+
+        # remove columns where all values are blank.
+        df.replace("", np.nan, inplace=True)
+        df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
+
+        slots = _get_sssom_schema_object().dict["slots"]
+        slots_with_double_as_range = {
+            slot for slot, slot_metadata in slots.items() if slot_metadata["range"] == "double"
+        }
+        non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
+        non_double_cols.replace(np.nan, "", inplace=True)
+        df.update(non_double_cols)
+
+        df = sort_df_rows_columns(df)
+        return cls.with_converter(df=df, converter=doc.converter, metadata=meta)
+
+    def to_mapping_set_document(self) -> "MappingSetDocument":
+        """Get a mapping set document."""
+        from .parsers import to_mapping_set_document
+
+        return to_mapping_set_document(self)
+
+    def to_mapping_set(self) -> MappingSet:
+        """Get a mapping set."""
+        return self.to_mapping_set_document().mapping_set
+
+    def to_mappings(self) -> List[SSSOM_Mapping]:
+        """Get a mapping set."""
+        return self.to_mapping_set().mappings
+
     def clean_context(self) -> None:
         """Clean up the context."""
         self.converter = curies.chain([_get_built_in_prefix_map(), self.converter])
+
+    def standardize_references(self) -> None:
+        """Standardize this MSDF's dataframe and metadata with respect to its converter."""
+        self._standardize_metadata_references()
+        self._standardize_df_references()
+
+    def _standardize_df_references(self) -> None:
+        """Standardize this MSDF's dataframe with respect to its converter."""
+        func = partial(_standardize_curie_or_iri, converter=self.converter)
+        for column, schema_data in _get_sssom_schema_object().dict["slots"].items():
+            if schema_data["range"] != "EntityReference":
+                continue
+            if column not in self.df.columns:
+                continue
+            self.df[column] = self.df[column].map(func)
+
+    def _standardize_metadata_references(self, *, raise_on_invalid: bool = False) -> None:
+        """Standardize this MSDF's metadata with respect to its converter."""
+        _standardize_metadata(
+            converter=self.converter, metadata=self.metadata, raise_on_invalid=raise_on_invalid
+        )
 
     def merge(self, *msdfs: "MappingSetDataFrame", inplace: bool = True) -> "MappingSetDataFrame":
         """Merge two MappingSetDataframes.
@@ -129,18 +226,12 @@ class MappingSetDataFrame:
     def __str__(self) -> str:  # noqa:D105
         description = "SSSOM data table \n"
         description += f"Number of extended prefix map records: {len(self.converter.records)} \n"
-        if self.metadata is None:
-            description += "No metadata available \n"
-        else:
-            description += f"Metadata: {json.dumps(self.metadata)} \n"
-        if self.df is None:
-            description += "No dataframe available"
-        else:
-            description += f"Number of mappings: {len(self.df.index)} \n"
-            description += "\nFirst rows of data: \n"
-            description += self.df.head().to_string() + "\n"
-            description += "\nLast rows of data: \n"
-            description += self.df.tail().to_string() + "\n"
+        description += f"Metadata: {json.dumps(self.metadata)} \n"
+        description += f"Number of mappings: {len(self.df.index)} \n"
+        description += "\nFirst rows of data: \n"
+        description += self.df.head().to_string() + "\n"
+        description += "\nLast rows of data: \n"
+        description += self.df.tail().to_string() + "\n"
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
@@ -179,7 +270,7 @@ class MappingSetDataFrame:
         :param msdf: MappingSetDataframe object to be removed from primary msdf object.
         """
         merge_on = KEY_FEATURES.copy()
-        if self.df is not None and PREDICATE_MODIFIER not in self.df.columns:
+        if PREDICATE_MODIFIER not in self.df.columns:
             merge_on.remove(PREDICATE_MODIFIER)
 
         self.df = (
@@ -198,6 +289,65 @@ class MappingSetDataFrame:
 
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
+
+
+def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
+    """Standardize a CURIE or IRI, returning the original if not possible.
+
+    :param curie_or_iri: Either a string representing a CURIE or an IRI
+    :returns:
+        - If the string represents an IRI, tries to standardize it. If not possible, returns the original value
+        - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
+        - Otherwise, return the original value
+    """
+    return converter.compress_or_standardize(curie_or_iri, passthrough=True)
+
+
+def _standardize_metadata(
+    converter: Converter, metadata: Dict[str, Any], *, raise_on_invalid: bool = False
+) -> None:
+    schema_object = _get_sssom_schema_object()
+    slots_dict = schema_object.dict["slots"]
+
+    # remove all falsy values. This has to be
+    # done this way and not by making a new object
+    # since we work in place
+    for k, v in list(metadata.items()):
+        if not k or not v:
+            del metadata[k]
+
+    for key, value in metadata.items():
+        slot_metadata = slots_dict.get(key)
+        if slot_metadata is None:
+            text = f"invalid metadata key {key}"
+            if raise_on_invalid:
+                raise ValueError(text)
+            logging.warning(text)
+            continue
+        if slot_metadata["range"] != "EntityReference":
+            continue
+        if is_multivalued_slot(key):
+            if isinstance(value, str):
+                metadata[key] = [
+                    _standardize_curie_or_iri(v.strip(), converter=converter)
+                    for v in value.split("|")
+                ]
+            elif isinstance(value, list):
+                metadata[key] = [_standardize_curie_or_iri(v, converter=converter) for v in value]
+            else:
+                raise TypeError(f"{key} requires either a string or a list, got: {value}")
+        elif isinstance(value, list):
+            print("here")
+            if len(value) > 1:
+                raise TypeError(
+                    f"value for {key} should have been a single value, but got a list: {value}"
+                )
+            print("also here")
+            # note that the scenario len(value) == 0 is already
+            # taken care of by the "if not value:" line above
+            metadata[key] = _standardize_curie_or_iri(value[0], converter=converter)
+        else:
+            metadata[key] = _standardize_curie_or_iri(value, converter=converter)
 
 
 @dataclass
@@ -645,12 +795,12 @@ def merge_msdf(
     # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
     # df_merged = reduce(
     #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-    #     [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+    #     [msdf.df for msdf in msdf_with_meta],
     # )
     # Concat is an alternative to merge when columns are not the same.
     df_merged = reduce(
         lambda left, right: pd.concat([left, right], axis=0, ignore_index=True),
-        [msdf.df for msdf in msdf_with_meta if msdf.df is not None],
+        [msdf.df for msdf in msdf_with_meta],
     ).drop_duplicates(ignore_index=True)
 
     converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
@@ -696,10 +846,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
     confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
-    if df is None:
-        raise ValueError(
-            "The dataframe, after assigning default confidence, appears empty (deal_with_negation)"
-        )
 
     #  If s,!p,o and s,p,o , then prefer higher confidence and remove the other.  ###
     negation_df: pd.DataFrame
@@ -824,18 +970,19 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
     :return: MappingSetDataFrame with metadata as columns
     """
+    # TODO add this into the "standardize" function introduced in
+    #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
     with open(SCHEMA_YAML) as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
-    if msdf.metadata is not None and msdf.df is not None:
-        for k, v in msdf.metadata.items():
-            if k not in msdf.df.columns and k in slots:
-                if k == MAPPING_SET_ID:
-                    k = MAPPING_SET_SOURCE
-                if isinstance(v, list):
-                    v = "|".join(x for x in v)
-                msdf.df[k] = str(v)
+    for k, v in msdf.metadata.items():
+        if k not in msdf.df.columns and k in slots:
+            if k == MAPPING_SET_ID:
+                k = MAPPING_SET_SOURCE
+            if isinstance(v, list):
+                v = "|".join(x for x in v)
+            msdf.df[k] = str(v)
     return msdf
 
 
@@ -864,13 +1011,13 @@ def get_file_extension(file: Union[str, Path, TextIO]) -> str:
     return "tsv"
 
 
-def extract_global_metadata(msdoc: MappingSetDocument) -> Dict[str, PrefixMap]:
+def _extract_global_metadata(msdoc: MappingSetDocument) -> MetadataType:
     """Extract metadata.
 
     :param msdoc: MappingSetDocument object
     :return: Dictionary containing metadata
     """
-    meta = {PREFIX_MAP_KEY: msdoc.prefix_map}
+    meta = {}
     ms_meta = msdoc.mapping_set
     for key in [
         slot
@@ -891,29 +1038,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     :param doc: MappingSetDocument object
     :return: MappingSetDataFrame object
     """
-    data = []
-    slots_with_double_as_range = [
-        s
-        for s in _get_sssom_schema_object().dict["slots"].keys()
-        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
-    ]
-    if doc.mapping_set.mappings is not None:
-        for mapping in doc.mapping_set.mappings:
-            m = get_dict_from_mapping(mapping)
-            data.append(m)
-    df = pd.DataFrame(data=data)
-    meta = extract_global_metadata(doc)
-    meta.pop(PREFIX_MAP_KEY, None)
-    # The following 3 lines are to remove columns
-    # where all values are blank.
-    df.replace("", np.nan, inplace=True)
-    df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
-    non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
-    non_double_cols = non_double_cols.replace(np.nan, "")
-    df[non_double_cols.columns] = non_double_cols
-    msdf = MappingSetDataFrame.with_converter(df=df, converter=doc.converter, metadata=meta)
-    msdf.df = sort_df_rows_columns(msdf.df)
-    return msdf
+    return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
 def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
@@ -924,66 +1049,80 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) ->
     :return: Dictionary
     """
     map_dict = {}
-    slots_with_double_as_range = [
-        s
-        for s in _get_sssom_schema_object().dict["slots"].keys()
-        if _get_sssom_schema_object().dict["slots"][s]["range"] == "double"
-    ]
+    sssom_schema_object = _get_sssom_schema_object()
     for property in map_obj:
-        if map_obj[property] is not None:
-            if isinstance(map_obj[property], list):
-                # IF object is an enum
-                if (
-                    _get_sssom_schema_object().dict["slots"][property]["range"]
-                    in _get_sssom_schema_object().dict["enums"].keys()
-                ):
-                    # IF object is a multivalued enum
-                    if _get_sssom_schema_object().dict["slots"][property]["multivalued"]:
-                        map_dict[property] = "|".join(
-                            enum_value.code.text for enum_value in map_obj[property]
-                        )
-                    # If object is NOT multivalued BUT an enum.
-                    else:
-                        map_dict[property] = map_obj[property].code.text
-                # IF object is NOT an enum but a list
-                else:
-                    map_dict[property] = "|".join(enum_value for enum_value in map_obj[property])
-            # IF object NOT a list
+        mapping_property = map_obj[property]
+        if mapping_property is None:
+            map_dict[property] = np.nan if property in sssom_schema_object.double_slots else ""
+            continue
+
+        slot_of_interest = sssom_schema_object.slots[property]
+        is_enum = slot_of_interest["range"] in sssom_schema_object.mapping_enum_keys  # type:ignore
+
+        # Check if the mapping_property is a list
+        if isinstance(mapping_property, list):
+            # If the property is an enumeration and it allows multiple values
+            if is_enum and slot_of_interest["multivalued"]:  # type:ignore
+                # Join all the enum values into a string separated by '|'
+                map_dict[property] = "|".join(
+                    enum_value.code.text for enum_value in mapping_property
+                )
             else:
-                # IF object is an enum
-                if (
-                    _get_sssom_schema_object().dict["slots"][property]["range"]
-                    in _get_sssom_schema_object().dict["enums"].keys()
-                ):
-                    map_dict[property] = map_obj[property].code.text
-                else:
-                    map_dict[property] = map_obj[property]
+                # If the property is not an enumeration or doesn't allow multiple values,
+                # join all the values into a string separated by '|'
+                map_dict[property] = "|".join(enum_value for enum_value in mapping_property)
+        elif is_enum:
+            # Assign the text of the enumeration code to the property in the dictionary
+            map_dict[property] = mapping_property.code.text
         else:
-            # IF map_obj[property] is None:
-            if property in slots_with_double_as_range:
-                map_dict[property] = np.nan
-            else:
-                map_dict[property] = ""
+            # If the mapping_property is neither a list nor an enumeration,
+            # assign the value directly to the property in the dictionary
+            map_dict[property] = mapping_property
 
     return map_dict
 
 
-CURIE_RE = re.compile(r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]")
+CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
+CURIE_RE = re.compile(CURIE_PATTERN)
 
 
+@deprecated(
+    deprecated_in="0.4.0",
+    details="sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from "
+    "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
+    "your context's prefix map and using curies.Converter.is_curie(). If you're looking for global syntax "
+    f"checking for CURIEs, try matching against {CURIE_PATTERN}",
+)
 def is_curie(string: str) -> bool:
+    """Check if the string is a CURIE."""
+    return _is_curie(string)
+
+
+def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     return bool(CURIE_RE.match(string))
 
 
+@deprecated(
+    deprecated_in="0.4.0",
+    details="sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from "
+    "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
+    "your context's prefix map and using curies.Converter.is_uri(). If you're looking for a globally valid "
+    "URI checker, use validators.url()",
+)
 def is_iri(string: str) -> bool:
+    """Check if the string is an IRI."""
+    return _is_iri(string)
+
+
+def _is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
     return validators.url(string)
 
 
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
-    if is_curie(curie):
+    if _is_curie(curie):
         return curie.split(":")[0]
     else:
         return ""
@@ -994,15 +1133,21 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if df.empty:
         return prefixes
-    for col in _get_sssom_schema_object().entity_reference_slots:
-        if col not in df.columns:
-            continue
-        prefixes.update(
-            converter.parse_curie(row).prefix
-            for row in df[col]
-            if not is_iri(row) and is_curie(row)
-        )
-    return set(prefixes)
+    sssom_schema_object = _get_sssom_schema_object()
+    entity_reference_slots = sssom_schema_object.entity_reference_slots & set(df.columns)
+    new_prefixes = {
+        converter.parse_curie(row).prefix
+        for col in entity_reference_slots
+        for row in df[col]
+        if not _is_iri(row) and _is_curie(row)
+        # we don't use the converter here since get_prefixes_used_in_table
+        # is often used to identify prefixes that are not properly registered
+        # in the converter
+    }
+
+    prefixes.update(new_prefixes)
+
+    return prefixes
 
 
 def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
@@ -1122,22 +1267,8 @@ def reconcile_prefix_and_data(
     converter = msdf.converter
     converter = curies.remap_curie_prefixes(converter, prefix_reconciliation["prefix_synonyms"])
     converter = curies.rewire(converter, prefix_reconciliation["prefix_expansion_reconciliation"])
-
-    # TODO make this standardization code directly part of msdf after
-    #  switching to native converter
-    def _upgrade(curie_or_iri: str) -> str:
-        if not is_iri(curie_or_iri) and is_curie(curie_or_iri):
-            return converter.standardize_curie(curie_or_iri) or curie_or_iri
-        return curie_or_iri
-
-    for column, values in _get_sssom_schema_object().dict["slots"].items():
-        if values["range"] != "EntityReference":
-            continue
-        if column not in msdf.df.columns:
-            continue
-        msdf.df[column] = msdf.df[column].map(_upgrade)
-
     msdf.converter = converter
+    msdf.standardize_references()
     return msdf
 
 
@@ -1170,7 +1301,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
     :raises ValidationError: If slot is wrong.
     :return:  List of all prefixes.
     """
-    if not msdf.metadata or msdf.df is None or msdf.df.empty:
+    # FIXME investigate the logic for this function -
+    #  some of the falsy checks don't make sense
+    if not msdf.metadata or msdf.df.empty:
         return set()
 
     prefixes: Set[str] = set()
@@ -1217,6 +1350,7 @@ def augment_metadata(
     :raises ValueError: If type of slot is neither str nor list.
     :return: MSDF with updated metadata.
     """
+    # TODO this now partially redundant of the MSDF built-in standardize functionality
     are_params_slots(meta)
     if not msdf.metadata:
         return msdf
@@ -1260,13 +1394,6 @@ def are_params_slots(params: dict) -> bool:
             f"The params are invalid: {invalids}. Should be any of the following: {_get_sssom_schema_object().mapping_set_slots}"
         )
     return True
-
-
-def _get_sssom_schema_object() -> SSSOMSchemaView:
-    sssom_sv_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
-    )
-    return sssom_sv_object
 
 
 def invert_mappings(
@@ -1356,11 +1483,4 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :param converter: Converter used for compression
     :return: A CURIE
     """
-    if not is_curie(uri):
-        return converter.compress_strict(uri)
-    rv = converter.standardize_curie(uri)
-    if rv is None:
-        raise ValueError(
-            f"CURIE appeared where there should be a URI, and could not be standardized: {uri}"
-        )
-    return rv
+    return converter.compress_or_standardize(uri, strict=True)
