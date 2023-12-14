@@ -105,6 +105,8 @@ SEE_ALSO = "see_also"
 OTHER = "other"
 COMMENT = "comment"
 
+JSON_CONTEXT_KEY = "@context"
+
 CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
 OBJECT_SOURCE_ID = "object_source_id"

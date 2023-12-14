@@ -27,6 +27,7 @@ from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
     DEFAULT_MAPPING_PROPERTIES,
+    JSON_CONTEXT_KEY,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
     OBJECT_ID,
@@ -256,9 +257,23 @@ def parse_sssom_json(
     """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
     converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
+    context_from_jsondoc = jsondoc.get(JSON_CONTEXT_KEY)
+
+    # Create a filtered dictionary with keys and values that are not already in converter.prefix_map
+    new_prefixes = {
+        key: value
+        for key, value in context_from_jsondoc.items()
+        if isinstance(value, str)
+        and (key not in converter.prefix_map or converter.prefix_map[key] != value)
+        and not key.startswith("@")
+    }
+
+    # Add the new prefixes to the converter
+    for key, value in new_prefixes.items():
+        converter.add_prefix(key, value)
+
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():

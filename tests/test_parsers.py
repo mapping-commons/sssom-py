@@ -4,9 +4,9 @@ import io
 import json
 import math
 import os
-import tempfile
 import unittest
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from textwrap import dedent
 from xml.dom import minidom
 
@@ -18,7 +18,7 @@ from rdflib import Graph
 
 from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
-from sssom.io import parse_file
+from sssom.io import convert_file, parse_file
 from sssom.parsers import (
     _open_input,
     _read_pandas_and_metadata,
@@ -378,7 +378,7 @@ class TestParseExplicit(unittest.TestCase):
             set(msdf.prefix_map),
         )
 
-        with tempfile.TemporaryDirectory() as directory:
+        with TemporaryDirectory() as directory:
             directory = Path(directory)
             path = directory.joinpath("test.sssom.tsv")
             with path.open("w") as file:
@@ -410,3 +410,27 @@ class TestParseExplicit(unittest.TestCase):
 
         # This checks that nothing funny gets added unexpectedly
         self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
+
+    def test_round_trip_tsv_json_tsv(self):
+        """Test TSV => JSON => TSV using convert() + parse()."""
+        input_tsv = test_data_dir.joinpath("basic_subset.tsv")
+        input_msdf = parse_sssom_table(input_tsv)
+        input_msdf.clean_prefix_map()
+        with TemporaryDirectory() as directory:
+            directory = Path(directory)
+            json_path = directory.joinpath("basic_subset.json")
+            tsv_path = directory.joinpath("json_to_tsv.tsv")
+            with json_path.open("w") as jfile:
+                convert_file(input_path=input_tsv, output_format="json", output=jfile)
+            with tsv_path.open("w") as tfile:
+                parse_file(
+                    input_path=str(json_path),
+                    input_format="json",
+                    prefix_map_mode="merged",
+                    output=tfile,
+                )
+            msdf = parse_sssom_table(tsv_path)
+            pd.testing.assert_frame_equal(input_msdf.df, msdf.df)
+            self.assertEqual(input_msdf.prefix_map, msdf.prefix_map)
+            # self.assertEqual(input_msdf.metadata, msdf.metadata)
+
