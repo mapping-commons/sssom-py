@@ -17,7 +17,7 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, JSON_CONTEXT_KEY, SCHEMA_YAML, SSSOM_URI_PREFIX
+from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
@@ -439,12 +439,12 @@ def _update_sssom_context_with_prefixmap(converter: Converter):
     """Prepare a JSON-LD context and dump to a string."""
     context = _load_sssom_context()
     for k, v in converter.bimap.items():
-        if k in context[JSON_CONTEXT_KEY] and context[JSON_CONTEXT_KEY][k] != v:
+        if k in context["@context"] and context["@context"][k] != v:
             logging.info(
                 f"{k} namespace is already in the context, ({context['@context'][k]}, "
                 f"but with a different value than {v}. Overwriting!"
             )
-        context[JSON_CONTEXT_KEY][k] = v
+        context["@context"][k] = v
     return context
 
 

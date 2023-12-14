@@ -10,7 +10,6 @@ from curies import Converter
 from sssom import MappingSetDataFrame
 from sssom.constants import (
     CREATOR_ID,
-    JSON_CONTEXT_KEY,
     OBJECT_ID,
     OBJECT_LABEL,
     PREDICATE_ID,
@@ -109,9 +108,9 @@ class TestWrite(unittest.TestCase):
         msdf = MappingSetDataFrame(df)
         msdf.clean_prefix_map()
         json_object = to_json(msdf)
-        self.assertIn(JSON_CONTEXT_KEY, json_object)
-        self.assertIn("DOID", json_object[JSON_CONTEXT_KEY])
-        self.assertIn("mapping_set_id", json_object[JSON_CONTEXT_KEY])
+        self.assertIn("@context", json_object)
+        self.assertIn("DOID", json_object["@context"])
+        self.assertIn("mapping_set_id", json_object["@context"])
 
     def test_update_sssom_context_with_prefixmap(self):
         """Test when writing to JSON, the context is correctly written as well."""
@@ -124,10 +123,10 @@ class TestWrite(unittest.TestCase):
         ]
         converter = Converter.from_extended_prefix_map(records)
         context = _update_sssom_context_with_prefixmap(converter)
-        self.assertIn(JSON_CONTEXT_KEY, context)
-        self.assertIn("SCTID", context[JSON_CONTEXT_KEY])
-        self.assertNotIn("snomed", context[JSON_CONTEXT_KEY])
-        self.assertIn("mapping_set_id", context[JSON_CONTEXT_KEY])
+        self.assertIn("@context", context)
+        self.assertIn("SCTID", context["@context"])
+        self.assertNotIn("snomed", context["@context"])
+        self.assertIn("mapping_set_id", context["@context"])
 
     def test_write_sssom_fhir(self):
         """Test writing as FHIR ConceptMap JSON."""
