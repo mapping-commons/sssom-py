@@ -9,7 +9,7 @@ import pkg_resources
 from curies import Converter
 from rdflib.namespace import is_ncname
 
-from .constants import EXTENDED_PREFIX_MAP
+from .constants import EXTENDED_PREFIX_MAP, JSON_CONTEXT_KEY
 
 __all__ = [
     "SSSOM_BUILT_IN_PREFIXES",
@@ -53,7 +53,7 @@ def _get_built_in_prefix_map() -> Converter:
     context = _load_sssom_context()
     prefix_map = {
         prefix: uri_prefix
-        for prefix, uri_prefix in context["@context"].items()
+        for prefix, uri_prefix in context[JSON_CONTEXT_KEY].items()
         if prefix in SSSOM_BUILT_IN_PREFIXES and isinstance(uri_prefix, str)
     }
     return Converter.from_prefix_map(prefix_map)
