@@ -262,7 +262,7 @@ def parse_sssom_json(
         meta = {}
 
     # Update metadata with values from JSON document
-    meta_keys_to_update = [MAPPING_SET_ID, LICENSE]
+    meta_keys_to_update = [attr for attr in dir(MappingSet) if not attr.startswith("_")]
     meta.update({key: jsondoc[key] for key in meta_keys_to_update if key in jsondoc})
 
     converter_from_jsonld = Converter.from_jsonld(file_path)
@@ -330,9 +330,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
-    mapping_set = MappingSet(
-        mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
-    )
+    mapping_set = MappingSet(mapping_set_id=_metadata[MAPPING_SET_ID], license=_metadata[LICENSE])
     _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
