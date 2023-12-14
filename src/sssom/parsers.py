@@ -28,8 +28,10 @@ from sssom.constants import (
     CURIE_MAP,
     DEFAULT_MAPPING_PROPERTIES,
     JSON_CONTEXT_KEY,
+    LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
+    MAPPING_SET_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -248,36 +250,35 @@ def parse_sssom_rdf(
 
 
 def parse_sssom_json(
-    file_path: str,
-    prefix_map: ConverterHint = None,
-    meta: Optional[MetadataType] = None,
-    **kwargs
-    # mapping_predicates: Optional[List[str]] = None,
+    file_path: str, prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None, **kwargs
 ) -> MappingSetDataFrame:
-    """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
+    """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
+
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
     context_from_jsondoc = jsondoc.get(JSON_CONTEXT_KEY)
 
-    # Create a filtered dictionary with keys and values that are not already in converter.prefix_map
-    new_prefixes = {
-        key: value
-        for key, value in context_from_jsondoc.items()
-        if isinstance(value, str)
-        and (key not in converter.prefix_map or converter.prefix_map[key] != value)
-        and not key.startswith("@")
-    }
+    # Initialize meta if it's None
+    if meta is None:
+        meta = {}
 
-    # Add the new prefixes to the converter
-    for key, value in new_prefixes.items():
-        converter.add_prefix(key, value)
+    # Update metadata with values from JSON document
+    meta_keys_to_update = [MAPPING_SET_ID, LICENSE]
+    meta.update({key: jsondoc[key] for key in meta_keys_to_update if key in jsondoc})
+
+    # Update CURIE_MAP if context_from_jsondoc exists
+    if context_from_jsondoc:
+        prefixes_from_json = {
+            key: value
+            for key, value in context_from_jsondoc.items()
+            if isinstance(value, str) and not key.startswith("@")
+        }
+        meta[CURIE_MAP] = prefixes_from_json
+
+    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
-    # df: pd.DataFrame = msdf.df
-    # if mapping_predicates and not df.empty():
-    #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 

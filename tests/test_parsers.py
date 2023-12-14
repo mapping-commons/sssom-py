@@ -432,5 +432,4 @@ class TestParseExplicit(unittest.TestCase):
             msdf = parse_sssom_table(tsv_path)
             pd.testing.assert_frame_equal(input_msdf.df, msdf.df)
             self.assertEqual(input_msdf.prefix_map, msdf.prefix_map)
-            # self.assertEqual(input_msdf.metadata, msdf.metadata)
-
+            self.assertEqual(input_msdf.metadata, msdf.metadata)
