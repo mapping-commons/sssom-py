@@ -329,7 +329,9 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
+
 MAPPING_SLOTS = None
+
 
 def _get_mapping_slots():
     global MAPPING_SLOTS
