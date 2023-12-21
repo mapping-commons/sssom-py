@@ -329,8 +329,14 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
+MAPPING_SLOTS = None
 
-MAPPING_SLOTS = set(_get_sssom_schema_object().mapping_slots)
+def _get_mapping_slots():
+    global MAPPING_SLOTS
+    if MAPPING_SLOTS is None:
+        # Initialize the list when this function is first called
+        MAPPING_SLOTS = set(_get_sssom_schema_object().mapping_slots)
+    return MAPPING_SLOTS
 
 
 def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
@@ -342,14 +348,16 @@ def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
     # Populate the mapping dictionary with key-value pairs from the row,
     # only if the value exists, is not NaN, and the key is in the schema's mapping slots.
     # The value could be a string or a list and is handled accordingly via _address_multivalued_slot().
+    mapping_slots = _get_mapping_slots()
+
     mdict = {
         k: _address_multivalued_slot(k, v)
         for k, v in row.items()
-        if v and pd.notna(v) and k in MAPPING_SLOTS
+        if v and pd.notna(v) and k in mapping_slots
     }
 
     # Update bad_attrs for keys not in mapping_slots
-    bad_keys = set(row.keys()) - MAPPING_SLOTS
+    bad_keys = set(row.keys()) - mapping_slots
     for bad_key in bad_keys:
         bad_attrs[bad_key] += 1
     return mdict
