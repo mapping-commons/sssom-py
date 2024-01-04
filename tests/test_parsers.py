@@ -9,6 +9,7 @@ from collections import ChainMap
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
+from typing import Callable
 from xml.dom import minidom
 
 import numpy as np
@@ -29,6 +30,7 @@ from sssom.parsers import (
     from_sssom_json,
     from_sssom_rdf,
     parse_sssom_json,
+    parse_sssom_rdf,
     parse_sssom_table,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
@@ -413,7 +415,7 @@ class TestParseExplicit(unittest.TestCase):
         # This checks that nothing funny gets added unexpectedly
         self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
 
-    def test_round_trip_json_tsv(self):
+    def _basic_round_trip(self, parse_func: Callable):
         """Test TSV => JSON => TSV using convert() + parse()."""
         rows = [
             (
@@ -450,9 +452,9 @@ class TestParseExplicit(unittest.TestCase):
             set(msdf.prefix_map),
         )
 
-        with TemporaryDirectory() as directory:
-            directory = Path(directory)
-            path = directory.joinpath("test.sssom.json")
+        with TemporaryDirectory() as dir:
+            directory = Path(dir)
+            path = directory.joinpath("test.sssom.x")
             with path.open("w") as file:
                 write_json(msdf, file)
 
@@ -499,3 +501,11 @@ class TestParseExplicit(unittest.TestCase):
             combine_meta,
             reconsitited_msdf_with_meta.metadata,
         )
+
+    def test_round_trip_json_tsv(self):
+        """Test JSON => TSV using parse()."""
+        self._basic_round_trip(parse_sssom_json)
+
+    def test_round_trip_rdf_tsv(self):
+        """Test RDF => TSV using parse()."""
+        self._basic_round_trip(parse_sssom_rdf)
