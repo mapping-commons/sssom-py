@@ -330,18 +330,9 @@ def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     return mapping_set
 
 
-MAPPING_SLOTS = None
-
-
-def _get_mapping_slots():
-    global MAPPING_SLOTS
-    if MAPPING_SLOTS is None:
-        # Initialize the list when this function is first called
-        MAPPING_SLOTS = set(_get_sssom_schema_object().mapping_slots)
-    return MAPPING_SLOTS
-
-
-def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
+def _get_mapping_dict(
+    row: pd.Series, bad_attrs: Counter, mapping_slots: typing.Set[str]
+) -> Dict[str, Any]:
     """Generate a mapping dictionary from a given row of data.
 
     It also updates the 'bad_attrs' counter for keys that are not present
@@ -350,7 +341,6 @@ def _get_mapping_dict(row: pd.Series, bad_attrs: Counter) -> Dict[str, Any]:
     # Populate the mapping dictionary with key-value pairs from the row,
     # only if the value exists, is not NaN, and the key is in the schema's mapping slots.
     # The value could be a string or a list and is handled accordingly via _address_multivalued_slot().
-    mapping_slots = _get_mapping_slots()
 
     mdict = {
         k: _address_multivalued_slot(k, v)
@@ -805,9 +795,11 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
     mapping_set = _init_mapping_set(meta)
     bad_attrs: Counter = Counter()
 
+    mapping_slots = set(_get_sssom_schema_object().mapping_slots)
+
     df.apply(
         lambda row: _add_valid_mapping_to_list(
-            _get_mapping_dict(row, bad_attrs), mapping_set.mappings
+            _get_mapping_dict(row, bad_attrs, mapping_slots), mapping_set.mappings
         ),
         axis=1,
     )
