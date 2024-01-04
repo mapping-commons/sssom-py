@@ -237,10 +237,27 @@ def parse_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
     g.parse(file_path, format=serialisation)
+
+    # Initialize meta if it's None
+    if meta is None:
+        meta = {}
+
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_rdflib(g),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
     msdf = from_sssom_rdf(g, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
@@ -261,13 +278,19 @@ def parse_sssom_json(
     if meta is None:
         meta = {}
 
-    # Update metadata with values from JSON document
-    meta_keys_to_update = [attr for attr in dir(MappingSet) if not attr.startswith("_")]
-    meta.update({key: jsondoc[key] for key in meta_keys_to_update if key in jsondoc})
-
-    converter_from_jsonld = Converter.from_jsonld(file_path)
-    converter_via_metadata, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
-    converter = curies.chain([converter_from_jsonld, converter_via_metadata])
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_jsonld(file_path),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
 
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
     return msdf
@@ -482,13 +505,28 @@ def from_sssom_json(
 
     :param jsondoc: JSON document
     :param prefix_map: Prefix map
-    :param meta: metadata
+    :param meta: metadata used to augment the metadata existing in the mapping set
     :return: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
+
     mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
-    _set_metadata_in_mapping_set(mapping_set, metadata=meta)
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
+
+    # As the Metadata appearing in the SSSOM document is already parsed by LinkML
+    # we only need to overwrite the metadata from 2 and 3 if it is not present
+    combine_meta = dict(
+        ChainMap(
+            meta or {},
+            get_default_metadata(),
+        )
+    )
+
+    _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
     mapping_set_document = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
@@ -740,13 +778,19 @@ def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
 
 
 def _set_metadata_in_mapping_set(
-    mapping_set: MappingSet, metadata: Optional[MetadataType] = None
+    mapping_set: MappingSet, metadata: Optional[MetadataType] = None, overwrite: bool = True
 ) -> None:
     if metadata is None:
         logging.info("Tried setting metadata but none provided.")
     else:
         for k, v in metadata.items():
             if k != CURIE_MAP:
+                if (
+                    hasattr(mapping_set, k)
+                    and getattr(mapping_set, k) is not None
+                    and not overwrite
+                ):
+                    continue
                 mapping_set[k] = _address_multivalued_slot(k, v)
 
 
