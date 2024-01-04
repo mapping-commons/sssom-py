@@ -5,6 +5,7 @@ import json
 import math
 import os
 import unittest
+from collections import ChainMap
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
@@ -18,7 +19,7 @@ from rdflib import Graph
 
 from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
-from sssom.io import convert_file, parse_file
+from sssom.io import parse_file
 from sssom.parsers import (
     _open_input,
     _read_pandas_and_metadata,
@@ -27,10 +28,11 @@ from sssom.parsers import (
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
+    parse_sssom_json,
     parse_sssom_table,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
-from sssom.writers import write_table
+from sssom.writers import write_json, write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
 
@@ -411,25 +413,89 @@ class TestParseExplicit(unittest.TestCase):
         # This checks that nothing funny gets added unexpectedly
         self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
 
-    def test_round_trip_tsv_json_tsv(self):
+    def test_round_trip_json_tsv(self):
         """Test TSV => JSON => TSV using convert() + parse()."""
-        input_tsv = test_data_dir.joinpath("basic_subset.tsv")
-        input_msdf = parse_sssom_table(input_tsv)
-        input_msdf.clean_prefix_map()
+        rows = [
+            (
+                "DOID:0050601",
+                "ADULT syndrome",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                "ADULT SYNDROME",
+                "semapv:ManualMappingCuration",
+                "orcid:0000-0003-4423-4370",
+            )
+        ]
+        columns = [
+            "subject_id",
+            "subject_label",
+            "predicate_id",
+            "object_id",
+            "object_label",
+            "mapping_justification",
+            "creator_id",
+        ]
+
+        df = pd.DataFrame(rows, columns=columns)
+        msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
+        msdf.clean_prefix_map(strict=True)
+
+        #: This is a set of the prefixes that explicitly are used in this
+        #: example. SSSOM-py also adds the remaining builtin prefixes from
+        #: :data:`sssom.context.SSSOM_BUILT_IN_PREFIXES`, which is reflected
+        #: in the formulation of the test expectation below
+        explicit_prefixes = {"DOID", "semapv", "orcid", "skos", "UMLS"}
+        self.assertEqual(
+            explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES),
+            set(msdf.prefix_map),
+        )
+
         with TemporaryDirectory() as directory:
             directory = Path(directory)
-            json_path = directory.joinpath("basic_subset.json")
-            tsv_path = directory.joinpath("json_to_tsv.tsv")
-            with json_path.open("w") as jfile:
-                convert_file(input_path=input_tsv, output_format="json", output=jfile)
-            with tsv_path.open("w") as tfile:
-                parse_file(
-                    input_path=str(json_path),
-                    input_format="json",
-                    prefix_map_mode="merged",
-                    output=tfile,
-                )
-            msdf = parse_sssom_table(tsv_path)
-            pd.testing.assert_frame_equal(input_msdf.df, msdf.df)
-            self.assertEqual(input_msdf.prefix_map, msdf.prefix_map)
-            self.assertEqual(input_msdf.metadata, msdf.metadata)
+            path = directory.joinpath("test.sssom.json")
+            with path.open("w") as file:
+                write_json(msdf, file)
+
+            reconsitited_msdf = parse_sssom_json(path)
+            reconsitited_msdf.clean_prefix_map(strict=True)
+
+            test_meta = {
+                "mapping_set_title": "A title",
+                "license": "https://w3id.org/sssom/license/test",
+            }
+
+            reconsitited_msdf_with_meta = parse_sssom_json(path, meta=test_meta)
+            reconsitited_msdf_with_meta.clean_prefix_map(strict=True)
+
+        # Ensure the prefix maps are equal after json parsing and cleaning
+        self.assertEqual(
+            msdf.prefix_map,
+            reconsitited_msdf.prefix_map,
+        )
+
+        # Ensure the shape, labels, and values in the data frame are the same after json parsing and cleaning
+        self.assertTrue(
+            msdf.df.equals(reconsitited_msdf.df),
+        )
+
+        # Ensure the metadata is the same after json parsing and cleaning
+        self.assertEqual(
+            msdf.metadata,
+            reconsitited_msdf.metadata,
+        )
+
+        combine_meta = dict(
+            ChainMap(
+                msdf.metadata,
+                test_meta,
+            )
+        )
+
+        # Ensure the metadata after json parsing with additional metadata corresponds to
+        # a chain of the original metadata with the test metadata.
+        # In particular, this ensures that fields in the test metadata provided are added
+        # to the MappingSet if they are not present, but not updated if they are already present.
+        self.assertEqual(
+            combine_meta,
+            reconsitited_msdf_with_meta.metadata,
+        )
