@@ -9,7 +9,6 @@ from collections import ChainMap
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
-from typing import Callable
 from xml.dom import minidom
 
 import numpy as np
@@ -22,6 +21,7 @@ from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_de
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
+    PARSING_FUNCTIONS,
     _open_input,
     _read_pandas_and_metadata,
     from_alignment_minidom,
@@ -29,12 +29,10 @@ from sssom.parsers import (
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
-    parse_sssom_json,
-    parse_sssom_rdf,
     parse_sssom_table,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
-from sssom.writers import write_json, write_table
+from sssom.writers import WRITER_FUNCTIONS, write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
 
@@ -415,8 +413,11 @@ class TestParseExplicit(unittest.TestCase):
         # This checks that nothing funny gets added unexpectedly
         self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
 
-    def _basic_round_trip(self, parse_func: Callable):
+    def _basic_round_trip(self, key: str):
         """Test TSV => JSON => TSV using convert() + parse()."""
+        parse_func = PARSING_FUNCTIONS[key]
+        write_func, _write_format = WRITER_FUNCTIONS[key]
+
         rows = [
             (
                 "DOID:0050601",
@@ -457,56 +458,49 @@ class TestParseExplicit(unittest.TestCase):
             path = directory.joinpath("test.sssom.x")
             path_str = str(path)
             with path.open("w") as file:
-                write_json(msdf, file)
+                write_func(msdf, file)
 
-            reconsitited_msdf = parse_sssom_json(path_str)
-            reconsitited_msdf.clean_prefix_map(strict=True)
+            reconstituted_msdf = parse_func(path_str)
+            reconstituted_msdf.clean_prefix_map(strict=True)
 
             test_meta = {
                 "mapping_set_title": "A title",
                 "license": "https://w3id.org/sssom/license/test",
             }
 
-            reconsitited_msdf_with_meta = parse_sssom_json(path_str, meta=test_meta)
-            reconsitited_msdf_with_meta.clean_prefix_map(strict=True)
+            reconstituted_msdf_with_meta = parse_func(path_str, meta=test_meta)
+            reconstituted_msdf_with_meta.clean_prefix_map(strict=True)
 
         # Ensure the prefix maps are equal after json parsing and cleaning
         self.assertEqual(
+            set(msdf.prefix_map),
+            set(reconstituted_msdf.prefix_map),
+            msg="Reconstituted prefix map has different CURIE prefixes",
+        )
+        self.assertEqual(
             msdf.prefix_map,
-            reconsitited_msdf.prefix_map,
+            reconstituted_msdf.prefix_map,
+            msg="Reconstituted prefix map has different URI prefixes",
         )
 
         # Ensure the shape, labels, and values in the data frame are the same after json parsing and cleaning
-        self.assertTrue(
-            msdf.df.equals(reconsitited_msdf.df),
-        )
+        self.assertTrue(msdf.df.equals(reconstituted_msdf.df))
 
         # Ensure the metadata is the same after json parsing and cleaning
-        self.assertEqual(
-            msdf.metadata,
-            reconsitited_msdf.metadata,
-        )
+        self.assertEqual(msdf.metadata, reconstituted_msdf.metadata)
 
-        combine_meta = dict(
-            ChainMap(
-                msdf.metadata,
-                test_meta,
-            )
-        )
+        combine_meta = dict(ChainMap(msdf.metadata, test_meta))
 
         # Ensure the metadata after json parsing with additional metadata corresponds to
         # a chain of the original metadata with the test metadata.
         # In particular, this ensures that fields in the test metadata provided are added
         # to the MappingSet if they are not present, but not updated if they are already present.
-        self.assertEqual(
-            combine_meta,
-            reconsitited_msdf_with_meta.metadata,
-        )
+        self.assertEqual(combine_meta, reconstituted_msdf_with_meta.metadata)
 
     def test_round_trip_json_tsv(self):
         """Test JSON => TSV using parse()."""
-        self._basic_round_trip(parse_sssom_json)
+        self._basic_round_trip("json")
 
     def test_round_trip_rdf_tsv(self):
         """Test RDF => TSV using parse()."""
-        self._basic_round_trip(parse_sssom_rdf)
+        self._basic_round_trip("rdf")
