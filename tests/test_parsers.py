@@ -455,10 +455,11 @@ class TestParseExplicit(unittest.TestCase):
         with TemporaryDirectory() as dir:
             directory = Path(dir)
             path = directory.joinpath("test.sssom.x")
+            path_str = str(path)
             with path.open("w") as file:
                 write_json(msdf, file)
 
-            reconsitited_msdf = parse_sssom_json(path)
+            reconsitited_msdf = parse_sssom_json(path_str)
             reconsitited_msdf.clean_prefix_map(strict=True)
 
             test_meta = {
@@ -466,7 +467,7 @@ class TestParseExplicit(unittest.TestCase):
                 "license": "https://w3id.org/sssom/license/test",
             }
 
-            reconsitited_msdf_with_meta = parse_sssom_json(path, meta=test_meta)
+            reconsitited_msdf_with_meta = parse_sssom_json(path_str, meta=test_meta)
             reconsitited_msdf_with_meta.clean_prefix_map(strict=True)
 
         # Ensure the prefix maps are equal after json parsing and cleaning
