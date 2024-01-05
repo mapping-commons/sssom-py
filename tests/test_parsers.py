@@ -17,13 +17,11 @@ import yaml
 from curies import Converter
 from rdflib import Graph
 
-from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
+from sssom.constants import CURIE_MAP, get_default_metadata
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
     PARSING_FUNCTIONS,
-    _open_input,
-    _read_pandas_and_metadata,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
@@ -345,74 +343,6 @@ class TestParse(unittest.TestCase):
 class TestParseExplicit(unittest.TestCase):
     """This test case contains explicit tests for parsing."""
 
-    def test_round_trip(self):
-        """Explicitly test round tripping."""
-        rows = [
-            (
-                "DOID:0050601",
-                "ADULT syndrome",
-                "skos:exactMatch",
-                "UMLS:C1863204",
-                "ADULT SYNDROME",
-                "semapv:ManualMappingCuration",
-                "orcid:0000-0003-4423-4370",
-            )
-        ]
-        columns = [
-            "subject_id",
-            "subject_label",
-            "predicate_id",
-            "object_id",
-            "object_label",
-            "mapping_justification",
-            "creator_id",
-        ]
-        df = pd.DataFrame(rows, columns=columns)
-        msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
-        msdf.clean_prefix_map(strict=True)
-        #: This is a set of the prefixes that explicitly are used in this
-        #: example. SSSOM-py also adds the remaining builtin prefixes from
-        #: :data:`sssom.context.SSSOM_BUILT_IN_PREFIXES`, which is reflected
-        #: in the formulation of the test expectation below
-        explicit_prefixes = {"DOID", "semapv", "orcid", "skos", "UMLS"}
-        self.assertEqual(
-            explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES),
-            set(msdf.prefix_map),
-        )
-
-        with TemporaryDirectory() as directory:
-            directory = Path(directory)
-            path = directory.joinpath("test.sssom.tsv")
-            with path.open("w") as file:
-                write_table(msdf, file)
-
-            _, read_metadata = _read_pandas_and_metadata(_open_input(path))
-            reconsitited_msdf = parse_sssom_table(path)
-
-        # This tests what's actually in the file after it's written out
-        self.assertEqual({CURIE_MAP, "license", "mapping_set_id"}, set(read_metadata))
-        self.assertEqual(DEFAULT_LICENSE, read_metadata["license"])
-        self.assertTrue(read_metadata["mapping_set_id"].startswith(f"{SSSOM_URI_PREFIX}mappings/"))
-
-        expected_prefix_map = {
-            "DOID": "http://purl.obolibrary.org/obo/DOID_",
-            "UMLS": "http://linkedlifedata.com/resource/umls/id/",
-            "orcid": "https://orcid.org/",
-            "owl": "http://www.w3.org/2002/07/owl#",
-            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-            "semapv": "https://w3id.org/semapv/vocab/",
-            "skos": "http://www.w3.org/2004/02/skos/core#",
-            "sssom": "https://w3id.org/sssom/",
-        }
-        self.assertEqual(
-            expected_prefix_map,
-            read_metadata[CURIE_MAP],
-        )
-
-        # This checks that nothing funny gets added unexpectedly
-        self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
-
     def _basic_round_trip(self, key: str):
         """Test TSV => JSON => TSV using convert() + parse()."""
         parse_func = PARSING_FUNCTIONS[key]
@@ -453,8 +383,23 @@ class TestParseExplicit(unittest.TestCase):
             set(msdf.prefix_map),
         )
 
-        with TemporaryDirectory() as dir:
-            path = Path(dir).joinpath("test.sssom.x")
+        #: A more explicit definition of what should be in the bijective
+        #: prefix map
+        expected_bimap = {
+            "DOID": "http://purl.obolibrary.org/obo/DOID_",
+            "UMLS": "http://linkedlifedata.com/resource/umls/id/",
+            "orcid": "https://orcid.org/",
+            "owl": "http://www.w3.org/2002/07/owl#",
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            "semapv": "https://w3id.org/semapv/vocab/",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "sssom": "https://w3id.org/sssom/",
+        }
+        self.assertEqual(expected_bimap, msdf.converter.bimap)
+
+        with TemporaryDirectory() as directory:
+            path = Path(directory).joinpath("test.sssom.x")
             with path.open("w") as file:
                 write_func(msdf, file)
 
