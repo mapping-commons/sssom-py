@@ -454,21 +454,18 @@ class TestParseExplicit(unittest.TestCase):
         )
 
         with TemporaryDirectory() as dir:
-            directory = Path(dir)
-            path = directory.joinpath("test.sssom.x")
-            path_str = str(path)
+            path = Path(dir).joinpath("test.sssom.x")
             with path.open("w") as file:
                 write_func(msdf, file)
 
-            reconstituted_msdf = parse_func(path_str)
+            reconstituted_msdf = parse_func(path)
             reconstituted_msdf.clean_prefix_map(strict=True)
 
             test_meta = {
                 "mapping_set_title": "A title",
                 "license": "https://w3id.org/sssom/license/test",
             }
-
-            reconstituted_msdf_with_meta = parse_func(path_str, meta=test_meta)
+            reconstituted_msdf_with_meta = parse_func(path, meta=test_meta)
             reconstituted_msdf_with_meta.clean_prefix_map(strict=True)
 
         # Ensure the prefix maps are equal after json parsing and cleaning
@@ -497,10 +494,14 @@ class TestParseExplicit(unittest.TestCase):
         # to the MappingSet if they are not present, but not updated if they are already present.
         self.assertEqual(combine_meta, reconstituted_msdf_with_meta.metadata)
 
-    def test_round_trip_json_tsv(self):
-        """Test JSON => TSV using parse()."""
+    def test_round_trip_json(self):
+        """Test writing then reading JSON."""
         self._basic_round_trip("json")
 
-    def test_round_trip_rdf_tsv(self):
-        """Test RDF => TSV using parse()."""
+    def test_round_trip_rdf(self):
+        """Test writing then reading RDF."""
         self._basic_round_trip("rdf")
+
+    def test_round_trip_tsv(self):
+        """Test writing then reading TSV."""
+        self._basic_round_trip("tsv")
