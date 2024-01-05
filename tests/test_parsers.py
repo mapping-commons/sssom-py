@@ -378,10 +378,7 @@ class TestParseExplicit(unittest.TestCase):
         #: :data:`sssom.context.SSSOM_BUILT_IN_PREFIXES`, which is reflected
         #: in the formulation of the test expectation below
         explicit_prefixes = {"DOID", "semapv", "orcid", "skos", "UMLS"}
-        self.assertEqual(
-            explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES),
-            set(msdf.prefix_map),
-        )
+        self.assertEqual(explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES), set(msdf.prefix_map))
 
         #: A more explicit definition of what should be in the bijective
         #: prefix map
@@ -415,12 +412,12 @@ class TestParseExplicit(unittest.TestCase):
 
         # Ensure the prefix maps are equal after json parsing and cleaning
         self.assertEqual(
-            set(msdf.prefix_map),
+            set(expected_bimap),
             set(reconstituted_msdf.prefix_map),
             msg="Reconstituted prefix map has different CURIE prefixes",
         )
         self.assertEqual(
-            msdf.prefix_map,
+            expected_bimap,
             reconstituted_msdf.prefix_map,
             msg="Reconstituted prefix map has different URI prefixes",
         )
