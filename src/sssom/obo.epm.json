@@ -4413,6 +4413,20 @@
         ]
     },
     {
+        "prefix": "OCCO",
+        "prefix_synonyms": [
+            "occo"
+        ],
+        "uri_prefix": "http://purl.obolibrary.org/obo/OCCO_",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/OCCO:",
+            "http://bioregistry.io/occo:",
+            "https://bioregistry.io/OCCO:",
+            "https://bioregistry.io/occo:",
+            "https://purl.obolibrary.org/obo/OCCO_"
+        ]
+    },
+    {
         "pattern": "^\\d+$",
         "prefix": "OGG",
         "prefix_synonyms": [
@@ -6875,6 +6889,15 @@
         ]
     },
     {
+        "prefix": "aftol.category",
+        "uri_prefix": "https://aftol.umn.edu/glossary?category=",
+        "uri_prefix_synonyms": [
+            "http://aftol.umn.edu/glossary?category=",
+            "http://bioregistry.io/aftol.category:",
+            "https://bioregistry.io/aftol.category:"
+        ]
+    },
+    {
         "pattern": "^\\d+$",
         "prefix": "aftol.taxonomy",
         "uri_prefix": "http://wasabi.lutzonilab.net/pub/displayTaxonInfo?aftol_id=",
@@ -9100,12 +9123,12 @@
     {
         "pattern": "^[0-9]+$",
         "prefix": "cellrepo",
-        "uri_prefix": "https://cellrepo.ico2s.org/repositories/",
+        "uri_prefix": "https://www.cellrepo.com/repositories/",
         "uri_prefix_synonyms": [
             "http://bioregistry.io/cellrepo:",
-            "http://cellrepo.ico2s.org/repositories/",
             "http://identifiers.org/cellrepo/",
             "http://identifiers.org/cellrepo:",
+            "http://www.cellrepo.com/repositories/",
             "https://bioregistry.io/cellrepo:",
             "https://identifiers.org/cellrepo/",
             "https://identifiers.org/cellrepo:"
@@ -13302,6 +13325,7 @@
         ]
     },
     {
+        "pattern": "^G[0-9]{5}[A-Z]{2}$",
         "prefix": "glygen",
         "uri_prefix": "https://glygen.org/glycan/",
         "uri_prefix_synonyms": [
@@ -14113,6 +14137,20 @@
             "http://bioregistry.io/hc.trial:",
             "http://health-products.canada.ca/ctdb-bdec/brand/?submissionNo=",
             "https://bioregistry.io/hc.trial:"
+        ]
+    },
+    {
+        "pattern": "^.+$",
+        "prefix": "hco",
+        "uri_prefix": "http://biohackathon.org/resource/hco#",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/hco:",
+            "http://identifiers.org/hco/",
+            "http://identifiers.org/hco:",
+            "https://biohackathon.org/resource/hco#",
+            "https://bioregistry.io/hco:",
+            "https://identifiers.org/hco/",
+            "https://identifiers.org/hco:"
         ]
     },
     {
