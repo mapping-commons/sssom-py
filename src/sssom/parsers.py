@@ -21,7 +21,7 @@ from curies import Converter
 from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
-from rdflib import Graph, URIRef
+from rdflib import Graph
 from sssom_schema import Mapping, MappingSet
 
 from sssom.constants import (
@@ -61,7 +61,6 @@ from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
-    URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
     is_multivalued_slot,
@@ -447,7 +446,15 @@ def from_sssom_rdf(
     :return: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
-    mapping_set = cast(MappingSet, RDFLibLoader().load(source=g, target_class=MappingSet, schemaview=_get_sssom_schema_object().view, prefix_map=converter))
+    mapping_set = cast(
+        MappingSet,
+        RDFLibLoader().load(
+            source=g,
+            target_class=MappingSet,
+            schemaview=_get_sssom_schema_object().view,
+            prefix_map=converter,
+        ),
+    )
 
     # The priority order for combining metadata is:
     #  1. Metadata appearing in the SSSOM document
