@@ -19,6 +19,7 @@ import requests
 import yaml
 from curies import Converter
 from linkml_runtime.loaders.json_loader import JSONLoader
+from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph, URIRef
 from sssom_schema import Mapping, MappingSet
@@ -446,53 +447,24 @@ def from_sssom_rdf(
     :return: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
+    mapping_set = cast(MappingSet, RDFLibLoader().load(source=g, target_class=MappingSet, schemaview=_get_sssom_schema_object().view, prefix_map=converter))
 
-    ms = _init_mapping_set(meta)
-    mlist: List[Mapping] = []
-    for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
-        mdict: Dict[str, Any] = {}
-        # TODO replace with g.predicate_objects()
-        for _, predicate, o in g.triples((ox, None, None)):
-            if not isinstance(predicate, URIRef):
-                continue
-            try:
-                predicate_curie = safe_compress(predicate, converter)
-            except ValueError as e:
-                logging.debug(e)
-                continue
-            if predicate_curie.startswith("sssom:"):
-                key = predicate_curie.replace("sssom:", "")
-            elif predicate_curie == "owl:annotatedProperty":
-                key = "predicate_id"
-            elif predicate_curie == "owl:annotatedTarget":
-                key = "object_id"
-            elif predicate_curie == "owl:annotatedSource":
-                key = "subject_id"
-            else:
-                continue
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
 
-            if isinstance(o, URIRef):
-                v: Any
-                try:
-                    v = safe_compress(o, converter)
-                except ValueError as e:
-                    logging.debug(e)
-                    continue
-            else:
-                v = o.toPython()
+    # As the Metadata appearing in the SSSOM document is already parsed by LinkML
+    # we only need to overwrite the metadata from 2 and 3 if it is not present
+    combine_meta = dict(
+        ChainMap(
+            meta or {},
+            get_default_metadata(),
+        )
+    )
 
-            mdict[key] = _address_multivalued_slot(key, v)
-
-        if not mdict:
-            logging.warning(
-                f"While trying to prepare a mapping for {sx},{px}, {ox}, something went wrong. "
-                f"This usually happens when a critical prefix_map entry is missing."
-            )
-            continue
-        _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
-
-    ms.mappings = mlist  # type: ignore
-    mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
+    _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
+    mdoc = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
 
