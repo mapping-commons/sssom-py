@@ -246,7 +246,15 @@ class MappingSetDataFrame:
         if self.metadata:
             prefixes_in_table.update(get_prefixes_used_in_metadata(self.metadata))
 
-        missing_prefixes = prefixes_in_table - self.converter.get_prefixes()
+        prefixes = {record.prefix for record in self.converter.records}
+        aliases = {
+            p
+            for p in itt.chain(*[record.prefix_synonyms for record in self.converter.records])
+            if p
+        }
+        converter_prefixes = prefixes | aliases
+        missing_prefixes = prefixes_in_table - converter_prefixes
+
         if missing_prefixes and strict:
             raise ValueError(
                 f"{missing_prefixes} are used in the SSSOM mapping set but it does not exist in the prefix map"
