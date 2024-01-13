@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sssom.parsers &mdash; sssom-py 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -94,16 +96,19 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.loaders.json_loader</span> <span class="kn">import</span> <span class="n">JSONLoader</span>
+<span class="kn">from</span> <span class="nn">linkml_runtime.loaders.rdflib_loader</span> <span class="kn">import</span> <span class="n">RDFLibLoader</span>
 <span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
-<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">URIRef</span>
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MappingSet</span>
 
 <span class="kn">from</span> <span class="nn">sssom.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CONFIDENCE</span><span class="p">,</span>
     <span class="n">CURIE_MAP</span><span class="p">,</span>
     <span class="n">DEFAULT_MAPPING_PROPERTIES</span><span class="p">,</span>
+    <span class="n">LICENSE</span><span class="p">,</span>
     <span class="n">MAPPING_JUSTIFICATION</span><span class="p">,</span>
     <span class="n">MAPPING_JUSTIFICATION_UNSPECIFIED</span><span class="p">,</span>
+    <span class="n">MAPPING_SET_ID</span><span class="p">,</span>
     <span class="n">OBJECT_ID</span><span class="p">,</span>
     <span class="n">OBJECT_LABEL</span><span class="p">,</span>
     <span class="n">OBJECT_SOURCE</span><span class="p">,</span>
@@ -133,7 +138,6 @@
 <span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
-    <span class="n">URI_SSSOM_MAPPINGS</span><span class="p">,</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">get_file_extension</span><span class="p">,</span>
     <span class="n">is_multivalued_slot</span><span class="p">,</span>
@@ -310,10 +314,27 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
     <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
     <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">serialisation</span><span class="p">)</span>
+
+    <span class="c1"># Initialize meta if it&#39;s None</span>
+    <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># The priority order for combining prefix maps are:</span>
+    <span class="c1">#  1. Built-in prefix map</span>
+    <span class="c1">#  2. Internal prefix map inside the document</span>
+    <span class="c1">#  3. Prefix map passed through this function inside the ``meta``</span>
+    <span class="c1">#  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">_get_built_in_prefix_map</span><span class="p">(),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_rdflib</span><span class="p">(</span><span class="n">g</span><span class="p">),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{})),</span>
+            <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_rdf</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="c1"># df: pd.DataFrame = msdf.df</span>
     <span class="c1"># if mapping_predicates and not df.empty():</span>
@@ -322,22 +343,33 @@
 
 
 <div class="viewcode-block" id="parse_sssom_json"><a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_json">[docs]</a><span class="k">def</span> <span class="nf">parse_sssom_json</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-    <span class="c1"># mapping_predicates: Optional[List[str]] = None,</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
         <span class="n">jsondoc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+    <span class="c1"># Initialize meta if it&#39;s None</span>
+    <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># The priority order for combining prefix maps are:</span>
+    <span class="c1">#  1. Built-in prefix map</span>
+    <span class="c1">#  2. Internal prefix map inside the document</span>
+    <span class="c1">#  3. Prefix map passed through this function inside the ``meta``</span>
+    <span class="c1">#  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">_get_built_in_prefix_map</span><span class="p">(),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_jsonld</span><span class="p">(</span><span class="n">file_path</span><span class="p">),</span>
+            <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{})),</span>
+            <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_sssom_json</span><span class="p">(</span><span class="n">jsondoc</span><span class="o">=</span><span class="n">jsondoc</span><span class="p">,</span> <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
-    <span class="c1"># df: pd.DataFrame = msdf.df</span>
-    <span class="c1"># if mapping_predicates and not df.empty():</span>
-    <span class="c1">#     msdf.df = df[df[&quot;predicate_id&quot;].isin(mapping_predicates)]</span>
     <span class="k">return</span> <span class="n">msdf</span></div>
 
 
@@ -398,9 +430,7 @@
 
 <span class="k">def</span> <span class="nf">_init_mapping_set</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MappingSet</span><span class="p">:</span>
     <span class="n">_metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ChainMap</span><span class="p">(</span><span class="n">meta</span> <span class="ow">or</span> <span class="p">{},</span> <span class="n">get_default_metadata</span><span class="p">()))</span>
-    <span class="n">mapping_set</span> <span class="o">=</span> <span class="n">MappingSet</span><span class="p">(</span>
-        <span class="n">mapping_set_id</span><span class="o">=</span><span class="n">_metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">],</span> <span class="n">license</span><span class="o">=</span><span class="n">_metadata</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span>
-    <span class="p">)</span>
+    <span class="n">mapping_set</span> <span class="o">=</span> <span class="n">MappingSet</span><span class="p">(</span><span class="n">mapping_set_id</span><span class="o">=</span><span class="n">_metadata</span><span class="p">[</span><span class="n">MAPPING_SET_ID</span><span class="p">],</span> <span class="n">license</span><span class="o">=</span><span class="n">_metadata</span><span class="p">[</span><span class="n">LICENSE</span><span class="p">])</span>
     <span class="n">_set_metadata_in_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mapping_set</span>
 
@@ -493,53 +523,33 @@
 <span class="sd">    :return: MappingSetDataFrame object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
+    <span class="n">mapping_set</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+        <span class="n">MappingSet</span><span class="p">,</span>
+        <span class="n">RDFLibLoader</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">g</span><span class="p">,</span>
+            <span class="n">target_class</span><span class="o">=</span><span class="n">MappingSet</span><span class="p">,</span>
+            <span class="n">schemaview</span><span class="o">=</span><span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
+            <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">,</span>
+            <span class="n">ignore_unmapped_predicates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 
-    <span class="n">ms</span> <span class="o">=</span> <span class="n">_init_mapping_set</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
-    <span class="n">mlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">sx</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">ox</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">URI_SSSOM_MAPPINGS</span><span class="p">),</span> <span class="kc">None</span><span class="p">)):</span>
-        <span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># TODO replace with g.predicate_objects()</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="n">ox</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">predicate_curie</span> <span class="o">=</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">predicate_curie</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sssom:&quot;</span><span class="p">):</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="n">predicate_curie</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;sssom:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">predicate_curie</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedProperty&quot;</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;predicate_id&quot;</span>
-            <span class="k">elif</span> <span class="n">predicate_curie</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedTarget&quot;</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;object_id&quot;</span>
-            <span class="k">elif</span> <span class="n">predicate_curie</span> <span class="o">==</span> <span class="s2">&quot;owl:annotatedSource&quot;</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;subject_id&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">continue</span>
+    <span class="c1"># The priority order for combining metadata is:</span>
+    <span class="c1">#  1. Metadata appearing in the SSSOM document</span>
+    <span class="c1">#  2. Metadata passed through ``meta`` to this function</span>
+    <span class="c1">#  3. Default metadata</span>
 
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
-                <span class="n">v</span><span class="p">:</span> <span class="n">Any</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">safe_compress</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="k">continue</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
+    <span class="c1"># As the Metadata appearing in the SSSOM document is already parsed by LinkML</span>
+    <span class="c1"># we only need to overwrite the metadata from 2 and 3 if it is not present</span>
+    <span class="n">combine_meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">ChainMap</span><span class="p">(</span>
+            <span class="n">meta</span> <span class="ow">or</span> <span class="p">{},</span>
+            <span class="n">get_default_metadata</span><span class="p">(),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
-            <span class="n">mdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mdict</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;While trying to prepare a mapping for </span><span class="si">{</span><span class="n">sx</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">px</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ox</span><span class="si">}</span><span class="s2">, something went wrong. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;This usually happens when a critical prefix_map entry is missing.&quot;</span>
-            <span class="p">)</span>
-            <span class="k">continue</span>
-        <span class="n">_add_valid_mapping_to_list</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">mlist</span><span class="p">,</span> <span class="n">flip_superclass_assertions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">ms</span><span class="o">.</span><span class="n">mappings</span> <span class="o">=</span> <span class="n">mlist</span>  <span class="c1"># type: ignore</span>
-    <span class="n">mdoc</span> <span class="o">=</span> <span class="n">MappingSetDocument</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
+    <span class="n">_set_metadata_in_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">combine_meta</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">mdoc</span> <span class="o">=</span> <span class="n">MappingSetDocument</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mdoc</span><span class="p">)</span></div>
 
 
@@ -552,13 +562,28 @@
 
 <span class="sd">    :param jsondoc: JSON document</span>
 <span class="sd">    :param prefix_map: Prefix map</span>
-<span class="sd">    :param meta: metadata</span>
+<span class="sd">    :param meta: metadata used to augment the metadata existing in the mapping set</span>
 <span class="sd">    :return: MappingSetDataFrame object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">)</span>
+
     <span class="n">mapping_set</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">MappingSet</span><span class="p">,</span> <span class="n">JSONLoader</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">jsondoc</span><span class="p">,</span> <span class="n">target_class</span><span class="o">=</span><span class="n">MappingSet</span><span class="p">))</span>
 
-    <span class="n">_set_metadata_in_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+    <span class="c1"># The priority order for combining metadata is:</span>
+    <span class="c1">#  1. Metadata appearing in the SSSOM document</span>
+    <span class="c1">#  2. Metadata passed through ``meta`` to this function</span>
+    <span class="c1">#  3. Default metadata</span>
+
+    <span class="c1"># As the Metadata appearing in the SSSOM document is already parsed by LinkML</span>
+    <span class="c1"># we only need to overwrite the metadata from 2 and 3 if it is not present</span>
+    <span class="n">combine_meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">ChainMap</span><span class="p">(</span>
+            <span class="n">meta</span> <span class="ow">or</span> <span class="p">{},</span>
+            <span class="n">get_default_metadata</span><span class="p">(),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">_set_metadata_in_mapping_set</span><span class="p">(</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">combine_meta</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">mapping_set_document</span> <span class="o">=</span> <span class="n">MappingSetDocument</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">mapping_set_document</span><span class="p">)</span></div>
 
@@ -810,13 +835,19 @@
 
 
 <span class="k">def</span> <span class="nf">_set_metadata_in_mapping_set</span><span class="p">(</span>
-    <span class="n">mapping_set</span><span class="p">:</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mapping_set</span><span class="p">:</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tried setting metadata but none provided.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">CURIE_MAP</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">hasattr</span><span class="p">(</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span>
+                <span class="p">):</span>
+                    <span class="k">continue</span>
                 <span class="n">mapping_set</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_address_multivalued_slot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
 
