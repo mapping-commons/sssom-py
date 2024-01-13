@@ -19,16 +19,19 @@ import requests
 import yaml
 from curies import Converter
 from linkml_runtime.loaders.json_loader import JSONLoader
+from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
-from rdflib import Graph, URIRef
+from rdflib import Graph
 from sssom_schema import Mapping, MappingSet
 
 from sssom.constants import (
     CONFIDENCE,
     CURIE_MAP,
     DEFAULT_MAPPING_PROPERTIES,
+    LICENSE,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
+    MAPPING_SET_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
@@ -58,7 +61,6 @@ from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
-    URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
     is_multivalued_slot,
@@ -235,10 +237,27 @@ def parse_sssom_rdf(
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     g = Graph()
     g.parse(file_path, format=serialisation)
+
+    # Initialize meta if it's None
+    if meta is None:
+        meta = {}
+
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_rdflib(g),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
     msdf = from_sssom_rdf(g, prefix_map=converter, meta=meta)
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
@@ -247,22 +266,33 @@ def parse_sssom_rdf(
 
 
 def parse_sssom_json(
-    file_path: str,
-    prefix_map: ConverterHint = None,
-    meta: Optional[MetadataType] = None,
-    **kwargs
-    # mapping_predicates: Optional[List[str]] = None,
+    file_path: str, prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None, **kwargs
 ) -> MappingSetDataFrame:
-    """Parse a TSV to a :class:`MappingSetDocument` to a  :class`MappingSetDataFrame`."""
+    """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
-    converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
 
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
+
+    # Initialize meta if it's None
+    if meta is None:
+        meta = {}
+
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_jsonld(file_path),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
+
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
-    # df: pd.DataFrame = msdf.df
-    # if mapping_predicates and not df.empty():
-    #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
     return msdf
 
 
@@ -323,9 +353,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
-    mapping_set = MappingSet(
-        mapping_set_id=_metadata["mapping_set_id"], license=_metadata["license"]
-    )
+    mapping_set = MappingSet(mapping_set_id=_metadata[MAPPING_SET_ID], license=_metadata[LICENSE])
     _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
@@ -418,53 +446,33 @@ def from_sssom_rdf(
     :return: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
+    mapping_set = cast(
+        MappingSet,
+        RDFLibLoader().load(
+            source=g,
+            target_class=MappingSet,
+            schemaview=_get_sssom_schema_object().view,
+            prefix_map=converter.bimap,
+            ignore_unmapped_predicates=True,
+        ),
+    )
 
-    ms = _init_mapping_set(meta)
-    mlist: List[Mapping] = []
-    for sx, px, ox in g.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
-        mdict: Dict[str, Any] = {}
-        # TODO replace with g.predicate_objects()
-        for _, predicate, o in g.triples((ox, None, None)):
-            if not isinstance(predicate, URIRef):
-                continue
-            try:
-                predicate_curie = safe_compress(predicate, converter)
-            except ValueError as e:
-                logging.debug(e)
-                continue
-            if predicate_curie.startswith("sssom:"):
-                key = predicate_curie.replace("sssom:", "")
-            elif predicate_curie == "owl:annotatedProperty":
-                key = "predicate_id"
-            elif predicate_curie == "owl:annotatedTarget":
-                key = "object_id"
-            elif predicate_curie == "owl:annotatedSource":
-                key = "subject_id"
-            else:
-                continue
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
 
-            if isinstance(o, URIRef):
-                v: Any
-                try:
-                    v = safe_compress(o, converter)
-                except ValueError as e:
-                    logging.debug(e)
-                    continue
-            else:
-                v = o.toPython()
+    # As the Metadata appearing in the SSSOM document is already parsed by LinkML
+    # we only need to overwrite the metadata from 2 and 3 if it is not present
+    combine_meta = dict(
+        ChainMap(
+            meta or {},
+            get_default_metadata(),
+        )
+    )
 
-            mdict[key] = _address_multivalued_slot(key, v)
-
-        if not mdict:
-            logging.warning(
-                f"While trying to prepare a mapping for {sx},{px}, {ox}, something went wrong. "
-                f"This usually happens when a critical prefix_map entry is missing."
-            )
-            continue
-        _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
-
-    ms.mappings = mlist  # type: ignore
-    mdoc = MappingSetDocument(mapping_set=ms, converter=converter)
+    _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
+    mdoc = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mdoc)
 
 
@@ -477,13 +485,28 @@ def from_sssom_json(
 
     :param jsondoc: JSON document
     :param prefix_map: Prefix map
-    :param meta: metadata
+    :param meta: metadata used to augment the metadata existing in the mapping set
     :return: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
+
     mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
-    _set_metadata_in_mapping_set(mapping_set, metadata=meta)
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
+
+    # As the Metadata appearing in the SSSOM document is already parsed by LinkML
+    # we only need to overwrite the metadata from 2 and 3 if it is not present
+    combine_meta = dict(
+        ChainMap(
+            meta or {},
+            get_default_metadata(),
+        )
+    )
+
+    _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
     mapping_set_document = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
@@ -735,13 +758,19 @@ def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
 
 
 def _set_metadata_in_mapping_set(
-    mapping_set: MappingSet, metadata: Optional[MetadataType] = None
+    mapping_set: MappingSet, metadata: Optional[MetadataType] = None, overwrite: bool = True
 ) -> None:
     if metadata is None:
         logging.info("Tried setting metadata but none provided.")
     else:
         for k, v in metadata.items():
             if k != CURIE_MAP:
+                if (
+                    hasattr(mapping_set, k)
+                    and getattr(mapping_set, k) is not None
+                    and not overwrite
+                ):
+                    continue
                 mapping_set[k] = _address_multivalued_slot(k, v)
 
 

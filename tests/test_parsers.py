@@ -4,9 +4,10 @@ import io
 import json
 import math
 import os
-import tempfile
 import unittest
+from collections import ChainMap
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from textwrap import dedent
 from xml.dom import minidom
 
@@ -16,12 +17,11 @@ import yaml
 from curies import Converter
 from rdflib import Graph
 
-from sssom.constants import CURIE_MAP, DEFAULT_LICENSE, SSSOM_URI_PREFIX, get_default_metadata
+from sssom.constants import CURIE_MAP, get_default_metadata
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
-    _open_input,
-    _read_pandas_and_metadata,
+    PARSING_FUNCTIONS,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
@@ -30,7 +30,7 @@ from sssom.parsers import (
     parse_sssom_table,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
-from sssom.writers import write_table
+from sssom.writers import WRITER_FUNCTIONS, write_table
 from tests.test_data import data_dir as test_data_dir
 from tests.test_data import test_out_dir
 
@@ -253,7 +253,7 @@ class TestParse(unittest.TestCase):
             write_table(msdf, file)
         self.assertEqual(
             len(msdf.df),
-            136,
+            141,
             f"{self.rdf_graph_file} has the wrong number of mappings.",
         )
 
@@ -343,8 +343,11 @@ class TestParse(unittest.TestCase):
 class TestParseExplicit(unittest.TestCase):
     """This test case contains explicit tests for parsing."""
 
-    def test_round_trip(self):
-        """Explicitly test round tripping."""
+    def _basic_round_trip(self, key: str):
+        """Test TSV => JSON => TSV using convert() + parse()."""
+        parse_func = PARSING_FUNCTIONS[key]
+        write_func, _write_format = WRITER_FUNCTIONS[key]
+
         rows = [
             (
                 "DOID:0050601",
@@ -365,34 +368,21 @@ class TestParseExplicit(unittest.TestCase):
             "mapping_justification",
             "creator_id",
         ]
+
         df = pd.DataFrame(rows, columns=columns)
         msdf = MappingSetDataFrame(df=df, converter=ensure_converter())
         msdf.clean_prefix_map(strict=True)
+
         #: This is a set of the prefixes that explicitly are used in this
         #: example. SSSOM-py also adds the remaining builtin prefixes from
         #: :data:`sssom.context.SSSOM_BUILT_IN_PREFIXES`, which is reflected
         #: in the formulation of the test expectation below
         explicit_prefixes = {"DOID", "semapv", "orcid", "skos", "UMLS"}
-        self.assertEqual(
-            explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES),
-            set(msdf.prefix_map),
-        )
+        self.assertEqual(explicit_prefixes.union(SSSOM_BUILT_IN_PREFIXES), set(msdf.prefix_map))
 
-        with tempfile.TemporaryDirectory() as directory:
-            directory = Path(directory)
-            path = directory.joinpath("test.sssom.tsv")
-            with path.open("w") as file:
-                write_table(msdf, file)
-
-            _, read_metadata = _read_pandas_and_metadata(_open_input(path))
-            reconsitited_msdf = parse_sssom_table(path)
-
-        # This tests what's actually in the file after it's written out
-        self.assertEqual({CURIE_MAP, "license", "mapping_set_id"}, set(read_metadata))
-        self.assertEqual(DEFAULT_LICENSE, read_metadata["license"])
-        self.assertTrue(read_metadata["mapping_set_id"].startswith(f"{SSSOM_URI_PREFIX}mappings/"))
-
-        expected_prefix_map = {
+        #: A more explicit definition of what should be in the bijective
+        #: prefix map
+        expected_bimap = {
             "DOID": "http://purl.obolibrary.org/obo/DOID_",
             "UMLS": "http://linkedlifedata.com/resource/umls/id/",
             "orcid": "https://orcid.org/",
@@ -403,10 +393,57 @@ class TestParseExplicit(unittest.TestCase):
             "skos": "http://www.w3.org/2004/02/skos/core#",
             "sssom": "https://w3id.org/sssom/",
         }
+        self.assertEqual(expected_bimap, msdf.converter.bimap)
+
+        with TemporaryDirectory() as directory:
+            path = Path(directory).joinpath("test.sssom.x")
+            with path.open("w") as file:
+                write_func(msdf, file)
+
+            reconstituted_msdf = parse_func(path)
+            reconstituted_msdf.clean_prefix_map(strict=True)
+
+            test_meta = {
+                "mapping_set_title": "A title",
+                "license": "https://w3id.org/sssom/license/test",
+            }
+            reconstituted_msdf_with_meta = parse_func(path, meta=test_meta)
+            reconstituted_msdf_with_meta.clean_prefix_map(strict=True)
+
+        # Ensure the prefix maps are equal after json parsing and cleaning
         self.assertEqual(
-            expected_prefix_map,
-            read_metadata[CURIE_MAP],
+            set(expected_bimap),
+            set(reconstituted_msdf.prefix_map),
+            msg="Reconstituted prefix map has different CURIE prefixes",
+        )
+        self.assertEqual(
+            expected_bimap,
+            reconstituted_msdf.prefix_map,
+            msg="Reconstituted prefix map has different URI prefixes",
         )
 
-        # This checks that nothing funny gets added unexpectedly
-        self.assertEqual(expected_prefix_map, reconsitited_msdf.prefix_map)
+        # Ensure the shape, labels, and values in the data frame are the same after json parsing and cleaning
+        self.assertTrue(msdf.df.equals(reconstituted_msdf.df))
+
+        # Ensure the metadata is the same after json parsing and cleaning
+        self.assertEqual(msdf.metadata, reconstituted_msdf.metadata)
+
+        combine_meta = dict(ChainMap(msdf.metadata, test_meta))
+
+        # Ensure the metadata after json parsing with additional metadata corresponds to
+        # a chain of the original metadata with the test metadata.
+        # In particular, this ensures that fields in the test metadata provided are added
+        # to the MappingSet if they are not present, but not updated if they are already present.
+        self.assertEqual(combine_meta, reconstituted_msdf_with_meta.metadata)
+
+    def test_round_trip_json(self):
+        """Test writing then reading JSON."""
+        self._basic_round_trip("json")
+
+    def test_round_trip_rdf(self):
+        """Test writing then reading RDF."""
+        self._basic_round_trip("rdf")
+
+    def test_round_trip_tsv(self):
+        """Test writing then reading TSV."""
+        self._basic_round_trip("tsv")
