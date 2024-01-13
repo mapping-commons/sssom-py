@@ -452,7 +452,7 @@ def from_sssom_rdf(
             source=g,
             target_class=MappingSet,
             schemaview=_get_sssom_schema_object().view,
-            prefix_map=converter,
+            prefix_map=converter.bimap,
             ignore_unmapped_predicates=True,
         ),
     )
