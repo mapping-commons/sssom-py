@@ -135,6 +135,7 @@ x:bone_element owl:equivalentClass y:bone,
     sssom:comment "." ;
     sssom:creator_id <file:///Users/matentzn/ws/sssom-py/tests/cjm> ;
     sssom:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
+    sssom:mapping_set_id <https://example.org/sssom_example.rdf> ;
     sssom:mapping_date "2020-05-30" ;
     sssom:mapping_tool "https://github.com/cmungall/rdf_matcher" ;
     sssom:mappings [ a owl:Axiom ;
