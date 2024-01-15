@@ -139,9 +139,7 @@ def get_metadata_and_prefix_map(
     metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
 ) -> Tuple[Converter, MetadataType]:
     """Load metadata and a prefix map in a deprecated way."""
-    return _get_metadata_and_prefix_map(
-        metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
-    )
+    return _get_metadata_and_prefix_map(metadata_path=metadata_path,prefix_map_mode=prefix_map_mode)
 
 
 def _get_metadata_and_prefix_map(
