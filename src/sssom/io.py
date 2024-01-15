@@ -135,9 +135,13 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     details="This functionality for loading SSSOM metadata from a YAML file is deprecated from the "
     "public API since it has internal assumptions which are usually not valid for downstream users.",
 )
-def get_metadata_and_prefix_map(*args, **kwargs):
+def get_metadata_and_prefix_map(
+    metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
+) -> Tuple[Converter, MetadataType]:
     """Load metadata and a prefix map in a deprecated way."""
-    return _get_metadata_and_prefix_map(*args, **kwargs)
+    return _get_metadata_and_prefix_map(
+        metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
+    )
 
 
 def _get_metadata_and_prefix_map(
