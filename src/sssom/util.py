@@ -1212,9 +1212,6 @@ def is_multivalued_slot(slot: str) -> bool:
     :param slot: Slot name
     :return: Slot is multivalued or no
     """
-    # Ideally:
-    # view = SchemaView('schema/sssom.yaml')
-    # return view.get_slot(slot).multivalued
     return slot in _get_sssom_schema_object().multivalued_slots
 
 

@@ -85,19 +85,12 @@ def parse_file(
     if mapping_predicate_filter:
         mapping_predicates = extract_iris(mapping_predicate_filter, converter)
 
-    # if mapping_predicates:
     doc = parse_func(
         input_path,
         prefix_map=converter,
         meta=meta,
         mapping_predicates=mapping_predicates,
     )
-    # else:
-    #     doc = parse_func(
-    #         input_path,
-    #         prefix_map=converter,
-    #         meta=meta,
-    #     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map(strict=strict_clean_prefixes)
