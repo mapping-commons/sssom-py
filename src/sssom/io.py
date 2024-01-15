@@ -12,7 +12,6 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
-from deprecation import deprecated
 
 from sssom.validators import validate
 
@@ -163,17 +162,6 @@ def _merge_converter(
     if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
         return curies.chain([converter, get_converter()])
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
-
-
-@deprecated(deprecated_in="0.4.0", details="Use sssom.io.extract_iris() directly")
-def get_list_of_predicate_iri(predicate_filter: Iterable[str], converter: Converter) -> list:
-    """Return a list of IRIs for predicate CURIEs passed.
-
-    :param predicate_filter: CURIE OR list of CURIEs OR file path containing the same.
-    :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
-    :return: A list of IRIs.
-    """
-    return extract_iris(predicate_filter, converter)
 
 
 def extract_iris(
