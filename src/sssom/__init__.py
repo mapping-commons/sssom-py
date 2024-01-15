@@ -10,7 +10,7 @@ except importlib.metadata.PackageNotFoundError:
 
 from sssom_schema import Mapping, MappingSet, slots  # noqa:401
 
-from sssom.io import _get_metadata_and_prefix_map  # noqa:401
+from sssom.io import get_metadata_and_prefix_map  # noqa:401
 from sssom.sssom_document import MappingSetDocument  # noqa:401
 from sssom.util import (  # noqa:401
     MappingSetDataFrame,
