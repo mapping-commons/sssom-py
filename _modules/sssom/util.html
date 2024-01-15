@@ -95,7 +95,6 @@
 <span class="kn">import</span> <span class="nn">validators</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
-<span class="kn">from</span> <span class="nn">deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
 <span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span> <span class="k">as</span> <span class="n">SSSOM_Mapping</span>
@@ -573,7 +572,7 @@
     <span class="k">return</span> <span class="n">return_df</span></div>
 
 
-<div class="viewcode-block" id="get_row_based_on_hierarchy"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_row_based_on_hierarchy">[docs]</a><span class="k">def</span> <span class="nf">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<div class="viewcode-block" id="get_row_based_on_hierarchy"><a class="viewcode-back" href="../../sssom.html#sssom.util.get_row_based_on_hierarchy">[docs]</a><span class="k">def</span> <span class="nf">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get row based on hierarchy of predicates.</span>
 
 <span class="sd">    The hierarchy is as follows:</span>
@@ -592,11 +591,13 @@
 
 <span class="sd">    :param df: Dataframe containing multiple predicates for same subject and object.</span>
 <span class="sd">    :return: Dataframe with a single row which ranks higher in the hierarchy.</span>
+<span class="sd">    :raises KeyError: if no rows are available</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">PREDICATE_LIST</span><span class="p">:</span>
         <span class="n">hierarchical_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">==</span> <span class="n">pred</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">hierarchical_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">hierarchical_df</span></div>
+            <span class="k">return</span> <span class="n">hierarchical_df</span>
+    <span class="k">raise</span> <span class="ne">KeyError</span></div>
 
 
 <div class="viewcode-block" id="assign_default_confidence"><a class="viewcode-back" href="../../sssom.html#sssom.util.assign_default_confidence">[docs]</a><span class="k">def</span> <span class="nf">assign_default_confidence</span><span class="p">(</span>
@@ -728,7 +729,10 @@
 
 
 <div class="viewcode-block" id="dataframe_to_ptable"><a class="viewcode-back" href="../../sssom.html#sssom.util.dataframe_to_ptable">[docs]</a><span class="k">def</span> <span class="nf">dataframe_to_ptable</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">default_confidence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">inverse_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">default_confidence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a KBOOM table.</span>
 
@@ -1157,33 +1161,9 @@
 <span class="n">CURIE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">CURIE_PATTERN</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="is_curie"><a class="viewcode-back" href="../../sssom.html#sssom.util.is_curie">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
-    <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span>
-    <span class="n">details</span><span class="o">=</span><span class="s2">&quot;sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from &quot;</span>
-    <span class="s2">&quot;the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on &quot;</span>
-    <span class="s2">&quot;your context&#39;s prefix map and using curies.Converter.is_curie(). If you&#39;re looking for global syntax &quot;</span>
-    <span class="sa">f</span><span class="s2">&quot;checking for CURIEs, try matching against </span><span class="si">{</span><span class="n">CURIE_PATTERN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">is_curie</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the string is a CURIE.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_is_curie</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
-
-
 <span class="k">def</span> <span class="nf">_is_curie</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the string is a CURIE.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">CURIE_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
-
-
-<div class="viewcode-block" id="is_iri"><a class="viewcode-back" href="../../sssom.html#sssom.util.is_iri">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
-    <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span>
-    <span class="n">details</span><span class="o">=</span><span class="s2">&quot;sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from &quot;</span>
-    <span class="s2">&quot;the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on &quot;</span>
-    <span class="s2">&quot;your context&#39;s prefix map and using curies.Converter.is_uri(). If you&#39;re looking for a globally valid &quot;</span>
-    <span class="s2">&quot;URI checker, use validators.url()&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">is_iri</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the string is an IRI.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_is_iri</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_is_iri</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1312,9 +1292,6 @@
 <span class="sd">    :param slot: Slot name</span>
 <span class="sd">    :return: Slot is multivalued or no</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Ideally:</span>
-    <span class="c1"># view = SchemaView(&#39;schema/sssom.yaml&#39;)</span>
-    <span class="c1"># return view.get_slot(slot).multivalued</span>
     <span class="k">return</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">multivalued_slots</span></div>
 
 

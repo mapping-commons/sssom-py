@@ -579,29 +579,6 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="sssom.io.get_list_of_predicate_iri">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_list_of_predicate_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#get_list_of_predicate_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_list_of_predicate_iri" title="Permalink to this definition"></a></dt>
-<dd><p>Return a list of IRIs for predicate CURIEs passed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>predicate_filter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – CURIE OR list of CURIEs OR file path containing the same.</p></li>
-<li><p><strong>converter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code></span>) – Prefix map of mapping set (possibly) containing custom prefix:IRI combination.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A list of IRIs.</p>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>Use sssom.io.extract_iris() directly</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.get_metadata_and_prefix_map">
 <span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Permalink to this definition"></a></dt>
 <dd><p>Load SSSOM metadata from a YAML file, and then augment it with default prefixes.</p>
@@ -1682,8 +1659,14 @@ replaced or not, defaults to False.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Dataframe containing multiple predicates for same subject and object.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dataframe with a single row which ranks higher in the hierarchy.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dataframe with a single row which ranks higher in the hierarchy.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – if no rows are available</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1737,26 +1720,6 @@ just return inverted data.</p></li>
 <dd class="field-odd"><p>Pandas dataframe with all subject IDs having the same prefix.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.is_curie">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_curie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#is_curie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.is_curie" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the string is a CURIE.
-:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on your context’s prefix map and using curies.Converter.is_curie(). If you’re looking for global syntax checking for CURIEs, try matching against [<a href="#id1"><span class="problematic" id="id2">A-Za-z0-9_</span></a>.]+[:][<a href="#id3"><span class="problematic" id="id4">A-Za-z0-9_</span></a>]</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.is_iri">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_iri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#is_iri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.is_iri" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the string is an IRI.
-:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.4.0: </span>sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on your context’s prefix map and using curies.Converter.is_uri(). If you’re looking for a globally valid URI checker, use validators.url()</p>
-</div>
 </dd></dl>
 
 <dl class="py function">
