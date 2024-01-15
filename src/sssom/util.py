@@ -495,7 +495,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
     return return_df
 
 
-def get_row_based_on_hierarchy(df: pd.DataFrame):
+def get_row_based_on_hierarchy(df: pd.DataFrame) -> pd.DataFrame:
     """Get row based on hierarchy of predicates.
 
     The hierarchy is as follows:
@@ -514,11 +514,13 @@ def get_row_based_on_hierarchy(df: pd.DataFrame):
 
     :param df: Dataframe containing multiple predicates for same subject and object.
     :return: Dataframe with a single row which ranks higher in the hierarchy.
+    :raises KeyError: if no rows are available
     """
     for pred in PREDICATE_LIST:
         hierarchical_df = df[df[PREDICATE_ID] == pred]
         if not hierarchical_df.empty:
             return hierarchical_df
+    raise KeyError
 
 
 def assign_default_confidence(
