@@ -652,7 +652,10 @@ def add_default_confidence(df: pd.DataFrame, confidence: float = np.NAN) -> pd.D
 
 
 def dataframe_to_ptable(
-    df: pd.DataFrame, *, inverse_factor: float = None, default_confidence: float = None
+    df: pd.DataFrame,
+    *,
+    inverse_factor: Optional[float] = None,
+    default_confidence: Optional[float] = None,
 ):
     """Export a KBOOM table.
 
