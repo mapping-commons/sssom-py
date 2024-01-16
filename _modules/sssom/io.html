@@ -89,6 +89,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
+<span class="kn">from</span> <span class="nn">deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
 
 <span class="kn">from</span> <span class="nn">sssom.validators</span> <span class="kn">import</span> <span class="n">validate</span>
 
@@ -153,7 +154,7 @@
 <span class="sd">    :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
-    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">get_metadata_and_prefix_map</span><span class="p">(</span>
+    <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_converter_and_metadata</span><span class="p">(</span>
         <span class="n">metadata_path</span><span class="o">=</span><span class="n">metadata_path</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="o">=</span><span class="n">prefix_map_mode</span>
     <span class="p">)</span>
     <span class="n">parse_func</span> <span class="o">=</span> <span class="n">get_parsing_function</span><span class="p">(</span><span class="n">input_format</span><span class="p">,</span> <span class="n">input_path</span><span class="p">)</span>
@@ -199,7 +200,19 @@
     <span class="n">write_tables</span><span class="p">(</span><span class="n">splitted</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_metadata_and_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.io.get_metadata_and_prefix_map">[docs]</a><span class="k">def</span> <span class="nf">get_metadata_and_prefix_map</span><span class="p">(</span>
+<div class="viewcode-block" id="get_metadata_and_prefix_map"><a class="viewcode-back" href="../../sssom.html#sssom.io.get_metadata_and_prefix_map">[docs]</a><span class="nd">@deprecated</span><span class="p">(</span>
+    <span class="n">deprecated_in</span><span class="o">=</span><span class="s2">&quot;0.4.3&quot;</span><span class="p">,</span>
+    <span class="n">details</span><span class="o">=</span><span class="s2">&quot;This functionality for loading SSSOM metadata from a YAML file is deprecated from the &quot;</span>
+    <span class="s2">&quot;public API since it has internal assumptions which are usually not valid for downstream users.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_metadata_and_prefix_map</span><span class="p">(</span>
+    <span class="n">metadata_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MergeMode</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Converter</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load metadata and a prefix map in a deprecated way.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_converter_and_metadata</span><span class="p">(</span><span class="n">metadata_path</span><span class="o">=</span><span class="n">metadata_path</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="o">=</span><span class="n">prefix_map_mode</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_converter_and_metadata</span><span class="p">(</span>
     <span class="n">metadata_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MergeMode</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Converter</span><span class="p">,</span> <span class="n">MetadataType</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -218,7 +231,7 @@
     <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ChainMap</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">get_default_metadata</span><span class="p">()))</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{}))</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">_merge_converter</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="n">prefix_map_mode</span><span class="o">=</span><span class="n">prefix_map_mode</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span></div>
+    <span class="k">return</span> <span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span>
 
 
 <span class="k">def</span> <span class="nf">_merge_converter</span><span class="p">(</span>
