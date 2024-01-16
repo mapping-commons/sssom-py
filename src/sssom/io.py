@@ -77,7 +77,7 @@ def parse_file(
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
     """
     raise_for_bad_path(input_path)
-    converter, meta = _get_metadata_and_prefix_map(
+    converter, meta = _get_converter_and_metadata(
         metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
     )
     parse_func = get_parsing_function(input_format, input_path)
@@ -139,12 +139,10 @@ def get_metadata_and_prefix_map(
     metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
 ) -> Tuple[Converter, MetadataType]:
     """Load metadata and a prefix map in a deprecated way."""
-    return _get_metadata_and_prefix_map(
-        metadata_path=metadata_path, prefix_map_mode=prefix_map_mode
-    )
+    return _get_converter_and_metadata(metadata_path=metadata_path, prefix_map_mode=prefix_map_mode)
 
 
-def _get_metadata_and_prefix_map(
+def _get_converter_and_metadata(
     metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
 ) -> Tuple[Converter, MetadataType]:
     """
