@@ -7598,6 +7598,16 @@
         ]
     },
     {
+        "pattern": "^[1-9]\\d*$",
+        "prefix": "authorea.author",
+        "uri_prefix": "https://www.authorea.com/users/",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/authorea.author:",
+            "http://www.authorea.com/users/",
+            "https://bioregistry.io/authorea.author:"
+        ]
+    },
+    {
         "pattern": "^[a-z][a-z0-9_]+[a-z0-9]$",
         "prefix": "babelon",
         "uri_prefix": "https://w3id.org/babelon/",
@@ -10541,6 +10551,15 @@
             "https://identifiers.org/dbgap/",
             "https://identifiers.org/dbgap:",
             "https://n2t.net/dbgap:"
+        ]
+    },
+    {
+        "prefix": "dblp.author",
+        "uri_prefix": "https://dblp.org/pid/",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/dblp.author:",
+            "http://dblp.org/pid/",
+            "https://bioregistry.io/dblp.author:"
         ]
     },
     {
@@ -15512,6 +15531,16 @@
         ]
     },
     {
+        "pattern": "^nbdc\\d+$",
+        "prefix": "integbio",
+        "uri_prefix": "https://integbio.jp/dbcatalog/en/record/",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/integbio:",
+            "http://integbio.jp/dbcatalog/en/record/",
+            "https://bioregistry.io/integbio:"
+        ]
+    },
+    {
         "prefix": "interfil",
         "uri_prefix": "http://www.interfil.org/details.php?id=",
         "uri_prefix_synonyms": [
@@ -20112,6 +20141,7 @@
         ]
     },
     {
+        "pattern": "^\\d+$",
         "prefix": "pathguide",
         "uri_prefix": "http://www.pathguide.org/fullrecord.php?organisms=all&availability=all&standards=all&order=alphabetic&DBID=",
         "uri_prefix_synonyms": [
@@ -22934,6 +22964,16 @@
     },
     {
         "pattern": "^\\d+$",
+        "prefix": "semion",
+        "uri_prefix": "https://www.semion.io/Author/",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/semion:",
+            "http://www.semion.io/Author/",
+            "https://bioregistry.io/semion:"
+        ]
+    },
+    {
+        "pattern": "^\\d+$",
         "prefix": "senso",
         "uri_prefix": "http://purl.dataone.org/odo/SENSO_",
         "uri_prefix_synonyms": [
@@ -23985,6 +24025,17 @@
             "http://bioregistry.io/tngb:",
             "https://biobanknetwork.telethon.it/Sample/View?sampleId=",
             "https://bioregistry.io/tngb:"
+        ]
+    },
+    {
+        "prefix": "togoid",
+        "uri_prefix": "https://togoid.dbcls.jp/ontology#",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/togoid:",
+            "http://togoid.dbcls.jp/#",
+            "http://togoid.dbcls.jp/ontology#",
+            "https://bioregistry.io/togoid:",
+            "https://togoid.dbcls.jp/#"
         ]
     },
     {
@@ -25649,6 +25700,16 @@
             "https://bioregistry.io/wos:",
             "https://bioregistry.io/wosid:",
             "https://bioregistry.io/wosuid:"
+        ]
+    },
+    {
+        "pattern": "^[A-Z]{1,3}-\\d{4}-(19|20)\\d\\d$",
+        "prefix": "wos.researcher",
+        "uri_prefix": "https://www.webofscience.com/wos/author/record/",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/wos.researcher:",
+            "http://www.webofscience.com/wos/author/record/",
+            "https://bioregistry.io/wos.researcher:"
         ]
     },
     {

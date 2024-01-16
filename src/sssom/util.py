@@ -18,7 +18,6 @@ import pandas as pd
 import validators
 import yaml
 from curies import Converter
-from deprecation import deprecated
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
@@ -496,7 +495,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
     return return_df
 
 
-def get_row_based_on_hierarchy(df: pd.DataFrame):
+def get_row_based_on_hierarchy(df: pd.DataFrame) -> pd.DataFrame:
     """Get row based on hierarchy of predicates.
 
     The hierarchy is as follows:
@@ -515,11 +514,13 @@ def get_row_based_on_hierarchy(df: pd.DataFrame):
 
     :param df: Dataframe containing multiple predicates for same subject and object.
     :return: Dataframe with a single row which ranks higher in the hierarchy.
+    :raises KeyError: if no rows are available
     """
     for pred in PREDICATE_LIST:
         hierarchical_df = df[df[PREDICATE_ID] == pred]
         if not hierarchical_df.empty:
             return hierarchical_df
+    raise KeyError
 
 
 def assign_default_confidence(
@@ -651,7 +652,10 @@ def add_default_confidence(df: pd.DataFrame, confidence: float = np.NAN) -> pd.D
 
 
 def dataframe_to_ptable(
-    df: pd.DataFrame, *, inverse_factor: float = None, default_confidence: float = None
+    df: pd.DataFrame,
+    *,
+    inverse_factor: Optional[float] = None,
+    default_confidence: Optional[float] = None,
 ):
     """Export a KBOOM table.
 
@@ -1080,33 +1084,9 @@ CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
 CURIE_RE = re.compile(CURIE_PATTERN)
 
 
-@deprecated(
-    deprecated_in="0.4.0",
-    details="sssom.util.is_curie is deprecated. This functionality was not supposed to be exposed from "
-    "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
-    "your context's prefix map and using curies.Converter.is_curie(). If you're looking for global syntax "
-    f"checking for CURIEs, try matching against {CURIE_PATTERN}",
-)
-def is_curie(string: str) -> bool:
-    """Check if the string is a CURIE."""
-    return _is_curie(string)
-
-
 def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     return bool(CURIE_RE.match(string))
-
-
-@deprecated(
-    deprecated_in="0.4.0",
-    details="sssom.util.is_iri is deprecated. This functionality was not supposed to be exposed from "
-    "the public interface from SSSOM-py. Instead, we suggest instantiating a curies.Converter based on "
-    "your context's prefix map and using curies.Converter.is_uri(). If you're looking for a globally valid "
-    "URI checker, use validators.url()",
-)
-def is_iri(string: str) -> bool:
-    """Check if the string is an IRI."""
-    return _is_iri(string)
 
 
 def _is_iri(string: str) -> bool:
@@ -1235,9 +1215,6 @@ def is_multivalued_slot(slot: str) -> bool:
     :param slot: Slot name
     :return: Slot is multivalued or no
     """
-    # Ideally:
-    # view = SchemaView('schema/sssom.yaml')
-    # return view.get_slot(slot).multivalued
     return slot in _get_sssom_schema_object().multivalued_slots
 
 
