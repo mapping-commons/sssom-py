@@ -132,19 +132,8 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
 
 def convert_plain_prefix_map_to_extended(prefix_map):
     """Convert a standard key/val prefix map to extended prefix map format."""
-    by_uri_prefix = {}
-    for prefix, uri_prefix in prefix_map.items():
-        if uri_prefix in by_uri_prefix:
-            by_uri_prefix[uri_prefix]["prefix_synonyms"].append(prefix)
-            continue
-        by_uri_prefix[uri_prefix] = {
-            "prefix": prefix,
-            "prefix_synonyms": [],
-            "uri_prefix": uri_prefix,
-            "uri_prefix_synonyms": [],
-        }
-    epm = list(by_uri_prefix.values())
-    return epm
+    # TODO delete
+    return curies.upgrade_prefix_map(prefix_map)
 
 
 def get_metadata_and_prefix_map(
@@ -165,8 +154,8 @@ def get_metadata_and_prefix_map(
 
     metadata = dict(ChainMap(metadata, get_default_metadata()))
     prefix_map = metadata.pop(CURIE_MAP, {})
-    epm = convert_plain_prefix_map_to_extended(prefix_map)
-    converter = Converter.from_extended_prefix_map(epm)
+    records = curies.upgrade_prefix_map(prefix_map)
+    converter = Converter(records)
     converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
     return converter, metadata
 
