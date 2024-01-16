@@ -12,6 +12,7 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
+from deprecation import deprecated
 
 from sssom.validators import validate
 
