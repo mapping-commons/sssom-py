@@ -238,13 +238,13 @@ files = [
 
 [[package]]
 name = "curies"
-version = "0.7.5"
+version = "0.7.6"
 description = "Idiomatic conversion between URIs and compact URIs (CURIEs)."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "curies-0.7.5-py3-none-any.whl", hash = "sha256:56b6a980b0b6a1e4ebe59c42c528ab3ce365d521d8382f37601a4c030c66c28d"},
-    {file = "curies-0.7.5.tar.gz", hash = "sha256:7fdc5fcf357b6a4b13dff46ba4544aeea4f1421c584e026a0985d3915ad5206a"},
+    {file = "curies-0.7.6-py3-none-any.whl", hash = "sha256:3307e757e47ed4384edb705c73cad40ad5e688e2dea263a60e6a5e5a6c33105d"},
+    {file = "curies-0.7.6.tar.gz", hash = "sha256:f86da3539cee349249f5b64db99651053649551920b9fe945c150719c8b9b40e"},
 ]
 
 [package.dependencies]
@@ -601,13 +601,13 @@ hbreader = "*"
 
 [[package]]
 name = "jsonschema"
-version = "4.20.0"
+version = "4.21.0"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.20.0-py3-none-any.whl", hash = "sha256:ed6231f0429ecf966f5bc8dfef245998220549cbbcf140f913b7464c52c3b6b3"},
-    {file = "jsonschema-4.20.0.tar.gz", hash = "sha256:4f614fd46d8d61258610998997743ec5492a648b33cf478c1ddc23ed4598a5fa"},
+    {file = "jsonschema-4.21.0-py3-none-any.whl", hash = "sha256:70a09719d375c0a2874571b363c8a24be7df8071b80c9aa76bc4551e7297c63c"},
+    {file = "jsonschema-4.21.0.tar.gz", hash = "sha256:3ba18e27f7491ea4a1b22edce00fb820eec968d397feb3f9cb61d5894bb38167"},
 ]
 
 [package.dependencies]
@@ -2223,13 +2223,13 @@ files = [
 
 [[package]]
 name = "tox"
-version = "4.12.0"
+version = "4.12.1"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "tox-4.12.0-py3-none-any.whl", hash = "sha256:c94bf5852ba41f3d9f1e3470ccf3390e0b7bdc938095be3cd96dce25ab5062a0"},
-    {file = "tox-4.12.0.tar.gz", hash = "sha256:76adc53a3baff7bde80d6ad7f63235735cfc5bc42e8cb6fccfbf62cb5ffd4d92"},
+    {file = "tox-4.12.1-py3-none-any.whl", hash = "sha256:c07ea797880a44f3c4f200ad88ad92b446b83079d4ccef89585df64cc574375c"},
+    {file = "tox-4.12.1.tar.gz", hash = "sha256:61aafbeff1bd8a5af84e54ef6e8402f53c6a6066d0782336171ddfbf5362122e"},
 ]
 
 [package.dependencies]
@@ -2464,4 +2464,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "7a68ffebd1c76f9270200d9509367d01d3418019a19789ac15a8e13afcc1e4cd"
+content-hash = "f3fd7c541043bd24fea6b711ddb7c43f5f724b37d405d4cd3a72803018b4a12e"
