@@ -130,12 +130,6 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-def convert_plain_prefix_map_to_extended(prefix_map):
-    """Convert a standard key/val prefix map to extended prefix map format."""
-    # TODO delete
-    return curies.upgrade_prefix_map(prefix_map)
-
-
 def get_metadata_and_prefix_map(
     metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
 ) -> Tuple[Converter, MetadataType]:
@@ -153,9 +147,7 @@ def get_metadata_and_prefix_map(
         metadata = yaml.safe_load(file)
 
     metadata = dict(ChainMap(metadata, get_default_metadata()))
-    prefix_map = metadata.pop(CURIE_MAP, {})
-    records = curies.upgrade_prefix_map(prefix_map)
-    converter = Converter(records)
+    converter = Converter.from_prefix_map(metadata.pop(CURIE_MAP, {}))
     converter = _merge_converter(converter, prefix_map_mode=prefix_map_mode)
     return converter, metadata
 
