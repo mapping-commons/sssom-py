@@ -431,6 +431,29 @@ class TestUtils(unittest.TestCase):
                 self.assertEqual(value, result_with_mapping_object[key])
                 self.assertEqual(value, result_with_dict[key])
 
+    def test_converter_get_prefixes_including_synonyms_and_get_subconverter(self):
+        """Test if get_subconverter() works with prefix synonyms."""
+        EPM = [
+            {
+                "prefix": "SCTID",
+                "prefix_synonyms": ["snomed"],
+                "uri_prefix": "http://snomed.info/id/",
+            },
+        ]
+
+        converter = Converter.from_extended_prefix_map(EPM)
+        self.assertNotIn("snomed", converter.get_prefixes(include_synonyms=False))
+        self.assertIn("snomed", converter.get_prefixes(include_synonyms=True))
+        subconverter = converter.get_subconverter(["snomed"])
+        self.assertIn(
+            "snomed",
+            subconverter.bimap.keys(),
+            "The subconverter which is used to generate "
+            "the prefixmap for the serialisation does not "
+            "contain the 'snomed' prefix, but it is used in "
+            "the raw data",
+        )
+
     def test_curiechain_with_conflicts(self):
         """Test curie map with CURIE/URI clashes."""
         PREFIXMAP_BOTH = {
