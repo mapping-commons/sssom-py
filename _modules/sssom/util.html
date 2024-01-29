@@ -1009,9 +1009,9 @@
             <span class="o">&amp;</span> <span class="p">(</span><span class="n">reconciled_df_subset</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">==</span> <span class="n">row_2</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">])</span>
         <span class="p">)</span>
 
-        <span class="n">reconciled_df_subset</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-            <span class="n">match_condition_2</span><span class="p">[</span><span class="n">match_condition_2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">PREDICATE_MODIFIER</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="n">row_2</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span>
+        <span class="n">reconciled_df_subset</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">match_condition_2</span><span class="p">[</span><span class="n">match_condition_2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">PREDICATE_MODIFIER</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">row_2</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">PREDICATE_MODIFIER</span> <span class="ow">in</span> <span class="n">reconciled_df_subset</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">reconciled_df_subset</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span> <span class="o">=</span> <span class="n">reconciled_df_subset</span><span class="p">[</span><span class="n">PREDICATE_MODIFIER</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>

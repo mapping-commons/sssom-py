@@ -472,7 +472,9 @@
     <span class="p">)</span>
     <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span>  <span class="c1"># type:ignore</span>
         <span class="s2">&quot;comment&quot;</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Diff between </span><span class="si">{</span><span class="n">input1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">input2</span><span class="si">}</span><span class="s2">. See comment column for information.&quot;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Diff between </span><span class="si">{</span><span class="n">input1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">input2</span><span class="si">}</span><span class="s2">. See comment column for information.&quot;</span>
+    <span class="p">)</span>
     <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 
 
