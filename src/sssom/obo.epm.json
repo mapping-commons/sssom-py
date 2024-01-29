@@ -4270,6 +4270,7 @@
             "http://n2t.net/nmr:",
             "http://www.ebi.ac.uk/ols/ontologies/nmrcv/terms?iri=http://purl.obolibrary.org/obo/NMR_",
             "http://www.ebi.ac.uk/ols/ontologies/nmrcv/terms?short_form=NMR:",
+            "http://www.ebi.ac.uk/ols4/ontologies/nmrcv/terms?short_form=NMR:",
             "https://bio2rdf.org/nmr:",
             "https://bioregistry.io/NMR:",
             "https://bioregistry.io/nmr:",
@@ -4280,7 +4281,8 @@
             "https://n2t.net/nmr:",
             "https://purl.obolibrary.org/obo/NMR_",
             "https://www.ebi.ac.uk/ols/ontologies/nmrcv/terms?iri=http://purl.obolibrary.org/obo/NMR_",
-            "https://www.ebi.ac.uk/ols/ontologies/nmrcv/terms?short_form=NMR:"
+            "https://www.ebi.ac.uk/ols/ontologies/nmrcv/terms?short_form=NMR:",
+            "https://www.ebi.ac.uk/ols4/ontologies/nmrcv/terms?short_form=NMR:"
         ]
     },
     {
@@ -4833,6 +4835,7 @@
             "http://n2t.net/orphanet.ordo:",
             "http://www.ebi.ac.uk/ols/ontologies/ordo/terms?iri=http://www.orpha.net/ORDO/",
             "http://www.ebi.ac.uk/ols/ontologies/ordo/terms?short_form=",
+            "http://www.ebi.ac.uk/ols4/ontologies/ordo/terms?short_form=",
             "https://bioregistry.io/ordo:",
             "https://bioregistry.io/orphanet.ordo:",
             "https://identifiers.org/orphanet.ordo/",
@@ -4841,6 +4844,7 @@
             "https://n2t.net/orphanet.ordo:",
             "https://www.ebi.ac.uk/ols/ontologies/ordo/terms?iri=http://www.orpha.net/ORDO/",
             "https://www.ebi.ac.uk/ols/ontologies/ordo/terms?short_form=",
+            "https://www.ebi.ac.uk/ols4/ontologies/ordo/terms?short_form=",
             "https://www.orpha.net/ORDO/Orphanet_"
         ]
     },
@@ -11900,11 +11904,13 @@
         "uri_prefix_synonyms": [
             "http://bio2rdf.org/eggnog:",
             "http://bioregistry.io/eggnog:",
+            "http://eggnog.embl.de/search/ogs/",
             "http://identifiers.org/eggnog/",
             "http://identifiers.org/eggnog:",
             "http://n2t.net/eggnog:",
             "https://bio2rdf.org/eggnog:",
             "https://bioregistry.io/eggnog:",
+            "https://eggnog.embl.de/search/ogs/",
             "https://eggnog.embl.de/version_3.0/cgi/search.py?search_term_0=",
             "https://identifiers.org/eggnog/",
             "https://identifiers.org/eggnog:",
@@ -11936,11 +11942,13 @@
             "http://identifiers.org/emdb/",
             "http://identifiers.org/emdb:",
             "http://n2t.net/emdb:",
+            "http://www.ebi.ac.uk/emdb/",
             "http://www.ebi.ac.uk/pdbe/entry/emdb/",
             "https://bioregistry.io/emdb:",
             "https://identifiers.org/emdb/",
             "https://identifiers.org/emdb:",
-            "https://n2t.net/emdb:"
+            "https://n2t.net/emdb:",
+            "https://www.ebi.ac.uk/emdb/"
         ]
     },
     {
@@ -12186,11 +12194,13 @@
             "http://identifiers.org/erm/",
             "http://identifiers.org/erm:",
             "http://n2t.net/erm:",
+            "http://nanocommons.github.io/erm-database/substance/erm/",
             "http://nanocommons.github.io/identifiers/registry#",
             "https://bioregistry.io/erm:",
             "https://identifiers.org/erm/",
             "https://identifiers.org/erm:",
-            "https://n2t.net/erm:"
+            "https://n2t.net/erm:",
+            "https://nanocommons.github.io/erm-database/substance/erm/"
         ]
     },
     {
@@ -14373,6 +14383,17 @@
         ]
     },
     {
+        "prefix": "hgvs",
+        "uri_prefix": "http://reg.clinicalgenome.org/allele?hgvs=",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/hgvs:",
+            "http://mutalyzer.nl/api/description_to_model/",
+            "https://bioregistry.io/hgvs:",
+            "https://mutalyzer.nl/api/description_to_model/",
+            "https://reg.clinicalgenome.org/allele?hgvs="
+        ]
+    },
+    {
         "pattern": "^HIX\\d{7}(\\.\\d+)?$",
         "prefix": "hinv.locus",
         "uri_prefix": "http://h-invitational.jp/hinv/spsoup/locus_view?hix_id=",
@@ -14842,11 +14863,11 @@
         "uri_prefix_synonyms": [
             "http://bioregistry.io/ICD-11:",
             "http://bioregistry.io/icd11:",
+            "http://icd.who.int/browse11/f/en#/http://id.who.int/icd/entity/",
             "http://icd.who.int/browse11/l-m/en#/http://id.who.int/icd/entity/",
-            "http://icd.who.int/dev11/f/en#/http://id.who.int/icd/entity/",
             "https://bioregistry.io/ICD-11:",
             "https://bioregistry.io/icd11:",
-            "https://icd.who.int/dev11/f/en#/http://id.who.int/icd/entity/"
+            "https://icd.who.int/browse11/f/en#/http://id.who.int/icd/entity/"
         ]
     },
     {
@@ -19105,12 +19126,17 @@
     {
         "pattern": "^[0-9]+$",
         "prefix": "nmrshiftdb2",
+        "prefix_synonyms": [
+            "NMRShiftDB"
+        ],
         "uri_prefix": "https://nmrshiftdb.nmr.uni-koeln.de/molecule/",
         "uri_prefix_synonyms": [
+            "http://bioregistry.io/NMRShiftDB:",
             "http://bioregistry.io/nmrshiftdb2:",
             "http://identifiers.org/nmrshiftdb2/",
             "http://identifiers.org/nmrshiftdb2:",
             "http://nmrshiftdb.nmr.uni-koeln.de/molecule/",
+            "https://bioregistry.io/NMRShiftDB:",
             "https://bioregistry.io/nmrshiftdb2:",
             "https://identifiers.org/nmrshiftdb2/",
             "https://identifiers.org/nmrshiftdb2:"
@@ -21259,12 +21285,14 @@
             "http://identifiers.org/probonto:",
             "http://n2t.net/probonto:",
             "http://www.ebi.ac.uk/ols/ontologies/probonto/terms?short_form=",
+            "http://www.ebi.ac.uk/ols4/ontologies/probonto/terms?short_form=",
             "https://bioregistry.io/probonto:",
             "https://identifiers.org/probonto/",
             "https://identifiers.org/probonto/PROB_",
             "https://identifiers.org/probonto:",
             "https://n2t.net/probonto:",
             "https://www.ebi.ac.uk/ols/ontologies/probonto/terms?short_form=",
+            "https://www.ebi.ac.uk/ols4/ontologies/probonto/terms?short_form=",
             "https://www.probonto.org/ontology#PROB_"
         ]
     },
