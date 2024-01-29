@@ -232,7 +232,7 @@ def parse_sssom_rdf(
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
-    **kwargs
+    **kwargs,
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
