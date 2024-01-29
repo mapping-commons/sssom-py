@@ -395,7 +395,9 @@ def diff(inputs: Tuple[str, str], output: TextIO):
     )
     msdf.metadata[  # type:ignore
         "comment"
-    ] = f"Diff between {input1} and {input2}. See comment column for information."
+    ] = (
+        f"Diff between {input1} and {input2}. See comment column for information."
+    )
     write_table(msdf, output)
 
 

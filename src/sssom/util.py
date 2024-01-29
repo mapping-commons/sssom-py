@@ -932,9 +932,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
             & (reconciled_df_subset[CONFIDENCE] == row_2[CONFIDENCE])
         )
 
-        reconciled_df_subset.loc[
-            match_condition_2[match_condition_2].index, PREDICATE_MODIFIER
-        ] = row_2[PREDICATE_MODIFIER]
+        reconciled_df_subset.loc[match_condition_2[match_condition_2].index, PREDICATE_MODIFIER] = (
+            row_2[PREDICATE_MODIFIER]
+        )
 
     if PREDICATE_MODIFIER in reconciled_df_subset.columns:
         reconciled_df_subset[PREDICATE_MODIFIER] = reconciled_df_subset[PREDICATE_MODIFIER].fillna(
