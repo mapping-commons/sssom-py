@@ -5,7 +5,7 @@ from functools import lru_cache
 from typing import Mapping, Union
 
 import curies
-import pkg_resources
+import importlib_resources
 from curies import Converter
 from rdflib.namespace import is_ncname
 
@@ -19,8 +19,8 @@ __all__ = [
 ]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-SSSOM_CONTEXT = pkg_resources.resource_filename(
-    "sssom_schema", "context/sssom_schema.context.jsonld"
+SSSOM_CONTEXT = importlib_resources.files("sssom_schema").joinpath(
+    "context/sssom_schema.context.jsonld"
 )
 
 
