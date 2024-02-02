@@ -6,14 +6,14 @@ from enum import Enum
 from functools import cached_property, lru_cache
 from typing import Any, Dict, List, Literal, Set
 
-import pkg_resources
+import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = pkg_resources.resource_filename("sssom_schema", "schema/sssom_schema.yaml")
+SCHEMA_YAML = importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
