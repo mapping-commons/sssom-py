@@ -83,6 +83,8 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 # ! This will be unnecessary when pandas >= 3.0.0 is released
 # A value is trying to be set on a copy of a slice from a DataFrame
 pd.options.mode.copy_on_write = True
+# Get the version of pandas as a tuple of integers
+pandas_version = tuple(map(int, pd.__version__.split(".")))
 
 
 @dataclass
@@ -155,8 +157,13 @@ class MappingSetDataFrame:
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = _extract_global_metadata(doc)
 
+        if pandas_version >= (2, 0, 0):
+            # For pandas >= 2.0.0, use the 'copy' parameter
+            df = df.infer_objects(copy=False)
+        else:
+            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
+            df = df.infer_objects()
         # remove columns where all values are blank.
-        df.infer_objects(copy=False)
         df.replace("", np.nan, inplace=True)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
@@ -165,7 +172,14 @@ class MappingSetDataFrame:
             slot for slot, slot_metadata in slots.items() if slot_metadata["range"] == "double"
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
-        non_double_cols.infer_objects(copy=False)
+
+        if pandas_version >= (2, 0, 0):
+            # For pandas >= 2.0.0, use the 'copy' parameter
+            non_double_cols = non_double_cols.infer_objects(copy=False)
+        else:
+            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
+            non_double_cols = non_double_cols.infer_objects()
+
         non_double_cols.replace(np.nan, "", inplace=True)
         df.update(non_double_cols)
 
