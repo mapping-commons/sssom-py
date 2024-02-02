@@ -80,7 +80,7 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
 TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
-#! This will be unnecessary when pandas >= 3.0.0 is released
+# ! This will be unnecessary when pandas >= 3.0.0 is released
 # A value is trying to be set on a copy of a slice from a DataFrame
 pd.options.mode.copy_on_write = True
 
