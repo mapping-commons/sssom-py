@@ -457,6 +457,10 @@ class TestParseExplicit(unittest.TestCase):
         """Test writing then reading JSON."""
         self._basic_round_trip("json")
 
+    def test_round_trip_jsonld(self):
+        """Test writing then reading JSON."""
+        self._basic_round_trip("jsonld")
+
     def test_round_trip_rdf(self):
         """Test writing then reading RDF."""
         self._basic_round_trip("rdf")

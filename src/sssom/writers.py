@@ -114,7 +114,7 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
         raise ValueError(f"Unknown json format: {serialisation}, currently only json supported")
 
 
-def write_jsonld(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+def write_jsonld(msdf: MappingSetDataFrame, output: TextIO, serialisation="jsonld") -> None:
     """Write a mapping set dataframe to the file as JSON."""
     if serialisation == "jsonld":
         data = to_jsonld(msdf)
@@ -460,7 +460,6 @@ def _update_sssom_context_with_prefixmap(converter: Converter):
 def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
-    context = _update_sssom_context_with_prefixmap(doc.converter)
     data = JSONDumper().dumps(doc.mapping_set, inject_type=False)
     json_obj = json.loads(data)
     return json_obj
