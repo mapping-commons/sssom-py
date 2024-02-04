@@ -114,6 +114,15 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
         raise ValueError(f"Unknown json format: {serialisation}, currently only json supported")
 
 
+def write_jsonld(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+    """Write a mapping set dataframe to the file as JSON."""
+    if serialisation == "jsonld":
+        data = to_jsonld(msdf)
+        json.dump(data, output, indent=2)
+    else:
+        raise ValueError(f"Unknown json format: {serialisation}, currently only json supported")
+
+
 def write_owl(
     msdf: MappingSetDataFrame,
     file: TextIO,
@@ -452,6 +461,15 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     """Convert a mapping set dataframe to a JSON object."""
     doc = to_mapping_set_document(msdf)
     context = _update_sssom_context_with_prefixmap(doc.converter)
+    data = JSONDumper().dumps(doc.mapping_set, inject_type=False)
+    json_obj = json.loads(data)
+    return json_obj
+
+
+def to_jsonld(msdf: MappingSetDataFrame) -> JsonObj:
+    """Convert a mapping set dataframe to a JSON object."""
+    doc = to_mapping_set_document(msdf)
+    context = _update_sssom_context_with_prefixmap(doc.converter)
     data = JSONDumper().dumps(doc.mapping_set, contexts=json.dumps(context))
     json_obj = json.loads(data)
     return json_obj
@@ -498,6 +516,7 @@ WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
     "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
     "ontoportal_json": (write_ontoportal_json, None),
     "fhir_json": (write_fhir_json, None),
+    "jsonld": (write_jsonld, None),
     "json": (write_json, None),
     "rdf": (write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION),
 }

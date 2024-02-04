@@ -17,12 +17,13 @@ from sssom.constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
 )
-from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
+from sssom.parsers import parse_sssom_json, parse_sssom_jsonld, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
     _update_sssom_context_with_prefixmap,
     to_json,
     write_fhir_json,
     write_json,
+    write_jsonld,
     write_ontoportal_json,
     write_owl,
     write_rdf,
@@ -76,6 +77,18 @@ class TestWrite(unittest.TestCase):
         with open(path, "w") as file:
             write_json(self.msdf, file)
         msdf = parse_sssom_json(path)
+        self.assertEqual(
+            len(msdf.df),
+            self.mapping_count,
+            f"{path} has the wrong number of mappings.",
+        )
+
+    def test_write_sssom_jsonld(self):
+        """Test writing as JSON."""
+        path = os.path.join(test_out_dir, "test_write_sssom_json.json")
+        with open(path, "w") as file:
+            write_jsonld(self.msdf, file)
+        msdf = parse_sssom_jsonld(path)
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,

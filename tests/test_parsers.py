@@ -26,6 +26,7 @@ from sssom.parsers import (
     from_obographs,
     from_sssom_dataframe,
     from_sssom_json,
+    from_sssom_jsonld,
     from_sssom_rdf,
     parse_sssom_table,
 )
@@ -260,6 +261,22 @@ class TestParse(unittest.TestCase):
     def test_parse_sssom_json(self):
         """Test parsing JSON."""
         msdf = from_sssom_json(
+            jsondoc=self.json,
+            prefix_map=self.df_converter,
+            meta=self.metadata,
+        )
+        path = os.path.join(test_out_dir, "test_parse_sssom_json.tsv")
+        with open(path, "w") as file:
+            write_table(msdf, file)
+        self.assertEqual(
+            len(msdf.df),
+            141,
+            f"{self.json_file} has the wrong number of mappings.",
+        )
+
+    def test_parse_sssom_jsonld(self):
+        """Test parsing JSON."""
+        msdf = from_sssom_jsonld(
             jsondoc=self.json,
             prefix_map=self.df_converter,
             meta=self.metadata,
