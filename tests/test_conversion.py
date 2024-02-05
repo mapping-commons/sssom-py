@@ -6,11 +6,11 @@ import unittest
 from os import stat
 
 from rdflib import Graph
+
 from sssom.parsers import get_parsing_function, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
-from sssom.util import read_pandas, to_mapping_set_dataframe
+from sssom.util import to_mapping_set_dataframe
 from sssom.writers import (
-    to_dataframe,
     to_json,
     to_owl_graph,
     to_rdf_graph,
@@ -64,9 +64,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.graph_serialisation,
             test.ct_graph_queries_owl,
         )
-        self._test_files_equal(
-            test.get_out_file(file_format), test.get_validate_file(file_format)
-        )
+        self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
     def _test_to_json(self, mdoc, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -88,14 +86,10 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             test.graph_serialisation,
             test.ct_graph_queries_rdf,
         )
-        self._test_files_equal(
-            test.get_out_file(file_format), test.get_validate_file(file_format)
-        )
+        self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
     def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str):
-        self._test_graph_size(
-            g, getattr(test, f"ct_graph_queries_{file_format}"), test.filename
-        )
+        self._test_graph_size(g, getattr(test, f"ct_graph_queries_{file_format}"), test.filename)
         f_roundtrip = test.get_out_file(f"roundtrip.{file_format}")
         g.serialize(destination=f_roundtrip, format=test.graph_serialisation)
         self._test_load_graph_size(
@@ -182,9 +176,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             write_json(msdf, file)
         with open(path) as json_file:
             data = json.load(json_file)
-        self._test_files_equal(
-            test.get_out_file("json"), test.get_validate_file("json")
-        )
+        self._test_files_equal(test.get_out_file("json"), test.get_validate_file("json"))
         self.assertEqual(
             len(data),
             test.ct_json_elements,
