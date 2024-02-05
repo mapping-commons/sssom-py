@@ -7,7 +7,7 @@ from os import stat
 
 from rdflib import Graph
 
-from sssom.parsers import get_parsing_function, to_mapping_set_document
+from sssom.parsers import get_parsing_function, parse_sssom_table, to_mapping_set_document
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import to_mapping_set_dataframe
 from sssom.writers import (
@@ -118,7 +118,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
 
     def _test_to_dataframe(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
-        df = to_dataframe(msdf)
+        df = msdf.df
         self.assertEqual(
             len(df),
             test.ct_data_frame_rows,
@@ -126,7 +126,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
         df.to_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
         # data = pd.read_csv(test.get_out_file("roundtrip.tsv"), sep="\t")
-        data = read_pandas(test.get_out_file("roundtrip.tsv"))
+        data = parse_sssom_table(test.get_out_file("roundtrip.tsv"))
         self.assertEqual(
             len(data),
             test.ct_data_frame_rows,
@@ -136,7 +136,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         with open(path, "w") as file:
             write_table(msdf, file)
         self._test_files_equal(test.get_out_file("tsv"), test.get_validate_file("tsv"))
-        df = read_pandas(path)
+        df = parse_sssom_table(path).df
         self.assertEqual(
             len(df),
             test.ct_data_frame_rows,
