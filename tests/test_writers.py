@@ -17,12 +17,13 @@ from sssom.constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
 )
-from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
+from sssom.parsers import parse_sssom_json, parse_sssom_jsonld, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
     _update_sssom_context_with_prefixmap,
-    to_json,
+    to_jsonld,
     write_fhir_json,
     write_json,
+    write_jsonld,
     write_ontoportal_json,
     write_owl,
     write_rdf,
@@ -82,6 +83,18 @@ class TestWrite(unittest.TestCase):
             f"{path} has the wrong number of mappings.",
         )
 
+    def test_write_sssom_jsonld(self):
+        """Test writing as JSON."""
+        path = os.path.join(test_out_dir, "test_write_sssom_json.json")
+        with open(path, "w") as file:
+            write_jsonld(self.msdf, file)
+        msdf = parse_sssom_jsonld(path)
+        self.assertEqual(
+            len(msdf.df),
+            self.mapping_count,
+            f"{path} has the wrong number of mappings.",
+        )
+
     def test_write_sssom_json_context(self):
         """Test when writing to JSON, the context is correctly written as well."""
         rows = [
@@ -107,7 +120,7 @@ class TestWrite(unittest.TestCase):
         df = pd.DataFrame(rows, columns=columns)
         msdf = MappingSetDataFrame(df)
         msdf.clean_prefix_map()
-        json_object = to_json(msdf)
+        json_object = to_jsonld(msdf)
         self.assertIn("@context", json_object)
         self.assertIn("DOID", json_object["@context"])
         self.assertIn("mapping_set_id", json_object["@context"])

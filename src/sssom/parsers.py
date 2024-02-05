@@ -286,13 +286,44 @@ def parse_sssom_json(
     converter = curies.chain(
         [
             _get_built_in_prefix_map(),
-            Converter.from_jsonld(file_path),
+            # Converter.from_jsonld(file_path), TODO: This wont work, as the JSON format has no notion of a "curie_map"
             Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
             ensure_converter(prefix_map, use_defaults=False),
         ]
     )
 
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
+    return msdf
+
+
+def parse_sssom_jsonld(
+    file_path: str, prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None, **kwargs
+) -> MappingSetDataFrame:
+    """Parse a JSON LD file to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
+    raise_for_bad_path(file_path)
+
+    with open(file_path) as json_file:
+        jsondoc = json.load(json_file)
+
+    # Initialize meta if it's None
+    if meta is None:
+        meta = {}
+
+    # The priority order for combining prefix maps are:
+    #  1. Built-in prefix map
+    #  2. Internal prefix map inside the document
+    #  3. Prefix map passed through this function inside the ``meta``
+    #  4. Prefix map passed through this function to ``prefix_map`` (handled with ensure_converter)
+    converter = curies.chain(
+        [
+            _get_built_in_prefix_map(),
+            Converter.from_jsonld(file_path),
+            Converter.from_prefix_map(meta.pop(CURIE_MAP, {})),
+            ensure_converter(prefix_map, use_defaults=False),
+        ]
+    )
+
+    msdf = from_sssom_jsonld(jsondoc=jsondoc, prefix_map=converter, meta=meta)
     return msdf
 
 
@@ -477,6 +508,41 @@ def from_sssom_rdf(
 
 
 def from_sssom_json(
+    jsondoc: Union[str, dict, TextIO],
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
+) -> MappingSetDataFrame:
+    """Load a mapping set dataframe from a JSON object.
+
+    :param jsondoc: JSON document
+    :param prefix_map: Prefix map
+    :param meta: metadata used to augment the metadata existing in the mapping set
+    :return: MappingSetDataFrame object
+    """
+    converter = ensure_converter(prefix_map)
+
+    mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
+
+    # The priority order for combining metadata is:
+    #  1. Metadata appearing in the SSSOM document
+    #  2. Metadata passed through ``meta`` to this function
+    #  3. Default metadata
+
+    # As the Metadata appearing in the SSSOM document is already parsed by LinkML
+    # we only need to overwrite the metadata from 2 and 3 if it is not present
+    combine_meta = dict(
+        ChainMap(
+            meta or {},
+            get_default_metadata(),
+        )
+    )
+
+    _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
+    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, converter=converter)
+    return to_mapping_set_dataframe(mapping_set_document)
+
+
+def from_sssom_jsonld(
     jsondoc: Union[str, dict, TextIO],
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
@@ -699,6 +765,7 @@ PARSING_FUNCTIONS: typing.Mapping[str, Callable] = {
     "obographs-json": parse_obographs_json,
     "alignment-api-xml": parse_alignment_xml,
     "json": parse_sssom_json,
+    "jsonld": parse_sssom_jsonld,
     "rdf": parse_sssom_rdf,
 }
 

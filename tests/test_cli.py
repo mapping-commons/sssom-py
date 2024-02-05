@@ -353,7 +353,6 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    @unittest.skip("this test doesn't actually test anything, just runs help")
     def test_convert_cli(self):
         """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
         test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
