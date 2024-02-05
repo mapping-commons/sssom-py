@@ -1,4 +1,5 @@
 """Tests for conversion utilities."""
+
 import unittest
 
 from sssom.parsers import parse_sssom_table

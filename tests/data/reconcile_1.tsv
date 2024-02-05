@@ -1,0 +1,18 @@
+# curie_map:
+#   UBERON: http://purl.obolibrary.org/obo/UBERON_
+#   ZFS: http://purl.obolibrary.org/obo/ZFS_
+#   oboInOwl: http://www.geneontology.org/formats/oboInOwl#
+#   owl: http://www.w3.org/2002/07/owl#
+#   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+#   rdfs: http://www.w3.org/2000/01/rdf-schema#
+#   semapv: https://w3id.org/semapv/vocab/
+#   skos: http://www.w3.org/2004/02/skos/core#
+#   sssom: https://w3id.org/sssom/
+# license: https://w3id.org/sssom/license/unspecified
+# mapping_set_id: https://w3id.org/sssom/mappings/72debc9d-ca69-45e8-b46d-aef8361bedf2
+# object_source: ZFS
+# subject_source: UBERON
+subject_id	subject_label	predicate_id	object_id	mapping_justification	subject_source	object_source
+UBERON:0000069	larval stage	oboInOwl:hasDbXref	ZFS:0000048	semapv:UnspecifiedMatching	UBERON	ZFS
+UBERON:0000105	life cycle stage	oboInOwl:hasDbXref	ZFS:0100000	semapv:UnspecifiedMatching	UBERON	ZFS
+UBERON:0000105	life cycle stage	oboInOwl:hasDbXref	ZFS:0000000	semapv:UnspecifiedMatching	UBERON	ZFS

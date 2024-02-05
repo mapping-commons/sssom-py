@@ -8,7 +8,7 @@
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix oio: <http://www.geneontology.org/formats/oboInOwl#> .
+@prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
 @prefix xref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix UBERON: <http://purl.obolibrary.org/obo/UBERON_> .
@@ -69,13 +69,13 @@ x:liver a owl:Class ; category: anatomy: ;
 x:bone_element a owl:Class ; category: anatomy: ;
    rdfs:label "bone element" ;
    xref: "UBERON:0001474" ; ## bone element
-   oio:hasBroadSynonym "bone" ;
+   oboInOwl:hasBroadSynonym "bone" ;
    rdfs:subClassOf x:organ .
 
 x:bone_tissue a owl:Class ; category: anatomy: ;
    rdfs:label "bone tissue" ;
    xref: "UBERON:0002481" ; ## bone tissue
-   oio:hasBroadSynonym "bone" ;
+   oboInOwl:hasBroadSynonym "bone" ;
    rdfs:subClassOf x:tissue .
 
 x:eyeball a owl:Class ; category: anatomy: ;
@@ -90,19 +90,19 @@ x:eye a owl:Class ; category: anatomy: ;
 
 x:hand a owl:Class ; category: anatomy: ;
    rdfs:label "manus" ;
-   oio:hasExactSynonym "hand" ;
+   oboInOwl:hasExactSynonym "hand" ;
    xref: "UBERON:0002398" ; ## manus
    rdfs:subClassOf x:appendage .
 
 x:foot a owl:Class ; category: anatomy: ;
    rdfs:label "pes" ;
-   oio:hasExactSynonym "foot" ;
+   oboInOwl:hasExactSynonym "foot" ;
    xref: "UBERON:0002387" ; ## pes
    rdfs:subClassOf x:appendage .
 
 x:obsolete_leg a owl:Class ; category: anatomy: ;
    rdfs:label "leg" ;
-   oio:hasRelatedSynonym "hindlimb" ;
+   oboInOwl:hasRelatedSynonym "hindlimb" ;
    owl:deprecated "true"^^xsd:boolean .
 
 x:hindlimb a owl:Class ; category: anatomy: ;
@@ -139,7 +139,7 @@ y:liver a owl:Class ; category: anatomy: ;
 y:bone a owl:Class ; category: anatomy: ;
    rdfs:label "bones" ;
    xref: "UBERON:0001474" ; ## bone element
-   oio:hasRelatedSynonym "bone element" ;
+   oboInOwl:hasRelatedSynonym "bone element" ;
    rdfs:subClassOf y:organ .
 
 y:eye a owl:Class ; category: anatomy: ;
@@ -159,7 +159,7 @@ y:foot a owl:Class ; category: anatomy: ;
 
 y:leg a owl:Class ; category: anatomy: ;
    rdfs:label "legs" ;
-   oio:hasExactSynonym "leg" ;
+   oboInOwl:hasExactSynonym "leg" ;
    rdfs:subClassOf y:appendage .
 
 ## Z ontology
@@ -188,12 +188,12 @@ z:liver a owl:Class ; category: anatomy: ;
 
 z:bone_element a owl:Class ; category: anatomy: ;
    xref: "UBERON:0001474" ; ## bone element
-   oio:hasBroadSynonym "bone" ;
+   oboInOwl:hasBroadSynonym "bone" ;
    rdfs:subClassOf z:organ .
 
 z:bone_tissue a owl:Class ; category: anatomy: ;
    xref: "UBERON:0002481" ; ## bone tissue
-   oio:hasBroadSynonym "bone" ;
+   oboInOwl:hasBroadSynonym "bone" ;
    rdfs:subClassOf z:tissue .
 
 z:eyeball a owl:Class ; category: anatomy: ;
@@ -205,12 +205,12 @@ z:eye a owl:Class ; category: anatomy: ;
    rdfs:subClassOf z:organ .
 
 z:hand a owl:Class ; category: anatomy: ;
-   oio:hasExactSynonym "hand" ;
+   oboInOwl:hasExactSynonym "hand" ;
    xref: "UBERON:0002398" ; ## manus
    rdfs:subClassOf z:appendage .
 
 z:foot a owl:Class ; category: anatomy: ;
-   oio:hasExactSynonym "foot" ;
+   oboInOwl:hasExactSynonym "foot" ;
    xref: "UBERON:0002387" ; ## pes
    rdfs:subClassOf z:appendage .
 

@@ -17,13 +17,11 @@ class TestSCC(unittest.TestCase):
     def test_scc(self):
         """Test splitting into cliques."""
         cliquedocs = split_into_cliques(self.mset)
-        for d in cliquedocs:
-            print(f"D: {len(d.mapping_set.mappings)}")
+        expected = [38, 36, 5, 8, 8, 10, 14, 8, 8, 2, 4]
+        self.assertEqual(sorted(expected), sorted(len(d.mapping_set.mappings) for d in cliquedocs))
 
     def test_cliquesummary(self):
         """Test summarizing cliques."""
         df = summarize_cliques(self.mset)
         df.to_csv(data_dir / "basic-cliquesummary.tsv", sep="\t")
-        df.describe().transpose().to_csv(
-            data_dir / "basic-cliquesummary-stats.tsv", sep="\t"
-        )
+        df.describe().transpose().to_csv(data_dir / "basic-cliquesummary-stats.tsv", sep="\t")

@@ -1,0 +1,19 @@
+# curie_map:
+#   UBERON: http://purl.obolibrary.org/obo/UBERON_
+#   WBls: http://purl.obolibrary.org/obo/WBls_
+#   oboInOwl: http://www.geneontology.org/formats/oboInOwl#
+#   owl: http://www.w3.org/2002/07/owl#
+#   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+#   rdfs: http://www.w3.org/2000/01/rdf-schema#
+#   semapv: https://w3id.org/semapv/vocab/
+#   skos: http://www.w3.org/2004/02/skos/core#
+#   sssom: https://w3id.org/sssom/
+# license: https://w3id.org/sssom/license/unspecified
+# mapping_set_id: https://w3id.org/sssom/mappings/c5e357f5-86df-4aaa-a30e-8a23ad523ab2
+# object_source: WBls
+# subject_source: UBERON
+subject_id	subject_label	predicate_id	object_id	mapping_justification	subject_source	object_source
+UBERON:0000066	fully formed stage	oboInOwl:hasDbXref	WBls:0000041	semapv:UnspecifiedMatching	UBERON	WBls
+UBERON:0000068	embryo stage	oboInOwl:hasDbXref	WBls:0000003	semapv:UnspecifiedMatching	UBERON	WBls
+UBERON:0000068	embryo stage	oboInOwl:hasDbXref	WBls:0000102	semapv:UnspecifiedMatching	UBERON	WBls
+UBERON:0000068	embryo stage	oboInOwl:hasDbXref	WBls:0000092	semapv:UnspecifiedMatching	UBERON	WBls

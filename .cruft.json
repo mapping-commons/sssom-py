@@ -1,0 +1,24 @@
+{
+  "template": "https://github.com/monarch-initiative/monarch-project-template.git",
+  "commit": "4a7682b439c90d913390d1ca7d930a88055a22d3",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "sssom-py",
+      "github_org_name": "mapping-commons",
+      "__project_slug": "sssom_py",
+      "project_description": "SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings.",
+      "min_python_version": "3.7",
+      "file_name": "main",
+      "greeting_recipient": "World",
+      "full_name": "Harshad Hegde",
+      "email": "hhegde@lbl.gov",
+      "__author": "Harshad Hegde <hhegde@lbl.gov>",
+      "license": "MIT",
+      "github_token_for_doc_deployment": "GH_TOKEN",
+      "github_token_for_pypi_deployment": "SSSOM_TOKEN",
+      "_template": "https://github.com/monarch-initiative/monarch-project-template.git"
+    }
+  },
+  "directory": null
+}

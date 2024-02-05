@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@v3.0.2
       with:
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     
@@ -16,22 +16,31 @@ jobs:
       with:
         python-version: 3.9
 
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: 1.6.1
+
     - name: Install dependencies.
       run: |
-        pip install -e .[docs]
-
+        poetry add setuptools@latest
+        poetry install --with docs
+        
     - name: Build documentation.
       run: |
+        echo ${{ secrets.GH_TOKEN }} >> src/sssom/token.txt
         mkdir gh-pages
         touch gh-pages/.nojekyll
         cd docs/
-        make clean html
-        cp -r _build/html/* ../gh-pages/
+        poetry run sphinx-apidoc -o . ../src/sssom/ --ext-autodoc -f
+        poetry run sphinx-build -b html . _build
+        cp -r _build/* ../gh-pages/
     
     - name: Deploy documentation.
       if: ${{ github.event_name == 'push' }}
-      uses: JamesIves/github-pages-deploy-action@v4.3.0
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         branch: gh-pages
         force: true
         folder: gh-pages
+        token: ${{ secrets.GH_TOKEN }}

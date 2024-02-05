@@ -1,7 +1,7 @@
 #license: "https://creativecommons.org/publicdomain/zero/1.0/"
 #mapping_set_id: https://w3id.org/sssom/mapping/tests/data/basic.tsv
 #mapping_tool: "https://github.com/cmungall/rdf_matcher"
-#creator_id: "cjm"
+#creator_id: "orcid:1234"
 #mapping_date: "2020-05-30"
 #curie_map:
 #  a: "http://example.org/a/"
@@ -13,6 +13,7 @@
 #  b: "http://example.org/b/"
 #  c: "http://example.org/c/"
 #  d: "http://example.org/d/"
+#  orcid: "https://orcid.org/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
 x:appendage	appendage	owl:equivalentClass		y:appendage	appendages	semapv:ManualMappingCuration	x	y	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.
 x:appendage	appendage	owl:equivalentClass		z:appendage	APPENDAGE	semapv:ManualMappingCuration	x	z	rdf_matcher	0.840714406	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	appendag	.

@@ -2,10 +2,12 @@
 
 import unittest
 
-from sssom.constants import SCHEMA_DICT
+from sssom.constants import _get_sssom_schema_object
 from sssom.parsers import parse_sssom_table
 from sssom.util import sort_df_rows_columns
 from tests.constants import data_dir
+
+SCHEMA_DICT = _get_sssom_schema_object().dict
 
 
 class TestSort(unittest.TestCase):
@@ -18,7 +20,5 @@ class TestSort(unittest.TestCase):
     def test_sort(self):
         """Test sorting of columns."""
         new_df = sort_df_rows_columns(self.msdf.df)
-        column_sequence = [
-            col for col in SCHEMA_DICT["slots"].keys() if col in new_df.columns
-        ]
+        column_sequence = [col for col in SCHEMA_DICT["slots"].keys() if col in new_df.columns]
         self.assertListEqual(column_sequence, list(new_df.columns))

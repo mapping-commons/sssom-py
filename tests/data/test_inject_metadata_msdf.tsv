@@ -1,0 +1,19 @@
+# creator_id:
+# - orcid:0000-0001-5839-2535
+# - orcid:0000-0001-5839-2532
+# curie_map:
+#   HP: http://purl.obolibrary.org/obo/HP_
+#   omop: https://athena.ohdsi.org/search-terms/terms/
+#   orcid: https://orcid.org/
+#   owl: http://www.w3.org/2002/07/owl#
+#   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+#   rdfs: http://www.w3.org/2000/01/rdf-schema#
+#   semapv: https://w3id.org/semapv/vocab/
+#   skos: http://www.w3.org/2004/02/skos/core#
+#   sssom: https://w3id.org/sssom/
+# license: https://creativecommons.org/licenses/by-nc/4.0/
+# mapping_set_description: All C-Path generated mappings of OBO terms to OMOP terms
+# mapping_set_id: cpath_obo_omop
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	mapping_date	confidence
+HP:0001250	Seizure	skos:exactMatch	omop:377091	Seizure	semapv:ManualMappingCuration	2023-01-01	1.0
+HP:0001324	Muscle weakness	skos:exactMatch	omop:79908	Muscle weakness	semapv:ManualMappingCuration	2023-01-01	1.0

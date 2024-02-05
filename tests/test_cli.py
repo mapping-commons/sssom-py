@@ -1,8 +1,10 @@
 """Tests for the command line interface."""
 
 import os
+import subprocess  # noqa
 import unittest
-from typing import Mapping
+from pathlib import Path
+from typing import Any, Mapping, Optional, cast
 
 from click.testing import CliRunner, Result
 
@@ -26,6 +28,7 @@ from sssom.cli import (
     split,
     validate,
 )
+from tests.constants import data_dir
 from tests.test_data import (
     RECON_YAML,
     SSSOMTestCase,
@@ -33,8 +36,6 @@ from tests.test_data import (
     get_multiple_input_test_cases,
     test_out_dir,
 )
-
-from .constants import data_dir
 
 
 class SSSOMCLITestSuite(unittest.TestCase):
@@ -46,9 +47,11 @@ class SSSOMCLITestSuite(unittest.TestCase):
         # Initially returned 2 tsv and 1 rdf. The RDF failed test
         test_cases = get_all_test_cases()
         for test in test_cases:
-            self.run_convert(runner, test)
-            if test.inputformat == "tsv":
+            if test.inputformat == "alignment-api-xml":
+                self.run_parse(runner, test)
+            elif test.inputformat == "tsv":
                 # These test only run on TSV inputs
+                self.run_convert(runner, test)
                 self.run_validate(runner, test)
                 self.run_parse(runner, test)
 
@@ -81,13 +84,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
         self.assertTrue(len(test_cases) >= 2)
 
-    def run_successful(self, result: Result, test_case: SSSOMTestCase) -> None:
+    def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
-        self.assertEqual(
-            result.exit_code,
-            0,
-            f"{test_case} did not perform as expected: {result.exception}",
-        )
+        if result.exit_code:
+            raise RuntimeError(f"{obj} failed") from result.exception
 
     def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the convert test."""
@@ -122,7 +122,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         ]
         if test_case.metadata_file:
             params.append("--metadata")
-            params.append(test_case.metadata_file)
+            params.append(data_dir / test_case.metadata_file)
 
         result = runner.invoke(parse, params)
         self.run_successful(result, test_case)
@@ -140,7 +140,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_ptable(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the ptable test."""
-        params = [test_case.filepath]
+        params = [test_case.filepath, "--output", test_case.get_out_file("ptable.tsv")]
         result = runner.invoke(ptable, params)
         self.run_successful(result, test_case)
         return result
@@ -163,9 +163,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
     """def run_sparql(self, runner, test_case: SSSOMTestCase):
         prams = []"""
 
-    def run_diff(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
-    ) -> Result:
+    def run_diff(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the diff test."""
         params = []
         out_file = None
@@ -180,17 +178,19 @@ class SSSOMCLITestSuite(unittest.TestCase):
         else:
             self.fail("No test to run.")
 
-    def run_partition(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
-    ) -> Result:
+    def run_partition(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the partition test."""
         params = []
-        primary_test_case = None
+        primary_test_case: Optional[SSSOMTestCase] = None
         for t in test_cases.values():
             if not primary_test_case:
                 primary_test_case = t
             params.append(t.filepath)
-        params.extend(["--output-directory", test_out_dir.as_posix()])
+        primary_test_case = cast(SSSOMTestCase, primary_test_case)
+        name = Path(primary_test_case.filepath).stem
+        directory = test_out_dir.joinpath(name)
+        directory.mkdir(exist_ok=True, parents=True)
+        params.extend(["--output-directory", directory.as_posix()])
         result = runner.invoke(partition, params)
         self.run_successful(result, primary_test_case)
         return result
@@ -228,9 +228,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_merge(
-        self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]
-    ) -> Result:
+    def run_merge(self, runner: CliRunner, test_cases: Mapping[str, SSSOMTestCase]) -> Result:
         """Run the merge test."""
         params = []
         out_file = None
@@ -244,9 +242,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_cases)
         return result
 
-    def run_reconcile_prefix(
-        self, runner: CliRunner, test_case: SSSOMTestCase
-    ) -> Result:
+    def run_reconcile_prefix(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the merge test with reconcile prefixes."""
         out_file = os.path.join(test_out_dir, "reconciled_prefix.tsv")
         result = runner.invoke(
@@ -278,9 +274,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.run_successful(result, test_case)
         return result
 
-    def run_sort_rows_columns(
-        self, runner: CliRunner, test_case: SSSOMTestCase
-    ) -> Result:
+    def run_sort_rows_columns(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Test sorting of DataFrame columns."""
         out_file = os.path.join(test_out_dir, "sort_column_test.tsv")
         in_file = test_case.filepath.replace("basic", "basic6")
@@ -358,3 +352,16 @@ class SSSOMCLITestSuite(unittest.TestCase):
         )
         self.run_successful(result, test_case)
         return result
+
+    @unittest.skip("this test doesn't actually test anything, just runs help")
+    def test_convert_cli(self):
+        """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
+        test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
+        args = [
+            "sssom",
+            "convert",
+            test_sssom,
+            "--output-format",
+            "owl",
+        ]
+        result = subprocess.check_output(args, shell=True)  # noqa

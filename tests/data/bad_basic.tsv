@@ -1,7 +1,7 @@
 #license: "https://creativecommons.org/publicdomain/zero/1.0/"
 #mapping_set_id: https://w3id.org/sssom/mapping/tests/data/basic3.tsv
 #mapping_tool: "https://github.com/cmungall/rdf_matcher"
-#creator_id: "cjm"
+#creator_id: "orcid:1234"
 #mapping_date: "2020-05-30"
 #curie_map:
 #  a: "http://example.org/a/"
@@ -10,7 +10,7 @@
 #  d: "http://example.org/d/"
 #  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
 #  owl: "http://www.w3.org/2002/07/owl#"
-#  semapv: "https://w3id.org/semapv/"
+#  semapv: "https://w3id.org/semapv/vocab/"
 subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification	subject_source	object_source	mapping_tool	confidence	subject_match_field	object_match_field	subject_category	object_category	match_string	comment
 c:something	YYYYY	owl:equivalentClass		b:something	yyyyyy	Lexical	c	d	rdf_matcher	0.81	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data
 d:something	YYYYY	owl:equivalentClass	Not	a:something	yyyyyy	Lexical	d	a	rdf_matcher	0.82	rdfs:label	rdfs:label	biolink:AnatomicalEntity	biolink:AnatomicalEntity	xxxxx	mock data

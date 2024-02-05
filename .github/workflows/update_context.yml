@@ -1,0 +1,28 @@
+name: Update sssom context
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 1"
+jobs:
+  update_context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Work around permission issue
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Update sssom context
+        run: |
+          make deploy-dm -B
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        if: ${{ success() }}
+        with:
+          commit-message: Update SSSOM Extended Prefix Map
+          title: 'Update SSSOM Extended Prefix Map'
+          body: |
+            This pull request updates sssom extended prefix map (epm). Make sure you run make tests manually.
+          assignees: matentzn
