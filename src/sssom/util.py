@@ -81,6 +81,7 @@ KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
 TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 # ! This will be unnecessary when pandas >= 3.0.0 is released
+# ! https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.infer_objects.html#
 # A value is trying to be set on a copy of a slice from a DataFrame
 pd.options.mode.copy_on_write = True
 # Get the version of pandas as a tuple of integers
