@@ -80,6 +80,13 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
 TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
+# ! This will be unnecessary when pandas >= 3.0.0 is released
+# ! https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.infer_objects.html#
+# A value is trying to be set on a copy of a slice from a DataFrame
+pd.options.mode.copy_on_write = True
+# Get the version of pandas as a tuple of integers
+pandas_version = tuple(map(int, pd.__version__.split(".")))
+
 
 @dataclass
 class MappingSetDataFrame:
@@ -151,6 +158,12 @@ class MappingSetDataFrame:
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = _extract_global_metadata(doc)
 
+        if pandas_version >= (2, 0, 0):
+            # For pandas >= 2.0.0, use the 'copy' parameter
+            df = df.infer_objects(copy=False)
+        else:
+            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
+            df = df.infer_objects()
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
@@ -160,6 +173,14 @@ class MappingSetDataFrame:
             slot for slot, slot_metadata in slots.items() if slot_metadata["range"] == "double"
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
+
+        if pandas_version >= (2, 0, 0):
+            # For pandas >= 2.0.0, use the 'copy' parameter
+            non_double_cols = non_double_cols.infer_objects(copy=False)
+        else:
+            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
+            non_double_cols = non_double_cols.infer_objects()
+
         non_double_cols.replace(np.nan, "", inplace=True)
         df.update(non_double_cols)
 
@@ -1397,18 +1418,26 @@ def invert_mappings(
         non_predicate_modified_df = df
 
     if subject_prefix:
-        subject_starts_with_prefix_condition = df[SUBJECT_ID].str.startswith(subject_prefix + ":")
-        object_starts_with_prefix_condition = df[OBJECT_ID].str.startswith(subject_prefix + ":")
+        # Filter rows where 'SUBJECT_ID' starts with the prefix but 'OBJECT_ID' does not
         prefixed_subjects_df = pd.DataFrame(
             non_predicate_modified_df[
-                (subject_starts_with_prefix_condition & ~object_starts_with_prefix_condition)
+                (
+                    non_predicate_modified_df[SUBJECT_ID].str.startswith(subject_prefix + ":")
+                    & ~non_predicate_modified_df[OBJECT_ID].str.startswith(subject_prefix + ":")
+                )
             ]
         )
+
+        # Filter rows where 'SUBJECT_ID' does not start with the prefix but 'OBJECT_ID' does
         non_prefix_subjects_df = pd.DataFrame(
             non_predicate_modified_df[
-                (~subject_starts_with_prefix_condition & object_starts_with_prefix_condition)
+                (
+                    ~non_predicate_modified_df[SUBJECT_ID].str.startswith(subject_prefix + ":")
+                    & non_predicate_modified_df[OBJECT_ID].str.startswith(subject_prefix + ":")
+                )
             ]
         )
+
         df_to_invert = non_prefix_subjects_df.loc[
             non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
         ]
