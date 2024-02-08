@@ -157,6 +157,13 @@
 <span class="n">KEY_FEATURES</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_MODIFIER</span><span class="p">]</span>
 <span class="n">TRIPLES_IDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">]</span>
 
+<span class="c1"># ! This will be unnecessary when pandas &gt;= 3.0.0 is released</span>
+<span class="c1"># ! https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.infer_objects.html#</span>
+<span class="c1"># A value is trying to be set on a copy of a slice from a DataFrame</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">copy_on_write</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Get the version of pandas as a tuple of integers</span>
+<span class="n">pandas_version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
+
 
 <div class="viewcode-block" id="MappingSetDataFrame"><a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MappingSetDataFrame</span><span class="p">:</span>
@@ -228,6 +235,12 @@
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">get_dict_from_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">)</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="n">_extract_global_metadata</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">pandas_version</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="c1"># For pandas &gt;= 2.0.0, use the &#39;copy&#39; parameter</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For pandas &lt; 2.0.0, call &#39;infer_objects()&#39; without any parameters</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span>
         <span class="c1"># remove columns where all values are blank.</span>
         <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># remove columns with all row = &#39;None&#39;-s.</span>
@@ -237,6 +250,14 @@
             <span class="n">slot</span> <span class="k">for</span> <span class="n">slot</span><span class="p">,</span> <span class="n">slot_metadata</span> <span class="ow">in</span> <span class="n">slots</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">slot_metadata</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span>
         <span class="p">}</span>
         <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">slots_with_double_as_range</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">pandas_version</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="c1"># For pandas &gt;= 2.0.0, use the &#39;copy&#39; parameter</span>
+            <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">non_double_cols</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For pandas &lt; 2.0.0, call &#39;infer_objects()&#39; without any parameters</span>
+            <span class="n">non_double_cols</span> <span class="o">=</span> <span class="n">non_double_cols</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span>
+
         <span class="n">non_double_cols</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">df</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">non_double_cols</span><span class="p">)</span>
 
@@ -1474,18 +1495,26 @@
         <span class="n">non_predicate_modified_df</span> <span class="o">=</span> <span class="n">df</span>
 
     <span class="k">if</span> <span class="n">subject_prefix</span><span class="p">:</span>
-        <span class="n">subject_starts_with_prefix_condition</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
-        <span class="n">object_starts_with_prefix_condition</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="c1"># Filter rows where &#39;SUBJECT_ID&#39; starts with the prefix but &#39;OBJECT_ID&#39; does not</span>
         <span class="n">prefixed_subjects_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="n">non_predicate_modified_df</span><span class="p">[</span>
-                <span class="p">(</span><span class="n">subject_starts_with_prefix_condition</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">object_starts_with_prefix_condition</span><span class="p">)</span>
+                <span class="p">(</span>
+                    <span class="n">non_predicate_modified_df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                    <span class="o">&amp;</span> <span class="o">~</span><span class="n">non_predicate_modified_df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="p">]</span>
         <span class="p">)</span>
+
+        <span class="c1"># Filter rows where &#39;SUBJECT_ID&#39; does not start with the prefix but &#39;OBJECT_ID&#39; does</span>
         <span class="n">non_prefix_subjects_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="n">non_predicate_modified_df</span><span class="p">[</span>
-                <span class="p">(</span><span class="o">~</span><span class="n">subject_starts_with_prefix_condition</span> <span class="o">&amp;</span> <span class="n">object_starts_with_prefix_condition</span><span class="p">)</span>
+                <span class="p">(</span>
+                    <span class="o">~</span><span class="n">non_predicate_modified_df</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                    <span class="o">&amp;</span> <span class="n">non_predicate_modified_df</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subject_prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="p">]</span>
         <span class="p">)</span>
+
         <span class="n">df_to_invert</span> <span class="o">=</span> <span class="n">non_prefix_subjects_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
             <span class="n">non_prefix_subjects_df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">predicate_invert_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="p">]</span>
