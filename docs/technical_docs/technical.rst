@@ -1,6 +1,6 @@
-.. _developer-docs:
+.. _technical-docs:
 
-Developer Documentation
+Technical Documentation
 ========================
 
 This section contains documentation for developers who want to contribute or extend the functionality of the project.
