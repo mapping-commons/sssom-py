@@ -1,6 +1,3 @@
-The following documentation is written in reStructuredText (RST) format compatible with Sphinx.
-
-```
 .. _additional-sssom-object-models:
 
 Additional SSSOM Object Models
@@ -45,6 +42,3 @@ Classes
         This is a property of the MappingSetDocument class. It returns a 
         dictionary representing a prefix map. This map is derived from the 
         converter's bimap attribute.
-```
-  
-This documentation provides a clear explanation of the code, including its purpose, imports, and classes. The `MappingSetDocument` class, its attributes, and properties are also explained in detail.

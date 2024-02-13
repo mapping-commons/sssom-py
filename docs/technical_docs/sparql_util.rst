@@ -1,4 +1,3 @@
-```
 The module provides utilities for querying mappings from a SPARQL endpoint. It uses the SPARQLWrapper to interact with the SPARQL endpoint and pandas library for data manipulation. It also uses the RDFLib library for handling RDF.
 
 Classes:
@@ -32,4 +31,3 @@ Functions:
 
     This function takes an EndpointConfig instance as an argument and returns a MappingSetDataFrame containing the query results. It constructs a SPARQL query based on the configuration and executes it against the endpoint. If the 'include_object_labels' flag is set, the query includes labels for the objects. The function logs the SPARQL query and converts the results into a pandas DataFrame.
 
-```

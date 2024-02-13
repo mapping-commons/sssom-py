@@ -1,4 +1,4 @@
-.. py:module:: <module_name>
+.. _rdf_util:
 .. py:function:: rewire_graph(g: Graph, mset: MappingSetDataFrame, subject_to_object: bool = True, precedence: Optional[List[str]] = None) -> int:
 
    This function rewrites an RDF Graph by replacing nodes using equivalence mappings provided in a MappingSetDataFrame. The function can either map from subject to object (default behavior) or from object to subject. In case of ambiguity, precedence can be defined with a list of prefixes.

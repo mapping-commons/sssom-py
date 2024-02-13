@@ -1,4 +1,3 @@
-```
 .. module:: Validators
    :synopsis: A module for validating various schema types.
 
@@ -37,4 +36,3 @@
 .. data:: VALIDATION_METHODS
    :annotation: Mapping[SchemaValidationType, Callable]
    :value: A mapping of different validation methods for different schema types.
-```
