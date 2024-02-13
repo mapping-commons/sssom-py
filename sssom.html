@@ -448,11 +448,11 @@ means chaining behind the “default” prefix map</p></li>
 <li><p>An empty dictionary or <code class="docutils literal notranslate"><span class="pre">None</span></code>. This results in using the default
 extended prefix map (currently based on a variant of the Bioregistry)
 if <code class="docutils literal notranslate"><span class="pre">use_defaults</span></code> is set to true, otherwise just the builtin prefix
-map including the prefixes in <code class="xref py py-data docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code></p></li>
+map including the prefixes in <a class="reference internal" href="technical_docs/context.html#sssom.context.SSSOM_BUILT_IN_PREFIXES" title="sssom.context.SSSOM_BUILT_IN_PREFIXES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code></a></p></li>
 <li><p>A non-empty dictionary representing a prefix map. This is loaded as a
 converter with <code class="xref py py-meth docutils literal notranslate"><span class="pre">Converter.from_prefix_map()</span></code>. It is chained
 behind the builtin prefix map to ensure none of the
-<code class="xref py py-data docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code> are overwritten with non-default values</p></li>
+<a class="reference internal" href="technical_docs/context.html#sssom.context.SSSOM_BUILT_IN_PREFIXES" title="sssom.context.SSSOM_BUILT_IN_PREFIXES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code></a> are overwritten with non-default values</p></li>
 <li><p>A pre-instantiated <code class="xref py py-class docutils literal notranslate"><span class="pre">curies.Converter</span></code>. Similarly to a prefix
 map passed into this function, this is chained behind the builtin prefix
 map</p></li>

@@ -54,7 +54,19 @@
 <li class="toctree-l2"><a class="reference internal" href="cli.html">SSSOM Command Line Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cliques.html">Cliques in mappings graphs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cliquesummary.html">Clique summary</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">JSON-LD context-loading utilities.</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">JSON-LD context-loading utilities.</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sssom.context.get_converter"><code class="docutils literal notranslate"><span class="pre">get_converter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sssom.context.ensure_converter"><code class="docutils literal notranslate"><span class="pre">ensure_converter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constants">Constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.SSSOM_BUILT_IN_PREFIXES"><code class="docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#types">Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sssom.context.ConverterHint"><code class="docutils literal notranslate"><span class="pre">ConverterHint</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="parsers.html">Parsers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rdf_util.html">RDF Utility Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sssom_document.html">Additional SSSOM Object Models</a></li>
@@ -89,30 +101,79 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="json-ld-context-loading-utilities">
-<span id="context"></span><h1>JSON-LD context-loading utilities.<a class="headerlink" href="#json-ld-context-loading-utilities" title="Permalink to this heading"></a></h1>
-<p>This module provides utility functions for loading JSON-LD contexts.</p>
-<p><strong>get_converter</strong></p>
-<p>This function returns a converter. The converter is obtained by chaining a built-in prefix map with a default converter. The function is cached using <cite>functools.lru_cache</cite> which means the result is saved and returned for any subsequent calls without re-executing the function.</p>
-<p><strong>_get_default_converter</strong></p>
-<p>This private function returns a converter from an extended prefix map. It checks each record in the converter, keeps only those with a valid NCName (valid names for elements and attributes), and then returns a new Converter with these records.</p>
-<p><strong>_load_sssom_context</strong></p>
-<p>This private function loads the JSON-LD context from a file and returns it as a dictionary.</p>
-<p><strong>_get_built_in_prefix_map</strong></p>
-<p>This private function returns a converter for built-in prefixes. The converter is created from prefixes in the JSON-LD context that match the built-in prefixes. The function is also cached using <cite>functools.lru_cache</cite>.</p>
-<p><strong>ensure_converter</strong></p>
-<p>This function ensures a converter is available. The type of the converter depends on the <cite>prefix_map</cite> parameter. If <cite>prefix_map</cite> is None or an empty dictionary, and <cite>use_defaults</cite> is set to True, it returns the default converter. If <cite>prefix_map</cite> is a non-empty dictionary, it is converted into a converter and chained behind the built-in prefix map. If <cite>prefix_map</cite> is a pre-instantiated converter, it is also chained behind the built-in prefix map.</p>
-<p><strong>ConverterHint</strong></p>
-<p>This type hint specifies a place where one of three options can be given:</p>
+  <section id="module-sssom.context">
+<span id="json-ld-context-loading-utilities"></span><span id="context"></span><h1>JSON-LD context-loading utilities.<a class="headerlink" href="#module-sssom.context" title="Permalink to this heading"></a></h1>
+<p>This module contains utility functions for loading JSON-LD contexts.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.context.get_converter">
+<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">get_converter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Converter</span></span></span><a class="reference internal" href="../_modules/sssom/context.html#get_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.get_converter" title="Permalink to this definition"></a></dt>
+<dd><p>Get a converter that is used to convert prefixes into URIs. This function is decorated
+with the <cite>functools.lru_cache</cite> decorator, which means that the function’s results are
+cached for faster subsequent calls.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.context.ensure_converter">
+<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">ensure_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sssom.context.ConverterHint" title="sssom.context.ConverterHint"><span class="pre">ConverterHint</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_defaults</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Converter</span></span></span><a class="reference internal" href="../_modules/sssom/context.html#ensure_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.context.ensure_converter" title="Permalink to this definition"></a></dt>
+<dd><p>Ensure a converter is available. This function checks if a converter is provided. If not,
+it either returns the default converter (if <cite>use_defaults</cite> is <cite>True</cite>) or a converter
+built from the built-in prefix map. If a converter or a prefix map is provided, it chains
+this with the built-in prefix map and returns the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix_map</strong> – <p>One of three options can be given:</p>
 <ol class="arabic simple">
-<li><p>None, which means a default converter is loaded.</p></li>
-<li><p>A legacy prefix mapping dictionary which will get upgraded into a Converter.</p></li>
-<li><p>A Converter which might get modified.</p></li>
+<li><p>An empty dictionary or <code class="docutils literal notranslate"><span class="pre">None</span></code>. This results in using the default extended prefix
+map (currently based on a variant of the Bioregistry) if <code class="docutils literal notranslate"><span class="pre">use_defaults</span></code> is set to
+true, otherwise just the builtin prefix map including the prefixes in
+<a class="reference internal" href="#sssom.context.SSSOM_BUILT_IN_PREFIXES" title="sssom.context.SSSOM_BUILT_IN_PREFIXES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code></a>.</p></li>
+<li><p>A non-empty dictionary representing a prefix map. This is loaded as a converter with
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">Converter.from_prefix_map()</span></code>. It is chained behind the builtin prefix map to
+ensure none of the <a class="reference internal" href="#sssom.context.SSSOM_BUILT_IN_PREFIXES" title="sssom.context.SSSOM_BUILT_IN_PREFIXES"><code class="xref py py-data docutils literal notranslate"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></code></a> are overwritten with non-default
+values.</p></li>
+<li><p>A pre-instantiated <code class="xref py py-class docutils literal notranslate"><span class="pre">curies.Converter</span></code>. Similarly to a prefix map passed into
+this function, this is chained behind the builtin prefix map.</p></li>
 </ol>
-<p><strong>SSSOM_BUILT_IN_PREFIXES</strong></p>
-<p>This variable contains a tuple of built-in prefixes.</p>
-<p><strong>SSSOM_CONTEXT</strong></p>
-<p>This variable is the path to the JSON-LD context file.</p>
+</p></li>
+<li><p><strong>use_defaults</strong> – If an empty dictionary or None is passed to this function, this
+parameter chooses if the extended prefix map (currently based on a variant of the
+Bioregistry) gets loaded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A re-usable converter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="sssom.context.SSSOM_BUILT_IN_PREFIXES">
+<span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">SSSOM_BUILT_IN_PREFIXES</span></span><a class="headerlink" href="#sssom.context.SSSOM_BUILT_IN_PREFIXES" title="Permalink to this definition"></a></dt>
+<dd><p>A tuple containing the names of the built-in prefixes that are used by SSSOM.</p>
+</dd></dl>
+
+</section>
+<section id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="sssom.context.ConverterHint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.context.</span></span><span class="sig-name descname"><span class="pre">ConverterHint</span></span><a class="headerlink" href="#sssom.context.ConverterHint" title="Permalink to this definition"></a></dt>
+<dd><p>A type hint that specifies a place where one of three options can be given:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>a legacy prefix mapping dictionary can be given, which will get upgraded into a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">curies.Converter</span></code>,</p></li>
+<li><p>a converter can be given, which might get modified. In SSSOM-py, this typically
+means chaining behind the “default” prefix map</p></li>
+<li><p>None, which means a default converter is loaded</p></li>
+</ol>
+</div></blockquote>
+</dd></dl>
+
+</section>
 </section>
 
 
