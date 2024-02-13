@@ -3,42 +3,62 @@
 JSON-LD context-loading utilities.
 ==================================
 
-This module provides utility functions for loading JSON-LD contexts.
+.. py:module:: sssom.context
+   :synopsis: Utilities for loading JSON-LD contexts.
+
+This module contains utility functions for loading JSON-LD contexts.
 
 
-**get_converter**
+.. py:function:: get_converter() -> Converter
+   :module: sssom.context
 
-This function returns a converter. The converter is obtained by chaining a built-in prefix map with a default converter. The function is cached using `functools.lru_cache` which means the result is saved and returned for any subsequent calls without re-executing the function.
+   Get a converter that is used to convert prefixes into URIs. This function is decorated 
+   with the `functools.lru_cache` decorator, which means that the function's results are 
+   cached for faster subsequent calls. 
 
-**_get_default_converter**
+.. py:function:: ensure_converter(prefix_map: ConverterHint = None, *, use_defaults: bool = True) -> Converter
+   :module: sssom.context
 
-This private function returns a converter from an extended prefix map. It checks each record in the converter, keeps only those with a valid NCName (valid names for elements and attributes), and then returns a new Converter with these records.
+   Ensure a converter is available. This function checks if a converter is provided. If not, 
+   it either returns the default converter (if `use_defaults` is `True`) or a converter 
+   built from the built-in prefix map. If a converter or a prefix map is provided, it chains 
+   this with the built-in prefix map and returns the result.
 
-**_load_sssom_context**
+   :param prefix_map: One of three options can be given:
 
-This private function loads the JSON-LD context from a file and returns it as a dictionary.
+      1. An empty dictionary or ``None``. This results in using the default extended prefix 
+         map (currently based on a variant of the Bioregistry) if ``use_defaults`` is set to 
+         true, otherwise just the builtin prefix map including the prefixes in 
+         :data:`SSSOM_BUILT_IN_PREFIXES`.
+      2. A non-empty dictionary representing a prefix map. This is loaded as a converter with 
+         :meth:`Converter.from_prefix_map`. It is chained behind the builtin prefix map to 
+         ensure none of the :data:`SSSOM_BUILT_IN_PREFIXES` are overwritten with non-default 
+         values.
+      3. A pre-instantiated :class:`curies.Converter`. Similarly to a prefix map passed into 
+         this function, this is chained behind the builtin prefix map.
+   :param use_defaults: If an empty dictionary or None is passed to this function, this 
+      parameter chooses if the extended prefix map (currently based on a variant of the 
+      Bioregistry) gets loaded.
+   :returns: A re-usable converter.
 
-**_get_built_in_prefix_map**
+Constants
+---------
 
-This private function returns a converter for built-in prefixes. The converter is created from prefixes in the JSON-LD context that match the built-in prefixes. The function is also cached using `functools.lru_cache`.
+.. py:data:: SSSOM_BUILT_IN_PREFIXES
+   :module: sssom.context
 
-**ensure_converter**
+   A tuple containing the names of the built-in prefixes that are used by SSSOM.
 
-This function ensures a converter is available. The type of the converter depends on the `prefix_map` parameter. If `prefix_map` is None or an empty dictionary, and `use_defaults` is set to True, it returns the default converter. If `prefix_map` is a non-empty dictionary, it is converted into a converter and chained behind the built-in prefix map. If `prefix_map` is a pre-instantiated converter, it is also chained behind the built-in prefix map.
+Types
+-----
 
-**ConverterHint**
+.. py:class:: ConverterHint
+   :module: sssom.context
 
-This type hint specifies a place where one of three options can be given:
+   A type hint that specifies a place where one of three options can be given:
 
-1. None, which means a default converter is loaded.
-2. A legacy prefix mapping dictionary which will get upgraded into a Converter.
-3. A Converter which might get modified. 
-
-**SSSOM_BUILT_IN_PREFIXES**
-
-This variable contains a tuple of built-in prefixes.
-
-**SSSOM_CONTEXT**
-
-This variable is the path to the JSON-LD context file.
-
+      1. a legacy prefix mapping dictionary can be given, which will get upgraded into a 
+         :class:`curies.Converter`,
+      2. a converter can be given, which might get modified. In SSSOM-py, this typically 
+         means chaining behind the "default" prefix map
+      3. None, which means a default converter is loaded
