@@ -1,4 +1,3 @@
-"""
 Utilities for loading JSON-LD contexts
 ======================================
 
@@ -62,4 +61,4 @@ This variable contains a tuple of built-in prefixes.
 **SSSOM_CONTEXT**
 
 This variable is the path to the JSON-LD context file.
-"""
+
