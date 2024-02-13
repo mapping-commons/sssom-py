@@ -64,7 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="context.html">JSON-LD context-loading utilities.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parsers.html">Parsers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rdf_util.html">RDF Utility Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sssom_document.html">Additional SSSOM Object Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sssom_document.html">MappingSetDocument</a></li>
 <li class="toctree-l2"><a class="reference internal" href="writers.html">Serialization Functions for SSSOM</a></li>
 </ul>
 </li>
@@ -116,7 +116,7 @@ These utilities are used for identifying and manipulating SCCs in the context of
 
 <dl class="py function">
 <dt class="sig sig-object py" id="split_into_cliques">
-<span class="sig-name descname"><span class="pre">split_into_cliques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sssom_document.html#MappingSetDocument" title="MappingSetDocument"><span class="pre">MappingSetDocument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#split_into_cliques" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">split_into_cliques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../sssom.html#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><span class="pre">MappingSetDataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../sssom.html#sssom.sssom_document.MappingSetDocument" title="sssom.sssom_document.MappingSetDocument"><span class="pre">MappingSetDocument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#split_into_cliques" title="Permalink to this definition"></a></dt>
 <dd><p>Split a MappingSetDataFrame into documents corresponding to strongly connected components of the associated graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
