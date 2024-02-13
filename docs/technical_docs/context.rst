@@ -8,6 +8,8 @@ JSON-LD context-loading utilities.
 
 This module contains utility functions for loading JSON-LD contexts.
 
+Functions
+---------
 
 .. py:function:: get_converter() -> Converter
    :module: sssom.context
