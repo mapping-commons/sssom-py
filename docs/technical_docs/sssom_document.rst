@@ -1,44 +1,25 @@
-.. _additional-sssom-object-models:
+.. _mapping_set_document:
 
-Additional SSSOM Object Models
-==============================
+MappingSetDocument
+==================
 
-This module contains additional models related to the Simple Standard for 
-Sharing Ontology Mappings (SSSOM) data. It includes a class that represents a 
-single SSSOM document.
-
-Imports
--------
-.. code-block:: python
-
-    from dataclasses import dataclass
-    from typing import Dict
-
-    from curies import Converter
-    from sssom_schema import MappingSet
-
-Classes
--------
-.. autoclass:: MappingSetDocument
-    :members:
+.. module:: Additional SSSOM object models
+   :synopsis: This module provides a data structure to represent a single SSSOM document.
 
 .. class:: MappingSetDocument
+   :noindex:
 
-    This class represents a single SSSOM document, which is a container for a 
-    MappingSet object and a CURIE map.
+    A data class representing a single SSSOM document which is a holder for a MappingSet object plus a CURIE map.
 
     .. attribute:: mapping_set
 
-        This attribute holds a MappingSet object, which includes a set of 
-        mappings and related metadata.
+        The main part of the document: a set of mappings plus metadata. It is of type :class:`sssom_schema.MappingSet`.
 
     .. attribute:: converter
 
-        This attribute is an instance of the Converter class from the curies 
-        module.
+        An instance of :class:`curies.Converter`, used to convert CURIEs in the mapping set.
 
-    .. attribute:: prefix_map
+    .. automethod:: prefix_map
 
-        This is a property of the MappingSetDocument class. It returns a 
-        dictionary representing a prefix map. This map is derived from the 
-        converter's bimap attribute.
+        A method that returns a prefix map, which is a dictionary representation of the converter's bidirectional map. 
+        The returned dictionary is of type :class:`typing.Dict` where both keys and values are of type :class:`str`.
