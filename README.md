@@ -78,3 +78,4 @@ natural language processing and large-scale knowledge assembly. Their work on SS
 DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
 
 https://indralab.github.io
+ 
