@@ -58,7 +58,14 @@
 <li class="toctree-l2"><a class="reference internal" href="parsers.html">Parsers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rdf_util.html">RDF Utility Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sssom_document.html">MappingSetDocument</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Serialization Functions for SSSOM</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Serialization Functions for SSSOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Writers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converters">Converters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#support-methods">Support Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-tables">Writing Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-information">Additional Information</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer_docs/modules.html">Technical Documentation</a></li>
@@ -92,7 +99,8 @@
   <section id="serialization-functions-for-sssom">
 <span id="writers"></span><h1>Serialization Functions for SSSOM<a class="headerlink" href="#serialization-functions-for-sssom" title="Permalink to this heading"></a></h1>
 <p>This module contains functions for serializing SSSOM mapping set dataframes to various formats, including TSV, OWL, JSON, FHIR JSON, and RDF.</p>
-<p>### Writers</p>
+<section id="id1">
+<h2>Writers<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15.0%" />
@@ -133,7 +141,9 @@
 </tbody>
 </table>
 <p>The <cite>get_writer_function()</cite> function can be used to obtain the appropriate writer function based on the desired output format.</p>
-<p>### Converters</p>
+</section>
+<section id="converters">
+<h2>Converters<a class="headerlink" href="#converters" title="Permalink to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15.0%" />
@@ -169,7 +179,9 @@
 </tr>
 </tbody>
 </table>
-<p>### Support Methods</p>
+</section>
+<section id="support-methods">
+<h2>Support Methods<a class="headerlink" href="#support-methods" title="Permalink to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25.0%" />
@@ -189,13 +201,18 @@
 </tr>
 </tbody>
 </table>
-<p>### Writing Tables</p>
+</section>
+<section id="writing-tables">
+<h2>Writing Tables<a class="headerlink" href="#writing-tables" title="Permalink to this heading"></a></h2>
 <p>The <cite>write_tables()</cite> function can be used to write a collection of mapping set dataframes to TSV files.</p>
-<p>### Additional Information</p>
+</section>
+<section id="additional-information">
+<h2>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>For more information on SSSOM, see the [SSSOM documentation](<a class="reference external" href="https://mapping-commons.github.io/sssom/">https://mapping-commons.github.io/sssom/</a>).</p></li>
 <li><p>For more information on the SSSOM Python package, see the [SSSOM Python package documentation](<a class="reference external" href="https://mapping-commons.github.io/sssom-py/">https://mapping-commons.github.io/sssom-py/</a>).</p></li>
 </ul>
+</section>
 </section>
 
 

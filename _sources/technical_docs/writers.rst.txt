@@ -5,7 +5,8 @@ Serialization Functions for SSSOM
 
 This module contains functions for serializing SSSOM mapping set dataframes to various formats, including TSV, OWL, JSON, FHIR JSON, and RDF.
 
-### Writers
+Writers
+-------
 
 .. list-table::
     :widths: 15 15 70
@@ -35,7 +36,8 @@ This module contains functions for serializing SSSOM mapping set dataframes to v
 
 The `get_writer_function()` function can be used to obtain the appropriate writer function based on the desired output format.
 
-### Converters
+Converters
+----------
 
 .. list-table::
     :widths: 15 15 70
@@ -60,7 +62,8 @@ The `get_writer_function()` function can be used to obtain the appropriate write
       - Ontoportal JSON
       - This function converts a `MappingSetDataFrame` object to a list of ontoportal mapping JSON objects.
 
-### Support Methods
+Support Methods
+---------------
 
 .. list-table::
     :widths: 25 75
@@ -73,11 +76,13 @@ The `get_writer_function()` function can be used to obtain the appropriate write
     * - `_inject_annotation_properties`
       - Injects annotation properties into an RDF graph.
 
-### Writing Tables
+Writing Tables
+--------------
 
 The `write_tables()` function can be used to write a collection of mapping set dataframes to TSV files.
 
-### Additional Information
+Additional Information
+----------------------
 
 - For more information on SSSOM, see the [SSSOM documentation](https://mapping-commons.github.io/sssom/).
 - For more information on the SSSOM Python package, see the [SSSOM Python package documentation](https://mapping-commons.github.io/sssom-py/).
