@@ -32,7 +32,6 @@ Contents
    cli_usage
    examples
    sphinx
-   technical_docs/technical
    developer_docs/modules
 
 Indices and tables
