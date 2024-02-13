@@ -1,11 +1,11 @@
-Utilities for identifying and working with cliques/SCCs in mappings graphs
---------------------------------------------------------------------------
+.. _cliques:
+
+Cliques in mappings graphs
+----------------------------
 
 This module contains several utilities for working with strongly connected components (SCCs) or cliques in mapping graphs.
 These utilities are used for identifying and manipulating SCCs in the context of data mappings.
 
-Functions
----------
 
 .. function:: to_digraph(msdf: MappingSetDataFrame) -> "networkx.DiGraph"
 
