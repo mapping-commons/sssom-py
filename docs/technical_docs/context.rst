@@ -1,11 +1,10 @@
-Utilities for loading JSON-LD contexts
-======================================
+.. _context:
+
+JSON-LD context-loading utilities.
+==================================
 
 This module provides utility functions for loading JSON-LD contexts.
 
-
-Functions
----------
 
 **get_converter**
 

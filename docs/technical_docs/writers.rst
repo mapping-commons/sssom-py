@@ -1,4 +1,7 @@
-## Serialization Functions for SSSOM
+.. _writers:
+
+Serialization Functions for SSSOM
+=================================
 
 This module contains functions for serializing SSSOM mapping set dataframes to various formats, including TSV, OWL, JSON, FHIR JSON, and RDF.
 
@@ -9,26 +12,26 @@ This module contains functions for serializing SSSOM mapping set dataframes to v
     :header-rows: 1
 
     * - Writer Function
-        - Output Format
-        - Description
+      - Output Format
+      - Description
     * - `write_table`
-        - TSV
-        - This function writes a `MappingSetDataFrame` object to a file as a table.
+      - TSV
+      - This function writes a `MappingSetDataFrame` object to a file as a table.
     * - `write_owl`
-        - OWL
-        - This function writes a `MappingSetDataFrame` object to a file as OWL.
+      - OWL
+      - This function writes a `MappingSetDataFrame` object to a file as OWL.
     * - `write_ontoportal_json`
-        - Ontoportal JSON
-        - This function writes a `MappingSetDataFrame` object to a file as the ontoportal mapping JSON model.
+      - Ontoportal JSON
+      - This function writes a `MappingSetDataFrame` object to a file as the ontoportal mapping JSON model.
     * - `write_fhir_json`
-        - FHIR JSON
-        - This function writes a `MappingSetDataFrame` object to a file as FHIR ConceptMap JSON.
+      - FHIR JSON
+      - This function writes a `MappingSetDataFrame` object to a file as FHIR ConceptMap JSON.
     * - `write_json`
-        - JSON
-        - This function writes a `MappingSetDataFrame` object to a file as JSON.
+      - JSON
+      - This function writes a `MappingSetDataFrame` object to a file as JSON.
     * - `write_rdf`
-        - RDF
-        - This function writes a `MappingSetDataFrame` object to a file as RDF.
+      - RDF
+      - This function writes a `MappingSetDataFrame` object to a file as RDF.
 
 The `get_writer_function()` function can be used to obtain the appropriate writer function based on the desired output format.
 
@@ -39,23 +42,23 @@ The `get_writer_function()` function can be used to obtain the appropriate write
     :header-rows: 1
 
     * - Converter Function
-        - Output Format
-        - Description
+      - Output Format
+      - Description
     * - `to_owl_graph`
-        - OWL graph
-        - This function converts a `MappingSetDataFrame` object to OWL in an RDF graph.
+      - OWL graph
+      - This function converts a `MappingSetDataFrame` object to OWL in an RDF graph.
     * - `to_rdf_graph`
-        - RDF graph
-        - This function converts a `MappingSetDataFrame` object to an RDF graph.
+      - RDF graph
+      - This function converts a `MappingSetDataFrame` object to an RDF graph.
     * - `to_fhir_json`
-        - FHIR JSON
-        - This function converts a `MappingSetDataFrame` object to a JSON object.
+      - FHIR JSON
+      - This function converts a `MappingSetDataFrame` object to a JSON object.
     * - `to_json`
-        - JSON
-        - This function converts a `MappingSetDataFrame` object to a JSON object.
+      - JSON
+      - This function converts a `MappingSetDataFrame` object to a JSON object.
     * - `to_ontoportal_json`
-        - Ontoportal JSON
-        - This function converts a `MappingSetDataFrame` object to a list of ontoportal mapping JSON objects.
+      - Ontoportal JSON
+      - This function converts a `MappingSetDataFrame` object to a list of ontoportal mapping JSON objects.
 
 ### Support Methods
 
@@ -64,11 +67,11 @@ The `get_writer_function()` function can be used to obtain the appropriate write
     :header-rows: 1
 
     * - Method
-        - Description
+      - Description
     * - `_get_separator`
-        - Returns the appropriate separator character for the specified table format.
+      - Returns the appropriate separator character for the specified table format.
     * - `_inject_annotation_properties`
-        - Injects annotation properties into an RDF graph.
+      - Injects annotation properties into an RDF graph.
 
 ### Writing Tables
 
