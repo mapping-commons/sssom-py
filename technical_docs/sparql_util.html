@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Update Documentation &mdash; sssom-py 0.0.0 documentation</title>
+  <title>Classes: &mdash; sssom-py 0.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -21,7 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="SSSOM Submodules" href="sssom.html" /> 
+    <link rel="next" title="Additional SSSOM Object Models" href="sssom_document.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="rdf_util.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,17 +50,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../cli_usage.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sphinx.html">Update Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../technical_docs/technical.html">Technical Documentation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Technical Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="api.html">Python API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sssom.html">SSSOM Submodules</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Update Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#new-page">New page</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#update-and-page-deployment">Update and page deployment</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="technical.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cli.html">SSSOM Command Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cliques.html">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html#variables-and-constants">Variables and Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html#private-functions">Private Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html#details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parsers.html">Parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rdf_util.html"><code class="docutils literal notranslate"><span class="pre">rewire_graph()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rdf_util.html#module_name-.rewire_node"><code class="docutils literal notranslate"><span class="pre">rewire_node()</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Classes:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sssom_document.html">Additional SSSOM Object Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validators.html"><code class="docutils literal notranslate"><span class="pre">VALIDATION_METHODS</span></code></a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_docs/modules.html">Technical Documentation</a></li>
 </ul>
 
         </div>
@@ -76,10 +83,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">Technical Documentation</a></li>
-      <li class="breadcrumb-item active">Update Documentation</li>
+          <li class="breadcrumb-item"><a href="technical.html">Technical Documentation</a></li>
+      <li class="breadcrumb-item active">Classes:</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/mapping-commons/sssom-py/blob/master/docs//master/docs/developer_docs/sphinx.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/mapping-commons/sssom-py/blob/master/docs//master/docs/technical_docs/sparql_util.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -87,30 +94,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="update-documentation">
-<h1>Update Documentation<a class="headerlink" href="#update-documentation" title="Permalink to this heading"></a></h1>
-<p>Using your terminal, <code class="docutils literal notranslate"><span class="pre">cd</span></code> to the ‘docs’ directory within the project.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
-</pre></div>
-</div>
-<section id="new-page">
-<h2>New page<a class="headerlink" href="#new-page" title="Permalink to this heading"></a></h2>
-<p>If you need to add a new page create a new file in this directory (docs/<em>filename</em>.rst). Update the content
-within <em>filename</em>.rst to the documentation you wish to add using the guidance provided by the
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/contents.html">Sphinx</a> web page.</p>
+  <p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+The module provides utilities for querying mappings from a SPARQL endpoint. It uses the SPARQLWrapper to interact with the SPARQL endpoint and pandas library for data manipulation. It also uses the RDFLib library for handling RDF.</p>
+<p>Classes:</p>
+<ul class="simple">
+<li><p>EndpointConfig: A container for a SPARQL endpoint’s configuration.</p></li>
+</ul>
+<p>Functions:</p>
+<ul class="simple">
+<li><p>query_mappings: Queries a SPARQL endpoint to obtain a set of mappings.</p></li>
+</ul>
+<section id="classes">
+<h1>Classes:<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h1>
 </section>
-<section id="update-and-page-deployment">
-<h2>Update and page deployment<a class="headerlink" href="#update-and-page-deployment" title="Permalink to this heading"></a></h2>
-<p>This is done automatically by GitHub Actions through a workflow as soon as the
-pull request is merged to the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.</p>
-</section>
+<section id="functions">
+<h1>Functions:<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h1>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sssom.html" class="btn btn-neutral float-left" title="SSSOM Submodules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rdf_util.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sssom_document.html" class="btn btn-neutral float-right" title="Additional SSSOM Object Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; sssom-py 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=525cde36"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="validators.html" />
+    <link rel="prev" title="Additional SSSOM Object Models" href="sssom_document.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sssom-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Quick Install Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_usage.html">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx.html">Update Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_docs/modules.html">Technical Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sssom-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="technical.html">Technical Documentation</a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/mapping-commons/sssom-py/blob/master/docs//master/docs/technical_docs/util.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>## Utility functions</p>
+<p>### <cite>augment_metadata</cite></p>
+<p>Augments metadata with parameters passed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">augment_metadata(msdf:</span> <span class="pre">MappingSetDataFrame,</span> <span class="pre">meta:</span> <span class="pre">dict,</span> <span class="pre">replace_multivalued:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False)</span> <span class="pre">-&gt;</span> <span class="pre">MappingSetDataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>msdf</cite>: MappingSetDataFrame (MSDF) object.</p></li>
+<li><p><cite>meta</cite>: Dictionary that needs to be added/updated to the metadata of the MSDF.</p></li>
+<li><dl class="simple">
+<dt><cite>replace_multivalued</cite>: Multivalued slots should be</dt><dd><p>replaced or not, defaults to False.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>#### Raises</p>
+<ul class="simple">
+<li><p><cite>ValueError</cite>: If type of slot is neither str nor list.</p></li>
+</ul>
+<p>#### Returns</p>
+<p>MSDF with updated metadata.</p>
+<p>—</p>
+<p>### <cite>compare_dataframes</cite></p>
+<p>Perform a diff between two SSSOM dataframes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">compare_dataframes(df1:</span> <span class="pre">pd.DataFrame,</span> <span class="pre">df2:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">MappingSetDiff</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df1</cite>: A mapping dataframe</p></li>
+<li><p><cite>df2</cite>: A mapping dataframe</p></li>
+</ul>
+<p>#### Returns</p>
+<p>A mapping set diff</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>currently does not discriminate between mappings with different predicates</p>
+</div>
+<p>—</p>
+<p>### <cite>create_entity</cite></p>
+<p>Create an Entity object.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">create_entity(identifier:</span> <span class="pre">str,</span> <span class="pre">mappings:</span> <span class="pre">Dict[str,</span> <span class="pre">Any])</span> <span class="pre">-&gt;</span> <span class="pre">Uriorcurie</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>identifier</cite>: Entity Id</p></li>
+<li><p><cite>mappings</cite>: Mapping dictionary</p></li>
+</ul>
+<p>#### Returns</p>
+<p>An Entity object</p>
+<p>—</p>
+<p>### <cite>deal_with_negation</cite></p>
+<p>Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination.</p>
+<p>Rule: negative trumps positive if modulus of confidence values are equal.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">deal_with_negation(df:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: Merged Pandas DataFrame</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Pandas DataFrame with negations addressed</p>
+<p>#### Raises</p>
+<ul class="simple">
+<li><p><cite>ValueError</cite>: If the dataframe is none after assigning default confidence</p></li>
+</ul>
+<p>—</p>
+<p>### <cite>filter_out_prefixes</cite></p>
+<p>Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">filter_out_prefixes(df:</span> <span class="pre">pd.DataFrame,</span> <span class="pre">filter_prefixes:</span> <span class="pre">List[str],</span> <span class="pre">features:</span> <span class="pre">Optional[list]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">require_all_prefixes:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: Pandas DataFrame of SSSOM Mapping</p></li>
+<li><p><cite>filter_prefixes</cite>: List of prefixes</p></li>
+<li><p><cite>features</cite>: List of dataframe column names dataframe to consider</p></li>
+<li><p><cite>require_all_prefixes</cite>: If True, all prefixes must be present in a row to be filtered out</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Pandas Dataframe</p>
+<p>—</p>
+<p>### <cite>filter_prefixes</cite></p>
+<p>Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">filter_prefixes(df:</span> <span class="pre">pd.DataFrame,</span> <span class="pre">filter_prefixes:</span> <span class="pre">List[str],</span> <span class="pre">features:</span> <span class="pre">Optional[list]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">require_all_prefixes:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: Pandas DataFrame of SSSOM Mapping</p></li>
+<li><p><cite>filter_prefixes</cite>: List of prefixes</p></li>
+<li><p><cite>features</cite>: List of dataframe column names dataframe to consider</p></li>
+<li><p><cite>require_all_prefixes</cite>: If True, all prefixes must be present in a row to be filtered out</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Pandas Dataframe</p>
+<p>—</p>
+<p>### <cite>get_all_prefixes</cite></p>
+<p>Fetch all prefixes in the MappingSetDataFrame.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">get_all_prefixes(msdf:</span> <span class="pre">MappingSetDataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">Set[str]</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>msdf</cite>: MappingSetDataFrame</p></li>
+</ul>
+<p>#### Raises</p>
+<ul class="simple">
+<li><p><cite>ValidationError</cite>: If slot is wrong.</p></li>
+<li><p><cite>ValidationError</cite>: If slot is wrong.</p></li>
+</ul>
+<p>#### Returns</p>
+<p>List of all prefixes.</p>
+<p>—</p>
+<p>### <cite>get_dict_from_mapping</cite></p>
+<p>Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">get_dict_from_mapping(map_obj:</span> <span class="pre">Union[Any,</span> <span class="pre">Dict[Any,</span> <span class="pre">Any],</span> <span class="pre">SSSOM_Mapping])</span> <span class="pre">-&gt;</span> <span class="pre">dict</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>map_obj</cite>: Mapping object</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Dictionary</p>
+<p>—</p>
+<p>### <cite>get_file_extension</cite></p>
+<p>Get file extension.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">get_file_extension(file:</span> <span class="pre">Union[str,</span> <span class="pre">Path,</span> <span class="pre">TextIO])</span> <span class="pre">-&gt;</span> <span class="pre">str</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>file</cite>: File path</p></li>
+</ul>
+<p>#### Returns</p>
+<p>format of the file passed, default tsv</p>
+<p>—</p>
+<p>### <cite>get_prefixes_used_in_metadata</cite></p>
+<p>Get a set of prefixes used in CURIEs in the metadata.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">get_prefixes_used_in_metadata(meta:</span> <span class="pre">MetadataType)</span> <span class="pre">-&gt;</span> <span class="pre">Set[str]</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>meta</cite>: MetadataType</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Set of prefixes</p>
+<p>—</p>
+<p>### <cite>get_prefixes_used_in_table</cite></p>
+<p>Get a list of prefixes used in CURIEs in key feature columns in a dataframe.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">get_prefixes_used_in_table(df:</span> <span class="pre">pd.DataFrame,</span> <span class="pre">converter:</span> <span class="pre">Converter)</span> <span class="pre">-&gt;</span> <span class="pre">Set[str]</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: Pandas DataFrame of SSSOM Mapping</p></li>
+<li><p><cite>converter</cite>: Converter</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Set of prefixes</p>
+<p>—</p>
+<p>### <cite>group_mappings</cite></p>
+<p>Group mappings by EntityPairs.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">group_mappings(df:</span> <span class="pre">pd.DataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">Dict[EntityPair,</span> <span class="pre">List[pd.Series]]</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: DataFrame whose <cite>confidence</cite> column needs to be filled.</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Dictionary consisting of the original DataFrame and dataframe consisting of empty confidence values.</p>
+<p>—</p>
+<p>### <cite>inject_metadata_into_df</cite></p>
+<p>Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">inject_metadata_into_df(msdf:</span> <span class="pre">MappingSetDataFrame)</span> <span class="pre">-&gt;</span> <span class="pre">MappingSetDataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>msdf</cite>: MappingSetDataFrame with metadata separate.</p></li>
+</ul>
+<p>#### Returns</p>
+<p>MappingSetDataFrame with metadata as columns</p>
+<p>—</p>
+<p>### <cite>invert_mappings</cite></p>
+<p>Switching subject and objects based on their prefixes and adjusting predicates accordingly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">invert_mappings(df:</span> <span class="pre">pd.DataFrame,</span> <span class="pre">subject_prefix:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">merge_inverted:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">predicate_invert_dictionary:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">None)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: Pandas dataframe.</p></li>
+<li><p><cite>subject_prefix</cite>: Prefix of subjects desired.</p></li>
+<li><dl class="simple">
+<dt><cite>merge_inverted</cite>: If True (default), add inverted dataframe to input else,</dt><dd><p>just return inverted data.</p>
+</dd>
+</dl>
+</li>
+<li><p><cite>predicate_invert_dictionary</cite>: YAML file providing the inverse mapping for predicates.</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Pandas dataframe with all subject IDs having the same prefix.</p>
+<p>—</p>
+<p>### <cite>is_multivalued_slot</cite></p>
+<p>Check whether the slot is multivalued according to the SSSOM specification.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">is_multivalued_slot(slot:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>slot</cite>: Slot name</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Slot is multivalued or no</p>
+<p>—</p>
+<p>### <cite>merge_msdf</cite></p>
+<p>Merge multiple MappingSetDataFrames into one.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">merge_msdf(*msdfs:</span> <span class="pre">MappingSetDataFrame,</span> <span class="pre">reconcile:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False)</span> <span class="pre">-&gt;</span> <span class="pre">MappingSetDataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>msdfs</cite>: A Tuple of MappingSetDataFrames to be merged</p></li>
+<li><dl class="simple">
+<dt><cite>reconcile</cite>: If reconcile=True, then dedupe(remove redundant lower confidence mappings)</dt><dd><p>and reconcile (if msdf contains a higher confidence _negative_ mapping,
+then remove lower confidence positive one. If confidence is the same,
+prefer HumanCurated. If both HumanCurated, prefer negative mapping).
+Defaults to True.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>#### Returns</p>
+<p>Merged MappingSetDataFrame.</p>
+<p>—</p>
+<p>### <cite>parse</cite></p>
+<p>Parse a TSV to a pandas frame.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">parse(filename:</span> <span class="pre">Union[str,</span> <span class="pre">Path])</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>filename</cite>: Filename or filepath</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Pandas DataFrame</p>
+<p>—</p>
+<p>### <cite>raise_for_bad_path</cite></p>
+<p>Raise exception if file path is invalid.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">raise_for_bad_path(file_path:</span> <span class="pre">Union[str,</span> <span class="pre">Path])</span> <span class="pre">-&gt;</span> <span class="pre">None</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>file_path</cite>: File path</p></li>
+</ul>
+<p>#### Raises</p>
+<ul class="simple">
+<li><p><cite>FileNotFoundError</cite>: Invalid file path</p></li>
+</ul>
+<p>—</p>
+<p>### <cite>reconcile_prefix_and_data</cite></p>
+<p>Reconciles prefix_map and translates CURIE switch in dataframe.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">reconcile_prefix_and_data(msdf:</span> <span class="pre">MappingSetDataFrame,</span> <span class="pre">prefix_reconciliation:</span> <span class="pre">dict)</span> <span class="pre">-&gt;</span> <span class="pre">MappingSetDataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>msdf</cite>: Mapping Set DataFrame.</p></li>
+<li><p><cite>prefix_reconciliation</cite>: Prefix reconcilation dictionary from a YAML file</p></li>
+</ul>
+<p>#### Returns</p>
+<p>Mapping Set DataFrame with reconciled prefix_map and data.</p>
+<p>—</p>
+<p>### <cite>safe_compress</cite></p>
+<p>Parse a CURIE from an IRI.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">safe_compress(uri:</span> <span class="pre">str,</span> <span class="pre">converter:</span> <span class="pre">Converter)</span> <span class="pre">-&gt;</span> <span class="pre">str</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>uri</cite>: The URI to parse. If this is already a CURIE, return directly.</p></li>
+<li><p><cite>converter</cite>: Converter used for compression</p></li>
+</ul>
+<p>#### Returns</p>
+<p>A CURIE</p>
+<p>—</p>
+<p>### <cite>sort_df_rows_columns</cite></p>
+<p>Canonical sorting of DataFrame columns.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">sort_df_rows_columns(df:</span> <span class="pre">pd.DataFrame,</span> <span class="pre">by_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">by_rows:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">pd.DataFrame</span>
+<span class="pre">`</span></code></p>
+<p>#### Arguments</p>
+<ul class="simple">
+<li><p><cite>df</cite>: Pandas DataFrame with random column sequence.</p></li>
+<li><p><cite>by_columns</cite>: Boolean flag to sort columns canonically.</p></li>
+<li><p><cite>by_rows</cite>: Boolean flag to sort rows by column #1</p></li>
+</ul>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sssom_document.html" class="btn btn-neutral float-left" title="Additional SSSOM Object Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="validators.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

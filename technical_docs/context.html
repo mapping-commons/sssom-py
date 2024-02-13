@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Functions &mdash; sssom-py 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=525cde36"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="io.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="cliquesummary.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sssom-py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Quick Install Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_usage.html">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx.html">Update Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="technical.html">Technical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cli.html">SSSOM Command Line Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cliques.html">Functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variables-and-constants">Variables and Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#private-functions">Private Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#details">Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parsers.html">Parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rdf_util.html"><code class="docutils literal notranslate"><span class="pre">rewire_graph()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rdf_util.html#module_name-.rewire_node"><code class="docutils literal notranslate"><span class="pre">rewire_node()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sparql_util.html">Classes:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sparql_util.html#functions">Functions:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sssom_document.html">Additional SSSOM Object Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validators.html"><code class="docutils literal notranslate"><span class="pre">VALIDATION_METHODS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_docs/modules.html">Technical Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sssom-py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="technical.html">Technical Documentation</a></li>
+      <li class="breadcrumb-item active">Functions</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/mapping-commons/sssom-py/blob/master/docs//master/docs/technical_docs/context.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>“””
+Utilities for loading JSON-LD contexts
+======================================</p>
+<p>This module provides utility functions for loading JSON-LD contexts.</p>
+<section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h1>
+</section>
+<section id="variables-and-constants">
+<h1>Variables and Constants<a class="headerlink" href="#variables-and-constants" title="Permalink to this heading"></a></h1>
+</section>
+<section id="private-functions">
+<h1>Private Functions<a class="headerlink" href="#private-functions" title="Permalink to this heading"></a></h1>
+</section>
+<section id="details">
+<h1>Details<a class="headerlink" href="#details" title="Permalink to this heading"></a></h1>
+<p><strong>get_converter</strong></p>
+<p>This function returns a converter. The converter is obtained by chaining a built-in prefix map with a default converter. The function is cached using <cite>functools.lru_cache</cite> which means the result is saved and returned for any subsequent calls without re-executing the function.</p>
+<p><strong>_get_default_converter</strong></p>
+<p>This private function returns a converter from an extended prefix map. It checks each record in the converter, keeps only those with a valid NCName (valid names for elements and attributes), and then returns a new Converter with these records.</p>
+<p><strong>_load_sssom_context</strong></p>
+<p>This private function loads the JSON-LD context from a file and returns it as a dictionary.</p>
+<p><strong>_get_built_in_prefix_map</strong></p>
+<p>This private function returns a converter for built-in prefixes. The converter is created from prefixes in the JSON-LD context that match the built-in prefixes. The function is also cached using <cite>functools.lru_cache</cite>.</p>
+<p><strong>ensure_converter</strong></p>
+<p>This function ensures a converter is available. The type of the converter depends on the <cite>prefix_map</cite> parameter. If <cite>prefix_map</cite> is None or an empty dictionary, and <cite>use_defaults</cite> is set to True, it returns the default converter. If <cite>prefix_map</cite> is a non-empty dictionary, it is converted into a converter and chained behind the built-in prefix map. If <cite>prefix_map</cite> is a pre-instantiated converter, it is also chained behind the built-in prefix map.</p>
+<p><strong>ConverterHint</strong></p>
+<p>This type hint specifies a place where one of three options can be given:</p>
+<ol class="arabic simple">
+<li><p>None, which means a default converter is loaded.</p></li>
+<li><p>A legacy prefix mapping dictionary which will get upgraded into a Converter.</p></li>
+<li><p>A Converter which might get modified.</p></li>
+</ol>
+<p><strong>SSSOM_BUILT_IN_PREFIXES</strong></p>
+<p>This variable contains a tuple of built-in prefixes.</p>
+<p><strong>SSSOM_CONTEXT</strong></p>
+<p>This variable is the path to the JSON-LD context file.
+“””</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cliquesummary.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="io.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
