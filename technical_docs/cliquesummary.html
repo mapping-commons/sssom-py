@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Functions" href="context.html" />
-    <link rel="prev" title="Functions" href="cliques.html" /> 
+    <link rel="prev" title="Utilities for identifying and working with cliques/SCCs in mappings graphs" href="cliques.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -81,39 +81,13 @@
              
   <p># sssom-cliquesummary</p>
 <p>Data dictionary for clique summary</p>
-<p>## Classes</p>
-<p>### Clique
-A clique</p>
 <p>Slots:</p>
-<div class="line-block">
-<div class="line">Slot Name | URI | Description | Range |</div>
-</div>
-<p><a href="#id1"><span class="problematic" id="id2">|---|</span></a>—<a href="#id3"><span class="problematic" id="id4">|---|</span></a>—|
-| id | <a class="reference external" href="http://www.w3.org/2002/07/owl#id">http://www.w3.org/2002/07/owl#id</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#string">http://www.w3.org/2001/XMLSchemata#string</a> |
-| members | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/members">http://w3id.org/sssom/schema/cliquesummary/members</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#string">http://www.w3.org/2001/XMLSchemata#string</a> |
-| members_labels | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/members_labels">http://w3id.org/sssom/schema/cliquesummary/members_labels</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#string">http://www.w3.org/2001/XMLSchemata#string</a> |
-| num_members | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/num_members">http://w3id.org/sssom/schema/cliquesummary/num_members</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#integer">http://www.w3.org/2001/XMLSchemata#integer</a> |
-| sources | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/sources">http://w3id.org/sssom/schema/cliquesummary/sources</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#string">http://www.w3.org/2001/XMLSchemata#string</a> |
-| num_sources | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/num_sources">http://w3id.org/sssom/schema/cliquesummary/num_sources</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#integer">http://www.w3.org/2001/XMLSchemata#integer</a> |
-| max_confidence | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/max_confidence">http://w3id.org/sssom/schema/cliquesummary/max_confidence</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |
-| min_confidence | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/min_confidence">http://w3id.org/sssom/schema/cliquesummary/min_confidence</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |
-| avg_confidence | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/avg_confidence">http://w3id.org/sssom/schema/cliquesummary/avg_confidence</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |
-| is_conflated | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/is_conflated">http://w3id.org/sssom/schema/cliquesummary/is_conflated</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#boolean">http://www.w3.org/2001/XMLSchemata#boolean</a> |
-| is_all_conflated | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/is_all_conflated">http://w3id.org/sssom/schema/cliquesummary/is_all_conflated</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#boolean">http://www.w3.org/2001/XMLSchemata#boolean</a> |
-| total_conflated | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/total_conflated">http://w3id.org/sssom/schema/cliquesummary/total_conflated</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#integer">http://www.w3.org/2001/XMLSchemata#integer</a> |
-| proportion_conflated | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/proportion_conflated">http://w3id.org/sssom/schema/cliquesummary/proportion_conflated</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |
-| conflation_score | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/conflation_score">http://w3id.org/sssom/schema/cliquesummary/conflation_score</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |
-| members_count | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/members_count">http://w3id.org/sssom/schema/cliquesummary/members_count</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#integer">http://www.w3.org/2001/XMLSchemata#integer</a> |
-| min_count_by_source | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/min_count_by_source">http://w3id.org/sssom/schema/cliquesummary/min_count_by_source</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#integer">http://www.w3.org/2001/XMLSchemata#integer</a> |
-| max_count_by_source | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/max_count_by_source">http://w3id.org/sssom/schema/cliquesummary/max_count_by_source</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#integer">http://www.w3.org/2001/XMLSchemata#integer</a> |
-| avg_count_by_source | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/avg_count_by_source">http://w3id.org/sssom/schema/cliquesummary/avg_count_by_source</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |
-| harmonic_mean_count_by_source | <a class="reference external" href="http://w3id.org/sssom/schema/cliquesummary/harmonic_mean_count_by_source">http://w3id.org/sssom/schema/cliquesummary/harmonic_mean_count_by_source</a> |  | <a class="reference external" href="http://www.w3.org/2001/XMLSchemata#double">http://www.w3.org/2001/XMLSchemata#double</a> |</p>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cliques.html" class="btn btn-neutral float-left" title="Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cliques.html" class="btn btn-neutral float-left" title="Utilities for identifying and working with cliques/SCCs in mappings graphs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="context.html" class="btn btn-neutral float-right" title="Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

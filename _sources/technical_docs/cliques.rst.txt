@@ -1,6 +1,3 @@
-The following is the Sphinx-compatible reStructuredText documentation for the above code:
-
-```
 Utilities for identifying and working with cliques/SCCs in mappings graphs
 --------------------------------------------------------------------------
 
@@ -46,6 +43,3 @@ Functions
 
    :param doc: A MappingSetDataFrame object.
    :return: A DataFrame containing summary statistics for each clique.
-```
-
-This documentation provides a brief overview of each function in the code, including its purpose, input parameters, and return value.
