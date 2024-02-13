@@ -1,4 +1,3 @@
-```
 .. _Parsers:
 
 Parsers
@@ -59,4 +58,3 @@ Parsers
 .. autofunction:: _ensure_valid_mapping_from_dict
 
 .. autofunction:: _add_valid_mapping_to_list
-```
