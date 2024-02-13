@@ -61,3 +61,13 @@ mypy:
 # .PHONY: deploy-docs
 # deploy-docs:
 # 	cp -r sphinx/_build/html/* docs/
+
+docs-via-gpt:
+	@for file in src/sssom/*.py; do \
+		if [ "$$file" != "src/sssom/__init__.py" ]; then \
+			filename=$$(basename -- "$$file" .py); \
+			codergpt --model gemini-pro document $$file -o "docs/$$filename.rst"; \
+		fi \
+	done
+
+

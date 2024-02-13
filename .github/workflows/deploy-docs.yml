@@ -2,6 +2,8 @@ name: Auto-deployment of Documentation
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ] #TODO: This is added for testing purposes. Remove it later.
 jobs:
   build-docs:
     runs-on: ubuntu-latest
@@ -37,7 +39,7 @@ jobs:
         cp -r _build/* ../gh-pages/
     
     - name: Deploy documentation.
-      if: ${{ github.event_name == 'push' }}
+      if: ${{ github.event_name == 'pull_request' }}  #TODO: Swith back to 'push' later.
       uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         branch: gh-pages
