@@ -3,28 +3,9 @@ Utilities for loading JSON-LD contexts
 
 This module provides utility functions for loading JSON-LD contexts.
 
+
 Functions
 ---------
-
-.. autofunction:: get_converter
-.. autofunction:: ensure_converter
-
-Variables and Constants
------------------------
-
-.. autodata:: SSSOM_BUILT_IN_PREFIXES
-.. autodata:: SSSOM_CONTEXT
-.. autodata:: ConverterHint
-
-Private Functions
------------------
-
-.. autofunction:: _get_default_converter
-.. autofunction:: _load_sssom_context
-.. autofunction:: _get_built_in_prefix_map
-
-Details
--------
 
 **get_converter**
 
