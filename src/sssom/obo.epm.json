@@ -3031,7 +3031,7 @@
         ]
     },
     {
-        "pattern": "^[0-9]+$",
+        "pattern": "^\\d{7}$",
         "prefix": "IDO",
         "prefix_synonyms": [
             "ido"
@@ -16887,6 +16887,16 @@
             "https://bioregistry.io/matrixdb.association:",
             "https://identifiers.org/matrixdb.association/",
             "https://n2t.net/matrixdb.association:"
+        ]
+    },
+    {
+        "pattern": "^\\S+$",
+        "prefix": "mavedb",
+        "uri_prefix": "https://www.mavedb.org/#/experiments/urn:mavedb:",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/mavedb:",
+            "http://www.mavedb.org/#/experiments/urn:mavedb:",
+            "https://bioregistry.io/mavedb:"
         ]
     },
     {
