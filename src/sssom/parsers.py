@@ -915,10 +915,7 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
     try:
         m = Mapping(**mdict)
     except ValueError as e:
-        logging.warning(
-            f"{mdict} not well-formed: {e}",
-            extra={"log_id": "mapping-not-wellformed"}
-        )
+        logging.warning(f"{mdict} not well-formed: {e}", extra={"log_id": "mapping-not-wellformed"})
         return None
     else:
         return m
