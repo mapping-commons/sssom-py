@@ -32,6 +32,7 @@ from sssom.constants import (
     SchemaValidationType,
     _get_sssom_schema_object,
 )
+from sssom.logging import SSSOMLogger
 
 from . import __version__
 from .cliques import split_into_cliques, summarize_cliques
@@ -61,6 +62,7 @@ from .util import (
 )
 from .writers import WRITER_FUNCTIONS, write_table
 
+_logging.setLoggerClass(SSSOMLogger)
 logging = _logging.getLogger(__name__)
 
 SSSOM_SV_OBJECT = _get_sssom_schema_object()
@@ -159,6 +161,7 @@ def convert(input: str, output: TextIO, output_format: str):
         sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl
     """  # noqa: DAR101
     convert_file(input_path=input, output=output, output_format=output_format)
+    _log_summary()
 
 
 # Input and metadata would be files (file paths). Check if exists.
@@ -399,6 +402,7 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         f"Diff between {input1} and {input2}. See comment column for information."
     )
     write_table(msdf, output)
+    _log_summary()
 
 
 @main.command()
@@ -632,6 +636,12 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
 #     write_table(msdf=filtered_msdf, file=output)
 
 
+def _log_summary():
+    logger = _logging.getLogger()
+    if isinstance(logger, SSSOMLogger):
+        logger.print_summary()
+
+
 def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
     """Dynamically generate click options.
 
@@ -729,7 +739,8 @@ def remove(input: str, output: TextIO, remove_map: str):
     "--merge-inverted/--no-merge-inverted",
     default=True,
     is_flag=True,
-    help="If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.",
+    help="If True (default), add inverted mappings to the input mapping set, "
+    "else, just return inverted mappings as a separate mapping set.",
 )
 @click.option("--inverse-map", help="Path to file that contains the inverse predicate dictionary.")
 def invert(
