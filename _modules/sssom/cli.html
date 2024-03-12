@@ -830,11 +830,13 @@
     <span class="k">if</span> <span class="n">inverse_map</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inverse_map</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">im</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
             <span class="n">inverse_dictionary</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+        <span class="n">inverse_predicate_map</span> <span class="o">=</span> <span class="n">inverse_dictionary</span><span class="p">[</span><span class="s2">&quot;inverse_predicate_map&quot;</span><span class="p">]</span>
+
     <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">invert_mappings</span><span class="p">(</span>
         <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
         <span class="n">subject_prefix</span><span class="p">,</span>
         <span class="n">merge_inverted</span><span class="p">,</span>
-        <span class="n">inverse_dictionary</span><span class="p">[</span><span class="s2">&quot;inverse_predicate_map&quot;</span><span class="p">],</span>
+        <span class="n">inverse_predicate_map</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 
