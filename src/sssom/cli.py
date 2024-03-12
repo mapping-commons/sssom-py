@@ -753,11 +753,13 @@ def invert(
     if inverse_map:
         with open(inverse_map, "r") as im:  # type: ignore
             inverse_dictionary = yaml.safe_load(im)
+        inverse_map = inverse_dictionary["inverse_predicate_map"]
+
     msdf.df = invert_mappings(
         msdf.df,
         subject_prefix,
         merge_inverted,
-        inverse_dictionary["inverse_predicate_map"],
+        inverse_map,
     )
     write_table(msdf, output)
 
