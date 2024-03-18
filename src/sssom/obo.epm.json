@@ -2474,6 +2474,20 @@
         ]
     },
     {
+        "prefix": "GALLONT",
+        "prefix_synonyms": [
+            "gallont"
+        ],
+        "uri_prefix": "http://purl.obolibrary.org/obo/GALLONT_",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/GALLONT:",
+            "http://bioregistry.io/gallont:",
+            "https://bioregistry.io/GALLONT:",
+            "https://bioregistry.io/gallont:",
+            "https://purl.obolibrary.org/obo/GALLONT_"
+        ]
+    },
+    {
         "pattern": "^\\d{8}$",
         "prefix": "GAZ",
         "prefix_synonyms": [
@@ -8042,6 +8056,16 @@
             "https://identifiers.org/biocatalogue.service/",
             "https://identifiers.org/biocatalogue.service:",
             "https://n2t.net/biocatalogue.service:"
+        ]
+    },
+    {
+        "pattern": "^\\d+$",
+        "prefix": "biocompute",
+        "uri_prefix": "https://biocomputeobject.org/BCO_",
+        "uri_prefix_synonyms": [
+            "http://biocomputeobject.org/BCO_",
+            "http://bioregistry.io/biocompute:",
+            "https://bioregistry.io/biocompute:"
         ]
     },
     {
@@ -19705,6 +19729,16 @@
             "https://bioregistry.io/OMOP:",
             "https://bioregistry.io/omop:",
             "https://data.ohdsi.org/concept/"
+        ]
+    },
+    {
+        "pattern": "^\\d+$",
+        "prefix": "omx.dataset",
+        "uri_prefix": "https://data.oncomx.org/OMX_",
+        "uri_prefix_synonyms": [
+            "http://bioregistry.io/omx.dataset:",
+            "http://data.oncomx.org/OMX_",
+            "https://bioregistry.io/omx.dataset:"
         ]
     },
     {
