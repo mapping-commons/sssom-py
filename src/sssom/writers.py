@@ -26,6 +26,7 @@ from .util import (
     URI_SSSOM_MAPPINGS,
     MappingSetDataFrame,
     get_file_extension,
+    invert_mappings,
     sort_df_rows_columns,
 )
 
@@ -150,6 +151,12 @@ def write_ontoportal_json(
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to OWL in an RDF graph."""
+    msdf.df = invert_mappings(
+        df=msdf.df,
+        merge_inverted=False,
+        update_justification=False,
+        predicate_invert_dictionary={"sssom:superClassOf": "rdfs:subClassOf"},
+    )
     graph = to_rdf_graph(msdf=msdf)
 
     for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
