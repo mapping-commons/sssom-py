@@ -67,7 +67,6 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 0)
 
-
     def test_to_rdf(self):
         """Test converting the basic example to a basic RDF graph."""
         g = to_rdf_graph(self.msdf)
