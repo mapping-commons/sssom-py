@@ -1469,6 +1469,7 @@
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">subject_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">merge_inverted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">update_justification</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">predicate_invert_dictionary</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Switching subject and objects based on their prefixes and adjusting predicates accordingly.</span>
@@ -1477,6 +1478,8 @@
 <span class="sd">    :param subject_prefix: Prefix of subjects desired.</span>
 <span class="sd">    :param merge_inverted: If True (default), add inverted dataframe to input else,</span>
 <span class="sd">                          just return inverted data.</span>
+<span class="sd">    :param update_justification: If True (default), the justification is updated to &quot;sempav:MappingInversion&quot;,</span>
+<span class="sd">                          else it is left as it is.</span>
 <span class="sd">    :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.</span>
 <span class="sd">    :return: Pandas dataframe with all subject IDs having the same prefix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1535,7 +1538,8 @@
     <span class="p">)</span>
     <span class="n">inverted_df</span> <span class="o">=</span> <span class="n">inverted_df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
     <span class="n">inverted_df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">inverted_df</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">predicate_invert_map</span><span class="p">)</span>
-    <span class="n">inverted_df</span><span class="p">[</span><span class="n">MAPPING_JUSTIFICATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">SEMAPV</span><span class="o">.</span><span class="n">MappingInversion</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">if</span> <span class="n">update_justification</span><span class="p">:</span>
+        <span class="n">inverted_df</span><span class="p">[</span><span class="n">MAPPING_JUSTIFICATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">SEMAPV</span><span class="o">.</span><span class="n">MappingInversion</span><span class="o">.</span><span class="n">value</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">prefixed_subjects_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">return_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">prefixed_subjects_df</span><span class="p">,</span> <span class="n">inverted_df</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>

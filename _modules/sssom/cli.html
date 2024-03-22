@@ -808,12 +808,19 @@
     <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--update-justification/--no-update-justification&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If True (default), the justification is updated to &#39;sempav:MappingInversion&#39;, else it is left as it is.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--inverse-map&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to file that contains the inverse predicate dictionary.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">invert</span><span class="p">(</span>
     <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">subject_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">merge_inverted</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">update_justification</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">inverse_map</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -823,6 +830,8 @@
 <span class="sd">    :param subject_prefix: Prefix of all subject_ids.</span>
 <span class="sd">    :param merge_inverted: If True (default), add inverted dataframe to input else,</span>
 <span class="sd">                          just return inverted data.</span>
+<span class="sd">    :param update_justification: If True (default), the justification is updated to &quot;sempav:MappingInversion&quot;,</span>
+<span class="sd">                          else it is left as it is.</span>
 <span class="sd">    :param inverse_map: YAML file providing the inverse mapping for predicates.</span>
 <span class="sd">    :param output: SSSOM TSV file with columns sorted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -831,12 +840,15 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inverse_map</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">im</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
             <span class="n">inverse_dictionary</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
         <span class="n">inverse_predicate_map</span> <span class="o">=</span> <span class="n">inverse_dictionary</span><span class="p">[</span><span class="s2">&quot;inverse_predicate_map&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inverse_predicate_map</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">msdf</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">invert_mappings</span><span class="p">(</span>
-        <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
-        <span class="n">subject_prefix</span><span class="p">,</span>
-        <span class="n">merge_inverted</span><span class="p">,</span>
-        <span class="n">inverse_predicate_map</span><span class="p">,</span>
+        <span class="n">df</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
+        <span class="n">subject_prefix</span><span class="o">=</span><span class="n">subject_prefix</span><span class="p">,</span>
+        <span class="n">merge_inverted</span><span class="o">=</span><span class="n">merge_inverted</span><span class="p">,</span>
+        <span class="n">update_justification</span><span class="o">=</span><span class="n">update_justification</span><span class="p">,</span>
+        <span class="n">predicate_invert_dictionary</span><span class="o">=</span><span class="n">inverse_predicate_map</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 

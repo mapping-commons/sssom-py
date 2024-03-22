@@ -372,7 +372,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 <dd><p>Desired output format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tsv | owl | ontoportal_json | fhir_json | json | rdf | turtle | xml | nt | ttl</p>
+<dd class="field-odd"><p>tsv | owl | ontoportal_json | fhir_json | json | rdf | xml | ttl | turtle | nt</p>
 </dd>
 </dl>
 </dd></dl>
@@ -815,11 +815,15 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 <dd class="field-odd"><p>If True (default), add inverted dataframe to input else,
 just return inverted data.</p>
 </dd>
-<dt class="field-even">param inverse_map<span class="colon">:</span></dt>
-<dd class="field-even"><p>YAML file providing the inverse mapping for predicates.</p>
+<dt class="field-even">param update_justification<span class="colon">:</span></dt>
+<dd class="field-even"><p>If True (default), the justification is updated to “sempav:MappingInversion”,
+else it is left as it is.</p>
 </dd>
-<dt class="field-odd">param output<span class="colon">:</span></dt>
-<dd class="field-odd"><p>SSSOM TSV file with columns sorted.</p>
+<dt class="field-odd">param inverse_map<span class="colon">:</span></dt>
+<dd class="field-odd"><p>YAML file providing the inverse mapping for predicates.</p>
+</dd>
+<dt class="field-even">param output<span class="colon">:</span></dt>
+<dd class="field-even"><p>SSSOM TSV file with columns sorted.</p>
 </dd>
 </dl>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sssom<span class="w"> </span>invert<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>INPUT
@@ -842,6 +846,12 @@ just return inverted data.</p>
 <dt class="sig sig-object std" id="cmdoption-sssom-invert-merge-inverted">
 <span id="cmdoption-sssom-invert-no-merge-inverted"></span><span class="sig-name descname"><span class="pre">--merge-inverted</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-merge-inverted</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-invert-merge-inverted" title="Permalink to this definition"></a></dt>
 <dd><p>If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-sssom-invert-update-justification">
+<span id="cmdoption-sssom-invert-no-update-justification"></span><span class="sig-name descname"><span class="pre">--update-justification</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-update-justification</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-sssom-invert-update-justification" title="Permalink to this definition"></a></dt>
+<dd><p>If True (default), the justification is updated to ‘sempav:MappingInversion’, else it is left as it is.</p>
 </dd></dl>
 
 <dl class="std option">
