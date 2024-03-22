@@ -731,12 +731,19 @@ def remove(input: str, output: TextIO, remove_map: str):
     is_flag=True,
     help="If True (default), add inverted mappings to the input mapping set, else, just return inverted mappings as a separate mapping set.",
 )
+@click.option(
+    "--update-justification/--no-update-justification",
+    default=True,
+    is_flag=True,
+    help="If True (default), the justification is updated to 'sempav:MappingInversion', else it is left as it is.",
+)
 @click.option("--inverse-map", help="Path to file that contains the inverse predicate dictionary.")
 def invert(
     input: str,
     output: TextIO,
     subject_prefix: Optional[str],
     merge_inverted: bool,
+    update_justification: bool,
     inverse_map: TextIO,
 ):
     """
@@ -746,6 +753,8 @@ def invert(
     :param subject_prefix: Prefix of all subject_ids.
     :param merge_inverted: If True (default), add inverted dataframe to input else,
                           just return inverted data.
+    :param update_justification: If True (default), the justification is updated to "sempav:MappingInversion",
+                          else it is left as it is.
     :param inverse_map: YAML file providing the inverse mapping for predicates.
     :param output: SSSOM TSV file with columns sorted.
     """
@@ -754,12 +763,15 @@ def invert(
         with open(inverse_map, "r") as im:  # type: ignore
             inverse_dictionary = yaml.safe_load(im)
         inverse_predicate_map = inverse_dictionary["inverse_predicate_map"]
+    else:
+        inverse_predicate_map = None
 
     msdf.df = invert_mappings(
-        msdf.df,
-        subject_prefix,
-        merge_inverted,
-        inverse_predicate_map,
+        df=msdf.df,
+        subject_prefix=subject_prefix,
+        merge_inverted=merge_inverted,
+        update_justification=update_justification,
+        predicate_invert_dictionary=inverse_predicate_map,
     )
     write_table(msdf, output)
 

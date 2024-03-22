@@ -1392,6 +1392,7 @@ def invert_mappings(
     df: pd.DataFrame,
     subject_prefix: Optional[str] = None,
     merge_inverted: bool = True,
+    update_justification: bool = True,
     predicate_invert_dictionary: dict = None,
 ) -> pd.DataFrame:
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
@@ -1400,6 +1401,8 @@ def invert_mappings(
     :param subject_prefix: Prefix of subjects desired.
     :param merge_inverted: If True (default), add inverted dataframe to input else,
                           just return inverted data.
+    :param update_justification: If True (default), the justification is updated to "sempav:MappingInversion",
+                          else it is left as it is.
     :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
@@ -1458,7 +1461,8 @@ def invert_mappings(
     )
     inverted_df = inverted_df[df.columns]
     inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_map)
-    inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
+    if update_justification:
+        inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
     if not prefixed_subjects_df.empty:
         return_df = pd.concat([prefixed_subjects_df, inverted_df]).drop_duplicates()
     else:
