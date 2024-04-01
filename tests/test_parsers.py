@@ -384,7 +384,7 @@ class TestParseExplicit(unittest.TestCase):
         #: prefix map
         expected_bimap = {
             "DOID": "http://purl.obolibrary.org/obo/DOID_",
-            "UMLS": "http://linkedlifedata.com/resource/umls/id/",
+            "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
             "orcid": "https://orcid.org/",
             "owl": "http://www.w3.org/2002/07/owl#",
             "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
