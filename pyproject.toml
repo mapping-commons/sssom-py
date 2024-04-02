@@ -14,10 +14,10 @@ readme = "README.md"
 python = "^3.8"
 click = ">=8.1.6"
 curies = ">=0.7.3"
-linkml-runtime = ">=1.5.5"
+linkml-runtime = "^1.7.5"
 pandas = ">1.0.3"
 pansql = { version = ">=0.0.1", extras = ["pansql"] }
-sssom-schema = ">=0.14.0"
+sssom-schema = "^0.15.2"
 networkx = { version = ">=3.1", extras = ["networkx"] }
 sparqlwrapper = ">=2.0.0"
 validators = ">=0.20.0"
