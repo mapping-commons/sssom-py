@@ -44,7 +44,7 @@ class TestParse(unittest.TestCase):
         self.df_url = (
             "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
         )
-        self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"
+        self.rdf_graph_file = f"{test_data_dir}/basic.sssom2.rdf"
         self.rdf_graph = Graph()
         self.rdf_graph.parse(self.rdf_graph_file, format="ttl")
 
@@ -384,7 +384,7 @@ class TestParseExplicit(unittest.TestCase):
         #: prefix map
         expected_bimap = {
             "DOID": "http://purl.obolibrary.org/obo/DOID_",
-            "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
+            "UMLS": "http://linkedlifedata.com/resource/umls/id/",
             "orcid": "https://orcid.org/",
             "owl": "http://www.w3.org/2002/07/owl#",
             "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
