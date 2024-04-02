@@ -11,35 +11,36 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-click = ">=8.1.6"
-curies = ">=0.7.3"
+python = "^3.9"
+click = ">=8.1.7"
+curies = ">=0.7.8"
+pandas = ">=2.2.1"
 linkml-runtime = "^1.7.5"
-pandas = ">1.0.3"
-pansql = { version = ">=0.0.1", extras = ["pansql"] }
 sssom-schema = "^0.15.2"
-networkx = { version = ">=3.1", extras = ["networkx"] }
-sparqlwrapper = ">=2.0.0"
-validators = ">=0.20.0"
+SPARQLWrapper = ">=2.0.0"
+validators = ">=0.25.0"
 deprecation = "^2.1.0"
-pyyaml = "^6.0.1"
-rdflib = ">=6.0.0"
+PyYAML = "^6.0.1"
+rdflib = ">=7.0.0"
+importlib-resources = "^6.4.0"
 scipy = {version = "*", extras = ["scipy"]}
-importlib-resources = "^6.1.1"
+networkx = {version = "^3.2.1", extras = ["networkx"]}
+pansql = {version = "^0.0.1", extras = ["pansql"]}
+
 
 [tool.poetry.group.dev.dependencies]
-pytest = {version = ">=7.1.2"}
-tox = {version = ">=3.25.1"}
+pytest = "^8.1.1"
+tox = "^4.14.2"
 
 [tool.poetry.group.docs]
 optional = true
 
 [tool.poetry.group.docs.dependencies]
-sphinx = {version = ">=6.1.3"}
-sphinx-rtd-theme = {version = ">=1.0.0"}
-sphinx-autodoc-typehints = {version = ">=1.2.0"}
-sphinx-click = {version = ">=4.3.0"}
-myst-parser = {version = ">=0.18.1"}
+sphinx = ">=7.2.6"
+sphinx-rtd-theme = ">=2.0.0"
+sphinx-autodoc-typehints = ">=2.0.0"
+sphinx-click = ">=5.1.0"
+myst-parser = ">=2.0.0"
 
 [tool.poetry.scripts]
 sssom = "sssom.cli:main"
