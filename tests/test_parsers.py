@@ -44,7 +44,7 @@ class TestParse(unittest.TestCase):
         self.df_url = (
             "https://raw.githubusercontent.com/mapping-commons/sssom-py/master/tests/data/basic.tsv"
         )
-        self.rdf_graph_file = f"{test_data_dir}/basic.sssom2.rdf"
+        self.rdf_graph_file = f"{test_data_dir}/basic.sssom.rdf"
         self.rdf_graph = Graph()
         self.rdf_graph.parse(self.rdf_graph_file, format="ttl")
 
