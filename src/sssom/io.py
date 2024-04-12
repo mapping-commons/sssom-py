@@ -185,6 +185,8 @@ def extract_iris(
         return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in pred_list)))
     if isinstance(input, list):
         return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in input)))
+    if isinstance(input, tuple):
+        return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in input)))
     if converter.is_uri(input):
         return [converter.standardize_uri(input, strict=True)]
     if converter.is_curie(input):
