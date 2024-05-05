@@ -99,20 +99,20 @@ def write_rdf(
     print(t.decode(), file=file)
 
 
-# todo: not sure the need for serialization param here; seems superfluous for some of these funcs
-def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir") -> None:
-    """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
-    data = to_fhir_json(msdf)
-    json.dump(data, output, indent=2)
-
-
 def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
     """Write a mapping set dataframe to the file as JSON."""
-    if serialisation == "json":
-        data = to_json(msdf)
-        json.dump(data, output, indent=2)
-    else:
-        raise ValueError(f"Unknown json format: {serialisation}, currently only json supported")
+    func_map: Dict[str, Callable] = {
+        "fhir_json": to_fhir_json,
+        "json": to_json,
+        "ontoportal_json": to_ontoportal_json,
+    }
+    if serialisation not in func_map:
+        raise ValueError(
+            f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(func_map.keys())}"
+        )
+    func: Callable = func_map[serialisation]
+    data = func(msdf)
+    json.dump(data, output, indent=2)
 
 
 def write_owl(
@@ -131,18 +131,6 @@ def write_owl(
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     print(t.decode(), file=file)
-
-
-def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
-) -> None:
-    """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
-    if serialisation != "ontoportal_json":
-        raise ValueError(
-            f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
-        )
-    data = to_ontoportal_json(msdf)
-    json.dump(data, output, indent=2)
 
 
 # Converters
@@ -264,9 +252,6 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
     return graph
 
 
-# TODO: add to CLI & to these functions: r4 vs r5 param
-# TODO: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
-#  - todo: later: allow any nested aribtrary override: (get in kwargs, else metadata.get(key, None))
 def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     """Convert a mapping set dataframe to a JSON object.
 
@@ -275,6 +260,10 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
 
     Resources:
       - ConcpetMap::SSSOM mapping spreadsheet: https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
+
+    TODO: add to CLI & to these functions: r4 vs r5 param
+    TODO: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
+     - todo: later: allow any nested aribtrary override: (get in kwargs, else metadata.get(key, None))
 
     Minor todos
     todo: `mapping_justification` consider `ValueString` -> `ValueCoding` https://github.com/timsbiomed/issues/issues/152
@@ -496,9 +485,9 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
     "tsv": (write_table, None),
     "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
-    "ontoportal_json": (write_ontoportal_json, None),
-    "fhir_json": (write_fhir_json, None),
-    "json": (write_json, None),
+    "ontoportal_json": (write_json, "ontoportal_json"),
+    "fhir_json": (write_json, "fhir_json"),
+    "json": (write_json, "json"),
     "rdf": (write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION),
 }
 for rdf_format in RDF_FORMATS:
