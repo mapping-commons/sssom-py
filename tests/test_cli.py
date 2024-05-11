@@ -52,6 +52,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             elif test.inputformat == "tsv":
                 # These test only run on TSV inputs
                 self.run_convert(runner, test)
+                self.run_convert(runner, test, "ontoportal_json")
                 self.run_validate(runner, test)
                 self.run_parse(runner, test)
 
@@ -89,9 +90,8 @@ class SSSOMCLITestSuite(unittest.TestCase):
         if result.exit_code:
             raise RuntimeError(f"{obj} failed") from result.exception
 
-    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
+    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase, fmt="owl") -> Result:
         """Run the convert test."""
-        fmt = "owl"
         params = [
             test_case.filepath,
             "--output",
