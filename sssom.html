@@ -2022,30 +2022,23 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <dd class="field-odd"><p>Dict: A Dictionary serializable as JSON.</p>
 </dd>
 </dl>
-<dl class="simple">
+<dl>
 <dt>Resources:</dt><dd><ul class="simple">
-<li><p>ConcpetMap::SSSOM mapping spreadsheet: https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</p></li>
+<li><p>ConceptMap::SSSOM mapping spreadsheet:</p></li>
 </ul>
+<p><a class="reference external" href="https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118">https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</a></p>
 </dd>
 </dl>
-<p>TODOs
-todo: when/how to conform to R5 instead of R4?: <a class="reference external" href="https://build.fhir.org/conceptmap.html">https://build.fhir.org/conceptmap.html</a>
-TODO: Add additional fields from both specs</p>
+<p>TODO: add to CLI &amp; to these functions: r4 vs r5 param
+TODO: What if the msdf doesn’t have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>ConceptMap spec fields: <a class="reference external" href="https://www.hl7.org/fhir/r4/conceptmap.html">https://www.hl7.org/fhir/r4/conceptmap.html</a></p></li>
-</ul>
-<blockquote>
-<div><ul class="simple">
-<li><p>Joe: Can also utilize: /Users/joeflack4/projects/hapi-fhir-jpaserver-starter/_archive/issues/sssom/example_json/minimal.json</p></li>
+<li><p>todo: later: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))</p></li>
 </ul>
 </div></blockquote>
-<ul class="simple">
-<li><p>SSSOM more fields:</p></li>
-<li><p>prefix_map</p></li>
-<li><p>SSSOM spec fields: <a class="reference external" href="https://mapping-commons.github.io/sssom/Mapping/">https://mapping-commons.github.io/sssom/Mapping/</a></p></li>
-</ul>
-</div></blockquote>
+<p>Minor todos
+todo: mapping_justification: consider <cite>ValueString</cite> -&gt; <cite>ValueCoding</cite> <a class="reference external" href="https://github.com/timsbiomed/issues/issues/152">https://github.com/timsbiomed/issues/issues/152</a>
+todo: when/how to conform to R5 instead of R4?: <a class="reference external" href="https://build.fhir.org/conceptmap.html">https://build.fhir.org/conceptmap.html</a></p>
 </dd></dl>
 
 <dl class="py function">
@@ -2094,13 +2087,12 @@ TODO: Add additional fields from both specs</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.writers.write_fhir_json">
-<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_fhir_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fhir'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#write_fhir_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_fhir_json" title="Permalink to this definition"></a></dt>
-<dd><p>Write a mapping set dataframe to the file as FHIR ConceptMap JSON.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_fhir_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fhir_json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#write_fhir_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_fhir_json" title="Permalink to this definition"></a></dt>
+<dd><p>Write a mapping set dataframe to the file as FHIR ConceptMap JSON.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.4.7: </span>Use write_json() instead</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2108,8 +2100,21 @@ TODO: Add additional fields from both specs</p>
 <span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#write_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_json" title="Permalink to this definition"></a></dt>
 <dd><p>Write a mapping set dataframe to the file as JSON.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>serialisation</strong> – <p>The JSON format to use. Supported formats are:
+- fhir_json: Outputs JSON in FHIR ConceptMap format (<a class="reference external" href="https://fhir-ru.github.io/conceptmap.html">https://fhir-ru.github.io/conceptmap.html</a>)</p>
+<blockquote>
+<div><p><a class="reference external" href="https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json">https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json</a></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>json: Outputs to SSSOM JSON <a class="reference external" href="https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json">https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json</a></p></li>
+<li><p>ontoportal_json: Outputs JSON in Ontoportal format (<a class="reference external" href="https://ontoportal.org/">https://ontoportal.org/</a>)
+<a class="reference external" href="https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json">https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json</a></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2117,12 +2122,11 @@ TODO: Add additional fields from both specs</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.writers.write_ontoportal_json">
 <span class="sig-prename descclassname"><span class="pre">sssom.writers.</span></span><span class="sig-name descname"><span class="pre">write_ontoportal_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ontoportal_json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/writers.html#write_ontoportal_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.writers.write_ontoportal_json" title="Permalink to this definition"></a></dt>
-<dd><p>Write a mapping set dataframe to the file as the ontoportal mapping JSON model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
-</dd>
-</dl>
+<dd><p>Write a mapping set dataframe to the file as the ontoportal mapping JSON model.
+:rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.4.7: </span>Use write_json() instead</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
