@@ -15,6 +15,7 @@ from sssom.parsers import get_parsing_function, parse_sssom_table, to_mapping_se
 from sssom.sssom_document import MappingSetDocument
 from sssom.util import MappingSetDataFrame, to_mapping_set_dataframe
 from sssom.writers import (
+    to_fhir_json,
     to_json,
     to_ontoportal_json,
     to_owl_graph,
@@ -62,6 +63,8 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 self._test_to_json(mdoc, test)
                 logging.info("Testing ontoportal JSON export")
                 self._test_to_ontoportal_json(mdoc, test)
+                logging.info("Testing fhir_json JSON export")
+                self._test_to_fhir_json(mdoc, test)
 
     def _test_to_owl_graph(self, mdoc, test):
         msdf = to_mapping_set_dataframe(mdoc)
@@ -84,6 +87,13 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(len(jsonob), test.ct_json_elements)
         with open(test.get_out_file("json"), "w") as file:
             write_json(msdf, file, serialisation="json")
+
+    def _test_to_fhir_json(self, mdoc, test: SSSOMTestCase):
+        msdf = to_mapping_set_dataframe(mdoc)
+        d = to_fhir_json(msdf)
+        self.assertEqual(
+            len(d["group"][0]["element"]), test.ct_data_frame_rows, "wrong number of mappings."
+        )
 
     def _test_to_ontoportal_json(self, mdoc, test: SSSOMTestCase):
         msdf = to_mapping_set_dataframe(mdoc)

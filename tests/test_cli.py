@@ -53,6 +53,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 # These test only run on TSV inputs
                 self.run_convert(runner, test)
                 self.run_convert(runner, test, "ontoportal_json")
+                self.run_convert(runner, test, "fhir_json")
                 self.run_validate(runner, test)
                 self.run_parse(runner, test)
 

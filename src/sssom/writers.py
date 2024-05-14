@@ -8,6 +8,7 @@ from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 import pandas as pd
 import yaml
 from curies import Converter
+from deprecation import deprecated
 from jsonasobj2 import JsonObj
 from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
 from linkml_runtime.utils.schemaview import SchemaView
@@ -99,20 +100,50 @@ def write_rdf(
     print(t.decode(), file=file)
 
 
-# todo: not sure the need for serialization param here; seems superfluous for some of these funcs
-def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir") -> None:
-    """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
-    data = to_fhir_json(msdf)
+def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+    """Write a mapping set dataframe to the file as JSON.
+
+    :param serialisation: The JSON format to use. Supported formats are:
+     - fhir_json: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
+       https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
+     - json: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
+     - ontoportal_json: Outputs JSON in Ontoportal format (https://ontoportal.org/)
+       https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
+    """
+    func_map: Dict[str, Callable] = {
+        "fhir_json": to_fhir_json,
+        "json": to_json,
+        "ontoportal_json": to_ontoportal_json,
+    }
+    if serialisation not in func_map:
+        raise ValueError(
+            f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(func_map.keys())}"
+        )
+    func: Callable = func_map[serialisation]
+    data = func(msdf)
     json.dump(data, output, indent=2)
 
 
-def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
-    """Write a mapping set dataframe to the file as JSON."""
-    if serialisation == "json":
-        data = to_json(msdf)
-        json.dump(data, output, indent=2)
-    else:
-        raise ValueError(f"Unknown json format: {serialisation}, currently only json supported")
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
+def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir_json") -> None:
+    """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
+    if serialisation != "fhir_json":
+        raise ValueError(
+            f"Unknown json format: {serialisation}, currently only fhir_json supported"
+        )
+    write_json(msdf, output, serialisation="fhir_json")
+
+
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
+def write_ontoportal_json(
+    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
+) -> None:
+    """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
+    if serialisation != "ontoportal_json":
+        raise ValueError(
+            f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
+        )
+    write_json(msdf, output, serialisation="ontoportal_json")
 
 
 def write_owl(
@@ -131,18 +162,6 @@ def write_owl(
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     print(t.decode(), file=file)
-
-
-def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
-) -> None:
-    """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
-    if serialisation != "ontoportal_json":
-        raise ValueError(
-            f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
-        )
-    data = to_ontoportal_json(msdf)
-    json.dump(data, output, indent=2)
 
 
 # Converters
@@ -271,29 +290,77 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     :return: Dict: A Dictionary serializable as JSON.
 
     Resources:
-      - ConcpetMap::SSSOM mapping spreadsheet: https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
+      - ConceptMap::SSSOM mapping spreadsheet:
+      https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
 
-    TODOs
+    TODO: add to CLI & to these functions: r4 vs r5 param
+    TODO: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
+     - todo: later: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))
+
+    Minor todos
+    todo: mapping_justification: consider `ValueString` -> `ValueCoding` https://github.com/timsbiomed/issues/issues/152
     todo: when/how to conform to R5 instead of R4?: https://build.fhir.org/conceptmap.html
-    TODO: Add additional fields from both specs
-     - ConceptMap spec fields: https://www.hl7.org/fhir/r4/conceptmap.html
-      - Joe: Can also utilize: /Users/joeflack4/projects/hapi-fhir-jpaserver-starter/_archive/issues/sssom/example_json/minimal.json
-     - SSSOM more fields:
-     - prefix_map
-     - SSSOM spec fields: https://mapping-commons.github.io/sssom/Mapping/
     """
+    # Constants
     df: pd.DataFrame = msdf.df
+    # TODO: R4 (try this first)
+    #  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint
+    #  https://www.hl7.org/fhir/r4/conceptmap.html
+    # todo: r4: if not found, should likely be `null` or something. check docs to see if nullable, else ask on Zulip
+    # TODO: R5 Needs to be one of:
+    #  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to
+    #  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html
+    #  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones
+    #  and then add the original SSSOM mapping CURIE fields somewhere else
+    # https://www.hl7.org/fhir/valueset-concept-map-equivalence.html
+    # https://github.com/mapping-commons/sssom-py/issues/258
+    equivalence_map = {
+        # relateedto: The concepts are related to each other, and have at least some overlap in meaning, but the exact
+        #   relationship is not known.
+        "skos:related": "relatedto",
+        "skos:relatedMatch": "relatedto",  # canonical
+        # equivalent: The definitions of the concepts mean the same thing (including when structural implications of
+        #   meaning are considered) (i.e. extensionally identical).
+        "skos:exactMatch": "equivalent",
+        # equal: The definitions of the concepts are exactly the same (i.e. only grammatical differences) and structural
+        #   implications of meaning are identical or irrelevant (i.e. intentionally identical).
+        "equal": "equal",  # todo what's difference between this and above? which to use?
+        # wider: The target mapping is wider in meaning than the source concept.
+        "skos:broader": "wider",
+        "skos:broadMatch": "wider",  # canonical
+        # subsumes: The target mapping subsumes the meaning of the source concept (e.g. the source is-a target).
+        "rdfs:subClassOf": "subsumes",
+        # narrower: The target mapping is narrower in meaning than the source concept. The sense in which the mapping is
+        #   narrower SHALL be described in the comments in this case, and applications should be careful when attempting
+        #   to use these mappings operationally.
+        "skos:narrower": "narrower",
+        "skos:narrowMatch": "narrower",  # canonical
+        # specializes: The target mapping specializes the meaning of the source concept (e.g. the target is-a source).
+        "sssom:superClassOf": "specializes",
+        # inexact: The target mapping overlaps with the source concept, but both source and target cover additional
+        # meaning, or the definitions are imprecise and it is uncertain whether they have the same boundaries to their
+        # meaning. The sense in which the mapping is inexact SHALL be described in the comments in this case, and
+        # applications should be careful when attempting to use these mappings operationally
+        "skos:closeMatch": "inexact",
+        # unmatched: There is no match for this concept in the target code system.
+        #   todo: this is more complicated. This will be a combination of predicate_id and predicate_modifier (if
+        #    present). See: https://github.com/mapping-commons/sssom/issues/185
+        "unmatched": "unmatched",
+        # disjoint: This is an explicit assertion that there is no mapping between the
+        # source and target concept.
+        "owl:disjointWith": "disjoint",
+    }
+
     # Intermediary variables
     metadata: Dict[str, Any] = msdf.metadata
     mapping_set_id = metadata.get("mapping_set_id", "")
     name: str = mapping_set_id.split("/")[-1].replace(".sssom.tsv", "")
+
     # Construct JSON
-    # TODO: Fix: sssom/writers.py:293: error: Item "None" of "Optional[Dict[str, Any]]" has no attribute "get"
-    #  ...a. Maybe remove the typing? b. remove the get? c. do outside of dict and add after?, d. Add "None"? maybe cant be done here
-    #  ...e. Probably assign metadata to new object and use that instead. so won't read as None
-    json_obj = {
+    json_obj: Dict[str, Any] = {
         "resourceType": "ConceptMap",
         "url": mapping_set_id,
+        # Assumes mapping_set_id is a URI w/ artefact name at end. System becomes URI stem, value becomes artefact name
         "identifier": [
             {
                 "system": "/".join(mapping_set_id.split("/")[:-1]) + "/",
@@ -302,7 +369,6 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
         ],
         "version": metadata.get("mapping_set_version", ""),
         "name": name,
-        "title": name,
         "status": "draft",  # todo: when done: draft | active | retired | unknown
         "experimental": True,  # todo: False when converter finished
         # todo: should this be date of last converted to FHIR json instead?
@@ -329,95 +395,11 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
         # }],
         # "purpose": "",  # todo: conceptmap
         "copyright": metadata.get("license", ""),
-        "sourceUri": metadata.get("subject_source", ""),  # todo: correct?
-        "targetUri": metadata.get("object_source", ""),  # todo: correct?
+        # TODO: Might want to make each "group" first, if there is more than 1 set of ontology1::ontology2
+        #  ...within a given MappingSet / set of SSSOM TSV rows.
         "group": [
             {
-                "source": metadata.get("subject_source", ""),  # todo: correct?
-                "target": metadata.get("object_source", ""),  # todo: correct?
-                "element": [
-                    {
-                        "code": row["subject_id"],
-                        "display": row.get("subject_label", ""),
-                        "target": [
-                            {
-                                "code": row["object_id"],
-                                "display": row.get("object_label", ""),
-                                # TODO: R4 (try this first)
-                                #  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint
-                                #  https://www.hl7.org/fhir/r4/conceptmap.html
-                                # todo: r4: if not found, eventually needs to be `null` or something. check docs to see if nullable, else ask on Zulip
-                                # TODO: R5 Needs to be one of:
-                                #  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to
-                                #  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html
-                                #  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones
-                                #  and then add the original SSSOM mapping CURIE fields somewhere else
-                                # https://www.hl7.org/fhir/valueset-concept-map-equivalence.html
-                                # https://github.com/mapping-commons/sssom-py/issues/258
-                                "equivalence": {
-                                    # relateedto: The concepts are related to each other, and have at least some overlap
-                                    # in meaning, but the exact relationship is not known.
-                                    "skos:related": "relatedto",
-                                    "skos:relatedMatch": "relatedto",  # canonical
-                                    # equivalent: The definitions of the concepts mean the same thing (including when
-                                    # structural implications of meaning are considered) (i.e. extensionally identical).
-                                    "skos:exactMatch": "equivalent",
-                                    # equal: The definitions of the concepts are exactly the same (i.e. only grammatical
-                                    # differences) and structural implications of meaning are identical or irrelevant
-                                    # (i.e. intentionally identical).
-                                    "equal": "equal",  # todo what's difference between this and above? which to use?
-                                    # wider: The target mapping is wider in meaning than the source concept.
-                                    "skos:broader": "wider",
-                                    "skos:broadMatch": "wider",  # canonical
-                                    # subsumes: The target mapping subsumes the meaning of the source concept (e.g. the
-                                    # source is-a target).
-                                    "rdfs:subClassOf": "subsumes",
-                                    "owl:subClassOf": "subsumes",
-                                    # narrower: The target mapping is narrower in meaning than the source concept. The
-                                    # sense in which the mapping is narrower SHALL be described in the comments in this
-                                    # case, and applications should be careful when attempting to use these mappings
-                                    # operationally.
-                                    "skos:narrower": "narrower",
-                                    "skos:narrowMatch": "narrower",  # canonical
-                                    # specializes: The target mapping specializes the meaning of the source concept
-                                    # (e.g. the target is-a source).
-                                    "sssom:superClassOf": "specializes",
-                                    # inexact: The target mapping overlaps with the source concept, but both source and
-                                    # target cover additional meaning, or the definitions are imprecise and it is
-                                    # uncertain whether they have the same boundaries to their meaning. The sense in
-                                    # which the mapping is inexact SHALL be described in the comments in this case, and
-                                    # applications should be careful when attempting to use these mappings operationally
-                                    "skos:closeMatch": "inexact",
-                                    # unmatched: There is no match for this concept in the target code system.
-                                    # todo: unmatched: this is more complicated. This will be a combination of
-                                    #  predicate_id and predicate_modifier (if present). See:
-                                    #  https://github.com/mapping-commons/sssom/issues/185
-                                    "unmatched": "unmatched",
-                                    # disjoint: This is an explicit assertion that there is no mapping between the
-                                    # source and target concept.
-                                    "owl:disjointWith": "disjoint",
-                                }.get(
-                                    row["predicate_id"], row["predicate_id"]
-                                ),  # r4
-                                # "relationship": row['predicate_id'],  # r5
-                                # "comment": '',
-                                "extension": [
-                                    {
-                                        # todo: `mapping_justification` consider changing `ValueString` -> `ValueCoding`
-                                        #  ...that is, if I happen to know the categories/codes for this categorical variable
-                                        #  ...if i do that, do i also need to upload that coding as a (i) `ValueSet` resource? (or (ii) codeable concept? prolly (i))
-                                        "url": "http://example.org/fhir/StructureDefinition/mapping_justification",
-                                        "ValueString": row.get(
-                                            "mapping_justification",
-                                            row.get("mapping_justification", ""),
-                                        ),
-                                    }
-                                ],
-                            }
-                        ],
-                    }
-                    for i, row in df.iterrows()
-                ],
+                "element": []
                 # "unmapped": {  # todo: conceptmap
                 #     "mode": "fixed",
                 #     "code": "temp",
@@ -426,9 +408,49 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
             }
         ],
     }
+    if "mapping_set_title" in metadata:
+        json_obj["title"] = metadata["mapping_set_title"]
+
+    # todo: Override? but how? (2024/04/05 Joe: idr what I was trying to override)
+    if "subject_source" in metadata:
+        json_obj["sourceUri"] = metadata["subject_source"]
+        json_obj["group"][0]["source"] = metadata["subject_source"]
+    if "object_source" in metadata:
+        json_obj["targetUri"] = metadata["object_source"]
+        json_obj["group"][0]["target"] = metadata["object_source"]
+
+    for _i, row in df.iterrows():
+        entry = {
+            "code": row["subject_id"],
+            "display": row.get("subject_label", ""),  # todo: if empty, don't add this key
+            "target": [
+                {
+                    "code": row["object_id"],
+                    "display": row.get("object_label", ""),  # todo: if empty, don't add this key
+                    "equivalence": equivalence_map.get(
+                        row["predicate_id"], row["predicate_id"]
+                    ),  # r4
+                    # "relationship": row['predicate_id'],  # r5
+                    # "comment": '',
+                    "extension": [
+                        {
+                            "url": "http://example.org/fhir/StructureDefinition/mapping_justification",
+                            "valueString": row.get(
+                                "mapping_justification",
+                                row.get(
+                                    "mapping_justification", ""
+                                ),  # todo: if empty, don't add this key
+                            ),
+                        }
+                    ],
+                }
+            ],
+        }
+        json_obj["group"][0]["element"].append(entry)
 
     # Delete empty fields
-    # todo: This should be recursive?
+    # todo: This should be recursive? yes
+    #  - it catches empty 'sourceUri' and 'targetUri', but not 'source' and 'target'
     keys_to_delete: List[str] = []
     for k, v in json_obj.items():
         if v in [
@@ -503,9 +525,9 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
     "tsv": (write_table, None),
     "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
-    "ontoportal_json": (write_ontoportal_json, None),
-    "fhir_json": (write_fhir_json, None),
-    "json": (write_json, None),
+    "ontoportal_json": (write_json, "ontoportal_json"),
+    "fhir_json": (write_json, "fhir_json"),
+    "json": (write_json, "json"),
     "rdf": (write_rdf, SSSOM_DEFAULT_RDF_SERIALISATION),
 }
 for rdf_format in RDF_FORMATS:
