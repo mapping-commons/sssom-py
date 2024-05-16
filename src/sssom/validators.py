@@ -1,15 +1,12 @@
 """Validators."""
-
 from typing import Callable, List, Mapping
 
 from jsonschema import ValidationError
-from linkml_runtime.processing.referencevalidator import ReferenceValidator
-from linkml_runtime.utils.schemaview import SchemaView
-from sssom_schema import MappingSet
+from linkml.validator import Validator
+from linkml.validator.plugins import JsonschemaValidationPlugin, RecommendedSlotsPlugin
 
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
-
 from .constants import SCHEMA_YAML, SchemaValidationType
 
 
@@ -28,9 +25,15 @@ def validate_json_schema(msdf: MappingSetDataFrame) -> None:
 
     :param msdf: MappingSetDataFrame to eb validated.
     """
-    validator = ReferenceValidator(SchemaView(SCHEMA_YAML))
+    validator = Validator(
+        schema=SCHEMA_YAML,
+        validation_plugins=[
+            JsonschemaValidationPlugin(closed=True),
+            RecommendedSlotsPlugin()
+        ]
+    )
     mapping_set = to_mapping_set_document(msdf).mapping_set
-    validator.validate(mapping_set, MappingSet)
+    validator.validate(mapping_set, "MappingSet")
 
 
 def validate_shacl(msdf: MappingSetDataFrame) -> None:
