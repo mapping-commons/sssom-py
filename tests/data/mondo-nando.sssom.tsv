@@ -1,0 +1,15 @@
+#curie_map: 
+#  NANDO: "http://nanbyodata.jp/ontology/NANDO_"
+#  MONDO: "http://purl.obolibrary.org/obo/MONDO_"
+#  orcid: "https://orcid.org/"
+#creator_id:
+#  - "orcid:0000-0003-0011-764X"
+#  - "orcid:0000-0002-0170-9172"
+#license: "https://creativecommons.org/licenses/by/4.0/"
+#mapping_set_title: "NANDO - Mondo mappings provided by nanbyodata.jp"
+#mapping_set_description: "This mapping set is manually curated by the NANDO team at nanbyodata.jp."
+#mapping_provider: "http://nanbyodata.jp"
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+NANDO:1100001	Neuromuscular disease	skos:exactMatch	MONDO:0019056	neuromuscular disease	semapv:MappingCuration
+NANDO:1100004	Immune system disease	skos:exactMatch	MONDO:0005046	immune system disorder	semapv:MappingCuration
+NANDO:2200355	Isolated ACTH deficiency	skos:exactMatch	MONDO:0008720|MONDO:0016042		semapv:MappingCuration
