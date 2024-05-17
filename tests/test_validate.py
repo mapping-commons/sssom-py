@@ -79,5 +79,4 @@ class TestValidate(unittest.TestCase):
 
     def test_validate_nando(self):
         """Test Shacl validation (Not implemented)."""
-        self.assertIsNone(validate(self.bad_nando, self.validation_types))
         self.assertRaises(ValidationError, validate, self.bad_nando, self.validation_types)

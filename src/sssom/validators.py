@@ -1,8 +1,11 @@
 """Validators."""
+import logging
 from typing import Callable, List, Mapping
 
+from dataclasses import asdict
 from jsonschema import ValidationError
-from linkml.validator import Validator
+from linkml.validator import Validator, ValidationReport
+from linkml.validator.report import Severity
 from linkml.validator.plugins import JsonschemaValidationPlugin, RecommendedSlotsPlugin
 
 from sssom.parsers import to_mapping_set_document
@@ -20,6 +23,20 @@ def validate(msdf: MappingSetDataFrame, validation_types: List[SchemaValidationT
         VALIDATION_METHODS[vt](msdf)
 
 
+def print_linkml_report(report: ValidationReport, fail_on_error: bool = True):
+    validation_errors = 0
+
+    if not report.results:
+        logging.info('The instance is valid!')
+    else:
+        for result in report.results:
+            validation_errors += 1
+            if result.severity == Severity.ERROR:
+                logging.error(result.message)
+
+    if fail_on_error and validation_errors:
+        raise ValidationError(f"You mapping set has {validation_errors} validation errors!")
+
 def validate_json_schema(msdf: MappingSetDataFrame) -> None:
     """Validate JSON Schema using linkml's JsonSchemaDataValidator.
 
@@ -33,7 +50,10 @@ def validate_json_schema(msdf: MappingSetDataFrame) -> None:
         ]
     )
     mapping_set = to_mapping_set_document(msdf).mapping_set
-    validator.validate(mapping_set, "MappingSet")
+
+    mapping_set_yaml = asdict(mapping_set)
+    report = validator.validate(mapping_set_yaml, "mapping set")
+    print_linkml_report(report)
 
 
 def validate_shacl(msdf: MappingSetDataFrame) -> None:
