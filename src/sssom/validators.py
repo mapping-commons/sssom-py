@@ -93,6 +93,7 @@ def validate_json_schema(msdf: MappingSetDataFrame) -> None:
     mapping_set_yaml_cleaned = clean_dict(mapping_set_yaml)
 
     report = validator.validate(mapping_set_yaml_cleaned, "mapping set")
+    # TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164
     print_linkml_report(report, False)
 
 
