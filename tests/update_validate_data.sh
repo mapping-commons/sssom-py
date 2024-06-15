@@ -8,5 +8,5 @@ poetry run sssom convert data/cob-to-external.tsv -O json -o validate_data/cob-t
 poetry run sssom convert data/cob-to-external.tsv -O owl -o validate_data/cob-to-external.tsv.owl
 poetry run sssom convert data/cob-to-external.tsv -O rdf -o validate_data/cob-to-external.tsv.rdf
 poetry run sssom convert data/cob-to-external.tsv -O tsv -o validate_data/cob-to-external.tsv.tsv
-poetry run sssom parse data/hp-base.json -I obographs-json -o validate_data/hp-base.json.json
+poetry run sssom parse data/hp-base.json -I obographs-json -o validate_data/hp-base.json.tsv
 poetry run sssom parse data/oaei-ordo-hp.rdf -I alignment-api-xml -o validate_data/oaei-ordo-hp.rdf.tsv
