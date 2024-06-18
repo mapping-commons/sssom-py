@@ -101,7 +101,7 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
 
     report = validator.validate(mapping_set_yaml_cleaned, "mapping set")
     # TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164
-    print_linkml_report(report, False)
+    print_linkml_report(report, fail_on_error)
 
 
 def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
