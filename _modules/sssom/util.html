@@ -634,7 +634,7 @@
         <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;DataFrame cannot be empty to &#39;assign_default_confidence&#39;.&quot;</span><span class="p">)</span>
     <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">CONFIDENCE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># np.NaN</span>
+        <span class="n">new_df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># np.nan</span>
         <span class="n">nan_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">new_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
@@ -732,7 +732,7 @@
     <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="add_default_confidence"><a class="viewcode-back" href="../../sssom.html#sssom.util.add_default_confidence">[docs]</a><span class="k">def</span> <span class="nf">add_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="add_default_confidence"><a class="viewcode-back" href="../../sssom.html#sssom.util.add_default_confidence">[docs]</a><span class="k">def</span> <span class="nf">add_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add `confidence` column to DataFrame if absent and initializes to 0.95.</span>
 
 <span class="sd">    If `confidence` column already exists, only fill in the None ones by 0.95.</span>
@@ -939,7 +939,7 @@
 <span class="sd">        #1; #2(i) #3 and $4 are taken care of by &#39;filtered_merged_df&#39; Only #2(ii) should be performed here.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Handle DataFrames with no &#39;confidence&#39; column (basically adding a np.NaN to all non-numeric confidences)</span>
+    <span class="c1"># Handle DataFrames with no &#39;confidence&#39; column (basically adding a np.nan to all non-numeric confidences)</span>
     <span class="n">confidence_in_original</span> <span class="o">=</span> <span class="n">CONFIDENCE</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
     <span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span> <span class="o">=</span> <span class="n">assign_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
