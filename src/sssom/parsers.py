@@ -425,7 +425,7 @@ def from_sssom_dataframe(
     # This is to address: A value is trying to be set on a copy of a slice from a DataFrame
     if CONFIDENCE in df.columns:
         df2 = df.copy()
-        df2[CONFIDENCE].replace(r"^\s*$", np.NaN, regex=True, inplace=True)
+        df2[CONFIDENCE].replace(r"^\s*$", np.nan, regex=True, inplace=True)
         df = df2
 
     mapping_set = _get_mapping_set_from_df(df=df, meta=meta)
