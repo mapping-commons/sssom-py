@@ -17,6 +17,7 @@ class TestValidate(unittest.TestCase):
         """Test up the test cases with the third basic example."""
         self.correct_msdf1 = parse_sssom_table(f"{data_dir}/basic.tsv")
         self.bad_msdf1 = parse_sssom_table(f"{data_dir}/bad_basic.tsv")
+        self.bad_nando = parse_sssom_table(f"{data_dir}/mondo-nando.sssom.tsv")
         self.validation_types = DEFAULT_VALIDATION_TYPES
         self.shacl_validation_types = [SchemaValidationType.Shacl]
 
@@ -75,3 +76,7 @@ class TestValidate(unittest.TestCase):
             self.correct_msdf1,
             self.shacl_validation_types,
         )
+
+    def test_validate_nando(self):
+        """Test Shacl validation (Not implemented)."""
+        self.assertRaises(ValidationError, validate, self.bad_nando, self.validation_types)
