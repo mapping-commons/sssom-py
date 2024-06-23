@@ -358,6 +358,14 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(rows[0], tuple(msdf.df.iloc[0]))
         self.assertEqual(new_msdf.metadata, msdf.metadata)
 
+    def test_curie_map(self):
+        """Test getting dict from a SSSOM mapping object or a dictionary."""
+        from sssom_schema import MappingSet
+
+        mapping_obj = MappingSet(mapping_set_id="a", license="b")
+        self.assertTrue("license" in mapping_obj)
+        self.assertTrue("curie_map" in mapping_obj)
+
     def test_get_dict_from_mapping(self):
         """Test getting dict from a SSSOM mapping object or a dictionary."""
         mapping_obj = SSSOM_Mapping(
