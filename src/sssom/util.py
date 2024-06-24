@@ -1107,12 +1107,18 @@ CURIE_RE = re.compile(CURIE_PATTERN)
 
 def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
-    return bool(CURIE_RE.match(string))
+    if string and isinstance(string, str):
+        return bool(CURIE_RE.match(string))
+    else:
+        return False
 
 
 def _is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
-    return validators.url(string)
+    if string and isinstance(string, str):
+        return validators.url(string)
+    else:
+        return False
 
 
 def get_prefix_from_curie(curie: str) -> str:
