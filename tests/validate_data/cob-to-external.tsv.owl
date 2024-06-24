@@ -1,4 +1,3 @@
-@prefix : <https://w3id.org/sssom/> .
 @prefix BFO: <http://purl.obolibrary.org/obo/BFO_> .
 @prefix CARO: <http://purl.obolibrary.org/obo/CARO_> .
 @prefix CHEBI: <http://purl.obolibrary.org/obo/CHEBI_> .
@@ -18,22 +17,27 @@
 @prefix PO: <http://purl.obolibrary.org/obo/PO_> .
 @prefix PR: <http://purl.obolibrary.org/obo/PR_> .
 @prefix RO: <http://purl.obolibrary.org/obo/RO_> .
+@prefix SEPIO: <http://purl.obolibrary.org/obo/SEPIO_> .
 @prefix SO: <http://purl.obolibrary.org/obo/SO_> .
 @prefix STATO: <http://purl.obolibrary.org/obo/STATO_> .
 @prefix UBERON: <http://purl.obolibrary.org/obo/UBERON_> .
 @prefix XAO: <http://purl.obolibrary.org/obo/XAO_> .
 @prefix ZFA: <http://purl.obolibrary.org/obo/ZFA_> .
+@prefix dc1: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix semapv: <https://w3id.org/semapv/vocab/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix sssom: <https://w3id.org/sssom/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+sssom:mapping_justification a owl:AnnotationProperty .
 
 sssom:object_label a owl:AnnotationProperty .
 
 sssom:subject_label a owl:AnnotationProperty .
 
-COB:0000001 a owl:Class ;
-    owl:equivalentClass BFO:0000019 .
+CHEBI:50906 rdfs:subClassOf COB:0000502 .
 
 COB:0000002 a owl:ObjectProperty ;
     owl:equivalentProperty RO:0000058 .
@@ -91,9 +95,6 @@ COB:0000028 a owl:ObjectProperty ;
 COB:0000029 a owl:ObjectProperty ;
     owl:equivalentProperty BFO:0000054 .
 
-COB:0000030 a owl:ObjectProperty ;
-    owl:equivalentProperty RO:0000080 .
-
 COB:0000031 a owl:Class ;
     owl:equivalentClass BFO:0000041 .
 
@@ -122,9 +123,6 @@ COB:0000039 a owl:ObjectProperty ;
 
 COB:0000040 a owl:ObjectProperty ;
     owl:equivalentProperty OBI:0000299 .
-
-COB:0000041 a owl:ObjectProperty ;
-    owl:equivalentProperty RO:0000086 .
 
 COB:0000042 a owl:Class ;
     owl:equivalentClass CHEBI:24867 .
@@ -199,9 +197,6 @@ COB:0000080 rdfs:subClassOf owl:Thing .
 COB:0000086 a owl:ObjectProperty ;
     owl:equivalentProperty STATO:0000102 .
 
-COB:0000088 a owl:Class ;
-    owl:equivalentClass DRON:0000005 .
-
 COB:0000101 a owl:Class ;
     owl:equivalentClass IAO:0000310 .
 
@@ -247,6 +242,8 @@ COB:0000513 a owl:ObjectProperty ;
 
 GEO:000000370 rdfs:subClassOf COB:0000068 .
 
+OBI:0000202 rdfs:subClassOf COB:0000123 .
+
 PO:0000003 rdfs:subClassOf COB:0000118 .
 
 PO:0009002 rdfs:subClassOf COB:0000017 .
@@ -278,8 +275,6 @@ BFO:0000015 a owl:Class .
 BFO:0000016 a owl:Class .
 
 BFO:0000017 a owl:Class .
-
-BFO:0000019 a owl:Class .
 
 BFO:0000020 a owl:Class .
 
@@ -333,6 +328,10 @@ COB:0000013 skos:closeMatch CHEBI:23367,
 COB:0000015 a owl:Class ;
     owl:equivalentClass CHEBI:16541,
         PR:000000001 .
+
+COB:0000088 a owl:Class ;
+    rdfs:seeAlso CHEBI:23888 ;
+    owl:equivalentClass DRON:0000005 .
 
 DRON:0000005 a owl:Class .
 
@@ -424,11 +423,9 @@ RO:0000057 a owl:ObjectProperty .
 
 RO:0000058 a owl:ObjectProperty .
 
-RO:0000080 a owl:ObjectProperty .
-
-RO:0000086 a owl:ObjectProperty .
-
 RO:0002333 a owl:ObjectProperty .
+
+SEPIO:0000048 a owl:Class .
 
 STATO:0000102 a owl:ObjectProperty .
 
@@ -446,17 +443,20 @@ COB:0000022 a owl:Class ;
 COB:0000068 a owl:Class ;
     owl:equivalentClass ENVO:01000813 .
 
+COB:0000123 a owl:Class ;
+    owl:equivalentClass SEPIO:0000048 .
+
 CHEBI:10545 a owl:Class .
 
 CHEBI:33250 a owl:Class .
 
-COB:0000502 a owl:Class ;
-    owl:equivalentClass BFO:0000020,
-        PATO:0000001 .
-
 COB:0000118 a owl:Class ;
     owl:equivalentClass CARO:0010004,
         NCBITaxon:131567 .
+
+COB:0000502 a owl:Class ;
+    owl:equivalentClass BFO:0000020,
+        PATO:0000001 .
 
 COB:0000006 a owl:Class ;
     owl:equivalentClass BFO:0000040 .
@@ -464,630 +464,848 @@ COB:0000006 a owl:Class ;
 COB:0000018 a owl:Class ;
     owl:equivalentClass CL:0000003 .
 
-[] a sssom:MappingSet ;
-    sssom:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
-    sssom:mappings [ a owl:Axiom ;
-            sssom:object_label "cell" ;
-            sssom:subject_label "plant cell" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource PO:0009002 ;
-            owl:annotatedTarget COB:0000017 ],
-        [ a owl:Axiom ;
-            sssom:object_label "protein" ;
-            sssom:subject_label "protein" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000015 ;
-            owl:annotatedTarget PR:000000001 ],
-        [ a owl:Axiom ;
-            sssom:object_label "part of" ;
-            sssom:subject_label "part of" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000072 ;
-            owl:annotatedTarget BFO:0000050 ],
-        [ a owl:Axiom ;
-            sssom:object_label "quality of" ;
-            sssom:subject_label "quality of" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000030 ;
-            owl:annotatedTarget RO:0000080 ],
-        [ a owl:Axiom ;
-            sssom:object_label "diagnosis" ;
-            sssom:subject_label "disease diagnosis" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000062 ;
-            owl:annotatedTarget OGMS:0000073 ],
-        [ a owl:Axiom ;
-            sssom:object_label "planned process" ;
-            sssom:subject_label "planned process" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000035 ;
-            owl:annotatedTarget OBI:0000011 ],
-        [ a owl:Axiom ;
-            sssom:object_label "immaterial entity" ;
-            sssom:subject_label "immaterial entity" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000031 ;
-            owl:annotatedTarget BFO:0000041 ],
-        [ a owl:Axiom ;
-            sssom:object_label "occurs in" ;
-            sssom:subject_label "occurs in" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000071 ;
-            owl:annotatedTarget BFO:0000066 ],
-        [ a owl:Axiom ;
-            sssom:object_label "cell" ;
-            sssom:subject_label "cell" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000017 ;
-            owl:annotatedTarget CL:0000000 ],
-        [ a owl:Axiom ;
-            sssom:object_label "function" ;
-            sssom:subject_label "function" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000112 ;
-            owl:annotatedTarget BFO:0000034 ],
-        [ a owl:Axiom ;
-            sssom:object_label "gross anatomical part" ;
-            sssom:subject_label "multicellular anatomical structure" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource UBERON:0010000 ;
-            owl:annotatedTarget COB:0000021 ],
-        [ a owl:Axiom ;
-            sssom:object_label "gross anatomical part" ;
-            sssom:subject_label "gross anatomical part" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000021 ;
-            owl:annotatedTarget CARO:0001008 ],
-        [ a owl:Axiom ;
-            sssom:object_label "is_specified_input_of" ;
-            sssom:subject_label "is specified input of" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000027 ;
-            owl:annotatedTarget OBI:0000295 ],
-        [ a owl:Axiom ;
-            sssom:object_label "assay" ;
-            sssom:subject_label "assay" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000107 ;
-            owl:annotatedTarget OBI:0000070 ],
-        [ a owl:Axiom ;
-            sssom:object_label "owl:Thing" ;
-            sssom:subject_label "elementary charge" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource COB:0000005 ;
-            owl:annotatedTarget owl:Thing ],
-        [ a owl:Axiom ;
-            sssom:object_label "site" ;
-            sssom:subject_label "site" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000057 ;
-            owl:annotatedTarget BFO:0000029 ],
-        [ a owl:Axiom ;
-            sssom:object_label "is about" ;
-            sssom:subject_label "is about" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000513 ;
-            owl:annotatedTarget IAO:0000136 ],
-        [ a owl:Axiom ;
-            sssom:object_label "clinical finding" ;
-            sssom:subject_label "phenotypic finding" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000063 ;
-            owl:annotatedTarget OGMS:0000014 ],
-        [ a owl:Axiom ;
-            sssom:object_label "is concretized as" ;
-            sssom:subject_label "is concretized as" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000002 ;
-            owl:annotatedTarget RO:0000058 ],
-        [ a owl:Axiom ;
-            sssom:object_label "investigation" ;
-            sssom:subject_label "investigation" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000109 ;
-            owl:annotatedTarget OBI:0000066 ],
-        [ a owl:Axiom ;
-            sssom:object_label "atom" ;
-            sssom:subject_label "uncharged atom" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000043 ;
-            owl:annotatedTarget CHEBI:33250 ],
-        [ a owl:Axiom ;
-            sssom:object_label "material entity" ;
-            sssom:subject_label "material entity" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000006 ;
-            owl:annotatedTarget BFO:0000040 ],
-        [ a owl:Axiom ;
-            sssom:object_label "cellular organism" ;
-            sssom:subject_label "whole plant" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource PO:0000003 ;
-            owl:annotatedTarget COB:0000118 ],
-        [ a owl:Axiom ;
-            sssom:object_label "inheres in" ;
-            sssom:subject_label "characteristic of" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000023 ;
-            owl:annotatedTarget RO:0000052 ],
-        [ a owl:Axiom ;
-            sssom:object_label "disposition" ;
-            sssom:subject_label "disposition" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000111 ;
-            owl:annotatedTarget BFO:0000016 ],
-        [ a owl:Axiom ;
-            sssom:object_label "role" ;
-            sssom:subject_label "role" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000114 ;
-            owl:annotatedTarget BFO:0000023 ],
-        [ a owl:Axiom ;
-            sssom:object_label "owl:Thing" ;
-            sssom:subject_label "geographical location" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource COB:0000032 ;
-            owl:annotatedTarget owl:Thing ],
-        [ a owl:Axiom ;
-            sssom:object_label "collection of organisms" ;
-            sssom:subject_label "collection of organisms" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000055 ;
-            owl:annotatedTarget PCO:0000000 ],
-        [ a owl:Axiom ;
-            sssom:object_label "topObjectProperty" ;
-            sssom:subject_label "has quantity" ;
-            owl:annotatedProperty rdfs:subPropertyOf ;
-            owl:annotatedSource COB:0000511 ;
-            owl:annotatedTarget owl:topObjectProperty ],
-        [ a owl:Axiom ;
-            sssom:object_label "native cell" ;
-            sssom:subject_label "xenopus cell" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource XAO:0003012 ;
-            owl:annotatedTarget COB:0000018 ],
-        [ a owl:Axiom ;
-            sssom:object_label "cell in vitro" ;
-            sssom:subject_label "cell in vitro" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000019 ;
-            owl:annotatedTarget CL:0001034 ],
-        [ a owl:Axiom ;
-            sssom:object_label "information content entity" ;
-            sssom:subject_label "information" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000061 ;
-            owl:annotatedTarget IAO:0000030 ],
-        [ a owl:Axiom ;
-            sssom:object_label "cellular organism" ;
-            sssom:subject_label "multicellular organism" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource UBERON:0000468 ;
-            owl:annotatedTarget COB:0000118 ],
-        [ a owl:Axiom ;
-            sssom:object_label "bearer of" ;
-            sssom:subject_label "has characteristic" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000512 ;
-            owl:annotatedTarget RO:0000053 ],
-        [ a owl:Axiom ;
-            sssom:object_label "native cell" ;
-            sssom:subject_label "native cell" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000018 ;
-            owl:annotatedTarget CL:0000003 ],
-        [ a owl:Axiom ;
-            sssom:object_label "executes" ;
-            sssom:subject_label "executes" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000086 ;
-            owl:annotatedTarget STATO:0000102 ],
-        [ a owl:Axiom ;
-            sssom:object_label "protein-containing complex" ;
-            sssom:subject_label "protein-containing macromolecular complex" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000075 ;
-            owl:annotatedTarget GO:0032991 ],
-        [ a owl:Axiom ;
-            sssom:object_label "electron" ;
-            sssom:subject_label "electron" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000010 ;
-            owl:annotatedTarget CHEBI:10545 ],
-        [ a owl:Axiom ;
-            sssom:object_label "has quality" ;
-            sssom:subject_label "has quality" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000041 ;
-            owl:annotatedTarget RO:0000086 ],
-        [ a owl:Axiom ;
-            sssom:object_label "document" ;
-            sssom:subject_label "document" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000101 ;
-            owl:annotatedTarget IAO:0000310 ],
-        [ a owl:Axiom ;
-            sssom:object_label "immaterial anatomical entity" ;
-            sssom:subject_label "plant anatomical space" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource PO:0025117 ;
-            owl:annotatedTarget COB:0000056 ],
-        [ a owl:Axiom ;
-            sssom:object_label "disease course" ;
-            sssom:subject_label "disease course" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000064 ;
-            owl:annotatedTarget OGMS:0000063 ],
-        [ a owl:Axiom ;
-            sssom:object_label "cellular organisms" ;
-            sssom:subject_label "cellular organism" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000118 ;
-            owl:annotatedTarget NCBITaxon:131567 ],
-        [ a owl:Axiom ;
-            sssom:object_label "enabled by" ;
-            sssom:subject_label "enabled by" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000074 ;
-            owl:annotatedTarget RO:0002333 ],
-        [ a owl:Axiom ;
-            sssom:object_label "characteristic" ;
-            sssom:subject_label "sequence_attribute" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource SO:0000400 ;
-            owl:annotatedTarget COB:0000502 ],
-        [ a owl:Axiom ;
-            sssom:object_label "data transformation" ;
-            sssom:subject_label "data transformation" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000108 ;
-            owl:annotatedTarget OBI:0200000 ],
-        [ a owl:Axiom ;
-            sssom:object_label "organism" ;
-            sssom:subject_label "organism" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000022 ;
-            owl:annotatedTarget OBI:0100026 ],
-        [ a owl:Axiom ;
-            sssom:object_label "quality" ;
-            sssom:subject_label "characteristic" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000502 ;
-            owl:annotatedTarget PATO:0000001 ],
-        [ a owl:Axiom ;
-            sssom:object_label "molecular process" ;
-            sssom:subject_label "physico-chemical process" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000066 ;
-            owl:annotatedTarget MOP:0000543 ],
-        [ a owl:Axiom ;
-            sssom:object_label "proton" ;
-            sssom:subject_label "proton" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000008 ;
-            owl:annotatedTarget CHEBI:24636 ],
-        [ a owl:Axiom ;
-            sssom:object_label "material entity" ;
-            sssom:subject_label "sequence_feature" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource SO:0000110 ;
-            owl:annotatedTarget COB:0000006 ],
-        [ a owl:Axiom ;
-            sssom:object_label "environmental system process" ;
-            sssom:subject_label "environmental process" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000065 ;
-            owl:annotatedTarget ENVO:02500000 ],
-        [ a owl:Axiom ;
-            sssom:object_label "immaterial anatomical entity" ;
-            sssom:subject_label "immaterial anatomical entity" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource UBERON:0000466 ;
-            owl:annotatedTarget COB:0000056 ],
-        [ a owl:Axiom ;
-            sssom:object_label "molecular function" ;
-            sssom:subject_label "gene product or complex activity" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000038 ;
-            owl:annotatedTarget GO:0003674 ],
-        [ a owl:Axiom ;
-            sssom:object_label "protein polypeptide chain" ;
-            sssom:subject_label "protein" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000015 ;
-            owl:annotatedTarget CHEBI:16541 ],
-        [ a owl:Axiom ;
-            sssom:object_label "conclusion based on data" ;
-            sssom:subject_label "conclusion based on data" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000058 ;
-            owl:annotatedTarget OBI:0001909 ],
-        [ a owl:Axiom ;
-            sssom:object_label "organization" ;
-            sssom:subject_label "organization" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000025 ;
-            owl:annotatedTarget OBI:0000245 ],
-        [ a owl:Axiom ;
-            sssom:object_label "data item" ;
-            sssom:subject_label "data item" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000102 ;
-            owl:annotatedTarget IAO:0000027 ],
-        [ a owl:Axiom ;
-            sssom:object_label "directive information entity" ;
-            sssom:subject_label "directive information entity" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000069 ;
-            owl:annotatedTarget IAO:0000033 ],
-        [ a owl:Axiom ;
-            sssom:object_label "geophysical entity" ;
-            sssom:subject_label "geographical entity" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource GEO:000000370 ;
-            owl:annotatedTarget COB:0000068 ],
-        [ a owl:Axiom ;
-            sssom:object_label "owl:Thing" ;
-            sssom:subject_label "subcellular structure" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource COB:0000020 ;
-            owl:annotatedTarget owl:Thing ],
-        [ a owl:Axiom ;
-            sssom:object_label "is_specified_output_of" ;
-            sssom:subject_label "is specified output of" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000028 ;
-            owl:annotatedTarget OBI:0000312 ],
-        [ a owl:Axiom ;
-            sssom:object_label "nucleus" ;
-            sssom:subject_label "cell nucleus" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000103 ;
-            owl:annotatedTarget GO:0005634 ],
-        [ a owl:Axiom ;
-            sssom:object_label "subatomic particle" ;
-            sssom:subject_label "subatomic particle" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000007 ;
-            owl:annotatedTarget CHEBI:36342 ],
-        [ a owl:Axiom ;
-            sssom:object_label "owl:Thing" ;
-            sssom:subject_label "complex of molecular entities" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource COB:0000080 ;
-            owl:annotatedTarget owl:Thing ],
-        [ a owl:Axiom ;
-            sssom:object_label "has part" ;
-            sssom:subject_label "has part" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000047 ;
-            owl:annotatedTarget BFO:0000051 ],
-        [ a owl:Axiom ;
-            sssom:object_label "has participant" ;
-            sssom:subject_label "has participant" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000070 ;
-            owl:annotatedTarget RO:0000057 ],
-        [ a owl:Axiom ;
-            sssom:object_label "owl:Thing" ;
-            sssom:subject_label "cellular membrane" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource COB:0000116 ;
-            owl:annotatedTarget owl:Thing ],
-        [ a owl:Axiom ;
-            sssom:object_label "organism or virus or viroid" ;
-            sssom:subject_label "organism" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000022 ;
-            owl:annotatedTarget CARO:0001010 ],
-        [ a owl:Axiom ;
-            sssom:object_label "drug product" ;
-            sssom:subject_label "drug product" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000088 ;
-            owl:annotatedTarget DRON:0000005 ],
-        [ a owl:Axiom ;
-            sssom:object_label "neutron" ;
-            sssom:subject_label "neutron" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000009 ;
-            owl:annotatedTarget CHEBI:30222 ],
-        [ a owl:Axiom ;
-            sssom:object_label "material processing" ;
-            sssom:subject_label "material processing" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000110 ;
-            owl:annotatedTarget OBI:0000094 ],
-        [ a owl:Axiom ;
-            sssom:object_label "quality" ;
-            sssom:subject_label "quality" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000001 ;
-            owl:annotatedTarget BFO:0000019 ],
-        [ a owl:Axiom ;
-            sssom:object_label "molecule" ;
-            sssom:subject_label "molecular entity" ;
-            owl:annotatedProperty skos:closeMatch ;
-            owl:annotatedSource COB:0000013 ;
-            owl:annotatedTarget CHEBI:25367 ],
-        [ a owl:Axiom ;
-            sssom:object_label "specifically dependent continuant" ;
-            sssom:subject_label "characteristic" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000502 ;
-            owl:annotatedTarget BFO:0000020 ],
-        [ a owl:Axiom ;
-            sssom:object_label "realizable entity" ;
-            sssom:subject_label "realizable" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000033 ;
-            owl:annotatedTarget BFO:0000017 ],
-        [ a owl:Axiom ;
-            sssom:object_label "material entity" ;
-            sssom:subject_label "sequence_variant" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource SO:0001060 ;
-            owl:annotatedTarget COB:0000006 ],
-        [ a owl:Axiom ;
-            sssom:object_label "process" ;
-            sssom:subject_label "process" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000034 ;
-            owl:annotatedTarget BFO:0000015 ],
-        [ a owl:Axiom ;
-            sssom:object_label "cellular organism" ;
-            sssom:subject_label "cellular organism" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000118 ;
-            owl:annotatedTarget CARO:0010004 ],
-        [ a owl:Axiom ;
-            sssom:object_label "plan" ;
-            sssom:subject_label "plan" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000113 ;
-            owl:annotatedTarget OBI:0000260 ],
-        [ a owl:Axiom ;
-            sssom:object_label "ecosystem" ;
-            sssom:subject_label "ecosystem" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000067 ;
-            owl:annotatedTarget ENVO:01001110 ],
-        [ a owl:Axiom ;
-            sssom:object_label "nucleic acid" ;
-            sssom:subject_label "nucleic acid polymer" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000049 ;
-            owl:annotatedTarget CHEBI:10545 ],
-        [ a owl:Axiom ;
-            sssom:object_label "owl:Thing" ;
-            sssom:subject_label "gene product" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource COB:0000073 ;
-            owl:annotatedTarget owl:Thing ],
-        [ a owl:Axiom ;
-            sssom:object_label "molecular entity" ;
-            sssom:subject_label "molecular entity" ;
-            owl:annotatedProperty skos:closeMatch ;
-            owl:annotatedSource COB:0000013 ;
-            owl:annotatedTarget CHEBI:23367 ],
-        [ a owl:Axiom ;
-            sssom:object_label "atomic nucleus" ;
-            sssom:subject_label "atomic nucleus" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000012 ;
-            owl:annotatedTarget CHEBI:33252 ],
-        [ a owl:Axiom ;
-            sssom:object_label "contains process" ;
-            sssom:subject_label "contains process" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000036 ;
-            owl:annotatedTarget BFO:0000067 ],
-        [ a owl:Axiom ;
-            sssom:object_label "objective specification" ;
-            sssom:subject_label "objective specification" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000076 ;
-            owl:annotatedTarget IAO:0000005 ],
-        [ a owl:Axiom ;
-            sssom:object_label "has_specified_input" ;
-            sssom:subject_label "has specified input" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000039 ;
-            owl:annotatedTarget OBI:0000293 ],
-        [ a owl:Axiom ;
-            sssom:object_label "mass" ;
-            sssom:subject_label "mass" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000003 ;
-            owl:annotatedTarget PATO:0000125 ],
-        [ a owl:Axiom ;
-            sssom:object_label "topObjectProperty" ;
-            sssom:subject_label "executed by" ;
-            owl:annotatedProperty rdfs:subPropertyOf ;
-            owl:annotatedSource COB:0000016 ;
-            owl:annotatedTarget owl:topObjectProperty ],
-        [ a owl:Axiom ;
-            sssom:object_label "native cell" ;
-            sssom:subject_label "zebrafish cell" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource ZFA:0009000 ;
-            owl:annotatedTarget COB:0000018 ],
-        [ a owl:Axiom ;
-            sssom:object_label "plan specification" ;
-            sssom:subject_label "plan specification" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000079 ;
-            owl:annotatedTarget IAO:0000104 ],
-        [ a owl:Axiom ;
-            sssom:object_label "astronomical body part" ;
-            sssom:subject_label "geophysical entity" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000068 ;
-            owl:annotatedTarget ENVO:01000813 ],
-        [ a owl:Axiom ;
-            sssom:object_label "material entity" ;
-            sssom:subject_label "sequence_collection" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource SO:0001260 ;
-            owl:annotatedTarget COB:0000006 ],
-        [ a owl:Axiom ;
-            sssom:object_label "electric" ;
-            sssom:subject_label "charge" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000004 ;
-            owl:annotatedTarget PATO:0002193 ],
-        [ a owl:Axiom ;
-            sssom:object_label "processed material" ;
-            sssom:subject_label "processed material entity" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000026 ;
-            owl:annotatedTarget OBI:0000047 ],
-        [ a owl:Axiom ;
-            sssom:object_label "realized in" ;
-            sssom:subject_label "realized in" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000029 ;
-            owl:annotatedTarget BFO:0000054 ],
-        [ a owl:Axiom ;
-            sssom:object_label "participates in" ;
-            sssom:subject_label "participates in" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000024 ;
-            owl:annotatedTarget RO:0000056 ],
-        [ a owl:Axiom ;
-            sssom:object_label "biological process" ;
-            sssom:subject_label "biological process" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000037 ;
-            owl:annotatedTarget GO:0008150 ],
-        [ a owl:Axiom ;
-            sssom:object_label "root" ;
-            sssom:subject_label "organism" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000022 ;
-            owl:annotatedTarget NCBITaxon:1 ],
-        [ a owl:Axiom ;
-            sssom:object_label "native cell" ;
-            sssom:subject_label "native plant cell" ;
-            owl:annotatedProperty rdfs:subClassOf ;
-            owl:annotatedSource PO:0025606 ;
-            owl:annotatedTarget COB:0000018 ],
-        [ a owl:Axiom ;
-            sssom:object_label "atom" ;
-            sssom:subject_label "atom" ;
-            owl:annotatedProperty skos:closeMatch ;
-            owl:annotatedSource COB:0000011 ;
-            owl:annotatedTarget CHEBI:33250 ],
-        [ a owl:Axiom ;
-            sssom:object_label "has_specified_output" ;
-            sssom:subject_label "has specified output" ;
-            owl:annotatedProperty owl:equivalentProperty ;
-            owl:annotatedSource COB:0000040 ;
-            owl:annotatedTarget OBI:0000299 ],
-        [ a owl:Axiom ;
-            sssom:object_label "monoatomic ion" ;
-            sssom:subject_label "monoatomic ion" ;
-            owl:annotatedProperty owl:equivalentClass ;
-            owl:annotatedSource COB:0000042 ;
-            owl:annotatedTarget CHEBI:24867 ] .
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000088 ;
+    owl:annotatedTarget DRON:0000005 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "drug product" ;
+    sssom:subject_label "drug product" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000025 ;
+    owl:annotatedTarget OBI:0000245 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "organization" ;
+    sssom:subject_label "organization" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000123 ;
+    owl:annotatedTarget SEPIO:0000048 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "agent role" ;
+    sssom:subject_label "agent role" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000110 ;
+    owl:annotatedTarget OBI:0000094 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "material processing" ;
+    sssom:subject_label "material processing" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource PO:0000003 ;
+    owl:annotatedTarget COB:0000118 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cellular organism" ;
+    sssom:subject_label "whole plant" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource CHEBI:50906 ;
+    owl:annotatedTarget COB:0000502 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "characteristic" ;
+    sssom:subject_label "role" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000103 ;
+    owl:annotatedTarget GO:0005634 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "nucleus" ;
+    sssom:subject_label "cell nucleus" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000063 ;
+    owl:annotatedTarget OGMS:0000014 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "clinical finding" ;
+    sssom:subject_label "phenotypic finding" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000114 ;
+    owl:annotatedTarget BFO:0000023 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "role" ;
+    sssom:subject_label "role" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000086 ;
+    owl:annotatedTarget STATO:0000102 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "executes" ;
+    sssom:subject_label "executes" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource PO:0009002 ;
+    owl:annotatedTarget COB:0000017 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cell" ;
+    sssom:subject_label "plant cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000047 ;
+    owl:annotatedTarget BFO:0000051 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has part" ;
+    sssom:subject_label "has part" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000015 ;
+    owl:annotatedTarget PR:000000001 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "protein" ;
+    sssom:subject_label "protein" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000062 ;
+    owl:annotatedTarget OGMS:0000073 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "diagnosis" ;
+    sssom:subject_label "disease diagnosis" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000049 ;
+    owl:annotatedTarget CHEBI:10545 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "nucleic acid" ;
+    sssom:subject_label "nucleic acid polymer" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000032 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "geographical location" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000006 ;
+    owl:annotatedTarget BFO:0000040 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "material entity" ;
+    sssom:subject_label "material entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000017 ;
+    owl:annotatedTarget CL:0000000 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cell" ;
+    sssom:subject_label "cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000113 ;
+    owl:annotatedTarget OBI:0000260 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "plan" ;
+    sssom:subject_label "plan" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource PO:0025606 ;
+    owl:annotatedTarget COB:0000018 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "native cell" ;
+    sssom:subject_label "native plant cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000116 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "cellular membrane" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000010 ;
+    owl:annotatedTarget CHEBI:10545 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "electron" ;
+    sssom:subject_label "electron" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:seeAlso ;
+    owl:annotatedSource COB:0000088 ;
+    owl:annotatedTarget CHEBI:23888 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "drug" ;
+    sssom:subject_label "drug product" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000022 ;
+    owl:annotatedTarget OBI:0100026 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "organism" ;
+    sssom:subject_label "organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000102 ;
+    owl:annotatedTarget IAO:0000027 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "data item" ;
+    sssom:subject_label "data item" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000111 ;
+    owl:annotatedTarget BFO:0000016 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "disposition" ;
+    sssom:subject_label "disposition" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000043 ;
+    owl:annotatedTarget CHEBI:33250 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "atom" ;
+    sssom:subject_label "uncharged atom" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000057 ;
+    owl:annotatedTarget BFO:0000029 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "site" ;
+    sssom:subject_label "site" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty skos:closeMatch ;
+    owl:annotatedSource COB:0000013 ;
+    owl:annotatedTarget CHEBI:25367 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "molecule" ;
+    sssom:subject_label "molecular entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000079 ;
+    owl:annotatedTarget IAO:0000104 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "plan specification" ;
+    sssom:subject_label "plan specification" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000073 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "gene product" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000008 ;
+    owl:annotatedTarget CHEBI:24636 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "proton" ;
+    sssom:subject_label "proton" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000019 ;
+    owl:annotatedTarget CL:0001034 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cell in vitro" ;
+    sssom:subject_label "cell in vitro" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource GEO:000000370 ;
+    owl:annotatedTarget COB:0000068 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "geophysical entity" ;
+    sssom:subject_label "geographical entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000061 ;
+    owl:annotatedTarget IAO:0000030 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "information content entity" ;
+    sssom:subject_label "information" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000003 ;
+    owl:annotatedTarget PATO:0000125 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "mass" ;
+    sssom:subject_label "mass" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000018 ;
+    owl:annotatedTarget CL:0000003 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "native cell" ;
+    sssom:subject_label "native cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000074 ;
+    owl:annotatedTarget RO:0002333 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "enabled by" ;
+    sssom:subject_label "enabled by" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000118 ;
+    owl:annotatedTarget CARO:0010004 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cellular organism" ;
+    sssom:subject_label "cellular organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource OBI:0000202 ;
+    owl:annotatedTarget COB:0000123 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "agent role" ;
+    sssom:subject_label "investigation agent role" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000029 ;
+    owl:annotatedTarget BFO:0000054 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "realized in" ;
+    sssom:subject_label "realized in" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000031 ;
+    owl:annotatedTarget BFO:0000041 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "immaterial entity" ;
+    sssom:subject_label "immaterial entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000112 ;
+    owl:annotatedTarget BFO:0000034 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "function" ;
+    sssom:subject_label "function" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000071 ;
+    owl:annotatedTarget BFO:0000066 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "occurs in" ;
+    sssom:subject_label "occurs in" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource UBERON:0010000 ;
+    owl:annotatedTarget COB:0000021 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "gross anatomical part" ;
+    sssom:subject_label "multicellular anatomical structure" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000026 ;
+    owl:annotatedTarget OBI:0000047 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "processed material" ;
+    sssom:subject_label "processed material entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource SO:0001260 ;
+    owl:annotatedTarget COB:0000006 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "material entity" ;
+    sssom:subject_label "sequence_collection" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000009 ;
+    owl:annotatedTarget CHEBI:30222 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "neutron" ;
+    sssom:subject_label "neutron" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000020 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "subcellular structure" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000069 ;
+    owl:annotatedTarget IAO:0000033 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "directive information entity" ;
+    sssom:subject_label "directive information entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000080 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "complex of molecular entities" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource UBERON:0000468 ;
+    owl:annotatedTarget COB:0000118 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cellular organism" ;
+    sssom:subject_label "multicellular organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000021 ;
+    owl:annotatedTarget CARO:0001008 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "gross anatomical part" ;
+    sssom:subject_label "gross anatomical part" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000067 ;
+    owl:annotatedTarget ENVO:01001110 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "ecosystem" ;
+    sssom:subject_label "ecosystem" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000033 ;
+    owl:annotatedTarget BFO:0000017 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "realizable entity" ;
+    sssom:subject_label "realizable" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000040 ;
+    owl:annotatedTarget OBI:0000299 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has_specified_output" ;
+    sssom:subject_label "has specified output" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000075 ;
+    owl:annotatedTarget GO:0032991 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "protein-containing complex" ;
+    sssom:subject_label "protein-containing macromolecular complex" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000502 ;
+    owl:annotatedTarget PATO:0000001 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "quality" ;
+    sssom:subject_label "characteristic" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000065 ;
+    owl:annotatedTarget ENVO:02500000 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "environmental system process" ;
+    sssom:subject_label "environmental process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000513 ;
+    owl:annotatedTarget IAO:0000136 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is about" ;
+    sssom:subject_label "is about" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000055 ;
+    owl:annotatedTarget PCO:0000000 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "collection of organisms" ;
+    sssom:subject_label "collection of organisms" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000072 ;
+    owl:annotatedTarget BFO:0000050 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "part of" ;
+    sssom:subject_label "part of" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000066 ;
+    owl:annotatedTarget MOP:0000543 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "molecular process" ;
+    sssom:subject_label "physico-chemical process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000015 ;
+    owl:annotatedTarget CHEBI:16541 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "protein polypeptide chain" ;
+    sssom:subject_label "protein" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty skos:closeMatch ;
+    owl:annotatedSource COB:0000013 ;
+    owl:annotatedTarget CHEBI:23367 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "molecular entity" ;
+    sssom:subject_label "molecular entity" .
+
+[] a owl:Ontology ;
+    dc1:license "https://creativecommons.org/publicdomain/zero/1.0/"^^xsd:anyURI ;
+    sssom:mapping_set_id "http://purl.obolibrary.org/obo/cob/components/cob-to-external.tsv"^^xsd:anyURI .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000070 ;
+    owl:annotatedTarget RO:0000057 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has participant" ;
+    sssom:subject_label "has participant" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000108 ;
+    owl:annotatedTarget OBI:0200000 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "data transformation" ;
+    sssom:subject_label "data transformation" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000512 ;
+    owl:annotatedTarget RO:0000053 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "bearer of" ;
+    sssom:subject_label "has characteristic" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000004 ;
+    owl:annotatedTarget PATO:0002193 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "electric" ;
+    sssom:subject_label "charge" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource XAO:0003012 ;
+    owl:annotatedTarget COB:0000018 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "native cell" ;
+    sssom:subject_label "xenopus cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000038 ;
+    owl:annotatedTarget GO:0003674 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "molecular function" ;
+    sssom:subject_label "gene product or complex activity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000502 ;
+    owl:annotatedTarget BFO:0000020 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "specifically dependent continuant" ;
+    sssom:subject_label "characteristic" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000034 ;
+    owl:annotatedTarget BFO:0000015 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "process" ;
+    sssom:subject_label "process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subPropertyOf ;
+    owl:annotatedSource COB:0000511 ;
+    owl:annotatedTarget owl:topObjectProperty ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "topObjectProperty" ;
+    sssom:subject_label "has quantity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource UBERON:0000466 ;
+    owl:annotatedTarget COB:0000056 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "immaterial anatomical entity" ;
+    sssom:subject_label "immaterial anatomical entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000039 ;
+    owl:annotatedTarget OBI:0000293 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has_specified_input" ;
+    sssom:subject_label "has specified input" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000012 ;
+    owl:annotatedTarget CHEBI:33252 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "atomic nucleus" ;
+    sssom:subject_label "atomic nucleus" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000109 ;
+    owl:annotatedTarget OBI:0000066 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "investigation" ;
+    sssom:subject_label "investigation" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource ZFA:0009000 ;
+    owl:annotatedTarget COB:0000018 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "native cell" ;
+    sssom:subject_label "zebrafish cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000107 ;
+    owl:annotatedTarget OBI:0000070 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "assay" ;
+    sssom:subject_label "assay" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000002 ;
+    owl:annotatedTarget RO:0000058 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is concretized as" ;
+    sssom:subject_label "is concretized as" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource SO:0000400 ;
+    owl:annotatedTarget COB:0000502 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "characteristic" ;
+    sssom:subject_label "sequence_attribute" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000037 ;
+    owl:annotatedTarget GO:0008150 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "biological process" ;
+    sssom:subject_label "biological process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000024 ;
+    owl:annotatedTarget RO:0000056 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "participates in" ;
+    sssom:subject_label "participates in" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000101 ;
+    owl:annotatedTarget IAO:0000310 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "document" ;
+    sssom:subject_label "document" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000076 ;
+    owl:annotatedTarget IAO:0000005 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "objective specification" ;
+    sssom:subject_label "objective specification" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000005 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "elementary charge" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000022 ;
+    owl:annotatedTarget CARO:0001010 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "organism or virus or viroid" ;
+    sssom:subject_label "organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000023 ;
+    owl:annotatedTarget RO:0000052 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "inheres in" ;
+    sssom:subject_label "characteristic of" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource SO:0000110 ;
+    owl:annotatedTarget COB:0000006 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "material entity" ;
+    sssom:subject_label "sequence_feature" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000027 ;
+    owl:annotatedTarget OBI:0000295 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is_specified_input_of" ;
+    sssom:subject_label "is specified input of" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000068 ;
+    owl:annotatedTarget ENVO:01000813 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "astronomical body part" ;
+    sssom:subject_label "geophysical entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000042 ;
+    owl:annotatedTarget CHEBI:24867 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "monoatomic ion" ;
+    sssom:subject_label "monoatomic ion" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource SO:0001060 ;
+    owl:annotatedTarget COB:0000006 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "material entity" ;
+    sssom:subject_label "sequence_variant" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource PO:0025117 ;
+    owl:annotatedTarget COB:0000056 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "immaterial anatomical entity" ;
+    sssom:subject_label "plant anatomical space" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000058 ;
+    owl:annotatedTarget OBI:0001909 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "conclusion based on data" ;
+    sssom:subject_label "conclusion based on data" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000035 ;
+    owl:annotatedTarget OBI:0000011 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "planned process" ;
+    sssom:subject_label "planned process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000036 ;
+    owl:annotatedTarget BFO:0000067 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "contains process" ;
+    sssom:subject_label "contains process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000022 ;
+    owl:annotatedTarget NCBITaxon:1 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "root" ;
+    sssom:subject_label "organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000118 ;
+    owl:annotatedTarget NCBITaxon:131567 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cellular organisms" ;
+    sssom:subject_label "cellular organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subPropertyOf ;
+    owl:annotatedSource COB:0000016 ;
+    owl:annotatedTarget owl:topObjectProperty ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "topObjectProperty" ;
+    sssom:subject_label "executed by" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty skos:closeMatch ;
+    owl:annotatedSource COB:0000011 ;
+    owl:annotatedTarget CHEBI:33250 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "atom" ;
+    sssom:subject_label "atom" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000028 ;
+    owl:annotatedTarget OBI:0000312 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is_specified_output_of" ;
+    sssom:subject_label "is specified output of" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000007 ;
+    owl:annotatedTarget CHEBI:36342 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "subatomic particle" ;
+    sssom:subject_label "subatomic particle" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource COB:0000064 ;
+    owl:annotatedTarget OGMS:0000063 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "disease course" ;
+    sssom:subject_label "disease course" .
+
 

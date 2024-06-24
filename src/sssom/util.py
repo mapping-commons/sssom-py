@@ -557,7 +557,7 @@ def assign_default_confidence(
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
     new_df = df.copy()
     if CONFIDENCE not in new_df.columns:
-        new_df[CONFIDENCE] = 0.0  # np.NaN
+        new_df[CONFIDENCE] = 0.0  # np.nan
         nan_df = pd.DataFrame(columns=new_df.columns)
     else:
         new_df = df[~df[CONFIDENCE].isna()]
@@ -655,7 +655,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def add_default_confidence(df: pd.DataFrame, confidence: float = np.NAN) -> pd.DataFrame:
+def add_default_confidence(df: pd.DataFrame, confidence: float = np.nan) -> pd.DataFrame:
     """Add `confidence` column to DataFrame if absent and initializes to 0.95.
 
     If `confidence` column already exists, only fill in the None ones by 0.95.
@@ -862,7 +862,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
     """
 
-    # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
+    # Handle DataFrames with no 'confidence' column (basically adding a np.nan to all non-numeric confidences)
     confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
 
