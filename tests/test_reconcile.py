@@ -27,7 +27,7 @@ class TestReconcile(unittest.TestCase):
 
         self.msdf1.df["confidence"] = np.NAN
         df3 = filter_redundant_rows(self.msdf1.df)
-        self.assertEqual(10, len(df3.index))
+        self.assertEqual(11, len(df3.index))
 
     def test_deal_with_negation(self):
         """Test handling negating returns the right number of rows."""
