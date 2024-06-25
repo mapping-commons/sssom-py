@@ -469,10 +469,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
             ]
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
-    # FutureWarning: The frame.append method is deprecated and
-    # will be removed from pandas in a future version.
-    # Use pandas.concat instead.
-    # return_df = df.append(nan_df).drop_duplicates()
+
     confidence_reconciled_df = pd.concat([df, nan_df]).drop_duplicates()
 
     # Reconciling dataframe rows based on the predicates with equal confidence.
