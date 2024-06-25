@@ -444,27 +444,29 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
-    dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
-    max_conf: Dict[Tuple[str, ...], float] = {}
-    for _, row in dfmax.iterrows():
+    if not df.empty:
+        dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
+        max_conf: Dict[Tuple[str, ...], float] = {}
+        for _, row in dfmax.iterrows():
+            if ignore_predicate:
+                max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
+            else:
+                max_conf[(row[SUBJECT_ID], row[OBJECT_ID], row[PREDICATE_ID])] = row[CONFIDENCE]
         if ignore_predicate:
-            max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
+            df = df[
+                df.apply(
+                    lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
+                    axis=1,
+                )
+            ]
         else:
-            max_conf[(row[SUBJECT_ID], row[OBJECT_ID], row[PREDICATE_ID])] = row[CONFIDENCE]
-    if ignore_predicate:
-        df = df[
-            df.apply(
-                lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
-                axis=1,
-            )
-        ]
-    else:
-        df = df[
-            df.apply(
-                lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
-                axis=1,
-            )
-        ]
+            df = df[
+                df.apply(
+                    lambda x: x[CONFIDENCE]
+                    >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                    axis=1,
+                )
+            ]
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
     # FutureWarning: The frame.append method is deprecated and
