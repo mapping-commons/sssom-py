@@ -521,33 +521,32 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">]</span>
     <span class="n">dfmax</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-    <span class="n">dfmax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">max</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
-    <span class="n">max_conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dfmax</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">dfmax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">max</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">max_conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dfmax</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">ignore_predicate</span><span class="p">:</span>
+                <span class="n">max_conf</span><span class="p">[(</span><span class="n">row</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_conf</span><span class="p">[(</span><span class="n">row</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">ignore_predicate</span><span class="p">:</span>
-            <span class="n">max_conf</span><span class="p">[(</span><span class="n">row</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">max_conf</span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">])],</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">max_conf</span><span class="p">[(</span><span class="n">row</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">ignore_predicate</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">max_conf</span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">])],</span>
-                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">max_conf</span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">])],</span>
-                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">]</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">]</span>
+                    <span class="o">&gt;=</span> <span class="n">max_conf</span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="n">SUBJECT_ID</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">OBJECT_ID</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">PREDICATE_ID</span><span class="p">])],</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
     <span class="c1"># We are preserving confidence = NaN rows without making assumptions.</span>
     <span class="c1"># This means that there are potential duplicate mappings</span>
-    <span class="c1"># FutureWarning: The frame.append method is deprecated and</span>
-    <span class="c1"># will be removed from pandas in a future version.</span>
-    <span class="c1"># Use pandas.concat instead.</span>
-    <span class="c1"># return_df = df.append(nan_df).drop_duplicates()</span>
+
     <span class="n">confidence_reconciled_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">nan_df</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
     <span class="c1"># Reconciling dataframe rows based on the predicates with equal confidence.</span>
