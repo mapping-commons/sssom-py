@@ -1,13 +1,13 @@
 """Validators."""
 
 import logging
-from dataclasses import asdict
 from typing import Callable, List, Mapping
 
 from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
-from linkml.validator.plugins import JsonschemaValidationPlugin, RecommendedSlotsPlugin
+from linkml.validator.plugins import JsonschemaValidationPlugin
 from linkml.validator.report import Severity, ValidationResult
+from linkml_runtime.dumpers import json_dumper
 
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
@@ -92,14 +92,15 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
     """
     validator = Validator(
         schema=SCHEMA_YAML,
-        validation_plugins=[JsonschemaValidationPlugin(closed=False), RecommendedSlotsPlugin()],
+        validation_plugins=[JsonschemaValidationPlugin(closed=False)],
     )
     mapping_set = to_mapping_set_document(msdf).mapping_set
 
-    mapping_set_yaml = asdict(mapping_set)
-    mapping_set_yaml_cleaned = _clean_dict(mapping_set_yaml)
+    # mapping_set_yaml = asdict(mapping_set)
+    # mapping_set_dict = _clean_dict(mapping_set_yaml)
+    mapping_set_dict = json_dumper.to_dict(mapping_set)
 
-    report = validator.validate(mapping_set_yaml_cleaned, "mapping set")
+    report = validator.validate(mapping_set_dict, "mapping set")
     # TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164
     print_linkml_report(report, fail_on_error)
 
