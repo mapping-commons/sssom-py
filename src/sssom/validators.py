@@ -151,7 +151,7 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame, fail_on_error: bo
         )
     report = ValidationReport(results=validation_results)
     # TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164
-    print_linkml_report(report, False)
+    print_linkml_report(report, fail_on_error)
 
 
 def check_strict_curie_format(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
