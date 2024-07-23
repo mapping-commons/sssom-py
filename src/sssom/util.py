@@ -444,33 +444,32 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
     dfmax: pd.DataFrame
-    dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
-    max_conf: Dict[Tuple[str, ...], float] = {}
-    for _, row in dfmax.iterrows():
+    if not df.empty:
+        dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
+        max_conf: Dict[Tuple[str, ...], float] = {}
+        for _, row in dfmax.iterrows():
+            if ignore_predicate:
+                max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
+            else:
+                max_conf[(row[SUBJECT_ID], row[OBJECT_ID], row[PREDICATE_ID])] = row[CONFIDENCE]
         if ignore_predicate:
-            max_conf[(row[SUBJECT_ID], row[OBJECT_ID])] = row[CONFIDENCE]
+            df = df[
+                df.apply(
+                    lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
+                    axis=1,
+                )
+            ]
         else:
-            max_conf[(row[SUBJECT_ID], row[OBJECT_ID], row[PREDICATE_ID])] = row[CONFIDENCE]
-    if ignore_predicate:
-        df = df[
-            df.apply(
-                lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID])],
-                axis=1,
-            )
-        ]
-    else:
-        df = df[
-            df.apply(
-                lambda x: x[CONFIDENCE] >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
-                axis=1,
-            )
-        ]
+            df = df[
+                df.apply(
+                    lambda x: x[CONFIDENCE]
+                    >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                    axis=1,
+                )
+            ]
     # We are preserving confidence = NaN rows without making assumptions.
     # This means that there are potential duplicate mappings
-    # FutureWarning: The frame.append method is deprecated and
-    # will be removed from pandas in a future version.
-    # Use pandas.concat instead.
-    # return_df = df.append(nan_df).drop_duplicates()
+
     confidence_reconciled_df = pd.concat([df, nan_df]).drop_duplicates()
 
     # Reconciling dataframe rows based on the predicates with equal confidence.
@@ -557,7 +556,7 @@ def assign_default_confidence(
         ValueError("DataFrame cannot be empty to 'assign_default_confidence'.")
     new_df = df.copy()
     if CONFIDENCE not in new_df.columns:
-        new_df[CONFIDENCE] = 0.0  # np.NaN
+        new_df[CONFIDENCE] = 0.0  # np.nan
         nan_df = pd.DataFrame(columns=new_df.columns)
     else:
         new_df = df[~df[CONFIDENCE].isna()]
@@ -655,7 +654,7 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     return d
 
 
-def add_default_confidence(df: pd.DataFrame, confidence: float = np.NAN) -> pd.DataFrame:
+def add_default_confidence(df: pd.DataFrame, confidence: float = np.nan) -> pd.DataFrame:
     """Add `confidence` column to DataFrame if absent and initializes to 0.95.
 
     If `confidence` column already exists, only fill in the None ones by 0.95.
@@ -862,7 +861,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
     """
 
-    # Handle DataFrames with no 'confidence' column (basically adding a np.NaN to all non-numeric confidences)
+    # Handle DataFrames with no 'confidence' column (basically adding a np.nan to all non-numeric confidences)
     confidence_in_original = CONFIDENCE in df.columns
     df, nan_df = assign_default_confidence(df)
 
@@ -1107,12 +1106,18 @@ CURIE_RE = re.compile(CURIE_PATTERN)
 
 def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
-    return bool(CURIE_RE.match(string))
+    if string and isinstance(string, str):
+        return bool(CURIE_RE.match(string))
+    else:
+        return False
 
 
 def _is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
-    return validators.url(string)
+    if string and isinstance(string, str):
+        return validators.url(string)
+    else:
+        return False
 
 
 def get_prefix_from_curie(curie: str) -> str:

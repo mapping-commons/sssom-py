@@ -18,7 +18,7 @@
     </a>
 </p>
 
-<img src="https://github.com/jmcmurry/closed-illustrations/raw/master/logos/sssom-logos/sssom_logo_black-banner.png" />
+<img src="https://github.com/tis-lab/closed-illustrations/raw/master/logos/sssom-logos/sssom_logo_black_banner.png" />
 
 SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings
 

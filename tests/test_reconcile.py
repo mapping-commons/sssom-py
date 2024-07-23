@@ -22,6 +22,13 @@ class TestReconcile(unittest.TestCase):
         df2 = filter_redundant_rows(self.msdf2.df)
         self.assertEqual(18, len(df2.index))
 
+        # Create a new dataframe with the confidence column having NaN values
+        import numpy as np
+
+        self.msdf1.df["confidence"] = np.NAN
+        df3 = filter_redundant_rows(self.msdf1.df)
+        self.assertEqual(11, len(df3.index))
+
     def test_deal_with_negation(self):
         """Test handling negating returns the right number of rows."""
         df1 = deal_with_negation(self.msdf1.df)
