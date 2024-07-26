@@ -371,6 +371,11 @@ Implemented via PR: <a class="reference external" href="https://github.com/mappi
 <span class="sig-name descname"><span class="pre">Sparql</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Sparql'</span></em><a class="headerlink" href="#sssom.constants.SchemaValidationType.Sparql" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sssom.constants.SchemaValidationType.StrictCurieFormat">
+<span class="sig-name descname"><span class="pre">StrictCurieFormat</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'StrictCurieFormat'</span></em><a class="headerlink" href="#sssom.constants.SchemaValidationType.StrictCurieFormat" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1900,11 +1905,14 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 <p>Validators.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.validators.check_all_prefixes_in_curie_map">
-<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">check_all_prefixes_in_curie_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#check_all_prefixes_in_curie_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.check_all_prefixes_in_curie_map" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">check_all_prefixes_in_curie_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#check_all_prefixes_in_curie_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.check_all_prefixes_in_curie_map" title="Permalink to this definition"></a></dt>
 <dd><p>Check all <cite>EntityReference</cite> slots are mentioned in ‘curie_map’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if true, the function will throw an ValidationError exception when there are errors</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValidationError</strong> – If all prefixes not in curie_map.</p>
@@ -1916,14 +1924,55 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="sssom.validators.check_strict_curie_format">
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">check_strict_curie_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#check_strict_curie_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.check_strict_curie_format" title="Permalink to this definition"></a></dt>
+<dd><p>Check all <cite>EntityReference</cite> slots are formatted as unambiguous curies.</p>
+<dl class="simple">
+<dt>Implemented rules:</dt><dd><ul class="simple">
+<li><p>CURIE does not contain pipe “|” character to ensure that multivalued processing of in TSV works correctly.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if true, the function will throw an ValidationError exception when there are errors</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValidationError</strong> – If any entity reference does not follow the strict CURIE format</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sssom.validators.print_linkml_report">
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">print_linkml_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#print_linkml_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.print_linkml_report" title="Permalink to this definition"></a></dt>
+<dd><p>Print the error messages in the report. Optionally throw exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationReport</span></code></span>) – A LinkML validation report</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if true, the function will throw an ValidationError exception when there are errors</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="sssom.validators.validate">
-<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate" title="Permalink to this definition"></a></dt>
 <dd><p>Validate SSSOM files against <cite>sssom-schema</cite> using linkML’s validator function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame.</p></li>
 <li><p><strong>validation_types</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#sssom.constants.SchemaValidationType" title="sssom.constants.SchemaValidationType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaValidationType</span></code></a>]</span>) – SchemaValidationType</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, throw an error when execution of a method has failed</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1934,11 +1983,14 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.validators.validate_json_schema">
-<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate_json_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate_json_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate_json_schema" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate_json_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate_json_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate_json_schema" title="Permalink to this definition"></a></dt>
 <dd><p>Validate JSON Schema using linkml’s JsonSchemaDataValidator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame to eb validated.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame to eb validated.</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if true, the function will throw an ValidationError exception when there are errors</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
@@ -1948,11 +2000,14 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.validators.validate_shacl">
-<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate_shacl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate_shacl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate_shacl" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate_shacl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate_shacl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate_shacl" title="Permalink to this definition"></a></dt>
 <dd><p>Validate SCHACL file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – TODO: <a class="reference external" href="https://github.com/linkml/linkml/issues/850">https://github.com/linkml/linkml/issues/850</a> .</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – TODO: <a class="reference external" href="https://github.com/linkml/linkml/issues/850">https://github.com/linkml/linkml/issues/850</a> .</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if true, the function will throw an ValidationError exception when there are errors</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>NotImplementedError</strong> – Not yet implemented.</p>
@@ -1965,11 +2020,14 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.validators.validate_sparql">
-<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate_sparql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate_sparql"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate_sparql" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.validators.</span></span><span class="sig-name descname"><span class="pre">validate_sparql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/validators.html#validate_sparql"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.validators.validate_sparql" title="Permalink to this definition"></a></dt>
 <dd><p>Validate SPARQL file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msdf</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#sssom.util.MappingSetDataFrame" title="sssom.util.MappingSetDataFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSetDataFrame</span></code></a></span>) – MappingSetDataFrame</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if true, the function will throw an ValidationError exception when there are errors</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>NotImplementedError</strong> – Not yet implemented.</p>
