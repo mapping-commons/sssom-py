@@ -11,10 +11,11 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.1"
 click = ">=8.1.6"
 curies = ">=0.7.3"
 linkml-runtime = "^1.7.5"
+linkml = ">1.7.10"
 pandas = ">1.0.3"
 pansql = { version = ">=0.0.1", extras = ["pansql"] }
 sssom-schema = "^0.15.2"

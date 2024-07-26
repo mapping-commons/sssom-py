@@ -197,11 +197,13 @@ class SchemaValidationType(str, Enum):
     Shacl = "Shacl"
     Sparql = "Sparql"
     PrefixMapCompleteness = "PrefixMapCompleteness"
+    StrictCurieFormat = "StrictCurieFormat"
 
 
 DEFAULT_VALIDATION_TYPES = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
+    SchemaValidationType.StrictCurieFormat,
 ]
 
 
