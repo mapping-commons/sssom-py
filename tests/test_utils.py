@@ -7,6 +7,7 @@ import pandas as pd
 import yaml
 from curies import Converter, Record, chain
 from sssom_schema import Mapping as SSSOM_Mapping
+from sssom_schema import slots as SSSOM_Slots
 
 from sssom.constants import (
     CREATOR_ID,
@@ -409,13 +410,18 @@ class TestUtils(unittest.TestCase):
             "match_string": "",
             "subject_preprocessing": "",
             "object_preprocessing": "",
-            "semantic_similarity_score": np.nan,
-            "semantic_similarity_measure": "",
             "see_also": "",
             "issue_tracker_item": "",
             "other": "",
             "comment": "",
         }
+
+        if hasattr(SSSOM_Slots, "similarity_score"):
+            expected_result["similarity_score"] = np.nan
+            expected_result["similarity_measure"] = ""
+        else:
+            expected_result["semantic_similarity_score"] = np.nan
+            expected_result["semantic_similarity_measure"] = ""
 
         result_with_mapping_object = get_dict_from_mapping(mapping_obj)
         result_with_dict = get_dict_from_mapping(mapping_dict)
