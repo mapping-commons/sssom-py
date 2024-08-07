@@ -914,6 +914,16 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
 
     try:
         m = Mapping(**mdict)
+        if m.subject_type == "rdfs literal":
+            if m.subject_label is None:
+                raise ValueError("Missing subject_label")
+        elif m.subject_id is None:
+            raise ValueError("Missing subject_id")
+        if m.object_type == "rdfs literal":
+            if m.object_label is None:
+                raise ValueError("Missing object_label")
+        elif m.object_id is None:
+            raise ValueError("Missing object_id")
     except ValueError as e:
         logging.warning(
             f"One mapping in the mapping set is not well-formed, "
