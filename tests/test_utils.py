@@ -175,6 +175,15 @@ class TestIO(unittest.TestCase):
         inverted_df = invert_mappings(df=self.msdf2.df, merge_inverted=False)
         self.assertEqual(len(inverted_df), len(self.msdf2.df.drop_duplicates()))
 
+    def test_invert_asymmetric_nodes(self):
+        """Test inverting sets containing imbalanced subject/object columns."""
+        msdf = parse_sssom_table(f"{data_dir}/asymmetric.tsv")
+        inverted_df = invert_mappings(msdf.df, merge_inverted=False)
+        self.assertEqual(len(inverted_df), len(msdf.df))
+        original_subject_labels = msdf.df["subject_label"].values
+        inverted_object_labels = inverted_df["object_label"].values
+        self.assertNotIn(False, original_subject_labels == inverted_object_labels)
+
     def test_inject_metadata_into_df(self):
         """Test injecting metadata into DataFrame is as expected."""
         expected_creators = "orcid:0000-0001-5839-2535|orcid:0000-0001-5839-2532"

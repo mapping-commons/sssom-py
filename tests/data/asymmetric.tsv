@@ -1,0 +1,17 @@
+#curie_map:
+#  orcid: https://orcid.org/
+#  x: http://example.org/x/
+#  y: http://example.org/y/
+#  z: http://example.org/z/
+#mapping_set_id: https://w3id.org/sssom/mapping/tests/data/asymmetric.tsv
+#creator_id:
+#  - orcid:1234
+#  - orcid:5678
+#license: https://creativecommons.org/publicdomain/zero/1.0/
+#mapping_date: 2020-05-30
+subject_id	subject_label	predicate_id	object_id	mapping_justification	object_source	confidence
+x:appendage	appendage	owl:equivalentClass	y:appendage	semapv:ManualMappingCuration	y:example	0.841
+x:appendage	appendage	owl:equivalentClass	z:appendage	semapv:LexicalMatching	z:example	0.882
+x:appendage	appendage	owl:equivalentClass	z:appendage	semapv:ManualMappingCuration	z:example	0.841
+x:bone_element	bone element	owl:equivalentClass	y:bone	semapv:LexicalMatching	y:example	0.739
+x:bone_element	bone element	owl:equivalentClass	y:bone	semapv:ManualMappingCuration	y:example	0.535
