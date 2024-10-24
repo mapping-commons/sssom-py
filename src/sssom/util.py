@@ -1464,7 +1464,7 @@ def invert_mappings(
     inverted_df = df_to_invert.rename(
         columns=_invert_column_names(list_of_subject_object_columns, columns_invert_map)
     )
-    inverted_df = inverted_df[df.columns]
+    inverted_df = sort_df_rows_columns(inverted_df, by_rows=False)
     inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_map)
     if update_justification:
         inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
