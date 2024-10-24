@@ -50,3 +50,18 @@ jobs:
 
       - name: Test with pytest and generate coverage file
         run: poetry run tox -e py
+
+      #-----------------------------------------------------
+      # QC with pandas 1.x.x
+      # Note: The lock file will always have pandas > 2.0.0
+      #-----------------------------------------------------
+      - name: Test with pandas<2.0.0
+      run: |
+        poetry add "pandas<2.0.0"
+
+        # Optionally clear poetry's cache to ensure no old versions interfere
+        poetry cache clear pypi --all
+
+        # Reinstall dependencies
+        poetry install --no-interaction
+        poetry run tox -e py
