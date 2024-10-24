@@ -58,7 +58,7 @@ jobs:
       - name: Test with pandas<2.0.0
         run: |
           poetry add "pandas<2.0.0"
-          poetry lock --no-update
+          poetry lock
 
           # Optionally clear poetry's cache to ensure no old versions interfere
           poetry cache clear pypi --all
