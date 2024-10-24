@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [ "3.8", "3.9", "3.10" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
 
     steps:
       - uses: actions/checkout@v3.0.2
@@ -58,4 +58,5 @@ jobs:
       - name: Test with pandas<2.0.0
         run: |
           poetry add "pandas<2.0.0"
+          poetry add "numpy<1.24"
           poetry run tox -e py
