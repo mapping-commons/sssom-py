@@ -58,5 +58,9 @@ jobs:
       - name: Test with pandas<2.0.0
         run: |
           poetry add "pandas<2.0.0"
-          poetry add "numpy<1.24"
+          if [[ "${{ matrix.python-version }}" == "3.12" ]]; then
+            poetry add "numpy>=1.24,<1.25"
+          else
+            poetry add "numpy<1.24"
+          fi
           poetry run tox -e py
