@@ -25,7 +25,7 @@ class TestReconcile(unittest.TestCase):
         # Create a new dataframe with the confidence column having NaN values
         import numpy as np
 
-        self.msdf1.df["confidence"] = np.NAN
+        self.msdf1.df["confidence"] = np.nan
         df3 = filter_redundant_rows(self.msdf1.df)
         self.assertEqual(11, len(df3.index))
 
