@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Python API &mdash; sssom-py 0.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=525cde36"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -141,20 +139,20 @@
            <div itemprop="articleBody">
              
   <section id="python-api">
-<h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this heading"></a></h1>
+<h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h1>
 <section id="datamodel">
-<h2>Datamodel<a class="headerlink" href="#datamodel" title="Permalink to this heading"></a></h2>
+<h2>Datamodel<a class="headerlink" href="#datamodel" title="Link to this heading"></a></h2>
 <p>Top-level Document object</p>
-<span class="target" id="module-sssom.sssom_document"></span><p>Additional SSSOM object models.</p>
+<p id="module-sssom.sssom_document">Additional SSSOM object models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sssom_document.</span></span><span class="sig-name descname"><span class="pre">MappingSetDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/sssom_document.html#MappingSetDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.sssom_document.</span></span><span class="sig-name descname"><span class="pre">MappingSetDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/sssom_document.html#MappingSetDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents a single SSSOM document.</p>
 <p>A document is simply a holder for a MappingSet object plus a CURIE map</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument.mapping_set">
-<span class="sig-name descname"><span class="pre">mapping_set</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.mapping_set" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mapping_set</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingSet</span></code></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.mapping_set" title="Link to this definition"></a></dt>
 <dd><p>a set of mappings plus metadata</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -165,7 +163,7 @@
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sssom.sssom_document.MappingSetDocument.prefix_map">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.prefix_map" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefix_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sssom.sssom_document.MappingSetDocument.prefix_map" title="Link to this definition"></a></dt>
 <dd><p>Get a prefix map.</p>
 </dd></dl>
 
@@ -174,12 +172,12 @@
 <p>A Document holds a MappingSet which is a collection of mappings</p>
 </section>
 <section id="i-o">
-<h2>I/O<a class="headerlink" href="#i-o" title="Permalink to this heading"></a></h2>
+<h2>I/O<a class="headerlink" href="#i-o" title="Link to this heading"></a></h2>
 <p>Conversion between TSV/pandas, internal datamodel and RDF</p>
-<span class="target" id="module-sssom.io"></span><p>I/O utilities for SSSOM.</p>
+<p id="module-sssom.io">I/O utilities for SSSOM.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.annotate_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">annotate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#annotate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.annotate_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">annotate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#annotate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.annotate_file" title="Link to this definition"></a></dt>
 <dd><p>Annotate a file i.e. add custom metadata to the mapping set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -203,7 +201,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.convert_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">convert_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#convert_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.convert_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">convert_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#convert_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.convert_file" title="Link to this definition"></a></dt>
 <dd><p>Convert a file from one format to another.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -221,7 +219,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.extract_iris">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#extract_iris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.extract_iris" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">extract_iris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#extract_iris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.extract_iris" title="Link to this definition"></a></dt>
 <dd><p>Recursively extracts a list of IRIs from a string or file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -241,7 +239,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.filter_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">filter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#filter_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.filter_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">filter_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#filter_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.filter_file" title="Link to this definition"></a></dt>
 <dd><p>Filter a dataframe by dynamically generating queries based on user input.</p>
 <p>e.g. sssom filter –subject_id x:% –subject_id y:% –object_id y:% –object_id z:% tests/data/basic.tsv</p>
 <p>yields the query:</p>
@@ -271,7 +269,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.get_metadata_and_prefix_map">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">get_metadata_and_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#get_metadata_and_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.get_metadata_and_prefix_map" title="Link to this definition"></a></dt>
 <dd><p>Load metadata and a prefix map in a deprecated way.
 :rtype: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Converter</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
 <div class="deprecated">
@@ -281,7 +279,7 @@ which are added to the metadata (e.g.: –mapping_set_id <a class="reference ext
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.parse_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">parse_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_clean_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping_predicate_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#parse_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.parse_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">parse_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_map_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_clean_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping_predicate_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#parse_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.parse_file" title="Link to this definition"></a></dt>
 <dd><p>Parse an SSSOM metadata file and write to a table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -308,7 +306,7 @@ the SSSOM default prefix map derived from the <code class="xref py py-mod docuti
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.run_sql_query">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">run_sql_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#run_sql_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.run_sql_query" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">run_sql_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#run_sql_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.run_sql_query" title="Link to this definition"></a></dt>
 <dd><p>Run a SQL query over one or more SSSOM files.</p>
 <p>Each of the N inputs is assigned a table name df1, df2, …, dfN</p>
 <p>Alternatively, the filenames can be used as table names - these are first stemmed
@@ -338,7 +336,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.split_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">split_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#split_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.split_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">split_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#split_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.split_file" title="Link to this definition"></a></dt>
 <dd><p>Split an SSSOM TSV by prefixes and relations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -355,7 +353,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.validate_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.validate_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.validate_file" title="Link to this definition"></a></dt>
 <dd><p>Validate the incoming SSSOM TSV according to the SSSOM specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -372,12 +370,12 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 </section>
 <section id="utils">
-<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h2>
+<h2>Utils<a class="headerlink" href="#utils" title="Link to this heading"></a></h2>
 <p>Utils - currently boomer-specific</p>
-<span class="target" id="module-sssom.util"></span><p>Utility functions.</p>
+<p id="module-sssom.util">Utility functions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.util.EntityPair">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">EntityPair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#EntityPair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.EntityPair" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">EntityPair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#EntityPair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.EntityPair" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A tuple of entities.</p>
 <p>Note that (e1,e2) == (e2,e1)</p>
@@ -385,18 +383,18 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="sssom.util.KEY_FEATURES">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">KEY_FEATURES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['subject_id',</span> <span class="pre">'predicate_id',</span> <span class="pre">'object_id',</span> <span class="pre">'predicate_modifier']</span></em><a class="headerlink" href="#sssom.util.KEY_FEATURES" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">KEY_FEATURES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['subject_id',</span> <span class="pre">'predicate_id',</span> <span class="pre">'object_id',</span> <span class="pre">'predicate_modifier']</span></em><a class="headerlink" href="#sssom.util.KEY_FEATURES" title="Link to this definition"></a></dt>
 <dd><p>The 4 columns whose combination would be used as primary keys while merging/grouping</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A collection of mappings represented as a DataFrame, together with additional metadata.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.clean_context">
-<span class="sig-name descname"><span class="pre">clean_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.clean_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_context" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">clean_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.clean_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_context" title="Link to this definition"></a></dt>
 <dd><p>Clean up the context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -407,7 +405,7 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.clean_prefix_map">
-<span class="sig-name descname"><span class="pre">clean_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.clean_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_prefix_map" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">clean_prefix_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.clean_prefix_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.clean_prefix_map" title="Link to this definition"></a></dt>
 <dd><p>Remove unused prefixes from the internal prefix map based on the internal dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -425,7 +423,7 @@ listed in the ‘curie_map’.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.from_mapping_set">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mapping_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mapping_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mapping_set" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mapping_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping_set</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mapping_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mapping_set" title="Link to this definition"></a></dt>
 <dd><p>Instantiate from a mapping set and an optional converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -446,7 +444,7 @@ prefix map derived from the Bioregistry.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.from_mapping_set_document">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mapping_set_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mapping_set_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mapping_set_document" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mapping_set_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mapping_set_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mapping_set_document" title="Link to this definition"></a></dt>
 <dd><p>Instantiate from a mapping set document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -457,7 +455,7 @@ prefix map derived from the Bioregistry.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.from_mappings">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mappings</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mappings" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mappings</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.from_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.from_mappings" title="Link to this definition"></a></dt>
 <dd><p>Instantiate from a list of mappings, mapping set metadata, and an optional converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -468,7 +466,7 @@ prefix map derived from the Bioregistry.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.merge">
-<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.merge" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.merge" title="Link to this definition"></a></dt>
 <dd><p>Merge two MappingSetDataframes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -489,13 +487,13 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.prefix_map">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefix_map</span></span><a class="headerlink" href="#sssom.util.MappingSetDataFrame.prefix_map" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefix_map</span></span><a class="headerlink" href="#sssom.util.MappingSetDataFrame.prefix_map" title="Link to this definition"></a></dt>
 <dd><p>Get a simple, bijective prefix map.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.remove_mappings">
-<span class="sig-name descname"><span class="pre">remove_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.remove_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.remove_mappings" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.remove_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.remove_mappings" title="Link to this definition"></a></dt>
 <dd><p>Remove mappings in right msdf from left msdf.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -509,7 +507,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.standardize_references">
-<span class="sig-name descname"><span class="pre">standardize_references</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.standardize_references"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.standardize_references" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">standardize_references</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.standardize_references"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.standardize_references" title="Link to this definition"></a></dt>
 <dd><p>Standardize this MSDF’s dataframe and metadata with respect to its converter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -520,7 +518,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.to_mapping_set">
-<span class="sig-name descname"><span class="pre">to_mapping_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mapping_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mapping_set" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_mapping_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mapping_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mapping_set" title="Link to this definition"></a></dt>
 <dd><p>Get a mapping set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -531,7 +529,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.to_mapping_set_document">
-<span class="sig-name descname"><span class="pre">to_mapping_set_document</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mapping_set_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mapping_set_document" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_mapping_set_document</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mapping_set_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mapping_set_document" title="Link to this definition"></a></dt>
 <dd><p>Get a mapping set document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -542,7 +540,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.to_mappings">
-<span class="sig-name descname"><span class="pre">to_mappings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mappings" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_mappings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.to_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.to_mappings" title="Link to this definition"></a></dt>
 <dd><p>Get a mapping set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -553,7 +551,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDataFrame.with_converter">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.with_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.with_converter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDataFrame.with_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDataFrame.with_converter" title="Link to this definition"></a></dt>
 <dd><p>Instantiate with a converter instead of a vanilla prefix map.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -566,7 +564,7 @@ if false, it simply return the merged data frame.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDiff">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unique_tuples1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_tuples2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">common_tuples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combined_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDiff" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">MappingSetDiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unique_tuples1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_tuples2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">common_tuples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combined_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#MappingSetDiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.MappingSetDiff" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents a difference between two mapping sets.</p>
 <p>Currently this is limited to diffs at the level of entity-pairs.
@@ -574,7 +572,7 @@ For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMat
 this is considered a mapping in common.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sssom.util.MappingSetDiff.combined_dataframe">
-<span class="sig-name descname"><span class="pre">combined_dataframe</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sssom.util.MappingSetDiff.combined_dataframe" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">combined_dataframe</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sssom.util.MappingSetDiff.combined_dataframe" title="Link to this definition"></a></dt>
 <dd><p>Dataframe that combines with left and right dataframes with information injected into
 the comment column</p>
 </dd></dl>
@@ -583,7 +581,7 @@ the comment column</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.add_default_confidence">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">add_default_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#add_default_confidence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.add_default_confidence" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">add_default_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#add_default_confidence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.add_default_confidence" title="Link to this definition"></a></dt>
 <dd><p>Add <cite>confidence</cite> column to DataFrame if absent and initializes to 0.95.</p>
 <p>If <cite>confidence</cite> column already exists, only fill in the None ones by 0.95.</p>
 <dl class="field-list simple">
@@ -601,7 +599,7 @@ the comment column</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.are_params_slots">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">are_params_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#are_params_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.are_params_slots" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">are_params_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#are_params_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.are_params_slots" title="Link to this definition"></a></dt>
 <dd><p>Check if parameters conform to the slots in MAPPING_SET_SLOTS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -621,7 +619,7 @@ the comment column</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.assign_default_confidence">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">assign_default_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#assign_default_confidence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.assign_default_confidence" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">assign_default_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#assign_default_confidence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.assign_default_confidence" title="Link to this definition"></a></dt>
 <dd><p>Assign <code class="xref py py-data docutils literal notranslate"><span class="pre">numpy.nan</span></code> to confidence that are blank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -638,7 +636,7 @@ the comment column</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.augment_metadata">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">augment_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#augment_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.augment_metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">augment_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_multivalued</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#augment_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.augment_metadata" title="Link to this definition"></a></dt>
 <dd><p>Augment metadata with parameters passed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -663,7 +661,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.collapse">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">collapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#collapse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.collapse" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">collapse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#collapse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.collapse" title="Link to this definition"></a></dt>
 <dd><p>Collapse rows with same S/P/O and combines confidence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -674,7 +672,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.compare_dataframes">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">compare_dataframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#compare_dataframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.compare_dataframes" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">compare_dataframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#compare_dataframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.compare_dataframes" title="Link to this definition"></a></dt>
 <dd><p>Perform a diff between two SSSOM dataframes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -698,7 +696,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.create_entity">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">create_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mappings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#create_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.create_entity" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">create_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mappings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#create_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.create_entity" title="Link to this definition"></a></dt>
 <dd><p>Create an Entity object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -718,7 +716,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.dataframe_to_ptable">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_ptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#dataframe_to_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.dataframe_to_ptable" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_ptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#dataframe_to_ptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.dataframe_to_ptable" title="Link to this definition"></a></dt>
 <dd><p>Export a KBOOM table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -742,7 +740,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.deal_with_negation">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">deal_with_negation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#deal_with_negation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.deal_with_negation" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">deal_with_negation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#deal_with_negation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.deal_with_negation" title="Link to this definition"></a></dt>
 <dd><p>Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination.</p>
 <p>Rule: negative trumps positive if modulus of confidence values are equal.</p>
 <dl class="field-list simple">
@@ -763,7 +761,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.filter_out_prefixes">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_out_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.filter_out_prefixes" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_out_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_out_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.filter_out_prefixes" title="Link to this definition"></a></dt>
 <dd><p>Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -785,7 +783,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.filter_prefixes">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.filter_prefixes" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_all_prefixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.filter_prefixes" title="Link to this definition"></a></dt>
 <dd><p>Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -807,7 +805,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.filter_redundant_rows">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_redundant_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_predicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_redundant_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.filter_redundant_rows" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">filter_redundant_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_predicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#filter_redundant_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.filter_redundant_rows" title="Link to this definition"></a></dt>
 <dd><p>Remove rows if there is another row with same S/O and higher confidence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -827,7 +825,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_all_prefixes">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_all_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_all_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_all_prefixes" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_all_prefixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_all_prefixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_all_prefixes" title="Link to this definition"></a></dt>
 <dd><p>Fetch all prefixes in the MappingSetDataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -850,7 +848,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_dict_from_mapping">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_dict_from_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_dict_from_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_dict_from_mapping" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_dict_from_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_dict_from_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_dict_from_mapping" title="Link to this definition"></a></dt>
 <dd><p>Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -867,7 +865,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_file_extension">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_file_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_file_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_file_extension" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_file_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_file_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_file_extension" title="Link to this definition"></a></dt>
 <dd><p>Get file extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -884,7 +882,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_prefix_from_curie">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefix_from_curie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curie</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefix_from_curie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefix_from_curie" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefix_from_curie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curie</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefix_from_curie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefix_from_curie" title="Link to this definition"></a></dt>
 <dd><p>Get the prefix from a CURIE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -895,7 +893,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_prefixes_used_in_metadata">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefixes_used_in_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefixes_used_in_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_metadata" title="Link to this definition"></a></dt>
 <dd><p>Get a set of prefixes used in CURIEs in the metadata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -906,7 +904,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_prefixes_used_in_table">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefixes_used_in_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_table" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_prefixes_used_in_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_table" title="Link to this definition"></a></dt>
 <dd><p>Get a list of prefixes used in CURIEs in key feature columns in a dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -917,7 +915,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_row_based_on_hierarchy">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_row_based_on_hierarchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_row_based_on_hierarchy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_row_based_on_hierarchy" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_row_based_on_hierarchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#get_row_based_on_hierarchy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_row_based_on_hierarchy" title="Link to this definition"></a></dt>
 <dd><p>Get row based on hierarchy of predicates.</p>
 <p>The hierarchy is as follows:
 # owl:equivalentClass
@@ -950,7 +948,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.group_mappings">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">group_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#group_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.group_mappings" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">group_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#group_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.group_mappings" title="Link to this definition"></a></dt>
 <dd><p>Group mappings by EntityPairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -961,7 +959,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.inject_metadata_into_df">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">inject_metadata_into_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#inject_metadata_into_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.inject_metadata_into_df" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">inject_metadata_into_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#inject_metadata_into_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.inject_metadata_into_df" title="Link to this definition"></a></dt>
 <dd><p>Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -978,7 +976,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.invert_mappings">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">invert_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_inverted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_justification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate_invert_dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#invert_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.invert_mappings" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">invert_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_inverted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_justification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate_invert_dictionary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#invert_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.invert_mappings" title="Link to this definition"></a></dt>
 <dd><p>Switching subject and objects based on their prefixes and adjusting predicates accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1003,7 +1001,7 @@ else it is left as it is.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.is_multivalued_slot">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_multivalued_slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#is_multivalued_slot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.is_multivalued_slot" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">is_multivalued_slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#is_multivalued_slot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.is_multivalued_slot" title="Link to this definition"></a></dt>
 <dd><p>Check whether the slot is multivalued according to the SSSOM specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1020,7 +1018,7 @@ else it is left as it is.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.merge_msdf">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">merge_msdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconcile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#merge_msdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.merge_msdf" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">merge_msdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msdfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reconcile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#merge_msdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.merge_msdf" title="Link to this definition"></a></dt>
 <dd><p>Merge multiple MappingSetDataFrames into one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1044,7 +1042,7 @@ Defaults to True.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.parse">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.parse" title="Link to this definition"></a></dt>
 <dd><p>Parse a TSV to a pandas frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -1055,7 +1053,7 @@ Defaults to True.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.raise_for_bad_path">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">raise_for_bad_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#raise_for_bad_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.raise_for_bad_path" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">raise_for_bad_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#raise_for_bad_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.raise_for_bad_path" title="Link to this definition"></a></dt>
 <dd><p>Raise exception if file path is invalid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1072,7 +1070,7 @@ Defaults to True.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.reconcile_prefix_and_data">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">reconcile_prefix_and_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_reconciliation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#reconcile_prefix_and_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.reconcile_prefix_and_data" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">reconcile_prefix_and_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_reconciliation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#reconcile_prefix_and_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.reconcile_prefix_and_data" title="Link to this definition"></a></dt>
 <dd><p>Reconciles prefix_map and translates CURIE switch in dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1097,7 +1095,7 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.remove_unmatched">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">remove_unmatched</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#remove_unmatched"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.remove_unmatched" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">remove_unmatched</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#remove_unmatched"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.remove_unmatched" title="Link to this definition"></a></dt>
 <dd><p>Remove rows where no match is found.</p>
 <p>TODO: <a class="reference external" href="https://github.com/OBOFoundry/SSSOM/issues/28">https://github.com/OBOFoundry/SSSOM/issues/28</a>
 :type df: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>
@@ -1108,7 +1106,7 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.safe_compress">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">safe_compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#safe_compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.safe_compress" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">safe_compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#safe_compress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.safe_compress" title="Link to this definition"></a></dt>
 <dd><p>Parse a CURIE from an IRI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1128,7 +1126,7 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.sort_df_rows_columns">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">sort_df_rows_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#sort_df_rows_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.sort_df_rows_columns" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">sort_df_rows_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#sort_df_rows_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.sort_df_rows_columns" title="Link to this definition"></a></dt>
 <dd><p>Canonical sorting of DataFrame columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1149,7 +1147,7 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.sort_sssom">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">sort_sssom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#sort_sssom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.sort_sssom" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">sort_sssom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#sort_sssom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.sort_sssom" title="Link to this definition"></a></dt>
 <dd><p>Sort SSSOM by columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1166,7 +1164,7 @@ Just doing <code class="docutils literal notranslate"><span class="pre">{&quot;g
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.to_mapping_set_dataframe">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">to_mapping_set_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#to_mapping_set_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.to_mapping_set_dataframe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">to_mapping_set_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#to_mapping_set_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.to_mapping_set_dataframe" title="Link to this definition"></a></dt>
 <dd><p>Convert MappingSetDocument into MappingSetDataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
