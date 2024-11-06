@@ -36,6 +36,28 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 90)
 
+    def test_uberon_to_rdf(self):
+        """Test to ensure that a mixed case prefix is not upper cased by LinkMLs rdflib_dumper."""
+
+        uberon = parse_sssom_table(data_dir / "uberon.sssom.tsv")
+        from linkml_runtime.dumpers import rdflib_dumper
+        from sssom.constants import SCHEMA_YAML
+        from sssom.parsers import to_mapping_set_document
+        from linkml_runtime.utils.schemaview import SchemaView
+        assert "HSAPDV" not in uberon.converter.bimap.keys(), "Namespace 'HSAPDV' should NOT exist in the MSDF"
+        assert "HsapDv" in uberon.converter.bimap.keys(), "Namespace 'HsapDv' should exist in the MSDF"
+
+        doc = to_mapping_set_document(uberon)
+        g = rdflib_dumper.as_rdf_graph(
+            element=doc.mapping_set,
+            schemaview=SchemaView(SCHEMA_YAML),
+            prefix_map=uberon.converter.bimap,
+        )
+
+        graph_as_string = g.serialize(format="turtle")
+        assert 'HSAPDV' in graph_as_string, "Upper case 'HSADV' should not appear in serialized output, this is just to prove a point"
+        assert 'HsapDv' in graph_as_string, "Upper case 'HsapDv' should appear in serialized output, but does not"
+
     def test_cob_to_owl(self):
         """Test converting the COB example to an OWL RDF graph."""
         g = to_owl_graph(self.cob)
