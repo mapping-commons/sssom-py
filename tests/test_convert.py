@@ -64,12 +64,12 @@ class TestConvert(unittest.TestCase):
         namespaces = list(g.namespace_manager.namespaces())
         assert any(prefix == 'HsapDv' for prefix, _ in namespaces), "Namespace 'HsapDv' should exist in the graph (and it does)"
 
-        # Here is where the problem happens:
-        assert any(prefix == 'HSAPDV' for prefix, _ in namespaces), "Namespace 'HSAPDV' should NOT exist in the graph, but I show it here to proof my point"
-
         # To show that the assert works, I am checking a random prefix to ensure it does not exist
-        assert not any(prefix == 'RANDOMRR' for prefix, _ in namespaces), "Namespace 'RANDOM' should exist in the graph"
+        assert not any(prefix == 'RANDOMRR' for prefix, _ in namespaces), "Namespace 'RANDOM' should exist in the graph, and indeed, it does not"
 
+        # Here is where the problem happens:
+        assert not any(prefix == 'HSAPDV' for prefix, _ in
+                   namespaces), "Namespace 'HSAPDV' should NOT exist in the graph, but I show it here to proof my point"
 
     def test_cob_to_owl(self):
         """Test converting the COB example to an OWL RDF graph."""
