@@ -62,11 +62,11 @@ def write_table(
     meta[CURIE_MAP] = msdf.converter.bimap
     if sort:
         msdf.df = sort_df_rows_columns(msdf.df)
-    lines = yaml.safe_dump(meta).split("\n")
-    lines = [f"# {line}" for line in lines if line != ""]
-    s = msdf.df.to_csv(sep=sep, index=False)
 
     if embedded_mode:
+        lines = yaml.safe_dump(meta).split("\n")
+        lines = [f"# {line}" for line in lines if line != ""]
+        s = msdf.df.to_csv(sep=sep, index=False).rstrip("\n")
         lines = lines + [s]
         for line in lines:
             print(line, file=file)
