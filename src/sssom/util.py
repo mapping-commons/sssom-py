@@ -168,7 +168,8 @@ class MappingSetDataFrame:
 
         # ! This will break when pandas >= 3.0.0 is released
         # https://github.com/pandas-dev/pandas/issues/57734
-        pd.set_option("future.no_silent_downcasting", True)
+        if "future.no_silent_downcasting" in pd.options:
+            pd.set_option("future.no_silent_downcasting", True)
         df.replace("", np.nan, inplace=True)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
