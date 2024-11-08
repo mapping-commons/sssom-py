@@ -164,10 +164,9 @@ class MappingSetDataFrame:
         else:
             # For pandas < 2.0.0, call 'infer_objects()' without any parameters
             df = df.infer_objects()
-        # remove columns where all values are blank
+        # remove columns where all values are blank.
 
-        # ! This will break when pandas >= 3.0.0 is released
-        # https://github.com/pandas-dev/pandas/issues/57734
+        # Context https://github.com/pandas-dev/pandas/issues/57734
         try:
             pd.set_option("future.no_silent_downcasting", True)
         except KeyError:
