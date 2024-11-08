@@ -173,7 +173,7 @@ class MappingSetDataFrame:
             # Option does not exist in this version of pandas
             pass
         df.replace("", np.nan, inplace=True)
-        df.infer_objects(copy=False)
+        # df.infer_objects(copy=False)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
         slots = _get_sssom_schema_object().dict["slots"]
