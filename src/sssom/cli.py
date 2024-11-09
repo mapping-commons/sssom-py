@@ -54,6 +54,7 @@ from .util import (
     filter_redundant_rows,
     invert_mappings,
     merge_msdf,
+    pandas_set_no_silent_downcasting,
     reconcile_prefix_and_data,
     remove_unmatched,
     sort_df_rows_columns,
@@ -126,6 +127,9 @@ predicate_filter_option = click.option(
 def main(verbose: int, quiet: bool):
     """Run the SSSOM CLI."""
     logger = _logging.getLogger()
+
+    pandas_set_no_silent_downcasting()
+
     if verbose >= 2:
         logger.setLevel(level=_logging.DEBUG)
     elif verbose == 1:

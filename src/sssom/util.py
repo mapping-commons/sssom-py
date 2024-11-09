@@ -1497,3 +1497,12 @@ def _safe_infer_objects(df):
         return df.infer_objects(copy=False)
     else:
         return df.infer_objects()
+
+
+def pandas_set_no_silent_downcasting(no_silent_downcasting=True):
+    """Set pandas future.no_silent_downcasting option. Context https://github.com/pandas-dev/pandas/issues/57734."""
+    try:
+        pd.set_option("future.no_silent_downcasting", no_silent_downcasting)
+    except KeyError:
+        # Option does not exist in this version of pandas
+        pass
