@@ -246,14 +246,9 @@
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">get_dict_from_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">)</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="n">_extract_global_metadata</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">pandas_version</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="c1"># For pandas &gt;= 2.0.0, use the &#39;copy&#39; parameter</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># For pandas &lt; 2.0.0, call &#39;infer_objects()&#39; without any parameters</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span>
         <span class="c1"># remove columns where all values are blank.</span>
         <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span>
         <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># remove columns with all row = &#39;None&#39;-s.</span>
 
         <span class="n">slots</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
@@ -1708,6 +1703,18 @@
 <span class="sd">    :return: A CURIE</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">compress_or_standardize</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="pandas_set_no_silent_downcasting">
+<a class="viewcode-back" href="../../sssom.html#sssom.util.pandas_set_no_silent_downcasting">[docs]</a>
+<span class="k">def</span> <span class="nf">pandas_set_no_silent_downcasting</span><span class="p">(</span><span class="n">no_silent_downcasting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set pandas future.no_silent_downcasting option. Context https://github.com/pandas-dev/pandas/issues/57734.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;future.no_silent_downcasting&quot;</span><span class="p">,</span> <span class="n">no_silent_downcasting</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c1"># Option does not exist in this version of pandas</span>
+        <span class="k">pass</span></div>
 
 </pre></div>
 
