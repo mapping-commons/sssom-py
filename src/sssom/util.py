@@ -160,7 +160,7 @@ class MappingSetDataFrame:
 
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
-        df = _safe_infer_objects(df)
+        df = df.infer_objects()
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
         slots = _get_sssom_schema_object().dict["slots"]
@@ -1488,15 +1488,6 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :return: A CURIE
     """
     return converter.compress_or_standardize(uri, strict=True)
-
-
-def _safe_infer_objects(df):
-    """Infer object types in a DataFrame, compatible with multiple pandas versions."""
-    _pandas_version = tuple(map(int, pd.__version__.split(".")[:2]))
-    if _pandas_version >= (2, 0):
-        return df.infer_objects(copy=False)
-    else:
-        return df.infer_objects()
 
 
 def pandas_set_no_silent_downcasting(no_silent_downcasting=True):
