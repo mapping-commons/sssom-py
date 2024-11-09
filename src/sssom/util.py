@@ -158,14 +158,9 @@ class MappingSetDataFrame:
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = _extract_global_metadata(doc)
 
-        if pandas_version >= (2, 0, 0):
-            # For pandas >= 2.0.0, use the 'copy' parameter
-            df = df.infer_objects(copy=False)
-        else:
-            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
-            df = df.infer_objects()
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
+        df = df.infer_objects()
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
         slots = _get_sssom_schema_object().dict["slots"]
@@ -1493,3 +1488,12 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :return: A CURIE
     """
     return converter.compress_or_standardize(uri, strict=True)
+
+
+def pandas_set_no_silent_downcasting(no_silent_downcasting=True):
+    """Set pandas future.no_silent_downcasting option. Context https://github.com/pandas-dev/pandas/issues/57734."""
+    try:
+        pd.set_option("future.no_silent_downcasting", no_silent_downcasting)
+    except KeyError:
+        # Option does not exist in this version of pandas
+        pass
