@@ -2,6 +2,8 @@
 
 import importlib.metadata
 
+import pandas as pd
+
 try:
     __version__ = importlib.metadata.version(__name__)
 except importlib.metadata.PackageNotFoundError:
@@ -24,3 +26,10 @@ from sssom.util import (  # noqa:401
 )
 
 from .constants import generate_mapping_set_id, get_default_metadata  # noqa:401
+
+# Context https://github.com/pandas-dev/pandas/issues/57734
+try:
+    pd.set_option("future.no_silent_downcasting", True)
+except KeyError:
+    # Option does not exist in this version of pandas
+    pass

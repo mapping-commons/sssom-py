@@ -165,13 +165,6 @@ class MappingSetDataFrame:
             # For pandas < 2.0.0, call 'infer_objects()' without any parameters
             df = df.infer_objects()
         # remove columns where all values are blank.
-
-        # Context https://github.com/pandas-dev/pandas/issues/57734
-        try:
-            pd.set_option("future.no_silent_downcasting", True)
-        except KeyError:
-            # Option does not exist in this version of pandas
-            pass
         df.replace("", np.nan, inplace=True)
         # df.infer_objects(copy=False)
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
