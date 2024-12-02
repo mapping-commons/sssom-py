@@ -123,8 +123,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
             <span class="n">validation_errors</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">Severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">Severity</span><span class="o">.</span><span class="n">FATAL</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">Severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">):</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">Severity</span><span class="o">.</span><span class="n">WARN</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="n">Severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">fail_on_error</span> <span class="ow">and</span> <span class="n">validation_errors</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You mapping set has </span><span class="si">{</span><span class="n">validation_errors</span><span class="si">}</span><span class="s2"> validation errors!&quot;</span><span class="p">)</span></div>
@@ -184,7 +188,6 @@
     <span class="n">mapping_set_dict</span> <span class="o">=</span> <span class="n">json_dumper</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">mapping_set</span><span class="p">)</span>
 
     <span class="n">report</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">mapping_set_dict</span><span class="p">,</span> <span class="s2">&quot;mapping set&quot;</span><span class="p">)</span>
-    <span class="c1"># TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164</span>
     <span class="n">print_linkml_report</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">)</span></div>
 
 
@@ -238,11 +241,10 @@
                 <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
                 <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">instantiates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Missing </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Missing prefix: </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
     <span class="n">report</span> <span class="o">=</span> <span class="n">ValidationReport</span><span class="p">(</span><span class="n">results</span><span class="o">=</span><span class="n">validation_results</span><span class="p">)</span>
-    <span class="c1"># TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164</span>
     <span class="n">print_linkml_report</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">)</span></div>
 
 
