@@ -43,8 +43,12 @@ def print_linkml_report(report: ValidationReport, fail_on_error: bool = True):
     else:
         for result in report.results:
             validation_errors += 1
-            if result.severity == Severity.ERROR:
+            if (result.severity == Severity.FATAL) or (result.severity == Severity.ERROR):
                 logging.error(result.message)
+            elif result.severity == Severity.WARN:
+                logging.error(result.message)
+            elif result.severity == Severity.INFO:
+                logging.info(result.message)
 
     if fail_on_error and validation_errors:
         raise ValidationError(f"You mapping set has {validation_errors} validation errors!")
@@ -101,7 +105,6 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
     mapping_set_dict = json_dumper.to_dict(mapping_set)
 
     report = validator.validate(mapping_set_dict, "mapping set")
-    # TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164
     print_linkml_report(report, fail_on_error)
 
 
@@ -146,11 +149,10 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame, fail_on_error: bo
                 severity=Severity.ERROR,
                 instance=None,
                 instantiates=None,
-                message=f"Missing {prefix}",
+                message=f"Missing prefix: {prefix}",
             )
         )
     report = ValidationReport(results=validation_results)
-    # TODO fail_on_error: False because of https://github.com/linkml/linkml/issues/2164
     print_linkml_report(report, fail_on_error)
 
 
