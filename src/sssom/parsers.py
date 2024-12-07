@@ -184,8 +184,7 @@ def _get_seperator_symbol_from_file_path(file):
 
 def _is_check_valid_extension_slot(slot_name, meta):
     extension_definitions = meta.get("extension_definitions", [])
-    return any(entry.get("slot_name") == slot_name for entry in extension_definitions)
-
+    return any("property" in entry and entry.get("slot_name") == slot_name for entry in extension_definitions)
 
 def _is_irregular_metadata(metadata_list: List[Dict]):
     fail_metadata = False

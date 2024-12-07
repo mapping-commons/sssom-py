@@ -464,23 +464,32 @@ class TestParseExplicit(unittest.TestCase):
 
     def test_check_irregular_metadata(self):
         """Test if irregular metadata check works according to https://w3id.org/sssom/spec."""
-        meta_fail = {
+        meta_fail_because_undeclared_extension = {
             "licenses": "http://licen.se",
             "mapping_set_id": "http://mapping.set/id1",
             "ext_test": "value",
         }
-        meta_ok = {
+        meta_fail_because_extension_without_property = {
             "license": "http://licen.se",
             "mapping_set_id": "http://mapping.set/id1",
             "ext_test": "value",
             "extension_definitions": [{"slot_name": "ext_test"}],
         }
 
+        meta_ok = {
+            "license": "http://licen.se",
+            "mapping_set_id": "http://mapping.set/id1",
+            "ext_test": "value",
+            "extension_definitions": [{"slot_name": "ext_test", "property": "skos:fantasyRelation"}],
+        }
+
         from sssom.parsers import _is_check_valid_extension_slot, _is_irregular_metadata
 
-        is_irregular_metadata_fail_case = _is_irregular_metadata([meta_fail])
+        is_irregular_metadata_fail_undeclared_case = _is_irregular_metadata([meta_fail_because_undeclared_extension])
         is_valid_extension = _is_check_valid_extension_slot("ext_test", meta_ok)
         is_irregular_metadata_ok_case = _is_irregular_metadata([meta_ok])
-        self.assertTrue(is_irregular_metadata_fail_case)
+        is_irregular_metadata_fail_missing_property_case = _is_irregular_metadata([meta_fail_because_extension_without_property])
+        self.assertTrue(is_irregular_metadata_fail_undeclared_case)
+        self.assertTrue(is_irregular_metadata_fail_missing_property_case)
         self.assertTrue(is_valid_extension)
         self.assertFalse(is_irregular_metadata_ok_case)
