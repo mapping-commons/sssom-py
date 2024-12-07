@@ -447,3 +447,17 @@ class TestParseExplicit(unittest.TestCase):
     def test_round_trip_tsv(self):
         """Test writing then reading TSV."""
         self._basic_round_trip("tsv")
+
+    def test_strict_parsing(self):
+        """Test Strict parsing mode."""
+        input_path = f"{test_data_dir}/basic_strict_fail.tsv"
+        with open(input_path, "r") as file:
+            input_string = file.read()
+        stream = io.StringIO(input_string)
+
+        with self.assertRaises(ValueError):
+            parse_sssom_table(stream, strict=True)
+
+        # Make sure it parses in non-strict mode
+        msdf = parse_sssom_table(stream)
+        self.assertEqual(len(msdf.df), 2)
