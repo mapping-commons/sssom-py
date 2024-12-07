@@ -182,6 +182,98 @@ def _get_seperator_symbol_from_file_path(file):
     return None
 
 
+def _is_check_valid_extension_slot(slot_name, meta):
+    extension_definitions = meta.get("extension_definitions", [])
+    return any(
+        "property" in entry and entry.get("slot_name") == slot_name
+        for entry in extension_definitions
+    )
+
+
+def _is_irregular_metadata(metadata_list: List[Dict]):
+    fail_metadata = False
+    for m in metadata_list:
+        for key in m:
+            if key not in _get_sssom_schema_object().mapping_set_slots:
+                if not _is_check_valid_extension_slot(key, m):
+                    logging.warning(
+                        f"Metadata key '{key}' is not a standard SSSOM mapping set metadata field. See "
+                        f"https://mapping-commons.github.io/sssom/spec-model/#non-standard-slots on how to "
+                        f"specify additional, non-standard fields in a SSSOM file."
+                    )
+                    fail_metadata = True
+    return fail_metadata
+
+
+def _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map):
+
+    # There are three ways in which prefixes can be communicated, so we will check all of them
+    # This is a bit overly draconian, as in the end, only the highest priority one gets picked
+    # But since this only constitues a (logging) warning, I think its worth reporting
+    builtin_converter = _get_built_in_prefix_map()
+    sssom_metadata_converter = _get_converter_pop_replace_curie_map(sssom_metadata)
+    meta_converter = _get_converter_pop_replace_curie_map(meta)
+    prefix_map_converter = ensure_converter(prefix_map, use_defaults=False)
+    is_valid_prefixes = True
+
+    for converter in [sssom_metadata_converter, meta_converter, prefix_map_converter]:
+        for builtin_prefix, builtin_uri in builtin_converter.bimap.items():
+            if builtin_prefix in converter.bimap:
+                if builtin_uri != converter.bimap[builtin_prefix]:
+                    logging.warning(
+                        f"A built-in prefix ({builtin_prefix}) was provided, "
+                        f"but the provided URI expansion ({converter.bimap[builtin_prefix]}) does not correspond "
+                        f"to the required URI expansion: {builtin_uri}. The prefix will be ignored."
+                    )
+                    is_valid_prefixes = False
+            # NOTE during refactor replace the following line by https://github.com/biopragmatics/curies/pull/136
+            reverse_bimap = {value: key for key, value in builtin_converter.bimap.items()}
+            if builtin_uri in reverse_bimap:
+                if builtin_prefix != reverse_bimap[builtin_uri]:
+                    logging.warning(
+                        f"A built-in URI namespace ({builtin_uri}) was used in (one of) the provided prefix map(s), "
+                        f"but the provided prefix ({reverse_bimap[builtin_uri]}) does not correspond to the "
+                        f"standard prefix: {builtin_prefix}. The prefix will be ignored."
+                    )
+                    is_valid_prefixes = False
+    return is_valid_prefixes
+
+
+def _fail_in_strict_parsing_mode(is_valid_built_in_prefixes, is_valid_metadata):
+    report = ""
+    if not is_valid_built_in_prefixes:
+        report += "STRONG WARNING: The prefix map provided contains built-in prefixes that were redefined.+\n"
+    if not is_valid_metadata:
+        report += (
+            "STRONG WARNING: The metadata provided contains non-standard and undefined metadata.+\n"
+        )
+
+    if report:
+        raise ValueError(report)
+
+
+def _get_converter_pop_replace_curie_map(sssom_metadata):
+    """
+    Pop CURIE_MAP from sssom_metadata, process it, and restore it if it existed.
+
+    Args:
+        sssom_metadata (dict): The metadata dictionary.
+
+    Returns:
+        Converter: A Converter object created from the CURIE_MAP.
+    """
+    curie_map = sssom_metadata.pop(CURIE_MAP, {})
+
+    # Process the popped value
+    sssom_metadata_converter = Converter.from_prefix_map(curie_map)
+
+    # Reinsert CURIE_MAP if it was present
+    if curie_map:
+        sssom_metadata[CURIE_MAP] = curie_map
+
+    return sssom_metadata_converter
+
+
 def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
     prefix_map: ConverterHint = None,
@@ -196,6 +288,12 @@ def parse_sssom_table(
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
     if meta is None:
         meta = {}
+
+    is_valid_built_in_prefixes = _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map)
+    is_valid_metadata = _is_irregular_metadata([sssom_metadata, meta])
+
+    if kwargs.get("strict"):
+        _fail_in_strict_parsing_mode(is_valid_built_in_prefixes, is_valid_metadata)
 
     # The priority order for combining prefix maps are:
     #  1. Built-in prefix map
