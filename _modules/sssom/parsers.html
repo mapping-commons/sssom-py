@@ -257,6 +257,98 @@
     <span class="k">return</span> <span class="kc">None</span>
 
 
+<span class="k">def</span> <span class="nf">_is_check_valid_extension_slot</span><span class="p">(</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">meta</span><span class="p">):</span>
+    <span class="n">extension_definitions</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extension_definitions&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="s2">&quot;property&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;slot_name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">slot_name</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">extension_definitions</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_is_irregular_metadata</span><span class="p">(</span><span class="n">metadata_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]):</span>
+    <span class="n">fail_metadata</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metadata_list</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_check_valid_extension_slot</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Metadata key &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is not a standard SSSOM mapping set metadata field. See &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;https://mapping-commons.github.io/sssom/spec-model/#non-standard-slots on how to &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;specify additional, non-standard fields in a SSSOM file.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">fail_metadata</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">fail_metadata</span>
+
+
+<span class="k">def</span> <span class="nf">_check_redefined_builtin_prefixes</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">):</span>
+
+    <span class="c1"># There are three ways in which prefixes can be communicated, so we will check all of them</span>
+    <span class="c1"># This is a bit overly draconian, as in the end, only the highest priority one gets picked</span>
+    <span class="c1"># But since this only constitues a (logging) warning, I think its worth reporting</span>
+    <span class="n">builtin_converter</span> <span class="o">=</span> <span class="n">_get_built_in_prefix_map</span><span class="p">()</span>
+    <span class="n">sssom_metadata_converter</span> <span class="o">=</span> <span class="n">_get_converter_pop_replace_curie_map</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="p">)</span>
+    <span class="n">meta_converter</span> <span class="o">=</span> <span class="n">_get_converter_pop_replace_curie_map</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">prefix_map_converter</span> <span class="o">=</span> <span class="n">ensure_converter</span><span class="p">(</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">is_valid_prefixes</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">converter</span> <span class="ow">in</span> <span class="p">[</span><span class="n">sssom_metadata_converter</span><span class="p">,</span> <span class="n">meta_converter</span><span class="p">,</span> <span class="n">prefix_map_converter</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">builtin_prefix</span><span class="p">,</span> <span class="n">builtin_uri</span> <span class="ow">in</span> <span class="n">builtin_converter</span><span class="o">.</span><span class="n">bimap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">builtin_prefix</span> <span class="ow">in</span> <span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">builtin_uri</span> <span class="o">!=</span> <span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">[</span><span class="n">builtin_prefix</span><span class="p">]:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;A built-in prefix (</span><span class="si">{</span><span class="n">builtin_prefix</span><span class="si">}</span><span class="s2">) was provided, &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;but the provided URI expansion (</span><span class="si">{</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span><span class="p">[</span><span class="n">builtin_prefix</span><span class="p">]</span><span class="si">}</span><span class="s2">) does not correspond &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;to the required URI expansion: </span><span class="si">{</span><span class="n">builtin_uri</span><span class="si">}</span><span class="s2">. The prefix will be ignored.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">is_valid_prefixes</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># NOTE during refactor replace the following line by https://github.com/biopragmatics/curies/pull/136</span>
+            <span class="n">reverse_bimap</span> <span class="o">=</span> <span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">builtin_converter</span><span class="o">.</span><span class="n">bimap</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">if</span> <span class="n">builtin_uri</span> <span class="ow">in</span> <span class="n">reverse_bimap</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">builtin_prefix</span> <span class="o">!=</span> <span class="n">reverse_bimap</span><span class="p">[</span><span class="n">builtin_uri</span><span class="p">]:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;A built-in URI namespace (</span><span class="si">{</span><span class="n">builtin_uri</span><span class="si">}</span><span class="s2">) was used in (one of) the provided prefix map(s), &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;but the provided prefix (</span><span class="si">{</span><span class="n">reverse_bimap</span><span class="p">[</span><span class="n">builtin_uri</span><span class="p">]</span><span class="si">}</span><span class="s2">) does not correspond to the &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;standard prefix: </span><span class="si">{</span><span class="n">builtin_prefix</span><span class="si">}</span><span class="s2">. The prefix will be ignored.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">is_valid_prefixes</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">is_valid_prefixes</span>
+
+
+<span class="k">def</span> <span class="nf">_fail_in_strict_parsing_mode</span><span class="p">(</span><span class="n">is_valid_built_in_prefixes</span><span class="p">,</span> <span class="n">is_valid_metadata</span><span class="p">):</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_built_in_prefixes</span><span class="p">:</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="s2">&quot;STRONG WARNING: The prefix map provided contains built-in prefixes that were redefined.+</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_metadata</span><span class="p">:</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="s2">&quot;STRONG WARNING: The metadata provided contains non-standard and undefined metadata.+</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">report</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_converter_pop_replace_curie_map</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pop CURIE_MAP from sssom_metadata, process it, and restore it if it existed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sssom_metadata (dict): The metadata dictionary.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Converter: A Converter object created from the CURIE_MAP.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curie_map</span> <span class="o">=</span> <span class="n">sssom_metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CURIE_MAP</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="c1"># Process the popped value</span>
+    <span class="n">sssom_metadata_converter</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">.</span><span class="n">from_prefix_map</span><span class="p">(</span><span class="n">curie_map</span><span class="p">)</span>
+
+    <span class="c1"># Reinsert CURIE_MAP if it was present</span>
+    <span class="k">if</span> <span class="n">curie_map</span><span class="p">:</span>
+        <span class="n">sssom_metadata</span><span class="p">[</span><span class="n">CURIE_MAP</span><span class="p">]</span> <span class="o">=</span> <span class="n">curie_map</span>
+
+    <span class="k">return</span> <span class="n">sssom_metadata_converter</span>
+
+
 <div class="viewcode-block" id="parse_sssom_table">
 <a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_table">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_sssom_table</span><span class="p">(</span>
@@ -273,6 +365,12 @@
     <span class="n">df</span><span class="p">,</span> <span class="n">sssom_metadata</span> <span class="o">=</span> <span class="n">_read_pandas_and_metadata</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">sep_new</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">is_valid_built_in_prefixes</span> <span class="o">=</span> <span class="n">_check_redefined_builtin_prefixes</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
+    <span class="n">is_valid_metadata</span> <span class="o">=</span> <span class="n">_is_irregular_metadata</span><span class="p">([</span><span class="n">sssom_metadata</span><span class="p">,</span> <span class="n">meta</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;strict&quot;</span><span class="p">):</span>
+        <span class="n">_fail_in_strict_parsing_mode</span><span class="p">(</span><span class="n">is_valid_built_in_prefixes</span><span class="p">,</span> <span class="n">is_valid_metadata</span><span class="p">)</span>
 
     <span class="c1"># The priority order for combining prefix maps are:</span>
     <span class="c1">#  1. Built-in prefix map</span>
