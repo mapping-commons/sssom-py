@@ -182,26 +182,23 @@ def _get_seperator_symbol_from_file_path(file):
     return None
 
 
-def _is_check_valid_extension_slot(slot_name):
-    logging.warning(
-        f"'{slot_name}' could be a valid extension slot "
-        f"(https://mapping-commons.github.io/sssom/spec-model/#non-standard-slots), "
-        f"but the validator does not check that yet."
-    )
-    return False
+def _is_check_valid_extension_slot(slot_name, meta):
+    extension_definitions = meta.get("extension_definitions", [])
+    return any(entry.get("slot_name") == slot_name for entry in extension_definitions)
 
 
-def _check_irregular_metadata(sssom_metadata, meta):
+def _is_irregular_metadata(metadata_list: List[Dict]):
     fail_metadata = False
-    for m in [sssom_metadata, meta]:
+    for m in metadata_list:
         for key in m:
-            if (key not in _get_sssom_schema_object().mapping_set_slots) and (
-                not _is_check_valid_extension_slot(key)
-            ):
-                logging.warning(
-                    f"Metadata key '{key}' is not a standard SSSOM mapping set metadata field."
-                )
-                fail_metadata = True
+            if key not in _get_sssom_schema_object().mapping_set_slots:
+                if not _is_check_valid_extension_slot(key, m):
+                    logging.warning(
+                        f"Metadata key '{key}' is not a standard SSSOM mapping set metadata field. See "
+                        f"https://mapping-commons.github.io/sssom/spec-model/#non-standard-slots on how to "
+                        f"specify additional, non-standard fields in a SSSOM file."
+                    )
+                    fail_metadata = True
     return fail_metadata
 
 
@@ -226,6 +223,7 @@ def _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map):
                         f"to the required URI expansion: {builtin_uri}. The prefix will be ignored."
                     )
                     is_valid_prefixes = False
+            # NOTE during refactor replace the following line by https://github.com/biopragmatics/curies/pull/136
             reverse_bimap = {value: key for key, value in builtin_converter.bimap.items()}
             if builtin_uri in reverse_bimap:
                 if builtin_prefix != reverse_bimap[builtin_uri]:
@@ -289,7 +287,7 @@ def parse_sssom_table(
         meta = {}
 
     is_valid_built_in_prefixes = _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map)
-    is_valid_metadata = _check_irregular_metadata(sssom_metadata, meta)
+    is_valid_metadata = _is_irregular_metadata([sssom_metadata, meta])
 
     if kwargs.get("strict"):
         _fail_in_strict_parsing_mode(is_valid_built_in_prefixes, is_valid_metadata)

@@ -461,3 +461,26 @@ class TestParseExplicit(unittest.TestCase):
         # Make sure it parses in non-strict mode
         msdf = parse_sssom_table(stream)
         self.assertEqual(len(msdf.df), 2)
+
+    def test_check_irregular_metadata(self):
+        """Test if irregular metadata check works according to https://w3id.org/sssom/spec."""
+        meta_fail = {
+            "licenses": "http://licen.se",
+            "mapping_set_id": "http://mapping.set/id1",
+            "ext_test": "value",
+        }
+        meta_ok = {
+            "license": "http://licen.se",
+            "mapping_set_id": "http://mapping.set/id1",
+            "ext_test": "value",
+            "extension_definitions": [{"slot_name": "ext_test"}],
+        }
+
+        from sssom.parsers import _is_check_valid_extension_slot, _is_irregular_metadata
+
+        is_irregular_metadata_fail_case = _is_irregular_metadata([meta_fail])
+        is_valid_extension = _is_check_valid_extension_slot("ext_test", meta_ok)
+        is_irregular_metadata_ok_case = _is_irregular_metadata([meta_ok])
+        self.assertTrue(is_irregular_metadata_fail_case)
+        self.assertTrue(is_valid_extension)
+        self.assertFalse(is_irregular_metadata_ok_case)
