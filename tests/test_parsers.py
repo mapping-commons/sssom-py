@@ -339,6 +339,17 @@ class TestParse(unittest.TestCase):
         msdf = parse_sssom_table(outfile)
         self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
 
+    def test_parse_trailing_tabs_in_metadata_header(self):
+        """Test parsing a file containing trailing tabs in header."""
+        input_path = f"{test_data_dir}/trailing-tabs.sssom.tsv"
+        msdf = parse_sssom_table(input_path)
+        self.assertEqual(msdf.metadata["mapping_set_id"], "https://example.org/sets/exo2c")
+        self.assertEqual(
+            len(msdf.df),
+            8,
+            f"{input_path} has the wrong number of mappings.",
+        )
+
 
 class TestParseExplicit(unittest.TestCase):
     """This test case contains explicit tests for parsing."""
