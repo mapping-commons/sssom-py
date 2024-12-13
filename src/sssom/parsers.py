@@ -121,7 +121,11 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
             if header_section:
                 header_section = False
         elif header_section:
-            metadata_component.write(line)
+            # We strip any trailing tabs. Such tabs may have been left
+            # by a spreadsheet editor who treated the header lines as
+            # if they were normal data lines; they would prevent the
+            # YAML parser from correctly parsing the metadata block.
+            metadata_component.write(line.rstrip("\t\n") + "\n")
         else:
             logging.info(
                 f"Line {line} is starting with hash symbol, but header section is already passed. "
