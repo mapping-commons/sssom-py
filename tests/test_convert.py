@@ -36,6 +36,41 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 90)
 
+    def test_uberon_to_rdf(self):
+        """Test to ensure that a mixed case prefix is not upper cased by LinkMLs rdflib_dumper."""
+
+        from linkml_runtime.dumpers import rdflib_dumper
+        from sssom.constants import SCHEMA_YAML
+        from sssom.parsers import to_mapping_set_document
+        from linkml_runtime.utils.schemaview import SchemaView
+
+        # Load the SSSOM table and then ensure that the associated prefixmap has the correct mixed case prefix (it does)
+        uberon = parse_sssom_table(data_dir / "uberon.sssom.tsv")
+        assert "HSAPDV" not in uberon.converter.bimap.keys(), "Namespace 'HSAPDV' should NOT exist in the MSDF"
+        assert "HsapDv" in uberon.converter.bimap.keys(), "Namespace 'HsapDv' should exist in the MSDF"
+
+        # Convert TSV file to YAML and ensure prefix is still there
+        doc = to_mapping_set_document(uberon)
+        assert "HsapDv" in doc.mapping_set.mappings[0].object_id, "Namespace 'HsapDv' should exist in the MSDF"
+
+
+        # Run LinkML conversion
+        g = rdflib_dumper.as_rdf_graph(
+            element=doc.mapping_set,
+            schemaview=SchemaView(SCHEMA_YAML),
+            prefix_map=uberon.converter.bimap,
+        )
+
+        namespaces = list(g.namespace_manager.namespaces())
+        assert any(prefix == 'HsapDv' for prefix, _ in namespaces), "Namespace 'HsapDv' should exist in the graph (and it does)"
+
+        # To show that the assert works, I am checking a random prefix to ensure it does not exist
+        assert not any(prefix == 'RANDOMRR' for prefix, _ in namespaces), "Namespace 'RANDOM' should exist in the graph, and indeed, it does not"
+
+        # Here is where the problem happens:
+        assert not any(prefix == 'HSAPDV' for prefix, _ in
+                   namespaces), "Namespace 'HSAPDV' should NOT exist in the graph, but I show it here to proof my point"
+
     def test_cob_to_owl(self):
         """Test converting the COB example to an OWL RDF graph."""
         g = to_owl_graph(self.cob)
