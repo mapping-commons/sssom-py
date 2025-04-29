@@ -22,8 +22,8 @@ from .constants import (
 
 def validate(
     msdf: MappingSetDataFrame,
-    *,
     validation_types: List[SchemaValidationType] | None = None,
+    *,
     fail_on_error: bool = True,
 ) -> dict[SchemaValidationType, ValidationReport]:
     """Validate SSSOM files against `sssom-schema` using linkML's validator function.
