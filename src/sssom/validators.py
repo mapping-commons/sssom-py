@@ -1,7 +1,7 @@
 """Validators."""
 
 import logging
-from typing import Callable, List, Mapping
+from typing import Callable, List, Mapping, Optional
 
 from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
@@ -22,7 +22,7 @@ from .constants import (
 
 def validate(
     msdf: MappingSetDataFrame,
-    validation_types: List[SchemaValidationType] | None = None,
+    validation_types: Optional[List[SchemaValidationType]] = None,
     *,
     fail_on_error: bool = True,
 ) -> dict[SchemaValidationType, ValidationReport]:
