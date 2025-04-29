@@ -13,11 +13,13 @@ import pandas as pd
 import yaml
 from curies import Converter
 from deprecation import deprecated
+from linkml.validator import ValidationReport
 
 from sssom.validators import validate
 
 from .constants import (
     CURIE_MAP,
+    DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
@@ -98,17 +100,24 @@ def parse_file(
     write_table(doc, output, embedded_mode)
 
 
-def validate_file(input_path: str, validation_types: List[SchemaValidationType]) -> None:
+def validate_file(
+    input_path: str,
+    *,
+    validation_types: List[SchemaValidationType] | None = None,
+    fail_on_error: bool = True,
+) -> dict[SchemaValidationType, ValidationReport]:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
     :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
     :param validation_types: A list of validation types to run.
+    :param fail_on_error: Should an exception be raised on error of _any_ validator?
+    :returns: A dictionary from validation types to validation reports
     """
     # Two things to check:
     # 1. All prefixes in the DataFrame are define in prefix_map
     # 2. All columns in the DataFrame abide by sssom-schema.
     msdf = parse_sssom_table(file_path=input_path)
-    validate(msdf=msdf, validation_types=validation_types)
+    return validate(msdf=msdf, validation_types=validation_types, fail_on_error=fail_on_error)
 
 
 def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
