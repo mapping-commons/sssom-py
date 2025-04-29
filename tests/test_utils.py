@@ -146,6 +146,22 @@ class TestIO(unittest.TestCase):
     def test_clean_prefix_map_not_strict(self):
         """Test clean prefix map with 'strict'=False."""
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
+        self.assertEqual(
+            {
+                "a": "http://example.org/a/",
+                "b": "http://example.org/b/",
+                "c": "http://example.org/c/",
+                "d": "http://example.org/d/",
+                "orcid": "https://orcid.org/",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "semapv": "https://w3id.org/semapv/vocab/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sssom": "https://w3id.org/sssom/",
+            },
+            msdf.prefix_map,
+        )
         original_curie_map = msdf.prefix_map
         self.assertEqual(
             {"a", "b", "c", "d", "orcid"}.union(SSSOM_BUILT_IN_PREFIXES),
@@ -202,7 +218,7 @@ class TestUtils(unittest.TestCase):
         metadata_path = data_dir.joinpath("enm_example.yml")
         metadata = yaml.safe_load(metadata_path.read_text())
         msdf = parse_sssom_table(path, meta=metadata)
-        prefixes = get_prefixes_used_in_table(msdf.df, converter=msdf.converter)
+        prefixes = get_prefixes_used_in_table(msdf.df)
         self.assertNotIn("http", prefixes)
         self.assertNotIn("https", prefixes)
         self.assertEqual(

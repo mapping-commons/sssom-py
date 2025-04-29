@@ -3,6 +3,7 @@
 import logging
 from typing import Any, Dict, List, Optional
 
+import curies
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, URIRef
 from sssom_schema import EntityReference, Mapping
@@ -26,7 +27,7 @@ def rewire_graph(
     if mdoc.mapping_set.mappings is None:
         raise TypeError
 
-    converter = mdoc.converter
+    converter: curies.Converter = mdoc.converter
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
@@ -42,8 +43,14 @@ def rewire_graph(
                 curr_tgt = rewire_map[src]
                 logging.info(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
                 if precedence:
-                    curr_pfx, _ = converter.parse_curie(curr_tgt)
-                    tgt_pfx, _ = converter.parse_curie(tgt)
+                    curr_reference = converter.parse_curie(curr_tgt)
+                    if curr_reference is None:
+                        raise ValueError
+                    target_reference = converter.parse_curie(tgt)
+                    if target_reference is None:
+                        raise ValueError
+                    curr_pfx = curr_reference.prefix
+                    tgt_pfx = target_reference.prefix
                     if tgt_pfx in precedence:
                         if curr_pfx not in precedence or precedence.index(
                             tgt_pfx
