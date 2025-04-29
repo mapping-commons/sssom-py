@@ -19,7 +19,6 @@ from sssom.validators import validate
 
 from .constants import (
     CURIE_MAP,
-    DEFAULT_VALIDATION_TYPES,
     PREFIX_MAP_MODE_MERGED,
     PREFIX_MAP_MODE_METADATA_ONLY,
     PREFIX_MAP_MODE_SSSOM_DEFAULT_ONLY,
