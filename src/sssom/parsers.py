@@ -1,5 +1,6 @@
 """SSSOM parsers."""
 
+import gzip
 import io
 import itertools as itt
 import json
@@ -96,6 +97,10 @@ def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
         elif "\n" in input or "\r" in input:
             # It's string data
             return io.StringIO(input)
+        elif input.endswith(".gz"):
+            with gzip.open(input, "rt") as file:
+                file_content = file.read()
+            return io.StringIO(file_content)
         else:
             # It's a local file path
             with open(input, "r") as file:
