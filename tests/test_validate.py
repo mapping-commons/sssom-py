@@ -28,7 +28,11 @@ class TestValidate(unittest.TestCase):
         Validate of the incoming file (basic.tsv) abides
         by the rules set by `sssom-schema`.
         """
-        self.assertIsNone(validate(self.correct_msdf1, self.validation_types))
+        rv = validate(self.correct_msdf1, self.validation_types)
+        self.assertIsNotNone(rv)
+        self.assertIn(SchemaValidationType.JsonSchema, rv)
+        json_validation = rv[SchemaValidationType.JsonSchema]
+        self.assertEqual([], json_validation.results)
 
     @unittest.skip(
         reason="""\
