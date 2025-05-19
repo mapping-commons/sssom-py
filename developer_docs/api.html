@@ -354,17 +354,21 @@ E.g. ~/dir/my.sssom.tsv becomes a table called ‘my’</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.io.validate_file">
-<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.validate_file" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.io.</span></span><span class="sig-name descname"><span class="pre">validate_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/io.html#validate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.io.validate_file" title="Link to this definition"></a></dt>
 <dd><p>Validate the incoming SSSOM TSV according to the SSSOM specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</p></li>
-<li><p><strong>validation_types</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../sssom.html#sssom.constants.SchemaValidationType" title="sssom.constants.SchemaValidationType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaValidationType</span></code></a>]</span>) – A list of validation types to run.</p></li>
+<li><p><strong>validation_types</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../sssom.html#sssom.constants.SchemaValidationType" title="sssom.constants.SchemaValidationType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaValidationType</span></code></a>]]</span>) – A list of validation types to run.</p></li>
+<li><p><strong>fail_on_error</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Should an exception be raised on error of _any_ validator?</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<a class="reference internal" href="../sssom.html#sssom.constants.SchemaValidationType" title="sssom.constants.SchemaValidationType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SchemaValidationType</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationReport</span></code>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary from validation types to validation reports</p>
 </dd>
 </dl>
 </dd></dl>

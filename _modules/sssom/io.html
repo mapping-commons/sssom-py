@@ -88,6 +88,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">curies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Converter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecation</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml.validator</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationReport</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">sssom.validators</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate</span>
 
@@ -181,17 +182,23 @@
 
 <div class="viewcode-block" id="validate_file">
 <a class="viewcode-back" href="../../sssom.html#sssom.io.validate_file">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_file</span><span class="p">(</span>
+    <span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">validation_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">,</span> <span class="n">ValidationReport</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate the incoming SSSOM TSV according to the SSSOM specification.</span>
 
 <span class="sd">    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml</span>
 <span class="sd">    :param validation_types: A list of validation types to run.</span>
+<span class="sd">    :param fail_on_error: Should an exception be raised on error of _any_ validator?</span>
+<span class="sd">    :returns: A dictionary from validation types to validation reports</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Two things to check:</span>
     <span class="c1"># 1. All prefixes in the DataFrame are define in prefix_map</span>
     <span class="c1"># 2. All columns in the DataFrame abide by sssom-schema.</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">input_path</span><span class="p">)</span>
-    <span class="n">validate</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">,</span> <span class="n">validation_types</span><span class="o">=</span><span class="n">validation_types</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">validate</span><span class="p">(</span><span class="n">msdf</span><span class="o">=</span><span class="n">msdf</span><span class="p">,</span> <span class="n">validation_types</span><span class="o">=</span><span class="n">validation_types</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="o">=</span><span class="n">fail_on_error</span><span class="p">)</span></div>
 
 
 
