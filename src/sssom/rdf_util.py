@@ -43,14 +43,8 @@ def rewire_graph(
                 curr_tgt = rewire_map[src]
                 logging.info(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
                 if precedence:
-                    curr_reference = converter.parse_curie(curr_tgt)
-                    if curr_reference is None:
-                        raise ValueError
-                    target_reference = converter.parse_curie(tgt)
-                    if target_reference is None:
-                        raise ValueError
-                    curr_pfx = curr_reference.prefix
-                    tgt_pfx = target_reference.prefix
+                    curr_pfx = converter.parse_curie(curr_tgt, strict=True).prefix
+                    tgt_pfx = converter.parse_curie(tgt, strict=True).prefix
                     if tgt_pfx in precedence:
                         if curr_pfx not in precedence or precedence.index(
                             tgt_pfx
