@@ -1,7 +1,7 @@
 """Validators."""
 
 import logging
-from typing import Callable, List, Mapping
+from typing import Callable, List, Mapping, Optional
 
 from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
@@ -12,22 +12,29 @@ from linkml_runtime.dumpers import json_dumper
 from sssom.parsers import to_mapping_set_document
 from sssom.util import MappingSetDataFrame, get_all_prefixes
 
-from .constants import SCHEMA_YAML, SchemaValidationType, _get_sssom_schema_object
+from .constants import (
+    DEFAULT_VALIDATION_TYPES,
+    SCHEMA_YAML,
+    SchemaValidationType,
+    _get_sssom_schema_object,
+)
 
 
 def validate(
     msdf: MappingSetDataFrame,
-    validation_types: List[SchemaValidationType],
+    validation_types: Optional[List[SchemaValidationType]] = None,
     fail_on_error: bool = True,
-) -> None:
+) -> dict[SchemaValidationType, ValidationReport]:
     """Validate SSSOM files against `sssom-schema` using linkML's validator function.
 
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
     :param fail_on_error: If true, throw an error when execution of a method has failed
+    :returns: A dictionary from validation types to validation reports
     """
-    for vt in validation_types:
-        VALIDATION_METHODS[vt](msdf, fail_on_error)
+    if validation_types is None:
+        validation_types = DEFAULT_VALIDATION_TYPES
+    return {vt: VALIDATION_METHODS[vt](msdf, fail_on_error) for vt in validation_types}
 
 
 def print_linkml_report(report: ValidationReport, fail_on_error: bool = True):
@@ -88,7 +95,7 @@ def _clean_dict(d):
     return cleaned_dict
 
 
-def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
+def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> ValidationReport:
     """Validate JSON Schema using linkml's JsonSchemaDataValidator.
 
     :param msdf: MappingSetDataFrame to eb validated.
@@ -106,9 +113,10 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
 
     report = validator.validate(mapping_set_dict, "mapping set")
     print_linkml_report(report, fail_on_error)
+    return report
 
 
-def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
+def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> ValidationReport:
     """Validate SCHACL file.
 
     :param msdf: TODO: https://github.com/linkml/linkml/issues/850 .
@@ -118,7 +126,7 @@ def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> Non
     raise NotImplementedError
 
 
-def validate_sparql(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
+def validate_sparql(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> ValidationReport:
     """Validate SPARQL file.
 
     :param msdf: MappingSetDataFrame
@@ -132,7 +140,9 @@ def validate_sparql(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> No
     raise NotImplementedError
 
 
-def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
+def check_all_prefixes_in_curie_map(
+    msdf: MappingSetDataFrame, fail_on_error: bool = True
+) -> ValidationReport:
     """Check all `EntityReference` slots are mentioned in 'curie_map'.
 
     :param msdf: MappingSetDataFrame
@@ -154,9 +164,12 @@ def check_all_prefixes_in_curie_map(msdf: MappingSetDataFrame, fail_on_error: bo
         )
     report = ValidationReport(results=validation_results)
     print_linkml_report(report, fail_on_error)
+    return report
 
 
-def check_strict_curie_format(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> None:
+def check_strict_curie_format(
+    msdf: MappingSetDataFrame, fail_on_error: bool = True
+) -> ValidationReport:
     """Check all `EntityReference` slots are formatted as unambiguous curies.
 
     Implemented rules:
@@ -194,9 +207,10 @@ def check_strict_curie_format(msdf: MappingSetDataFrame, fail_on_error: bool = T
 
     report = ValidationReport(results=validation_results)
     print_linkml_report(report, fail_on_error)
+    return report
 
 
-VALIDATION_METHODS: Mapping[SchemaValidationType, Callable] = {
+VALIDATION_METHODS: Mapping[SchemaValidationType, Callable[..., ValidationReport]] = {
     SchemaValidationType.JsonSchema: validate_json_schema,
     SchemaValidationType.Shacl: validate_shacl,
     SchemaValidationType.Sparql: validate_sparql,
