@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sssom.validators &mdash; sssom-py 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
@@ -75,24 +75,24 @@
   <h1>Source code for sssom.validators</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Validators.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span>
 
-<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
-<span class="kn">from</span> <span class="nn">linkml.validator</span> <span class="kn">import</span> <span class="n">ValidationReport</span><span class="p">,</span> <span class="n">Validator</span>
-<span class="kn">from</span> <span class="nn">linkml.validator.plugins</span> <span class="kn">import</span> <span class="n">JsonschemaValidationPlugin</span>
-<span class="kn">from</span> <span class="nn">linkml.validator.report</span> <span class="kn">import</span> <span class="n">Severity</span><span class="p">,</span> <span class="n">ValidationResult</span>
-<span class="kn">from</span> <span class="nn">linkml_runtime.dumpers</span> <span class="kn">import</span> <span class="n">json_dumper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jsonschema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml.validator</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationReport</span><span class="p">,</span> <span class="n">Validator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml.validator.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonschemaValidationPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml.validator.report</span><span class="w"> </span><span class="kn">import</span> <span class="n">Severity</span><span class="p">,</span> <span class="n">ValidationResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml_runtime.dumpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">json_dumper</span>
 
-<span class="kn">from</span> <span class="nn">sssom.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
-<span class="kn">from</span> <span class="nn">sssom.util</span> <span class="kn">import</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">get_all_prefixes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sssom.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_mapping_set_document</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sssom.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">get_all_prefixes</span>
 
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">SCHEMA_YAML</span><span class="p">,</span> <span class="n">SchemaValidationType</span><span class="p">,</span> <span class="n">_get_sssom_schema_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SCHEMA_YAML</span><span class="p">,</span> <span class="n">SchemaValidationType</span><span class="p">,</span> <span class="n">_get_sssom_schema_object</span>
 
 
 <div class="viewcode-block" id="validate">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.validate">[docs]</a>
-<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">validation_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">],</span>
     <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -110,7 +110,7 @@
 
 <div class="viewcode-block" id="print_linkml_report">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.print_linkml_report">[docs]</a>
-<span class="k">def</span> <span class="nf">print_linkml_report</span><span class="p">(</span><span class="n">report</span><span class="p">:</span> <span class="n">ValidationReport</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_linkml_report</span><span class="p">(</span><span class="n">report</span><span class="p">:</span> <span class="n">ValidationReport</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print the error messages in the report. Optionally throw exception.</span>
 
 <span class="sd">    :param report: A LinkML validation report</span>
@@ -137,7 +137,7 @@
 
 <span class="c1"># TODO This should not be necessary: https://github.com/linkml/linkml/issues/2117,</span>
 <span class="c1">#  https://github.com/orgs/linkml/discussions/1975</span>
-<span class="k">def</span> <span class="nf">_clean_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_clean_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively removes key-value pairs from a dictionary where the value is None, &quot;null&quot;, or an empty string.</span>
 
 <span class="sd">    Args:</span>
@@ -171,7 +171,7 @@
 
 <div class="viewcode-block" id="validate_json_schema">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.validate_json_schema">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_json_schema</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_json_schema</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate JSON Schema using linkml&#39;s JsonSchemaDataValidator.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame to eb validated.</span>
@@ -194,7 +194,7 @@
 
 <div class="viewcode-block" id="validate_shacl">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.validate_shacl">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_shacl</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_shacl</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate SCHACL file.</span>
 
 <span class="sd">    :param msdf: TODO: https://github.com/linkml/linkml/issues/850 .</span>
@@ -207,7 +207,7 @@
 
 <div class="viewcode-block" id="validate_sparql">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.validate_sparql">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_sparql</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_sparql</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate SPARQL file.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame</span>
@@ -224,7 +224,7 @@
 
 <div class="viewcode-block" id="check_all_prefixes_in_curie_map">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.check_all_prefixes_in_curie_map">[docs]</a>
-<span class="k">def</span> <span class="nf">check_all_prefixes_in_curie_map</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_all_prefixes_in_curie_map</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check all `EntityReference` slots are mentioned in &#39;curie_map&#39;.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame</span>
@@ -251,7 +251,7 @@
 
 <div class="viewcode-block" id="check_strict_curie_format">
 <a class="viewcode-back" href="../../sssom.html#sssom.validators.check_strict_curie_format">[docs]</a>
-<span class="k">def</span> <span class="nf">check_strict_curie_format</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_strict_curie_format</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">fail_on_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check all `EntityReference` slots are formatted as unambiguous curies.</span>
 
 <span class="sd">    Implemented rules:</span>
@@ -260,9 +260,9 @@
 <span class="sd">    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors</span>
 <span class="sd">    :raises ValidationError: If any entity reference does not follow the strict CURIE format</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">itt</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">itt</span>
 
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
     <span class="n">msdf</span><span class="o">.</span><span class="n">clean_context</span><span class="p">()</span>
     <span class="n">validation_results</span> <span class="o">=</span> <span class="p">[]</span>

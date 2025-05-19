@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sssom.constants &mdash; sssom-py 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
@@ -75,16 +75,16 @@
   <h1>Source code for sssom.constants</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Constants.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Set</span>
 
-<span class="kn">import</span> <span class="nn">importlib_resources</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">linkml_runtime.utils.schema_as_dict</span> <span class="kn">import</span> <span class="n">schema_as_dict</span>
-<span class="kn">from</span> <span class="nn">linkml_runtime.utils.schemaview</span> <span class="kn">import</span> <span class="n">SchemaView</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib_resources</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml_runtime.utils.schema_as_dict</span><span class="w"> </span><span class="kn">import</span> <span class="n">schema_as_dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml_runtime.utils.schemaview</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaView</span>
 
 <span class="n">HERE</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
@@ -245,7 +245,7 @@
 
 <div class="viewcode-block" id="SEMAPV">
 <a class="viewcode-back" href="../../sssom.html#sssom.constants.SEMAPV">[docs]</a>
-<span class="k">class</span> <span class="nc">SEMAPV</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SEMAPV</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SEMAPV Enum containing different mapping_justification.</span>
 
 <span class="sd">    See also: https://mapping-commons.github.io/semantic-mapping-vocabulary/#matchingprocess</span>
@@ -269,7 +269,7 @@
 
 <div class="viewcode-block" id="SchemaValidationType">
 <a class="viewcode-back" href="../../sssom.html#sssom.constants.SchemaValidationType">[docs]</a>
-<span class="k">class</span> <span class="nc">SchemaValidationType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SchemaValidationType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Schema validation types.&quot;&quot;&quot;</span>
 
     <span class="c1"># TODO move this class into validators.py</span>
@@ -290,7 +290,7 @@
 
 <div class="viewcode-block" id="SSSOMSchemaView">
 <a class="viewcode-back" href="../../sssom.html#sssom.constants.SSSOMSchemaView">[docs]</a>
-<span class="k">class</span> <span class="nc">SSSOMSchemaView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SSSOMSchemaView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SchemaView class from linkml which is instantiated when necessary.</span>
 
@@ -300,7 +300,7 @@
 
 <div class="viewcode-block" id="SSSOMSchemaView.__new__">
 <a class="viewcode-back" href="../../sssom.html#sssom.constants.SSSOMSchemaView.__new__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a instance of the SSSOM schema view if non-existent.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">):</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
@@ -308,54 +308,54 @@
 
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SchemaView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SchemaView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return SchemaView object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SchemaView</span><span class="p">(</span><span class="n">SCHEMA_YAML</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return SchemaView as a dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">schema_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">mapping_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mapping_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of mapping slots.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="s2">&quot;mapping&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slots</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">mapping_set_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mapping_set_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of mapping set slots.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="s2">&quot;mapping set&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">slots</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">multivalued_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">multivalued_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return set of multivalued slots.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">all_slots</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_slot</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">multivalued</span><span class="p">}</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">entity_reference_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">entity_reference_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return set of entity reference slots.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">all_slots</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_slot</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">range</span> <span class="o">==</span> <span class="n">ENTITY_REFERENCE</span><span class="p">}</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">mapping_enum_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mapping_enum_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a set of mapping enum keys.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;enums&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the slots for SSSOMSchemaView object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">double_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">double_slots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the slot names for SSSOMSchemaView object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span><span class="p">}</span></div>
 
 
 
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_get_sssom_schema_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SSSOMSchemaView</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sssom_schema_object</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SSSOMSchemaView</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a view over the SSSOM schema.&quot;&quot;&quot;</span>
     <span class="n">sssom_sv_object</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">SSSOMSchemaView</span><span class="o">.</span><span class="n">instance</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">SSSOMSchemaView</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">SSSOMSchemaView</span><span class="p">()</span>
@@ -372,7 +372,7 @@
 
 <div class="viewcode-block" id="generate_mapping_set_id">
 <a class="viewcode-back" href="../../sssom.html#sssom.constants.generate_mapping_set_id">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_mapping_set_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_mapping_set_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mapping set ID.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SSSOM_URI_PREFIX</span><span class="si">}</span><span class="s2">mappings/</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
@@ -380,7 +380,7 @@
 
 <div class="viewcode-block" id="get_default_metadata">
 <a class="viewcode-back" href="../../sssom.html#sssom.constants.get_default_metadata">[docs]</a>
-<span class="k">def</span> <span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">MetadataType</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_default_metadata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">MetadataType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get default metadata.</span>
 
 <span class="sd">    :returns: A metadata dictionary containing a default</span>

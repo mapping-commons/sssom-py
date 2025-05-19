@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sssom.cli &mdash; sssom-py 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
@@ -86,31 +86,31 @@
 <span class="sd">.. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">get_args</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">get_args</span>
 
-<span class="kn">import</span> <span class="nn">click</span>
-<span class="kn">import</span> <span class="nn">curies</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
-<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">Graph</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">chi2_contingency</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">curies</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">curies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Converter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">chi2_contingency</span>
 
-<span class="kn">from</span> <span class="nn">sssom.constants</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sssom.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DEFAULT_VALIDATION_TYPES</span><span class="p">,</span>
     <span class="n">MergeMode</span><span class="p">,</span>
     <span class="n">SchemaValidationType</span><span class="p">,</span>
     <span class="n">_get_sssom_schema_object</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
-<span class="kn">from</span> <span class="nn">.cliques</span> <span class="kn">import</span> <span class="n">split_into_cliques</span><span class="p">,</span> <span class="n">summarize_cliques</span>
-<span class="kn">from</span> <span class="nn">.io</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.cliques</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_into_cliques</span><span class="p">,</span> <span class="n">summarize_cliques</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">annotate_file</span><span class="p">,</span>
     <span class="n">convert_file</span><span class="p">,</span>
     <span class="n">filter_file</span><span class="p">,</span>
@@ -119,10 +119,10 @@
     <span class="n">split_file</span><span class="p">,</span>
     <span class="n">validate_file</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">PARSING_FUNCTIONS</span><span class="p">,</span> <span class="n">parse_sssom_table</span>
-<span class="kn">from</span> <span class="nn">.rdf_util</span> <span class="kn">import</span> <span class="n">rewire_graph</span>
-<span class="kn">from</span> <span class="nn">.sparql_util</span> <span class="kn">import</span> <span class="n">EndpointConfig</span><span class="p">,</span> <span class="n">query_mappings</span>
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">PARSING_FUNCTIONS</span><span class="p">,</span> <span class="n">parse_sssom_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rdf_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">rewire_graph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sparql_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">EndpointConfig</span><span class="p">,</span> <span class="n">query_mappings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">compare_dataframes</span><span class="p">,</span>
     <span class="n">dataframe_to_ptable</span><span class="p">,</span>
@@ -135,7 +135,7 @@
     <span class="n">sort_df_rows_columns</span><span class="p">,</span>
     <span class="n">to_mapping_set_dataframe</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.writers</span> <span class="kn">import</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">,</span> <span class="n">write_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.writers</span><span class="w"> </span><span class="kn">import</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">,</span> <span class="n">write_table</span>
 
 <span class="n">logging</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -199,7 +199,7 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="n">__version__</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the SSSOM CLI.&quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 
@@ -218,7 +218,7 @@
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;subcommand&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
-<span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">help</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Echoes help for subcommands.&quot;&quot;&quot;</span>
     <span class="n">subcommand_obj</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">subcommand_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -231,7 +231,7 @@
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
 <span class="nd">@output_format_option</span>
-<span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a file.</span>
 
 <span class="sd">    Example:</span>
@@ -280,7 +280,7 @@
 <span class="p">)</span>
 <span class="nd">@predicate_filter_option</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span>
     <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">input_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -314,7 +314,7 @@
     <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT_VALIDATION_TYPES</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SchemaValidationType</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce an error report for an SSSOM file.&quot;&quot;&quot;</span>
     <span class="n">validation_type_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">validation_types</span><span class="p">]</span>
     <span class="n">validate_file</span><span class="p">(</span><span class="n">input_path</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">validation_types</span><span class="o">=</span><span class="n">validation_type_list</span><span class="p">)</span>
@@ -323,7 +323,7 @@
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@input_argument</span>
 <span class="nd">@output_directory_option</span>
-<span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">split</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split input file into multiple output broken down by prefixes.&quot;&quot;&quot;</span>
     <span class="n">split_file</span><span class="p">(</span><span class="n">input_path</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">output_directory</span><span class="o">=</span><span class="n">output_directory</span><span class="p">)</span>
 
@@ -337,7 +337,7 @@
     <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">FloatRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Default confidence to be assigned if absent.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">ptable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">default_confidence</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ptable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">inverse_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">default_confidence</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an SSSOM file to a ptable for kboom/`boomer &lt;https://github.com/INCATools/boomer&gt;`_.&quot;&quot;&quot;</span>
     <span class="c1"># TODO should maybe move to boomer (but for now it can live here, so cjm can tweak</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
@@ -351,7 +351,7 @@
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">dedupe</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dedupe</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove lower confidence duplicate lines from an SSSOM file.&quot;&quot;&quot;</span>
     <span class="c1"># df = parse(input)</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
@@ -367,7 +367,7 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-Q&quot;</span><span class="p">,</span> <span class="s2">&quot;--query&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;SQL query. Use &quot;df&quot; as table name.&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">dosql</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dosql</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a SQL query over one or more SSSOM files.</span>
 
 <span class="sd">    Each of the N inputs is assigned a table name df1, df2, ..., dfN</span>
@@ -415,7 +415,7 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-l&quot;</span><span class="p">,</span> <span class="s2">&quot;--limit&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-P&quot;</span><span class="p">,</span> <span class="s2">&quot;--prefix&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Tuple</span><span class="p">([</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]),</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">sparql</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sparql</span><span class="p">(</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">config</span><span class="p">,</span>
     <span class="n">graph</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -446,7 +446,7 @@
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@output_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">diff</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare two SSSOM files.</span>
 
 <span class="sd">    The output is a new SSSOM file with the union of all mappings, and</span>
@@ -483,7 +483,7 @@
 <span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@output_directory_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">partition</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Partition an SSSOM into one file for each strongly connected component.&quot;&quot;&quot;</span>
     <span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
@@ -506,7 +506,7 @@
 <span class="nd">@output_option</span>
 <span class="nd">@metadata_option</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--statsfile&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">cliquesummary</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">statsfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cliquesummary</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">statsfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate summaries for each clique in a SSSOM file.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
@@ -526,7 +526,7 @@
 <span class="nd">@output_option</span>
 <span class="nd">@transpose_option</span>
 <span class="nd">@fields_option</span>
-<span class="k">def</span> <span class="nf">crosstab</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crosstab</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write sssom summary cross-tabulated by categories.&quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">remove_unmatched</span><span class="p">(</span><span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#CROSSTAB ON </span><span class="si">{</span><span class="n">fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -542,7 +542,7 @@
 <span class="nd">@transpose_option</span>
 <span class="nd">@fields_option</span>
 <span class="nd">@input_argument</span>
-<span class="k">def</span> <span class="nf">correlations</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">correlations</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate correlations.&quot;&quot;&quot;</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">remove_unmatched</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
@@ -585,7 +585,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Boolean indicating the need for reconciliation of the SSSOM tsv file.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge multiple MappingSetDataFrames into one .</span>
 
 <span class="sd">    if reconcile=True, then dedupe(remove redundant lower confidence mappings) and</span>
@@ -609,7 +609,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List of prefixes in order of precedence.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">rewire</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rewire</span><span class="p">(</span>
     <span class="nb">input</span><span class="p">,</span>
     <span class="n">mapping_file</span><span class="p">,</span>
     <span class="n">precedence</span><span class="p">,</span>
@@ -640,7 +640,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Provide YAML file with prefix reconciliation information.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">reconcile_prefixes</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reconcile_prefix_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reconcile_prefixes</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reconcile_prefix_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reconcile prefix_map based on provided YAML file.</span>
 
@@ -670,7 +670,7 @@
     <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Sort rows by DataFrame column #1 (ascending).&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">by_columns</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">by_rows</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">by_columns</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">by_rows</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sort DataFrame columns canonically.</span>
 
@@ -713,14 +713,14 @@
 
 <div class="viewcode-block" id="dynamically_generate_sssom_options">
 <a class="viewcode-back" href="../../sssom.html#sssom.cli.dynamically_generate_sssom_options">[docs]</a>
-<span class="k">def</span> <span class="nf">dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Dynamically generate click options.</span>
 
 <span class="sd">    :param options: List of all possible options.</span>
 <span class="sd">    :return: Click options deduced from user input into parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">sssom_slot</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">options</span><span class="p">):</span>
             <span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--&quot;</span> <span class="o">+</span> <span class="n">sssom_slot</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span>
@@ -733,7 +733,7 @@
 <span class="nd">@input_argument</span>
 <span class="nd">@output_option</span>
 <span class="nd">@dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_slots</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a dataframe by dynamically generating queries based on user input.</span>
 
 <span class="sd">    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv</span>
@@ -764,7 +764,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Multivalued slots should be replaced or not. [default: False]&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@dynamically_generate_sssom_options</span><span class="p">(</span><span class="n">SSSOM_SV_OBJECT</span><span class="o">.</span><span class="n">mapping_set_slots</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotate</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Annotate metadata of a mapping set.</span>
 
 <span class="sd">    :param input: Input path of the SSSOM tsv file.</span>
@@ -785,7 +785,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mapping file path that needs to be removed from input.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@output_option</span>
-<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">remove_map</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">remove_map</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove mappings from an input mapping.</span>
 
 <span class="sd">    :param input: Input SSSOM tsv file.</span>
@@ -820,7 +820,7 @@
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If True (default), the justification is updated to &#39;sempav:MappingInversion&#39;, else it is left as it is.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--inverse-map&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to file that contains the inverse predicate dictionary.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">invert</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">invert</span><span class="p">(</span>
     <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
     <span class="n">subject_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>

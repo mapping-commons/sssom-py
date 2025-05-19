@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sssom.util &mdash; sssom-py 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
@@ -75,30 +75,30 @@
   <h1>Source code for sssom.util</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">itt</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">_logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">punctuation</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">DefaultDict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">itt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">string</span><span class="w"> </span><span class="kn">import</span> <span class="n">punctuation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">DefaultDict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">curies</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">validators</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">curies</span> <span class="kn">import</span> <span class="n">Converter</span>
-<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">ValidationError</span>
-<span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.types</span> <span class="kn">import</span> <span class="n">Uriorcurie</span>
-<span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">Mapping</span> <span class="k">as</span> <span class="n">SSSOM_Mapping</span>
-<span class="kn">from</span> <span class="nn">sssom_schema</span> <span class="kn">import</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">slots</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">curies</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">validators</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">curies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Converter</span><span class="p">,</span> <span class="n">ReferenceTuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jsonschema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">linkml_runtime.linkml_model.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Uriorcurie</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sssom_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span> <span class="k">as</span> <span class="n">SSSOM_Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sssom_schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="n">slots</span>
 
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">COLUMN_INVERT_DICTIONARY</span><span class="p">,</span>
     <span class="n">COMMENT</span><span class="p">,</span>
     <span class="n">CONFIDENCE</span><span class="p">,</span>
@@ -136,14 +136,14 @@
     <span class="n">_get_sssom_schema_object</span><span class="p">,</span>
     <span class="n">get_default_metadata</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.context</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">,</span>
     <span class="n">ConverterHint</span><span class="p">,</span>
     <span class="n">_get_built_in_prefix_map</span><span class="p">,</span>
     <span class="n">ensure_converter</span><span class="p">,</span>
     <span class="n">get_converter</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.sssom_document</span> <span class="kn">import</span> <span class="n">MappingSetDocument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sssom_document</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingSetDocument</span>
 
 <span class="n">logging</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -166,7 +166,7 @@
 <div class="viewcode-block" id="MappingSetDataFrame">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">MappingSetDataFrame</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of mappings represented as a DataFrame, together with additional metadata.&quot;&quot;&quot;</span>
 
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
@@ -174,14 +174,14 @@
     <span class="n">metadata</span><span class="p">:</span> <span class="n">MetadataType</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_default_metadata</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a simple, bijective prefix map.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">bimap</span>
 
 <div class="viewcode-block" id="MappingSetDataFrame.with_converter">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.with_converter">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_converter</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_converter</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">,</span>
         <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
@@ -199,7 +199,7 @@
 <div class="viewcode-block" id="MappingSetDataFrame.from_mappings">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.from_mappings">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_mappings</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_mappings</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">mappings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SSSOM_Mapping</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
@@ -221,7 +221,7 @@
 <div class="viewcode-block" id="MappingSetDataFrame.from_mapping_set">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.from_mapping_set">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_mapping_set</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_mapping_set</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">mapping_set</span><span class="p">:</span> <span class="n">MappingSet</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate from a mapping set and an optional converter.</span>
@@ -238,7 +238,7 @@
 <div class="viewcode-block" id="MappingSetDataFrame.from_mapping_set_document">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.from_mapping_set_document">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_mapping_set_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_mapping_set_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate from a mapping set document.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">converter</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
@@ -273,43 +273,43 @@
 
 <div class="viewcode-block" id="MappingSetDataFrame.to_mapping_set_document">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.to_mapping_set_document">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDocument&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mapping_set_document</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDocument&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping set document.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">to_mapping_set_document</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_mapping_set_document</span>
 
         <span class="k">return</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MappingSetDataFrame.to_mapping_set">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.to_mapping_set">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_mapping_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSet</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mapping_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSet</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping set.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_mapping_set_document</span><span class="p">()</span><span class="o">.</span><span class="n">mapping_set</span></div>
 
 
 <div class="viewcode-block" id="MappingSetDataFrame.to_mappings">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.to_mappings">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SSSOM_Mapping</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SSSOM_Mapping</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a mapping set.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_mapping_set</span><span class="p">()</span><span class="o">.</span><span class="n">mappings</span></div>
 
 
 <div class="viewcode-block" id="MappingSetDataFrame.clean_context">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.clean_context">[docs]</a>
-    <span class="k">def</span> <span class="nf">clean_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the context.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">curies</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">_get_built_in_prefix_map</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="MappingSetDataFrame.standardize_references">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.standardize_references">[docs]</a>
-    <span class="k">def</span> <span class="nf">standardize_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">standardize_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardize this MSDF&#39;s dataframe and metadata with respect to its converter.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_metadata_references</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_df_references</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_standardize_df_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_standardize_df_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardize this MSDF&#39;s dataframe with respect to its converter.&quot;&quot;&quot;</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_standardize_curie_or_iri</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">schema_data</span> <span class="ow">in</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;slots&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -319,7 +319,7 @@
                 <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_standardize_metadata_references</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_standardize_metadata_references</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardize this MSDF&#39;s metadata with respect to its converter.&quot;&quot;&quot;</span>
         <span class="n">_standardize_metadata</span><span class="p">(</span>
             <span class="n">converter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="o">=</span><span class="n">raise_on_invalid</span>
@@ -327,7 +327,7 @@
 
 <div class="viewcode-block" id="MappingSetDataFrame.merge">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.merge">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two MappingSetDataframes.</span>
 
 <span class="sd">        :param msdfs: Multiple/Single MappingSetDataFrame(s) to merge with self</span>
@@ -345,7 +345,7 @@
             <span class="k">return</span> <span class="n">msdf</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
         <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;SSSOM data table </span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of extended prefix map records: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">description</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Metadata: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -358,7 +358,7 @@
 
 <div class="viewcode-block" id="MappingSetDataFrame.clean_prefix_map">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.clean_prefix_map">[docs]</a>
-    <span class="k">def</span> <span class="nf">clean_prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean_prefix_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove unused prefixes from the internal prefix map based on the internal dataframe.</span>
 
@@ -366,7 +366,7 @@
 <span class="sd">                       listed in the &#39;curie_map&#39;.</span>
 <span class="sd">        :raises ValueError: If prefixes absent in &#39;curie_map&#39; and strict flag = True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">prefixes_in_table</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
+        <span class="n">prefixes_in_table</span> <span class="o">=</span> <span class="n">get_prefixes_used_in_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
             <span class="n">prefixes_in_table</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span>
 
@@ -385,7 +385,7 @@
 
 <div class="viewcode-block" id="MappingSetDataFrame.remove_mappings">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDataFrame.remove_mappings">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_mappings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msdf</span><span class="p">:</span> <span class="s2">&quot;MappingSetDataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove mappings in right msdf from left msdf.</span>
 
 <span class="sd">        :param msdf: MappingSetDataframe object to be removed from primary msdf object.</span>
@@ -414,7 +414,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_standardize_curie_or_iri</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardize a CURIE or IRI, returning the original if not possible.</span>
 
 <span class="sd">    :param curie_or_iri: Either a string representing a CURIE or an IRI</span>
@@ -426,7 +426,7 @@
     <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">compress_or_standardize</span><span class="p">(</span><span class="n">curie_or_iri</span><span class="p">,</span> <span class="n">passthrough</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_standardize_metadata</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_standardize_metadata</span><span class="p">(</span>
     <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">raise_on_invalid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">schema_object</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span>
@@ -476,7 +476,7 @@
 <div class="viewcode-block" id="EntityPair">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.EntityPair">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">EntityPair</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityPair</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A tuple of entities.</span>
 
@@ -486,7 +486,7 @@
     <span class="n">subject_entity</span><span class="p">:</span> <span class="n">Uriorcurie</span>
     <span class="n">object_entity</span><span class="p">:</span> <span class="n">Uriorcurie</span>
 
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># noqa:D105</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject_entity</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_entity</span><span class="p">:</span>
             <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject_entity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_entity</span>
         <span class="k">else</span><span class="p">:</span>
@@ -498,7 +498,7 @@
 <div class="viewcode-block" id="MappingSetDiff">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.MappingSetDiff">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">MappingSetDiff</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MappingSetDiff</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a difference between two mapping sets.</span>
 
@@ -521,7 +521,7 @@
 
 <div class="viewcode-block" id="parse">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.parse">[docs]</a>
-<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a pandas frame.&quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">)</span></div>
@@ -530,7 +530,7 @@
 
 <div class="viewcode-block" id="collapse">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.collapse">[docs]</a>
-<span class="k">def</span> <span class="nf">collapse</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">collapse</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collapse rows with same S/P/O and combines confidence.&quot;&quot;&quot;</span>
     <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">SUBJECT_ID</span><span class="p">,</span> <span class="n">PREDICATE_ID</span><span class="p">,</span> <span class="n">OBJECT_ID</span><span class="p">])[</span><span class="n">CONFIDENCE</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">max</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">df2</span></div>
@@ -539,7 +539,7 @@
 
 <div class="viewcode-block" id="sort_sssom">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.sort_sssom">[docs]</a>
-<span class="k">def</span> <span class="nf">sort_sssom</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_sssom</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sort SSSOM by columns.</span>
 
 <span class="sd">    :param df: SSSOM DataFrame to be sorted.</span>
@@ -552,7 +552,7 @@
 
 <div class="viewcode-block" id="filter_redundant_rows">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.filter_redundant_rows">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_redundant_rows</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">ignore_predicate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_redundant_rows</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">ignore_predicate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove rows if there is another row with same S/O and higher confidence.</span>
 
 <span class="sd">    :param df: Pandas DataFrame to filter</span>
@@ -644,7 +644,7 @@
 
 <div class="viewcode-block" id="get_row_based_on_hierarchy">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_row_based_on_hierarchy">[docs]</a>
-<span class="k">def</span> <span class="nf">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_row_based_on_hierarchy</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get row based on hierarchy of predicates.</span>
 
 <span class="sd">    The hierarchy is as follows:</span>
@@ -675,7 +675,7 @@
 
 <div class="viewcode-block" id="assign_default_confidence">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.assign_default_confidence">[docs]</a>
-<span class="k">def</span> <span class="nf">assign_default_confidence</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">assign_default_confidence</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign :data:`numpy.nan` to confidence that are blank.</span>
@@ -699,7 +699,7 @@
 
 <div class="viewcode-block" id="remove_unmatched">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.remove_unmatched">[docs]</a>
-<span class="k">def</span> <span class="nf">remove_unmatched</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_unmatched</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove rows where no match is found.</span>
 
 <span class="sd">    TODO: https://github.com/OBOFoundry/SSSOM/issues/28</span>
@@ -712,7 +712,7 @@
 
 <div class="viewcode-block" id="create_entity">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.create_entity">[docs]</a>
-<span class="k">def</span> <span class="nf">create_entity</span><span class="p">(</span><span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Uriorcurie</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_entity</span><span class="p">(</span><span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Uriorcurie</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an Entity object.</span>
 
@@ -730,7 +730,7 @@
 
 <div class="viewcode-block" id="group_mappings">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.group_mappings">[docs]</a>
-<span class="k">def</span> <span class="nf">group_mappings</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">EntityPair</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_mappings</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">EntityPair</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Group mappings by EntityPairs.&quot;&quot;&quot;</span>
     <span class="n">mappings</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="n">EntityPair</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
@@ -757,7 +757,7 @@
 
 <div class="viewcode-block" id="compare_dataframes">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.compare_dataframes">[docs]</a>
-<span class="k">def</span> <span class="nf">compare_dataframes</span><span class="p">(</span><span class="n">df1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDiff</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_dataframes</span><span class="p">(</span><span class="n">df1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDiff</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a diff between two SSSOM dataframes.</span>
 
 <span class="sd">    :param df1: A mapping dataframe</span>
@@ -801,7 +801,7 @@
 
 <div class="viewcode-block" id="add_default_confidence">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.add_default_confidence">[docs]</a>
-<span class="k">def</span> <span class="nf">add_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_default_confidence</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add `confidence` column to DataFrame if absent and initializes to 0.95.</span>
 
 <span class="sd">    If `confidence` column already exists, only fill in the None ones by 0.95.</span>
@@ -821,7 +821,7 @@
 
 <div class="viewcode-block" id="dataframe_to_ptable">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.dataframe_to_ptable">[docs]</a>
-<span class="k">def</span> <span class="nf">dataframe_to_ptable</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dataframe_to_ptable</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">inverse_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -946,7 +946,7 @@
 
 <div class="viewcode-block" id="merge_msdf">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.merge_msdf">[docs]</a>
-<span class="k">def</span> <span class="nf">merge_msdf</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">merge_msdf</span><span class="p">(</span>
     <span class="o">*</span><span class="n">msdfs</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">reconcile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
@@ -991,7 +991,7 @@
 
 <div class="viewcode-block" id="deal_with_negation">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.deal_with_negation">[docs]</a>
-<span class="k">def</span> <span class="nf">deal_with_negation</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deal_with_negation</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine negative and positive rows with matching [SUBJECT_ID, OBJECT_ID, CONFIDENCE] combination.</span>
 
 <span class="sd">    Rule: negative trumps positive if modulus of confidence values are equal.</span>
@@ -1140,7 +1140,7 @@
 
 <div class="viewcode-block" id="inject_metadata_into_df">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.inject_metadata_into_df">[docs]</a>
-<span class="k">def</span> <span class="nf">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">inject_metadata_into_df</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame with metadata separate.</span>
@@ -1166,7 +1166,7 @@
 
 <div class="viewcode-block" id="get_file_extension">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_file_extension">[docs]</a>
-<span class="k">def</span> <span class="nf">get_file_extension</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_file_extension</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get file extension.</span>
 
 <span class="sd">    :param file: File path</span>
@@ -1192,7 +1192,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_extract_global_metadata</span><span class="p">(</span><span class="n">msdoc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetadataType</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_global_metadata</span><span class="p">(</span><span class="n">msdoc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetadataType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract metadata.</span>
 
 <span class="sd">    :param msdoc: MappingSetDocument object</span>
@@ -1215,7 +1215,7 @@
 <span class="c1"># to_mapping_set_document is in parser.py in order to avoid circular import errors</span>
 <div class="viewcode-block" id="to_mapping_set_dataframe">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.to_mapping_set_dataframe">[docs]</a>
-<span class="k">def</span> <span class="nf">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_mapping_set_dataframe</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">MappingSetDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert MappingSetDocument into MappingSetDataFrame.</span>
 
 <span class="sd">    :param doc: MappingSetDocument object</span>
@@ -1227,7 +1227,7 @@
 
 <div class="viewcode-block" id="get_dict_from_mapping">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_dict_from_mapping">[docs]</a>
-<span class="k">def</span> <span class="nf">get_dict_from_mapping</span><span class="p">(</span><span class="n">map_obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">SSSOM_Mapping</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_dict_from_mapping</span><span class="p">(</span><span class="n">map_obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">SSSOM_Mapping</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.</span>
 
@@ -1273,7 +1273,7 @@
 <span class="n">CURIE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">CURIE_PATTERN</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_is_curie</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_curie</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the string is a CURIE.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">string</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">CURIE_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
@@ -1281,7 +1281,7 @@
         <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">_is_iri</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_iri</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the string is an IRI.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">string</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">validators</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
@@ -1291,10 +1291,10 @@
 
 <div class="viewcode-block" id="get_prefix_from_curie">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefix_from_curie">[docs]</a>
-<span class="k">def</span> <span class="nf">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_prefix_from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the prefix from a CURIE.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">_is_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">curie</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ReferenceTuple</span><span class="o">.</span><span class="n">from_curie</span><span class="p">(</span><span class="n">curie</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
@@ -1302,7 +1302,7 @@
 
 <div class="viewcode-block" id="get_prefixes_used_in_table">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_table">[docs]</a>
-<span class="k">def</span> <span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_prefixes_used_in_table</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of prefixes used in CURIEs in key feature columns in a dataframe.&quot;&quot;&quot;</span>
     <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
@@ -1310,7 +1310,7 @@
     <span class="n">sssom_schema_object</span> <span class="o">=</span> <span class="n">_get_sssom_schema_object</span><span class="p">()</span>
     <span class="n">entity_reference_slots</span> <span class="o">=</span> <span class="n">sssom_schema_object</span><span class="o">.</span><span class="n">entity_reference_slots</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">new_prefixes</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">converter</span><span class="o">.</span><span class="n">parse_curie</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="n">ReferenceTuple</span><span class="o">.</span><span class="n">from_curie</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">entity_reference_slots</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_iri</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_curie</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
@@ -1327,7 +1327,7 @@
 
 <div class="viewcode-block" id="get_prefixes_used_in_metadata">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_prefixes_used_in_metadata">[docs]</a>
-<span class="k">def</span> <span class="nf">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">MetadataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_prefixes_used_in_metadata</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">MetadataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a set of prefixes used in CURIEs in the metadata.&quot;&quot;&quot;</span>
     <span class="n">prefixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SSSOM_BUILT_IN_PREFIXES</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">meta</span><span class="p">:</span>
@@ -1344,7 +1344,7 @@
 
 <div class="viewcode-block" id="filter_out_prefixes">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.filter_out_prefixes">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_out_prefixes</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_out_prefixes</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1375,7 +1375,7 @@
 
 <div class="viewcode-block" id="filter_prefixes">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.filter_prefixes">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_prefixes</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_prefixes</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">filter_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1406,7 +1406,7 @@
 
 <div class="viewcode-block" id="raise_for_bad_path">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.raise_for_bad_path">[docs]</a>
-<span class="k">def</span> <span class="nf">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise exception if file path is invalid.</span>
 
 <span class="sd">    :param file_path: File path</span>
@@ -1424,7 +1424,7 @@
 
 <div class="viewcode-block" id="is_multivalued_slot">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.is_multivalued_slot">[docs]</a>
-<span class="k">def</span> <span class="nf">is_multivalued_slot</span><span class="p">(</span><span class="n">slot</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_multivalued_slot</span><span class="p">(</span><span class="n">slot</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether the slot is multivalued according to the SSSOM specification.</span>
 
 <span class="sd">    :param slot: Slot name</span>
@@ -1436,7 +1436,7 @@
 
 <div class="viewcode-block" id="reconcile_prefix_and_data">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.reconcile_prefix_and_data">[docs]</a>
-<span class="k">def</span> <span class="nf">reconcile_prefix_and_data</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reconcile_prefix_and_data</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">prefix_reconciliation</span><span class="p">:</span> <span class="nb">dict</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconciles prefix_map and translates CURIE switch in dataframe.</span>
@@ -1464,7 +1464,7 @@
 
 <div class="viewcode-block" id="sort_df_rows_columns">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.sort_df_rows_columns">[docs]</a>
-<span class="k">def</span> <span class="nf">sort_df_rows_columns</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_df_rows_columns</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">by_columns</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">by_rows</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1488,7 +1488,7 @@
 
 <div class="viewcode-block" id="get_all_prefixes">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.get_all_prefixes">[docs]</a>
-<span class="k">def</span> <span class="nf">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_prefixes</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch all prefixes in the MappingSetDataFrame.</span>
 
 <span class="sd">    :param msdf: MappingSetDataFrame</span>
@@ -1536,7 +1536,7 @@
 
 <div class="viewcode-block" id="augment_metadata">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.augment_metadata">[docs]</a>
-<span class="k">def</span> <span class="nf">augment_metadata</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">augment_metadata</span><span class="p">(</span>
     <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">replace_multivalued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Augment metadata with parameters passed.</span>
@@ -1577,7 +1577,7 @@
 
 <div class="viewcode-block" id="are_params_slots">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.are_params_slots">[docs]</a>
-<span class="k">def</span> <span class="nf">are_params_slots</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">are_params_slots</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if parameters conform to the slots in MAPPING_SET_SLOTS.</span>
 
 <span class="sd">    :param params: Dictionary of parameters.</span>
@@ -1600,7 +1600,7 @@
 
 <div class="viewcode-block" id="invert_mappings">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.invert_mappings">[docs]</a>
-<span class="k">def</span> <span class="nf">invert_mappings</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">invert_mappings</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">subject_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">merge_inverted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1688,14 +1688,14 @@
 
 
 
-<span class="k">def</span> <span class="nf">_invert_column_names</span><span class="p">(</span><span class="n">column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">columns_invert_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_invert_column_names</span><span class="p">(</span><span class="n">column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">columns_invert_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary for column renames in pandas DataFrame.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">columns_invert_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="safe_compress">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.safe_compress">[docs]</a>
-<span class="k">def</span> <span class="nf">safe_compress</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_compress</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">Converter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a CURIE from an IRI.</span>
 
 <span class="sd">    :param uri: The URI to parse. If this is already a CURIE, return directly.</span>
@@ -1708,7 +1708,7 @@
 
 <div class="viewcode-block" id="pandas_set_no_silent_downcasting">
 <a class="viewcode-back" href="../../sssom.html#sssom.util.pandas_set_no_silent_downcasting">[docs]</a>
-<span class="k">def</span> <span class="nf">pandas_set_no_silent_downcasting</span><span class="p">(</span><span class="n">no_silent_downcasting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pandas_set_no_silent_downcasting</span><span class="p">(</span><span class="n">no_silent_downcasting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set pandas future.no_silent_downcasting option. Context https://github.com/pandas-dev/pandas/issues/57734.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;future.no_silent_downcasting&quot;</span><span class="p">,</span> <span class="n">no_silent_downcasting</span><span class="p">)</span>

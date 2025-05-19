@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sssom package &mdash; sssom-py 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -413,8 +413,8 @@ the best tool is <code class="xref py py-class docutils literal notranslate"><sp
 You can do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="o">...</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
-<span class="kn">from</span> <span class="nn">sssom</span> <span class="kn">import</span> <span class="n">get_default_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChainMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sssom</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_default_metadata</span>
 
 <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ChainMap</span><span class="p">(</span>
     <span class="n">my_metadata</span> <span class="ow">or</span> <span class="p">{},</span>
@@ -1628,7 +1628,7 @@ replaced or not, defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sssom.util.get_prefixes_used_in_table">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#get_prefixes_used_in_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_table" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">get_prefixes_used_in_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sssom/util.html#get_prefixes_used_in_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.get_prefixes_used_in_table" title="Link to this definition"></a></dt>
 <dd><p>Get a list of prefixes used in CURIEs in key feature columns in a dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
