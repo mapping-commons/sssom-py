@@ -101,7 +101,6 @@ def parse_file(
 
 def validate_file(
     input_path: str,
-    *,
     validation_types: Optional[List[SchemaValidationType]] = None,
     fail_on_error: bool = True,
 ) -> dict[SchemaValidationType, ValidationReport]:
