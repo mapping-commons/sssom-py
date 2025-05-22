@@ -1,13 +1,13 @@
-[tool.poetry]
+[project]
 name = "sssom"
 version = "0.0.0"
 description = "Operations on SSSOM mapping tables"
 authors = [
-    "Chris Mungall <cjmungall@lbl.gov>",
-    "Nicolas Matentzoglu <nicolas.matentzoglu@gmail.com>",
-    "Harshad Hegde <hhegde@lbl.gov>"
+    { name = "Chris Mungall", email = "cjmungall@lbl.gov" },
+    { name = "Nicolas Matentzoglu", email = "nicolas.matentzoglu@gmail.com" },
+    { name = "Harshad Hegde", email = "hhegde@lbl.gov" },
 ]
-license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -17,20 +17,35 @@ curies = ">=0.10.18"
 linkml-runtime = "^1.7.5"
 linkml = ">1.7.10"
 pandas = ">1.0.3"
-pansql = { version = ">=0.0.1", extras = ["pansql"] }
 sssom-schema = "^1.0.0"
-networkx = { version = ">=3.1", extras = ["networkx"] }
 sparqlwrapper = ">=2.0.0"
 validators = ">=0.20.0"
 deprecation = "^2.1.0"
 pyyaml = "^6.0.1"
 rdflib = ">=6.0.0"
-scipy = {version = "*", extras = ["scipy"]}
 importlib-resources = "^6.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = {version = ">=7.1.2"}
 tox = {version = ">=3.25.1"}
+
+[tool.poetry.group.networkx]
+optional = true
+
+[tool.poetry.group.networkx.dependencies]
+networkx = {version = "*"}
+
+[tool.poetry.group.scipy]
+optional = true
+
+[tool.poetry.group.scipy.dependencies]
+scipy = {version = "*"}
+
+[tool.poetry.group.pansql]
+optional = true
+
+[tool.poetry.group.pansql.dependencies]
+pansql = {version = ">=0.0.1"}
 
 [tool.poetry.group.docs]
 optional = true
