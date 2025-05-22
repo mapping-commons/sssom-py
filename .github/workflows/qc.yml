@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry add setuptools@latest
-          poetry install --no-interaction
+          poetry install --no-interaction --all-extras
 
       - name: Check code quality with flake8
         run: poetry run tox -e flake8
