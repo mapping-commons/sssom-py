@@ -40,6 +40,7 @@ url = "https://raw.githubusercontent.com/mapping-commons/mh_mapping_initiative/m
 msdf = sssom.parse_tsv(url)
 
 # SSSOM comes with several "write" functions
+sssom.write_tsv(msdf, "test.tsv")
 sssom.write_json(msdf, "test.json")
 sssom.write_owl(msdf, "test.owl")
 sssom.write_rdf(msdf, "test.ttl")
