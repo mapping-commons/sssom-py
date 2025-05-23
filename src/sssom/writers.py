@@ -2,8 +2,9 @@
 
 import json
 import logging as _logging
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
@@ -47,6 +48,15 @@ SSSOM_NS = SSSOM_URI_PREFIX
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
+@contextmanager
+def _open_text_writer(xx: str | Path | TextIO) -> Generator[TextIO, None, None]:
+    if isinstance(xx, str | Path):
+        with open(xx, "w") as file:
+            yield file
+    else:
+        yield xx
+
+
 def write_table(
     msdf: MappingSetDataFrame,
     file: str | Path | TextIO,
@@ -68,18 +78,14 @@ def write_table(
         lines = [f"# {line}" for line in lines if line != ""]
         s = msdf.df.to_csv(sep=sep, index=False).rstrip("\n")
         lines = lines + [s]
-        if isinstance(file, str | Path):
-            with open(file, "w") as fh:
-                for line in lines:
-                    print(line, file=fh)
-        else:
+        with _open_text_writer(file) as fh:
             for line in lines:
-                print(line, file=file)
+                print(line, file=fh)
     else:
         if isinstance(file, str | Path):
             yml_filepath = Path(file).with_suffix(".yaml")
         else:
-            yml_filepath = file.name.replace("tsv", "yaml")
+            yml_filepath = Path(file.name.replace("tsv", "yaml"))
 
         # Export MSDF as tsv
         msdf.df.to_csv(file, sep=sep, index=False)
@@ -110,11 +116,8 @@ def write_rdf(
     check_all_prefixes_in_curie_map(msdf)
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    if isinstance(file, str | Path):
-        with open(file, "w") as fh:
-            print(t.decode(), file=fh)
-    else:
-        print(t.decode(), file=file)
+    with _open_text_writer(file) as fh:
+        print(t.decode(), file=fh)
 
 
 def write_json(
@@ -143,12 +146,8 @@ def write_json(
         )
     func: Callable = func_map[serialisation]
     data = func(msdf)
-
-    if isinstance(output, str | Path):
-        with open(output, "w") as file:
-            json.dump(data, file, indent=2)
-    else:
-        json.dump(data, output, indent=2)
+    with _open_text_writer(output) as fh:
+        json.dump(data, fh, indent=2)
 
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
@@ -190,12 +189,8 @@ def write_owl(
 
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-
-    if isinstance(file, str | Path):
-        with open(file) as fh:
-            print(t.decode(), file=fh)
-    else:
-        print(t.decode(), file=file)
+    with _open_text_writer(file) as fh:
+        print(t.decode(), file=fh)
 
 
 # Converters

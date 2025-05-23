@@ -123,7 +123,7 @@ class TestWrite(unittest.TestCase):
         self.assertNotIn("snomed", context["@context"])
         self.assertIn("mapping_set_id", context["@context"])
 
-    def test_write_sssom_fhir(self):
+    def test_write_sssom_fhir(self) -> None:
         """Test writing as FHIR ConceptMap JSON."""
         # Vars
         path = os.path.join(test_out_dir, "test_write_sssom_fhir.json")
