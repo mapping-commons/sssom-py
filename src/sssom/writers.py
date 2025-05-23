@@ -49,7 +49,7 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 def write_table(
     msdf: MappingSetDataFrame,
-    file: TextIO,
+    file: str | Path | TextIO,
     embedded_mode: bool = True,
     serialisation: str = "tsv",
     sort: bool = False,
@@ -68,13 +68,21 @@ def write_table(
         lines = [f"# {line}" for line in lines if line != ""]
         s = msdf.df.to_csv(sep=sep, index=False).rstrip("\n")
         lines = lines + [s]
-        for line in lines:
-            print(line, file=file)
+        if isinstance(file, str | Path):
+            with open(file, "w") as fh:
+                for line in lines:
+                    print(line, file=fh)
+        else:
+            for line in lines:
+                print(line, file=file)
     else:
+        if isinstance(file, str | Path):
+            yml_filepath = Path(file).with_suffix(".yaml")
+        else:
+            yml_filepath = file.name.replace("tsv", "yaml")
+
         # Export MSDF as tsv
         msdf.df.to_csv(file, sep=sep, index=False)
-        # Export Metadata as yaml
-        yml_filepath = file.name.replace("tsv", "yaml")
         with open(yml_filepath, "w") as y:
             yaml.safe_dump(meta, y)
 
@@ -86,7 +94,7 @@ def write_tsv(msdf: MappingSetDataFrame, path: str | Path | TextIO, sort: bool =
 
 def write_rdf(
     msdf: MappingSetDataFrame,
-    file: TextIO,
+    file: str | Path | TextIO,
     serialisation: Optional[str] = None,
 ) -> None:
     """Write a mapping set dataframe to the file as RDF."""
@@ -102,17 +110,26 @@ def write_rdf(
     check_all_prefixes_in_curie_map(msdf)
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode(), file=file)
+    if isinstance(file, str | Path):
+        with open(file, "w") as fh:
+            print(t.decode(), file=fh)
+    else:
+        print(t.decode(), file=file)
 
 
-def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+def write_json(
+    msdf: MappingSetDataFrame, output: str | Path | TextIO, serialisation="json"
+) -> None:
     """Write a mapping set dataframe to the file as JSON.
 
+    :param msdf: A mapping set dataframe
+    :param output: A path or write-supported file object to write JSON to
     :param serialisation: The JSON format to use. Supported formats are:
-     - fhir_json: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
+
+     - ``fhir_json``: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
        https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
-     - json: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
-     - ontoportal_json: Outputs JSON in Ontoportal format (https://ontoportal.org/)
+     - ``json``: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
+     - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
        https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
     """
     func_map: Dict[str, Callable] = {
@@ -126,11 +143,18 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
         )
     func: Callable = func_map[serialisation]
     data = func(msdf)
-    json.dump(data, output, indent=2)
+
+    if isinstance(output, str | Path):
+        with open(output, "w") as file:
+            json.dump(data, file, indent=2)
+    else:
+        json.dump(data, output, indent=2)
 
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
-def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir_json") -> None:
+def write_fhir_json(
+    msdf: MappingSetDataFrame, output: str | Path | TextIO, serialisation="fhir_json"
+) -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     if serialisation != "fhir_json":
         raise ValueError(
@@ -141,7 +165,7 @@ def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fh
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
 def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
+    msdf: MappingSetDataFrame, output: str | Path | TextIO, serialisation: str = "ontoportal_json"
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
     if serialisation != "ontoportal_json":
@@ -153,7 +177,7 @@ def write_ontoportal_json(
 
 def write_owl(
     msdf: MappingSetDataFrame,
-    file: TextIO,
+    file: str | Path | TextIO,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
@@ -166,7 +190,12 @@ def write_owl(
 
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode(), file=file)
+
+    if isinstance(file, str | Path):
+        with open(file) as fh:
+            print(t.decode(), file=fh)
+    else:
+        print(t.decode(), file=file)
 
 
 # Converters
