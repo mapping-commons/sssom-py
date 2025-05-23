@@ -21,17 +21,32 @@
 
 <img src="https://github.com/tis-lab/closed-illustrations/raw/master/logos/sssom-logos/sssom_logo_black_banner.png" />
 
-SSSOM (Simple Standard for Sharing Ontology Mappings) is a TSV and RDF/OWL standard for ontology mappings
+A Python library and command line interface (CLI) for working with
+[SSSOM (Simple Standard for Sharing Ontology Mappings)](https://github.com/mapping-commons/sssom).
 
+## Getting Started
+
+A SSSOM TSV can be parsed with
+
+```python
+import sssom
+
+# other SSSOM files can be found on https://mapping-commons.github.io
+url = "https://raw.githubusercontent.com/mapping-commons/mh_mapping_initiative/master/mappings/mp_hp_eye_impc.sssom.tsv"
+
+# TSV can be parsed into a mapping set dataframe object,
+# which includes a pandas DataFrame, a curies.Converter,
+# and metadata
+msdf = sssom.parse_tsv(url)
+
+# SSSOM comes with several "write" functions
+sssom.write_json(msdf, "test.json")
+sssom.write_owl(msdf, "test.owl")
+sssom.write_rdf(msdf, "test.ttl")
 ```
-WARNING: 
-    The export formats (json, rdf) of sssom-py are not yet finalised! 
-    Please expect changes in future releases!
-```
 
-See https://github.com/OBOFoundry/SSSOM
-
-This is a python library and command line toolkit for working with SSSOM. It also defines a schema for SSSOM.
+> [!WARNING]  
+> The export formats (json, rdf) of sssom-py are not yet finalised! Expect changes in future releases.
 
 ## Documentation
 

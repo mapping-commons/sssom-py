@@ -399,12 +399,6 @@ class MappingSetDiff:
     """
 
 
-def parse(filename: Union[str, Path]) -> pd.DataFrame:
-    """Parse a TSV to a pandas frame."""
-    logging.info(f"Parsing {filename}")
-    return pd.read_csv(filename, sep="\t", comment="#")
-
-
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
     """Collapse rows with same S/P/O and combines confidence."""
     df2 = df.groupby([SUBJECT_ID, PREDICATE_ID, OBJECT_ID])[CONFIDENCE].apply(max).reset_index()

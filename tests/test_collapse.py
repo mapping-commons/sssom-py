@@ -1,6 +1,10 @@
 """Test various grouping functionalities."""
 
 import unittest
+from pathlib import Path
+from typing import Union
+
+import pandas as pd
 
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
@@ -9,10 +13,14 @@ from sssom.util import (
     dataframe_to_ptable,
     filter_redundant_rows,
     group_mappings,
-    parse,
     reconcile_prefix_and_data,
 )
 from tests.constants import data_dir
+
+
+def parse(filename: Union[str, Path]) -> pd.DataFrame:
+    """Parse a TSV to a pandas frame."""
+    return pd.read_csv(filename, sep="\t", comment="#")
 
 
 class TestCollapse(unittest.TestCase):

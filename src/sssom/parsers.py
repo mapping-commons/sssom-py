@@ -287,9 +287,25 @@ def parse_sssom_table(
     file_path: Union[str, Path, TextIO],
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
-    **kwargs,
+    *,
+    strict: bool = False,
 ) -> MappingSetDataFrame:
-    """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
+    """Parse a SSSOM TSV.
+
+    :param file_path:
+        A file path, URL, or I/O object that contains SSSOM encoded in TSV
+    :param prefix_map:
+        A prefix map or :class:`curies.Converter` used to validate prefixes,
+        CURIEs, and IRIs appearing in the SSSOM TSV
+    :param meta:
+        Additional document-level metadata for the SSSOM TSV document that is not
+        contained within the document itself. For example, this may come from a
+        companion SSSOM YAML file.
+    :param strict:
+        If true, will fail parsing for undefined prefixes, CURIEs, or IRIs
+    :returns:
+        A parsed dataframe wrapper object
+    """
     if isinstance(file_path, Path) or isinstance(file_path, str):
         raise_for_bad_path(file_path)
     stream: io.StringIO = _open_input(file_path)
@@ -301,7 +317,7 @@ def parse_sssom_table(
     is_valid_built_in_prefixes = _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map)
     is_valid_metadata = _is_irregular_metadata([sssom_metadata, meta])
 
-    if kwargs.get("strict"):
+    if strict:
         _fail_in_strict_parsing_mode(is_valid_built_in_prefixes, is_valid_metadata)
 
     # The priority order for combining prefix maps are:
@@ -332,6 +348,9 @@ def parse_sssom_table(
 
     msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
     return msdf
+
+
+parse_tsv = parse_sssom_table
 
 
 def parse_sssom_rdf(
