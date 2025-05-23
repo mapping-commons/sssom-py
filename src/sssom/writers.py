@@ -19,7 +19,7 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
+from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
@@ -49,7 +49,7 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
 @contextmanager
-def _open_text_writer(xx: str | Path | TextIO) -> Generator[TextIO, None, None]:
+def _open_text_writer(xx: PathOrIO) -> Generator[TextIO, None, None]:
     if isinstance(xx, str | Path):
         with open(xx, "w") as file:
             yield file
@@ -59,7 +59,7 @@ def _open_text_writer(xx: str | Path | TextIO) -> Generator[TextIO, None, None]:
 
 def write_table(
     msdf: MappingSetDataFrame,
-    file: str | Path | TextIO,
+    file: PathOrIO,
     embedded_mode: bool = True,
     serialisation: str = "tsv",
     sort: bool = False,
@@ -93,14 +93,16 @@ def write_table(
             yaml.safe_dump(meta, y)
 
 
-def write_tsv(msdf: MappingSetDataFrame, path: str | Path | TextIO, sort: bool = False) -> None:
+def write_tsv(
+    msdf: MappingSetDataFrame, path: PathOrIO, embedded_mode: bool = True, sort: bool = False
+) -> None:
     """Write a mapping set to a TSV file."""
-    raise NotImplementedError
+    write_table(msdf, path, serialisation="tsv", embedded_mode=embedded_mode, sort=sort)
 
 
 def write_rdf(
     msdf: MappingSetDataFrame,
-    file: str | Path | TextIO,
+    file: PathOrIO,
     serialisation: Optional[str] = None,
 ) -> None:
     """Write a mapping set dataframe to the file as RDF."""
@@ -120,9 +122,7 @@ def write_rdf(
         print(t.decode(), file=fh)
 
 
-def write_json(
-    msdf: MappingSetDataFrame, output: str | Path | TextIO, serialisation="json"
-) -> None:
+def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="json") -> None:
     """Write a mapping set dataframe to the file as JSON.
 
     :param msdf: A mapping set dataframe
@@ -151,9 +151,7 @@ def write_json(
 
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
-def write_fhir_json(
-    msdf: MappingSetDataFrame, output: str | Path | TextIO, serialisation="fhir_json"
-) -> None:
+def write_fhir_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="fhir_json") -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     if serialisation != "fhir_json":
         raise ValueError(
@@ -164,7 +162,7 @@ def write_fhir_json(
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
 def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: str | Path | TextIO, serialisation: str = "ontoportal_json"
+    msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "ontoportal_json"
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
     if serialisation != "ontoportal_json":
@@ -176,7 +174,7 @@ def write_ontoportal_json(
 
 def write_owl(
     msdf: MappingSetDataFrame,
-    file: str | Path | TextIO,
+    file: PathOrIO,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""

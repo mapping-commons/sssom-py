@@ -54,6 +54,7 @@ from sssom.constants import (
     SUBJECT_SOURCE,
     SUBJECT_SOURCE_ID,
     MetadataType,
+    PathOrIO,
     _get_sssom_schema_object,
     get_default_metadata,
 )
@@ -76,7 +77,7 @@ logging = _logging.getLogger(__name__)
 # Parsers (from file)
 
 
-def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
+def _open_input(input: PathOrIO) -> io.StringIO:
     """Transform a URL, a filepath (from pathlib), or a string (with file contents) to a StringIO object.
 
     :param input: A string representing a URL, a filepath, or file contents,
@@ -284,7 +285,7 @@ def _get_converter_pop_replace_curie_map(sssom_metadata):
 
 
 def parse_sssom_table(
-    file_path: Union[str, Path, TextIO],
+    file_path: PathOrIO,
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     *,
@@ -354,7 +355,7 @@ parse_tsv = parse_sssom_table
 
 
 def parse_sssom_rdf(
-    file_path: str,
+    file_path: Union[str, Path],
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -392,7 +393,10 @@ def parse_sssom_rdf(
 
 
 def parse_sssom_json(
-    file_path: str, prefix_map: ConverterHint = None, meta: Optional[MetadataType] = None, **kwargs
+    file_path: Union[str, Path],
+    prefix_map: ConverterHint = None,
+    meta: Optional[MetadataType] = None,
+    **kwargs,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     raise_for_bad_path(file_path)
@@ -426,7 +430,7 @@ def parse_sssom_json(
 
 
 def parse_obographs_json(
-    file_path: str,
+    file_path: Union[str, Path],
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
@@ -510,7 +514,7 @@ def _get_mapping_dict(
 
 
 def parse_alignment_xml(
-    file_path: str,
+    file_path: Union[str, Path],
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
@@ -520,7 +524,7 @@ def parse_alignment_xml(
 
     converter, meta = _get_prefix_map_and_metadata(prefix_map=prefix_map, meta=meta)
     logging.info("Loading from alignment API")
-    xmldoc = minidom.parse(file_path)
+    xmldoc = minidom.parse(Path(file_path).resolve().as_posix())
     msdf = from_alignment_minidom(
         xmldoc,
         prefix_map=converter,
