@@ -50,7 +50,7 @@ MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 @contextmanager
 def _open_text_writer(xx: PathOrIO) -> Generator[TextIO, None, None]:
-    if isinstance(xx, str | Path):
+    if isinstance(xx, (str, Path)):
         with open(xx, "w") as file:
             yield file
     else:
@@ -82,7 +82,7 @@ def write_table(
             for line in lines:
                 print(line, file=fh)
     else:
-        if isinstance(file, str | Path):
+        if isinstance(file, (str, Path)):
             yml_filepath = Path(file).with_suffix(".yaml")
         else:
             yml_filepath = Path(file.name.replace("tsv", "yaml"))
