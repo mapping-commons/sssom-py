@@ -290,6 +290,7 @@ def parse_sssom_table(
     meta: Optional[MetadataType] = None,
     *,
     strict: bool = False,
+    **kwargs: Any,
 ) -> MappingSetDataFrame:
     """Parse a SSSOM TSV.
 
@@ -304,9 +305,13 @@ def parse_sssom_table(
         companion SSSOM YAML file.
     :param strict:
         If true, will fail parsing for undefined prefixes, CURIEs, or IRIs
+    :param kwargs:
+        Additional keyword arguments (unhandled)
     :returns:
         A parsed dataframe wrapper object
     """
+    if kwargs:
+        logging.warning("unhandled keyword arguments passed: %s", kwargs)
     if isinstance(file_path, Path) or isinstance(file_path, str):
         raise_for_bad_path(file_path)
     stream: io.StringIO = _open_input(file_path)
