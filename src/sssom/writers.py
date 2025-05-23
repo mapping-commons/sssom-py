@@ -51,8 +51,8 @@ def write_table(
     msdf: MappingSetDataFrame,
     file: TextIO,
     embedded_mode: bool = True,
-    serialisation="tsv",
-    sort=False,
+    serialisation: str = "tsv",
+    sort: bool = False,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     sep = _get_separator(serialisation)
@@ -77,6 +77,11 @@ def write_table(
         yml_filepath = file.name.replace("tsv", "yaml")
         with open(yml_filepath, "w") as y:
             yaml.safe_dump(meta, y)
+
+
+def write_tsv(msdf: MappingSetDataFrame, path: str | Path | TextIO, sort: bool = False) -> None:
+    """Write a mapping set to a TSV file."""
+    raise NotImplementedError
 
 
 def write_rdf(
