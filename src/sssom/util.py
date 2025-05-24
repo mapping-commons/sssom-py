@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
 from string import punctuation
-from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, TextIO, Tuple, Union
 
 import curies
 import numpy as np
@@ -994,7 +994,10 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: PathOrIO) -> str | None:
+ExtensionLiteral = Literal["tsv", "csv"]
+
+
+def get_file_extension(file: PathOrIO) -> ExtensionLiteral | None:
     """Get file extension.
 
     :param file: File path

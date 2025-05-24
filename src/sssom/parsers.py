@@ -63,6 +63,7 @@ from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
 from .sssom_document import MappingSetDocument
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
+    ExtensionLiteral,
     MappingSetDataFrame,
     get_file_extension,
     is_multivalued_slot,
@@ -173,6 +174,9 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str | None = None):
     return df, sssom_metadata
 
 
+EXTENSION_TO_SEP: dict[ExtensionLiteral, str] = {"tsv": "\t", "csv": ","}
+
+
 def _infer_separator(file: PathOrIO) -> str | None:
     r"""Infer the CSV separator from a file path or IO object.
 
@@ -180,11 +184,9 @@ def _infer_separator(file: PathOrIO) -> str | None:
     :return: the separator symbols as a string, e.g. '\t'
     """
     extension = get_file_extension(file)
-    if extension == "tsv":
-        return "\t"
-    elif extension == "csv":
-        return ","
-    return None
+    if extension is None:
+        return None
+    return EXTENSION_TO_SEP[extension]
 
 
 def _is_check_valid_extension_slot(slot_name, meta):
