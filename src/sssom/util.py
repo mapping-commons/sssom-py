@@ -897,6 +897,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # If same confidence prefer "HumanCurated".
     reconciled_df_subset = pd.DataFrame(columns=combined_normalized_subset.columns)
+    reconciled_dfs_ = []
     for _, row_1 in max_confidence_df.iterrows():
         match_condition_1 = (
             (combined_normalized_subset[SUBJECT_ID] == row_1[SUBJECT_ID])
@@ -929,13 +930,11 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         #     ],
         #     ignore_index=True,
         # )
-        reconciled_df_subset = pd.concat(
-            [
-                reconciled_df_subset,
-                combined_normalized_subset.loc[match_condition_1[match_condition_1].index, :],
-            ],
-            ignore_index=True,
+        reconciled_dfs_.append(
+            combined_normalized_subset.loc[match_condition_1[match_condition_1].index, :]
         )
+
+    reconciled_df_subset = pd.concat(reconciled_dfs_)
 
     # Add negations (PREDICATE_MODIFIER) back to DataFrame
     # NOTE: negative TRUMPS positive if negative and positive with same
