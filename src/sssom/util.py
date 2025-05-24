@@ -1406,11 +1406,8 @@ def invert_mappings(
     :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
     :return: Pandas dataframe with all subject IDs having the same prefix.
     """
-    if predicate_invert_dictionary:
-        predicate_invert_map = predicate_invert_dictionary
-    else:
-        predicate_invert_map = PREDICATE_INVERT_DICTIONARY
-    columns_invert_map = COLUMN_INVERT_DICTIONARY
+    if predicate_invert_dictionary is None:
+        predicate_invert_dictionary = PREDICATE_INVERT_DICTIONARY
 
     if PREDICATE_MODIFIER in df.columns:
         blank_predicate_modifier = df[PREDICATE_MODIFIER] == ""
@@ -1442,25 +1439,27 @@ def invert_mappings(
         )
 
         df_to_invert = non_prefix_subjects_df.loc[
-            non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+            non_prefix_subjects_df[PREDICATE_ID].isin(list(predicate_invert_dictionary.keys()))
         ]
         non_inverted_df_by_predicate = pd.DataFrame(columns=non_prefix_subjects_df.columns)
     else:
         prefixed_subjects_df = pd.DataFrame()
         df_to_invert = non_predicate_modified_df.loc[
-            non_predicate_modified_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+            non_predicate_modified_df[PREDICATE_ID].isin(list(predicate_invert_dictionary.keys()))
         ]
         non_inverted_df_by_predicate = non_predicate_modified_df.loc[
-            ~non_predicate_modified_df[PREDICATE_ID].isin(list(predicate_invert_map.keys()))
+            ~non_predicate_modified_df[PREDICATE_ID].isin(list(predicate_invert_dictionary.keys()))
         ]
-    list_of_subject_object_columns = [
-        x for x in df_to_invert.columns if x.startswith(("subject", "object"))
-    ]
+
     inverted_df = df_to_invert.rename(
-        columns=_invert_column_names(list_of_subject_object_columns, columns_invert_map)
+        columns={
+            column: COLUMN_INVERT_DICTIONARY[column]
+            for column in df_to_invert.columns
+            if column in COLUMN_INVERT_DICTIONARY
+        }
     )
     inverted_df = sort_df_rows_columns(inverted_df, by_rows=False)
-    inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_map)
+    inverted_df[PREDICATE_ID] = inverted_df[PREDICATE_ID].map(predicate_invert_dictionary)
     if update_justification:
         inverted_df[MAPPING_JUSTIFICATION] = SEMAPV.MappingInversion.value
     if not prefixed_subjects_df.empty:
@@ -1472,12 +1471,8 @@ def invert_mappings(
     if merge_inverted:
         return pd.concat([df, return_df]).drop_duplicates()
     else:
+        print(return_df)
         return return_df
-
-
-def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
-    """Return a dictionary for column renames in pandas DataFrame."""
-    return {x: columns_invert_map[x] for x in column_names}
 
 
 def safe_compress(uri: str, converter: Converter) -> str:
