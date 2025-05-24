@@ -144,7 +144,7 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
     return table_component, metadata_component
 
 
-def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
+def _read_pandas_and_metadata(input: io.StringIO, sep: str | None = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param input: The file to read. If no separator is given, this file should be named.
@@ -155,7 +155,6 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
 
     try:
         df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
-        df.fillna("", inplace=True)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -167,28 +166,24 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
                 MAPPING_JUSTIFICATION,
             ]
         )
+    else:
+        df.fillna("", inplace=True)
 
-    if isinstance(df, pd.DataFrame):
-        sssom_metadata = _read_metadata_from_table(metadata_stream)
-        return df, sssom_metadata
-
-    return None, None
+    sssom_metadata = _read_metadata_from_table(metadata_stream)
+    return df, sssom_metadata
 
 
-def _get_seperator_symbol_from_file_path(file):
-    r"""
-    Take as an input a filepath and return the seperate symbol used, for example, by pandas.
+def _infer_separator(file: PathOrIO) -> str | None:
+    r"""Infer the CSV separator from a file path or IO object.
 
     :param file: the file path
-    :return: the seperator symbols as a string, e.g. '\t'
+    :return: the separator symbols as a string, e.g. '\t'
     """
-    if isinstance(file, Path) or isinstance(file, str):
-        extension = get_file_extension(file)
-        if extension == "tsv":
-            return "\t"
-        elif extension == "csv":
-            return ","
-        logging.warning(f"Could not guess file extension for {file}")
+    extension = get_file_extension(file)
+    if extension == "tsv":
+        return "\t"
+    elif extension == "csv":
+        return ","
     return None
 
 
@@ -290,9 +285,10 @@ def parse_sssom_table(
     meta: Optional[MetadataType] = None,
     *,
     strict: bool = False,
+    sep: str | None = None,
     **kwargs: Any,
 ) -> MappingSetDataFrame:
-    """Parse a SSSOM TSV.
+    """Parse a SSSOM CSV or TSV file.
 
     :param file_path:
         A file path, URL, or I/O object that contains SSSOM encoded in TSV
@@ -305,6 +301,8 @@ def parse_sssom_table(
         companion SSSOM YAML file.
     :param strict:
         If true, will fail parsing for undefined prefixes, CURIEs, or IRIs
+    :param sep:
+        The seperator. If not given, inferred from file name
     :param kwargs:
         Additional keyword arguments (unhandled)
     :returns:
@@ -315,8 +313,9 @@ def parse_sssom_table(
     if isinstance(file_path, Path) or isinstance(file_path, str):
         raise_for_bad_path(file_path)
     stream: io.StringIO = _open_input(file_path)
-    sep_new = _get_seperator_symbol_from_file_path(file_path)
-    df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
+    if sep is None:
+        sep = _infer_separator(file_path)
+    df, sssom_metadata = _read_pandas_and_metadata(stream, sep)
     if meta is None:
         meta = {}
 
@@ -356,7 +355,16 @@ def parse_sssom_table(
     return msdf
 
 
-parse_tsv = parse_sssom_table
+def parse_csv(*args, **kwargs) -> MappingSetDataFrame:
+    """Parse a SSSOM CSV file, forwarding arguments to :func:`parse_sssom_table`."""
+    kwargs["sep"] = ","
+    return parse_sssom_table(*args, **kwargs)
+
+
+def parse_tsv(*args, **kwargs) -> MappingSetDataFrame:
+    """Parse a SSSOM TSV file, forwarding arguments to :func:`parse_sssom_table`."""
+    kwargs["sep"] = "\t"
+    return parse_sssom_table(*args, **kwargs)
 
 
 def parse_sssom_rdf(
@@ -828,6 +836,7 @@ def _make_mdict(
 
 
 PARSING_FUNCTIONS: typing.Mapping[str, Callable] = {
+    "csv": parse_sssom_table,
     "tsv": parse_sssom_table,
     "obographs-json": parse_obographs_json,
     "alignment-api-xml": parse_alignment_xml,
@@ -841,14 +850,14 @@ def get_parsing_function(input_format: Optional[str], filename: str) -> Callable
 
     :param input_format: File format
     :param filename: Filename
-    :raises Exception: Unknown file format
+    :raises ValueError: Unknown file format
     :return: Appropriate 'read' function
     """
     if input_format is None:
-        input_format = get_file_extension(filename)
+        input_format = get_file_extension(filename) or "tsv"
     func = PARSING_FUNCTIONS.get(input_format)
     if func is None:
-        raise Exception(f"Unknown input format: {input_format}")
+        raise ValueError(f"Unknown input format: {input_format}")
     return func
 
 

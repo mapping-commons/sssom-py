@@ -58,6 +58,7 @@ from .constants import (
     SUBJECT_SOURCE,
     UNKNOWN_IRI,
     MetadataType,
+    PathOrIO,
     _get_sssom_schema_object,
     get_default_metadata,
 )
@@ -993,29 +994,25 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: Union[str, Path, TextIO]) -> str:
+def get_file_extension(file: PathOrIO) -> str | None:
     """Get file extension.
 
     :param file: File path
     :return: format of the file passed, default tsv
     """
-    if isinstance(file, Path):
-        if file.suffix:
-            return file.suffix.strip(punctuation)
-        else:
-            logging.warning(
-                f"Cannot guess format from {file}, despite appearing to be a Path-like object."
-            )
-    elif isinstance(file, str):
-        filename = file
-        parts = filename.split(".")
-        if len(parts) > 0:
-            f_format = parts[-1]
-            return f_format.strip(punctuation)
-        else:
-            logging.warning(f"Cannot guess format from {filename}")
-    logging.info("Cannot guess format extension for this file, assuming TSV.")
-    return "tsv"
+    if isinstance(file, str):
+        file = Path(file)
+    elif isinstance(file, TextIO):
+        file = Path(file.name)
+
+    filename = file.name.removesuffix(".gz")
+    if filename.endswith(".tsv"):
+        return "tsv"
+    elif filename.endswith(".csv"):
+        return "csv"
+    else:
+        logging.debug("cannot guess format for %s", filename)
+        return None
 
 
 def _extract_global_metadata(msdoc: MappingSetDocument) -> MetadataType:

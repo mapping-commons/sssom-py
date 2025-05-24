@@ -572,7 +572,7 @@ def get_writer_function(
     :return: Type of writer function
     """
     if output_format is None:
-        output_format = get_file_extension(output)
+        output_format = get_file_extension(output) or "tsv"
     if output_format not in WRITER_FUNCTIONS:
         raise ValueError(f"Unknown output format: {output_format}")
     func, tag = WRITER_FUNCTIONS[output_format]

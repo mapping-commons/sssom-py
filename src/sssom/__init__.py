@@ -23,5 +23,5 @@ from sssom.util import (  # noqa:401
 )
 
 from .constants import generate_mapping_set_id, get_default_metadata  # noqa:401
-from .parsers import parse_tsv  # noqa:401
+from .parsers import parse_csv, parse_sssom_table, parse_tsv  # noqa:401
 from .writers import write_json, write_owl, write_rdf, write_tsv  # noqa:401
