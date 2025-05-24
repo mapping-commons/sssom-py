@@ -9,7 +9,6 @@ from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
-from string import punctuation
 from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, TextIO, Tuple, Union
 
 import curies
