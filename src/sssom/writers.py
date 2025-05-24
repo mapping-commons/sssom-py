@@ -2,8 +2,9 @@
 
 import json
 import logging as _logging
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
@@ -18,7 +19,7 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX
+from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
@@ -47,12 +48,21 @@ SSSOM_NS = SSSOM_URI_PREFIX
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
 
 
+@contextmanager
+def _open_text_writer(xx: PathOrIO) -> Generator[TextIO, None, None]:
+    if isinstance(xx, (str, Path)):
+        with open(xx, "w") as file:
+            yield file
+    else:
+        yield xx
+
+
 def write_table(
     msdf: MappingSetDataFrame,
-    file: TextIO,
+    file: PathOrIO,
     embedded_mode: bool = True,
-    serialisation="tsv",
-    sort=False,
+    serialisation: str = "tsv",
+    sort: bool = False,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     sep = _get_separator(serialisation)
@@ -68,20 +78,31 @@ def write_table(
         lines = [f"# {line}" for line in lines if line != ""]
         s = msdf.df.to_csv(sep=sep, index=False).rstrip("\n")
         lines = lines + [s]
-        for line in lines:
-            print(line, file=file)
+        with _open_text_writer(file) as fh:
+            for line in lines:
+                print(line, file=fh)
     else:
+        if isinstance(file, (str, Path)):
+            yml_filepath = Path(file).with_suffix(".yaml")
+        else:
+            yml_filepath = Path(file.name.replace("tsv", "yaml"))
+
         # Export MSDF as tsv
         msdf.df.to_csv(file, sep=sep, index=False)
-        # Export Metadata as yaml
-        yml_filepath = file.name.replace("tsv", "yaml")
         with open(yml_filepath, "w") as y:
             yaml.safe_dump(meta, y)
 
 
+def write_tsv(
+    msdf: MappingSetDataFrame, path: PathOrIO, embedded_mode: bool = True, sort: bool = False
+) -> None:
+    """Write a mapping set to a TSV file."""
+    write_table(msdf, path, serialisation="tsv", embedded_mode=embedded_mode, sort=sort)
+
+
 def write_rdf(
     msdf: MappingSetDataFrame,
-    file: TextIO,
+    file: PathOrIO,
     serialisation: Optional[str] = None,
 ) -> None:
     """Write a mapping set dataframe to the file as RDF."""
@@ -97,17 +118,21 @@ def write_rdf(
     check_all_prefixes_in_curie_map(msdf)
     graph = to_rdf_graph(msdf=msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode(), file=file)
+    with _open_text_writer(file) as fh:
+        print(t.decode(), file=fh)
 
 
-def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") -> None:
+def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="json") -> None:
     """Write a mapping set dataframe to the file as JSON.
 
+    :param msdf: A mapping set dataframe
+    :param output: A path or write-supported file object to write JSON to
     :param serialisation: The JSON format to use. Supported formats are:
-     - fhir_json: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
+
+     - ``fhir_json``: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
        https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
-     - json: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
-     - ontoportal_json: Outputs JSON in Ontoportal format (https://ontoportal.org/)
+     - ``json``: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
+     - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
        https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
     """
     func_map: Dict[str, Callable] = {
@@ -121,11 +146,12 @@ def write_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="json") 
         )
     func: Callable = func_map[serialisation]
     data = func(msdf)
-    json.dump(data, output, indent=2)
+    with _open_text_writer(output) as fh:
+        json.dump(data, fh, indent=2)
 
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
-def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fhir_json") -> None:
+def write_fhir_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="fhir_json") -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     if serialisation != "fhir_json":
         raise ValueError(
@@ -136,7 +162,7 @@ def write_fhir_json(msdf: MappingSetDataFrame, output: TextIO, serialisation="fh
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
 def write_ontoportal_json(
-    msdf: MappingSetDataFrame, output: TextIO, serialisation: str = "ontoportal_json"
+    msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "ontoportal_json"
 ) -> None:
     """Write a mapping set dataframe to the file as the ontoportal mapping JSON model."""
     if serialisation != "ontoportal_json":
@@ -148,7 +174,7 @@ def write_ontoportal_json(
 
 def write_owl(
     msdf: MappingSetDataFrame,
-    file: TextIO,
+    file: PathOrIO,
     serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
@@ -161,7 +187,8 @@ def write_owl(
 
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
-    print(t.decode(), file=file)
+    with _open_text_writer(file) as fh:
+        print(t.decode(), file=fh)
 
 
 # Converters
@@ -545,7 +572,7 @@ def get_writer_function(
     :return: Type of writer function
     """
     if output_format is None:
-        output_format = get_file_extension(output)
+        output_format = get_file_extension(output) or "tsv"
     if output_format not in WRITER_FUNCTIONS:
         raise ValueError(f"Unknown output format: {output_format}")
     func, tag = WRITER_FUNCTIONS[output_format]

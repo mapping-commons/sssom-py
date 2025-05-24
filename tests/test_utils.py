@@ -1,6 +1,8 @@
 """Test for merging MappingSetDataFrames."""
 
+import tempfile
 import unittest
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -26,12 +28,15 @@ from sssom.util import (
     filter_out_prefixes,
     filter_prefixes,
     get_dict_from_mapping,
+    get_file_extension,
     get_prefixes_used_in_table,
     inject_metadata_into_df,
     invert_mappings,
     is_multivalued_slot,
 )
 from tests.constants import data_dir
+
+HERE = Path(__file__).parent.resolve()
 
 
 class TestIO(unittest.TestCase):
@@ -498,3 +503,22 @@ class TestUtils(unittest.TestCase):
             )
 
         # self.assertIn("SCTID", converter.prefix_map)
+
+    def test_get_file_extension(self) -> None:
+        """Test getting a file extension."""
+        for value, part in [
+            ("tsv", "test.tsv"),
+            ("tsv", "test.tsv.gz"),
+            ("csv", "test.csv"),
+            ("csv", "test.csv.gz"),
+            # Don't infer an extension for something else
+            (None, "test.xxx"),
+        ]:
+            path = HERE.joinpath(part)
+            with self.subTest(path=path, mode="path"):
+                self.assertEqual(value, get_file_extension(path))
+            with self.subTest(path=path, mode="str"):
+                self.assertEqual(value, get_file_extension(path.as_posix()))
+            with self.subTest(path=path, mode="file"), tempfile.TemporaryDirectory() as d:
+                with Path(d).joinpath(part).open("w") as file:
+                    self.assertEqual(value, get_file_extension(file))
