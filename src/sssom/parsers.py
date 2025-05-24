@@ -177,7 +177,7 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str | None = None):
 EXTENSION_TO_SEP: dict[ExtensionLiteral, str] = {"tsv": "\t", "csv": ","}
 
 
-def _infer_separator(file: PathOrIO) -> str | None:
+def _infer_separator(file: PathOrIO) -> Optional[str]:
     r"""Infer the CSV separator from a file path or IO object.
 
     :param file: the file path
