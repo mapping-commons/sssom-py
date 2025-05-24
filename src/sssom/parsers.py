@@ -110,51 +110,38 @@ def _open_input(input: Union[str, Path, TextIO]) -> io.StringIO:
     raise IOError(f"Could not determine the type of input {input}")
 
 
-def _separate_metadata_and_table_from_stream(s: io.StringIO):
-    s.seek(0)
-
-    # Create a new StringIO object for filtered data
-    table_component = io.StringIO()
-    metadata_component = io.StringIO()
-
-    header_section = True
-
-    # Filter out lines starting with '#'
-    for line in s:
-        if not line.startswith("#"):
-            table_component.write(line)
-            if header_section:
-                header_section = False
-        elif header_section:
-            # We strip any trailing tabs. Such tabs may have been left
-            # by a spreadsheet editor who treated the header lines as
-            # if they were normal data lines; they would prevent the
-            # YAML parser from correctly parsing the metadata block.
-            metadata_component.write(line.rstrip("\t\n") + "\n")
-        else:
-            logging.info(
-                f"Line {line} is starting with hash symbol, but header section is already passed. "
-                f"This line is skipped"
-            )
-
-    # Reset the cursor to the start of the new StringIO object
-    table_component.seek(0)
-    metadata_component.seek(0)
-    return table_component, metadata_component
-
-
-def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
+def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional[str] = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param input: The file to read. If no separator is given, this file should be named.
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
-    table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
+    if sep is None:
+        sep = _get_seperator_symbol_from_file_path(file_path) or "\t"
+
+    if isinstance(file_path, (str, Path)):
+        raise_for_bad_path(file_path)
+
+    stream = _open_input(file_path)
+
+    # consume from the top of the stream until there's no more preceding #
+    header_yaml = ""
+    while (line := stream.readline()).startswith("#"):
+        line = line.lstrip("#").rstrip("\n").rstrip("\t")
+        if not line:
+            continue
+        header_yaml += line + "\n"
+
+    sssom_metadata = yaml.safe_load(header_yaml)
+
+    # The first line that doesn't start with a # is assumed
+    # to be the header, so we split it with the inferred separator
+    names = line.split(sep)
 
     try:
-        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
-        df.fillna("", inplace=True)
+        # pandas can keep going and read from the same stream that we already have
+        df = pd.read_csv(stream, sep=sep, dtype=str, engine="python", header=None, names=names)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -166,12 +153,10 @@ def _read_pandas_and_metadata(input: io.StringIO, sep: str = None):
                 MAPPING_JUSTIFICATION,
             ]
         )
+    else:
+        df.fillna("", inplace=True)
 
-    if isinstance(df, pd.DataFrame):
-        sssom_metadata = _read_metadata_from_table(metadata_stream)
-        return df, sssom_metadata
-
-    return None, None
+    return df, sssom_metadata
 
 
 def _get_seperator_symbol_from_file_path(file):
@@ -292,9 +277,7 @@ def parse_sssom_table(
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
     if isinstance(file_path, Path) or isinstance(file_path, str):
         raise_for_bad_path(file_path)
-    stream: io.StringIO = _open_input(file_path)
-    sep_new = _get_seperator_symbol_from_file_path(file_path)
-    df, sssom_metadata = _read_pandas_and_metadata(stream, sep_new)
+    df, sssom_metadata = _read_pandas_and_metadata(file_path)
     if meta is None:
         meta = {}
 
@@ -846,20 +829,6 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
         setattr(mapping, "object_" + var, subject_val)
     return mapping
 
-
-def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
-    yamlstr = ""
-    for line in stream:
-        if line.startswith("#"):
-            yamlstr += re.sub("^#", "", line)
-        else:
-            break
-
-    if yamlstr:
-        meta = yaml.safe_load(yamlstr)
-        logging.info(f"Meta={meta}")
-        return meta
-    return {}
 
 
 def _set_metadata_in_mapping_set(
