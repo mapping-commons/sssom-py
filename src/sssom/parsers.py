@@ -94,6 +94,7 @@ def _open_input(p: PathOrIO) -> TextIO:
     if isinstance(p, str) and (p.startswith("http://") or p.startswith("https://")):
         # It's a URL
         data = requests.get(p, timeout=30).content
+        # TODO handle gzipped remote content
         return io.StringIO(data.decode("utf-8"))
 
     # squash a path to a string so we don't have to duplicate logic below
@@ -151,13 +152,20 @@ def _separate_metadata_and_table_from_stream(stream: TextIO):
     return table_component, metadata_component
 
 
-def _read_pandas_and_metadata(stream: TextIO, sep: Optional[str] = None):
+def _read_pandas_and_metadata(file_path: PathOrIO, sep: Optional[str] = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
-    :param stream: The file to read. If no separator is given, this file should be named.
+    :param file_path: The file path or stream to read
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
+    if sep is None:
+        sep = _infer_separator(file_path)
+
+    if isinstance(file_path, (str, Path)):
+        raise_for_bad_path(file_path)
+
+    stream = _open_input(file_path)
     table_stream, metadata_stream = _separate_metadata_and_table_from_stream(stream)
 
     try:
@@ -317,12 +325,8 @@ def parse_sssom_table(
     """
     if kwargs:
         logging.warning("unhandled keyword arguments passed: %s", kwargs)
-    if isinstance(file_path, Path) or isinstance(file_path, str):
-        raise_for_bad_path(file_path)
-    stream = _open_input(file_path)
-    if sep is None:
-        sep = _infer_separator(file_path)
-    df, sssom_metadata = _read_pandas_and_metadata(stream, sep)
+
+    df, sssom_metadata = _read_pandas_and_metadata(file_path, sep)
     if meta is None:
         meta = {}
 
