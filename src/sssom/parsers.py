@@ -145,7 +145,7 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
     return table_component, metadata_component
 
 
-def _read_pandas_and_metadata(input: io.StringIO, sep: str | None = None):
+def _read_pandas_and_metadata(input: io.StringIO, sep: Optional[str] = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param input: The file to read. If no separator is given, this file should be named.
@@ -287,7 +287,7 @@ def parse_sssom_table(
     meta: Optional[MetadataType] = None,
     *,
     strict: bool = False,
-    sep: str | None = None,
+    sep: Optional[str] = None,
     **kwargs: Any,
 ) -> MappingSetDataFrame:
     """Parse a SSSOM CSV or TSV file.
