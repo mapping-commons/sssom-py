@@ -997,7 +997,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 ExtensionLiteral = Literal["tsv", "csv"]
 
 
-def get_file_extension(file: PathOrIO) -> ExtensionLiteral | None:
+def get_file_extension(file: PathOrIO) -> Optional[ExtensionLiteral]:
     """Get file extension.
 
     :param file: File path
