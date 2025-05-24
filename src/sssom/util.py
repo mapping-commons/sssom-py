@@ -9,7 +9,7 @@ from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, TextIO, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, Tuple, Union
 
 import curies
 import numpy as np
@@ -1002,10 +1002,13 @@ def get_file_extension(file: PathOrIO) -> Optional[ExtensionLiteral]:
     :param file: File path
     :return: format of the file passed, default tsv
     """
-    if isinstance(file, str):
-        file = Path(file)
-    elif isinstance(file, TextIO):
+    if not isinstance(file, (str, Path)):
+        if not hasattr(file, "name"):
+            logging.debug("cannot guess format for object without name: %s", file)
+            return None
         file = Path(file.name)
+    elif isinstance(file, str):
+        file = Path(file)
 
     filename = file.name.removesuffix(".gz")
     if filename.endswith(".tsv"):

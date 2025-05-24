@@ -5,6 +5,7 @@ import io
 import itertools as itt
 import json
 import logging as _logging
+import os.path
 import re
 import typing
 from collections import ChainMap, Counter
@@ -74,46 +75,51 @@ from .util import (
 
 logging = _logging.getLogger(__name__)
 
+
 # * *******************************************************
 # Parsers (from file)
 
 
-def _open_input(input: PathOrIO) -> io.StringIO:
+def _open_input(p: PathOrIO) -> TextIO:
     """Transform a URL, a filepath (from pathlib), or a string (with file contents) to a StringIO object.
 
-    :param input: A string representing a URL, a filepath, or file contents,
-                              or a Path object representing a filepath.
+    :param p:
+        A string representing a URL, a filepath, or file contents, or a Path object representing a filepath.
     :return: A StringIO object containing the input data.
     """
-    # If the import already is a StrinIO, return it
-    if isinstance(input, io.StringIO):
-        return input
-    elif isinstance(input, Path):
-        input = str(input)
+    # if we passed an IO object, return it back directly
+    if not isinstance(p, (str, Path)):
+        return p
 
-    if isinstance(input, str):
-        if input.startswith("http://") or input.startswith("https://"):
-            # It's a URL
-            data = requests.get(input, timeout=30).content
-            return io.StringIO(data.decode("utf-8"))
-        elif "\n" in input or "\r" in input:
-            # It's string data
-            return io.StringIO(input)
-        elif input.endswith(".gz"):
-            with gzip.open(input, "rt") as file:
-                file_content = file.read()
-            return io.StringIO(file_content)
-        else:
-            # It's a local file path
-            with open(input, "r") as file:
-                file_content = file.read()
-            return io.StringIO(file_content)
+    if isinstance(p, str) and (p.startswith("http://") or p.startswith("https://")):
+        # It's a URL
+        data = requests.get(p, timeout=30).content
+        return io.StringIO(data.decode("utf-8"))
 
-    raise IOError(f"Could not determine the type of input {input}")
+    # squash a path to a string so we don't have to duplicate logic below
+    if isinstance(p, Path):
+        p = p.as_posix()
+
+    if "\n" in p or "\r" in p:
+        # It's string data
+        return io.StringIO(p)
+
+    if not os.path.exists(p):
+        raise FileNotFoundError(f"file does not exist: {p}")
+
+    if p.endswith(".gz"):
+        with gzip.open(p, "rt") as file:
+            file_content = file.read()
+        return io.StringIO(file_content)
+    else:
+        # It's a local file path
+        with open(p, "r") as file:
+            file_content = file.read()
+        return io.StringIO(file_content)
 
 
-def _separate_metadata_and_table_from_stream(s: io.StringIO):
-    s.seek(0)
+def _separate_metadata_and_table_from_stream(stream: TextIO):
+    stream.seek(0)
 
     # Create a new StringIO object for filtered data
     table_component = io.StringIO()
@@ -122,7 +128,7 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
     header_section = True
 
     # Filter out lines starting with '#'
-    for line in s:
+    for line in stream:
         if not line.startswith("#"):
             table_component.write(line)
             if header_section:
@@ -145,14 +151,14 @@ def _separate_metadata_and_table_from_stream(s: io.StringIO):
     return table_component, metadata_component
 
 
-def _read_pandas_and_metadata(input: io.StringIO, sep: Optional[str] = None):
+def _read_pandas_and_metadata(stream: TextIO, sep: Optional[str] = None):
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
-    :param input: The file to read. If no separator is given, this file should be named.
+    :param stream: The file to read. If no separator is given, this file should be named.
     :param sep: File separator for pandas
     :return: A pandas dataframe
     """
-    table_stream, metadata_stream = _separate_metadata_and_table_from_stream(input)
+    table_stream, metadata_stream = _separate_metadata_and_table_from_stream(stream)
 
     try:
         df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
@@ -213,7 +219,6 @@ def _is_irregular_metadata(metadata_list: List[Dict]):
 
 
 def _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map):
-
     # There are three ways in which prefixes can be communicated, so we will check all of them
     # This is a bit overly draconian, as in the end, only the highest priority one gets picked
     # But since this only constitues a (logging) warning, I think its worth reporting
@@ -314,7 +319,7 @@ def parse_sssom_table(
         logging.warning("unhandled keyword arguments passed: %s", kwargs)
     if isinstance(file_path, Path) or isinstance(file_path, str):
         raise_for_bad_path(file_path)
-    stream: io.StringIO = _open_input(file_path)
+    stream = _open_input(file_path)
     if sep is None:
         sep = _infer_separator(file_path)
     df, sssom_metadata = _read_pandas_and_metadata(stream, sep)
