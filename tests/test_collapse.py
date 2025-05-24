@@ -1,8 +1,6 @@
 """Test various grouping functionalities."""
 
 import unittest
-from pathlib import Path
-from typing import Union
 
 import pandas as pd
 
@@ -18,17 +16,12 @@ from sssom.util import (
 from tests.constants import data_dir
 
 
-def parse(filename: Union[str, Path]) -> pd.DataFrame:
-    """Parse a TSV to a pandas frame."""
-    return pd.read_csv(filename, sep="\t", comment="#")
-
-
 class TestCollapse(unittest.TestCase):
     """Test various grouping functionalities."""
 
     def setUp(self) -> None:
         """Set up the test case."""
-        self.df = parse(data_dir / "basic.tsv")
+        self.df = pd.read_csv(data_dir / "basic.tsv", sep="\t", comment="#")
 
     def test_row_count(self):
         """Test the dataframe has the correct number of rows."""
@@ -71,7 +64,7 @@ class TestCollapse(unittest.TestCase):
             self.assertTrue(c.startswith("COMMON_TO_BOTH"))
         # output = sqldf("select * from diff_df where comment != ''")
 
-        df2 = parse(data_dir / "basic2.tsv")
+        df2 = pd.read_csv(data_dir / "basic2.tsv", sep="\t", comment="#")
         diff = compare_dataframes(self.df, df2)
         self.assertEqual(15, len(diff.unique_tuples1))
         self.assertEqual(3, len(diff.unique_tuples2))
