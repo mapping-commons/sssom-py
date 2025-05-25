@@ -36,6 +36,58 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 90)
 
+    def test_uberon_to_rdf(self) -> None:
+        """Test to ensure that a mixed case prefix is not upper cased by LinkMLs rdflib_dumper."""
+        from linkml_runtime.dumpers import rdflib_dumper
+        from linkml_runtime.utils.schemaview import SchemaView
+
+        from sssom.constants import SCHEMA_YAML
+        from sssom.parsers import to_mapping_set_document
+
+        # Load the SSSOM table and then ensure that the associated prefixmap has the correct mixed case prefix (it does)
+        uberon = parse_sssom_table(data_dir / "uberon.sssom.tsv")
+        self.assertNotIn(
+            "HSAPDV", uberon.converter.bimap, msg="Namespace 'HSAPDV' should NOT exist in the MSDF"
+        )
+        self.assertIn(
+            "HsapDv",
+            uberon.converter.bimap,
+            msg="Namespace 'HsapDv' should exist in the MSDF",
+        )
+
+        # Convert TSV file to YAML and ensure prefix is still there
+        doc = to_mapping_set_document(uberon)
+        self.assertIn(
+            "HsapDv",
+            doc.mapping_set.mappings[0].object_id,
+            msg="Namespace 'HsapDv' should exist in the MSDF",
+        )
+
+        # Run LinkML conversion
+        g = rdflib_dumper.as_rdf_graph(
+            element=doc.mapping_set,
+            schemaview=SchemaView(SCHEMA_YAML),
+            prefix_map=uberon.converter.bimap,
+        )
+
+        namespaces = list(g.namespace_manager.namespaces())
+        self.assertTrue(
+            any(prefix == "HsapDv" for prefix, _ in namespaces),
+            msg="Namespace 'HsapDv' should exist in the graph (and it does)",
+        )
+
+        # To show that the assert works, I am checking a random prefix to ensure it does not exist
+        self.assertFalse(
+            any(prefix == "RANDOMRR" for prefix, _ in namespaces),
+            msg="Namespace 'RANDOM' should exist in the graph, and indeed, it does not",
+        )
+
+        # Here is where the problem happens:
+        self.assertFalse(
+            any(prefix == "HSAPDV" for prefix, _ in namespaces),
+            msg="Namespace 'HSAPDV' should NOT exist in the graph, but I show it here to proof my point",
+        )
+
     def test_cob_to_owl(self):
         """Test converting the COB example to an OWL RDF graph."""
         g = to_owl_graph(self.cob)
@@ -67,7 +119,7 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 0)
 
-    def test_to_rdf(self):
+    def test_to_rdf(self) -> None:
         """Test converting the basic example to a basic RDF graph."""
         g = to_rdf_graph(self.msdf)
         results = g.query(
