@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 import validators
 import yaml
-from curies import Converter
+from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
@@ -158,14 +158,9 @@ class MappingSetDataFrame:
         df = pd.DataFrame(get_dict_from_mapping(mapping) for mapping in doc.mapping_set.mappings)
         meta = _extract_global_metadata(doc)
 
-        if pandas_version >= (2, 0, 0):
-            # For pandas >= 2.0.0, use the 'copy' parameter
-            df = df.infer_objects(copy=False)
-        else:
-            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
-            df = df.infer_objects()
         # remove columns where all values are blank.
         df.replace("", np.nan, inplace=True)
+        df = df.infer_objects()
         df.dropna(axis=1, how="all", inplace=True)  # remove columns with all row = 'None'-s.
 
         slots = _get_sssom_schema_object().dict["slots"]
@@ -262,7 +257,7 @@ class MappingSetDataFrame:
                        listed in the 'curie_map'.
         :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
         """
-        prefixes_in_table = get_prefixes_used_in_table(self.df, converter=self.converter)
+        prefixes_in_table = get_prefixes_used_in_table(self.df)
         if self.metadata:
             prefixes_in_table.update(get_prefixes_used_in_metadata(self.metadata))
 
@@ -1123,12 +1118,12 @@ def _is_iri(string: str) -> bool:
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
     if _is_curie(curie):
-        return curie.split(":")[0]
+        return ReferenceTuple.from_curie(curie).prefix
     else:
         return ""
 
 
-def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[str]:
+def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if df.empty:
@@ -1136,7 +1131,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame, converter: Converter) -> Set[st
     sssom_schema_object = _get_sssom_schema_object()
     entity_reference_slots = sssom_schema_object.entity_reference_slots & set(df.columns)
     new_prefixes = {
-        converter.parse_curie(row).prefix
+        ReferenceTuple.from_curie(row).prefix
         for col in entity_reference_slots
         for row in df[col]
         if not _is_iri(row) and _is_curie(row)
@@ -1493,3 +1488,12 @@ def safe_compress(uri: str, converter: Converter) -> str:
     :return: A CURIE
     """
     return converter.compress_or_standardize(uri, strict=True)
+
+
+def pandas_set_no_silent_downcasting(no_silent_downcasting=True):
+    """Set pandas future.no_silent_downcasting option. Context https://github.com/pandas-dev/pandas/issues/57734."""
+    try:
+        pd.set_option("future.no_silent_downcasting", no_silent_downcasting)
+    except KeyError:
+        # Option does not exist in this version of pandas
+        pass

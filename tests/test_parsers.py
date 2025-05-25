@@ -127,7 +127,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             # this number went up from 8099 when the curies.Converter was introduced
             # since it was able to handle CURIE prefix and URI prefix synonyms
-            8489,
+            8966,
             len(msdf.df),
             f"{self.obographs_file} has the wrong number of mappings.",
         )
@@ -339,6 +339,17 @@ class TestParse(unittest.TestCase):
         msdf = parse_sssom_table(outfile)
         self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
 
+    def test_parse_trailing_tabs_in_metadata_header(self):
+        """Test parsing a file containing trailing tabs in header."""
+        input_path = f"{test_data_dir}/trailing-tabs.sssom.tsv"
+        msdf = parse_sssom_table(input_path)
+        self.assertEqual(msdf.metadata["mapping_set_id"], "https://example.org/sets/exo2c")
+        self.assertEqual(
+            len(msdf.df),
+            8,
+            f"{input_path} has the wrong number of mappings.",
+        )
+
 
 class TestParseExplicit(unittest.TestCase):
     """This test case contains explicit tests for parsing."""
@@ -447,3 +458,55 @@ class TestParseExplicit(unittest.TestCase):
     def test_round_trip_tsv(self):
         """Test writing then reading TSV."""
         self._basic_round_trip("tsv")
+
+    def test_strict_parsing(self):
+        """Test Strict parsing mode."""
+        input_path = f"{test_data_dir}/basic_strict_fail.tsv"
+        with open(input_path, "r") as file:
+            input_string = file.read()
+        stream = io.StringIO(input_string)
+
+        with self.assertRaises(ValueError):
+            parse_sssom_table(stream, strict=True)
+
+        # Make sure it parses in non-strict mode
+        msdf = parse_sssom_table(stream)
+        self.assertEqual(len(msdf.df), 2)
+
+    def test_check_irregular_metadata(self):
+        """Test if irregular metadata check works according to https://w3id.org/sssom/spec."""
+        meta_fail_because_undeclared_extension = {
+            "licenses": "http://licen.se",
+            "mapping_set_id": "http://mapping.set/id1",
+            "ext_test": "value",
+        }
+        meta_fail_because_extension_without_property = {
+            "license": "http://licen.se",
+            "mapping_set_id": "http://mapping.set/id1",
+            "ext_test": "value",
+            "extension_definitions": [{"slot_name": "ext_test"}],
+        }
+
+        meta_ok = {
+            "license": "http://licen.se",
+            "mapping_set_id": "http://mapping.set/id1",
+            "ext_test": "value",
+            "extension_definitions": [
+                {"slot_name": "ext_test", "property": "skos:fantasyRelation"}
+            ],
+        }
+
+        from sssom.parsers import _is_check_valid_extension_slot, _is_irregular_metadata
+
+        is_irregular_metadata_fail_undeclared_case = _is_irregular_metadata(
+            [meta_fail_because_undeclared_extension]
+        )
+        is_valid_extension = _is_check_valid_extension_slot("ext_test", meta_ok)
+        is_irregular_metadata_ok_case = _is_irregular_metadata([meta_ok])
+        is_irregular_metadata_fail_missing_property_case = _is_irregular_metadata(
+            [meta_fail_because_extension_without_property]
+        )
+        self.assertTrue(is_irregular_metadata_fail_undeclared_case)
+        self.assertTrue(is_irregular_metadata_fail_missing_property_case)
+        self.assertTrue(is_valid_extension)
+        self.assertFalse(is_irregular_metadata_ok_case)

@@ -16,6 +16,7 @@
     <a href="https://github.com/psf/black">
         <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
     </a>
+    <a href="https://doi.org/10.5281/zenodo.14296666"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.14296666.svg" alt="DOI"></a>
 </p>
 
 <img src="https://github.com/tis-lab/closed-illustrations/raw/master/logos/sssom-logos/sssom_logo_black_banner.png" />
@@ -37,9 +38,10 @@ This is a python library and command line toolkit for working with SSSOM. It als
 See [documentation](https://mapping-commons.github.io/sssom-py/index.html#)
 
 ### Deploy documentation
-```shell
-make sphinx
-make deploy-docs
+
+```console
+$ make sphinx
+$ make deploy-docs
 ```
 
 ## Schema
@@ -53,7 +55,7 @@ derivations to JSON-Schema, ShEx, etc.
 configuration is stored in [`tox.ini`](tox.ini) in different "environments"
 whose headers look like `[testenv:...]`. All tests can be run with:
 
-```shell
+```console
 $ pip install tox
 $ tox
 ```
@@ -78,4 +80,49 @@ natural language processing and large-scale knowledge assembly. Their work on SS
 DARPA Young Faculty Award W911NF2010255 (PI: Benjamin M. Gyori).
 
 https://indralab.github.io
+
+## Citation
+
+SSSOM itself can be cited with:
+
+```bibtex
+@article{10.1093/database/baac035,
+    author = {Matentzoglu, Nicolas and Balhoff, James P and Bello, Susan M and Bizon, Chris and Brush, Matthew and Callahan, Tiffany J and Chute, Christopher G and Duncan, William D and Evelo, Chris T and Gabriel, Davera and Graybeal, John and Gray, Alasdair and Gyori, Benjamin M and Haendel, Melissa and Harmse, Henriette and Harris, Nomi L and Harrow, Ian and Hegde, Harshad B and Hoyt, Amelia L and Hoyt, Charles T and Jiao, Dazhi and Jiménez-Ruiz, Ernesto and Jupp, Simon and Kim, Hyeongsik and Koehler, Sebastian and Liener, Thomas and Long, Qinqin and Malone, James and McLaughlin, James A and McMurry, Julie A and Moxon, Sierra and Munoz-Torres, Monica C and Osumi-Sutherland, David and Overton, James A and Peters, Bjoern and Putman, Tim and Queralt-Rosinach, Núria and Shefchek, Kent and Solbrig, Harold and Thessen, Anne and Tudorache, Tania and Vasilevsky, Nicole and Wagner, Alex H and Mungall, Christopher J},
+    title = {A Simple Standard for Sharing Ontological Mappings (SSSOM)},
+    journal = {Database},
+    volume = {2022},
+    pages = {baac035},
+    year = {2022},
+    month = {05},
+    issn = {1758-0463},
+    doi = {10.1093/database/baac035},
+    url = {https://doi.org/10.1093/database/baac035},
+    eprint = {https://academic.oup.com/database/article-pdf/doi/10.1093/database/baac035/43832024/baac035.pdf},
+}
+```
+
+To cite the SSSOM-py software package specifically, use:
+
+```bibtex
+@software{sssom-py,
+  author       = {Harshad Hegde and
+                  Nico Matentzoglu and
+                  Charles Tapley Hoyt and
+                  Chris Mungall and
+                  Joe Flack and
+                  Benjamin M. Gyori and
+                  Damien Goutte-Gattat and
+                  Glass and
+                  Syphax Bouazzouni},
+  title        = {mapping-commons/sssom-py: v0.4.15 release (minor
+                   fixes)
+                  },
+  month        = dec,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {v0.4.15},
+  doi          = {10.5281/zenodo.14296666},
+  url          = {https://doi.org/10.5281/zenodo.14296666},
+}
+```
  
