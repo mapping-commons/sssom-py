@@ -4,7 +4,7 @@ import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Set
+from typing import Any, Dict, List, Literal, Set, TextIO, Union
 
 import importlib_resources
 import yaml
@@ -316,3 +316,7 @@ def get_default_metadata() -> MetadataType:
         "mapping_set_id": generate_mapping_set_id(),
         "license": DEFAULT_LICENSE,
     }
+
+
+#: A hint for functions that can take a path or an IO
+PathOrIO = Union[str, pathlib.Path, TextIO]
