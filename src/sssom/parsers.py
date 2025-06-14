@@ -700,18 +700,18 @@ def from_alignment_minidom(
                         _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
                 elif node_name == "xml":
-                    if e.firstChild.nodeValue != "yes":
+                    if e.firstChild.nodeValue != "yes":  # type:ignore[union-attr]
                         raise ValueError(
                             "Alignment format: xml element said, but not set to yes. Only XML is supported!"
                         )
                 elif node_name == "onto1":
-                    ms[SUBJECT_SOURCE_ID] = e.firstChild.nodeValue
+                    ms[SUBJECT_SOURCE_ID] = e.firstChild.nodeValue  # type:ignore[union-attr]
                 elif node_name == "onto2":
-                    ms[OBJECT_SOURCE_ID] = e.firstChild.nodeValue
+                    ms[OBJECT_SOURCE_ID] = e.firstChild.nodeValue  # type:ignore[union-attr]
                 elif node_name == "uri1":
-                    ms[SUBJECT_SOURCE] = e.firstChild.nodeValue
+                    ms[SUBJECT_SOURCE] = e.firstChild.nodeValue  # type:ignore[union-attr]
                 elif node_name == "uri2":
-                    ms[OBJECT_SOURCE] = e.firstChild.nodeValue
+                    ms[OBJECT_SOURCE] = e.firstChild.nodeValue  # type:ignore[union-attr]
 
     ms.mappings = mlist  # type: ignore
     mapping_set_document = MappingSetDocument(mapping_set=ms, converter=converter)
