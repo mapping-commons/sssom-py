@@ -90,7 +90,9 @@ class TestParse(unittest.TestCase):
         """Test parsing a TSV."""
         input_path = test_data_dir.joinpath("basic.tsv")
         with input_path.open() as file:
-            msdf = parse_sssom_table(file)
+            input_string = file.read()
+        stream = io.StringIO(input_string)
+        msdf = parse_sssom_table(stream)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_stream.tsv")
         with open(output_path, "w") as file:
             write_table(msdf, file)
