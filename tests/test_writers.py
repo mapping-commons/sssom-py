@@ -43,20 +43,18 @@ class TestWrite(unittest.TestCase):
     def test_write_sssom_dataframe(self):
         """Test writing as a dataframe."""
         tmp_path = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
-        with open(tmp_path, "w") as tmp_file:
-            write_table(self.msdf, tmp_file)
+        write_table(self.msdf, tmp_path)
         msdf = parse_sssom_table(tmp_path)
         self.assertEqual(
             len(msdf.df),
             self.mapping_count,
-            f"{tmp_file} has the wrong number of mappings.",
+            f"{tmp_path} has the wrong number of mappings.",
         )
 
     def test_write_sssom_rdf(self):
         """Test writing as RDF."""
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
-        with open(path_1, "w") as file:
-            write_rdf(self.msdf, file)
+        write_rdf(self.msdf, path_1)
         msdf = parse_sssom_rdf(path_1, self.msdf.prefix_map)
         self.assertEqual(
             len(msdf.df),
@@ -66,14 +64,12 @@ class TestWrite(unittest.TestCase):
 
         # TODO this test doesn't make sense
         path_2 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf.tsv")
-        with open(path_2, "w") as file:
-            write_table(self.msdf, file)
+        write_table(self.msdf, path_2)
 
     def test_write_sssom_json(self):
         """Test writing as JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_json.json")
-        with open(path, "w") as file:
-            write_json(self.msdf, file)
+        write_json(self.msdf, path)
         msdf = parse_sssom_json(path)
         self.assertEqual(
             len(msdf.df),
@@ -127,7 +123,7 @@ class TestWrite(unittest.TestCase):
         self.assertNotIn("snomed", context["@context"])
         self.assertIn("mapping_set_id", context["@context"])
 
-    def test_write_sssom_fhir(self):
+    def test_write_sssom_fhir(self) -> None:
         """Test writing as FHIR ConceptMap JSON."""
         # Vars
         path = os.path.join(test_out_dir, "test_write_sssom_fhir.json")
@@ -136,8 +132,7 @@ class TestWrite(unittest.TestCase):
         mapping_set_id: str = metadata["mapping_set_id"]
 
         # Write
-        with open(path, "w") as file:
-            write_json(self.msdf, file, "fhir_json")
+        write_json(self.msdf, path, "fhir_json")
         # Read
         # todo: after implementing reader/importer, change this to `msdf = parse_sssom_fhir_json()`
         with open(path, "r") as file:
@@ -174,14 +169,12 @@ class TestWrite(unittest.TestCase):
     def test_write_sssom_owl(self):
         """Test writing as OWL."""
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_owl.owl")
-        with open(tmp_file, "w") as file:
-            write_owl(self.msdf, file)
+        write_owl(self.msdf, tmp_file)
 
     def test_write_sssom_ontoportal_json(self):
         """Test writing as ontoportal JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_ontoportal_json.json")
-        with open(path, "w") as file:
-            write_json(self.msdf, file, "ontoportal_json")
+        write_json(self.msdf, path, "ontoportal_json")
 
         with open(path, "r") as file:
             d = json.load(file)

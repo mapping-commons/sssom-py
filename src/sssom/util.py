@@ -9,8 +9,7 @@ from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
-from string import punctuation
-from typing import Any, DefaultDict, Dict, List, Optional, Set, TextIO, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, Tuple, Union
 
 import curies
 import numpy as np
@@ -58,6 +57,7 @@ from .constants import (
     SUBJECT_SOURCE,
     UNKNOWN_IRI,
     MetadataType,
+    PathOrIO,
     _get_sssom_schema_object,
     get_default_metadata,
 )
@@ -397,12 +397,6 @@ class MappingSetDiff:
     Dataframe that combines with left and right dataframes with information injected into
     the comment column
     """
-
-
-def parse(filename: Union[str, Path]) -> pd.DataFrame:
-    """Parse a TSV to a pandas frame."""
-    logging.info(f"Parsing {filename}")
-    return pd.read_csv(filename, sep="\t", comment="#")
 
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
@@ -999,29 +993,31 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     return msdf
 
 
-def get_file_extension(file: Union[str, Path, TextIO]) -> str:
+ExtensionLiteral = Literal["tsv", "csv"]
+
+
+def get_file_extension(file: PathOrIO) -> Optional[ExtensionLiteral]:
     """Get file extension.
 
     :param file: File path
     :return: format of the file passed, default tsv
     """
-    if isinstance(file, Path):
-        if file.suffix:
-            return file.suffix.strip(punctuation)
-        else:
-            logging.warning(
-                f"Cannot guess format from {file}, despite appearing to be a Path-like object."
-            )
+    if not isinstance(file, (str, Path)):
+        if not hasattr(file, "name"):
+            logging.debug("cannot guess format for object without name: %s", file)
+            return None
+        file = Path(file.name)
     elif isinstance(file, str):
-        filename = file
-        parts = filename.split(".")
-        if len(parts) > 0:
-            f_format = parts[-1]
-            return f_format.strip(punctuation)
-        else:
-            logging.warning(f"Cannot guess format from {filename}")
-    logging.info("Cannot guess format extension for this file, assuming TSV.")
-    return "tsv"
+        file = Path(file)
+
+    filename = file.name.removesuffix(".gz")
+    if filename.endswith(".tsv"):
+        return "tsv"
+    elif filename.endswith(".csv"):
+        return "csv"
+    else:
+        logging.debug("cannot guess format for %s", filename)
+        return None
 
 
 def _extract_global_metadata(msdoc: MappingSetDocument) -> MetadataType:
