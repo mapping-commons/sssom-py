@@ -94,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="sssom.html#sssom-cliquesummary-module">sssom.cliquesummary module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sssom.html#module-sssom.constants">sssom.constants module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.constants.MetadataType"><code class="docutils literal notranslate"><span class="pre">MetadataType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.constants.PathOrIO"><code class="docutils literal notranslate"><span class="pre">PathOrIO</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.constants.SEMAPV"><code class="docutils literal notranslate"><span class="pre">SEMAPV</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="sssom.html#sssom.constants.SEMAPV.CompositeMatching"><code class="docutils literal notranslate"><span class="pre">SEMAPV.CompositeMatching</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="sssom.html#sssom.constants.SEMAPV.CrossSpeciesBroadMatch"><code class="docutils literal notranslate"><span class="pre">SEMAPV.CrossSpeciesBroadMatch</span></code></a></li>
@@ -163,10 +164,12 @@
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.from_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">from_sssom_rdf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.get_parsing_function"><code class="docutils literal notranslate"><span class="pre">get_parsing_function()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_alignment_xml"><code class="docutils literal notranslate"><span class="pre">parse_alignment_xml()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_csv"><code class="docutils literal notranslate"><span class="pre">parse_csv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_obographs_json"><code class="docutils literal notranslate"><span class="pre">parse_obographs_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_sssom_json"><code class="docutils literal notranslate"><span class="pre">parse_sssom_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_sssom_rdf"><code class="docutils literal notranslate"><span class="pre">parse_sssom_rdf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_sssom_table"><code class="docutils literal notranslate"><span class="pre">parse_sssom_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.parse_tsv"><code class="docutils literal notranslate"><span class="pre">parse_tsv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.split_dataframe"><code class="docutils literal notranslate"><span class="pre">split_dataframe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.split_dataframe_by_prefix"><code class="docutils literal notranslate"><span class="pre">split_dataframe_by_prefix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.parsers.to_mapping_set_document"><code class="docutils literal notranslate"><span class="pre">to_mapping_set_document()</span></code></a></li>
@@ -257,7 +260,6 @@
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.is_multivalued_slot"><code class="docutils literal notranslate"><span class="pre">is_multivalued_slot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.merge_msdf"><code class="docutils literal notranslate"><span class="pre">merge_msdf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.pandas_set_no_silent_downcasting"><code class="docutils literal notranslate"><span class="pre">pandas_set_no_silent_downcasting()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.raise_for_bad_path"><code class="docutils literal notranslate"><span class="pre">raise_for_bad_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.reconcile_prefix_and_data"><code class="docutils literal notranslate"><span class="pre">reconcile_prefix_and_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.util.remove_unmatched"><code class="docutils literal notranslate"><span class="pre">remove_unmatched()</span></code></a></li>
@@ -291,6 +293,7 @@
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.writers.write_rdf"><code class="docutils literal notranslate"><span class="pre">write_rdf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.writers.write_table"><code class="docutils literal notranslate"><span class="pre">write_table()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.writers.write_tables"><code class="docutils literal notranslate"><span class="pre">write_tables()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sssom.html#sssom.writers.write_tsv"><code class="docutils literal notranslate"><span class="pre">write_tsv()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="sssom.html#module-sssom">Module contents</a></li>

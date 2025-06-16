@@ -80,6 +80,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">itt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">Counter</span>
@@ -129,6 +130,7 @@
     <span class="n">SUBJECT_SOURCE</span><span class="p">,</span>
     <span class="n">SUBJECT_SOURCE_ID</span><span class="p">,</span>
     <span class="n">MetadataType</span><span class="p">,</span>
+    <span class="n">PathOrIO</span><span class="p">,</span>
     <span class="n">_get_sssom_schema_object</span><span class="p">,</span>
     <span class="n">get_default_metadata</span><span class="p">,</span>
 <span class="p">)</span>
@@ -137,6 +139,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.sssom_document</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingSetDocument</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
+    <span class="n">ExtensionLiteral</span><span class="p">,</span>
     <span class="n">MappingSetDataFrame</span><span class="p">,</span>
     <span class="n">get_file_extension</span><span class="p">,</span>
     <span class="n">is_multivalued_slot</span><span class="p">,</span>
@@ -147,46 +150,52 @@
 
 <span class="n">logging</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+
 <span class="c1"># * *******************************************************</span>
 <span class="c1"># Parsers (from file)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_open_input</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_open_input</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">PathOrIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TextIO</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a URL, a filepath (from pathlib), or a string (with file contents) to a StringIO object.</span>
 
-<span class="sd">    :param input: A string representing a URL, a filepath, or file contents,</span>
-<span class="sd">                              or a Path object representing a filepath.</span>
+<span class="sd">    :param p:</span>
+<span class="sd">        A string representing a URL, a filepath, or file contents, or a Path object representing a filepath.</span>
 <span class="sd">    :return: A StringIO object containing the input data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># If the import already is a StrinIO, return it</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">input</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
-        <span class="nb">input</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="c1"># if we passed an IO object, return it back directly</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">p</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">input</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://&quot;</span><span class="p">):</span>
-            <span class="c1"># It&#39;s a URL</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
-            <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="nb">input</span> <span class="ow">or</span> <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
-            <span class="c1"># It&#39;s string data</span>
-            <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">input</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">):</span>
-            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">file_content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># It&#39;s a local file path</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">file_content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://&quot;</span><span class="p">)):</span>
+        <span class="c1"># It&#39;s a URL</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+        <span class="c1"># TODO handle gzipped remote content</span>
+        <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
 
-    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not determine the type of input </span><span class="si">{</span><span class="nb">input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># squash a path to a string so we don&#39;t have to duplicate logic below</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">p</span> <span class="ow">or</span> <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+        <span class="c1"># It&#39;s string data</span>
+        <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file does not exist: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file_content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># It&#39;s a local file path</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file_content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_separate_metadata_and_table_from_stream</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">):</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_separate_metadata_and_table_from_stream</span><span class="p">(</span><span class="n">stream</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Create a new StringIO object for filtered data</span>
     <span class="n">table_component</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
@@ -195,7 +204,7 @@
     <span class="n">header_section</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># Filter out lines starting with &#39;#&#39;</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
             <span class="n">table_component</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">header_section</span><span class="p">:</span>
@@ -218,18 +227,24 @@
     <span class="k">return</span> <span class="n">table_component</span><span class="p">,</span> <span class="n">metadata_component</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_read_pandas_and_metadata</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_pandas_and_metadata</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">PathOrIO</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.</span>
 
-<span class="sd">    :param input: The file to read. If no separator is given, this file should be named.</span>
+<span class="sd">    :param file_path: The file path or stream to read</span>
 <span class="sd">    :param sep: File separator for pandas</span>
 <span class="sd">    :return: A pandas dataframe</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">table_stream</span><span class="p">,</span> <span class="n">metadata_stream</span> <span class="o">=</span> <span class="n">_separate_metadata_and_table_from_stream</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="n">_infer_separator</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+        <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">_open_input</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">table_stream</span><span class="p">,</span> <span class="n">metadata_stream</span> <span class="o">=</span> <span class="n">_separate_metadata_and_table_from_stream</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">table_stream</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">EmptyDataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seems like the dataframe is empty: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -241,29 +256,26 @@
                 <span class="n">MAPPING_JUSTIFICATION</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-        <span class="n">sssom_metadata</span> <span class="o">=</span> <span class="n">_read_metadata_from_table</span><span class="p">(</span><span class="n">metadata_stream</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">sssom_metadata</span>
-
-    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">sssom_metadata</span> <span class="o">=</span> <span class="n">_read_metadata_from_table</span><span class="p">(</span><span class="n">metadata_stream</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">sssom_metadata</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_seperator_symbol_from_file_path</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Take as an input a filepath and return the seperate symbol used, for example, by pandas.</span>
+<span class="n">EXTENSION_TO_SEP</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">ExtensionLiteral</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tsv&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_infer_separator</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">PathOrIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Infer the CSV separator from a file path or IO object.</span>
 
 <span class="sd">    :param file: the file path</span>
-<span class="sd">    :return: the seperator symbols as a string, e.g. &#39;\t&#39;</span>
+<span class="sd">    :return: the separator symbols as a string, e.g. &#39;\t&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">extension</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;tsv&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
-        <span class="k">elif</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;,&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not guess file extension for </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">extension</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">extension</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">EXTENSION_TO_SEP</span><span class="p">[</span><span class="n">extension</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_check_valid_extension_slot</span><span class="p">(</span><span class="n">slot_name</span><span class="p">,</span> <span class="n">meta</span><span class="p">):</span>
@@ -290,7 +302,6 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_redefined_builtin_prefixes</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">):</span>
-
     <span class="c1"># There are three ways in which prefixes can be communicated, so we will check all of them</span>
     <span class="c1"># This is a bit overly draconian, as in the end, only the highest priority one gets picked</span>
     <span class="c1"># But since this only constitues a (logging) warning, I think its worth reporting</span>
@@ -361,24 +372,45 @@
 <div class="viewcode-block" id="parse_sssom_table">
 <a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_table">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_sssom_table</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="n">PathOrIO</span><span class="p">,</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">sep</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">stream</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span> <span class="o">=</span> <span class="n">_open_input</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">sep_new</span> <span class="o">=</span> <span class="n">_get_seperator_symbol_from_file_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">sssom_metadata</span> <span class="o">=</span> <span class="n">_read_pandas_and_metadata</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">sep_new</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a SSSOM CSV or TSV file.</span>
+
+<span class="sd">    :param file_path:</span>
+<span class="sd">        A file path, URL, or I/O object that contains SSSOM encoded in TSV</span>
+<span class="sd">    :param prefix_map:</span>
+<span class="sd">        A prefix map or :class:`curies.Converter` used to validate prefixes,</span>
+<span class="sd">        CURIEs, and IRIs appearing in the SSSOM TSV</span>
+<span class="sd">    :param meta:</span>
+<span class="sd">        Additional document-level metadata for the SSSOM TSV document that is not</span>
+<span class="sd">        contained within the document itself. For example, this may come from a</span>
+<span class="sd">        companion SSSOM YAML file.</span>
+<span class="sd">    :param strict:</span>
+<span class="sd">        If true, will fail parsing for undefined prefixes, CURIEs, or IRIs</span>
+<span class="sd">    :param sep:</span>
+<span class="sd">        The seperator. If not given, inferred from file name</span>
+<span class="sd">    :param kwargs:</span>
+<span class="sd">        Additional keyword arguments (unhandled)</span>
+<span class="sd">    :returns:</span>
+<span class="sd">        A parsed dataframe wrapper object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;unhandled keyword arguments passed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">df</span><span class="p">,</span> <span class="n">sssom_metadata</span> <span class="o">=</span> <span class="n">_read_pandas_and_metadata</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">is_valid_built_in_prefixes</span> <span class="o">=</span> <span class="n">_check_redefined_builtin_prefixes</span><span class="p">(</span><span class="n">sssom_metadata</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">)</span>
     <span class="n">is_valid_metadata</span> <span class="o">=</span> <span class="n">_is_irregular_metadata</span><span class="p">([</span><span class="n">sssom_metadata</span><span class="p">,</span> <span class="n">meta</span><span class="p">])</span>
 
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;strict&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
         <span class="n">_fail_in_strict_parsing_mode</span><span class="p">(</span><span class="n">is_valid_built_in_prefixes</span><span class="p">,</span> <span class="n">is_valid_metadata</span><span class="p">)</span>
 
     <span class="c1"># The priority order for combining prefix maps are:</span>
@@ -412,10 +444,28 @@
 
 
 
+<div class="viewcode-block" id="parse_csv">
+<a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_csv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_csv</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a SSSOM CSV file, forwarding arguments to :func:`parse_sssom_table`.&quot;&quot;&quot;</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;sep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
+    <span class="k">return</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_tsv">
+<a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_tsv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_tsv</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a SSSOM TSV file, forwarding arguments to :func:`parse_sssom_table`.&quot;&quot;&quot;</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;sep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">parse_sssom_table</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="parse_sssom_rdf">
 <a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_rdf">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_sssom_rdf</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">serialisation</span><span class="o">=</span><span class="n">SSSOM_DEFAULT_RDF_SERIALISATION</span><span class="p">,</span>
@@ -456,7 +506,10 @@
 <div class="viewcode-block" id="parse_sssom_json">
 <a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_sssom_json">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_sssom_json</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+    <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MappingSetDataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.&quot;&quot;&quot;</span>
     <span class="n">raise_for_bad_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
@@ -493,7 +546,7 @@
 <div class="viewcode-block" id="parse_obographs_json">
 <a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_obographs_json">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_obographs_json</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">mapping_predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -580,7 +633,7 @@
 <div class="viewcode-block" id="parse_alignment_xml">
 <a class="viewcode-back" href="../../sssom.html#sssom.parsers.parse_alignment_xml">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_alignment_xml</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
     <span class="n">prefix_map</span><span class="p">:</span> <span class="n">ConverterHint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MetadataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">mapping_predicates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -590,7 +643,7 @@
 
     <span class="n">converter</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">_get_prefix_map_and_metadata</span><span class="p">(</span><span class="n">prefix_map</span><span class="o">=</span><span class="n">prefix_map</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading from alignment API&quot;</span><span class="p">)</span>
-    <span class="n">xmldoc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">xmldoc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span>
     <span class="n">msdf</span> <span class="o">=</span> <span class="n">from_alignment_minidom</span><span class="p">(</span>
         <span class="n">xmldoc</span><span class="p">,</span>
         <span class="n">prefix_map</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span>
@@ -754,18 +807,18 @@
                         <span class="n">_add_valid_mapping_to_list</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">mlist</span><span class="p">,</span> <span class="n">flip_superclass_assertions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;xml&quot;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span> <span class="o">!=</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span> <span class="o">!=</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>  <span class="c1"># type:ignore[union-attr]</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="s2">&quot;Alignment format: xml element said, but not set to yes. Only XML is supported!&quot;</span>
                         <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;onto1&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="n">SUBJECT_SOURCE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">SUBJECT_SOURCE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>  <span class="c1"># type:ignore[union-attr]</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;onto2&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="n">OBJECT_SOURCE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">OBJECT_SOURCE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>  <span class="c1"># type:ignore[union-attr]</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;uri1&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="n">SUBJECT_SOURCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">SUBJECT_SOURCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>  <span class="c1"># type:ignore[union-attr]</span>
                 <span class="k">elif</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s2">&quot;uri2&quot;</span><span class="p">:</span>
-                    <span class="n">ms</span><span class="p">[</span><span class="n">OBJECT_SOURCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>
+                    <span class="n">ms</span><span class="p">[</span><span class="n">OBJECT_SOURCE</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">nodeValue</span>  <span class="c1"># type:ignore[union-attr]</span>
 
     <span class="n">ms</span><span class="o">.</span><span class="n">mappings</span> <span class="o">=</span> <span class="n">mlist</span>  <span class="c1"># type: ignore</span>
     <span class="n">mapping_set_document</span> <span class="o">=</span> <span class="n">MappingSetDocument</span><span class="p">(</span><span class="n">mapping_set</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">)</span>
@@ -905,6 +958,7 @@
 
 
 <span class="n">PARSING_FUNCTIONS</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;csv&quot;</span><span class="p">:</span> <span class="n">parse_sssom_table</span><span class="p">,</span>
     <span class="s2">&quot;tsv&quot;</span><span class="p">:</span> <span class="n">parse_sssom_table</span><span class="p">,</span>
     <span class="s2">&quot;obographs-json&quot;</span><span class="p">:</span> <span class="n">parse_obographs_json</span><span class="p">,</span>
     <span class="s2">&quot;alignment-api-xml&quot;</span><span class="p">:</span> <span class="n">parse_alignment_xml</span><span class="p">,</span>
@@ -920,14 +974,14 @@
 
 <span class="sd">    :param input_format: File format</span>
 <span class="sd">    :param filename: Filename</span>
-<span class="sd">    :raises Exception: Unknown file format</span>
+<span class="sd">    :raises ValueError: Unknown file format</span>
 <span class="sd">    :return: Appropriate &#39;read&#39; function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">input_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">input_format</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">input_format</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;tsv&quot;</span>
     <span class="n">func</span> <span class="o">=</span> <span class="n">PARSING_FUNCTIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">input_format</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown input format: </span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown input format: </span><span class="si">{</span><span class="n">input_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">func</span></div>
 
 

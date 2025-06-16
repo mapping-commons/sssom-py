@@ -96,7 +96,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.is_multivalued_slot"><code class="docutils literal notranslate"><span class="pre">is_multivalued_slot()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.merge_msdf"><code class="docutils literal notranslate"><span class="pre">merge_msdf()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.pandas_set_no_silent_downcasting"><code class="docutils literal notranslate"><span class="pre">pandas_set_no_silent_downcasting()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sssom.util.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.raise_for_bad_path"><code class="docutils literal notranslate"><span class="pre">raise_for_bad_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.reconcile_prefix_and_data"><code class="docutils literal notranslate"><span class="pre">reconcile_prefix_and_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sssom.util.remove_unmatched"><code class="docutils literal notranslate"><span class="pre">remove_unmatched()</span></code></a></li>
@@ -877,7 +876,7 @@ replaced or not, defaults to False.</p></li>
 <dd class="field-odd"><p><strong>file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]</span>) – File path</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'tsv'</span></code>, <code class="docutils literal notranslate"><span class="pre">'csv'</span></code>]]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>format of the file passed, default tsv</p>
@@ -1049,17 +1048,6 @@ Defaults to True.</p></li>
 <dt class="sig sig-object py" id="sssom.util.pandas_set_no_silent_downcasting">
 <span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">pandas_set_no_silent_downcasting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">no_silent_downcasting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#pandas_set_no_silent_downcasting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.pandas_set_no_silent_downcasting" title="Link to this definition"></a></dt>
 <dd><p>Set pandas future.no_silent_downcasting option. Context <a class="reference external" href="https://github.com/pandas-dev/pandas/issues/57734">https://github.com/pandas-dev/pandas/issues/57734</a>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sssom.util.parse">
-<span class="sig-prename descclassname"><span class="pre">sssom.util.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sssom/util.html#parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sssom.util.parse" title="Link to this definition"></a></dt>
-<dd><p>Parse a TSV to a pandas frame.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
