@@ -132,11 +132,11 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
     if isinstance(file_path, (str, Path)):
         raise_for_bad_path(file_path)
 
-    stream = _open_input(file_path)
+    table_stream = _open_input(file_path)
 
     # consume from the top of the stream until there's no more preceding #
     header_yaml = ""
-    while (line := stream.readline()).startswith("#"):
+    while (line := table_stream.readline()).startswith("#"):
         line = line.lstrip("#").rstrip()
         if not line:
             continue
@@ -150,7 +150,7 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
 
     try:
         # pandas can keep going and read from the same stream that we already have
-        df = pd.read_csv(stream, sep=sep, dtype=str, engine="python", header=None, names=names)
+        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python", header=None, names=names)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
