@@ -470,8 +470,11 @@ class TestParseExplicit(unittest.TestCase):
             parse_sssom_table(stream, strict=True)
 
         # Make sure it parses in non-strict mode
-        msdf = parse_sssom_table(stream)
-        self.assertEqual(len(msdf.df), 2)
+        with open(input_path, "r") as file:
+            input_string = file.read()
+        stream2 = io.StringIO(input_string)
+        msdf = parse_sssom_table(stream2, strict=False)
+        self.assertEqual(2, len(msdf.df))
 
     def test_check_irregular_metadata(self):
         """Test if irregular metadata check works according to https://w3id.org/sssom/spec."""
