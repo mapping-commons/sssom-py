@@ -118,7 +118,9 @@ def _open_input(p: PathOrIO) -> TextIO:
         return io.StringIO(file_content)
 
 
-def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional[str] = None):
+def _read_pandas_and_metadata(
+    file_path: Union[str, Path, TextIO], sep: Optional[str] = None
+) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file_path: The file path or stream to read
@@ -141,7 +143,7 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
             continue
         header_yaml += line + "\n"
 
-    sssom_metadata = yaml.safe_load(header_yaml)
+    sssom_metadata = yaml.safe_load(header_yaml) if header_yaml else {}
 
     # The first line that doesn't start with a # is assumed
     # to be the header, so we split it with the inferred separator
@@ -149,9 +151,7 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
 
     try:
         # pandas can keep going and read from the same stream that we already have
-        df = pd.read_csv(
-            stream, sep=sep, dtype=str, engine="python", header=None, names=names
-        )
+        df = pd.read_csv(stream, sep=sep, dtype=str, engine="python", header=None, names=names)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
