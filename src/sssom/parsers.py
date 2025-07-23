@@ -128,7 +128,7 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
     # consume from the top of the stream until there's no more preceding #
     header_yaml = ""
     while (line := stream.readline()).startswith("#"):
-        line = line.lstrip("#").rstrip("\n").rstrip("\t")
+        line = line.lstrip("#").rstrip()
         if not line:
             continue
         header_yaml += line + "\n"
