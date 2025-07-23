@@ -4,7 +4,7 @@ import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Set
+from typing import Any, Dict, List, Literal, Set, TextIO, Union
 
 import importlib_resources
 import yaml
@@ -158,6 +158,7 @@ COLUMN_INVERT_DICTIONARY = {
     SUBJECT_SOURCE: OBJECT_SOURCE,
     SUBJECT_PREPROCESSING: OBJECT_PREPROCESSING,
     SUBJECT_SOURCE_VERSION: OBJECT_SOURCE_VERSION,
+    SUBJECT_TYPE: OBJECT_TYPE,
     OBJECT_ID: SUBJECT_ID,
     OBJECT_LABEL: SUBJECT_LABEL,
     OBJECT_CATEGORY: SUBJECT_CATEGORY,
@@ -165,6 +166,7 @@ COLUMN_INVERT_DICTIONARY = {
     OBJECT_SOURCE: SUBJECT_SOURCE,
     OBJECT_PREPROCESSING: SUBJECT_PREPROCESSING,
     OBJECT_SOURCE_VERSION: SUBJECT_SOURCE_VERSION,
+    OBJECT_TYPE: SUBJECT_TYPE,
 }
 
 
@@ -316,3 +318,7 @@ def get_default_metadata() -> MetadataType:
         "mapping_set_id": generate_mapping_set_id(),
         "license": DEFAULT_LICENSE,
     }
+
+
+#: A hint for functions that can take a path or an IO
+PathOrIO = Union[str, pathlib.Path, TextIO]

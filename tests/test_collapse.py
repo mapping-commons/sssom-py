@@ -2,6 +2,8 @@
 
 import unittest
 
+import pandas as pd
+
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
     collapse,
@@ -9,7 +11,6 @@ from sssom.util import (
     dataframe_to_ptable,
     filter_redundant_rows,
     group_mappings,
-    parse,
     reconcile_prefix_and_data,
 )
 from tests.constants import data_dir
@@ -20,7 +21,7 @@ class TestCollapse(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up the test case."""
-        self.df = parse(data_dir / "basic.tsv")
+        self.df = pd.read_csv(data_dir / "basic.tsv", sep="\t", comment="#")
 
     def test_row_count(self):
         """Test the dataframe has the correct number of rows."""
@@ -63,7 +64,7 @@ class TestCollapse(unittest.TestCase):
             self.assertTrue(c.startswith("COMMON_TO_BOTH"))
         # output = sqldf("select * from diff_df where comment != ''")
 
-        df2 = parse(data_dir / "basic2.tsv")
+        df2 = pd.read_csv(data_dir / "basic2.tsv", sep="\t", comment="#")
         diff = compare_dataframes(self.df, df2)
         self.assertEqual(15, len(diff.unique_tuples1))
         self.assertEqual(3, len(diff.unique_tuples2))
