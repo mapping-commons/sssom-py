@@ -120,12 +120,12 @@ def _open_input(p: PathOrIO) -> TextIO:
 
 def _read_pandas_and_metadata(
     file_path: Union[str, Path, TextIO], sep: Optional[str] = None
-) -> tuple[pd.DataFrame, dict[str, Any]]:
+) -> tuple[pd.DataFrame, MetadataType]:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file_path: The file path or stream to read
     :param sep: File separator for pandas
-    :return: A pandas dataframe
+    :return: A pair of a dataframe and metadata dictionary
     """
     if sep is None:
         sep = _infer_separator(file_path) or "\t"
