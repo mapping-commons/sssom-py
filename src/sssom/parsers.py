@@ -283,7 +283,7 @@ def parse_sssom_table(
     sep: Optional[str] = None,
     **kwargs: Any,
 ) -> MappingSetDataFrame:
-    """Parse a SSSOM CSV or TSV file to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`.
+    """Parse a SSSOM CSV or TSV file.
 
     :param file_path:
         A file path, URL, or I/O object that contains SSSOM encoded in TSV
@@ -305,9 +305,8 @@ def parse_sssom_table(
     """
     if kwargs:
         logging.warning("unhandled keyword arguments passed: %s", kwargs)
-    if isinstance(file_path, Path) or isinstance(file_path, str):
-        raise_for_bad_path(file_path)
-    df, sssom_metadata = _read_pandas_and_metadata(file_path, sep=sep)
+
+    df, sssom_metadata = _read_pandas_and_metadata(file_path, sep)
     if meta is None:
         meta = {}
 
