@@ -6,7 +6,6 @@ import itertools as itt
 import json
 import logging as _logging
 import os.path
-import re
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
@@ -150,7 +149,9 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
 
     try:
         # pandas can keep going and read from the same stream that we already have
-        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python", header=None, names=names)
+        df = pd.read_csv(
+            table_stream, sep=sep, dtype=str, engine="python", header=None, names=names
+        )
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -873,7 +874,6 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
         setattr(mapping, "subject_" + var, object_val)
         setattr(mapping, "object_" + var, subject_val)
     return mapping
-
 
 
 def _set_metadata_in_mapping_set(
