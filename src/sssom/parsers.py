@@ -127,7 +127,7 @@ def _read_pandas_and_metadata(file_path: Union[str, Path, TextIO], sep: Optional
     :return: A pandas dataframe
     """
     if sep is None:
-        sep = _get_seperator_symbol_from_file_path(file_path) or "\t"
+        sep = _infer_separator(file_path) or "\t"
 
     if isinstance(file_path, (str, Path)):
         raise_for_bad_path(file_path)
