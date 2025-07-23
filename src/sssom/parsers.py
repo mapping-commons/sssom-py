@@ -147,7 +147,7 @@ def _read_pandas_and_metadata(
 
     # The first line that doesn't start with a # is assumed
     # to be the header, so we split it with the inferred separator
-    names = line.split(sep)
+    names = line.strip().split(sep)
 
     try:
         # pandas can keep going and read from the same stream that we already have
