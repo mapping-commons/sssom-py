@@ -6,7 +6,6 @@ import itertools as itt
 import json
 import logging as _logging
 import os.path
-import re
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
@@ -119,57 +118,40 @@ def _open_input(p: PathOrIO) -> TextIO:
         return io.StringIO(file_content)
 
 
-def _separate_metadata_and_table_from_stream(stream: TextIO):
-    stream.seek(0)
-
-    # Create a new StringIO object for filtered data
-    table_component = io.StringIO()
-    metadata_component = io.StringIO()
-
-    header_section = True
-
-    # Filter out lines starting with '#'
-    for line in stream:
-        if not line.startswith("#"):
-            table_component.write(line)
-            if header_section:
-                header_section = False
-        elif header_section:
-            # We strip any trailing tabs. Such tabs may have been left
-            # by a spreadsheet editor who treated the header lines as
-            # if they were normal data lines; they would prevent the
-            # YAML parser from correctly parsing the metadata block.
-            metadata_component.write(line.rstrip("\t\n") + "\n")
-        else:
-            logging.info(
-                f"Line {line} is starting with hash symbol, but header section is already passed. "
-                f"This line is skipped"
-            )
-
-    # Reset the cursor to the start of the new StringIO object
-    table_component.seek(0)
-    metadata_component.seek(0)
-    return table_component, metadata_component
-
-
-def _read_pandas_and_metadata(file_path: PathOrIO, sep: Optional[str] = None):
+def _read_pandas_and_metadata(
+    file_path: Union[str, Path, TextIO], sep: Optional[str] = None
+) -> tuple[pd.DataFrame, MetadataType]:
     """Read a tabular data file by wrapping func:`pd.read_csv` to handles comment lines correctly.
 
     :param file_path: The file path or stream to read
     :param sep: File separator for pandas
-    :return: A pandas dataframe
+    :return: A pair of a dataframe and metadata dictionary
     """
     if sep is None:
-        sep = _infer_separator(file_path)
+        sep = _infer_separator(file_path) or "\t"
 
     if isinstance(file_path, (str, Path)):
         raise_for_bad_path(file_path)
 
     stream = _open_input(file_path)
-    table_stream, metadata_stream = _separate_metadata_and_table_from_stream(stream)
+
+    # consume from the top of the stream until there's no more preceding #
+    header_yaml = ""
+    while (line := stream.readline()).startswith("#"):
+        line = line.lstrip("#").rstrip()
+        if not line:
+            continue
+        header_yaml += line + "\n"
+
+    sssom_metadata = yaml.safe_load(header_yaml) if header_yaml else {}
+
+    # The first line that doesn't start with a # is assumed
+    # to be the header, so we split it with the inferred separator
+    names = line.strip().split(sep)
 
     try:
-        df = pd.read_csv(table_stream, sep=sep, dtype=str, engine="python")
+        # pandas can keep going and read from the same stream that we already have
+        df = pd.read_csv(stream, sep=sep, dtype=str, engine="python", header=None, names=names)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -184,7 +166,6 @@ def _read_pandas_and_metadata(file_path: PathOrIO, sep: Optional[str] = None):
     else:
         df.fillna("", inplace=True)
 
-    sssom_metadata = _read_metadata_from_table(metadata_stream)
     return df, sssom_metadata
 
 
@@ -893,21 +874,6 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
         setattr(mapping, "subject_" + var, object_val)
         setattr(mapping, "object_" + var, subject_val)
     return mapping
-
-
-def _read_metadata_from_table(stream: io.StringIO) -> Dict[str, Any]:
-    yamlstr = ""
-    for line in stream:
-        if line.startswith("#"):
-            yamlstr += re.sub("^#", "", line)
-        else:
-            break
-
-    if yamlstr:
-        meta = yaml.safe_load(yamlstr)
-        logging.info(f"Meta={meta}")
-        return meta
-    return {}
 
 
 def _set_metadata_in_mapping_set(
