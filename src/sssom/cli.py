@@ -423,7 +423,9 @@ def partition(inputs: List[str], output_directory: str):
         cliquedocs = split_into_cliques(doc)
     except ModuleNotFoundError as e:
         if e.name == "networkx":
-            raise click.ClickException("The partition command requires the optional networkx module.")
+            raise click.ClickException(
+                "The partition command requires the optional networkx module."
+            )
         raise
     for n, cdoc in enumerate(cliquedocs, start=1):
         ofn = f"{output_directory}/clique_{n}.sssom.tsv"
@@ -452,7 +454,9 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
         df = summarize_cliques(doc)
     except ModuleNotFoundError as e:
         if e.name == "networkx":
-            raise click.ClickException("The cliquesummary command requires the optional networkx module.")
+            raise click.ClickException(
+                "The cliquesummary command requires the optional networkx module."
+            )
         raise
     df.to_csv(output, sep="\t")
     if statsfile is None:
@@ -484,7 +488,6 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str
 @input_argument
 def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Calculate correlations."""
-
     try:
         from scipy.stats import chi2_contingency
     except ModuleNotFoundError:
