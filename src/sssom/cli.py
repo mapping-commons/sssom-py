@@ -24,7 +24,6 @@ import pandas as pd
 import yaml
 from curies import Converter
 from rdflib import Graph
-from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -469,6 +468,12 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str
 @input_argument
 def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Calculate correlations."""
+
+    try:
+        from scipy.stats import chi2_contingency
+    except ModuleNotFoundError:
+        raise click.ClickException("The correlations command requires the scipy module.")
+
     msdf = parse_sssom_table(input)
     df = remove_unmatched(msdf.df)
     if len(df) == 0:
