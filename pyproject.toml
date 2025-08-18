@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 # see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies
-[project.optional-dependencies]
+[tool.poetry.extras]
 networkx = [
     "networkx>=3.1",
 ]
