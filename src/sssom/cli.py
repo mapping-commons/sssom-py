@@ -24,7 +24,6 @@ import pandas as pd
 import yaml
 from curies import Converter
 from rdflib import Graph
-from scipy.stats import chi2_contingency
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -308,7 +307,13 @@ def dosql(query: str, inputs: List[str], output: TextIO):
         FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
-    run_sql_query(query=query, inputs=inputs, output=output)
+    try:
+        run_sql_query(query=query, inputs=inputs, output=output)
+    except ModuleNotFoundError as e:
+        if e.name == "pansql":
+            raise click.ClickException("The dosql command requires the optional pansql module.")
+        raise
+
     # n = 1
     # new_msdf = MappingSetDataFrame()
     # while len(inputs) >= n:
@@ -414,7 +419,14 @@ def partition(inputs: List[str], output_directory: str):
     doc = docs.pop()
     """for d2 in docs:
         doc.mapping_set.mappings += d2.mapping_set.mappings"""
-    cliquedocs = split_into_cliques(doc)
+    try:
+        cliquedocs = split_into_cliques(doc)
+    except ModuleNotFoundError as e:
+        if e.name == "networkx":
+            raise click.ClickException(
+                "The partition command requires the optional networkx module."
+            )
+        raise
     for n, cdoc in enumerate(cliquedocs, start=1):
         ofn = f"{output_directory}/clique_{n}.sssom.tsv"
         # logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
@@ -438,7 +450,14 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
     else:
         meta_obj = yaml.safe_load(open(metadata))
         doc = parse_sssom_table(input, meta=meta_obj)
-    df = summarize_cliques(doc)
+    try:
+        df = summarize_cliques(doc)
+    except ModuleNotFoundError as e:
+        if e.name == "networkx":
+            raise click.ClickException(
+                "The cliquesummary command requires the optional networkx module."
+            )
+        raise
     df.to_csv(output, sep="\t")
     if statsfile is None:
         logging.info(df.describe)
@@ -469,6 +488,11 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str
 @input_argument
 def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
     """Calculate correlations."""
+    try:
+        from scipy.stats import chi2_contingency
+    except ModuleNotFoundError:
+        raise click.ClickException("The correlations command requires the optional scipy module.")
+
     msdf = parse_sssom_table(input)
     df = remove_unmatched(msdf.df)
     if len(df) == 0:
@@ -669,7 +693,12 @@ def filter(input: str, output: TextIO, **kwargs):
     :param output: Output location.
     :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     """
-    filter_file(input=input, output=output, **kwargs)
+    try:
+        filter_file(input=input, output=output, **kwargs)
+    except ModuleNotFoundError as e:
+        if e.name == "pansql":
+            raise click.ClickException("The filter command requires the pansql optional module.")
+        raise
 
 
 @main.command()
