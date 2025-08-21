@@ -5,6 +5,7 @@ import os
 import unittest
 from typing import Any, Dict
 
+import curies
 import pandas as pd
 from curies import Converter
 
@@ -184,3 +185,68 @@ class TestWrite(unittest.TestCase):
             self.mapping_count,
             f"{path} has the wrong number of mappings.",
         )
+
+    # TODO: Determine assertions that should pass
+    # TODO: Fix failing assertions that should pass
+    # TODO: before merging, remove pass/fail comments at end of assertion lines
+    def test_missing_entries(self):
+        """Test to make sure that missing entires do not appear."""
+        tmp_file = os.path.join(test_out_dir, "test_missing_entries.sssom.tsv")
+        df = pd.DataFrame(
+            [
+                {
+                    "subject_id": "Orphanet:58",
+                    "subject_label": "Alexander disease",
+                    "predicate_id": "skos:exactMatch",
+                    "object_id": "icd11.foundation:2023359698",
+                    "object_label": "Alexander disease",
+                    "mapping_justification": "semapv:UnspecifiedMatching",
+                }
+            ]
+        )
+        metadata = {
+            "creator_id": "orcid:0000-0002-2906-7319",
+            "curie_map": {
+                "MONDO": "http://purl.obolibrary.org/obo/MONDO_",
+                "Orphanet": "http://www.orpha.net/ORDO/Orphanet_",
+                "icd11.foundation": "http://id.who.int/icd/entity/",
+                "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
+                "orcid": "https://orcid.org/",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "semapv": "https://w3id.org/semapv/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sssom": "https://w3id.org/sssom/",
+            },
+            "license": "http://w3id.org/sssom/license/unspecified",
+            "mapping_provider": "https://www.orpha.net/",
+        }
+
+        # When passing Converter
+        msdf: MappingSetDataFrame = MappingSetDataFrame(
+            converter=curies.Converter.from_prefix_map(metadata["curie_map"]),
+            df=df,
+            metadata=metadata,
+        )
+        self.assertIn("curie_map", msdf.metadata)  # pass
+        self.assertIn("icd11.foundation", msdf.metadata["curie_map"])  # pass
+        self.assertIn("icd11.foundation", msdf.prefix_map)  # pass
+        with open(tmp_file, "w") as f:
+            write_table(msdf, f)
+        msdf2 = parse_sssom_table(tmp_file)
+        self.assertIn("curie_map", msdf2.metadata)  # fail
+        self.assertIn("icd11.foundation", msdf2.metadata["curie_map"])  # KeyError
+        self.assertIn("icd11.foundation", msdf2.prefix_map)  # pass
+
+        # When no passed Converter
+        msdf: MappingSetDataFrame = MappingSetDataFrame(df=df, metadata=metadata)
+        self.assertIn("curie_map", msdf.metadata)  # pass
+        self.assertIn("icd11.foundation", msdf.metadata["curie_map"])  # pass
+        self.assertIn("icd11.foundation", msdf.prefix_map)  # fail
+        with open(tmp_file, "w") as f:
+            write_table(msdf, f)
+        msdf2 = parse_sssom_table(tmp_file)
+        self.assertIn("curie_map", msdf2.metadata)  # fail
+        self.assertIn("icd11.foundation", msdf2.metadata["curie_map"])  # KeyError
+        self.assertIn("icd11.foundation", msdf2.prefix_map)  # fail
