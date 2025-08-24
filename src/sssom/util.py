@@ -343,6 +343,8 @@ class MappingSetDataFrame:
                 value = values[0].split("|")
             else:
                 value = values[0]
+            if slot in self.metadata and self.metadata[slot] != value:
+                continue  # Set already has a different value
 
             self.metadata[slot] = value
             condensed.append(slot)
