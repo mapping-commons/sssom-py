@@ -58,6 +58,7 @@ from .constants import (
     UNKNOWN_IRI,
     MetadataType,
     PathOrIO,
+    SSSOMSchemaView,
     _get_sssom_schema_object,
     get_default_metadata,
 )
@@ -298,6 +299,56 @@ class MappingSetDataFrame:
 
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
+
+    def propagate(self) -> List[str]:
+        """Propagate slot values from the set level down to individual records.
+
+        :return: The list of slots that were effectively propagated.
+        """
+        schema = SSSOMSchemaView()
+        propagated = []
+
+        for slot in schema.propagatable_slots:
+            if slot not in self.metadata:  # Nothing to propagate
+                continue
+            if slot in self.df.columns:  # Cannot propagate
+                continue
+
+            if schema.view.get_slot(slot).multivalued:
+                value = "|".join(self.metadata.pop(slot))
+            else:
+                value = self.metadata.pop(slot)
+
+            self.df[slot] = value
+            propagated.append(slot)
+
+        return propagated
+
+    def condense(self) -> List[str]:
+        """Condense record-level slot values to the set whenever possible.
+
+        :return: The list of slots that were effectively condensed.
+        """
+        schema = SSSOMSchemaView()
+        condensed = []
+
+        for slot in schema.propagatable_slots:
+            if slot not in self.df.columns:  # Nothing to condense
+                continue
+            values = self.df[slot].unique()
+            if len(values) > 1:  # Cannot condense
+                continue
+
+            if schema.view.get_slot(slot).multivalued:
+                value = values[0].split("|")
+            else:
+                value = values[0]
+
+            self.metadata[slot] = value
+            condensed.append(slot)
+
+        self.df.drop(columns=condensed, inplace=True)
+        return condensed
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:

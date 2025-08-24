@@ -522,3 +522,43 @@ class TestUtils(unittest.TestCase):
             with self.subTest(path=path, mode="file"), tempfile.TemporaryDirectory() as d:
                 with Path(d).joinpath(part).open("w") as file:
                     self.assertEqual(value, get_file_extension(file))
+
+    def test_propagation_and_condensation(self) -> None:
+        """Test propagating/condensing values of propagatable slots."""
+        msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv")
+
+        propagated_slots = msdf.propagate()
+        # creator_id is not a propagatable slot
+        self.assertNotIn("creator_id", propagated_slots)
+        self.assertNotIn("creator_id", msdf.df.columns)
+        # mapping_tool has values for some records and should not be propagated
+        self.assertNotIn("mapping_tool", propagated_slots)
+        # mapping_provider should be propagated
+        self.assertIn("mapping_provider", propagated_slots)
+        self.assertIn("mapping_provider", msdf.df.columns)
+        self.assertNotIn("mapping_provider", msdf.metadata)
+        # Ditto for subject_preprocessing
+        self.assertIn("subject_preprocessing", propagated_slots)
+        self.assertIn("subject_preprocessing", msdf.df.columns)
+        self.assertNotIn("subject_preprocessing", msdf.metadata)
+
+        propagated_slots = msdf.propagate()
+        # Set has been propagated already, no further propagation possible
+        self.assertEqual(0, len(propagated_slots))
+
+        condensed_slots = msdf.condense()
+        # mapping_tool has not a unique value and should not be condensed
+        self.assertNotIn("mapping_tool", condensed_slots)
+        self.assertIn("mapping_tool", msdf.df.columns)
+        # mapping_provider should be condensed back
+        self.assertIn("mapping_provider", condensed_slots)
+        self.assertNotIn("mapping_provider", msdf.df.columns)
+        self.assertIn("mapping_provider", msdf.metadata)
+        # Ditto for subject_preprocessing
+        self.assertIn("subject_preprocessing", condensed_slots)
+        self.assertNotIn("subject_preprocessing", msdf.df.columns)
+        self.assertIn("subject_preprocessing", msdf.metadata)
+
+        condensed_slots = msdf.condense()
+        # Set has been condensed already, no further condensation possible
+        self.assertEqual(0, len(condensed_slots))

@@ -268,6 +268,16 @@ class SSSOMSchemaView(object):
         """Return the slot names for SSSOMSchemaView object."""
         return {k for k, v in self.dict["slots"].items() if v["range"] == "double"}
 
+    @cached_property
+    def propagatable_slots(self) -> List[str]:
+        """Return the names of all propagatable slots."""
+        slots = []
+        for slot_name in self.mapping_set_slots:
+            annotations = self.view.annotation_dict(slot_name)
+            if annotations is not None and "propagated" in annotations:
+                slots.append(slot_name)
+        return slots
+
 
 @lru_cache(1)
 def _get_sssom_schema_object() -> SSSOMSchemaView:
