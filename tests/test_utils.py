@@ -562,3 +562,13 @@ class TestUtils(unittest.TestCase):
         condensed_slots = msdf.condense()
         # Set has been condensed already, no further condensation possible
         self.assertEqual(0, len(condensed_slots))
+
+    def test_propagation_fill_empty_mode(self) -> None:
+        """Test propagate with fill_empty=True."""
+        msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv")
+
+        propagated_slots = msdf.propagate(fill_empty=True)
+        # mapping_tool should have been propagated
+        self.assertIn("mapping_tool", propagated_slots)
+        self.assertNotIn("mapping_tool", msdf.metadata)
+        self.assertEqual(2, len(msdf.df["mapping_tool"].unique()))

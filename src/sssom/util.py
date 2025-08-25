@@ -300,7 +300,7 @@ class MappingSetDataFrame:
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
 
-    def propagate(self) -> List[str]:
+    def propagate(self, fill_empty=False) -> List[str]:
         """Propagate slot values from the set level down to individual records.
 
         Propagation, as defined by the SSSOM specification, is the process by
@@ -311,6 +311,13 @@ class MappingSetDataFrame:
         Propagation of a slot is only allowed iff no individual records
         already have a value for that slot.
 
+        :param fill_empty: If True, propagation of a slot is allowed even if
+                           some individual records already have a value for
+                           that slot. The set-level value will be propagated to
+                           all the records for which the slot is empty. Note
+                           that (1) this is not spec-compliant behaviour, and
+                           (2) this makes the operation non-reversible by a
+                           subsequent condensation.
         :return: The list of slots that were effectively propagated.
         """
         schema = SSSOMSchemaView()
@@ -319,7 +326,8 @@ class MappingSetDataFrame:
         for slot in schema.propagatable_slots:
             if slot not in self.metadata:  # Nothing to propagate
                 continue
-            if slot in self.df.columns:
+            is_present = slot in self.df.columns
+            if is_present and not fill_empty:
                 logging.warning(
                     f"Not propagating value for '{slot}' because the slot is already set on individual records."
                 )
@@ -330,7 +338,10 @@ class MappingSetDataFrame:
             else:
                 value = self.metadata.pop(slot)
 
-            self.df[slot] = value
+            if is_present:
+                self.df.loc[self.df[slot].eq("") | self.df[slot].isna(), slot] = value
+            else:
+                self.df[slot] = value
             propagated.append(slot)
 
         return propagated
