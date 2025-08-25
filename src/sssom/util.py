@@ -303,6 +303,14 @@ class MappingSetDataFrame:
     def propagate(self) -> List[str]:
         """Propagate slot values from the set level down to individual records.
 
+        Propagation, as defined by the SSSOM specification, is the process by
+        which the values of so-called "propagatable slots" in the set metadata
+        are moved to the corresponding slots in each individual mapping
+        records.
+
+        Propagation of a slot is only allowed iff no individual records
+        already have a value for that slot.
+
         :return: The list of slots that were effectively propagated.
         """
         schema = SSSOMSchemaView()
@@ -311,7 +319,10 @@ class MappingSetDataFrame:
         for slot in schema.propagatable_slots:
             if slot not in self.metadata:  # Nothing to propagate
                 continue
-            if slot in self.df.columns:  # Cannot propagate
+            if slot in self.df.columns:
+                logging.warning(
+                    f"Not propagating value for '{slot}' because the slot is already set on individual records."
+                )
                 continue
 
             if schema.view.get_slot(slot).multivalued:
@@ -327,6 +338,15 @@ class MappingSetDataFrame:
     def condense(self) -> List[str]:
         """Condense record-level slot values to the set whenever possible.
 
+        Condensation is the opposite of propagation. It is the process by
+        which the values of so-called "propagatable" slots found in individual
+        mapping records are moved to the corresponding slots in the set
+        metadata.
+
+        Condensation of a slot is only allowed iff (1) all records have the
+        same value for that slot and (2) the slot does not already have a
+        different value in the set metadata.
+
         :return: The list of slots that were effectively condensed.
         """
         schema = SSSOMSchemaView()
@@ -336,18 +356,28 @@ class MappingSetDataFrame:
             if slot not in self.df.columns:  # Nothing to condense
                 continue
             values = self.df[slot].unique()
-            if len(values) > 1:  # Cannot condense
+            if len(values) > 1:
+                # Different values across the records, cannot condense
                 continue
 
             if schema.view.get_slot(slot).multivalued:
                 value = values[0].split("|")
             else:
                 value = values[0]
-            if slot in self.metadata and self.metadata[slot] != value:
-                continue  # Set already has a different value
 
-            self.metadata[slot] = value
-            condensed.append(slot)
+            if slot in self.metadata:
+                if self.metadata[slot] != value:
+                    logging.warning(
+                        f"Not condensing slot '{slot}' because it already has a different value in the set metadata."
+                    )
+                    continue
+                # No need to set the condensed value in the set metadata as it
+                # is already there, but we must still remove the column from
+                # the dataframe
+                condensed.append(slot)
+            else:
+                self.metadata[slot] = value
+                condensed.append(slot)
 
         self.df.drop(columns=condensed, inplace=True)
         return condensed
