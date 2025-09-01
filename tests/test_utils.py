@@ -595,3 +595,40 @@ class TestUtils(unittest.TestCase):
         self.assertIn("mapping_tool", propagated_slots)
         self.assertNotIn("mapping_tool", msdf.metadata)
         self.assertEqual(2, len(msdf.df["mapping_tool"].unique()))
+
+    def test_inferring_compatible_version(self) -> None:
+        """Test that we can correctly infer the version a set is compatible with."""
+        msdf10 = parse_sssom_table(f"{data_dir}/basic.tsv")
+
+        # Nothing in that set requires 1.1
+        self.assertEqual("1.0", msdf10.get_compatible_version())
+
+        def _clone(msdf):
+            return MappingSetDataFrame(df=msdf.df.copy(), metadata=msdf.metadata.copy())
+
+        # Inject a 1.1-specific mapping set slot
+        msdf11 = _clone(msdf10)
+        msdf11.metadata["cardinality_scope"] = "predicate_id"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject a 1.1-specific mapping slot
+        msdf11 = _clone(msdf10)
+        msdf11.df["predicate_type"] = "owl object property"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject a 1.1-specific entity_type_enum value
+        msdf11 = _clone(msdf10)
+        msdf11.metadata["subject_type"] = "composed entity expression"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Same, but on a single mapping record
+        msdf11 = _clone(msdf10)
+        msdf11.df["object_type"] = "owl class"
+        msdf11.df.loc[2, "object_type"] = "composed entity expression"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject the 1.1-specific "0:0" cardinality value
+        msdf11 = _clone(msdf10)
+        msdf11.df["mapping_cardinality"] = "1:1"
+        msdf11.df.loc[9, "mapping_cardinality"] = "0:0"
+        self.assertEqual("1.1", msdf11.get_compatible_version())

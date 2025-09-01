@@ -10,6 +10,7 @@ import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
+from sssom_schema.datamodel.sssom_schema import SssomVersionEnum
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
@@ -277,6 +278,27 @@ class SSSOMSchemaView(object):
             if annotations is not None and "propagated" in annotations:
                 slots.append(slot_name)
         return slots
+
+    def get_minimum_version(self, slot_name: str, class_name: str = "mapping"):
+        """Get the minimum version of SSSOM required for a given slot.
+
+        :param slot_name: The queried slot.
+        :param class_name: The class the slot belongs to. This is needed
+                           because a slot may have been added to a class
+                           in a later version than the version in which
+                           it was first introduced in the schema.
+        :return: A SssomVersionEnum value representing the earliest
+                 version of SSSOM that defines the given slot in the
+                 given class. May be None if the requested slot name
+                 is not a valid slot name.
+        """
+        try:
+            slot = self.view.induced_slot(slot_name, class_name)
+            return SssomVersionEnum(slot.annotations.added_in.value)
+        except AttributeError:  # No added_in annotation, defaults to 1.0
+            return SssomVersionEnum("1.0")
+        except ValueError:  # No such slot
+            return None
 
 
 @lru_cache(1)
