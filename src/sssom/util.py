@@ -58,6 +58,7 @@ from .constants import (
     UNKNOWN_IRI,
     MetadataType,
     PathOrIO,
+    SSSOMSchemaView,
     _get_sssom_schema_object,
     get_default_metadata,
 )
@@ -298,6 +299,99 @@ class MappingSetDataFrame:
 
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
+
+    def propagate(self, fill_empty=False) -> List[str]:
+        """Propagate slot values from the set level down to individual records.
+
+        Propagation, as defined by the SSSOM specification, is the process by
+        which the values of so-called "propagatable slots" in the set metadata
+        are moved to the corresponding slots in each individual mapping
+        records.
+
+        Propagation of a slot is only allowed iff no individual records
+        already have a value for that slot.
+
+        :param fill_empty: If True, propagation of a slot is allowed even if
+                           some individual records already have a value for
+                           that slot. The set-level value will be propagated to
+                           all the records for which the slot is empty. Note
+                           that (1) this is not spec-compliant behaviour, and
+                           (2) this makes the operation non-reversible by a
+                           subsequent condensation.
+        :return: The list of slots that were effectively propagated.
+        """
+        schema = SSSOMSchemaView()
+        propagated = []
+
+        for slot in schema.propagatable_slots:
+            if slot not in self.metadata:  # Nothing to propagate
+                continue
+            is_present = slot in self.df.columns
+            if is_present and not fill_empty:
+                logging.warning(
+                    f"Not propagating value for '{slot}' because the slot is already set on individual records."
+                )
+                continue
+
+            if schema.view.get_slot(slot).multivalued:
+                value = "|".join(self.metadata.pop(slot))
+            else:
+                value = self.metadata.pop(slot)
+
+            if is_present:
+                self.df.loc[self.df[slot].eq("") | self.df[slot].isna(), slot] = value
+            else:
+                self.df[slot] = value
+            propagated.append(slot)
+
+        return propagated
+
+    def condense(self) -> List[str]:
+        """Condense record-level slot values to the set whenever possible.
+
+        Condensation is the opposite of propagation. It is the process by
+        which the values of so-called "propagatable" slots found in individual
+        mapping records are moved to the corresponding slots in the set
+        metadata.
+
+        Condensation of a slot is only allowed iff (1) all records have the
+        same value for that slot and (2) the slot does not already have a
+        different value in the set metadata.
+
+        :return: The list of slots that were effectively condensed.
+        """
+        schema = SSSOMSchemaView()
+        condensed = []
+
+        for slot in schema.propagatable_slots:
+            if slot not in self.df.columns:  # Nothing to condense
+                continue
+            values = self.df[slot].unique()
+            if len(values) > 1:
+                # Different values across the records, cannot condense
+                continue
+
+            if schema.view.get_slot(slot).multivalued:
+                value = values[0].split("|")
+            else:
+                value = values[0]
+
+            if slot in self.metadata:
+                if self.metadata[slot] != value:
+                    logging.warning(
+                        f"Not condensing slot '{slot}' because it already has a different value in the set metadata."
+                    )
+                    continue
+                # No need to set the condensed value in the set metadata as it
+                # is already there, but we must still remove the column from
+                # the dataframe
+                condensed.append(slot)
+            else:
+                self.metadata[slot] = value
+                condensed.append(slot)
+
+        self.df.drop(columns=condensed, inplace=True)
+        return condensed
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
