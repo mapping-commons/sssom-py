@@ -563,6 +563,29 @@ class TestUtils(unittest.TestCase):
         # Set has been condensed already, no further condensation possible
         self.assertEqual(0, len(condensed_slots))
 
+    def test_condensation_with_existing_set_values(self) -> None:
+        """Test that condensation works as expected with the mapping set already contains values for the to-be-condensed slots."""
+        msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv")
+        msdf.propagate()
+        # Following propagation, all records in msdf have the same
+        # mapping_provider ("https://example.org/mappings/)"
+
+        # Inject a different mapping_provider value in the set metadata;
+        # this should prevent that slot from being condensed back
+        msdf.metadata["mapping_provider"] = "https://example.org/mappings/2"
+        condensed_slots = msdf.condense()
+        self.assertNotIn("mapping_provider", condensed_slots)
+        self.assertIn("mapping_provider", msdf.df.columns)
+        self.assertEqual("https://example.org/mappings/2", msdf.metadata["mapping_provider"])
+
+        # Inject the same mapping_provider value as the one contained in
+        # the records; this should allow the slot to be condensed
+        msdf.metadata["mapping_provider"] = "https://example.org/mappings"
+        condensed_slots = msdf.condense()
+        self.assertIn("mapping_provider", condensed_slots)
+        self.assertNotIn("mapping_provider", msdf.df.columns)
+        self.assertEqual("https://example.org/mappings", msdf.metadata["mapping_provider"])
+
     def test_propagation_fill_empty_mode(self) -> None:
         """Test propagate with fill_empty=True."""
         msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv")
