@@ -1,0 +1,8 @@
+#curie_map:
+#  HsapDv: http://purl.obolibrary.org/obo/HsapDv_
+#  UBERON: http://purl.obolibrary.org/obo/UBERON_
+#mapping_set_id: http://purl.obolibrary.org/obo/uberon/uberon-base/mappings.sssom.tsv
+#license: http://creativecommons.org/licenses/by/3.0/
+#subject_source: http://purl.obolibrary.org/obo/uberon/uberon-base.owl
+subject_id	subject_label	predicate_id	object_id	mapping_justification
+UBERON:0000068	embryo stage	semapv:crossSpeciesExactMatch	HsapDv:0000002	semapv:UnspecifiedMatching
