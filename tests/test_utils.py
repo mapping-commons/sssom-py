@@ -595,3 +595,30 @@ class TestUtils(unittest.TestCase):
         self.assertIn("mapping_tool", propagated_slots)
         self.assertNotIn("mapping_tool", msdf.metadata)
         self.assertEqual(2, len(msdf.df["mapping_tool"].unique()))
+
+    def test_infer_cardinality(self) -> None:
+        """Test cardinality computation."""
+
+        def _check_against_precomputed_values(filename):
+            msdf = parse_sssom_table(f"{data_dir}/{filename}")
+            # Expected values are already contained in the test file
+            expected = list(msdf.df["mapping_cardinality"].values)
+            msdf.df.drop(columns="mapping_cardinality", inplace=True)
+            msdf.infer_cardinality()
+            self.assertEqual(expected, list(msdf.df["mapping_cardinality"].values))
+
+        _check_against_precomputed_values("cardinality.sssom.tsv")
+        _check_against_precomputed_values("cardinality-with-NoTermFound.sssom.tsv")
+        _check_against_precomputed_values("cardinality-with-literal-mappings.sssom.tsv")
+
+    def test_infer_scoped_cardinality(self) -> None:
+        """Test cardinality computation with scopes."""
+        msdf = parse_sssom_table(f"{data_dir}/cardinality-scope.sssom.tsv")
+
+        msdf.infer_cardinality(["predicate_id"])
+        expected = ["1:n", "1:n", "1:n", "1:n", "1:1", "1:1"]
+        self.assertEqual(expected, list(msdf.df["mapping_cardinality"].values))
+
+        msdf.infer_cardinality(["object_source"])
+        expected = ["1:1", "1:1", "1:1", "1:1", "1:1", "1:1"]
+        self.assertEqual(expected, list(msdf.df["mapping_cardinality"].values))
