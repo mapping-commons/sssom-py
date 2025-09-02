@@ -11,6 +11,6 @@ from sssom.constants import SCHEMA_YAML
 class TestResources(unittest.TestCase):
     """A test case for resource availability checks."""
 
-    def test_exists(self):
+    def test_exists(self) -> None:
         """Test the schema YAML file is available to the package."""
         self.assertTrue(os.path.exists(SCHEMA_YAML))

@@ -17,7 +17,7 @@ class TestSort(unittest.TestCase):
 
         self.validation_file = join(data_dir, "test_annotate_sssom.tsv")
 
-    def test_annotate(self):
+    def test_annotate(self) -> None:
         """Test annotation of metadata."""
         kwargs = {
             "mapping_set_id": ("http://w3id.org/my/mapping.sssom.tsv",),
@@ -30,7 +30,7 @@ class TestSort(unittest.TestCase):
         self.assertEqual(annotated_msdf.prefix_map, validation_msdf.prefix_map)
         self.assertEqual(len(annotated_msdf.df), len(validation_msdf.df))
 
-    def test_annotate_multivalued(self):
+    def test_annotate_multivalued(self) -> None:
         """Test annotation of metadata which are multivalued."""
         kwargs = {
             "creator_id": ("orcid:0123",),
@@ -46,7 +46,7 @@ class TestSort(unittest.TestCase):
         annotated_msdf_2 = annotate_file(input=self.input, **kwargs)
         self.assertTrue(len(annotated_msdf_2.metadata["creator_id"]), 2)
 
-    def test_annotate_fail(self):
+    def test_annotate_fail(self) -> None:
         """Pass invalid param to see if it fails."""
         kwargs = {"abcd": ("x:%", "y:%")}
         with self.assertRaises(ValueError):

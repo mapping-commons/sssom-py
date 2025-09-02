@@ -41,7 +41,7 @@ from tests.test_data import (
 class SSSOMCLITestSuite(unittest.TestCase):
     """A test case for the dynamic CLI tests."""
 
-    def test_cli_single_input(self):
+    def test_cli_single_input(self) -> None:
         """Run all test cases on a single input file."""
         runner = CliRunner()
         # Initially returned 2 tsv and 1 rdf. The RDF failed test
@@ -76,7 +76,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
         self.assertTrue(len(test_cases) > 2)
 
-    def test_cli_multiple_input(self):
+    def test_cli_multiple_input(self) -> None:
         """Run test cases that require multiple files."""
         runner = CliRunner()
         test_cases = get_multiple_input_test_cases()
@@ -91,7 +91,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         if result.exit_code:
             raise RuntimeError(f"{obj} failed") from result.exception
 
-    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase, fmt="owl") -> Result:
+    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase, fmt: str="owl") -> Result:
         """Run the convert test."""
         params = [
             test_case.filepath,
@@ -355,7 +355,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         return result
 
     @unittest.skip("this test doesn't actually test anything, just runs help")
-    def test_convert_cli(self):
+    def test_convert_cli(self) -> None:
         """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
         test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
         args = [

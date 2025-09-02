@@ -21,7 +21,7 @@ class TestValidate(unittest.TestCase):
         self.validation_types = DEFAULT_VALIDATION_TYPES
         self.shacl_validation_types = [SchemaValidationType.Shacl]
 
-    def test_validate_json(self):
+    def test_validate_json(self) -> None:
         """
         Test JSONSchemaValidation.
 
@@ -50,7 +50,7 @@ class TestValidate(unittest.TestCase):
     place. Therefore, this test is now skipped and marked for FIXME.
     """
     )
-    def test_validate_json_fail(self):
+    def test_validate_json_fail(self) -> None:
         """
         Test if JSONSchemaValidation fail is as expected.
 
@@ -59,7 +59,7 @@ class TestValidate(unittest.TestCase):
         """
         self.assertRaises(ValidationError, validate, self.bad_msdf1, self.validation_types)
 
-    def test_validate_shacl(self):
+    def test_validate_shacl(self) -> None:
         """
         Test Shacl validation (Not implemented).
 
@@ -72,7 +72,7 @@ class TestValidate(unittest.TestCase):
             self.shacl_validation_types,
         )
 
-    def test_validate_sparql(self):
+    def test_validate_sparql(self) -> None:
         """Test Shacl validation (Not implemented)."""
         self.assertRaises(
             NotImplementedError,
@@ -81,6 +81,6 @@ class TestValidate(unittest.TestCase):
             self.shacl_validation_types,
         )
 
-    def test_validate_nando(self):
+    def test_validate_nando(self) -> None:
         """Test Shacl validation (Not implemented)."""
         self.assertRaises(ValidationError, validate, self.bad_nando, self.validation_types)

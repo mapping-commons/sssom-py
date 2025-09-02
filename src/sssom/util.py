@@ -482,11 +482,11 @@ class MappingSetDiff:
     this is considered a mapping in common.
     """
 
-    unique_tuples1: Optional[Set[EntityPair]] = None
-    unique_tuples2: Optional[Set[EntityPair]] = None
-    common_tuples: Optional[Set[EntityPair]] = None
+    unique_tuples1: Set[EntityPair]
+    unique_tuples2: Set[EntityPair]
+    common_tuples: Set[EntityPair]
 
-    combined_dataframe: Optional[pd.DataFrame] = None
+    combined_dataframe: pd.DataFrame
     """
     Dataframe that combines with left and right dataframes with information injected into
     the comment column
@@ -546,7 +546,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
             df = df[
                 df.apply(
                     lambda x: x[CONFIDENCE]
-                    >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                              >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                     axis=1,
                 )
             ]
@@ -709,31 +709,35 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     mappings2 = group_mappings(df2.copy())
     tuples1 = set(mappings1.keys())
     tuples2 = set(mappings2.keys())
-    d = MappingSetDiff()
-    d.unique_tuples1 = tuples1.difference(tuples2)
-    d.unique_tuples2 = tuples2.difference(tuples1)
-    d.common_tuples = tuples1.intersection(tuples2)
+    unique_tuples1 = tuples1.difference(tuples2)
+    unique_tuples2 = tuples2.difference(tuples1)
+    common_tuples = tuples1.intersection(tuples2)
     all_tuples = tuples1.union(tuples2)
     all_ids = set()
     for t in all_tuples:
         all_ids.update({t.subject_entity, t.object_entity})
     rows = []
-    for t in d.unique_tuples1:
+    for t in unique_tuples1:
         for r in mappings1[t]:
             r[COMMENT] = "UNIQUE_1"
         rows += mappings1[t]
-    for t in d.unique_tuples2:
+    for t in unique_tuples2:
         for r in mappings2[t]:
             r[COMMENT] = "UNIQUE_2"
         rows += mappings2[t]
-    for t in d.common_tuples:
+    for t in common_tuples:
         new_rows = mappings1[t] + mappings2[t]
         for r in new_rows:
             r[COMMENT] = "COMMON_TO_BOTH"
         rows += new_rows
     # for r in rows:
     #    r['other'] = 'synthesized sssom file'
-    d.combined_dataframe = pd.DataFrame(rows).drop_duplicates()
+    d = MappingSetDiff(
+        unique_tuples1=unique_tuples1,
+        unique_tuples2=unique_tuples2,
+        common_tuples=common_tuples,
+        combined_dataframe=pd.DataFrame(rows).drop_duplicates(),
+    )
     return d
 
 

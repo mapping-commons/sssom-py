@@ -32,7 +32,7 @@ from tests.test_data import SSSOMTestCase, get_all_test_cases
 class SSSOMReadWriteTestSuite(unittest.TestCase):
     """A test case for conversion utilities."""
 
-    def test_conversion(self):
+    def test_conversion(self) -> None:
         """Run all conversion tests."""
         test_cases = get_all_test_cases()
         self.assertTrue(len(test_cases) > 2, "Less than 2 testcases in the test suite!")
@@ -66,7 +66,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 logging.info("Testing fhir_json JSON export")
                 self._test_to_fhir_json(mdoc, test)
 
-    def _test_to_owl_graph(self, mdoc, test):
+    def _test_to_owl_graph(self, mdoc, test) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         g = to_owl_graph(msdf)
         file_format = "owl"
@@ -81,21 +81,21 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
-    def _test_to_json(self, mdoc, test: SSSOMTestCase):
+    def _test_to_json(self, mdoc, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         jsonob = to_json(msdf)
         self.assertEqual(len(jsonob), test.ct_json_elements)
         with open(test.get_out_file("json"), "w") as file:
             write_json(msdf, file, serialisation="json")
 
-    def _test_to_fhir_json(self, mdoc, test: SSSOMTestCase):
+    def _test_to_fhir_json(self, mdoc, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         d = to_fhir_json(msdf)
         self.assertEqual(
             len(d["group"][0]["element"]), test.ct_data_frame_rows, "wrong number of mappings."
         )
 
-    def _test_to_ontoportal_json(self, mdoc, test: SSSOMTestCase):
+    def _test_to_ontoportal_json(self, mdoc, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         jsonob = to_ontoportal_json(msdf)
         self.assertEqual(len(jsonob), test.ct_data_frame_rows)
@@ -107,7 +107,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertIsInstance(first_ob["relation"], list)
         self.assertGreater(len(first_ob["relation"]), 0)
 
-    def _test_to_rdf_graph(self, mdoc, test):
+    def _test_to_rdf_graph(self, mdoc, test) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         g = to_rdf_graph(msdf)
         file_format = "rdf"
@@ -132,15 +132,15 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             getattr(test, f"ct_graph_queries_{file_format}"),
         )
 
-    def _test_files_equal(self, f1, f2):
+    def _test_files_equal(self, f1, f2) -> None:
         self.assertTrue(filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!")
 
-    def _test_load_graph_size(self, file: str, graph_serialisation: str, queries: list):
+    def _test_load_graph_size(self, file: str, graph_serialisation: str, queries: list) -> None:
         g = Graph()
         g.parse(file, format=graph_serialisation)
         self._test_graph_size(g, queries, file)
 
-    def _test_graph_size(self, graph: Graph, queries: list, file: str):
+    def _test_graph_size(self, graph: Graph, queries: list, file: str) -> None:
         for query, size in queries:
             self.assertEqual(
                 len(graph.query(query)),
@@ -148,7 +148,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 f"Graph query {query} does not return the expected number of triples for {file}",
             )
 
-    def _test_to_dataframe(self, mdoc, test):
+    def _test_to_dataframe(self, mdoc, test) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         df = msdf.df
         self.assertEqual(
@@ -176,7 +176,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             f"The exported pandas data frame has less elements than the orginal one for {test.filename}",
         )
 
-    def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase):
+    def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         json_dict = to_json(msdf)
         self.assertTrue("mappings" in json_dict)
@@ -218,7 +218,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             f"The exported JSON file has less elements than the orginal one for {test.filename}",
         )
 
-    def test_ontoportal_writer(self):
+    def test_ontoportal_writer(self) -> None:
         """Test dumping to OntoPortal JSON."""
         rows = [
             {
