@@ -26,6 +26,7 @@ from .constants import (
     COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
+    MAPPING_CARDINALITY,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
@@ -33,6 +34,7 @@ from .constants import (
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
+    OBJECT_TYPE,
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
@@ -55,6 +57,7 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    SUBJECT_TYPE,
     UNKNOWN_IRI,
     MetadataType,
     PathOrIO,
@@ -415,23 +418,20 @@ class MappingSetDataFrame:
         # "manually" based on the informations provided in
         # <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
         if (
-            self.metadata.get("subject_type") == "composed entity expression"
-            or self.metadata.get("object_type") == "composed entity expression"
+            self.metadata.get(SUBJECT_TYPE) == "composed entity expression"
+            or self.metadata.get(OBJECT_TYPE) == "composed entity expression"
             or (
-                "subject_type" in self.df.columns
-                and "composed entity expression" in self.df["subject_type"].values
+                SUBJECT_TYPE in self.df.columns
+                and "composed entity expression" in self.df[SUBJECT_TYPE].values
             )
             or (
-                "object_type" in self.df.columns
-                and "composed entity expression" in self.df["object_type"].values
+                OBJECT_TYPE in self.df.columns
+                and "composed entity expression" in self.df[OBJECT_TYPE].values
             )
         ):
             versions.add("1.1")
 
-        if (
-            "mapping_cardinality" in self.df.columns
-            and "0:0" in self.df["mapping_cardinality"].values
-        ):
+        if MAPPING_CARDINALITY in self.df.columns and "0:0" in self.df[MAPPING_CARDINALITY].values:
             versions.add("1.1")
 
         # Get the highest of the accumulated versions. We do a numerical
