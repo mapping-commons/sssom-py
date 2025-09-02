@@ -416,7 +416,7 @@ class MappingSetDataFrame:
         # <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
         if (
             self.metadata.get("subject_type") == "composed entity expression"
-            or self.metadata.get("subject_type") == "composed entity expression"
+            or self.metadata.get("object_type") == "composed entity expression"
             or (
                 "subject_type" in self.df.columns
                 and "composed entity expression" in self.df["subject_type"].values
@@ -438,10 +438,9 @@ class MappingSetDataFrame:
         # sort, so that version 1.10 (if we ever get that far in the 1.x
         # branch) does not get sorted before version 1.9.
         def _version_to_compare_key(version):
-            major, minor = [int(s) for s in version.split(".")]
-            return (major * 100) + minor
+            return tuple(int(s) for s in version.split("."))
 
-        return sorted(versions, key=_version_to_compare_key)[-1]
+        return max(versions, key=_version_to_compare_key)
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
