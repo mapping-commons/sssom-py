@@ -91,7 +91,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         if result.exit_code:
             raise RuntimeError(f"{obj} failed") from result.exception
 
-    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase, fmt: str="owl") -> Result:
+    def run_convert(self, runner: CliRunner, test_case: SSSOMTestCase, fmt: str = "owl") -> Result:
         """Run the convert test."""
         params = [
             test_case.filepath,
@@ -112,7 +112,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
     def run_parse(self, runner: CliRunner, test_case: SSSOMTestCase) -> Result:
         """Run the parse test."""
-        params = [
+        if test_case.inputformat is None:
+            raise TypeError
+
+        params: list[str] = [
             test_case.filepath,
             "--output",
             test_case.get_out_file("tsv"),
@@ -125,7 +128,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
             params.append("--metadata")
             params.append(data_dir / test_case.metadata_file)
 
-        result = runner.invoke(parse, params)
+        result: Result = runner.invoke(parse, params)
         self.run_successful(result, test_case)
         return result
 
@@ -286,9 +289,9 @@ class SSSOMCLITestSuite(unittest.TestCase):
                 "-o",
                 os.path.join(test_out_dir, out_file),
                 "-k",
-                True,
+                "true",
                 "-r",
-                True,
+                "true",
             ],
         )
         self.run_successful(result, test_case)
@@ -358,10 +361,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
     def test_convert_cli(self) -> None:
         """Test conversion of SSSOM tsv to OWL format when multivalued metadata items are present."""
         test_sssom = data_dir / "test_inject_metadata_msdf.tsv"
-        args = [
+        args: list[str] = [
             "sssom",
             "convert",
-            test_sssom,
+            test_sssom.as_posix(),
             "--output-format",
             "owl",
         ]

@@ -546,7 +546,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
             df = df[
                 df.apply(
                     lambda x: x[CONFIDENCE]
-                              >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                    >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                     axis=1,
                 )
             ]

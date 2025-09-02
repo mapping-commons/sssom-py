@@ -3,6 +3,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -19,6 +20,7 @@ from sssom.constants import (
     SEMAPV,
     SUBJECT_ID,
     SUBJECT_LABEL,
+    MetadataType,
 )
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iris
@@ -324,21 +326,21 @@ class TestUtils(unittest.TestCase):
 
     def test_standardize_metdata_delete_empty(self) -> None:
         """Test that an element that should not be a list but is empty just gets deleted."""
-        metadata = {"mapping_source": []}
+        metadata: MetadataType = {"mapping_source": []}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({}, msdf.metadata)
 
     def test_standardize_metadata_single(self) -> None:
         """Test standardizing a single valued slot."""
-        metadata = {"mapping_source": "https://example.org/r1"}
+        metadata: MetadataType = {"mapping_source": "https://example.org/r1"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
 
     def test_standardize_metadata_raise_on_missing(self) -> None:
         """Test that an exception is raised for a metadata key that's not in the schema."""
-        metadata = {"xxxx": "https://example.org/r1"}
+        metadata: MetadataType = {"xxxx": "https://example.org/r1"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(ValueError):
             msdf._standardize_metadata_references(raise_on_invalid=True)

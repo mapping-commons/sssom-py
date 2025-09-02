@@ -6,7 +6,7 @@ import re
 from collections import ChainMap
 from itertools import chain
 from pathlib import Path
-from typing import Iterable, List, Optional, TextIO, Tuple, Union
+from typing import Any, Iterable, List, Optional, TextIO, Tuple, Union
 
 import curies
 import pandas as pd
@@ -14,6 +14,7 @@ import yaml
 from curies import Converter
 from deprecation import deprecated
 from linkml.validator import ValidationReport
+from typing_extensions import TypeAlias
 
 from sssom.validators import validate
 
@@ -177,9 +178,11 @@ def _merge_converter(
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
 
 
-def extract_iris(
-    input: Union[str, Path, Iterable[Union[str, Path]]], converter: Converter
-) -> List[str]:
+VV = Union[str, Path]
+RecursivePathList: TypeAlias = Union[VV, Iterable[Union[VV, "RecursivePathList"]]]
+
+
+def extract_iris(input: RecursivePathList, converter: Converter) -> List[str]:
     """
     Recursively extracts a list of IRIs from a string or file.
 
@@ -297,7 +300,7 @@ def run_sql_query(
     return new_msdf
 
 
-def filter_file(input: str, output: Optional[TextIO] = None, **kwargs) -> MappingSetDataFrame:
+def filter_file(input: str, output: Optional[TextIO] = None, **kwargs: Any) -> MappingSetDataFrame:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -344,7 +347,7 @@ def filter_file(input: str, output: Optional[TextIO] = None, **kwargs) -> Mappin
 
 
 def annotate_file(
-    input: str, output: Optional[TextIO] = None, replace_multivalued: bool = False, **kwargs
+    input: str, output: Optional[TextIO] = None, replace_multivalued: bool = False, **kwargs: Any
 ) -> MappingSetDataFrame:
     """Annotate a file i.e. add custom metadata to the mapping set.
 

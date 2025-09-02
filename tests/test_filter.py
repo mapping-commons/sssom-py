@@ -2,6 +2,7 @@
 
 import unittest
 from os.path import join
+from typing import Any
 
 from sssom.constants import PREDICATE_MODIFIER
 from sssom.io import filter_file
@@ -21,7 +22,7 @@ class TestSort(unittest.TestCase):
 
     def test_filter(self) -> None:
         """Test filtering of rows."""
-        kwargs = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%", "a:%")}
+        kwargs: dict[str, Any] = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%", "a:%")}
         filtered_msdf = filter_file(input=self.input, **kwargs)
         validation_msdf = parse_sssom_table(self.validation_file)
 
@@ -36,6 +37,6 @@ class TestSort(unittest.TestCase):
 
     def test_filter_fail(self) -> None:
         """Pass invalid param to see if it fails."""
-        kwargs = {"subject_ids": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
+        kwargs: dict[str, Any] = {"subject_ids": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
         with self.assertRaises(ValueError):
             filter_file(input=self.input, **kwargs)
