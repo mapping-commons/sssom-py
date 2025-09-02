@@ -393,7 +393,7 @@ class MappingSetDataFrame:
         self.df.drop(columns=condensed, inplace=True)
         return condensed
 
-    def get_compatible_version(self):
+    def get_compatible_version(self) -> str:
         """Get the minimum version of SSSOM this set is compatible with."""
         schema = SSSOMSchemaView()
         versions = set()

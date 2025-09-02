@@ -279,7 +279,7 @@ class SSSOMSchemaView(object):
                 slots.append(slot_name)
         return slots
 
-    def get_minimum_version(self, slot_name: str, class_name: str = "mapping"):
+    def get_minimum_version(self, slot_name: str, class_name: str = "mapping") -> SssomVersionEnum:
         """Get the minimum version of SSSOM required for a given slot.
 
         :param slot_name: The queried slot.
