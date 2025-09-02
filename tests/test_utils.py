@@ -13,6 +13,7 @@ from sssom_schema import slots as SSSOM_Slots
 
 from sssom.constants import (
     CREATOR_ID,
+    MAPPING_CARDINALITY,
     OBJECT_ID,
     OBJECT_LABEL,
     PREDICATE_ID,
@@ -602,10 +603,10 @@ class TestUtils(unittest.TestCase):
         def _check_against_precomputed_values(filename):
             msdf = parse_sssom_table(f"{data_dir}/{filename}")
             # Expected values are already contained in the test file
-            expected = list(msdf.df["mapping_cardinality"].values)
-            msdf.df.drop(columns="mapping_cardinality", inplace=True)
+            expected = list(msdf.df[MAPPING_CARDINALITY].values)
+            msdf.df.drop(columns=MAPPING_CARDINALITY, inplace=True)
             msdf.infer_cardinality()
-            self.assertEqual(expected, list(msdf.df["mapping_cardinality"].values))
+            self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
 
         _check_against_precomputed_values("cardinality.sssom.tsv")
         _check_against_precomputed_values("cardinality-with-NoTermFound.sssom.tsv")
@@ -617,8 +618,8 @@ class TestUtils(unittest.TestCase):
 
         msdf.infer_cardinality(["predicate_id"])
         expected = ["1:n", "1:n", "1:n", "1:n", "1:1", "1:1"]
-        self.assertEqual(expected, list(msdf.df["mapping_cardinality"].values))
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
 
         msdf.infer_cardinality(["object_source"])
         expected = ["1:1", "1:1", "1:1", "1:1", "1:1", "1:1"]
-        self.assertEqual(expected, list(msdf.df["mapping_cardinality"].values))
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))

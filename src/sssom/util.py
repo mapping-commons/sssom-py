@@ -23,12 +23,15 @@ from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 
 from .constants import (
+    CARDINALITY_SCOPE,
     COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
+    MAPPING_CARDINALITY,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
+    NO_TERM_FOUND,
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
@@ -437,10 +440,7 @@ class MappingSetDataFrame:
         # We iterate over the records a first time to collect the different
         # objects mapped to each subject and vice versa
         for _, row in self.df.iterrows():
-            if (
-                row.get("subject_id") == "sssom:NoTermFound"
-                or row.get("object_id") == "sssom:NoTermFound"
-            ):
+            if row.get(SUBJECT_ID) == NO_TERM_FOUND or row.get(OBJECT_ID) == NO_TERM_FOUND:
                 # Mappings to sssom:NoTermFound are ignored for cardinality computations
                 continue
 
@@ -456,12 +456,12 @@ class MappingSetDataFrame:
         cards = []
         for _, row in self.df.iterrows():
             # Special cases involving sssom:NoTermFound on either side
-            if row.get("subject_id") == "sssom:NoTermFound":
-                if row.get("object_id") == "sssom:NoTermFound":
+            if row.get(SUBJECT_ID) == NO_TERM_FOUND:
+                if row.get(OBJECT_ID) == NO_TERM_FOUND:
                     cards.append("0:0")
                 else:
                     cards.append("0:1")
-            elif row.get("object_id") == "sssom:NoTermFound":
+            elif row.get(OBJECT_ID) == NO_TERM_FOUND:
                 cards.append("1:0")
             else:
                 # General case
@@ -480,12 +480,12 @@ class MappingSetDataFrame:
                         cards.append("n:n")
 
         # Add the computed values to the dataframe
-        self.df["mapping_cardinality"] = cards
+        self.df[MAPPING_CARDINALITY] = cards
         if len(scope) > 0:
-            self.df["cardinality_scope"] = "|".join(scope)
+            self.df[CARDINALITY_SCOPE] = "|".join(scope)
         else:
             # No scope, so remove any pre-existing "cardinality_scope" column
-            self.df.drop(columns="cardinality_scope", inplace=True, errors="ignore")
+            self.df.drop(columns=CARDINALITY_SCOPE, inplace=True, errors="ignore")
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
