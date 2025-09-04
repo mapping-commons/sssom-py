@@ -132,15 +132,17 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
             getattr(test, f"ct_graph_queries_{file_format}"),
         )
 
-    def _test_files_equal(self, f1, f2) -> None:
+    def _test_files_equal(self, f1: str, f2: str) -> None:
         self.assertTrue(filecmp.cmp(f1, f2), f"{f1} and {f2} are not the same!")
 
-    def _test_load_graph_size(self, file: str, graph_serialisation: str, queries: list) -> None:
+    def _test_load_graph_size(
+        self, file: str, graph_serialisation: str, queries: list[tuple[str, int]]
+    ) -> None:
         g = Graph()
         g.parse(file, format=graph_serialisation)
         self._test_graph_size(g, queries, file)
 
-    def _test_graph_size(self, graph: Graph, queries: list, file: str) -> None:
+    def _test_graph_size(self, graph: Graph, queries: list[tuple[str, int]], file: str) -> None:
         for query, size in queries:
             self.assertEqual(
                 len(graph.query(query)),
@@ -148,7 +150,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 f"Graph query {query} does not return the expected number of triples for {file}",
             )
 
-    def _test_to_dataframe(self, mdoc, test) -> None:
+    def _test_to_dataframe(self, mdoc: MappingSetDocument, test) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         df = msdf.df
         self.assertEqual(

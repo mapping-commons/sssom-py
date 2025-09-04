@@ -9,7 +9,7 @@ from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Literal, Mapping, Optional, Set, Tuple, Union, cast
 
 import curies
 import numpy as np
@@ -98,7 +98,7 @@ class MappingSetDataFrame:
     metadata: MetadataType = field(default_factory=get_default_metadata)
 
     @property
-    def prefix_map(self):
+    def prefix_map(self) -> Mapping[str, str]:
         """Get a simple, bijective prefix map."""
         return self.converter.bimap
 
@@ -195,7 +195,7 @@ class MappingSetDataFrame:
 
     def to_mappings(self) -> List[SSSOM_Mapping]:
         """Get a mapping set."""
-        return self.to_mapping_set().mappings
+        return cast(List[SSSOM_Mapping], self.to_mapping_set().mappings)
 
     def clean_context(self) -> None:
         """Clean up the context."""
