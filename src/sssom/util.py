@@ -422,6 +422,12 @@ class MappingSetDataFrame:
         subjects_by_object: dict[str, set[str]] = {}  # Unique subjects for any given object
         objects_by_subject: dict[str, set[str]] = {}  # Unique objects for any given subject
 
+        schema = SSSOMSchemaView()
+        unknown_slots = [slot for slot in scope if slot not in schema.mapping_slots]
+        if len(unknown_slots) > 0:
+            logging.warning(f"Ignoring invalid slot name(s): {unknown_slots}.")
+            scope = list(set(scope) - set(unknown_slots))
+
         # Helper function to transform a row into a string that represents
         # a subject (or object) in a given scope; `side` is either `subject`
         # or `object`.

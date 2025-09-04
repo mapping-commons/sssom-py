@@ -12,6 +12,7 @@ from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import slots as SSSOM_Slots
 
 from sssom.constants import (
+    CARDINALITY_SCOPE,
     CREATOR_ID,
     MAPPING_CARDINALITY,
     OBJECT_ID,
@@ -623,3 +624,13 @@ class TestUtils(unittest.TestCase):
         msdf.infer_cardinality(["object_source"])
         expected = ["1:1", "1:1", "1:1", "1:1", "1:1", "1:1"]
         self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+
+        msdf.infer_cardinality(["object_source", "not_a_valid_slot_name"])
+        # should yield the same result as above
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+
+        msdf.infer_cardinality(["not_a_valid_slot_name"])
+        # should be equivalent to an empty scope
+        expected = ["1:n", "1:n", "1:n", "1:n", "1:n", "1:n"]
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+        self.assertNotIn(CARDINALITY_SCOPE, msdf.df.columns)
