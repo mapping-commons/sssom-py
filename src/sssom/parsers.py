@@ -8,7 +8,6 @@ import logging as _logging
 import os.path
 import typing
 from collections import ChainMap, Counter
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, NamedTuple, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
@@ -978,8 +977,7 @@ def split_dataframe(
     )
 
 
-@dataclass(frozen=True, eq=True)
-class SSSOMSplitTriple:
+class SSSOMSplitTriple(NamedTuple):
     subject_prefix: str
     object_prefix: str
     relation: str
