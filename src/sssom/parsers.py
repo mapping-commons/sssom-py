@@ -8,8 +8,9 @@ import logging as _logging
 import os.path
 import typing
 from collections import ChainMap, Counter
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
+from typing import Any, Callable, Dict, Iterable, List, NamedTuple, Optional, TextIO, Tuple, Union, cast
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -977,6 +978,27 @@ def split_dataframe(
     )
 
 
+@dataclass(frozen=True, eq=True)
+class SSSOMTriple:
+    subject_prefix: str
+    object_prefix: str
+    relation: str
+
+    def __post_init__(self):
+        relation_prefix, relation_id = self.relation.split(":")
+
+    @property
+    def relation_prefix(self):
+        return self.relation.split(":")[0]
+
+    @property
+    def relation_id(self):
+        return self.relation.split(":")[1]
+
+    def as_identifier(self):
+        return f"{self.subject_prefix.lower()}_{self.relation_id.lower()}_{self.object_prefix.lower()}"
+
+
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame,
     subject_prefixes: Iterable[str],
@@ -994,31 +1016,45 @@ def split_dataframe_by_prefix(
     df = msdf.df
     meta = msdf.metadata
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
+    splits_by_triple: dict[SSSOMTriple, list[dict]] = {}
+
+    # Still iterate through the product of SxPxO initially to pre-populate a dict
     for subject_prefix, object_prefix, relation in itt.product(
         subject_prefixes, object_prefixes, relations
     ):
-        relation_prefix, relation_id = relation.split(":")
-        split = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
+        triple = SSSOMTriple(subject_prefix, object_prefix, relation)
+        split_id = triple.as_identifier()
         if subject_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
+            logging.warning(f"{split_id} - missing subject prefix - {subject_prefix}")
             continue
         if object_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split} - missing object prefix - {object_prefix}")
+            logging.warning(f"{split_id} - missing object prefix - {object_prefix}")
             continue
-        df_subset = df[
-            (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
-            & (df[PREDICATE_ID] == relation)
-            & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
-        ]
-        if 0 == len(df_subset):
-            logging.debug(f"No matches ({len(df_subset)} matches found)")
+        splits_by_triple[triple] = []
+
+    # Iterate through `msdf.df` once, building up a list of matches in the pre-populated dict
+    for _mapping in df.itertuples(index=False, name="Row"):
+        mapping = cast(NamedTuple, _mapping)._asdict()
+        subject_prefix = mapping[SUBJECT_ID].split(":")[0]
+        object_prefix = mapping[OBJECT_ID].split(":")[0]
+        relation = mapping[PREDICATE_ID]
+        triple = SSSOMTriple(subject_prefix, object_prefix, relation)
+        if triple in splits_by_triple:
+            splits_by_triple[triple].append(mapping)
+
+    # Iterate through the prepopulated dict
+    for triple, values in splits_by_triple.items():
+        split_id = triple.as_identifier()
+        if len(values) == 0:
+            logging.debug(f"{split_id} - No matches (0 matches found)")
             continue
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, relation_prefix]
+            [triple.subject_prefix, triple.object_prefix, triple.relation_prefix]
         )
-        split_to_msdf[split] = from_sssom_dataframe(
-            df_subset, prefix_map=dict(subconverter.bimap), meta=meta
+        split_to_msdf[split_id] = from_sssom_dataframe(
+            pd.DataFrame(values), prefix_map=dict(subconverter.bimap), meta=meta
         )
+
     return split_to_msdf
 
 
