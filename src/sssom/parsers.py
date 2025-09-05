@@ -1076,7 +1076,7 @@ def _help_split_dataframe_by_prefix(
 
 
 def _clean_list(item: str | Iterable[str]) -> list[str]:
-    return [item] if isinstance(item, str) else list(str)  # type:ignore
+    return [item] if isinstance(item, str) else list(item)
 
 
 def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
