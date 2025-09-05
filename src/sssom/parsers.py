@@ -979,7 +979,7 @@ def split_dataframe(
 
 
 @dataclass(frozen=True, eq=True)
-class SSSOMTriple:
+class SSSOMSplitTriple:
     subject_prefix: str
     object_prefix: str
     relation: str
@@ -1016,13 +1016,13 @@ def split_dataframe_by_prefix(
     df = msdf.df
     meta = msdf.metadata
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
-    splits_by_triple: dict[SSSOMTriple, list[dict]] = {}
+    mappings_by_triple: dict[SSSOMSplitTriple, list[dict]] = {}
 
     # Still iterate through the product of SxPxO initially to pre-populate a dict
     for subject_prefix, object_prefix, relation in itt.product(
         subject_prefixes, object_prefixes, relations
     ):
-        triple = SSSOMTriple(subject_prefix, object_prefix, relation)
+        triple = SSSOMSplitTriple(subject_prefix, object_prefix, relation)
         split_id = triple.as_identifier()
         if subject_prefix not in msdf.converter.bimap:
             logging.warning(f"{split_id} - missing subject prefix - {subject_prefix}")
@@ -1030,7 +1030,7 @@ def split_dataframe_by_prefix(
         if object_prefix not in msdf.converter.bimap:
             logging.warning(f"{split_id} - missing object prefix - {object_prefix}")
             continue
-        splits_by_triple[triple] = []
+        mappings_by_triple[triple] = []
 
     # Iterate through `msdf.df` once, building up a list of matches in the pre-populated dict
     for _mapping in df.itertuples(index=False, name="Row"):
@@ -1038,12 +1038,12 @@ def split_dataframe_by_prefix(
         subject_prefix = mapping[SUBJECT_ID].split(":")[0]
         object_prefix = mapping[OBJECT_ID].split(":")[0]
         relation = mapping[PREDICATE_ID]
-        triple = SSSOMTriple(subject_prefix, object_prefix, relation)
-        if triple in splits_by_triple:
-            splits_by_triple[triple].append(mapping)
+        triple = SSSOMSplitTriple(subject_prefix, object_prefix, relation)
+        if triple in mappings_by_triple:
+            mappings_by_triple[triple].append(mapping)
 
     # Iterate through the prepopulated dict
-    for triple, values in splits_by_triple.items():
+    for triple, values in mappings_by_triple.items():
         split_id = triple.as_identifier()
         if len(values) == 0:
             logging.debug(f"{split_id} - No matches (0 matches found)")
