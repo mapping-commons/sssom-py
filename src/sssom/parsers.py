@@ -1032,26 +1032,27 @@ def split_dataframe_by_prefix(
         mapping = cast(NamedTuple, _mapping)._asdict()
         subject_curie = msdf.converter.parse_curie(mapping[SUBJECT_ID], strict=True)
         object_curie = msdf.converter.parse_curie(mapping[OBJECT_ID], strict=True)
+        relation_curie = msdf.converter.parse_curie(mapping[PREDICATE_ID], strict=True)
         group = SSSOMSplitGroup(
             subject_curie.prefix,
             object_curie.prefix,
-            msdf.converter.parse_curie(mapping[PREDICATE_ID], strict=True),
+            relation_curie,
         )
         if group in mappings_by_group:
             mappings_by_group[group].append(mapping)
 
     # Convert the mappings in each group to a MappingSetDataFrame and index them
     # by a string identifier.
-    for group, values in mappings_by_group.items():
+    for group, mappings in mappings_by_group.items():
         split_id = group.as_identifier()
-        if len(values) == 0:
+        if len(mappings) == 0:
             logging.debug(f"{split_id} - No matches (0 matches found)")
             continue
         subconverter = msdf.converter.get_subconverter(
             [group.subject_prefix, group.object_prefix, group.relation_curie.prefix]
         )
         split_to_msdf[split_id] = from_sssom_dataframe(
-            pd.DataFrame(values), prefix_map=dict(subconverter.bimap), meta=meta
+            pd.DataFrame(mappings), prefix_map=dict(subconverter.bimap), meta=meta
         )
 
     return split_to_msdf
