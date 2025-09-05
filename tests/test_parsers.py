@@ -28,6 +28,7 @@ from sssom.parsers import (
     from_sssom_json,
     from_sssom_rdf,
     parse_sssom_table,
+    split_dataframe,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
@@ -271,6 +272,21 @@ class TestParse(unittest.TestCase):
             len(msdf.df),
             141,
             f"{self.json_file} has the wrong number of mappings.",
+        )
+
+    def test_split_msdf(self):
+        """Test splitting a mapping set dataframe"""
+        msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_converter, meta=self.df_meta)
+        splitted = split_dataframe(msdf)
+        self.assertEqual(
+            len(splitted.keys()),
+            11,
+            f"{self.df_file} was split into the wrong number of files.",
+        )
+        self.assertEqual(
+            sum([len(msdf.df) for msdf in splitted.values()]),
+            len(msdf.df),
+            f"{self.df_file} did not include all mappings when being split."
         )
 
     # * "mapping_justification" is no longer multivalued.
