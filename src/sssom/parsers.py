@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
-from curies import Converter
+from curies import Converter, ReferenceTuple
 from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
@@ -977,25 +977,18 @@ def split_dataframe(
     )
 
 
-class SSSOMSplitTriple(NamedTuple):
+class SSSOMSplitGroup(NamedTuple):
+    """A tuple to identify the boundary where a mapping set should be split."""
     subject_prefix: str
     object_prefix: str
-    relation: str
-
-    def __post_init__(self):
-        relation_prefix, relation_id = self.relation.split(":")
-
-    @property
-    def relation_prefix(self):
-        return self.relation.split(":")[0]
-
-    @property
-    def relation_id(self):
-        return self.relation.split(":")[1]
+    relation_curie: ReferenceTuple
 
     def as_identifier(self):
-        return f"{self.subject_prefix.lower()}_{self.relation_id.lower()}_{self.object_prefix.lower()}"
-
+        return "_".join([
+            self.subject_prefix.lower(),
+            self.relation_curie.identifier.lower(),
+            self.object_prefix.lower(),
+        ])
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame,
@@ -1014,40 +1007,48 @@ def split_dataframe_by_prefix(
     df = msdf.df
     meta = msdf.metadata
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
-    mappings_by_triple: dict[SSSOMSplitTriple, list[dict]] = {}
+    mappings_by_group: dict[SSSOMSplitGroup, list[dict]] = {}
 
-    # Still iterate through the product of SxPxO initially to pre-populate a dict
+    # Build up a dict of groups by which mappings should be stored.
     for subject_prefix, object_prefix, relation in itt.product(
         subject_prefixes, object_prefixes, relations
     ):
-        triple = SSSOMSplitTriple(subject_prefix, object_prefix, relation)
-        split_id = triple.as_identifier()
+        group = SSSOMSplitGroup(
+            subject_prefix,
+            object_prefix,
+            msdf.converter.parse_curie(relation, strict=True),
+        )
+        split_id = group.as_identifier()
         if subject_prefix not in msdf.converter.bimap:
             logging.warning(f"{split_id} - missing subject prefix - {subject_prefix}")
             continue
         if object_prefix not in msdf.converter.bimap:
             logging.warning(f"{split_id} - missing object prefix - {object_prefix}")
             continue
-        mappings_by_triple[triple] = []
+        mappings_by_group[group] = []
 
-    # Iterate through `msdf.df` once, building up a list of matches in the pre-populated dict
+    # Store mappings by each group of interest.
     for _mapping in df.itertuples(index=False, name="Row"):
         mapping = cast(NamedTuple, _mapping)._asdict()
-        subject_prefix = mapping[SUBJECT_ID].split(":")[0]
-        object_prefix = mapping[OBJECT_ID].split(":")[0]
-        relation = mapping[PREDICATE_ID]
-        triple = SSSOMSplitTriple(subject_prefix, object_prefix, relation)
-        if triple in mappings_by_triple:
-            mappings_by_triple[triple].append(mapping)
+        subject_curie = msdf.converter.parse_curie(mapping[SUBJECT_ID], strict=True)
+        object_curie = msdf.converter.parse_curie(mapping[OBJECT_ID], strict=True)
+        group = SSSOMSplitGroup(
+            subject_curie.prefix,
+            object_curie.prefix,
+            msdf.converter.parse_curie(mapping[PREDICATE_ID], strict=True),
+        )
+        if group in mappings_by_group:
+            mappings_by_group[group].append(mapping)
 
-    # Iterate through the prepopulated dict
-    for triple, values in mappings_by_triple.items():
-        split_id = triple.as_identifier()
+    # Convert the mappings in each group to a MappingSetDataFrame and index them
+    # by a string identifier.
+    for group, values in mappings_by_group.items():
+        split_id = group.as_identifier()
         if len(values) == 0:
             logging.debug(f"{split_id} - No matches (0 matches found)")
             continue
         subconverter = msdf.converter.get_subconverter(
-            [triple.subject_prefix, triple.object_prefix, triple.relation_prefix]
+            [group.subject_prefix, group.object_prefix, group.relation_curie.prefix]
         )
         split_to_msdf[split_id] = from_sssom_dataframe(
             pd.DataFrame(values), prefix_map=dict(subconverter.bimap), meta=meta
