@@ -4,6 +4,7 @@ import io
 import json
 import math
 import os
+import typing
 import unittest
 from collections import ChainMap
 from pathlib import Path
@@ -22,12 +23,14 @@ from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_convert
 from sssom.io import parse_file
 from sssom.parsers import (
     PARSING_FUNCTIONS,
+    SplitMethod,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
     parse_sssom_table,
+    split_dataframe_by_prefix,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
@@ -513,3 +516,46 @@ class TestParseExplicit(unittest.TestCase):
         self.assertTrue(is_irregular_metadata_fail_missing_property_case)
         self.assertTrue(is_valid_extension)
         self.assertFalse(is_irregular_metadata_ok_case)
+
+
+class TestSplit(unittest.TestCase):
+    """A test case for dataframe utilities."""
+
+    def test_split_df(self) -> None:
+        """Test the precursor to SSSOM function."""
+        rows = [
+            ("p1:1", "skos:exactMatch", "p2:1"),
+            ("p1:2", "skos:exactMatch", "p2:2"),
+            ("p1:2", "skos:exactMatch", "p3:2"),
+            ("p4:1", "skos:exactMatch", "p1:1"),
+            ("p5:1", "skos:broaderMatch", "p6:1"),
+        ]
+        df = pd.DataFrame(rows, columns=["subject_id", "predicate_id", "object_id"])
+        for method in typing.get_args(SplitMethod):
+            with self.subTest(method=method):
+                # test that if there's ever an empty list, then it returns an empty dict
+                self.assertFalse(
+                    dict(
+                        split_dataframe_by_prefix(
+                            df, [], ["skos:exactMatch"], ["p2"], method=method
+                        )
+                    )
+                )
+                self.assertFalse(
+                    dict(split_dataframe_by_prefix(df, ["p1"], [], ["p2"], method=method))
+                )
+                self.assertFalse(
+                    dict(
+                        split_dataframe_by_prefix(
+                            df, ["p1"], ["skos:exactMatch"], [], method=method
+                        )
+                    )
+                )
+
+                rv = dict(
+                    split_dataframe_by_prefix(
+                        df, ["p1"], ["skos:exactMatch"], ["p2"], method=method
+                    )
+                )
+                self.assertIn(("p1", "skos:exactMatch", "p2"), rv)
+                self.assertEqual(1, len(rv))

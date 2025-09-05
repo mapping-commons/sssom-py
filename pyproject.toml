@@ -14,7 +14,7 @@ requires-python = ">=3.9,<4.0.0"
 
 dependencies = [
     "click>=8.1.6",
-    "curies>=0.10.18",
+    "curies>=0.10.20",
     "linkml-runtime>=1.7.5",
     "linkml>1.7.10",
     "pandas>1.0.3",
