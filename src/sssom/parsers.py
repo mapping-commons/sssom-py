@@ -1036,12 +1036,12 @@ def split_dataframe_by_prefix(
             object_prefix,
             msdf.converter.parse_curie(relation, strict=True),
         )
-        split_id = group.as_identifier()
+        split = group.as_identifier()
         if subject_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split_id} - missing subject prefix - {subject_prefix}")
+            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
             continue
         if object_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split_id} - missing object prefix - {object_prefix}")
+            logging.warning(f"{split} - missing object prefix - {object_prefix}")
             continue
         mappings_by_group[group] = []
 
@@ -1062,14 +1062,14 @@ def split_dataframe_by_prefix(
     # Convert the mappings in each group to a MappingSetDataFrame and index them
     # by a string identifier.
     for group, mappings in mappings_by_group.items():
-        split_id = group.as_identifier()
+        split = group.as_identifier()
         if len(mappings) == 0:
-            logging.debug(f"{split_id} - No matches (0 matches found)")
+            logging.debug(f"{split} - No matches (0 matches found)")
             continue
         subconverter = msdf.converter.get_subconverter(
             [group.subject_prefix, group.object_prefix, group.relation_curie.prefix]
         )
-        split_to_msdf[split_id] = from_sssom_dataframe(
+        split_to_msdf[split] = from_sssom_dataframe(
             pd.DataFrame(mappings), prefix_map=dict(subconverter.bimap), meta=meta
         )
 
