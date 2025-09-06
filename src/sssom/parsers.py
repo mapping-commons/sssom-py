@@ -9,7 +9,19 @@ import os.path
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, NamedTuple, Optional, TextIO, Tuple, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -979,16 +991,20 @@ def split_dataframe(
 
 class SSSOMSplitGroup(NamedTuple):
     """A tuple to identify the boundary where a mapping set should be split."""
+
     subject_prefix: str
     object_prefix: str
     relation_curie: ReferenceTuple
 
     def as_identifier(self):
-        return "_".join([
-            self.subject_prefix.lower(),
-            self.relation_curie.identifier.lower(),
-            self.object_prefix.lower(),
-        ])
+        return "_".join(
+            [
+                self.subject_prefix.lower(),
+                self.relation_curie.identifier.lower(),
+                self.object_prefix.lower(),
+            ]
+        )
+
 
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame,

@@ -286,7 +286,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             sum([len(msdf.df) for msdf in splitted.values()]),
             len(msdf.df),
-            f"{self.df_file} did not include all mappings when being split."
+            f"{self.df_file} did not include all mappings when being split.",
         )
 
     # * "mapping_justification" is no longer multivalued.
