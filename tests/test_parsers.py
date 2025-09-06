@@ -565,7 +565,7 @@ class TestSplit(unittest.TestCase):
         self.assertIn("p1_exactmatch_p2", rv)
         self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
 
-        # test an explicit return with only single entries
+        # test an explicit return with multiple entries
         rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"])
         self.assertEqual(2, len(rv), msg="nothing was indexed")
         self.assertIn("p1_exactmatch_p2", rv)
