@@ -553,7 +553,21 @@ class TestSplit(unittest.TestCase):
         self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
         self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
 
+        # test that missing prefixes don't result in anything
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"]))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"]))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"]))
+
+        sdf = pd.DataFrame(subrows, columns=columns)
+        # test an explicit return with only single entries
         rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"])
         self.assertEqual(1, len(rv), msg="nothing was indexed")
         self.assertIn("p1_exactmatch_p2", rv)
-        self.assertEqual(pd.DataFrame(subrows, columns=columns), rv["p1_exactmatch_p2"])
+        self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
+
+        # test an explicit return with only single entries
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"])
+        self.assertEqual(2, len(rv), msg="nothing was indexed")
+        self.assertIn("p1_exactmatch_p2", rv)
+        self.assertIn("p1_exactmatch_p3", rv)
+        self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
