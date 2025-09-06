@@ -523,39 +523,43 @@ class TestSplit(unittest.TestCase):
 
     def test_split_df(self) -> None:
         """Test the precursor to SSSOM function."""
+        converter = Converter.from_prefix_map(
+            {
+                "p1": "https://example.org/p1/",
+                "p2": "https://example.org/p2/",
+                "p3": "https://example.org/p3/",
+                "p4": "https://example.org/p4/",
+                "p5": "https://example.org/p5/",
+                "p6": "https://example.org/p6/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "semapv": "https://w3id.org/semapv/vocab/",
+            }
+        )
         rows = [
-            ("p1:1", "skos:exactMatch", "p2:1"),
-            ("p1:2", "skos:exactMatch", "p2:2"),
-            ("p1:2", "skos:exactMatch", "p3:2"),
-            ("p4:1", "skos:exactMatch", "p1:1"),
-            ("p5:1", "skos:broaderMatch", "p6:1"),
+            ("p1:1", "skos:exactMatch", "p2:1", "semapv:ManualMappingCuration"),
+            ("p1:2", "skos:exactMatch", "p2:2", "semapv:ManualMappingCuration"),
+            ("p1:2", "skos:exactMatch", "p3:2", "semapv:ManualMappingCuration"),
+            ("p4:1", "skos:exactMatch", "p1:1", "semapv:ManualMappingCuration"),
+            ("p5:1", "skos:broadMatch", "p6:1", "semapv:ManualMappingCuration"),
         ]
-        df = pd.DataFrame(rows, columns=["subject_id", "predicate_id", "object_id"])
+        df = pd.DataFrame(
+            rows, columns=["subject_id", "predicate_id", "object_id", "mapping_justification"]
+        )
+        msdf = from_sssom_dataframe(df, converter)
+
         for method in typing.get_args(SplitMethod):
             with self.subTest(method=method):
                 # test that if there's ever an empty list, then it returns an empty dict
                 self.assertFalse(
-                    dict(
-                        split_dataframe_by_prefix(
-                            df, [], ["skos:exactMatch"], ["p2"], method=method
-                        )
-                    )
+                    split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"], method=method)
                 )
+                self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], [], method=method))
                 self.assertFalse(
-                    dict(split_dataframe_by_prefix(df, ["p1"], [], ["p2"], method=method))
-                )
-                self.assertFalse(
-                    dict(
-                        split_dataframe_by_prefix(
-                            df, ["p1"], ["skos:exactMatch"], [], method=method
-                        )
-                    )
+                    split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"], method=method)
                 )
 
-                rv = dict(
-                    split_dataframe_by_prefix(
-                        df, ["p1"], ["skos:exactMatch"], ["p2"], method=method
-                    )
+                rv = split_dataframe_by_prefix(
+                    msdf, ["p1"], ["p2"], ["skos:exactMatch"], method=method
                 )
-                self.assertIn(("p1", "skos:exactMatch", "p2"), rv)
-                self.assertEqual(1, len(rv))
+                self.assertEqual(1, len(rv), msg="nothing was indexed")
+                self.assertIn("p1_exactmatch_p2", rv)
