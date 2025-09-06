@@ -996,14 +996,16 @@ class SSSOMSplitGroup(NamedTuple):
     object_prefix: str
     relation_curie: ReferenceTuple
 
-    def as_identifier(self):
-        return "_".join(
-            [
-                self.subject_prefix.lower(),
-                self.relation_curie.identifier.lower(),
-                self.object_prefix.lower(),
-            ]
+    def as_identifier(self) -> str:
+        """Get a split group key."""
+        return _get_split_key(
+            self.subject_prefix, self.relation_curie.identifier, self.object_prefix
         )
+
+
+def _get_split_key(subject_prefix: str, relation_luid: str, object_prefix: str) -> str:
+    split = f"{subject_prefix.lower()}_{relation_luid.lower()}_{object_prefix.lower()}"
+    return split
 
 
 def split_dataframe_by_prefix(
