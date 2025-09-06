@@ -548,14 +548,12 @@ class TestSplit(unittest.TestCase):
         df = pd.DataFrame(rows, columns=columns)
         msdf = from_sssom_dataframe(df, converter)
 
-        for method in []:
-            with self.subTest(method=method):
-                # test that if there's ever an empty list, then it returns an empty dict
-                self.assertFalse(split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"]))
-                self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
-                self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
+        # test that if there's ever an empty list, then it returns an empty dict
+        self.assertFalse(split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"]))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
 
-                rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"])
-                self.assertEqual(1, len(rv), msg="nothing was indexed")
-                self.assertIn("p1_exactmatch_p2", rv)
-                self.assertEqual(pd.DataFrame(subrows, columns=columns), rv["p1_exactmatch_p2"])
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"])
+        self.assertEqual(1, len(rv), msg="nothing was indexed")
+        self.assertIn("p1_exactmatch_p2", rv)
+        self.assertEqual(pd.DataFrame(subrows, columns=columns), rv["p1_exactmatch_p2"])
