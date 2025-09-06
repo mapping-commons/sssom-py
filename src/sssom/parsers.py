@@ -1027,14 +1027,10 @@ def _help_split_dataframe_by_prefix(
     *,
     method: SplitMethod | None = None,
 ) -> Iterable[tuple[tuple[str, str, str], pd.DataFrame]]:
-    """Iterate over splits on a dataframe."""
-    import click
-
     subject_prefixes = _clean_list(subject_prefixes)
     predicates = _clean_list(predicates)
     object_prefixes = _clean_list(object_prefixes)
 
-    click.echo(f"splitting with method: {method}")
     if method == "disjoint-indexes" or method is None:
         s_indexes = {
             subject_prefix: get_filter_df_by_prefixes_index(
@@ -1077,7 +1073,7 @@ def _help_split_dataframe_by_prefix(
             yield (subject_prefix, predicate, object_prefix), df.iloc[dense_idx]
 
     else:
-        raise ValueError
+        raise ValueError(f"invalid split method: {method}")
 
 
 def _clean_list(item: str | Iterable[str]) -> list[str]:
