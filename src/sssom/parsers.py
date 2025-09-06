@@ -1025,16 +1025,16 @@ def split_dataframe_by_prefix(
     :param relations: a list of relations of interest
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
-    predicates = [msdf.converter.parse_curie(predicate, strict=True) for predicate in relations]
+    relation_tuples = [msdf.converter.parse_curie(relation, strict=True) for relation in relations]
     rr = _help_split_dataframe_by_prefix(
-        msdf.df, subject_prefixes, predicates, object_prefixes, method=method
+        msdf.df, subject_prefixes, relation_tuples, object_prefixes, method=method
     )
     rv = {}
-    for (subject_prefix, predicate, object_prefix), df in rr:
+    for (subject_prefix, relation, object_prefix), df in rr:
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, predicate.prefix]
+            [subject_prefix, object_prefix, relation.prefix]
         )
-        split = f"{subject_prefix.lower()}_{predicate.identifier.lower()}_{object_prefix.lower()}"
+        split = f"{subject_prefix.lower()}_{relation.identifier.lower()}_{object_prefix.lower()}"
         rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
     return rv
 
