@@ -964,8 +964,12 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
     return mapping_set
 
 
+SplitMethod: TypeAlias = Literal["disjoint-indexes", "dense-indexes"]
+
+
 def split_dataframe(
     msdf: MappingSetDataFrame,
+    method: SplitMethod | None = None,
 ) -> Dict[str, MappingSetDataFrame]:
     """Group the mapping set dataframe into several subdataframes by prefix.
 
@@ -981,10 +985,8 @@ def split_dataframe(
         subject_prefixes=subject_prefixes,
         object_prefixes=object_prefixes,
         relations=relations,
+        method=method,
     )
-
-
-SplitMethod: TypeAlias = Literal["disjoint-indexes", "dense-indexes"]
 
 
 def split_dataframe_by_prefix(
@@ -1026,10 +1028,13 @@ def _help_split_dataframe_by_prefix(
     method: SplitMethod | None = None,
 ) -> Iterable[tuple[tuple[str, str, str], pd.DataFrame]]:
     """Iterate over splits on a dataframe."""
+    import click
+
     subject_prefixes = _clean_list(subject_prefixes)
     predicates = _clean_list(predicates)
     object_prefixes = _clean_list(object_prefixes)
 
+    click.echo(f"splitting with method: {method}")
     if method == "disjoint-indexes" or method is None:
         s_indexes = {
             subject_prefix: get_filter_df_by_prefixes_index(

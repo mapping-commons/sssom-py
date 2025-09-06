@@ -14,6 +14,7 @@ later, but that will cause problems--the code will get executed twice:
 import logging as _logging
 import os
 import sys
+import typing
 from operator import itemgetter
 from pathlib import Path
 from typing import Any, Callable, List, Optional, TextIO, Tuple, get_args
@@ -43,7 +44,7 @@ from .io import (
     split_file,
     validate_file,
 )
-from .parsers import PARSING_FUNCTIONS, parse_sssom_table
+from .parsers import PARSING_FUNCTIONS, SplitMethod, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
@@ -247,9 +248,10 @@ def validate(input: str, validation_types: List[SchemaValidationType]):
 @main.command()
 @input_argument
 @output_directory_option
-def split(input: str, output_directory: str):
+@click.option("--method", type=click.Choice(typing.get_args(SplitMethod)))
+def split(input: str, output_directory: str, method: SplitMethod):
     """Split input file into multiple output broken down by prefixes."""
-    split_file(input_path=input, output_directory=output_directory)
+    split_file(input_path=input, output_directory=output_directory, method=method)
 
 
 @main.command()
