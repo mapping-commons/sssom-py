@@ -171,9 +171,7 @@ def _read_pandas_and_metadata(
 
     try:
         # pandas can keep going and read from the same stream that we already have
-        df = pd.read_csv(
-            stream, sep=sep, dtype=str, engine="python", header=None, names=names
-        )
+        df = pd.read_csv(stream, sep=sep, dtype=str, engine="python", header=None, names=names)
     except EmptyDataError as e:
         logging.warning(f"Seems like the dataframe is empty: {e}")
         df = pd.DataFrame(
@@ -250,9 +248,7 @@ def _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map):
                     )
                     is_valid_prefixes = False
             # NOTE during refactor replace the following line by https://github.com/biopragmatics/curies/pull/136
-            reverse_bimap = {
-                value: key for key, value in builtin_converter.bimap.items()
-            }
+            reverse_bimap = {value: key for key, value in builtin_converter.bimap.items()}
             if builtin_uri in reverse_bimap:
                 if builtin_prefix != reverse_bimap[builtin_uri]:
                     logging.warning(
@@ -269,7 +265,9 @@ def _fail_in_strict_parsing_mode(is_valid_built_in_prefixes, is_valid_metadata):
     if not is_valid_built_in_prefixes:
         report += "STRONG WARNING: The prefix map provided contains built-in prefixes that were redefined.+\n"
     if not is_valid_metadata:
-        report += "STRONG WARNING: The metadata provided contains non-standard and undefined metadata.+\n"
+        report += (
+            "STRONG WARNING: The metadata provided contains non-standard and undefined metadata.+\n"
+        )
 
     if report:
         raise ValueError(report)
@@ -333,9 +331,7 @@ def parse_sssom_table(
     if meta is None:
         meta = {}
 
-    is_valid_built_in_prefixes = _check_redefined_builtin_prefixes(
-        sssom_metadata, meta, prefix_map
-    )
+    is_valid_built_in_prefixes = _check_redefined_builtin_prefixes(sssom_metadata, meta, prefix_map)
     is_valid_metadata = _is_irregular_metadata([sssom_metadata, meta])
 
     if strict:
@@ -512,9 +508,7 @@ def _address_multivalued_slot(k: str, v: Any) -> Union[str, List[str]]:
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:
     _metadata = dict(ChainMap(meta or {}, get_default_metadata()))
-    mapping_set = MappingSet(
-        mapping_set_id=_metadata[MAPPING_SET_ID], license=_metadata[LICENSE]
-    )
+    mapping_set = MappingSet(mapping_set_id=_metadata[MAPPING_SET_ID], license=_metadata[LICENSE])
     _set_metadata_in_mapping_set(mapping_set=mapping_set, metadata=meta)
     return mapping_set
 
@@ -649,9 +643,7 @@ def from_sssom_json(
     """
     converter = ensure_converter(prefix_map)
 
-    mapping_set = cast(
-        MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet)
-    )
+    mapping_set = cast(MappingSet, JSONLoader().load(source=jsondoc, target_class=MappingSet))
 
     # The priority order for combining metadata is:
     #  1. Metadata appearing in the SSSOM document
@@ -668,9 +660,7 @@ def from_sssom_json(
     )
 
     _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
-    mapping_set_document = MappingSetDocument(
-        mapping_set=mapping_set, converter=converter
-    )
+    mapping_set_document = MappingSetDocument(mapping_set=mapping_set, converter=converter)
     return to_mapping_set_dataframe(mapping_set_document)
 
 
@@ -708,9 +698,7 @@ def from_alignment_minidom(
                         mdict: Dict[str, Any] = _cell_element_values(
                             c_node, converter, mapping_predicates=mapping_predicates
                         )
-                        _add_valid_mapping_to_list(
-                            mdict, mlist, flip_superclass_assertions=True
-                        )
+                        _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
 
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":  # type:ignore[union-attr]
@@ -789,18 +777,14 @@ def from_obographs(
                 predicate_uri = value["pred"]
                 if predicate_uri not in mapping_predicates:
                     continue
-                mdict = _make_mdict(
-                    node_uri, predicate_uri, value["val"], converter, labels
-                )
+                mdict = _make_mdict(node_uri, predicate_uri, value["val"], converter, labels)
                 _add_valid_mapping_to_list(mdict, mlist)
 
         for edge in graph.get("edges", []):
             predicate_uri = _get_obographs_predicate_id(edge["pred"])
             if predicate_uri not in mapping_predicates:
                 continue
-            mdict = _make_mdict(
-                edge["sub"], predicate_uri, edge["obj"], converter, labels
-            )
+            mdict = _make_mdict(edge["sub"], predicate_uri, edge["obj"], converter, labels)
             _add_valid_mapping_to_list(mdict, mlist)
 
         if OWL_EQUIV_CLASS_URI in mapping_predicates:
@@ -931,52 +915,36 @@ def _set_metadata_in_mapping_set(
                 mapping_set[k] = _address_multivalued_slot(k, v)
 
 
-def _cell_element_values(
-    cell_node, converter: Converter, mapping_predicates
-) -> Dict[str, Any]:
+def _cell_element_values(cell_node, converter: Converter, mapping_predicates) -> Dict[str, Any]:
     mdict: Dict[str, Any] = {}
     for child in cell_node.childNodes:
         if child.nodeType == Node.ELEMENT_NODE:
             try:
                 if child.nodeName == "entity1":
-                    mdict[SUBJECT_ID] = safe_compress(
-                        child.getAttribute("rdf:resource"), converter
-                    )
+                    mdict[SUBJECT_ID] = safe_compress(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "entity2":
-                    mdict[OBJECT_ID] = safe_compress(
-                        child.getAttribute("rdf:resource"), converter
-                    )
+                    mdict[OBJECT_ID] = safe_compress(child.getAttribute("rdf:resource"), converter)
                 elif child.nodeName == "measure":
                     mdict[CONFIDENCE] = child.firstChild.nodeValue
                 elif child.nodeName == "relation":
                     relation = child.firstChild.nodeValue
-                    if (relation == "=") and (
-                        SKOS_EXACT_MATCH_URI in mapping_predicates
-                    ):
+                    if (relation == "=") and (SKOS_EXACT_MATCH_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = SKOS_EXACT_MATCH
-                    elif (relation == "<") and (
-                        SKOS_BROAD_MATCH_URI in mapping_predicates
-                    ):
+                    elif (relation == "<") and (SKOS_BROAD_MATCH_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = SKOS_BROAD_MATCH
-                    elif (relation == ">") and (
-                        SKOS_NARROW_MATCH_URI in mapping_predicates
-                    ):
+                    elif (relation == ">") and (SKOS_NARROW_MATCH_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = SKOS_NARROW_MATCH
                     # elif (relation == "%") and (SOMETHING in mapping_predicates)
                     #     # Incompatible.
                     #     pass
                     # elif (relation == "HasInstance") and (SOMETHING in mapping_predicates):
                     #     pass
-                    elif (relation == "InstanceOf") and (
-                        RDF_TYPE_URI in mapping_predicates
-                    ):
+                    elif (relation == "InstanceOf") and (RDF_TYPE_URI in mapping_predicates):
                         mdict[PREDICATE_ID] = RDF_TYPE
                     else:
                         logging.warning(f"{relation} not a recognised relation type.")
                 else:
-                    logging.warning(
-                        f"Unsupported alignment api element: {child.nodeName}"
-                    )
+                    logging.warning(f"Unsupported alignment api element: {child.nodeName}")
             except ValueError as e:
                 logging.warning(e)
 
@@ -993,9 +961,7 @@ def to_mapping_set_document(msdf: MappingSetDataFrame) -> MappingSetDocument:
     return MappingSetDocument(mapping_set=ms, converter=msdf.converter)
 
 
-def _get_mapping_set_from_df(
-    df: pd.DataFrame, meta: Optional[MetadataType] = None
-) -> MappingSet:
+def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = None) -> MappingSet:
     mapping_set = _init_mapping_set(meta)
     bad_attrs: Counter = Counter()
 
@@ -1059,9 +1025,7 @@ def split_dataframe_by_prefix(
     :param relations: a list of relations of interest
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
-    predicates = [
-        msdf.converter.parse_curie(predicate, strict=True) for predicate in relations
-    ]
+    predicates = [msdf.converter.parse_curie(predicate, strict=True) for predicate in relations]
     rr = _help_split_dataframe_by_prefix(
         msdf.df, subject_prefixes, predicates, object_prefixes, method=method
     )
@@ -1071,9 +1035,7 @@ def split_dataframe_by_prefix(
             [subject_prefix, object_prefix, predicate.prefix]
         )
         split = f"{subject_prefix.lower()}_{predicate.identifier.lower()}_{object_prefix.lower()}"
-        rv[split] = from_sssom_dataframe(
-            df, prefix_map=subconverter, meta=msdf.metadata
-        )
+        rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
     return rv
 
 
@@ -1086,11 +1048,7 @@ def _help_split_dataframe_by_prefix(
     method: SplitMethod | None = None,
 ) -> Iterable[tuple[tuple[str, curies.Reference, str], pd.DataFrame]]:
     subject_prefixes = _clean_list(subject_prefixes)
-    predicates = (
-        [predicates]
-        if isinstance(predicates, curies.ReferenceTuple)
-        else list(predicates)
-    )
+    predicates = [predicates] if isinstance(predicates, curies.ReferenceTuple) else list(predicates)
     object_prefixes = _clean_list(object_prefixes)
 
     if method == "disjoint-indexes" or method is None:
@@ -1101,9 +1059,7 @@ def _help_split_dataframe_by_prefix(
             for subject_prefix in subject_prefixes
         }
         p_indexes = {
-            predicate: get_filter_df_by_curies_index(
-                df, column="predicate_id", curie=predicate
-            )
+            predicate: get_filter_df_by_curies_index(df, column="predicate_id", curie=predicate)
             for predicate in predicates
         }
         o_indexes = {
@@ -1115,11 +1071,7 @@ def _help_split_dataframe_by_prefix(
         for subject_prefix, predicate, object_prefix in itt.product(
             subject_prefixes, predicates, object_prefixes
         ):
-            idx = (
-                s_indexes[subject_prefix]
-                & p_indexes[predicate]
-                & o_indexes[object_prefix]
-            )
+            idx = s_indexes[subject_prefix] & p_indexes[predicate] & o_indexes[object_prefix]
             if not idx.any():
                 continue
             yield (subject_prefix, predicate, object_prefix), df[idx]
