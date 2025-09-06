@@ -1016,7 +1016,7 @@ def split_dataframe_by_prefix(
         subconverter = msdf.converter.get_subconverter(
             [subject_prefix, object_prefix, predicate_reference.prefix]
         )
-        split = f"{subject_prefix.lower()}_{predicate.lower()}_{object_prefix.lower()}"
+        split = f"{subject_prefix.lower()}_{predicate_reference.identifier.lower()}_{object_prefix.lower()}"
         rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
     return rv
 
