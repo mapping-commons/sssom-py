@@ -7,9 +7,22 @@ import json
 import logging as _logging
 import os.path
 import typing
-from collections import ChainMap, Counter
+from collections import ChainMap, Counter, defaultdict
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
+from typing import (
+    Any,
+    Callable,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -18,7 +31,7 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
-from curies import Converter
+from curies import Converter, ReferenceTuple
 from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
@@ -977,9 +990,12 @@ def split_dataframe(
     )
 
 
-def _get_split_key(subject_prefix: str, relation_luid: str, object_prefix: str) -> str:
-    split = f"{subject_prefix.lower()}_{relation_luid.lower()}_{object_prefix.lower()}"
-    return split
+class SSSOMSplitGroup(NamedTuple):
+    """The key of a group of mappings in a split MappingSetDataFrame."""
+
+    subject_prefix: str
+    object_prefix: str
+    relation_tup: ReferenceTuple
 
 
 def split_dataframe_by_prefix(
@@ -996,34 +1012,51 @@ def split_dataframe_by_prefix(
     :param relations: a list of relations of interest
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
-    df = msdf.df
     meta = msdf.metadata
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
-    for subject_prefix, object_prefix, relation in itt.product(
-        subject_prefixes, object_prefixes, relations
-    ):
-        relation_prefix, relation_id = relation.split(":")
-        split = _get_split_key(subject_prefix, relation_id, object_prefix)
-        if subject_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
+    mappings_by_group: DefaultDict[SSSOMSplitGroup, List[object]] = defaultdict(list)
+    parse_curie = msdf.converter.parse_curie
+
+    expected_split_groups = [
+        SSSOMSplitGroup(
+            subject_prefix,
+            object_prefix,
+            parse_curie(relation, strict=True),
+        )
+        for subject_prefix, relation, object_prefix in itt.product(
+            subject_prefixes, relations, object_prefixes
+        )
+    ]
+
+    for mapping in msdf.df.itertuples(index=False):
+        group = SSSOMSplitGroup(
+            parse_curie(getattr(mapping, SUBJECT_ID), strict=True).prefix,
+            parse_curie(getattr(mapping, OBJECT_ID), strict=True).prefix,
+            parse_curie(getattr(mapping, PREDICATE_ID), strict=True),
+        )
+        mappings_by_group[group].append(mapping)
+
+    for group in expected_split_groups:
+        split = f"{group.subject_prefix.lower()}_{group.relation_tup.identifier.lower()}_{group.object_prefix.lower()}"
+        mappings = mappings_by_group.get(group, None)
+
+        if group.subject_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing subject prefix - {group.subject_prefix}")
             continue
-        if object_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split} - missing object prefix - {object_prefix}")
+        elif group.object_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing object prefix - {group.object_prefix}")
             continue
-        df_subset = df[
-            (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
-            & (df[PREDICATE_ID] == relation)
-            & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
-        ]
-        if 0 == len(df_subset):
-            logging.debug(f"No matches ({len(df_subset)} matches found)")
+        elif mappings is None:
+            logging.debug(f"{split} - No matches matches found")
             continue
+
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, relation_prefix]
+            [group.subject_prefix, group.object_prefix, group.relation_tup.prefix]
         )
         split_to_msdf[split] = from_sssom_dataframe(
-            df_subset, prefix_map=dict(subconverter.bimap), meta=meta
+            pd.DataFrame(mappings), prefix_map=dict(subconverter.bimap), meta=meta
         )
+
     return split_to_msdf
 
 
