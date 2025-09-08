@@ -1025,7 +1025,14 @@ def split_dataframe_by_prefix(
     :param relations: a list of relations of interest
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
-    relation_tuples = [msdf.converter.parse_curie(relation, strict=True) for relation in relations]
+    relation_tuples = []
+    for relation in relations:
+        t = msdf.converter.parse_curie(relation)
+        if t is None:
+            logging.warning("invalid relation CURIE for dataframe split: %s", relation)
+        else:
+            relation_tuples.append(t)
+
     rr = _help_split_dataframe_by_prefix(
         msdf.df, subject_prefixes, relation_tuples, object_prefixes, method=method
     )
