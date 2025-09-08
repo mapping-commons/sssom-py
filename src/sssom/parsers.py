@@ -990,6 +990,11 @@ def split_dataframe(
     )
 
 
+def _get_split_key(subject_prefix: str, relation_luid: str, object_prefix: str) -> str:
+    split = f"{subject_prefix.lower()}_{relation_luid.lower()}_{object_prefix.lower()}"
+    return split
+
+
 class SSSOMSplitGroup(NamedTuple):
     """The key of a group of mappings in a split MappingSetDataFrame."""
 
@@ -1037,7 +1042,9 @@ def split_dataframe_by_prefix(
         mappings_by_group[group].append(mapping)
 
     for group in expected_split_groups:
-        split = f"{group.subject_prefix.lower()}_{group.relation_tup.identifier.lower()}_{group.object_prefix.lower()}"
+        split = _get_split_key(
+            group.subject_prefix, group.relation_tup.identifier, group.object_prefix
+        )
         mappings = mappings_by_group.get(group, None)
 
         if group.subject_prefix not in msdf.converter.bimap:
