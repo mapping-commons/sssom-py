@@ -16,7 +16,7 @@ import os
 import sys
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, ParamSpec, TextIO, Tuple, TypeVar, get_args
+from typing import Any, Callable, List, Optional, TextIO, Tuple, TypeVar, get_args
 
 import click
 import curies
@@ -24,6 +24,7 @@ import pandas as pd
 import yaml
 from curies import Converter
 from rdflib import Graph, URIRef
+from typing_extensions import ParamSpec
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -73,7 +74,7 @@ input_format_option = click.option(
     "-I",
     "--input-format",
     help="The string denoting the input format.",
-    type=click.Choice(PARSING_FUNCTIONS),
+    type=click.Choice(list(PARSING_FUNCTIONS)),
 )
 output_option = click.option(
     "-o",
@@ -86,7 +87,7 @@ output_format_option = click.option(
     "-O",
     "--output-format",
     help="Desired output format.",
-    type=click.Choice(WRITER_FUNCTIONS),
+    type=click.Choice(list(WRITER_FUNCTIONS)),
 )
 output_directory_option = click.option(
     "-d",
