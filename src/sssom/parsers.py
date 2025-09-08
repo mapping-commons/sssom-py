@@ -1054,17 +1054,17 @@ def _help_split_dataframe_by_prefix(
     if method == "disjoint-indexes" or method is None:
         s_indexes = {
             subject_prefix: get_filter_df_by_prefixes_index(
-                df, column="subject_id", prefix=subject_prefix
+                df, column="subject_id", prefixes=subject_prefix
             )
             for subject_prefix in subject_prefixes
         }
         p_indexes = {
-            predicate: get_filter_df_by_curies_index(df, column="predicate_id", curie=predicate)
+            predicate: get_filter_df_by_curies_index(df, column="predicate_id", curies=predicate)
             for predicate in predicates
         }
         o_indexes = {
             object_prefix: get_filter_df_by_prefixes_index(
-                df, column="object_id", prefix=object_prefix
+                df, column="object_id", prefixes=object_prefix
             )
             for object_prefix in object_prefixes
         }
