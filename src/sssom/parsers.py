@@ -1070,7 +1070,7 @@ def _help_split_dataframe_by_prefix(
             for subject_prefix in subject_prefixes
         }
         p_indexes: dict[ReferenceTuple, pd.Series[bool]] = {
-            predicate: get_filter_df_by_curies_index(df, column="predicate_id", curies=predicate)
+            predicate: get_filter_df_by_curies_index(df, column="predicate_id", curies=predicate.curie)
             for predicate in predicates
         }
         o_indexes: dict[str, pd.Series[bool]] = {
