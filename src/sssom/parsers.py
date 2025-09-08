@@ -1,5 +1,7 @@
 """SSSOM parsers."""
 
+from __future__ import annotations
+
 import gzip
 import io
 import itertools as itt
@@ -9,7 +11,18 @@ import os.path
 import typing
 from collections import ChainMap, Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 from xml.dom import Node, minidom
 from xml.dom.minidom import Document
 
@@ -18,12 +31,19 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
-from curies import Converter
+from curies import Converter, ReferenceTuple
+from curies.dataframe import (
+    get_df_curies_index,
+    get_df_prefixes_index,
+    get_filter_df_by_curies_index,
+    get_filter_df_by_prefixes_index,
+)
 from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph
 from sssom_schema import Mapping, MappingSet
+from typing_extensions import Literal, TypeAlias
 
 from sssom.constants import (
     CONFIDENCE,
@@ -877,7 +897,9 @@ def _swap_object_subject(mapping: Mapping) -> Mapping:
 
 
 def _set_metadata_in_mapping_set(
-    mapping_set: MappingSet, metadata: Optional[MetadataType] = None, overwrite: bool = True
+    mapping_set: MappingSet,
+    metadata: Optional[MetadataType] = None,
+    overwrite: bool = True,
 ) -> None:
     if metadata is None:
         logging.info("Tried setting metadata but none provided.")
@@ -957,8 +979,12 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
     return mapping_set
 
 
+SplitMethod: TypeAlias = Literal["disjoint-indexes", "dense-indexes"]
+
+
 def split_dataframe(
     msdf: MappingSetDataFrame,
+    method: SplitMethod | None = None,
 ) -> Dict[str, MappingSetDataFrame]:
     """Group the mapping set dataframe into several subdataframes by prefix.
 
@@ -974,6 +1000,7 @@ def split_dataframe(
         subject_prefixes=subject_prefixes,
         object_prefixes=object_prefixes,
         relations=relations,
+        method=method,
     )
 
 
@@ -987,6 +1014,8 @@ def split_dataframe_by_prefix(
     subject_prefixes: Iterable[str],
     object_prefixes: Iterable[str],
     relations: Iterable[str],
+    *,
+    method: SplitMethod | None = None,
 ) -> Dict[str, MappingSetDataFrame]:
     """Split a mapping set dataframe by prefix.
 
@@ -994,37 +1023,94 @@ def split_dataframe_by_prefix(
     :param subject_prefixes: a list of prefixes pertaining to the subject
     :param object_prefixes: a list of prefixes pertaining to the object
     :param relations: a list of relations of interest
+    :param method: The method for calculating splits
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
-    df = msdf.df
-    meta = msdf.metadata
-    split_to_msdf: Dict[str, MappingSetDataFrame] = {}
-    for subject_prefix, object_prefix, relation in itt.product(
-        subject_prefixes, object_prefixes, relations
-    ):
-        relation_prefix, relation_id = relation.split(":")
-        split = _get_split_key(subject_prefix, relation_id, object_prefix)
-        if subject_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
-            continue
-        if object_prefix not in msdf.converter.bimap:
-            logging.warning(f"{split} - missing object prefix - {object_prefix}")
-            continue
-        df_subset = df[
-            (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
-            & (df[PREDICATE_ID] == relation)
-            & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
-        ]
-        if 0 == len(df_subset):
-            logging.debug(f"No matches ({len(df_subset)} matches found)")
-            continue
+    predicates: List[ReferenceTuple] = []
+    for relation in relations:
+        if reference_tuple := msdf.converter.parse_curie(relation):
+            predicates.append(reference_tuple)
+        else:
+            logging.warning("invalid relation CURIE for dataframe split: %s", relation)
+
+    rr = _help_split_dataframe_by_prefix(
+        msdf.df,
+        subject_prefixes=subject_prefixes,
+        predicates=predicates,
+        object_prefixes=object_prefixes,
+        method=method,
+    )
+    rv = {}
+    for (subject_prefix, relation_t, object_prefix), df in rr:
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, relation_prefix]
+            [subject_prefix, object_prefix, relation_t.prefix]
         )
-        split_to_msdf[split] = from_sssom_dataframe(
-            df_subset, prefix_map=dict(subconverter.bimap), meta=meta
-        )
-    return split_to_msdf
+        split = _get_split_key(subject_prefix, relation_t.identifier, object_prefix)
+        rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
+    return rv
+
+
+def _help_split_dataframe_by_prefix(
+    df: pd.DataFrame,
+    subject_prefixes: str | Iterable[str],
+    predicates: curies.ReferenceTuple | Iterable[curies.ReferenceTuple],
+    object_prefixes: str | Iterable[str],
+    *,
+    method: SplitMethod | None = None,
+) -> Iterable[tuple[tuple[str, curies.ReferenceTuple, str], pd.DataFrame]]:
+    subject_prefixes = _clean_list(subject_prefixes)
+    predicates = [predicates] if isinstance(predicates, curies.ReferenceTuple) else list(predicates)
+    object_prefixes = _clean_list(object_prefixes)
+
+    if method == "disjoint-indexes" or method is None:
+        s_indexes: dict[str, pd.Series[bool]] = {
+            subject_prefix: get_filter_df_by_prefixes_index(
+                df, column="subject_id", prefixes=subject_prefix
+            )
+            for subject_prefix in subject_prefixes
+        }
+        p_indexes: dict[ReferenceTuple, pd.Series[bool]] = {
+            predicate: get_filter_df_by_curies_index(
+                df, column="predicate_id", curies=predicate.curie
+            )
+            for predicate in predicates
+        }
+        o_indexes: dict[str, pd.Series[bool]] = {
+            object_prefix: get_filter_df_by_prefixes_index(
+                df, column="object_id", prefixes=object_prefix
+            )
+            for object_prefix in object_prefixes
+        }
+        for subject_prefix, predicate, object_prefix in itt.product(
+            subject_prefixes, predicates, object_prefixes
+        ):
+            idx = s_indexes[subject_prefix] & p_indexes[predicate] & o_indexes[object_prefix]
+            if not idx.any():
+                continue
+            yield (subject_prefix, predicate, object_prefix), df[idx]
+
+    elif method == "dense-indexes":
+        s_index = get_df_prefixes_index(df, column="subject_id")
+        p_index = get_df_curies_index(df, column="predicate_id")
+        o_index = get_df_prefixes_index(df, column="object_id")
+        for subject_prefix, predicate, object_prefix in itt.product(
+            subject_prefixes, predicates, object_prefixes
+        ):
+            dense_idx: list[int] = sorted(
+                set(s_index.get(subject_prefix, []))
+                .intersection(p_index.get(predicate.curie, []))
+                .intersection(o_index.get(object_prefix, []))
+            )
+            if not dense_idx:
+                continue
+            yield (subject_prefix, predicate, object_prefix), df.iloc[dense_idx]
+
+    else:
+        raise ValueError(f"invalid split method: {method}")
+
+
+def _clean_list(item: str | Iterable[str]) -> list[str]:
+    return [item] if isinstance(item, str) else list(item)
 
 
 def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
