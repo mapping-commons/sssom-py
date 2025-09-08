@@ -666,7 +666,7 @@ T = TypeVar("T")
 
 
 def dynamically_generate_sssom_options(
-    options: list[str],
+    options: List[str],
 ) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """Dynamically generate click options.
 
