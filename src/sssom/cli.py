@@ -235,7 +235,7 @@ def parse(
 @click.option(
     "--validation-types",
     "-V",
-    type=click.Choice(SchemaValidationType),
+    type=click.Choice(list(SchemaValidationType)),
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
