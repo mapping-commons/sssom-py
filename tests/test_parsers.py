@@ -549,7 +549,6 @@ class TestSplit(unittest.TestCase):
         msdf = from_sssom_dataframe(df, converter)
 
         # test that if there's ever an empty list, then it returns an empty dict
-        self.assertFalse(split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"]))
         self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
         self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
 

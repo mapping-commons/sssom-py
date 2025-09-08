@@ -1057,23 +1057,23 @@ def _help_split_dataframe_by_prefix(
     object_prefixes: str | Iterable[str],
     *,
     method: SplitMethod | None = None,
-) -> Iterable[tuple[tuple[str, curies.Reference, str], pd.DataFrame]]:
+) -> Iterable[tuple[tuple[str, curies.ReferenceTuple, str], pd.DataFrame]]:
     subject_prefixes = _clean_list(subject_prefixes)
     predicates = [predicates] if isinstance(predicates, curies.ReferenceTuple) else list(predicates)
     object_prefixes = _clean_list(object_prefixes)
 
     if method == "disjoint-indexes" or method is None:
-        s_indexes = {
+        s_indexes: dict[str, pd.Series[bool]] = {
             subject_prefix: get_filter_df_by_prefixes_index(
                 df, column="subject_id", prefixes=subject_prefix
             )
             for subject_prefix in subject_prefixes
         }
-        p_indexes = {
+        p_indexes: dict[ReferenceTuple, pd.Series[bool]] = {
             predicate: get_filter_df_by_curies_index(df, column="predicate_id", curies=predicate)
             for predicate in predicates
         }
-        o_indexes = {
+        o_indexes: dict[str, pd.Series[bool]] = {
             object_prefix: get_filter_df_by_prefixes_index(
                 df, column="object_id", prefixes=object_prefix
             )
