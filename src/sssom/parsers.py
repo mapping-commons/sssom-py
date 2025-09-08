@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
-from curies import Converter
+from curies import Converter, ReferenceTuple
 from curies.dataframe import (
     get_df_curies_index,
     get_df_prefixes_index,
@@ -1023,25 +1023,29 @@ def split_dataframe_by_prefix(
     :param subject_prefixes: a list of prefixes pertaining to the subject
     :param object_prefixes: a list of prefixes pertaining to the object
     :param relations: a list of relations of interest
+    :param method: The method for calculating splits
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
-    relation_tuples = []
+    predicates: List[ReferenceTuple] = []
     for relation in relations:
-        t = msdf.converter.parse_curie(relation)
-        if t is None:
-            logging.warning("invalid relation CURIE for dataframe split: %s", relation)
+        if reference_tuple := msdf.converter.parse_curie(relation):
+            predicates.append(reference_tuple)
         else:
-            relation_tuples.append(t)
+            logging.warning("invalid relation CURIE for dataframe split: %s", relation)
 
     rr = _help_split_dataframe_by_prefix(
-        msdf.df, subject_prefixes, relation_tuples, object_prefixes, method=method
+        msdf.df,
+        subject_prefixes=subject_prefixes,
+        predicates=predicates,
+        object_prefixes=object_prefixes,
+        method=method,
     )
     rv = {}
-    for (subject_prefix, relation, object_prefix), df in rr:
+    for (subject_prefix, relation_t, object_prefix), df in rr:
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, relation.prefix]
+            [subject_prefix, object_prefix, relation_t.prefix]
         )
-        split = _get_split_key(subject_prefix, relation.identifier, object_prefix)
+        split = _get_split_key(subject_prefix, relation_t.identifier, object_prefix)
         rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
     return rv
 
@@ -1084,15 +1088,15 @@ def _help_split_dataframe_by_prefix(
             yield (subject_prefix, predicate, object_prefix), df[idx]
 
     elif method == "dense-indexes":
-        s_index = get_df_prefixes_index(df, "subject_id")
-        p_index = get_df_curies_index(df, "predicate_id")
-        o_index = get_df_prefixes_index(df, "object_id")
+        s_index = get_df_prefixes_index(df, column="subject_id")
+        p_index = get_df_curies_index(df, column="predicate_id")
+        o_index = get_df_prefixes_index(df, column="object_id")
         for subject_prefix, predicate, object_prefix in itt.product(
             subject_prefixes, predicates, object_prefixes
         ):
             dense_idx: list[int] = sorted(
                 set(s_index.get(subject_prefix, []))
-                .intersection(p_index.get(predicate, []))
+                .intersection(p_index.get(predicate.curie, []))
                 .intersection(o_index.get(object_prefix, []))
             )
             if not dense_idx:
