@@ -543,6 +543,10 @@ class TestSplit(unittest.TestCase):
             ("p4:1", "skos:exactMatch", "p1:1", "semapv:ManualMappingCuration"),
             ("p5:1", "skos:broadMatch", "p6:1", "semapv:ManualMappingCuration"),
             ("p1:7", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            # the following rows have CURIEs whose prefixes aren't in the converter
+            ("x:1", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "x:2", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "skos:broadMatch", "x:3", "semapv:ManualMappingCuration"),
         ]
         columns = ["subject_id", "predicate_id", "object_id", "mapping_justification"]
         df = pd.DataFrame(rows, columns=columns)
