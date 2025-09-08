@@ -197,6 +197,8 @@ def extract_iris(input: RecursivePathList, converter: Converter) -> List[str]:
         return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in input)))
     if isinstance(input, tuple):
         return sorted(set(chain.from_iterable(extract_iris(p, converter) for p in input)))
+    if not isinstance(input, str):
+        raise TypeError
     if converter.is_uri(input):
         return [converter.standardize_uri(input, strict=True)]
     if converter.is_curie(input):

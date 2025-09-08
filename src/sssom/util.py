@@ -926,7 +926,7 @@ def merge_msdf(
         [msdf.df for msdf in msdf_with_meta],
     ).drop_duplicates(ignore_index=True)
 
-    converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
+    converter = curies.chain([msdf.converter for msdf in msdf_with_meta])
     merged_msdf = MappingSetDataFrame.with_converter(df=df_merged, converter=converter)
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)

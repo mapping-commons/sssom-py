@@ -66,7 +66,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 logging.info("Testing fhir_json JSON export")
                 self._test_to_fhir_json(mdoc, test)
 
-    def _test_to_owl_graph(self, mdoc, test) -> None:
+    def _test_to_owl_graph(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         g = to_owl_graph(msdf)
         file_format = "owl"
@@ -81,21 +81,21 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
-    def _test_to_json(self, mdoc, test: SSSOMTestCase) -> None:
+    def _test_to_json(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         jsonob = to_json(msdf)
         self.assertEqual(len(jsonob), test.ct_json_elements)
         with open(test.get_out_file("json"), "w") as file:
             write_json(msdf, file, serialisation="json")
 
-    def _test_to_fhir_json(self, mdoc, test: SSSOMTestCase) -> None:
+    def _test_to_fhir_json(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         d = to_fhir_json(msdf)
         self.assertEqual(
             len(d["group"][0]["element"]), test.ct_data_frame_rows, "wrong number of mappings."
         )
 
-    def _test_to_ontoportal_json(self, mdoc, test: SSSOMTestCase) -> None:
+    def _test_to_ontoportal_json(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         jsonob = to_ontoportal_json(msdf)
         self.assertEqual(len(jsonob), test.ct_data_frame_rows)
@@ -107,7 +107,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertIsInstance(first_ob["relation"], list)
         self.assertGreater(len(first_ob["relation"]), 0)
 
-    def _test_to_rdf_graph(self, mdoc, test) -> None:
+    def _test_to_rdf_graph(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         g = to_rdf_graph(msdf)
         file_format = "rdf"
@@ -122,7 +122,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         )
         # self._test_files_equal(test.get_out_file(file_format), test.get_validate_file(file_format))
 
-    def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str):
+    def _test_graph_roundtrip(self, g: Graph, test: SSSOMTestCase, file_format: str) -> None:
         self._test_graph_size(g, getattr(test, f"ct_graph_queries_{file_format}"), test.filename)
         f_roundtrip = test.get_out_file(f"roundtrip.{file_format}")
         g.serialize(destination=f_roundtrip, format=test.graph_serialisation)
@@ -150,7 +150,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                 f"Graph query {query} does not return the expected number of triples for {file}",
             )
 
-    def _test_to_dataframe(self, mdoc: MappingSetDocument, test) -> None:
+    def _test_to_dataframe(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
         msdf = to_mapping_set_dataframe(mdoc)
         df = msdf.df
         self.assertEqual(

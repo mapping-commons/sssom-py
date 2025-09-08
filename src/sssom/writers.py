@@ -4,7 +4,7 @@ import json
 import logging as _logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, Optional, TextIO, Tuple, Union
+from typing import Any, Callable, Collection, Dict, Generator, List, Optional, TextIO, Tuple, Union
 
 import pandas as pd
 import yaml
@@ -596,7 +596,8 @@ def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[s
         logging.info(f"Writing {path} complete!")
 
 
-def _inject_annotation_properties(graph: Graph, elements) -> None:
+def _inject_annotation_properties(graph: Graph, elements: Collection[str]) -> None:
+    # TODO unused, delete
     for var in [
         slot
         for slot in dir(slots)

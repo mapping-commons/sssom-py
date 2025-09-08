@@ -16,14 +16,14 @@ import os
 import sys
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, TextIO, Tuple, get_args
+from typing import Any, Callable, List, Optional, ParamSpec, TextIO, Tuple, TypeVar, get_args
 
 import click
 import curies
 import pandas as pd
 import yaml
 from curies import Converter
-from rdflib import Graph
+from rdflib import Graph, URIRef
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -363,7 +363,7 @@ def sparql(
     if url is not None:
         endpoint.url = url
     if graph is not None:
-        endpoint.graph = graph
+        endpoint.graph = URIRef(graph)
     if limit is not None:
         endpoint.limit = limit
     if object_labels is not None:
@@ -398,7 +398,7 @@ def diff(inputs: Tuple[str, str], output: TextIO) -> None:
         )
 
     prefix_map_list = [msdf1, msdf2]
-    converter = curies.chain(m.converter for m in prefix_map_list)
+    converter = curies.chain([m.converter for m in prefix_map_list])
     msdf = MappingSetDataFrame.with_converter(
         df=d.combined_dataframe.drop_duplicates(), converter=converter
     )
@@ -559,12 +559,12 @@ def merge(inputs: str, output: TextIO, reconcile: bool = False) -> None:
 )
 @output_option
 def rewire(
-    input,
-    mapping_file,
-    precedence,
+    input: str,
+    mapping_file: str,
+    precedence: list[str],
     output: TextIO,
-    input_format,
-    output_format,
+    input_format: str,
+    output_format: str,
 ) -> None:
     """Rewire an ontology using equivalent classes/properties from a mapping file.
 
@@ -660,14 +660,20 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool) -> None:
 #     write_table(msdf=filtered_msdf, file=output)
 
 
-def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
+P = ParamSpec("P")
+T = TypeVar("T")
+
+
+def dynamically_generate_sssom_options(
+    options: list[str],
+) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """Dynamically generate click options.
 
     :param options: List of all possible options.
     :return: Click options deduced from user input into parameters.
     """
 
-    def _decorator(f):
+    def _decorator(f: Callable[P, T]) -> Callable[P, T]:
         for sssom_slot in reversed(options):
             click.option("--" + sssom_slot, multiple=True)(f)
         return f

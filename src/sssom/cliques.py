@@ -126,7 +126,7 @@ def group_values(d: Dict[str, str]) -> Dict[str, List[str]]:
     return dict(rv)
 
 
-def get_src(src: Optional[str], curie: str):
+def get_src(src: Optional[str], curie: str) -> str:
     """Get prefix of subject/object in the MappingSetDataFrame.
 
     :param src: Source
@@ -139,7 +139,7 @@ def get_src(src: Optional[str], curie: str):
         return src
 
 
-def summarize_cliques(doc: MappingSetDataFrame):
+def summarize_cliques(doc: MappingSetDataFrame) -> pd.DataFrame:
     """Summarize stats on a clique doc."""
     cliquedocs = split_into_cliques(doc)
     items = []
