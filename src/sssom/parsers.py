@@ -977,6 +977,11 @@ def split_dataframe(
     )
 
 
+def _get_split_key(subject_prefix: str, relation_luid: str, object_prefix: str) -> str:
+    split = f"{subject_prefix.lower()}_{relation_luid.lower()}_{object_prefix.lower()}"
+    return split
+
+
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame,
     subject_prefixes: Iterable[str],
@@ -998,7 +1003,7 @@ def split_dataframe_by_prefix(
         subject_prefixes, object_prefixes, relations
     ):
         relation_prefix, relation_id = relation.split(":")
-        split = f"{subject_prefix.lower()}_{relation_id.lower()}_{object_prefix.lower()}"
+        split = _get_split_key(subject_prefix, relation_id, object_prefix)
         if subject_prefix not in msdf.converter.bimap:
             logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
             continue
