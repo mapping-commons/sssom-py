@@ -1,16 +1,17 @@
 """Constants."""
 
+from __future__ import annotations
+
 import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Mapping, Set, TextIO, Union
+from typing import Any, ClassVar, Dict, List, Literal, Mapping, Set, TextIO, Union, cast
 
 import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
-from typing_extensions import Self
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
@@ -218,7 +219,9 @@ class SSSOMSchemaView(object):
     Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    def __new__(cls) -> Self:
+    instance: ClassVar[SSSOMSchemaView]
+
+    def __new__(cls) -> SSSOMSchemaView:
         """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
@@ -284,7 +287,9 @@ class SSSOMSchemaView(object):
 def _get_sssom_schema_object() -> SSSOMSchemaView:
     """Get a view over the SSSOM schema."""
     sssom_sv_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
+        SSSOMSchemaView.instance
+        if hasattr(SSSOMSchemaView, "instance")
+        else SSSOMSchemaView()  # type:ignore[misc]
     )
     return sssom_sv_object
 

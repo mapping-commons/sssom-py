@@ -1,5 +1,7 @@
 """Utility functions."""
 
+from __future__ import annotations
+
 import itertools as itt
 import json
 import logging as _logging
@@ -9,7 +11,20 @@ from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Literal, Mapping, Optional, Set, Tuple, Union, cast
+from typing import (
+    Any,
+    DefaultDict,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import curies
 import numpy as np
@@ -72,6 +87,9 @@ from .context import (
 from .sssom_document import MappingSetDocument
 
 logging = _logging.getLogger(__name__)
+
+X = TypeVar("X")
+Y = TypeVar("Y")
 
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
@@ -1569,7 +1587,7 @@ def invert_mappings(
         return return_df
 
 
-def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
+def _invert_column_names(column_names: list[X], columns_invert_map: Mapping[X, Y]) -> dict[X, Y]:
     """Return a dictionary for column renames in pandas DataFrame."""
     return {x: columns_invert_map[x] for x in column_names}
 
