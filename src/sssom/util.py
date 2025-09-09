@@ -396,7 +396,7 @@ class MappingSetDataFrame:
         self.df.drop(columns=condensed, inplace=True)
         return condensed
 
-    def infer_cardinality(self, scope: List[str] | None = None) -> None:
+    def infer_cardinality(self, scope: Optional[List[str]] = None) -> None:
         """Infer cardinality values in the set.
 
         This method will automatically fill the `mapping_cardinality` slot for
