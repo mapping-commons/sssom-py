@@ -539,8 +539,6 @@ class MappingSetDataFrame:
         # Get the highest of the accumulated versions.
         return ".".join([str(i) for i in max(versions)])
 
-        return max(versions, key=_version_to_compare_key)
-
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
     """Standardize a CURIE or IRI, returning the original if not possible.
