@@ -1,0 +1,7 @@
+#curie_map:
+#  FBbt: "http://purl.obolibrary.org/obo/FBbt_"
+#  UBERON: "http://purl.obolibrary.org/obo/UBERON_"
+#  sssom.record: "https://example.org/sssom.record/"
+#  orcid: "https://orcid.org/"
+record_id	subject_id	predicate_id	object_id	mapping_justification	creator_id
+sssom.record:hq6bs14aptzepwgk6pw7j8ysnft6riqrw7har84rtk8r9xmbcwty	FBbt:00001234	skos:exactMatch	UBERON:0005678	semapv:ManualMappingCuration	orcid:0000-0000-1234-5678|orcid:0000-0000-5678-1234
