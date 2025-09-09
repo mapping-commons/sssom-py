@@ -9,6 +9,7 @@ from curies import Converter
 
 import sssom.io
 from sssom import Mapping
+from sssom.constants import SSSOMSchemaView
 from sssom.sexpr import get_mapping_hash, to_sexpr
 
 HERE = Path(__file__).parent.resolve()
@@ -57,12 +58,43 @@ class TestSExpressions(unittest.TestCase):
             get_mapping_hash(mapping, converter),
         )
 
+    def test_test_completion(self) -> None:
+        """Test that the example file is complete over the whole SSSOM schema."""
+        view = SSSOMSchemaView()
+
+        df = pd.read_csv(PATH, sep="\t", comment="#")
+        missing = set(view.mapping_slots).difference(df.columns)
+        if missing:
+            msg = "\n".join(sorted(missing))
+            self.fail(msg=f"comprehensive testing file is missing slots:\n{msg}")
+
+        for slot in view.mapping_slots:
+            with self.subTest(slot=slot):
+                series = df[slot]
+                self.assertTrue(series.any(), msg=f"there is no row that has a value for: {slot}")
+
+                values = series.unique()
+                if slot in view.multivalued_slots:
+                    self.assertTrue(
+                        any("|" in value for value in values),
+                        msg=f"missing a multi-valued example for slot: {slot}",
+                    )
+                    self.assertTrue(
+                        any("|" not in value for value in values),
+                        msg=f"missing a single valued example for slot: {slot}",
+                    )
+                else:
+                    self.assertFalse(
+                        any("|" in value for value in values),
+                        msg=f"should not have a pipe delimiter in single valued slot: {slot}",
+                    )
+
     def test_all(self) -> None:
         """Test all."""
         msdf = sssom.parse_tsv(PATH)
 
         # After new SSSOM schema release, this will be part of the mapping data model
-        record_ids = pd.read_csv(PATH, sep="\t", skiprows=5)["record_id"]
+        record_ids = pd.read_csv(PATH, sep="\t", comment="#")["record_id"]
         for record_id, mapping in zip(record_ids, msdf.to_mappings()):
             self.assertEqual(
                 record_id.removeprefix("sssom.record:"),
