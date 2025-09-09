@@ -501,18 +501,18 @@ class MappingSetDataFrame:
     def get_compatible_version(self) -> str:
         """Get the minimum version of SSSOM this set is compatible with."""
         schema = SSSOMSchemaView()
-        versions: Set[str] = set()
+        versions: Set[Tuple[int, int]] = set()
 
         # First get the minimum versions required by the slots present
         # in the set; this is entirely provided by the SSSOM model.
         for slot in self.metadata.keys():
             version = schema.get_minimum_version(slot, "mapping set")
             if version is not None:
-                versions.add(str(version))
+                versions.add(version)
         for slot in self.df.columns:
             version = schema.get_minimum_version(slot, "mapping")
             if version is not None:
-                versions.add(str(version))
+                versions.add(version)
 
         # Then take care of enum values; we cannot use the SSSOM model
         # for that (enum values are not tagged with an "added_in"
@@ -531,16 +531,13 @@ class MappingSetDataFrame:
                 and "composed entity expression" in self.df[OBJECT_TYPE].values
             )
         ):
-            versions.add("1.1")
+            versions.add((1, 1))
 
         if MAPPING_CARDINALITY in self.df.columns and "0:0" in self.df[MAPPING_CARDINALITY].values:
-            versions.add("1.1")
+            versions.add((1, 1))
 
-        # Get the highest of the accumulated versions. We do a numerical
-        # sort, so that version 1.10 (if we ever get that far in the 1.x
-        # branch) does not get sorted before version 1.9.
-        def _version_to_compare_key(version):
-            return tuple(int(s) for s in version.split("."))
+        # Get the highest of the accumulated versions.
+        return ".".join([str(i) for i in max(versions)])
 
         return max(versions, key=_version_to_compare_key)
 
