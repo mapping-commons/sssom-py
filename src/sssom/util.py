@@ -23,12 +23,15 @@ from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 
 from .constants import (
+    CARDINALITY_SCOPE,
     COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
+    MAPPING_CARDINALITY,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
+    NO_TERM_FOUND,
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
@@ -392,6 +395,106 @@ class MappingSetDataFrame:
 
         self.df.drop(columns=condensed, inplace=True)
         return condensed
+
+    def infer_cardinality(self, scope: Optional[List[str]] = None) -> None:
+        """Infer cardinality values in the set.
+
+        This method will automatically fill the `mapping_cardinality` slot for
+        all records in the set, overwriting any pre-existing values.
+
+        See <https://mapping-commons.github.io/sssom/spec-model/#mapping-cardinality-and-cardinality-scope>
+        for more information about cardinality computation,
+        <https://mapping-commons.github.io/sssom/spec-model/#literal-mappings>
+        for how to deal with literal mapping records, and
+        <https://mapping-commons.github.io/sssom/spec-model/#representing-unmapped-entities>
+        for how to deal with mapping records involving `sssom:NoTermFound`.
+
+        :param scope: A list of slot names that defines the subset of the
+                      records in which cardinality will be computed. For
+                      example, with a scope of `['predicate_id']`, for any
+                      given record the cardinality will be computed relatively
+                      to the subset of records that have the same predicate.
+                      The default is an empty list, meaning that cardinality is
+                      computed relatively to the entire set of records.
+        """
+        if scope is None:
+            scope = []
+
+        #: Unique subjects for any given object
+        subjects_by_object: defaultdict[str, set[str]] = defaultdict(set)
+        #: Unique objects for any given subject
+        objects_by_subject: defaultdict[str, set[str]] = defaultdict(set)
+
+        schema = SSSOMSchemaView()
+        unknown_slots = [slot for slot in scope if slot not in schema.mapping_slots]
+        if len(unknown_slots) > 0:
+            logging.warning(f"Ignoring invalid slot name(s): {unknown_slots}.")
+            scope = list(set(scope) - set(unknown_slots))
+
+        # Helper function to transform a row into a string that represents
+        # a subject (or object) in a given scope; `side` is either `subject`
+        # or `object`.
+        def _to_string(row: dict[str, Any], side: str) -> str:
+            # We prepend a one-letter code (`L` or `E`) to the actual subject
+            # or object so that literal and non-literal mapping records are
+            # always distinguishable and can be counted separately.
+            if row.get(f"{side}_type") == "rdfs literal":
+                s = "L\0" + row.get(f"{side}_label", "")
+            else:
+                s = "E\0" + row.get(f"{side}_id", "")
+            for slot in scope:
+                s += "\0" + row.get(slot, "")
+            return s
+
+        # We iterate over the records a first time to collect the different
+        # objects mapped to each subject and vice versa
+        for _, row in self.df.iterrows():
+            if row.get(SUBJECT_ID) == NO_TERM_FOUND or row.get(OBJECT_ID) == NO_TERM_FOUND:
+                # Mappings to sssom:NoTermFound are ignored for cardinality computations
+                continue
+
+            subj = _to_string(row, "subject")
+            obj = _to_string(row, "object")
+
+            subjects_by_object[obj].add(subj)
+            objects_by_subject[subj].add(obj)
+
+        # Second iteration to compute the actual cardinality values. Since we
+        # must not modify a row while we are iterating over the dataframe, we
+        # collect the values in a separate array.
+        cards = []
+        for _, row in self.df.iterrows():
+            # Special cases involving sssom:NoTermFound on either side
+            if row.get(SUBJECT_ID) == NO_TERM_FOUND:
+                if row.get(OBJECT_ID) == NO_TERM_FOUND:
+                    cards.append("0:0")
+                else:
+                    cards.append("0:1")
+            elif row.get(OBJECT_ID) == NO_TERM_FOUND:
+                cards.append("1:0")
+            else:
+                # General case
+                n_subjects = len(subjects_by_object[_to_string(row, "object")])
+                n_objects = len(objects_by_subject[_to_string(row, "subject")])
+
+                if n_subjects == 1:
+                    if n_objects == 1:
+                        cards.append("1:1")
+                    else:
+                        cards.append("1:n")
+                else:
+                    if n_objects == 1:
+                        cards.append("n:1")
+                    else:
+                        cards.append("n:n")
+
+        # Add the computed values to the dataframe
+        self.df[MAPPING_CARDINALITY] = cards
+        if len(scope) > 0:
+            self.df[CARDINALITY_SCOPE] = "|".join(scope)
+        else:
+            # No scope, so remove any pre-existing "cardinality_scope" column
+            self.df.drop(columns=CARDINALITY_SCOPE, inplace=True, errors="ignore")
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
