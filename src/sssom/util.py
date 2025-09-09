@@ -501,7 +501,7 @@ class MappingSetDataFrame:
     def get_compatible_version(self) -> str:
         """Get the minimum version of SSSOM this set is compatible with."""
         schema = SSSOMSchemaView()
-        versions = set()
+        versions: Set[str] = set()
 
         # First get the minimum versions required by the slots present
         # in the set; this is entirely provided by the SSSOM model.
