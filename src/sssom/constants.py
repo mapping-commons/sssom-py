@@ -4,7 +4,7 @@ import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Set, TextIO, Union
+from typing import Any, Dict, List, Literal, Optional, Set, TextIO, Tuple, Union
 
 import importlib_resources
 import yaml
@@ -282,6 +282,33 @@ class SSSOMSchemaView(object):
             if annotations is not None and "propagated" in annotations:
                 slots.append(slot_name)
         return slots
+
+    def get_minimum_version(
+        self, slot_name: str, class_name: str = "mapping"
+    ) -> Optional[Tuple[int, int]]:
+        """Get the minimum version of SSSOM required for a given slot.
+
+        :param slot_name: The queried slot.
+        :param class_name: The class the slot belongs to. This is needed
+                           because a slot may have been added to a class
+                           in a later version than the version in which
+                           it was first introduced in the schema.
+        :return: A tuple containing the major and minor numbers of the
+                 earliest version of SSSOM that defines the given slot
+                 in the given class. May be None if the requested slot
+                 name is not a valid slot name.
+        """
+        try:
+            slot = self.view.induced_slot(slot_name, class_name)
+            version = [int(s) for s in slot.annotations.added_in.value.split(".")]
+            if len(version) != 2:
+                # Should never happen, schema is incorrect
+                return None
+            return (version[0], version[1])
+        except AttributeError:  # No added_in annotation, defaults to 1.0
+            return (1, 0)
+        except ValueError:  # No such slot
+            return None
 
 
 @lru_cache(1)

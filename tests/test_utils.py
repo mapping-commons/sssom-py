@@ -17,10 +17,13 @@ from sssom.constants import (
     MAPPING_CARDINALITY,
     OBJECT_ID,
     OBJECT_LABEL,
+    OBJECT_TYPE,
     PREDICATE_ID,
+    PREDICATE_TYPE,
     SEMAPV,
     SUBJECT_ID,
     SUBJECT_LABEL,
+    SUBJECT_TYPE,
 )
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iris
@@ -634,3 +637,40 @@ class TestUtils(unittest.TestCase):
         expected = ["1:n", "1:n", "1:n", "1:n", "1:n", "1:n"]
         self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
         self.assertNotIn(CARDINALITY_SCOPE, msdf.df.columns)
+
+    def test_inferring_compatible_version(self) -> None:
+        """Test that we can correctly infer the version a set is compatible with."""
+        msdf10 = parse_sssom_table(f"{data_dir}/basic.tsv")
+
+        # Nothing in that set requires 1.1
+        self.assertEqual("1.0", msdf10.get_compatible_version())
+
+        def _clone(msdf):
+            return MappingSetDataFrame(df=msdf.df.copy(), metadata=msdf.metadata.copy())
+
+        # Inject a 1.1-specific mapping set slot
+        msdf11 = _clone(msdf10)
+        msdf11.metadata[CARDINALITY_SCOPE] = "predicate_id"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject a 1.1-specific mapping slot
+        msdf11 = _clone(msdf10)
+        msdf11.df[PREDICATE_TYPE] = "owl object property"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject a 1.1-specific entity_type_enum value
+        msdf11 = _clone(msdf10)
+        msdf11.metadata[SUBJECT_TYPE] = "composed entity expression"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Same, but on a single mapping record
+        msdf11 = _clone(msdf10)
+        msdf11.df[OBJECT_TYPE] = "owl class"
+        msdf11.df.loc[2, OBJECT_TYPE] = "composed entity expression"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject the 1.1-specific "0:0" cardinality value
+        msdf11 = _clone(msdf10)
+        msdf11.df[MAPPING_CARDINALITY] = "1:1"
+        msdf11.df.loc[9, MAPPING_CARDINALITY] = "0:0"
+        self.assertEqual("1.1", msdf11.get_compatible_version())

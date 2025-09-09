@@ -36,6 +36,7 @@ from .constants import (
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
+    OBJECT_TYPE,
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
@@ -58,6 +59,7 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
+    SUBJECT_TYPE,
     UNKNOWN_IRI,
     MetadataType,
     PathOrIO,
@@ -495,6 +497,47 @@ class MappingSetDataFrame:
         else:
             # No scope, so remove any pre-existing "cardinality_scope" column
             self.df.drop(columns=CARDINALITY_SCOPE, inplace=True, errors="ignore")
+
+    def get_compatible_version(self) -> str:
+        """Get the minimum version of SSSOM this set is compatible with."""
+        schema = SSSOMSchemaView()
+        versions: Set[Tuple[int, int]] = set()
+
+        # First get the minimum versions required by the slots present
+        # in the set; this is entirely provided by the SSSOM model.
+        for slot in self.metadata.keys():
+            version = schema.get_minimum_version(slot, "mapping set")
+            if version is not None:
+                versions.add(version)
+        for slot in self.df.columns:
+            version = schema.get_minimum_version(slot, "mapping")
+            if version is not None:
+                versions.add(version)
+
+        # Then take care of enum values; we cannot use the SSSOM model
+        # for that (enum values are not tagged with an "added_in"
+        # annotation the way slots are), so this has to be handled
+        # "manually" based on the informations provided in
+        # <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
+        if (
+            self.metadata.get(SUBJECT_TYPE) == "composed entity expression"
+            or self.metadata.get(OBJECT_TYPE) == "composed entity expression"
+            or (
+                SUBJECT_TYPE in self.df.columns
+                and "composed entity expression" in self.df[SUBJECT_TYPE].values
+            )
+            or (
+                OBJECT_TYPE in self.df.columns
+                and "composed entity expression" in self.df[OBJECT_TYPE].values
+            )
+        ):
+            versions.add((1, 1))
+
+        if MAPPING_CARDINALITY in self.df.columns and "0:0" in self.df[MAPPING_CARDINALITY].values:
+            versions.add((1, 1))
+
+        # Get the highest of the accumulated versions.
+        return ".".join([str(i) for i in max(versions)])
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
