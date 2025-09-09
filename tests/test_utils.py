@@ -601,6 +601,43 @@ class TestUtils(unittest.TestCase):
         self.assertNotIn("mapping_tool", msdf.metadata)
         self.assertEqual(2, len(msdf.df["mapping_tool"].unique()))
 
+    def test_infer_cardinality(self) -> None:
+        """Test cardinality computation."""
+
+        def _check_against_precomputed_values(filename):
+            msdf = parse_sssom_table(f"{data_dir}/{filename}")
+            # Expected values are already contained in the test file
+            expected = list(msdf.df[MAPPING_CARDINALITY].values)
+            msdf.df.drop(columns=MAPPING_CARDINALITY, inplace=True)
+            msdf.infer_cardinality()
+            self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+
+        _check_against_precomputed_values("cardinality.sssom.tsv")
+        _check_against_precomputed_values("cardinality-with-NoTermFound.sssom.tsv")
+        _check_against_precomputed_values("cardinality-with-literal-mappings.sssom.tsv")
+
+    def test_infer_scoped_cardinality(self) -> None:
+        """Test cardinality computation with scopes."""
+        msdf = parse_sssom_table(f"{data_dir}/cardinality-scope.sssom.tsv")
+
+        msdf.infer_cardinality(["predicate_id"])
+        expected = ["1:n", "1:n", "1:n", "1:n", "1:1", "1:1"]
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+
+        msdf.infer_cardinality(["object_source"])
+        expected = ["1:1", "1:1", "1:1", "1:1", "1:1", "1:1"]
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+
+        msdf.infer_cardinality(["object_source", "not_a_valid_slot_name"])
+        # should yield the same result as above
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+
+        msdf.infer_cardinality(["not_a_valid_slot_name"])
+        # should be equivalent to an empty scope
+        expected = ["1:n", "1:n", "1:n", "1:n", "1:n", "1:n"]
+        self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
+        self.assertNotIn(CARDINALITY_SCOPE, msdf.df.columns)
+
     def test_inferring_compatible_version(self) -> None:
         """Test that we can correctly infer the version a set is compatible with."""
         msdf10 = parse_sssom_table(f"{data_dir}/basic.tsv")

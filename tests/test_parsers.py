@@ -28,6 +28,7 @@ from sssom.parsers import (
     from_sssom_json,
     from_sssom_rdf,
     parse_sssom_table,
+    split_dataframe_by_prefix,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
@@ -513,3 +514,64 @@ class TestParseExplicit(unittest.TestCase):
         self.assertTrue(is_irregular_metadata_fail_missing_property_case)
         self.assertTrue(is_valid_extension)
         self.assertFalse(is_irregular_metadata_ok_case)
+
+
+class TestSplit(unittest.TestCase):
+    """A test case for dataframe utilities."""
+
+    def test_split_df(self) -> None:
+        """Test the precursor to SSSOM function."""
+        converter = Converter.from_prefix_map(
+            {
+                "p1": "https://example.org/p1/",
+                "p2": "https://example.org/p2/",
+                "p3": "https://example.org/p3/",
+                "p4": "https://example.org/p4/",
+                "p5": "https://example.org/p5/",
+                "p6": "https://example.org/p6/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "semapv": "https://w3id.org/semapv/vocab/",
+            }
+        )
+        subrows = [
+            ("p1:1", "skos:exactMatch", "p2:1", "semapv:ManualMappingCuration"),
+            ("p1:2", "skos:exactMatch", "p2:2", "semapv:ManualMappingCuration"),
+        ]
+        rows = [
+            *subrows,
+            ("p1:2", "skos:exactMatch", "p3:2", "semapv:ManualMappingCuration"),
+            ("p4:1", "skos:exactMatch", "p1:1", "semapv:ManualMappingCuration"),
+            ("p5:1", "skos:broadMatch", "p6:1", "semapv:ManualMappingCuration"),
+            ("p1:7", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            # the following rows have CURIEs whose prefixes aren't in the converter
+            ("x:1", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "x:2", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "skos:broadMatch", "x:3", "semapv:ManualMappingCuration"),
+        ]
+        columns = ["subject_id", "predicate_id", "object_id", "mapping_justification"]
+        df = pd.DataFrame(rows, columns=columns)
+        msdf = from_sssom_dataframe(df, converter)
+
+        # test that if there's ever an empty list, then it returns an empty dict
+        self.assertFalse(split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"]))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
+
+        # test that missing prefixes don't result in anything
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"]))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"]))
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"]))
+
+        sdf = pd.DataFrame(subrows, columns=columns)
+        # test an explicit return with only single entries
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"])
+        self.assertEqual(1, len(rv), msg="nothing was indexed")
+        self.assertIn("p1_exactmatch_p2", rv)
+        self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
+
+        # test an explicit return with multiple entries
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"])
+        self.assertEqual(2, len(rv), msg="nothing was indexed")
+        self.assertIn("p1_exactmatch_p2", rv)
+        self.assertIn("p1_exactmatch_p3", rv)
+        self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())

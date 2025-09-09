@@ -111,6 +111,10 @@ CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
 OBJECT_SOURCE_ID = "object_source_id"
 
+# Special value for "unmapped" entities
+# see <https://mapping-commons.github.io/sssom/spec-model/#representing-unmapped-entities>
+NO_TERM_FOUND = "sssom:NoTermFound"
+
 # PREDICATES
 OWL_EQUIVALENT_CLASS = "owl:equivalentClass"
 OWL_EQUIVALENT_PROPERTY = "owl:equivalentProperty"
