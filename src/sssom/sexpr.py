@@ -25,13 +25,15 @@ SKIP_SLOTS = {"record_id", "mapping_cardinality"}
 
 
 def _should_expand(slot: str) -> bool:
-    return True
+    return slot in _get_sssom_schema_object().entity_reference_slots
 
 
 def to_sexpr(x: Mapping, converter: curies.Converter) -> str:
     # todo get canonical order
+
+    schema_object = _get_sssom_schema_object()
     rv = "(7:mapping("
-    for slot in _get_sssom_schema_object().slots:
+    for slot in schema_object.mapping_slots:
         if slot in SKIP_SLOTS:
             continue
         value = getattr(x, slot, None)
