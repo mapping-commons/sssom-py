@@ -396,7 +396,7 @@ class MappingSetDataFrame:
         self.df.drop(columns=condensed, inplace=True)
         return condensed
 
-    def infer_cardinality(self, scope: List[str] = None) -> None:
+    def infer_cardinality(self, scope: List[str] | None = None) -> None:
         """Infer cardinality values in the set.
 
         This method will automatically fill the `mapping_cardinality` slot for
@@ -419,8 +419,11 @@ class MappingSetDataFrame:
         """
         if scope is None:
             scope = []
-        subjects_by_object: dict[str, set[str]] = {}  # Unique subjects for any given object
-        objects_by_subject: dict[str, set[str]] = {}  # Unique objects for any given subject
+
+        #: Unique subjects for any given object
+        subjects_by_object: defaultdict[str, set[str]] = defaultdict(set)
+        #: Unique objects for any given subject
+        objects_by_subject: defaultdict[str, set[str]] = defaultdict(set)
 
         schema = SSSOMSchemaView()
         unknown_slots = [slot for slot in scope if slot not in schema.mapping_slots]
@@ -431,7 +434,7 @@ class MappingSetDataFrame:
         # Helper function to transform a row into a string that represents
         # a subject (or object) in a given scope; `side` is either `subject`
         # or `object`.
-        def _to_string(row, side):
+        def _to_string(row: dict[str, Any], side: str) -> str:
             # We prepend a one-letter code (`L` or `E`) to the actual subject
             # or object so that literal and non-literal mapping records are
             # always distinguishable and can be counted separately.
@@ -453,8 +456,8 @@ class MappingSetDataFrame:
             subj = _to_string(row, "subject")
             obj = _to_string(row, "object")
 
-            subjects_by_object.setdefault(obj, set()).add(subj)
-            objects_by_subject.setdefault(subj, set()).add(obj)
+            subjects_by_object[obj].add(subj)
+            objects_by_subject[subj].add(obj)
 
         # Second iteration to compute the actual cardinality values. Since we
         # must not modify a row while we are iterating over the dataframe, we
