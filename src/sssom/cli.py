@@ -16,14 +16,15 @@ import os
 import sys
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, TextIO, Tuple, get_args
+from typing import Any, Callable, List, Optional, TextIO, Tuple, TypeVar, get_args
 
 import click
 import curies
 import pandas as pd
 import yaml
 from curies import Converter
-from rdflib import Graph
+from rdflib import Graph, URIRef
+from typing_extensions import ParamSpec
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -73,7 +74,7 @@ input_format_option = click.option(
     "-I",
     "--input-format",
     help="The string denoting the input format.",
-    type=click.Choice(PARSING_FUNCTIONS),
+    type=click.Choice(list(PARSING_FUNCTIONS)),
 )
 output_option = click.option(
     "-o",
@@ -86,7 +87,7 @@ output_format_option = click.option(
     "-O",
     "--output-format",
     help="Desired output format.",
-    type=click.Choice(WRITER_FUNCTIONS),
+    type=click.Choice(list(WRITER_FUNCTIONS)),
 )
 output_directory_option = click.option(
     "-d",
@@ -123,7 +124,7 @@ predicate_filter_option = click.option(
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
 @click.version_option(__version__)
-def main(verbose: int, quiet: bool):
+def main(verbose: int, quiet: bool) -> None:
     """Run the SSSOM CLI."""
     logger = _logging.getLogger()
 
@@ -142,7 +143,7 @@ def main(verbose: int, quiet: bool):
 @main.command()
 @click.argument("subcommand")
 @click.pass_context
-def help(ctx, subcommand):
+def help(ctx: click.Context, subcommand: str) -> None:
     """Echoes help for subcommands."""
     subcommand_obj = main.get_command(ctx, subcommand)
     if subcommand_obj is None:
@@ -155,7 +156,7 @@ def help(ctx, subcommand):
 @input_argument
 @output_option
 @output_format_option
-def convert(input: str, output: TextIO, output_format: str):
+def convert(input: str, output: TextIO, output_format: str) -> None:
     """Convert a file.
 
     Example:
@@ -214,7 +215,7 @@ def parse(
     output: TextIO,
     embedded_mode: bool,
     mapping_predicate_filter: Optional[tuple],
-):
+) -> None:
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     parse_file(
         input_path=input,
@@ -234,7 +235,7 @@ def parse(
 @click.option(
     "--validation-types",
     "-V",
-    type=click.Choice(SchemaValidationType),
+    type=click.Choice(list(SchemaValidationType)),
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
@@ -247,7 +248,7 @@ def validate(input: str, validation_types: List[SchemaValidationType]):
 @main.command()
 @input_argument
 @output_directory_option
-def split(input: str, output_directory: str):
+def split(input: str, output_directory: str) -> None:
     """Split input file into multiple output broken down by prefixes."""
     split_file(input_path=input, output_directory=output_directory)
 
@@ -261,7 +262,7 @@ def split(input: str, output_directory: str):
     type=click.FloatRange(0, 1),
     help="Default confidence to be assigned if absent.",
 )
-def ptable(input, output: TextIO, inverse_factor: float, default_confidence: float):
+def ptable(input, output: TextIO, inverse_factor: float, default_confidence: float) -> None:
     """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`_."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     msdf = parse_sssom_table(input)
@@ -275,7 +276,7 @@ def ptable(input, output: TextIO, inverse_factor: float, default_confidence: flo
 @main.command()
 @input_argument
 @output_option
-def dedupe(input: str, output: TextIO):
+def dedupe(input: str, output: TextIO) -> None:
     """Remove lower confidence duplicate lines from an SSSOM file."""
     # df = parse(input)
     msdf = parse_sssom_table(input)
@@ -291,7 +292,7 @@ def dedupe(input: str, output: TextIO):
 @click.option("-Q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
-def dosql(query: str, inputs: List[str], output: TextIO):
+def dosql(query: str, inputs: List[str], output: TextIO) -> None:
     """Run a SQL query over one or more SSSOM files.
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
@@ -353,7 +354,7 @@ def sparql(
     object_labels: bool,
     prefix: List[Tuple[str, str]],
     output: TextIO,
-):
+) -> None:
     """Run a SPARQL query."""
     # FIXME this usage needs _serious_ refactoring
     endpoint = EndpointConfig(converter=Converter.from_prefix_map(dict(prefix)))  # type: ignore
@@ -363,7 +364,7 @@ def sparql(
     if url is not None:
         endpoint.url = url
     if graph is not None:
-        endpoint.graph = graph
+        endpoint.graph = URIRef(graph)
     if limit is not None:
         endpoint.limit = limit
     if object_labels is not None:
@@ -376,7 +377,7 @@ def sparql(
 @main.command()
 @output_option
 @click.argument("inputs", nargs=2)
-def diff(inputs: Tuple[str, str], output: TextIO):
+def diff(inputs: Tuple[str, str], output: TextIO) -> None:
     """Compare two SSSOM files.
 
     The output is a new SSSOM file with the union of all mappings, and
@@ -398,7 +399,7 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         )
 
     prefix_map_list = [msdf1, msdf2]
-    converter = curies.chain(m.converter for m in prefix_map_list)
+    converter = curies.chain([m.converter for m in prefix_map_list])
     msdf = MappingSetDataFrame.with_converter(
         df=d.combined_dataframe.drop_duplicates(), converter=converter
     )
@@ -413,7 +414,7 @@ def diff(inputs: Tuple[str, str], output: TextIO):
 @main.command()
 @output_directory_option
 @click.argument("inputs", nargs=-1)
-def partition(inputs: List[str], output_directory: str):
+def partition(inputs: List[str], output_directory: str) -> None:
     """Partition an SSSOM into one file for each strongly connected component."""
     docs = [parse_sssom_table(input) for input in inputs]
     doc = docs.pop()
@@ -443,7 +444,7 @@ def partition(inputs: List[str], output_directory: str):
 @output_option
 @metadata_option
 @click.option("-s", "--statsfile")
-def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
+def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str) -> None:
     """Calculate summaries for each clique in a SSSOM file."""
     if metadata is None:
         doc = parse_sssom_table(input)
@@ -470,7 +471,7 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
 @output_option
 @transpose_option
 @fields_option
-def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
+def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]) -> None:
     """Write sssom summary cross-tabulated by categories."""
     df = remove_unmatched(parse_sssom_table(input).df)
     logging.info(f"#CROSSTAB ON {fields}")
@@ -486,7 +487,7 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str
 @transpose_option
 @fields_option
 @input_argument
-def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
+def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]) -> None:
     """Calculate correlations."""
     try:
         from scipy.stats import chi2_contingency
@@ -534,7 +535,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
     help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
 )
 @output_option
-def merge(inputs: str, output: TextIO, reconcile: bool = False):
+def merge(inputs: str, output: TextIO, reconcile: bool = False) -> None:
     """Merge multiple MappingSetDataFrames into one .
 
     if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
@@ -559,13 +560,13 @@ def merge(inputs: str, output: TextIO, reconcile: bool = False):
 )
 @output_option
 def rewire(
-    input,
-    mapping_file,
-    precedence,
+    input: str,
+    mapping_file: str,
+    precedence: list[str],
     output: TextIO,
-    input_format,
-    output_format,
-):
+    input_format: str,
+    output_format: str,
+) -> None:
     """Rewire an ontology using equivalent classes/properties from a mapping file.
 
     Example:
@@ -589,7 +590,7 @@ def rewire(
     help="Provide YAML file with prefix reconciliation information.",
 )
 @output_option
-def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
+def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO) -> None:
     """
     Reconcile prefix_map based on provided YAML file.
 
@@ -619,7 +620,7 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
     default=True,
     help="Sort rows by DataFrame column #1 (ascending).",
 )
-def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
+def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool) -> None:
     """
     Sort DataFrame columns canonically.
 
@@ -660,14 +661,20 @@ def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
 #     write_table(msdf=filtered_msdf, file=output)
 
 
-def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
+P = ParamSpec("P")
+T = TypeVar("T")
+
+
+def dynamically_generate_sssom_options(
+    options: List[str],
+) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """Dynamically generate click options.
 
     :param options: List of all possible options.
     :return: Click options deduced from user input into parameters.
     """
 
-    def _decorator(f):
+    def _decorator(f: Callable[P, T]) -> Callable[P, T]:
         for sssom_slot in reversed(options):
             click.option("--" + sssom_slot, multiple=True)(f)
         return f
@@ -679,7 +686,7 @@ def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
 @input_argument
 @output_option
 @dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_slots)
-def filter(input: str, output: TextIO, **kwargs):
+def filter(input: str, output: TextIO, **kwargs: Any) -> None:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -715,7 +722,7 @@ def filter(input: str, output: TextIO, **kwargs):
     help="Multivalued slots should be replaced or not. [default: False]",
 )
 @dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_set_slots)
-def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
+def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs: Any) -> None:
     """Annotate metadata of a mapping set.
 
     :param input: Input path of the SSSOM tsv file.
@@ -736,7 +743,7 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     help="Mapping file path that needs to be removed from input.",
 )
 @output_option
-def remove(input: str, output: TextIO, remove_map: str):
+def remove(input: str, output: TextIO, remove_map: str) -> None:
     """Remove mappings from an input mapping.
 
     :param input: Input SSSOM tsv file.
@@ -778,7 +785,7 @@ def invert(
     merge_inverted: bool,
     update_justification: bool,
     inverse_map: TextIO,
-):
+) -> None:
     """
     Invert subject and object IDs such that all subjects have the prefix provided.
 

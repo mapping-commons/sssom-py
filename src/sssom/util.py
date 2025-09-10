@@ -1,5 +1,7 @@
 """Utility functions."""
 
+from __future__ import annotations
+
 import itertools as itt
 import json
 import logging as _logging
@@ -9,7 +11,20 @@ from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Literal, Optional, Set, Tuple, Union
+from typing import (
+    Any,
+    DefaultDict,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import curies
 import numpy as np
@@ -76,6 +91,9 @@ from .sssom_document import MappingSetDocument
 
 logging = _logging.getLogger(__name__)
 
+X = TypeVar("X")
+Y = TypeVar("Y")
+
 SSSOM_DEFAULT_RDF_SERIALISATION = "turtle"
 
 URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
@@ -101,7 +119,7 @@ class MappingSetDataFrame:
     metadata: MetadataType = field(default_factory=get_default_metadata)
 
     @property
-    def prefix_map(self):
+    def prefix_map(self) -> Mapping[str, str]:
         """Get a simple, bijective prefix map."""
         return self.converter.bimap
 
@@ -198,7 +216,7 @@ class MappingSetDataFrame:
 
     def to_mappings(self) -> List[SSSOM_Mapping]:
         """Get a mapping set."""
-        return self.to_mapping_set().mappings
+        return cast(List[SSSOM_Mapping], self.to_mapping_set().mappings)
 
     def clean_context(self) -> None:
         """Clean up the context."""
@@ -585,11 +603,11 @@ class MappingSetDiff:
     this is considered a mapping in common.
     """
 
-    unique_tuples1: Optional[Set[EntityPair]] = None
-    unique_tuples2: Optional[Set[EntityPair]] = None
-    common_tuples: Optional[Set[EntityPair]] = None
+    unique_tuples1: Set[EntityPair]
+    unique_tuples2: Set[EntityPair]
+    common_tuples: Set[EntityPair]
 
-    combined_dataframe: Optional[pd.DataFrame] = None
+    combined_dataframe: pd.DataFrame
     """
     Dataframe that combines with left and right dataframes with information injected into
     the comment column
@@ -812,31 +830,35 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
     mappings2 = group_mappings(df2.copy())
     tuples1 = set(mappings1.keys())
     tuples2 = set(mappings2.keys())
-    d = MappingSetDiff()
-    d.unique_tuples1 = tuples1.difference(tuples2)
-    d.unique_tuples2 = tuples2.difference(tuples1)
-    d.common_tuples = tuples1.intersection(tuples2)
+    unique_tuples1 = tuples1.difference(tuples2)
+    unique_tuples2 = tuples2.difference(tuples1)
+    common_tuples = tuples1.intersection(tuples2)
     all_tuples = tuples1.union(tuples2)
     all_ids = set()
     for t in all_tuples:
         all_ids.update({t.subject_entity, t.object_entity})
     rows = []
-    for t in d.unique_tuples1:
+    for t in unique_tuples1:
         for r in mappings1[t]:
             r[COMMENT] = "UNIQUE_1"
         rows += mappings1[t]
-    for t in d.unique_tuples2:
+    for t in unique_tuples2:
         for r in mappings2[t]:
             r[COMMENT] = "UNIQUE_2"
         rows += mappings2[t]
-    for t in d.common_tuples:
+    for t in common_tuples:
         new_rows = mappings1[t] + mappings2[t]
         for r in new_rows:
             r[COMMENT] = "COMMON_TO_BOTH"
         rows += new_rows
     # for r in rows:
     #    r['other'] = 'synthesized sssom file'
-    d.combined_dataframe = pd.DataFrame(rows).drop_duplicates()
+    d = MappingSetDiff(
+        unique_tuples1=unique_tuples1,
+        unique_tuples2=unique_tuples2,
+        common_tuples=common_tuples,
+        combined_dataframe=pd.DataFrame(rows).drop_duplicates(),
+    )
     return d
 
 
@@ -1007,7 +1029,7 @@ def merge_msdf(
         [msdf.df for msdf in msdf_with_meta],
     ).drop_duplicates(ignore_index=True)
 
-    converter = curies.chain(msdf.converter for msdf in msdf_with_meta)
+    converter = curies.chain([msdf.converter for msdf in msdf_with_meta])
     merged_msdf = MappingSetDataFrame.with_converter(df=df_merged, converter=converter)
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
@@ -1668,7 +1690,7 @@ def invert_mappings(
         return return_df
 
 
-def _invert_column_names(column_names: list, columns_invert_map: dict) -> dict:
+def _invert_column_names(column_names: list[X], columns_invert_map: Mapping[X, Y]) -> dict[X, Y]:
     """Return a dictionary for column renames in pandas DataFrame."""
     return {x: columns_invert_map[x] for x in column_names}
 

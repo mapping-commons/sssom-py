@@ -2,12 +2,13 @@
 
 import json
 from functools import lru_cache
-from typing import Mapping, Union
+from typing import Any, Mapping, Union
 
 import curies
 import importlib_resources
 from curies import Converter
 from rdflib.namespace import is_ncname
+from typing_extensions import TypeAlias
 
 from .constants import EXTENDED_PREFIX_MAP
 
@@ -42,7 +43,10 @@ def _get_default_converter() -> Converter:
     return Converter(records)
 
 
-def _load_sssom_context():
+Context: TypeAlias = dict[str, Any]
+
+
+def _load_sssom_context() -> Context:
     with open(SSSOM_CONTEXT) as file:
         return json.load(file, strict=False)
 

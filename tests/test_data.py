@@ -25,7 +25,7 @@ def get_test_file(filename: str) -> str:
 class SSSOMTestCase:
     """A dynamic test case for data tests."""
 
-    def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]):
+    def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]) -> None:
         """Initialize the SSSOM test case.
 
         :param config: A dictionary of configuration values

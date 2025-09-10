@@ -1027,7 +1027,7 @@ def split_dataframe_by_prefix(
     return split_to_msdf
 
 
-def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
+def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]) -> Optional[Mapping]:
     """
     Return a valid mapping object if it can be constructed, else None.
 
@@ -1060,7 +1060,7 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
 
 def _add_valid_mapping_to_list(
     mdict: Dict[str, Any], mlist: List[Mapping], *, flip_superclass_assertions=False
-):
+) -> None:
     """
     Validate the mapping and append to the list if valid.
 

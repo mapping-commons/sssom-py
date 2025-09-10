@@ -1,10 +1,12 @@
 """Constants."""
 
+from __future__ import annotations
+
 import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Set, TextIO, Union
+from typing import Any, ClassVar, Dict, List, Literal, Mapping, Set, TextIO, Union, cast
 
 import importlib_resources
 import yaml
@@ -155,7 +157,7 @@ with open(HERE / "inverse_map.yaml", "r") as im:
 
 PREDICATE_INVERT_DICTIONARY = inverse_map["inverse_predicate_map"]
 
-COLUMN_INVERT_DICTIONARY = {
+COLUMN_INVERT_DICTIONARY: Mapping[str, str] = {
     SUBJECT_ID: OBJECT_ID,
     SUBJECT_LABEL: OBJECT_LABEL,
     SUBJECT_CATEGORY: OBJECT_CATEGORY,
@@ -207,7 +209,7 @@ class SchemaValidationType(str, Enum):
     StrictCurieFormat = "StrictCurieFormat"
 
 
-DEFAULT_VALIDATION_TYPES = [
+DEFAULT_VALIDATION_TYPES: List[SchemaValidationType] = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
     SchemaValidationType.StrictCurieFormat,
@@ -222,7 +224,9 @@ class SSSOMSchemaView(object):
     Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    def __new__(cls):
+    instance: ClassVar[SSSOMSchemaView]
+
+    def __new__(cls) -> SSSOMSchemaView:
         """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
@@ -234,7 +238,7 @@ class SSSOMSchemaView(object):
         return SchemaView(SCHEMA_YAML)
 
     @cached_property
-    def dict(self) -> dict:
+    def dict(self) -> Dict[str, Any]:
         """Return SchemaView as a dictionary."""
         return schema_as_dict(self.view.schema)
 
@@ -246,7 +250,7 @@ class SSSOMSchemaView(object):
     @cached_property
     def mapping_set_slots(self) -> List[str]:
         """Return list of mapping set slots."""
-        return self.view.get_class("mapping set").slots
+        return cast(List[str], self.view.get_class("mapping set").slots)
 
     @cached_property
     def multivalued_slots(self) -> Set[str]:
@@ -288,7 +292,9 @@ class SSSOMSchemaView(object):
 def _get_sssom_schema_object() -> SSSOMSchemaView:
     """Get a view over the SSSOM schema."""
     sssom_sv_object = (
-        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
+        SSSOMSchemaView.instance
+        if hasattr(SSSOMSchemaView, "instance")
+        else SSSOMSchemaView()  # type:ignore[misc]
     )
     return sssom_sv_object
 

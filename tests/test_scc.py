@@ -14,13 +14,13 @@ class TestSCC(unittest.TestCase):
         """Set up the test case by reading the basic SSSOM example."""
         self.mset = parse_sssom_table(data_dir / "basic.tsv")
 
-    def test_scc(self):
+    def test_scc(self) -> None:
         """Test splitting into cliques."""
         cliquedocs = split_into_cliques(self.mset)
         expected = [38, 36, 5, 8, 8, 10, 14, 8, 8, 2, 4]
         self.assertEqual(sorted(expected), sorted(len(d.mapping_set.mappings) for d in cliquedocs))
 
-    def test_cliquesummary(self):
+    def test_cliquesummary(self) -> None:
         """Test summarizing cliques."""
         df = summarize_cliques(self.mset)
         df.to_csv(data_dir / "basic-cliquesummary.tsv", sep="\t")
