@@ -27,7 +27,9 @@ from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iris
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
+    FAIR_WEIGHTS,
     MappingSetDataFrame,
+    _get_sssom_schema_object,
     filter_out_prefixes,
     filter_prefixes,
     get_dict_from_mapping,
@@ -635,3 +637,21 @@ class TestUtils(unittest.TestCase):
         expected = ["1:n", "1:n", "1:n", "1:n", "1:n", "1:n"]
         self.assertEqual(expected, list(msdf.df[MAPPING_CARDINALITY].values))
         self.assertNotIn(CARDINALITY_SCOPE, msdf.df.columns)
+
+
+class TestFAIRScore(unittest.TestCase):
+    """Test the FAIRness score."""
+
+    def test_complete_weighting(self) -> None:
+        """Test that there are weights for all fields."""
+        missing = set(_get_sssom_schema_object().mapping_slots).difference(FAIR_WEIGHTS)
+        if missing:
+            msg = "\n".join(missing)
+            self.fail(msg=f"missing weights for mapping fields: {msg}")
+
+    def test_mapping_weight(self) -> None:
+        """Test calculating the weight on a mapping."""
+        m = SSSOM_Mapping(
+            
+        )
+

@@ -667,7 +667,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
             df = df[
                 df.apply(
                     lambda x: x[CONFIDENCE]
-                    >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                              >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                     axis=1,
                 )
             ]
@@ -1712,3 +1712,63 @@ def pandas_set_no_silent_downcasting(no_silent_downcasting=True):
     except KeyError:
         # Option does not exist in this version of pandas
         pass
+
+
+#: A mapping from slots to the weight they have for calculating the FAIRness of a mapping
+FAIR_WEIGHTS: dict[str, float] = {
+    "publication_date": 1.0,
+    "mapping_justification": 1.0,
+    "curation_rule": 1.0,
+    "similarity_measure": 1.0,
+    "author_label": 1.0,
+    "subject_preprocessing": 1.0,
+    "confidence": 1.0,
+    "object_category": 1.0,
+    "subject_source_version": 1.0,
+    "license": 1.0,
+    "see_also": 1.0,
+    "mapping_source": 1.0,
+    "subject_match_field": 1.0,
+    "issue_tracker_item": 1.0,
+    "subject_label": 1.0,
+    "subject_source": 1.0,
+    "object_source": 1.0,
+    "object_id": 1.0,
+    "author_id": 1.0,
+    "object_source_version": 1.0,
+    "mapping_tool": 1.0,
+    "other": 1.0,
+    "reviewer_id": 1.0,
+    "reviewer_label": 1.0,
+    "predicate_label": 1.0,
+    "object_label": 1.0,
+    "object_preprocessing": 1.0,
+    "curation_rule_text": 1.0,
+    "creator_label": 1.0,
+    "predicate_id": 1.0,
+    "subject_id": 1.0,
+    "object_match_field": 1.0,
+    "mapping_tool_version": 1.0,
+    "subject_type": 1.0,
+    "mapping_cardinality": 1.0,
+    "similarity_score": 1.0,
+    "mapping_provider": 1.0,
+    "match_string": 1.0,
+    "predicate_modifier": 1.0,
+    "mapping_date": 1.0,
+    "object_type": 1.0,
+    "creator_id": 1.0,
+    "subject_category": 1.0,
+    "comment": 1.0,
+}
+FAIR_TOTAL_WEIGHT = sum(FAIR_WEIGHTS.values())
+
+
+def calculate_fairness(mapping: SSSOM_Mapping) -> float:
+    """Calculate FAIRness of a mapping."""
+    s: float = sum(
+        weight
+        for key, weight in FAIR_WEIGHTS.items()
+        if getattr(mapping, key, None)
+    )
+    return s / FAIR_TOTAL_WEIGHT
