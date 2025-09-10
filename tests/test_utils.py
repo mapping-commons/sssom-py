@@ -15,6 +15,8 @@ from sssom.constants import (
     CARDINALITY_SCOPE,
     CREATOR_ID,
     MAPPING_CARDINALITY,
+    MAPPING_SET_CONFIDENCE,
+    MAPPING_TOOL_ID,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_TYPE,
@@ -674,3 +676,47 @@ class TestUtils(unittest.TestCase):
         msdf11.df[MAPPING_CARDINALITY] = "1:1"
         msdf11.df.loc[9, MAPPING_CARDINALITY] = "0:0"
         self.assertEqual("1.1", msdf11.get_compatible_version())
+
+    def test_enforce_version(self) -> None:
+        """Test that we can force a set to be compliant with a specific SSSOM version."""
+        msdf11 = parse_sssom_table(f"{data_dir}/sssom11-extensions.sssom.tsv")
+
+        # The test set contains non-standard slots, but they are
+        # discarded by the parser (even those properly declared as
+        # extensions!). To be able to test the "strict" enforcing mode,
+        # we manually reintroduce the non-standard slots here.
+        msdf11.metadata["ext_fooability_scale"] = 79
+        msdf11.metadata["ext_undefined"] = "bar"
+        msdf11.df["ext_fooable"] = True
+        msdf11.df["ext_undefined"] = "bar"
+
+        msdf10 = msdf11.enforce_version("1.0")
+        # msdf11 should still have all its 1.1 slots since we are not
+        # using inplace=True
+        self.assertIn(MAPPING_SET_CONFIDENCE, msdf11.metadata)
+        self.assertIn(MAPPING_TOOL_ID, msdf11.df.columns)
+        self.assertIn("composed entity expression", msdf11.df[SUBJECT_TYPE].values)
+        # But those slots should not be present in msdf10
+        self.assertNotIn(MAPPING_SET_CONFIDENCE, msdf10.metadata)
+        self.assertNotIn(MAPPING_TOOL_ID, msdf10.df.columns)
+        self.assertNotIn("composed entity expression", msdf10.df[SUBJECT_TYPE].values)
+        # Further confirm that msdf10 is 1.0-compliant
+        self.assertEqual("1.0", msdf10.get_compatible_version())
+        # Non-standard slots should all be preserved
+        self.assertIn("ext_fooability_scale", msdf10.metadata)
+        self.assertIn("ext_undefined", msdf10.metadata)
+        self.assertIn("ext_fooable", msdf10.df.columns)
+        self.assertIn("ext_undefined", msdf10.df.columns)
+
+        msdf10 = msdf11.enforce_version("1.0", strict=True)
+        self.assertEqual("1.0", msdf10.get_compatible_version())
+        # Declared non-standard slots should still be there
+        self.assertIn("ext_fooability_scale", msdf10.metadata)
+        self.assertIn("ext_fooable", msdf10.df.columns)
+        # But not undeclared ones
+        self.assertNotIn("ext_undefined", msdf10.metadata)
+        self.assertNotIn("ext_undefined", msdf10.df.columns)
+
+        msdf11.enforce_version("1.0", inplace=True)
+        # now msdf11 itself should be 1.0-compliant
+        self.assertEqual("1.0", msdf11.get_compatible_version())
