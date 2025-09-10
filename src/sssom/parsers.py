@@ -1,5 +1,7 @@
 """SSSOM parsers."""
 
+from __future__ import annotations
+
 import gzip
 import io
 import itertools as itt

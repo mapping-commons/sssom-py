@@ -11,6 +11,8 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
+from __future__ import annotations
+
 import logging as _logging
 import os
 import sys

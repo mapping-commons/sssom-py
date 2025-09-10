@@ -1,5 +1,7 @@
 """Utilities for loading JSON-LD contexts."""
 
+from __future__ import annotations
+
 import json
 from functools import lru_cache
 from typing import Any, Mapping, Union, cast

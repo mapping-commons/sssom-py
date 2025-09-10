@@ -15,7 +15,9 @@ from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
+SCHEMA_YAML = pathlib.Path(
+    importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
+)
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
