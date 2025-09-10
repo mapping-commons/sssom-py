@@ -2,22 +2,21 @@
 
 from __future__ import annotations
 
+import importlib.resources
 import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
 from typing import Any, ClassVar, Dict, List, Literal, Mapping, Set, TextIO, Union, cast
 
-import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = pathlib.Path(
-    importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
-)
+SCHEMA_RESOURCES = importlib.resources.files("sssom_schema")
+SCHEMA_YAML = SCHEMA_RESOURCES.joinpath("schema/sssom_schema.yaml")
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"

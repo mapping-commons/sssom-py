@@ -1199,7 +1199,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     # TODO add this into the "standardize" function introduced in
     #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    with open(SCHEMA_YAML) as file:
+    with SCHEMA_YAML.open() as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
     for k, v in msdf.metadata.items():

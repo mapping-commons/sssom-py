@@ -4,16 +4,14 @@ from __future__ import annotations
 
 import json
 from functools import lru_cache
-from pathlib import Path
 from typing import Any, Mapping, Union, cast
 
 import curies
-import importlib_resources
 from curies import Converter
 from rdflib.namespace import is_ncname
 from typing_extensions import TypeAlias
 
-from .constants import EXTENDED_PREFIX_MAP
+from .constants import EXTENDED_PREFIX_MAP, SCHEMA_RESOURCES
 
 __all__ = [
     "SSSOM_BUILT_IN_PREFIXES",
@@ -23,9 +21,7 @@ __all__ = [
 ]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-SSSOM_CONTEXT = Path(
-    importlib_resources.files("sssom_schema").joinpath("context/sssom_schema.context.jsonld")
-)
+SSSOM_CONTEXT = SCHEMA_RESOURCES.joinpath("context/sssom_schema.context.jsonld")
 
 
 @lru_cache(1)
