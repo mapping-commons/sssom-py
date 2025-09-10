@@ -10,6 +10,7 @@ import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
+from sssom_schema.datamodel.sssom_schema import SssomVersionEnum
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
@@ -300,15 +301,25 @@ class SSSOMSchemaView(object):
         """
         try:
             slot = self.view.induced_slot(slot_name, class_name)
-            version = [int(s) for s in slot.annotations.added_in.value.split(".")]
-            if len(version) != 2:
-                # Should never happen, schema is incorrect
-                return None
-            return (version[0], version[1])
+            return parse_sssom_version(slot.annotations.added_in.value)
         except AttributeError:  # No added_in annotation, defaults to 1.0
             return (1, 0)
         except ValueError:  # No such slot
             return None
+
+
+def parse_sssom_version(version: str) -> Tuple[int, int]:
+    """Parse a string into a valid SSSOM version number.
+
+    :param version: The string to parse into a version number.
+    :return: A (major, minor) tuple.
+    """
+    v = [int(n) for n in SssomVersionEnum(version).code.text.split(".")]
+    if len(v) != 2:
+        # Should never happen, should be caught by the SssomVersionEnum
+        # constructor before we arrive here
+        raise ValueError("Invalid version")
+    return (v[0], v[1])
 
 
 @lru_cache(1)
