@@ -1615,7 +1615,7 @@ def invert_mappings(
     subject_prefix: Optional[str] = None,
     merge_inverted: bool = True,
     update_justification: bool = True,
-    predicate_invert_dictionary: dict[str, str] = None,
+    predicate_invert_dictionary: dict[str, str] | None = None,
 ) -> pd.DataFrame:
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
 
