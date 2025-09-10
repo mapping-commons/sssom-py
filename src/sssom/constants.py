@@ -2,20 +2,21 @@
 
 from __future__ import annotations
 
+import importlib.resources
 import pathlib
 import uuid
 from enum import Enum
 from functools import cached_property, lru_cache
 from typing import Any, ClassVar, Dict, List, Literal, Mapping, Set, TextIO, Union, cast
 
-import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
+SCHEMA_RESOURCES = importlib.resources.files("sssom_schema")
+SCHEMA_YAML = SCHEMA_RESOURCES.joinpath("schema/sssom_schema.yaml")
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
@@ -240,12 +241,12 @@ class SSSOMSchemaView(object):
     @cached_property
     def dict(self) -> Dict[str, Any]:
         """Return SchemaView as a dictionary."""
-        return schema_as_dict(self.view.schema)
+        return schema_as_dict(self.view.schema)  # type:ignore
 
     @cached_property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        return self.view.get_class("mapping").slots
+        return self.view.get_class("mapping").slots  # type:ignore
 
     @cached_property
     def mapping_set_slots(self) -> List[str]:
@@ -270,7 +271,7 @@ class SSSOMSchemaView(object):
     @cached_property
     def slots(self) -> Dict[str, str]:
         """Return the slots for SSSOMSchemaView object."""
-        return self.dict["slots"]
+        return self.dict["slots"]  # type:ignore
 
     @cached_property
     def double_slots(self) -> Set[str]:
@@ -292,9 +293,7 @@ class SSSOMSchemaView(object):
 def _get_sssom_schema_object() -> SSSOMSchemaView:
     """Get a view over the SSSOM schema."""
     sssom_sv_object = (
-        SSSOMSchemaView.instance
-        if hasattr(SSSOMSchemaView, "instance")
-        else SSSOMSchemaView()  # type:ignore[misc]
+        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
     )
     return sssom_sv_object
 

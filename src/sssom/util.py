@@ -36,6 +36,7 @@ from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
+from typing_extensions import TypedDict
 
 from .constants import (
     CARDINALITY_SCOPE,
@@ -266,9 +267,9 @@ class MappingSetDataFrame:
         description += f"Metadata: {json.dumps(self.metadata)} \n"
         description += f"Number of mappings: {len(self.df.index)} \n"
         description += "\nFirst rows of data: \n"
-        description += self.df.head().to_string() + "\n"
+        description += f"{self.df.head().to_string()}\n"
         description += "\nLast rows of data: \n"
-        description += self.df.tail().to_string() + "\n"
+        description += f"{self.df.tail().to_string()}\n"
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
@@ -321,7 +322,7 @@ class MappingSetDataFrame:
         self.df = self.df[self.df.columns.drop(list(self.df.filter(regex=r"_2")))]
         self.clean_prefix_map()
 
-    def propagate(self, fill_empty=False) -> List[str]:
+    def propagate(self, fill_empty: bool = False) -> List[str]:
         """Propagate slot values from the set level down to individual records.
 
         Propagation, as defined by the SSSOM specification, is the process by
@@ -457,11 +458,11 @@ class MappingSetDataFrame:
             # or object so that literal and non-literal mapping records are
             # always distinguishable and can be counted separately.
             if row.get(f"{side}_type") == "rdfs literal":
-                s = "L\0" + row.get(f"{side}_label", "")
+                s = "L\0" + (row.get(f"{side}_label") or "")
             else:
-                s = "E\0" + row.get(f"{side}_id", "")
+                s = "E\0" + (row.get(f"{side}_id") or "")
             for slot in scope:
-                s += "\0" + row.get(slot, "")
+                s += "\0" + (row.get(slot) or "")
             return s
 
         # We iterate over the records a first time to collect the different
@@ -884,7 +885,7 @@ def dataframe_to_ptable(
     *,
     inverse_factor: Optional[float] = None,
     default_confidence: Optional[float] = None,
-):
+) -> list[tuple[str, str, float, float, float, float]]:
     """Export a KBOOM table.
 
     :param df: Pandas DataFrame
@@ -905,7 +906,7 @@ def dataframe_to_ptable(
     for _, row in df.iterrows():
         subject_id = row[SUBJECT_ID]
         object_id = row[OBJECT_ID]
-        confidence = row[CONFIDENCE]
+        confidence: float = row[CONFIDENCE]
         # confidence of inverse
         # e.g. if Pr(super) = 0.2, then Pr(sub) = (1-0.2) * IF
         inverse_confidence = (1.0 - confidence) * inverse_factor
@@ -984,8 +985,7 @@ def dataframe_to_ptable(
         # * #########################################
         else:
             raise ValueError(f"predicate: {predicate_type}")
-        row = [subject_id, object_id] + [str(p) for p in ps]
-        rows.append(row)
+        rows.append((subject_id, object_id, *ps))
     return rows
 
 
@@ -1199,7 +1199,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     # TODO add this into the "standardize" function introduced in
     #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    with open(SCHEMA_YAML) as file:
+    with SCHEMA_YAML.open() as file:
         schema = yaml.safe_load(file)
     slots = schema["classes"]["mapping"]["slots"]
     for k, v in msdf.metadata.items():
@@ -1269,7 +1269,7 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
-def get_dict_from_mapping(map_obj: Union[Any, Dict[Any, Any], SSSOM_Mapping]) -> dict:
+def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) -> dict[str, Any]:
     """
     Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
 
@@ -1325,7 +1325,7 @@ def _is_curie(string: str) -> bool:
 def _is_iri(string: str) -> bool:
     """Check if the string is an IRI."""
     if string and isinstance(string, str):
-        return validators.url(string)
+        return bool(validators.url(string))
     else:
         return False
 
@@ -1377,7 +1377,7 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
 def filter_out_prefixes(
     df: pd.DataFrame,
     filter_prefixes: List[str],
-    features: Optional[list] = None,
+    features: Optional[list[str]] = None,
     require_all_prefixes: bool = False,
 ) -> pd.DataFrame:
     """Filter out rows which contains a CURIE with a prefix in the filter_prefixes list.
@@ -1405,7 +1405,7 @@ def filter_out_prefixes(
 def filter_prefixes(
     df: pd.DataFrame,
     filter_prefixes: List[str],
-    features: Optional[list] = None,
+    features: Optional[list[str]] = None,
     require_all_prefixes: bool = True,
 ) -> pd.DataFrame:
     """Filter out rows which do NOT contain a CURIE with a prefix in the filter_prefixes list.
@@ -1454,8 +1454,15 @@ def is_multivalued_slot(slot: str) -> bool:
     return slot in _get_sssom_schema_object().multivalued_slots
 
 
+class PrefixReconciliation(TypedDict):
+    """Reconciliation dictionaries."""
+
+    prefix_synonyms: dict[str, str]
+    prefix_expansion_reconciliation: dict[str, str]
+
+
 def reconcile_prefix_and_data(
-    msdf: MappingSetDataFrame, prefix_reconciliation: dict
+    msdf: MappingSetDataFrame, prefix_reconciliation: PrefixReconciliation
 ) -> MappingSetDataFrame:
     """Reconciles prefix_map and translates CURIE switch in dataframe.
 
@@ -1546,7 +1553,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
 
 
 def augment_metadata(
-    msdf: MappingSetDataFrame, meta: dict, replace_multivalued: bool = False
+    msdf: MappingSetDataFrame, meta: MetadataType, replace_multivalued: bool = False
 ) -> MappingSetDataFrame:
     """Augment metadata with parameters passed.
 
@@ -1564,7 +1571,7 @@ def augment_metadata(
     for k, v in meta.items():
         # If slot is multivalued, add to list.
         if k in _get_sssom_schema_object().multivalued_slots and not replace_multivalued:
-            tmp_value: list = []
+            tmp_value: list[str]
             if isinstance(msdf.metadata[k], str):
                 tmp_value = [msdf.metadata[k]]
             elif isinstance(msdf.metadata[k], list):
@@ -1583,16 +1590,16 @@ def augment_metadata(
     return msdf
 
 
-def are_params_slots(params: dict) -> bool:
+def are_params_slots(params: dict[str, Any]) -> bool:
     """Check if parameters conform to the slots in MAPPING_SET_SLOTS.
 
     :param params: Dictionary of parameters.
     :raises ValueError: If params are not slots.
     :return: True/False
     """
-    empty_params = {k: v for k, v in params.items() if v is None or v == ""}
+    empty_params = {k for k, v in params.items() if v is None or v == ""}
     if len(empty_params) > 0:
-        logging.info(f"Parameters: {empty_params.keys()} has(ve) no value.")
+        logging.info(f"Parameters: {empty_params} has(ve) no value.")
 
     legit_params = all(p in _get_sssom_schema_object().mapping_set_slots for p in params.keys())
     if not legit_params:
@@ -1608,7 +1615,7 @@ def invert_mappings(
     subject_prefix: Optional[str] = None,
     merge_inverted: bool = True,
     update_justification: bool = True,
-    predicate_invert_dictionary: dict = None,
+    predicate_invert_dictionary: dict[str, str] | None = None,
 ) -> pd.DataFrame:
     """Switching subject and objects based on their prefixes and adjusting predicates accordingly.
 
@@ -1705,7 +1712,7 @@ def safe_compress(uri: str, converter: Converter) -> str:
     return converter.compress_or_standardize(uri, strict=True)
 
 
-def pandas_set_no_silent_downcasting(no_silent_downcasting=True):
+def pandas_set_no_silent_downcasting(no_silent_downcasting: bool = True) -> None:
     """Set pandas future.no_silent_downcasting option. Context https://github.com/pandas-dev/pandas/issues/57734."""
     try:
         pd.set_option("future.no_silent_downcasting", no_silent_downcasting)

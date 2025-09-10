@@ -11,6 +11,8 @@ later, but that will cause problems--the code will get executed twice:
 .. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
 """
 
+from __future__ import annotations
+
 import logging as _logging
 import os
 import sys
@@ -214,7 +216,7 @@ def parse(
     strict_clean_prefixes: bool,
     output: TextIO,
     embedded_mode: bool,
-    mapping_predicate_filter: Optional[tuple],
+    mapping_predicate_filter: list[str],
 ) -> None:
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     parse_file(
@@ -239,7 +241,7 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
-def validate(input: str, validation_types: List[SchemaValidationType]):
+def validate(input: str, validation_types: List[SchemaValidationType]) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
     validate_file(input_path=input, validation_types=validation_type_list)
@@ -262,7 +264,7 @@ def split(input: str, output_directory: str) -> None:
     type=click.FloatRange(0, 1),
     help="Default confidence to be assigned if absent.",
 )
-def ptable(input, output: TextIO, inverse_factor: float, default_confidence: float) -> None:
+def ptable(input: str, output: TextIO, inverse_factor: float, default_confidence: float) -> None:
     """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`_."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     msdf = parse_sssom_table(input)
@@ -347,10 +349,10 @@ def dosql(query: str, inputs: List[str], output: TextIO) -> None:
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
 @output_option
 def sparql(
-    url: str,
-    config,
-    graph: str,
-    limit: int,
+    url: str | None,
+    config: TextIO | None,
+    graph: str | None,
+    limit: int | None,
     object_labels: bool,
     prefix: List[Tuple[str, str]],
     output: TextIO,
@@ -403,9 +405,7 @@ def diff(inputs: Tuple[str, str], output: TextIO) -> None:
     msdf = MappingSetDataFrame.with_converter(
         df=d.combined_dataframe.drop_duplicates(), converter=converter
     )
-    msdf.metadata[  # type:ignore
-        "comment"
-    ] = (
+    msdf.metadata["comment"] = (
         f"Diff between {input1} and {input2}. See comment column for information."
     )
     write_table(msdf, output)

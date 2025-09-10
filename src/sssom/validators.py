@@ -1,7 +1,9 @@
 """Validators."""
 
+from __future__ import annotations
+
 import logging
-from typing import Callable, List, Mapping, Optional
+from typing import Any, Callable, List, Mapping, Optional
 
 from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
@@ -37,7 +39,7 @@ def validate(
     return {vt: VALIDATION_METHODS[vt](msdf, fail_on_error) for vt in validation_types}
 
 
-def print_linkml_report(report: ValidationReport, fail_on_error: bool = True):
+def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) -> None:
     """Print the error messages in the report. Optionally throw exception.
 
     :param report: A LinkML validation report
@@ -63,7 +65,7 @@ def print_linkml_report(report: ValidationReport, fail_on_error: bool = True):
 
 # TODO This should not be necessary: https://github.com/linkml/linkml/issues/2117,
 #  https://github.com/orgs/linkml/discussions/1975
-def _clean_dict(d):
+def _clean_dict(d: dict[str, Any]) -> dict[str, Any]:
     """Recursively removes key-value pairs from a dictionary where the value is None, "null", or an empty string.
 
     Args:
@@ -75,7 +77,7 @@ def _clean_dict(d):
     if not isinstance(d, dict):
         return d
 
-    cleaned_dict = {}
+    cleaned_dict: dict[str, Any] = {}
     for k, v in d.items():
         if isinstance(v, dict):
             # Recursively clean nested dictionary

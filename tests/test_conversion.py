@@ -4,7 +4,6 @@ import filecmp
 import json
 import logging
 import unittest
-from typing import Dict
 
 import pandas as pd
 import yaml
@@ -99,7 +98,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         msdf = to_mapping_set_dataframe(mdoc)
         jsonob = to_ontoportal_json(msdf)
         self.assertEqual(len(jsonob), test.ct_data_frame_rows)
-        first_ob: Dict = jsonob[0]
+        first_ob = jsonob[0]
         self.assertIn("classes", first_ob)
         self.assertIsInstance(first_ob["classes"], list)
         self.assertEqual(2, len(first_ob["classes"]))
@@ -156,7 +155,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(
             len(df),
             test.ct_data_frame_rows,
-            f"The pandas data frame has less elements than the orginal one for {test.filename}",
+            f"The pandas data frame has less elements than the original one for {test.filename}",
         )
         path = test.get_out_file("roundtrip.tsv")
         with open(path, "w") as file:
@@ -165,7 +164,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(
             len(data),
             test.ct_data_frame_rows,
-            f"The re-serialised pandas data frame has less elements than the orginal one for {test.filename}",
+            f"The re-serialised pandas data frame has less elements than the original one for {test.filename}",
         )
         path = test.get_out_file("tsv")
         with open(path, "w") as file:
@@ -175,7 +174,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(
             len(df),
             test.ct_data_frame_rows,
-            f"The exported pandas data frame has less elements than the orginal one for {test.filename}",
+            f"The exported pandas data frame has less elements than the original one for {test.filename}",
         )
 
     def _test_to_json_dict(self, mdoc: MappingSetDocument, test: SSSOMTestCase) -> None:
@@ -186,15 +185,15 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(
             len(json_dict),
             test.ct_json_elements,
-            f"JSON document has less elements than the orginal one for {test.filename}. Json: {json.dumps(json_dict)}",
+            f"JSON document has less elements than the original one for {test.filename}. JSON: {json.dumps(json_dict)}",
         )
 
         self.assertIsNotNone(msdf.df)
         self.assertIsInstance(json_dict["mappings"], list)
         self.assertEqual(
             len(json_dict["mappings"]),
-            len(msdf.df.index),  # type:ignore
-            f"JSON document has less mappings than the orginal ({test.filename}). Json: {json.dumps(json_dict)}",
+            len(msdf.df.index),
+            f"JSON document has less mappings than the original ({test.filename}). JSON: {json.dumps(json_dict)}",
         )
 
         with open(test.get_out_file("roundtrip.json"), "w", encoding="utf-8") as f:
@@ -206,7 +205,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(
             len(data),
             test.ct_json_elements,
-            f"The re-serialised JSON file has less elements than the orginal one for {test.filename}",
+            f"The re-serialised JSON file has less elements than the original one for {test.filename}",
         )
         path = test.get_out_file("jsonld")
         with open(path, "w") as file:
@@ -217,7 +216,7 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
         self.assertEqual(
             len(data),
             test.ct_json_elements,
-            f"The exported JSON file has less elements than the orginal one for {test.filename}",
+            f"The exported JSON file has less elements than the original one for {test.filename}",
         )
 
     def test_ontoportal_writer(self) -> None:

@@ -1,16 +1,17 @@
 """Utilities for loading JSON-LD contexts."""
 
+from __future__ import annotations
+
 import json
 from functools import lru_cache
-from typing import Any, Mapping, Union
+from typing import Any, Mapping, Union, cast
 
 import curies
-import importlib_resources
 from curies import Converter
 from rdflib.namespace import is_ncname
 from typing_extensions import TypeAlias
 
-from .constants import EXTENDED_PREFIX_MAP
+from .constants import EXTENDED_PREFIX_MAP, SCHEMA_RESOURCES
 
 __all__ = [
     "SSSOM_BUILT_IN_PREFIXES",
@@ -20,9 +21,7 @@ __all__ = [
 ]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-SSSOM_CONTEXT = importlib_resources.files("sssom_schema").joinpath(
-    "context/sssom_schema.context.jsonld"
-)
+SSSOM_CONTEXT = SCHEMA_RESOURCES.joinpath("context/sssom_schema.context.jsonld")
 
 
 @lru_cache(1)
@@ -47,8 +46,8 @@ Context: TypeAlias = dict[str, Any]
 
 
 def _load_sssom_context() -> Context:
-    with open(SSSOM_CONTEXT) as file:
-        return json.load(file, strict=False)
+    with SSSOM_CONTEXT.open() as file:
+        return cast(Context, json.load(file, strict=False))
 
 
 @lru_cache(1)

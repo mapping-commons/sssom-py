@@ -28,13 +28,12 @@ from sssom.cli import (
     split,
     validate,
 )
-from tests.constants import data_dir
+from tests.constants import data_dir, test_out_dir
 from tests.test_data import (
     RECON_YAML,
     SSSOMTestCase,
     get_all_test_cases,
     get_multiple_input_test_cases,
-    test_out_dir,
 )
 
 

@@ -6,6 +6,7 @@ import pandas as pd
 
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
+    PrefixReconciliation,
     collapse,
     compare_dataframes,
     dataframe_to_ptable,
@@ -91,7 +92,7 @@ class TestCollapse(unittest.TestCase):
             },
             msdf.prefix_map,
         )
-        prefix_reconciliation = {
+        prefix_reconciliation: PrefixReconciliation = {
             "prefix_synonyms": {
                 "a": "c",
                 "c": "c2",
