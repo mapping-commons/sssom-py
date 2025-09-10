@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Mapping, Union, cast
 
 import curies
@@ -22,8 +23,8 @@ __all__ = [
 ]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-SSSOM_CONTEXT = importlib_resources.files("sssom_schema").joinpath(
-    "context/sssom_schema.context.jsonld"
+SSSOM_CONTEXT = Path(
+    importlib_resources.files("sssom_schema").joinpath("context/sssom_schema.context.jsonld")
 )
 
 
