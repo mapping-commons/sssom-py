@@ -33,12 +33,12 @@ from .constants import (
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
+    NEW_ENUM_VALUES,
     NO_TERM_FOUND,
     OBJECT_CATEGORY,
     OBJECT_ID,
     OBJECT_LABEL,
     OBJECT_SOURCE,
-    OBJECT_TYPE,
     OBO_HAS_DB_XREF,
     OWL_DIFFERENT_FROM,
     OWL_EQUIVALENT_CLASS,
@@ -61,7 +61,6 @@ from .constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_SOURCE,
-    SUBJECT_TYPE,
     UNKNOWN_IRI,
     MetadataType,
     PathOrIO,
@@ -517,27 +516,13 @@ class MappingSetDataFrame:
             if version is not None:
                 versions.add(version)
 
-        # Then take care of enum values; we cannot use the SSSOM model
-        # for that (enum values are not tagged with an "added_in"
-        # annotation the way slots are), so this has to be handled
-        # "manually" based on the informations provided in
-        # <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
-        if (
-            self.metadata.get(SUBJECT_TYPE) == "composed entity expression"
-            or self.metadata.get(OBJECT_TYPE) == "composed entity expression"
-            or (
-                SUBJECT_TYPE in self.df.columns
-                and "composed entity expression" in self.df[SUBJECT_TYPE].values
-            )
-            or (
-                OBJECT_TYPE in self.df.columns
-                and "composed entity expression" in self.df[OBJECT_TYPE].values
-            )
-        ):
-            versions.add((1, 1))
-
-        if MAPPING_CARDINALITY in self.df.columns and "0:0" in self.df[MAPPING_CARDINALITY].values:
-            versions.add((1, 1))
+        # Then take care of enum values
+        for new_enum_value in NEW_ENUM_VALUES:
+            for slot in new_enum_value.slots:
+                if self.metadata.get(slot) == new_enum_value.value or (
+                    slot in self.df.columns and new_enum_value.value in self.df[slot].values
+                ):
+                    versions.add(new_enum_value.added_in)
 
         # Get the highest of the accumulated versions.
         return ".".join([str(i) for i in max(versions)])
@@ -590,12 +575,10 @@ class MappingSetDataFrame:
             for name in msdf.metadata.keys()
             if not _keep(name, schema.get_minimum_version(name, "mapping set"))
         ]
-        if target_version < (1, 1):
-            # Remove enum values introduced in 1.1
-            if msdf.metadata.get(SUBJECT_TYPE) == "composed entity expression":
-                to_remove.append(SUBJECT_TYPE)
-            if msdf.metadata.get(OBJECT_TYPE) == "composed entity expression":
-                to_remove.append(OBJECT_TYPE)
+        for new_enum_value in [v for v in NEW_ENUM_VALUES if v.added_in > target_version]:
+            for slot in new_enum_value.slots:
+                if msdf.metadata.get(slot) == new_enum_value.value:
+                    to_remove.append(slot)
         for slot in to_remove:
             msdf.metadata.pop(slot)
 
@@ -606,16 +589,10 @@ class MappingSetDataFrame:
             if not _keep(name, schema.get_minimum_version(name, "mapping"))
         ]
         msdf.df.drop(columns=to_remove, inplace=True)
-        if target_version < (1, 1):
-            # Remove enum values introduced in 1.1
-            if SUBJECT_TYPE in msdf.df.columns:
-                msdf.df.loc[msdf.df[SUBJECT_TYPE] == "composed entity expression", SUBJECT_TYPE] = (
-                    ""
-                )
-            if OBJECT_TYPE in msdf.df.columns:
-                msdf.df.loc[msdf.df[OBJECT_TYPE] == "composed entity expression", OBJECT_TYPE] = ""
-            if MAPPING_CARDINALITY in msdf.df.columns:
-                msdf.df.loc[msdf.df[MAPPING_CARDINALITY] == "0:0", MAPPING_CARDINALITY] = ""
+        for new_enum_value in [v for v in NEW_ENUM_VALUES if v.added_in > target_version]:
+            for slot in new_enum_value.slots:
+                if slot in msdf.df.columns:
+                    msdf.df.loc[msdf.df[slot] == new_enum_value.value, slot] = ""
 
         return msdf
 

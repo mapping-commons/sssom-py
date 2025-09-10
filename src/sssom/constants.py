@@ -2,6 +2,7 @@
 
 import pathlib
 import uuid
+from dataclasses import dataclass
 from enum import Enum
 from functools import cached_property, lru_cache
 from typing import Any, Dict, List, Literal, Optional, Set, TextIO, Tuple, Union
@@ -216,6 +217,28 @@ DEFAULT_VALIDATION_TYPES = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
     SchemaValidationType.StrictCurieFormat,
+]
+
+
+@dataclass
+class NewEnumValue(object):
+    """Represents a enum value that had been added posteriorly to 1.0.
+
+    Ideally that information should be encoded in the LinkML schema and
+    made available through the SSSOMSchemaView class below, but it does
+    not seem possible to annotate enum values in LinkML the way it can
+    be done for slots. So the information comes from the spec instead,
+    at <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
+    """
+
+    slots: list[str]  # Impacted slots
+    value: str  # The new value
+    added_in: tuple[int, int]  # Version that introduced the new value
+
+
+NEW_ENUM_VALUES = [
+    NewEnumValue([SUBJECT_TYPE, OBJECT_TYPE], "composed entity expression", (1, 1)),
+    NewEnumValue([MAPPING_CARDINALITY], "0:0", (1, 1)),
 ]
 
 
