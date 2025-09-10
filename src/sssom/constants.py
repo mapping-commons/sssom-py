@@ -240,12 +240,12 @@ class SSSOMSchemaView(object):
     @cached_property
     def dict(self) -> Dict[str, Any]:
         """Return SchemaView as a dictionary."""
-        return schema_as_dict(self.view.schema)
+        return schema_as_dict(self.view.schema)  # type:ignore
 
     @cached_property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        return self.view.get_class("mapping").slots
+        return self.view.get_class("mapping").slots  # type:ignore
 
     @cached_property
     def mapping_set_slots(self) -> List[str]:
@@ -270,7 +270,7 @@ class SSSOMSchemaView(object):
     @cached_property
     def slots(self) -> Dict[str, str]:
         """Return the slots for SSSOMSchemaView object."""
-        return self.dict["slots"]
+        return self.dict["slots"]  # type:ignore
 
     @cached_property
     def double_slots(self) -> Set[str]:
@@ -292,9 +292,7 @@ class SSSOMSchemaView(object):
 def _get_sssom_schema_object() -> SSSOMSchemaView:
     """Get a view over the SSSOM schema."""
     sssom_sv_object = (
-        SSSOMSchemaView.instance
-        if hasattr(SSSOMSchemaView, "instance")
-        else SSSOMSchemaView()  # type:ignore[misc]
+        SSSOMSchemaView.instance if hasattr(SSSOMSchemaView, "instance") else SSSOMSchemaView()
     )
     return sssom_sv_object
 

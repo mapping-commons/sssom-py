@@ -1,5 +1,7 @@
 """I/O utilities for SSSOM."""
 
+from __future__ import annotations
+
 import logging
 import os
 import re
@@ -33,6 +35,9 @@ from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
 from .util import MappingSetDataFrame, are_params_slots, augment_metadata, raise_for_bad_path
 from .writers import get_writer_function, write_table, write_tables
 
+VV = Union[str, Path]
+RecursivePathList: TypeAlias = Union[VV, Iterable[Union[VV, "RecursivePathList"]]]
+
 
 def convert_file(
     input_path: str,
@@ -62,7 +67,7 @@ def parse_file(
     clean_prefixes: bool = True,
     strict_clean_prefixes: bool = True,
     embedded_mode: bool = True,
-    mapping_predicate_filter: tuple = None,
+    mapping_predicate_filter: RecursivePathList | None = None,
 ) -> None:
     """Parse an SSSOM metadata file and write to a table.
 
@@ -131,7 +136,7 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     write_tables(splitted, output_directory)
 
 
-@deprecated(
+@deprecated(  # type:ignore[misc]
     deprecated_in="0.4.3",
     details="This functionality for loading SSSOM metadata from a YAML file is deprecated from the "
     "public API since it has internal assumptions which are usually not valid for downstream users.",
@@ -176,10 +181,6 @@ def _merge_converter(
     if prefix_map_mode == PREFIX_MAP_MODE_MERGED:
         return curies.chain([converter, get_converter()])
     raise ValueError(f"Invalid prefix map mode: {prefix_map_mode}")
-
-
-VV = Union[str, Path]
-RecursivePathList: TypeAlias = Union[VV, Iterable[Union[VV, "RecursivePathList"]]]
 
 
 def extract_iris(input: RecursivePathList, converter: Converter) -> List[str]:

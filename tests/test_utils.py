@@ -602,8 +602,8 @@ class TestUtils(unittest.TestCase):
     def test_infer_cardinality(self) -> None:
         """Test cardinality computation."""
 
-        def _check_against_precomputed_values(filename):
-            msdf = parse_sssom_table(f"{data_dir}/{filename}")
+        def _check_against_precomputed_values(filename: str) -> None:
+            msdf = parse_sssom_table(data_dir.joinpath(filename))
             # Expected values are already contained in the test file
             expected = list(msdf.df[MAPPING_CARDINALITY].values)
             msdf.df.drop(columns=MAPPING_CARDINALITY, inplace=True)

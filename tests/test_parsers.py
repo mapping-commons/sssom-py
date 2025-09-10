@@ -32,8 +32,8 @@ from sssom.parsers import (
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
-from tests.test_data import data_dir as test_data_dir
-from tests.test_data import test_out_dir
+from tests.constants import data_dir as test_data_dir
+from tests.constants import test_out_dir
 
 
 class TestParse(unittest.TestCase):
