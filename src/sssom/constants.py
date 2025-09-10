@@ -106,6 +106,8 @@ SEMANTIC_SIMILARITY_MEASURE = "semantic_similarity_measure"
 SEE_ALSO = "see_also"
 OTHER = "other"
 COMMENT = "comment"
+EXTENSION_DEFINITIONS = "extension_definitions"
+EXTENSION_SLOT_NAME = "slot_name"
 
 CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
