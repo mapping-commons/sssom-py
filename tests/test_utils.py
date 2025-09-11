@@ -26,6 +26,7 @@ from sssom.constants import (
     SUBJECT_ID,
     SUBJECT_LABEL,
     SUBJECT_TYPE,
+    MetadataType,
 )
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter
 from sssom.io import extract_iris
@@ -56,7 +57,7 @@ class TestIO(unittest.TestCase):
         self.features = [SUBJECT_ID, OBJECT_ID]
         self.mapping_justification = SEMAPV.ManualMappingCuration.value
 
-    def test_broken_predicate_list(self):
+    def test_broken_predicate_list(self) -> None:
         """Test merging of multiple msdfs."""
         predicate_filter = ["skos:relatedMatch", [f"{data_dir}/predicate_list3.txt"]]
         prefix_map = {"skos": "http://www.w3.org/2004/02/skos/core#"}
@@ -70,7 +71,7 @@ class TestIO(unittest.TestCase):
             iri_list,
         )
 
-    def test_filter_prefixes_any(self):
+    def test_filter_prefixes_any(self) -> None:
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
@@ -82,7 +83,7 @@ class TestIO(unittest.TestCase):
         )
         self.assertEqual(len(filtered_df), 136)
 
-    def test_filter_prefixes_all(self):
+    def test_filter_prefixes_all(self) -> None:
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
@@ -94,7 +95,7 @@ class TestIO(unittest.TestCase):
         )
         self.assertEqual(len(filtered_df), 40)
 
-    def test_filter_out_prefixes_any(self):
+    def test_filter_out_prefixes_any(self) -> None:
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
@@ -106,7 +107,7 @@ class TestIO(unittest.TestCase):
         )
         self.assertEqual(len(filtered_df), 5)
 
-    def test_filter_out_prefixes_all(self):
+    def test_filter_out_prefixes_all(self) -> None:
         """Test filtering MSDF.df by prefixes provided."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
@@ -118,7 +119,7 @@ class TestIO(unittest.TestCase):
         )
         self.assertEqual(len(filtered_df), 101)
 
-    def test_remove_mappings(self):
+    def test_remove_mappings(self) -> None:
         """Test remove mappings."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
@@ -133,7 +134,7 @@ class TestIO(unittest.TestCase):
         # len(self.msdf.df) = 141 and len(new_msdf.df) = 5
         self.assertEqual(len(original_msdf.df), original_length - len(new_msdf.df))
 
-    def test_clean_prefix_map(self):
+    def test_clean_prefix_map(self) -> None:
         """Test clean prefix map."""
         prefix_filter_list = ["x", "y"]
         original_msdf = self.msdf
@@ -149,13 +150,13 @@ class TestIO(unittest.TestCase):
             set(original_msdf.prefix_map.keys()).intersection(set(new_msdf.prefix_map.keys())),
         )
 
-    def test_clean_prefix_map_strict(self):
+    def test_clean_prefix_map_strict(self) -> None:
         """Test clean prefix map with 'strict'=True."""
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
         with self.assertRaises(ValueError):
             msdf.clean_prefix_map(strict=True)
 
-    def test_clean_prefix_map_not_strict(self):
+    def test_clean_prefix_map_not_strict(self) -> None:
         """Test clean prefix map with 'strict'=False."""
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
         self.assertEqual(
@@ -186,24 +187,24 @@ class TestIO(unittest.TestCase):
             set(new_curie_map),
         )
 
-    def test_invert_nodes(self):
+    def test_invert_nodes(self) -> None:
         """Test invert nodes."""
         subject_prefix = "a"
         inverted_df = invert_mappings(self.msdf2.df, subject_prefix, False)
         self.assertEqual(len(inverted_df), 13)
 
-    def test_invert_nodes_merged(self):
+    def test_invert_nodes_merged(self) -> None:
         """Test invert nodes with merge_inverted."""
         subject_prefix = "a"
         inverted_df = invert_mappings(self.msdf2.df, subject_prefix, True)
         self.assertEqual(len(inverted_df), 38)
 
-    def test_invert_nodes_without_prefix(self):
+    def test_invert_nodes_without_prefix(self) -> None:
         """Test invert nodes."""
         inverted_df = invert_mappings(df=self.msdf2.df, merge_inverted=False)
         self.assertEqual(len(inverted_df), len(self.msdf2.df.drop_duplicates()))
 
-    def test_invert_asymmetric_nodes(self):
+    def test_invert_asymmetric_nodes(self) -> None:
         """Test inverting sets containing imbalanced subject/object columns."""
         msdf = parse_sssom_table(f"{data_dir}/asymmetric.tsv")
         inverted_df = invert_mappings(msdf.df, merge_inverted=False)
@@ -212,7 +213,7 @@ class TestIO(unittest.TestCase):
         inverted_object_labels = inverted_df["object_label"].values
         self.assertNotIn(False, original_subject_labels == inverted_object_labels)
 
-    def test_inject_metadata_into_df(self):
+    def test_inject_metadata_into_df(self) -> None:
         """Test injecting metadata into DataFrame is as expected."""
         expected_creators = "orcid:0000-0001-5839-2535|orcid:0000-0001-5839-2532"
         msdf = parse_sssom_table(f"{data_dir}/test_inject_metadata_msdf.tsv")
@@ -224,7 +225,7 @@ class TestIO(unittest.TestCase):
 class TestUtils(unittest.TestCase):
     """Unit test for utility functions."""
 
-    def test_get_prefixes(self):
+    def test_get_prefixes(self) -> None:
         """Test getting prefixes from a MSDF."""
         path = data_dir.joinpath("enm_example.tsv")
         metadata_path = data_dir.joinpath("enm_example.yml")
@@ -249,7 +250,7 @@ class TestUtils(unittest.TestCase):
             prefixes,
         )
 
-    def test_standardize_df(self):
+    def test_standardize_df(self) -> None:
         """Test standardizing a MSDF's dataframe."""
         rows = [("a:1", "b:2", "c:3")]
         columns = ["subject_id", "predicate_id", "object_id"]
@@ -268,21 +269,21 @@ class TestUtils(unittest.TestCase):
             tuple(df.iloc[0]),
         )
 
-    def test_standardize_idempotent(self):
+    def test_standardize_idempotent(self) -> None:
         """Test standardizing leaves correct fields."""
         metadata = {"license": "https://example.org/test-license"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({"license": "https://example.org/test-license"}, msdf.metadata)
 
-    def test_standardize_metadata_upgrade_multivalued_single(self):
+    def test_standardize_metadata_upgrade_multivalued_single(self) -> None:
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({"creator_id": ["orcid:0000-0003-4423-4370"]}, msdf.metadata)
 
-    def test_standardize_metadata_upgrade_multivalued_multiple(self):
+    def test_standardize_metadata_upgrade_multivalued_multiple(self) -> None:
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370 | orcid:0000-0002-6601-2165"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
@@ -292,7 +293,7 @@ class TestUtils(unittest.TestCase):
             msdf.metadata,
         )
 
-    def test_standardize_metadata_multivalued(self):
+    def test_standardize_metadata_multivalued(self) -> None:
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
@@ -302,21 +303,21 @@ class TestUtils(unittest.TestCase):
             msdf.metadata,
         )
 
-    def test_standardize_metadata_multivalued_type_error(self):
+    def test_standardize_metadata_multivalued_type_error(self) -> None:
         """Test raising on a  non-string, non-list object given to a multivalued slot."""
         metadata = {"creator_id": object()}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(TypeError):
             msdf._standardize_metadata_references(raise_on_invalid=True)
 
-    def test_standardize_error_non_list(self):
+    def test_standardize_error_non_list(self) -> None:
         """Test that a type error is raised when metadata is presented that should not be a list."""
         metadata = {"mapping_source": ["https://example.org/r1", "https://example.org/r2"]}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(TypeError):
             msdf._standardize_metadata_references(raise_on_invalid=True)
 
-    def test_standardize_coerce_list(self):
+    def test_standardize_coerce_list(self) -> None:
         """Test that a metadata field that should not be a list gets coerced to a single element."""
         self.assertFalse(is_multivalued_slot("mapping_source"))
         metadata = {"mapping_source": ["https://example.org/r1"]}
@@ -329,23 +330,23 @@ class TestUtils(unittest.TestCase):
         )
         self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
 
-    def test_standardize_metdata_delete_empty(self):
+    def test_standardize_metdata_delete_empty(self) -> None:
         """Test that an element that should not be a list but is empty just gets deleted."""
-        metadata = {"mapping_source": []}
+        metadata: MetadataType = {"mapping_source": []}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({}, msdf.metadata)
 
-    def test_standardize_metadata_single(self):
+    def test_standardize_metadata_single(self) -> None:
         """Test standardizing a single valued slot."""
-        metadata = {"mapping_source": "https://example.org/r1"}
+        metadata: MetadataType = {"mapping_source": "https://example.org/r1"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
 
-    def test_standardize_metadata_raise_on_missing(self):
+    def test_standardize_metadata_raise_on_missing(self) -> None:
         """Test that an exception is raised for a metadata key that's not in the schema."""
-        metadata = {"xxxx": "https://example.org/r1"}
+        metadata: MetadataType = {"xxxx": "https://example.org/r1"}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(ValueError):
             msdf._standardize_metadata_references(raise_on_invalid=True)
@@ -355,7 +356,7 @@ class TestUtils(unittest.TestCase):
             msdf._standardize_metadata_references()
             self.assertIn("invalid metadata key xxxx", "".join(cm.output))
 
-    def test_msdf_from_mappings(self):
+    def test_msdf_from_mappings(self) -> None:
         """Test round tripping to SSSOM classes."""
         rows = [
             (
@@ -396,7 +397,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(rows[0], tuple(msdf.df.iloc[0]))
         self.assertEqual(new_msdf.metadata, msdf.metadata)
 
-    def test_get_dict_from_mapping(self):
+    def test_get_dict_from_mapping(self) -> None:
         """Test getting dict from a SSSOM mapping object or a dictionary."""
         mapping_obj = SSSOM_Mapping(
             subject_id="DOID:0050601",
@@ -474,7 +475,7 @@ class TestUtils(unittest.TestCase):
                 self.assertEqual(value, result_with_mapping_object[key])
                 self.assertEqual(value, result_with_dict[key])
 
-    def test_curiechain_with_conflicts(self):
+    def test_curiechain_with_conflicts(self) -> None:
         """Test curie map with CURIE/URI clashes."""
         PREFIXMAP_BOTH = {
             "SCTID": "http://identifiers.org/snomedct/",
@@ -606,8 +607,8 @@ class TestUtils(unittest.TestCase):
     def test_infer_cardinality(self) -> None:
         """Test cardinality computation."""
 
-        def _check_against_precomputed_values(filename):
-            msdf = parse_sssom_table(f"{data_dir}/{filename}")
+        def _check_against_precomputed_values(filename: str) -> None:
+            msdf = parse_sssom_table(data_dir.joinpath(filename))
             # Expected values are already contained in the test file
             expected = list(msdf.df[MAPPING_CARDINALITY].values)
             msdf.df.drop(columns=MAPPING_CARDINALITY, inplace=True)
@@ -647,7 +648,7 @@ class TestUtils(unittest.TestCase):
         # Nothing in that set requires 1.1
         self.assertEqual("1.0", msdf10.get_compatible_version())
 
-        def _clone(msdf):
+        def _clone(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
             return MappingSetDataFrame(df=msdf.df.copy(), metadata=msdf.metadata.copy())
 
         # Inject a 1.1-specific mapping set slot

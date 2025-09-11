@@ -8,7 +8,7 @@ from sssom_schema import Mapping
 class TestModel(unittest.TestCase):
     """A test case for making sure the model works as intended."""
 
-    def test_invalid_mapping_throws_value_error(self):
+    def test_invalid_mapping_throws_value_error(self) -> None:
         """Test if instantiating Mapping() fails when required elements are missing."""
         mdict_missing = dict(
             subject_id="ID:123"
@@ -20,7 +20,7 @@ class TestModel(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "must be supplied"):
             _ = Mapping(**mdict_missing)
 
-    def test_valid_mapping_does_not_throw_value_error(self):
+    def test_valid_mapping_does_not_throw_value_error(self) -> None:
         """Test if instantiating Mapping() works when all required elements are present."""
         mdict_complete = dict(
             subject_id="AID:123",

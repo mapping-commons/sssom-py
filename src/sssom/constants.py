@@ -1,13 +1,28 @@
 """Constants."""
 
+from __future__ import annotations
+
+import importlib.resources
 import pathlib
 import uuid
 from dataclasses import dataclass
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Optional, Set, TextIO, Tuple, Union
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 
-import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
@@ -15,7 +30,8 @@ from sssom_schema.datamodel.sssom_schema import SssomVersionEnum
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
+SCHEMA_RESOURCES = importlib.resources.files("sssom_schema")
+SCHEMA_YAML = SCHEMA_RESOURCES.joinpath("schema/sssom_schema.yaml")
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
@@ -161,7 +177,7 @@ with open(HERE / "inverse_map.yaml", "r") as im:
 
 PREDICATE_INVERT_DICTIONARY = inverse_map["inverse_predicate_map"]
 
-COLUMN_INVERT_DICTIONARY = {
+COLUMN_INVERT_DICTIONARY: Mapping[str, str] = {
     SUBJECT_ID: OBJECT_ID,
     SUBJECT_LABEL: OBJECT_LABEL,
     SUBJECT_CATEGORY: OBJECT_CATEGORY,
@@ -213,7 +229,7 @@ class SchemaValidationType(str, Enum):
     StrictCurieFormat = "StrictCurieFormat"
 
 
-DEFAULT_VALIDATION_TYPES = [
+DEFAULT_VALIDATION_TYPES: List[SchemaValidationType] = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
     SchemaValidationType.StrictCurieFormat,
@@ -250,7 +266,9 @@ class SSSOMSchemaView(object):
     Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    def __new__(cls):
+    instance: ClassVar[SSSOMSchemaView]
+
+    def __new__(cls) -> SSSOMSchemaView:
         """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
@@ -262,19 +280,19 @@ class SSSOMSchemaView(object):
         return SchemaView(SCHEMA_YAML)
 
     @cached_property
-    def dict(self) -> dict:
+    def dict(self) -> Dict[str, Any]:
         """Return SchemaView as a dictionary."""
-        return schema_as_dict(self.view.schema)
+        return schema_as_dict(self.view.schema)  # type:ignore
 
     @cached_property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        return self.view.get_class("mapping").slots
+        return self.view.get_class("mapping").slots  # type:ignore
 
     @cached_property
     def mapping_set_slots(self) -> List[str]:
         """Return list of mapping set slots."""
-        return self.view.get_class("mapping set").slots
+        return cast(List[str], self.view.get_class("mapping set").slots)
 
     @cached_property
     def multivalued_slots(self) -> Set[str]:
@@ -294,7 +312,7 @@ class SSSOMSchemaView(object):
     @cached_property
     def slots(self) -> Dict[str, str]:
         """Return the slots for SSSOMSchemaView object."""
-        return self.dict["slots"]
+        return self.dict["slots"]  # type:ignore
 
     @cached_property
     def double_slots(self) -> Set[str]:

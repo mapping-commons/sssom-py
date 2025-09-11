@@ -15,7 +15,7 @@ class TestConvert(unittest.TestCase):
         self.msdf = parse_sssom_table(data_dir / "basic.tsv")
         self.cob = parse_sssom_table(data_dir / "cob-to-external.tsv")
 
-    def test_df(self):
+    def test_df(self) -> None:
         """Test the dataframe has the right number of mappings."""
         df = self.msdf.df
         self.assertEqual(
@@ -24,7 +24,7 @@ class TestConvert(unittest.TestCase):
             "The tested SSSOM file has an unexpected number of mappings.",
         )
 
-    def test_to_owl(self):
+    def test_to_owl(self) -> None:
         """Test converting the basic example to an OWL RDF graph."""
         g = to_owl_graph(self.msdf)
         results = g.query(
@@ -36,7 +36,7 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 90)
 
-    def test_cob_to_owl(self):
+    def test_cob_to_owl(self) -> None:
         """Test converting the COB example to an OWL RDF graph."""
         g = to_owl_graph(self.cob)
         results = g.query(
@@ -67,7 +67,7 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 0)
 
-    def test_to_rdf(self):
+    def test_to_rdf(self) -> None:
         """Test converting the basic example to a basic RDF graph."""
         g = to_rdf_graph(self.msdf)
         results = g.query(
@@ -81,7 +81,7 @@ class TestConvert(unittest.TestCase):
         size = len(results)
         self.assertEqual(size, 90)
 
-    def test_to_json(self):
+    def test_to_json(self) -> None:
         """Test converting the basic example to a JSON object."""
         json_obj = to_json(self.msdf)
         self.assertIsInstance(json_obj, dict)

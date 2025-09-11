@@ -40,7 +40,7 @@ class TestWrite(unittest.TestCase):
         # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
         self.mapping_count = 141  # 141 for basic.tsv
 
-    def test_write_sssom_dataframe(self):
+    def test_write_sssom_dataframe(self) -> None:
         """Test writing as a dataframe."""
         tmp_path = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
         write_table(self.msdf, tmp_path)
@@ -51,7 +51,7 @@ class TestWrite(unittest.TestCase):
             f"{tmp_path} has the wrong number of mappings.",
         )
 
-    def test_write_sssom_rdf(self):
+    def test_write_sssom_rdf(self) -> None:
         """Test writing as RDF."""
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         write_rdf(self.msdf, path_1)
@@ -66,7 +66,7 @@ class TestWrite(unittest.TestCase):
         path_2 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf.tsv")
         write_table(self.msdf, path_2)
 
-    def test_write_sssom_json(self):
+    def test_write_sssom_json(self) -> None:
         """Test writing as JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_json.json")
         write_json(self.msdf, path)
@@ -77,7 +77,7 @@ class TestWrite(unittest.TestCase):
             f"{path} has the wrong number of mappings.",
         )
 
-    def test_write_sssom_json_context(self):
+    def test_write_sssom_json_context(self) -> None:
         """Test when writing to JSON, the context is correctly written as well."""
         rows = [
             (
@@ -107,7 +107,7 @@ class TestWrite(unittest.TestCase):
         self.assertIn("DOID", json_object["@context"])
         self.assertIn("mapping_set_id", json_object["@context"])
 
-    def test_update_sssom_context_with_prefixmap(self):
+    def test_update_sssom_context_with_prefixmap(self) -> None:
         """Test when writing to JSON, the context is correctly written as well."""
         records = [
             {
@@ -166,12 +166,12 @@ class TestWrite(unittest.TestCase):
         #  - I'm getting: subsumes, owl:equivalentClass (and see what else in basic.tsv)
         # todo: mapping_justification extensionprint()  # TODO: temp
 
-    def test_write_sssom_owl(self):
+    def test_write_sssom_owl(self) -> None:
         """Test writing as OWL."""
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_owl.owl")
         write_owl(self.msdf, tmp_file)
 
-    def test_write_sssom_ontoportal_json(self):
+    def test_write_sssom_ontoportal_json(self) -> None:
         """Test writing as ontoportal JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_ontoportal_json.json")
         write_json(self.msdf, path, "ontoportal_json")

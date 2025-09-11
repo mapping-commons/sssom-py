@@ -15,7 +15,7 @@ class TestReconcile(unittest.TestCase):
         self.msdf1 = parse_sssom_table(data_dir / "basic3.tsv")
         self.msdf2 = parse_sssom_table(data_dir / "basic7.tsv")
 
-    def test_filter(self):
+    def test_filter(self) -> None:
         """Test filtering returns the right number of rows."""
         df1 = filter_redundant_rows(self.msdf1.df)
         self.assertEqual(10, len(df1.index))
@@ -29,14 +29,14 @@ class TestReconcile(unittest.TestCase):
         df3 = filter_redundant_rows(self.msdf1.df)
         self.assertEqual(11, len(df3.index))
 
-    def test_deal_with_negation(self):
+    def test_deal_with_negation(self) -> None:
         """Test handling negating returns the right number of rows."""
         df1 = deal_with_negation(self.msdf1.df)
         self.assertEqual(8, len(df1.index))
         df2 = deal_with_negation(self.msdf2.df)
         self.assertEqual(12, len(df2.index))
 
-    def test_merge(self):
+    def test_merge(self) -> None:
         """Test merging two tables."""
         msdf3 = parse_sssom_table(data_dir / "basic.tsv")
         merged_msdf1 = merge_msdf(self.msdf1, msdf3)
@@ -49,17 +49,17 @@ class TestReconcile(unittest.TestCase):
         merged_msdf3 = merge_msdf(self.msdf1, self.msdf2)
         self.assertEqual(34, len(merged_msdf3.df))
 
-    def test_merge_with_reconcile(self):
+    def test_merge_with_reconcile(self) -> None:
         """Test merging two tables with reconciliation."""
         merged_msdf = merge_msdf(self.msdf1, self.msdf2, reconcile=True)
         self.assertEqual(len(merged_msdf.df), 18)
 
-    def test_merge_without_reconcile(self):
+    def test_merge_without_reconcile(self) -> None:
         """Test merging two tables without reconciliation."""
         merged_msdf = merge_msdf(self.msdf1, self.msdf2, reconcile=False)
         self.assertEqual(len(merged_msdf.df), 34)
 
-    def test_merge_with_reconcile_without_confidence(self):
+    def test_merge_with_reconcile_without_confidence(self) -> None:
         """Test merging two tables without reconciliation."""
         msdf1 = parse_sssom_table(data_dir / "reconcile_1.tsv")
         msdf2 = parse_sssom_table(data_dir / "reconcile_2.tsv")

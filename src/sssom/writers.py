@@ -4,7 +4,19 @@ import json
 import logging as _logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, Optional, TextIO, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 
 import pandas as pd
 import yaml
@@ -122,7 +134,7 @@ def write_rdf(
         print(t.decode(), file=fh)
 
 
-def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="json") -> None:
+def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "json") -> None:
     """Write a mapping set dataframe to the file as JSON.
 
     :param msdf: A mapping set dataframe
@@ -135,23 +147,20 @@ def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="json"
      - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
        https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
     """
-    func_map: Dict[str, Callable] = {
-        "fhir_json": to_fhir_json,
-        "json": to_json,
-        "ontoportal_json": to_ontoportal_json,
-    }
-    if serialisation not in func_map:
+    if serialisation not in JSON_CONVERTERS:
         raise ValueError(
-            f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(func_map.keys())}"
+            f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(JSON_CONVERTERS.keys())}"
         )
-    func: Callable = func_map[serialisation]
+    func = JSON_CONVERTERS[serialisation]
     data = func(msdf)
     with _open_text_writer(output) as fh:
         json.dump(data, fh, indent=2)
 
 
-@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
-def write_fhir_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="fhir_json") -> None:
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore[misc]
+def write_fhir_json(
+    msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "fhir_json"
+) -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     if serialisation != "fhir_json":
         raise ValueError(
@@ -160,7 +169,7 @@ def write_fhir_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="
     write_json(msdf, output, serialisation="fhir_json")
 
 
-@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore
 def write_ontoportal_json(
     msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "ontoportal_json"
 ) -> None:
@@ -175,7 +184,7 @@ def write_ontoportal_json(
 def write_owl(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    serialisation: str = SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
     if serialisation not in RDF_FORMATS:
@@ -307,10 +316,10 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
         # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
         prefix_map=msdf.converter.bimap,
     )
-    return graph
+    return cast(Graph, graph)
 
 
-def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
+def to_fhir_json(msdf: MappingSetDataFrame) -> Dict[str, Any]:
     """Convert a mapping set dataframe to a JSON object.
 
     :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.
@@ -491,7 +500,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     return json_obj
 
 
-def _update_sssom_context_with_prefixmap(converter: Converter):
+def _update_sssom_context_with_prefixmap(converter: Converter) -> dict[str, Any]:
     """Prepare a JSON-LD context and dump to a string."""
     context = _load_sssom_context()
     for k, v in converter.bimap.items():
@@ -513,7 +522,7 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     return json_obj
 
 
-def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
+def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict[str, Any]]:
     """Convert a mapping set dataframe to a list of ontoportal mapping JSON objects."""
     converter = msdf.converter
     metadata: Dict[str, Any] = msdf.metadata
@@ -549,7 +558,9 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 
 # Support methods
 
-WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
+WRITER_FUNCTIONS: Dict[
+    str, Tuple[Callable[[MappingSetDataFrame, PathOrIO], None], Optional[str]]
+] = {
     "tsv": (write_table, None),
     "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
     "ontoportal_json": (write_json, "ontoportal_json"),
@@ -596,7 +607,8 @@ def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[s
         logging.info(f"Writing {path} complete!")
 
 
-def _inject_annotation_properties(graph: Graph, elements) -> None:
+def _inject_annotation_properties(graph: Graph, elements: Collection[str]) -> None:
+    # TODO unused, delete
     for var in [
         slot
         for slot in dir(slots)
@@ -622,3 +634,10 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
     else:
         raise ValueError(f"Unknown table format: {serialisation}, should be one of tsv or csv")
     return sep
+
+
+JSON_CONVERTERS: Dict[str, Callable[[MappingSetDataFrame], Any]] = {
+    "fhir_json": to_fhir_json,
+    "json": to_json,
+    "ontoportal_json": to_ontoportal_json,
+}
