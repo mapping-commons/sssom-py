@@ -667,7 +667,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
             df = df[
                 df.apply(
                     lambda x: x[CONFIDENCE]
-                              >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
+                    >= max_conf[(x[SUBJECT_ID], x[OBJECT_ID], x[PREDICATE_ID])],
                     axis=1,
                 )
             ]
@@ -1766,9 +1766,5 @@ FAIR_TOTAL_WEIGHT = sum(FAIR_WEIGHTS.values())
 
 def calculate_fairness(mapping: SSSOM_Mapping) -> float:
     """Calculate FAIRness of a mapping."""
-    s: float = sum(
-        weight
-        for key, weight in FAIR_WEIGHTS.items()
-        if getattr(mapping, key, None)
-    )
+    s: float = sum(weight for key, weight in FAIR_WEIGHTS.items() if getattr(mapping, key, None))
     return s / FAIR_TOTAL_WEIGHT

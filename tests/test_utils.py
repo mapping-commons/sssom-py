@@ -651,7 +651,4 @@ class TestFAIRScore(unittest.TestCase):
 
     def test_mapping_weight(self) -> None:
         """Test calculating the weight on a mapping."""
-        m = SSSOM_Mapping(
-            
-        )
-
+        m = SSSOM_Mapping()
