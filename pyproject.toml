@@ -48,6 +48,7 @@ rdflib-endpoint = [
     "uvicorn",
     "fastapi",
     "rdflib-endpoint",
+    "httpx",  # only used in tests, but this is small
 ]
 
 [project.scripts]
