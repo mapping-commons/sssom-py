@@ -120,7 +120,15 @@ def write_rdf(
     *,
     hydrate: bool = False,
 ) -> None:
-    """Write a mapping set dataframe to the file as RDF."""
+    """Write a mapping set dataframe to the file as RDF.
+
+    :param msdf: A mapping set dataframe
+    :param file: The path or file object to write to
+    :param serialisation: The RDF format to serialize to, see :data:`RDF_FORMATS`.
+        Defaults to turtle.
+    :param hydrate: If true, will add subject-predicate-objects directly representing
+        mappings. This is opt-in behavior.
+    """
     if serialisation is None:
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
     elif serialisation not in RDF_FORMATS:
