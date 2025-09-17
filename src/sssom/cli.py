@@ -62,7 +62,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .writers import WRITER_FUNCTIONS, write_table
+from .writers import WRITER_FUNCTIONS, to_rdf_endpoint, write_table
 
 logging = _logging.getLogger(__name__)
 
