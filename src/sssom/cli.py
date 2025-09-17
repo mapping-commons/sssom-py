@@ -62,7 +62,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .writers import WRITER_FUNCTIONS, to_rdf_endpoint, write_table
+from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint, write_table
 
 logging = _logging.getLogger(__name__)
 
@@ -825,7 +825,7 @@ def serve_rdf(input: str, host: str, port: int) -> None:
     import uvicorn
 
     msdf = parse_sssom_table(input)
-    app = to_rdf_endpoint(msdf, host=host, port=port)
+    app = get_rdflib_endpoint(msdf)
     uvicorn.run(app, host=host, port=port)
 
 

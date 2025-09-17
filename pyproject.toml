@@ -44,6 +44,11 @@ docs = [
     "sphinx-click>=4.3.0",
     "myst-parser>=0.18.1",
 ]
+rdflib-endpoint = [
+    "uvicorn",
+    "fastapi",
+    "rdflib-endpoint",
+]
 
 [project.scripts]
 sssom = "sssom.cli:main"
