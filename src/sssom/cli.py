@@ -816,5 +816,17 @@ def invert(
     write_table(msdf, output)
 
 
+@main.command(name="serve-rdf")
+@input_argument
+def serve_rdf(input: str) -> None:
+    """Serve the SSSOM file as an RDF SPARQL endpoint."""
+    import uvicorn
+    from rdflib_endpoint import SparqlEndpoint
+
+    msdf = parse_sssom_table(input)
+    app = to_rdf_endpoint(msdf)
+    uvicorn.run(app)
+
+
 if __name__ == "__main__":
     main()
