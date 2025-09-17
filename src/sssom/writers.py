@@ -2,6 +2,7 @@
 
 import json
 import logging as _logging
+import rdflib
 from contextlib import contextmanager
 from pathlib import Path
 from typing import (
@@ -116,6 +117,8 @@ def write_rdf(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
     serialisation: Optional[str] = None,
+    *,
+    hydrate: bool = False,
 ) -> None:
     """Write a mapping set dataframe to the file as RDF."""
     if serialisation is None:
@@ -128,7 +131,7 @@ def write_rdf(
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     check_all_prefixes_in_curie_map(msdf)
-    graph = to_rdf_graph(msdf=msdf)
+    graph = to_rdf_graph(msdf=msdf, hydrate=hydrate)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     with _open_text_writer(file) as fh:
         print(t.decode(), file=fh)
@@ -204,6 +207,14 @@ def write_owl(
 # Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)
 
 
+def _hydrate_axioms(graph: rdflib.Graph) -> None:
+    for axiom in graph.subjects(RDF.type, OWL.Axiom):
+        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
+            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+                    graph.add((s, p, o))
+
+
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to OWL in an RDF graph."""
     msdf.df = invert_mappings(
@@ -217,11 +228,7 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
 
-    for axiom in graph.subjects(RDF.type, OWL.Axiom):
-        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-                    graph.add((s, p, o))
+    _hydrate_axioms(graph)
 
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -307,7 +314,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     return graph
 
 
-def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
+def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
     graph = rdflib_dumper.as_rdf_graph(
@@ -316,6 +323,8 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
         # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
         prefix_map=msdf.converter.bimap,
     )
+    if hydrate:
+        _hydrate_axioms(graph)
     return cast(Graph, graph)
 
 
