@@ -2,7 +2,6 @@
 
 import json
 import logging as _logging
-import rdflib
 from contextlib import contextmanager
 from pathlib import Path
 from typing import (
@@ -20,6 +19,7 @@ from typing import (
 )
 
 import pandas as pd
+import rdflib
 import yaml
 from curies import Converter
 from deprecation import deprecated
