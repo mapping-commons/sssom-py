@@ -818,14 +818,15 @@ def invert(
 
 @main.command(name="serve-rdf")
 @input_argument
-def serve_rdf(input: str) -> None:
+@click.option("--host", default="127.0.0.1")
+@click.option("--port", type=int, default=8000)
+def serve_rdf(input: str, host: str, port: int) -> None:
     """Serve the SSSOM file as an RDF SPARQL endpoint."""
     import uvicorn
-    from rdflib_endpoint import SparqlEndpoint
 
     msdf = parse_sssom_table(input)
-    app = to_rdf_endpoint(msdf)
-    uvicorn.run(app)
+    app = to_rdf_endpoint(msdf, host=host, port=port)
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":
