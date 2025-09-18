@@ -56,6 +56,9 @@ OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
 
+NO_TERM_REF = rdflib.URIRef("https://w3id.org/sssom/NoTermFound")
+NEGATED = rdflib.URIRef("https://w3id.org/sssom/predicate_modifier")
+
 # Writers
 
 MSDFWriter = Callable[[MappingSetDataFrame, TextIO], None]
@@ -215,12 +218,31 @@ def write_owl(
 # Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)
 
 
-def _hydrate_axioms(graph: rdflib.Graph) -> None:
+def _hydrate_axioms(
+    graph: rdflib.Graph,
+    *,
+    add_negative: bool = True,
+    add_no_term_found: bool = True,
+) -> None:
     for axiom in graph.subjects(RDF.type, OWL.Axiom):
         for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
             for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
                 for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+                    if not add_negative and _is_negated(graph, axiom):
+                        continue
+                    if not add_no_term_found and _is_no_term_found(s, o):
+                        continue
                     graph.add((s, p, o))
+
+
+def _is_no_term_found(s: rdflib.Node, o: rdflib.Node) -> bool:
+    return s == NO_TERM_FOUND_URI or o == NO_TERM_FOUND_URI
+
+
+def _is_negated(graph: rdflib.Graph, axiom: rdflib.Node) -> bool:
+    return any(
+        obj == rdflib.Literal("NOT") for obj in graph.objects(subject=axiom, predicate=NEGATED)
+    )
 
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
@@ -332,7 +354,7 @@ def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
         prefix_map=msdf.converter.bimap,
     )
     if hydrate:
-        _hydrate_axioms(graph)
+        _hydrate_axioms(graph, add_no_term_found=False, add_negative=False)
     return cast(Graph, graph)
 
 
