@@ -19,6 +19,7 @@ from typing import (
 )
 
 import pandas as pd
+import rdflib
 import yaml
 from curies import Converter
 from deprecation import deprecated
@@ -31,7 +32,7 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
+from .constants import CURIE_MAP, PREDICATE_MODIFIER_NOT, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
@@ -54,6 +55,12 @@ OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
 OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
+
+NO_TERM_REF = rdflib.URIRef("https://w3id.org/sssom/NoTermFound")
+PREDICATE_MODIFIER = rdflib.URIRef("https://w3id.org/sssom/predicate_modifier")
+OBJECT_NOT = rdflib.URIRef("https://w3id.org/sssom/NegatedPredicate")
+LITERAL_NOT = rdflib.Literal(PREDICATE_MODIFIER_NOT)
+NEGATED_NODES: set[rdflib.Node] = {OBJECT_NOT, LITERAL_NOT}
 
 # Writers
 
@@ -116,8 +123,18 @@ def write_rdf(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
     serialisation: Optional[str] = None,
+    *,
+    hydrate: bool = False,
 ) -> None:
-    """Write a mapping set dataframe to the file as RDF."""
+    """Write a mapping set dataframe to the file as RDF.
+
+    :param msdf: A mapping set dataframe
+    :param file: The path or file object to write to
+    :param serialisation: The RDF format to serialize to, see :data:`RDF_FORMATS`.
+        Defaults to turtle.
+    :param hydrate: If true, will add subject-predicate-objects directly representing
+        mappings. This is opt-in behavior.
+    """
     if serialisation is None:
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
     elif serialisation not in RDF_FORMATS:
@@ -128,7 +145,7 @@ def write_rdf(
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     check_all_prefixes_in_curie_map(msdf)
-    graph = to_rdf_graph(msdf=msdf)
+    graph = to_rdf_graph(msdf=msdf, hydrate=hydrate)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     with _open_text_writer(file) as fh:
         print(t.decode(), file=fh)
@@ -204,6 +221,33 @@ def write_owl(
 # Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)
 
 
+def _hydrate_axioms(
+    graph: rdflib.Graph,
+    *,
+    add_negative: bool = True,
+    add_no_term_found: bool = True,
+) -> None:
+    for axiom in graph.subjects(RDF.type, OWL.Axiom):
+        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
+            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+                    if not add_negative and _is_negated(graph, axiom):
+                        continue
+                    if not add_no_term_found and _is_no_term_found(s, o):
+                        continue
+                    graph.add((s, p, o))
+
+
+def _is_no_term_found(s: rdflib.Node, o: rdflib.Node) -> bool:
+    return s == NO_TERM_REF or o == NO_TERM_REF
+
+
+def _is_negated(graph: rdflib.Graph, axiom: rdflib.Node) -> bool:
+    return any(
+        obj in NEGATED_NODES for obj in graph.objects(subject=axiom, predicate=PREDICATE_MODIFIER)
+    )
+
+
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to OWL in an RDF graph."""
     msdf.df = invert_mappings(
@@ -217,11 +261,8 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
 
-    for axiom in graph.subjects(RDF.type, OWL.Axiom):
-        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-                    graph.add((s, p, o))
+    # TODO consider making this not add negative or term not found
+    _hydrate_axioms(graph, add_negative=True, add_no_term_found=True)
 
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -307,7 +348,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     return graph
 
 
-def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
+def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
     graph = rdflib_dumper.as_rdf_graph(
@@ -316,6 +357,8 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
         # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
         prefix_map=msdf.converter.bimap,
     )
+    if hydrate:
+        _hydrate_axioms(graph, add_no_term_found=False, add_negative=False)
     return cast(Graph, graph)
 
 
