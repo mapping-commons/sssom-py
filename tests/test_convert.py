@@ -2,6 +2,11 @@
 
 import unittest
 
+import curies
+import pandas as pd
+
+from sssom import MappingSetDataFrame
+from sssom.constants import OBJECT_ID, PREDICATE_ID, SEMAPV, SUBJECT_ID
 from sssom.parsers import parse_sssom_table
 from sssom.writers import to_json, to_owl_graph, to_rdf_graph
 from tests.constants import data_dir
@@ -95,3 +100,33 @@ class TestConvert(unittest.TestCase):
             # ensure no JSON-LD strangeness
             for k in m.keys():
                 self.assertFalse(k.startswith("@"))
+
+    def test_to_rdf_hydrated(self) -> None:
+        """Test converting to RDF with hydration."""
+        rows = [
+            (
+                "DOID:0050601",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                SEMAPV.ManualMappingCuration.value,
+            )
+        ]
+        columns = [
+            SUBJECT_ID,
+            PREDICATE_ID,
+            OBJECT_ID,
+            SEMAPV.ManualMappingCuration.value,
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        converter = curies.Converter.from_prefix_map(
+            {
+                "DOID": "http://purl.obolibrary.org/obo/DOID_",
+                "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
+            }
+        )
+        msdf = MappingSetDataFrame(df, converter=converter)
+        graph = to_rdf_graph(msdf, hydrate=False)
+        self.assertFalse(graph.query("ASK { DOID:0050601 skos:exactMatch UMLS:C1863204 }"))
+
+        graph = to_rdf_graph(msdf, hydrate=True)
+        self.assertTrue(graph.query("ASK { DOID:0050601 skos:exactMatch UMLS:C1863204 }"))
