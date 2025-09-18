@@ -1,5 +1,7 @@
 """Tests for conversion utilities."""
 
+from __future__ import annotations
+
 import unittest
 
 import curies
