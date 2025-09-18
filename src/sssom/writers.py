@@ -32,7 +32,7 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
+from .constants import CURIE_MAP, PREDICATE_MODIFIER_NOT, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
@@ -58,6 +58,7 @@ SSSOM_NS = SSSOM_URI_PREFIX
 
 NO_TERM_REF = rdflib.URIRef("https://w3id.org/sssom/NoTermFound")
 NEGATED = rdflib.URIRef("https://w3id.org/sssom/predicate_modifier")
+LITERAL_NOT = rdflib.Literal(PREDICATE_MODIFIER_NOT)
 
 # Writers
 
@@ -240,9 +241,7 @@ def _is_no_term_found(s: rdflib.Node, o: rdflib.Node) -> bool:
 
 
 def _is_negated(graph: rdflib.Graph, axiom: rdflib.Node) -> bool:
-    return any(
-        obj == rdflib.Literal("NOT") for obj in graph.objects(subject=axiom, predicate=NEGATED)
-    )
+    return any(obj == LITERAL_NOT for obj in graph.objects(subject=axiom, predicate=NEGATED))
 
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
