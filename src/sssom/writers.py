@@ -394,7 +394,7 @@ def get_rdflib_endpoint_app(msdf: MappingSetDataFrame) -> rdflib_endpoint.Sparql
     """Get a FastAPI app that serves the mappings from a SPARQL endpoint."""
     from rdflib_endpoint import SparqlEndpoint
 
-    graph = to_rdf_graph(msdf)
+    graph = to_rdf_graph(msdf, hydrate=True)
     app = SparqlEndpoint(
         graph=graph,
         cors_enabled=True,
