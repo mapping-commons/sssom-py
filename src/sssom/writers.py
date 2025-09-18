@@ -57,8 +57,10 @@ OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
 
 NO_TERM_REF = rdflib.URIRef("https://w3id.org/sssom/NoTermFound")
-NEGATED = rdflib.URIRef("https://w3id.org/sssom/predicate_modifier")
+PREDICATE_MODIFIER = rdflib.URIRef("https://w3id.org/sssom/predicate_modifier")
+OBJECT_NOT = rdflib.URIRef("https://w3id.org/sssom/NegatedPredicate")
 LITERAL_NOT = rdflib.Literal(PREDICATE_MODIFIER_NOT)
+NEGATED_NODES: set[rdflib.Node] = {OBJECT_NOT, LITERAL_NOT}
 
 # Writers
 
@@ -241,7 +243,9 @@ def _is_no_term_found(s: rdflib.Node, o: rdflib.Node) -> bool:
 
 
 def _is_negated(graph: rdflib.Graph, axiom: rdflib.Node) -> bool:
-    return any(obj == LITERAL_NOT for obj in graph.objects(subject=axiom, predicate=NEGATED))
+    return any(
+        obj in NEGATED_NODES for obj in graph.objects(subject=axiom, predicate=PREDICATE_MODIFIER)
+    )
 
 
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
