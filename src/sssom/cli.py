@@ -62,7 +62,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .writers import WRITER_FUNCTIONS, write_table
+from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint_app, write_table
 
 logging = _logging.getLogger(__name__)
 
@@ -814,6 +814,26 @@ def invert(
         predicate_invert_dictionary=inverse_predicate_map,
     )
     write_table(msdf, output)
+
+
+@main.command(name="serve-rdf")
+@input_argument
+@click.option(
+    "--hydrate/--no-hydrate",
+    is_flag=True,
+    default=True,
+    show_default=True,
+    help="Infer S-P-O simple triples from axioms. On by default.",
+)
+@click.option("--host", default="127.0.0.1", show_default=True)
+@click.option("--port", type=int, default=8000, show_default=True)
+def serve_rdf(input: str, host: str, port: int, hydrate: bool) -> None:
+    """Serve the SSSOM file as an RDF SPARQL endpoint."""
+    import uvicorn
+
+    msdf = parse_sssom_table(input)
+    app = get_rdflib_endpoint_app(msdf, hydrate=hydrate)
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":

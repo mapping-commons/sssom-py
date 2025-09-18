@@ -1,10 +1,13 @@
 """Serialization functions for SSSOM."""
 
+from __future__ import annotations
+
 import json
 import logging as _logging
 from contextlib import contextmanager
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Collection,
@@ -44,6 +47,9 @@ from .util import (
     invert_mappings,
     sort_df_rows_columns,
 )
+
+if TYPE_CHECKING:
+    import rdflib_endpoint
 
 logging = _logging.getLogger(__name__)
 
@@ -360,6 +366,45 @@ def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
     if hydrate:
         _hydrate_axioms(graph, add_no_term_found=False, add_negative=False)
     return cast(Graph, graph)
+
+
+EXAMPLE_SPARQL_QUERY = """\
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX sssom: <https://w3id.org/sssom/>
+    PREFIX obo: <http://purl.obolibrary.org/obo/>
+    PREFIX semapv: <https://w3id.org/semapv/vocab/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX pav: <http://purl.org/pav/>
+    PREFIX orcid: <https://orcid.org/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT ?s ?p ?o ?justification {
+      [] a owl:Axiom ;
+        owl:annotatedSource ?s ;
+        owl:annotatedProperty ?p ;
+        owl:annotatedTarget ?o ;
+        sssom:mapping_justification ?justification ;
+    }
+    LIMIT 50
+"""
+
+
+def get_rdflib_endpoint_app(
+    msdf: MappingSetDataFrame, *, hydrate: bool = True
+) -> rdflib_endpoint.SparqlEndpoint:
+    """Get a FastAPI app that serves the mappings from a SPARQL endpoint."""
+    from rdflib_endpoint import SparqlEndpoint
+
+    graph = to_rdf_graph(msdf, hydrate=hydrate)
+    app = SparqlEndpoint(
+        graph=graph,
+        cors_enabled=True,
+        title=f"SSSOM SPARQL Endpoint for {msdf.metadata['mapping_set_id']}",
+        description=msdf.metadata.get("mapping_set_description"),
+        example_query=EXAMPLE_SPARQL_QUERY,
+    )
+    return app
 
 
 def to_fhir_json(msdf: MappingSetDataFrame) -> Dict[str, Any]:

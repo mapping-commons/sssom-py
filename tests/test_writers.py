@@ -5,8 +5,10 @@ import os
 import unittest
 from typing import Any, Dict
 
+import curies
 import pandas as pd
 from curies import Converter
+from fastapi.testclient import TestClient
 
 from sssom import MappingSetDataFrame
 from sssom.constants import (
@@ -20,7 +22,9 @@ from sssom.constants import (
 )
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
+    EXAMPLE_SPARQL_QUERY,
     _update_sssom_context_with_prefixmap,
+    get_rdflib_endpoint_app,
     to_json,
     write_json,
     write_owl,
@@ -183,4 +187,41 @@ class TestWrite(unittest.TestCase):
             len(d),
             self.mapping_count,
             f"{path} has the wrong number of mappings.",
+        )
+
+    def test_rdflib_endpoint(self) -> None:
+        """Test serving SPARQL."""
+        rows = [
+            (
+                "DOID:0050601",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                SEMAPV.ManualMappingCuration.value,
+            )
+        ]
+        columns = [
+            SUBJECT_ID,
+            PREDICATE_ID,
+            OBJECT_ID,
+            SEMAPV.ManualMappingCuration.value,
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        converter = curies.Converter.from_prefix_map(
+            {
+                "DOID": "http://purl.obolibrary.org/obo/DOID_",
+                "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
+            }
+        )
+        msdf = MappingSetDataFrame(df, converter=converter)
+        app = get_rdflib_endpoint_app(msdf)
+        client = TestClient(app)
+        response = client.get(
+            "/", params={"query": EXAMPLE_SPARQL_QUERY}, headers={"Accept": "application/json"}
+        )
+        self.assertEqual(200, response.status_code)
+        results = response.json()["results"]["bindings"]
+        self.assertEqual(1, len(results))
+        self.assertEqual("http://purl.obolibrary.org/obo/DOID_0050601", results[0]["s"]["value"])
+        self.assertEqual(
+            "https://uts.nlm.nih.gov/uts/umls/concept/C1863204", results[0]["o"]["value"]
         )
