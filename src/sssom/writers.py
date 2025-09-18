@@ -257,7 +257,8 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
 
-    _hydrate_axioms(graph)
+    # TODO consider making this not add negative or term not found
+    _hydrate_axioms(graph, add_negative=True, add_no_term_found=True)
 
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
