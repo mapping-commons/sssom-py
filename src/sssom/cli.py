@@ -818,14 +818,21 @@ def invert(
 
 @main.command(name="serve-rdf")
 @input_argument
-@click.option("--host", default="127.0.0.1")
-@click.option("--port", type=int, default=8000)
-def serve_rdf(input: str, host: str, port: int) -> None:
+@click.option(
+    "--hydrate/--no-hydrate",
+    is_flag=True,
+    default=True,
+    show_default=True,
+    help="Infer S-P-O simple triples from axioms. On by default.",
+)
+@click.option("--host", default="127.0.0.1", show_default=True)
+@click.option("--port", type=int, default=8000, show_default=True)
+def serve_rdf(input: str, host: str, port: int, hydrate: bool) -> None:
     """Serve the SSSOM file as an RDF SPARQL endpoint."""
     import uvicorn
 
     msdf = parse_sssom_table(input)
-    app = get_rdflib_endpoint_app(msdf)
+    app = get_rdflib_endpoint_app(msdf, hydrate=hydrate)
     uvicorn.run(app, host=host, port=port)
 
 

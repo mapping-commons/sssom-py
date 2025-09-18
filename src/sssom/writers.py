@@ -390,11 +390,13 @@ EXAMPLE_SPARQL_QUERY = """\
 """
 
 
-def get_rdflib_endpoint_app(msdf: MappingSetDataFrame) -> rdflib_endpoint.SparqlEndpoint:
+def get_rdflib_endpoint_app(
+    msdf: MappingSetDataFrame, *, hydrate: bool = True
+) -> rdflib_endpoint.SparqlEndpoint:
     """Get a FastAPI app that serves the mappings from a SPARQL endpoint."""
     from rdflib_endpoint import SparqlEndpoint
 
-    graph = to_rdf_graph(msdf, hydrate=True)
+    graph = to_rdf_graph(msdf, hydrate=hydrate)
     app = SparqlEndpoint(
         graph=graph,
         cors_enabled=True,
