@@ -236,7 +236,7 @@ def _hydrate_axioms(
 
 
 def _is_no_term_found(s: rdflib.Node, o: rdflib.Node) -> bool:
-    return s == NO_TERM_FOUND_URI or o == NO_TERM_FOUND_URI
+    return s == NO_TERM_REF or o == NO_TERM_REF
 
 
 def _is_negated(graph: rdflib.Graph, axiom: rdflib.Node) -> bool:

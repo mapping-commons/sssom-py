@@ -161,7 +161,11 @@ class TestConvert(unittest.TestCase):
         msdf = MappingSetDataFrame(df, converter=converter)
         graph = to_rdf_graph(msdf, hydrate=False)
         self.assertIn("sssom", {p for p, _ in graph.namespaces()})
-        self.assert_not_ask(graph, "ASK { DOID:0050601 skos:exactMatch UMLS:C1863204 }")
+        self.assert_not_ask(
+            graph,
+            "ASK { DOID:0050601 skos:exactMatch UMLS:C1863204 }",
+            msg="hydration should not have occurred",
+        )
         self.assert_not_ask(graph, "ASK { mesh:C562684 skos:exactMatch HP:0003348 }")
         self.assert_not_ask(graph, "ASK { mesh:C563052 skos:exactMatch sssom:NoTermFound }")
         self.assert_not_ask(graph, "ASK { sssom:NoTermFound skos:exactMatch mesh:C564625 }")
@@ -195,4 +199,4 @@ class TestConvert(unittest.TestCase):
 
     def assert_not_ask(self, graph: rdflib.Graph, query: str, *, msg: str | None = None) -> None:
         """Assert that the query returns a false answer."""
-        self.assertTrue(graph.query(query).askAnswer, msg=msg)
+        self.assertFalse(graph.query(query).askAnswer, msg=msg)
