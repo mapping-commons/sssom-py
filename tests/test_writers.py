@@ -24,7 +24,7 @@ from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
     EXAMPLE_SPARQL_QUERY,
     _update_sssom_context_with_prefixmap,
-    get_rdflib_endpoint,
+    get_rdflib_endpoint_app,
     to_json,
     write_json,
     write_owl,
@@ -213,7 +213,7 @@ class TestWrite(unittest.TestCase):
             }
         )
         msdf = MappingSetDataFrame(df, converter=converter)
-        app = get_rdflib_endpoint(msdf)
+        app = get_rdflib_endpoint_app(msdf)
         client = TestClient(app)
         response = client.get(
             "/", params={"query": EXAMPLE_SPARQL_QUERY}, headers={"Accept": "application/json"}

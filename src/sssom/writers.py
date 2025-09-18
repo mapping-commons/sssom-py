@@ -347,7 +347,7 @@ EXAMPLE_SPARQL_QUERY = """\
 """
 
 
-def get_rdflib_endpoint(msdf: MappingSetDataFrame) -> rdflib_endpoint.SparqlEndpoint:
+def get_rdflib_endpoint_app(msdf: MappingSetDataFrame) -> rdflib_endpoint.SparqlEndpoint:
     """Get a FastAPI app that serves the mappings from a SPARQL endpoint."""
     from rdflib_endpoint import SparqlEndpoint
 
