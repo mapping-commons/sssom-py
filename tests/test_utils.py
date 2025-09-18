@@ -30,6 +30,7 @@ from sssom.util import (
     FAIR_WEIGHTS,
     MappingSetDataFrame,
     _get_sssom_schema_object,
+    calculate_fairness,
     filter_out_prefixes,
     filter_prefixes,
     get_dict_from_mapping,
@@ -651,4 +652,18 @@ class TestFAIRScore(unittest.TestCase):
 
     def test_mapping_weight(self) -> None:
         """Test calculating the weight on a mapping."""
-        m = SSSOM_Mapping()
+        m1 = SSSOM_Mapping(
+            subject_id="DOID:0050601",
+            predicate_id="skos:exactMatch",
+            object_id="UMLS:C1863204",
+            mapping_justification=SEMAPV.ManualMappingCuration.value,
+        )
+        m2 = SSSOM_Mapping(
+            subject_id="DOID:0050601",
+            subject_label="ADULT syndrome",
+            predicate_id="skos:exactMatch",
+            object_id="UMLS:C1863204",
+            object_label="ADULT syndrome",
+            mapping_justification=SEMAPV.ManualMappingCuration.value,
+        )
+        self.assertLess(calculate_fairness(m1), calculate_fairness(m2))
