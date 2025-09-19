@@ -287,13 +287,13 @@ def dosql(query: str, inputs: List[str], output: TextIO) -> None:
     Alternatively, the filenames can be used as table names - these are first stemmed
     E.g. ``~/dir/my.sssom.tsv`` becomes a table called 'my'
 
-    Example:
+    Example
 
     .. code-block:: console
 
         $ sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
 
-    Example:
+    Example
 
     .. code-block:: console
 
@@ -553,7 +553,7 @@ def rewire(
 ) -> None:
     """Rewire an ontology using equivalent classes/properties from a mapping file.
 
-    Example:
+    Example
 
     .. code-block:: console
 
