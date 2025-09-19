@@ -1,15 +1,4 @@
-"""Command line interface for SSSOM.
-
-Why does this file exist, and why not put this in ``__main__``? You might be tempted to import things from ``__main__``
-later, but that will cause problems--the code will get executed twice:
-
-- When you run ``python3 -m sssom`` python will execute``__main__.py`` as a script. That means there won't be any
-  ``sssom.__main__`` in ``sys.modules``.
-- When you import __main__ it will get executed again (as a module) because
-  there's no ``sssom.__main__`` in ``sys.modules`` .
-
-.. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
-"""
+"""Command line interface for SSSOM."""
 
 from __future__ import annotations
 
@@ -159,11 +148,7 @@ def help(ctx: click.Context, subcommand: str) -> None:
 @output_option
 @output_format_option
 def convert(input: str, output: TextIO, output_format: str) -> None:
-    """Convert a file.
-
-    Example:
-        sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl
-    """  # noqa: DAR101
+    """Convert a file."""
     convert_file(input_path=input, output=output, output_format=output_format)
 
 
@@ -300,14 +285,19 @@ def dosql(query: str, inputs: List[str], output: TextIO) -> None:
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
 
     Alternatively, the filenames can be used as table names - these are first stemmed
-    E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
+    E.g. ``~/dir/my.sssom.tsv`` becomes a table called 'my'
 
     Example:
-        sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+
+    .. code-block:: console
+
+        $ sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
 
     Example:
-        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
-        FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
+
+    .. code-block:: console
+    
+        $ sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
     try:
@@ -532,17 +522,11 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
     "-R",
     "--reconcile",
     default=False,
-    help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
+    help="If true, the deduplicate (i.e., remove redundant lower confidence mappings) and reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower confidence positive one. If confidence is the same, prefer HumanCurated. If both HumanCurated, prefer negative mapping)"
 )
 @output_option
 def merge(inputs: str, output: TextIO, reconcile: bool = False) -> None:
-    """Merge multiple MappingSetDataFrames into one .
-
-    if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
-    reconcile (if msdf contains a higher confidence _negative_ mapping,
-    then remove lower confidence positive one. If confidence is the same,
-    prefer HumanCurated. If both HumanCurated, prefer negative mapping).
-    """  # noqa: DAR101
+    """Merge multiple MappingSetDataFrames into one."""  # noqa: DAR101
     msdfs = [parse_sssom_table(i) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
     write_table(merged_msdf, output)
@@ -570,7 +554,10 @@ def rewire(
     """Rewire an ontology using equivalent classes/properties from a mapping file.
 
     Example:
-        sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+
+    .. code-block:: console
+
+        $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
 
     # noqa: DAR101
     """
@@ -591,13 +578,7 @@ def rewire(
 )
 @output_option
 def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO) -> None:
-    """
-    Reconcile prefix_map based on provided YAML file.
-
-    :param input: MappingSetDataFrame filename
-    :param reconcile_prefix_file: YAML file containing the prefix reconcilation rules.
-    :param output: Target file path.
-    """
+    """Reconcile prefix_map based on provided YAML file."""
     msdf = parse_sssom_table(input)
     with open(reconcile_prefix_file, "rb") as rp_file:
         rp_dict = yaml.safe_load(rp_file)
@@ -621,44 +602,10 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO) 
     help="Sort rows by DataFrame column #1 (ascending).",
 )
 def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool) -> None:
-    """
-    Sort DataFrame columns canonically.
-
-    :param input: SSSOM TSV file.
-    :param by_columns: Boolean flag to sort columns canonically.
-    :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
-    :param output: SSSOM TSV file with columns sorted.
-    """
+    """Sort DataFrame columns canonically."""
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
-
-
-# @main.command()
-# @input_argument
-# @click.option(
-#     "-P",
-#     "--prefix",
-#     multiple=True,
-#     help="Prefixes that need to be filtered.",
-# )
-# @click.option(
-#     "-D",
-#     "--predicate",
-#     multiple=True,
-#     help="Predicates that need to be filtered.",
-# )
-# @output_option
-# def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
-#     """Filter mapping file based on prefix and predicates provided.
-
-#     :param input: Input mapping file (tsv)
-#     :param output: SSSOM TSV file.
-#     :param prefix: Prefixes to be retained.
-#     :param predicate: Predicates to be retained.
-#     """
-#     filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
-#     write_table(msdf=filtered_msdf, file=output)
 
 
 P = ParamSpec("P")
@@ -719,19 +666,12 @@ def filter(input: str, output: TextIO, **kwargs: Any) -> None:
     "--replace-multivalued",
     default=False,
     type=bool,
-    help="Multivalued slots should be replaced or not. [default: False]",
+    show_default=True,
+    help="Multivalued slots should be replaced or not.",
 )
 @dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_set_slots)
 def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs: Any) -> None:
-    """Annotate metadata of a mapping set.
-
-    :param input: Input path of the SSSOM tsv file.
-    :param output: Output location.
-    :param replace_multivalued: Multivalued slots should be
-        replaced or not, defaults to False
-    :param kwargs: Options provided by user
-        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
-    """
+    """Annotate metadata of a mapping set."""
     annotate_file(input=input, output=output, replace_multivalued=replace_multivalued, **kwargs)
 
 
@@ -744,12 +684,7 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs: An
 )
 @output_option
 def remove(input: str, output: TextIO, remove_map: str) -> None:
-    """Remove mappings from an input mapping.
-
-    :param input: Input SSSOM tsv file.
-    :param output: Output path.
-    :param remove_map: Mapping to be removed.
-    """
+    """Remove mappings from an input mapping."""
     input_msdf = parse_sssom_table(input)
     remove_msdf = parse_sssom_table(remove_map)
     input_msdf.remove_mappings(remove_msdf)

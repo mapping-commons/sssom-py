@@ -84,9 +84,10 @@ logging = _logging.getLogger(__name__)
 def _open_input(p: PathOrIO) -> TextIO:
     """Transform a URL, a filepath (from pathlib), or a string (with file contents) to a StringIO object.
 
-    :param p:
-        A string representing a URL, a filepath, or file contents, or a Path object representing a filepath.
-    :return: A StringIO object containing the input data.
+    :param p: A string representing a URL, a filepath, or file contents, or a Path object
+        representing a filepath.
+
+    :returns: A StringIO object containing the input data.
     """
     # if we passed an IO object, return it back directly
     if not isinstance(p, (str, Path)):
@@ -127,7 +128,8 @@ def _read_pandas_and_metadata(
 
     :param file_path: The file path or stream to read
     :param sep: File separator for pandas
-    :return: A pair of a dataframe and metadata dictionary
+
+    :returns: A pair of a dataframe and metadata dictionary
     """
     if sep is None:
         sep = _infer_separator(file_path) or "\t"
@@ -178,7 +180,8 @@ def _infer_separator(file: PathOrIO) -> Optional[str]:
     r"""Infer the CSV separator from a file path or IO object.
 
     :param file: the file path
-    :return: the separator symbols as a string, e.g. '\t'
+
+    :returns: the separator symbols as a string, e.g. '\t'
     """
     extension = get_file_extension(file)
     if extension is None:
@@ -258,14 +261,11 @@ def _fail_in_strict_parsing_mode(is_valid_built_in_prefixes: bool, is_valid_meta
 
 
 def _get_converter_pop_replace_curie_map(sssom_metadata: MetadataType) -> curies.Converter:
-    """
-    Pop CURIE_MAP from sssom_metadata, process it, and restore it if it existed.
+    """Pop CURIE_MAP from sssom_metadata, process it, and restore it if it existed.
 
-    Args:
-        sssom_metadata: The metadata dictionary.
+    :param sssom_metadata: The metadata dictionary.
 
-    Returns:
-        Converter: A Converter object created from the CURIE_MAP.
+    :returns: A Converter object created from the CURIE_MAP.
     """
     curie_map = sssom_metadata.pop(CURIE_MAP, {})
 
@@ -290,23 +290,16 @@ def parse_sssom_table(
 ) -> MappingSetDataFrame:
     """Parse a SSSOM CSV or TSV file.
 
-    :param file_path:
-        A file path, URL, or I/O object that contains SSSOM encoded in TSV
-    :param prefix_map:
-        A prefix map or :class:`curies.Converter` used to validate prefixes,
-        CURIEs, and IRIs appearing in the SSSOM TSV
-    :param meta:
-        Additional document-level metadata for the SSSOM TSV document that is not
-        contained within the document itself. For example, this may come from a
-        companion SSSOM YAML file.
-    :param strict:
-        If true, will fail parsing for undefined prefixes, CURIEs, or IRIs
-    :param sep:
-        The seperator. If not given, inferred from file name
-    :param kwargs:
-        Additional keyword arguments (unhandled)
-    :returns:
-        A parsed dataframe wrapper object
+    :param file_path: A file path, URL, or I/O object that contains SSSOM encoded in TSV
+    :param prefix_map: A prefix map or :class:`curies.Converter` used to validate prefixes, CURIEs,
+        and IRIs appearing in the SSSOM TSV
+    :param meta: Additional document-level metadata for the SSSOM TSV document that is not contained
+        within the document itself. For example, this may come from a companion SSSOM YAML file.
+    :param strict: If true, will fail parsing for undefined prefixes, CURIEs, or IRIs
+    :param sep: The seperator. If not given, inferred from file name
+    :param kwargs: Additional keyword arguments (unhandled)
+
+    :returns: A parsed dataframe wrapper object
     """
     if kwargs:
         logging.warning("unhandled keyword arguments passed: %s", kwargs)
@@ -450,7 +443,8 @@ def parse_obographs_json(
     :param prefix_map: an optional prefix map
     :param meta: an optional dictionary of metadata elements
     :param mapping_predicates: an optional list of mapping predicates that should be extracted
-    :return: A SSSOM MappingSetDataFrame
+
+    :returns: A SSSOM MappingSetDataFrame
     """
     raise_for_bad_path(file_path)
 
@@ -502,8 +496,8 @@ def _get_mapping_dict(
 ) -> Dict[str, Any]:
     """Generate a mapping dictionary from a given row of data.
 
-    It also updates the 'bad_attrs' counter for keys that are not present
-    in the sssom_schema_object's mapping_slots.
+    It also updates the 'bad_attrs' counter for keys that are not present in the
+    sssom_schema_object's mapping_slots.
     """
     # Populate the mapping dictionary with key-value pairs from the row,
     # only if the value exists, is not NaN, and the key is in the schema's mapping slots.
@@ -556,7 +550,8 @@ def from_sssom_dataframe(
     :param df: A mappings dataframe
     :param prefix_map: A prefix map
     :param meta: A metadata dictionary
-    :return: MappingSetDataFrame
+
+    :returns: MappingSetDataFrame
     """
     converter = ensure_converter(prefix_map)
 
@@ -580,7 +575,8 @@ def from_sssom_rdf(
     :param g: the Graph (rdflib)
     :param prefix_map: A dictionary containing the prefix map, defaults to None
     :param meta: Potentially additional metadata, defaults to None
-    :return: MappingSetDataFrame object
+
+    :returns: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
     mapping_set = cast(
@@ -623,7 +619,8 @@ def from_sssom_json(
     :param jsondoc: JSON document
     :param prefix_map: Prefix map
     :param meta: metadata used to augment the metadata existing in the mapping set
-    :return: MappingSetDataFrame object
+
+    :returns: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
 
@@ -660,8 +657,11 @@ def from_alignment_minidom(
     :param prefix_map: A prefix map
     :param meta: Optional meta data
     :param mapping_predicates: Optional list of mapping predicates to extract
-    :return: MappingSetDocument
-    :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is supported!
+
+    :returns: MappingSetDocument
+
+    :raises ValueError: for alignment format: xml element said, but not set to yes. Only XML is
+        supported!
     """
     converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
@@ -719,10 +719,13 @@ def from_obographs(
 
     :param jsondoc: The JSON object representing the ontology in obographs format
     :param prefix_map: The prefix map to be used
-    :param meta: Any additional metadata that needs to be added to the resulting SSSOM data frame, defaults to None
+    :param meta: Any additional metadata that needs to be added to the resulting SSSOM data frame,
+        defaults to None
     :param mapping_predicates: Optional list of mapping predicates to extract
+
+    :returns: An SSSOM data frame (MappingSetDataFrame)
+
     :raises Exception: When there is no CURIE
-    :return: An SSSOM data frame (MappingSetDataFrame)
     """
     converter = ensure_converter(prefix_map)
     ms = _init_mapping_set(meta)
@@ -848,8 +851,10 @@ def get_parsing_function(
 
     :param input_format: File format
     :param filename: Filename
+
+    :returns: Appropriate 'read' function
+
     :raises ValueError: Unknown file format
-    :return: Appropriate 'read' function
     """
     if input_format is None:
         input_format = get_file_extension(filename) or "tsv"
@@ -977,8 +982,10 @@ def split_dataframe(
     """Group the mapping set dataframe into several subdataframes by prefix.
 
     :param msdf: MappingSetDataFrame object
+
+    :returns: Mapping object
+
     :raises RuntimeError: DataFrame object within MappingSetDataFrame is None
-    :return: Mapping object
     """
     subject_prefixes = set(msdf.df[SUBJECT_ID].str.split(":", n=1, expand=True)[0])
     object_prefixes = set(msdf.df[OBJECT_ID].str.split(":", n=1, expand=True)[0])
@@ -1008,7 +1015,8 @@ def split_dataframe_by_prefix(
     :param subject_prefixes: a list of prefixes pertaining to the subject
     :param object_prefixes: a list of prefixes pertaining to the object
     :param relations: a list of relations of interest
-    :return: a dict of SSSOM data frame names to MappingSetDataFrame
+
+    :returns: a dict of SSSOM data frame names to MappingSetDataFrame
     """
     df = msdf.df
     meta = msdf.metadata
@@ -1042,11 +1050,11 @@ def split_dataframe_by_prefix(
 
 
 def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]) -> Optional[Mapping]:
-    """
-    Return a valid mapping object if it can be constructed, else None.
+    """Return a valid mapping object if it can be constructed, else None.
 
     :param mdict: A dictionary containing the mapping metadata.
-    :return: A valid Mapping object, or None.
+
+    :returns: A valid Mapping object, or None.
     """
     mdict.setdefault(MAPPING_JUSTIFICATION, MAPPING_JUSTIFICATION_UNSPECIFIED)
 
@@ -1075,13 +1083,11 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]) -> Optional[Mapping]:
 def _add_valid_mapping_to_list(
     mdict: Dict[str, Any], mlist: List[Mapping], *, flip_superclass_assertions: bool = False
 ) -> None:
-    """
-    Validate the mapping and append to the list if valid.
+    """Validate the mapping and append to the list if valid.
 
-    Parameters:
-    - mdict (dict): A dictionary containing the mapping metadata.
-    - mlist (list): The list to which the valid mapping should be appended.
-    - flip_superclass_assertions (bool): an optional paramter that flips sssom:superClassOf to rdfs:subClassOf
+    Parameters: - mdict (dict): A dictionary containing the mapping metadata. - mlist (list): The
+    list to which the valid mapping should be appended. - flip_superclass_assertions (bool): an
+    optional paramter that flips sssom:superClassOf to rdfs:subClassOf
     """
     mapping = _ensure_valid_mapping_from_dict(mdict)
     if not mapping:

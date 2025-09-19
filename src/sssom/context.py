@@ -76,20 +76,19 @@ def ensure_converter(prefix_map: ConverterHint = None, *, use_defaults: bool = T
 
     :param prefix_map: One of the following:
 
-        1. An empty dictionary or ``None``. This results in using the default
-           extended prefix map (currently based on a variant of the Bioregistry)
-           if ``use_defaults`` is set to true, otherwise just the builtin prefix
-           map including the prefixes in :data:`SSSOM_BUILT_IN_PREFIXES`
-        2. A non-empty dictionary representing a prefix map. This is loaded as a
-           converter with :meth:`Converter.from_prefix_map`. It is chained
-           behind the builtin prefix map to ensure none of the
-           :data:`SSSOM_BUILT_IN_PREFIXES` are overwritten with non-default values
-        3. A pre-instantiated :class:`curies.Converter`. Similarly to a prefix
-           map passed into this function, this is chained behind the builtin prefix
-           map
-    :param use_defaults: If an empty dictionary or None is passed to this function,
-        this parameter chooses if the extended prefix map (currently based on a
-        variant of the Bioregistry) gets loaded.
+        1. An empty dictionary or ``None``. This results in using the default extended prefix map
+           (currently based on a variant of the Bioregistry) if ``use_defaults`` is set to true,
+           otherwise just the builtin prefix map including the prefixes in
+           :data:`SSSOM_BUILT_IN_PREFIXES`
+        2. A non-empty dictionary representing a prefix map. This is loaded as a converter with
+           :meth:`Converter.from_prefix_map`. It is chained behind the builtin prefix map to ensure
+           none of the :data:`SSSOM_BUILT_IN_PREFIXES` are overwritten with non-default values
+        3. A pre-instantiated :class:`curies.Converter`. Similarly to a prefix map passed into this
+           function, this is chained behind the builtin prefix map
+    :param use_defaults: If an empty dictionary or None is passed to this function, this parameter
+        chooses if the extended prefix map (currently based on a variant of the Bioregistry) gets
+        loaded.
+
     :returns: A re-usable converter
     """
     if not prefix_map:
