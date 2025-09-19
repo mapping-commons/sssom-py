@@ -296,7 +296,7 @@ def dosql(query: str, inputs: List[str], output: TextIO) -> None:
     Example:
 
     .. code-block:: console
-    
+
         $ sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv
     """  # noqa: DAR101
     # should start with from_tsv and MOST should return write_sssom
@@ -522,7 +522,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
     "-R",
     "--reconcile",
     default=False,
-    help="If true, the deduplicate (i.e., remove redundant lower confidence mappings) and reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower confidence positive one. If confidence is the same, prefer HumanCurated. If both HumanCurated, prefer negative mapping)"
+    help="If true, the deduplicate (i.e., remove redundant lower confidence mappings) and reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower confidence positive one. If confidence is the same, prefer HumanCurated. If both HumanCurated, prefer negative mapping)",
 )
 @output_option
 def merge(inputs: str, output: TextIO, reconcile: bool = False) -> None:
