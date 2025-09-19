@@ -275,30 +275,25 @@ def dedupe(input: str, output: TextIO) -> None:
     write_table(msdf_out, output)
 
 
-@main.command()
+@main.command(
+    help="""\
+Each of the N inputs is assigned a table name df1, df2, ..., dfN
+
+Alternatively, the filenames can be used as table names - these are first stemmed
+E.g. ``~/dir/my.sssom.tsv`` becomes a table called 'my'
+
+Examples:
+
+$ sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+
+$ sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv
+"""
+)
 @click.option("-Q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
 def dosql(query: str, inputs: List[str], output: TextIO) -> None:
-    """Run a SQL query over one or more SSSOM files.
-
-    Each of the N inputs is assigned a table name df1, df2, ..., dfN
-
-    Alternatively, the filenames can be used as table names - these are first stemmed
-    E.g. ``~/dir/my.sssom.tsv`` becomes a table called 'my'
-
-    Example
-
-    .. code-block:: console
-
-        $ sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
-
-    Example
-
-    .. code-block:: console
-
-        $ sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv
-    """  # noqa: DAR101
+    """Run a SQL query over one or more SSSOM files."""
     # should start with from_tsv and MOST should return write_sssom
     try:
         run_sql_query(query=query, inputs=inputs, output=output)
@@ -532,7 +527,13 @@ def merge(inputs: str, output: TextIO, reconcile: bool = False) -> None:
     write_table(merged_msdf, output)
 
 
-@main.command()
+@main.command(
+    help="""\
+Example:
+
+$ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+"""
+)
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
 @click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
@@ -551,16 +552,7 @@ def rewire(
     input_format: str,
     output_format: str,
 ) -> None:
-    """Rewire an ontology using equivalent classes/properties from a mapping file.
-
-    Example
-
-    .. code-block:: console
-
-        $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
-
-    # noqa: DAR101
-    """
+    """Rewire an ontology using equivalent classes/properties from a mapping file."""
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
