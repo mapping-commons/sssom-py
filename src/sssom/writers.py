@@ -136,10 +136,10 @@ def write_rdf(
 
     :param msdf: A mapping set dataframe
     :param file: The path or file object to write to
-    :param serialisation: The RDF format to serialize to, see :data:`RDF_FORMATS`.
-        Defaults to turtle.
-    :param hydrate: If true, will add subject-predicate-objects directly representing
-        mappings. This is opt-in behavior.
+    :param serialisation: The RDF format to serialize to, see :data:`RDF_FORMATS`. Defaults to
+        turtle.
+    :param hydrate: If true, will add subject-predicate-objects directly representing mappings. This
+        is opt-in behavior.
     """
     if serialisation is None:
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
@@ -164,11 +164,13 @@ def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str =
     :param output: A path or write-supported file object to write JSON to
     :param serialisation: The JSON format to use. Supported formats are:
 
-     - ``fhir_json``: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
-       https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
-     - ``json``: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
-     - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
-       https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
+        - ``fhir_json``: Outputs JSON in FHIR ConceptMap format
+          (https://fhir-ru.github.io/conceptmap.html)
+          https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
+        - ``json``: Outputs to SSSOM JSON
+          https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
+        - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
+          https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
     """
     if serialisation not in JSON_CONVERTERS:
         raise ValueError(
@@ -410,20 +412,25 @@ def get_rdflib_endpoint_app(
 def to_fhir_json(msdf: MappingSetDataFrame) -> Dict[str, Any]:
     """Convert a mapping set dataframe to a JSON object.
 
-    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.
-    :return: Dict: A Dictionary serializable as JSON.
+    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/
+        additional metadata.
 
-    Resources:
-      - ConceptMap::SSSOM mapping spreadsheet:
-      https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
+    :returns: Dict: A Dictionary serializable as JSON.
 
-    TODO: add to CLI & to these functions: r4 vs r5 param
-    TODO: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
-     - todo: later: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))
+    .. seealso::
 
-    Minor todos
-    todo: mapping_justification: consider `ValueString` -> `ValueCoding` https://github.com/timsbiomed/issues/issues/152
-    todo: when/how to conform to R5 instead of R4?: https://build.fhir.org/conceptmap.html
+        ConceptMap=SSSOM mapping spreadsheet
+        https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
+
+    .. todo:: add to CLI & to these functions: r4 vs r5 param
+
+    .. todo:: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
+
+    .. todo:: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))
+
+    .. todo:: mapping_justification consider `ValueString` -> `ValueCoding` https://github.com/timsbiomed/issues/issues/152
+
+    .. todo:: when/how to conform to R5 instead of R4? https://build.fhir.org/conceptmap.html
     """
     # Constants
     df: pd.DataFrame = msdf.df
@@ -667,8 +674,10 @@ def get_writer_function(
 
     :param output: Output file
     :param output_format: Output file format, defaults to None
+
+    :returns: Type of writer function
+
     :raises ValueError: Unknown output format
-    :return: Type of writer function
     """
     if output_format is None:
         output_format = get_file_extension(output) or "tsv"

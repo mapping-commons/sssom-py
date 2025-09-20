@@ -32,6 +32,7 @@ def validate(
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
     :param fail_on_error: If true, throw an error when execution of a method has failed
+
     :returns: A dictionary from validation types to validation reports
     """
     if validation_types is None:
@@ -43,7 +44,8 @@ def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) ->
     """Print the error messages in the report. Optionally throw exception.
 
     :param report: A LinkML validation report
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors
+    :param fail_on_error: if true, the function will throw an ValidationError exception when there
+        are errors
     """
     validation_errors = 0
 
@@ -68,11 +70,9 @@ def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) ->
 def _clean_dict(d: dict[str, Any]) -> dict[str, Any]:
     """Recursively removes key-value pairs from a dictionary where the value is None, "null", or an empty string.
 
-    Args:
-    d (dict): The dictionary to clean.
+    :param d: The dictionary to clean.
 
-    Returns:
-    dict: A cleaned dictionary with unwanted values removed.
+    :returns: A cleaned dictionary with unwanted values removed.
     """
     if not isinstance(d, dict):
         return d
@@ -101,7 +101,8 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
     """Validate JSON Schema using linkml's JsonSchemaDataValidator.
 
     :param msdf: MappingSetDataFrame to eb validated.
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors
+    :param fail_on_error: if true, the function will throw an ValidationError exception when there
+        are errors
     """
     validator = Validator(
         schema=SCHEMA_YAML,
@@ -122,7 +123,9 @@ def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> Val
     """Validate SCHACL file.
 
     :param msdf: TODO: https://github.com/linkml/linkml/issues/850 .
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors
+    :param fail_on_error: if true, the function will throw an ValidationError exception when there
+        are errors
+
     :raises NotImplementedError: Not yet implemented.
     """
     raise NotImplementedError
@@ -132,7 +135,9 @@ def validate_sparql(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> Va
     """Validate SPARQL file.
 
     :param msdf: MappingSetDataFrame
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors
+    :param fail_on_error: if true, the function will throw an ValidationError exception when there
+        are errors
+
     :raises NotImplementedError: Not yet implemented.
     """
     # queries = {}
@@ -148,7 +153,9 @@ def check_all_prefixes_in_curie_map(
     """Check all `EntityReference` slots are mentioned in 'curie_map'.
 
     :param msdf: MappingSetDataFrame
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors
+    :param fail_on_error: if true, the function will throw an ValidationError exception when there
+        are errors
+
     :raises ValidationError: If all prefixes not in curie_map.
     """
     msdf.clean_context()
@@ -175,9 +182,14 @@ def check_strict_curie_format(
     """Check all `EntityReference` slots are formatted as unambiguous curies.
 
     Implemented rules:
-      - CURIE does not contain pipe "|" character to ensure that multivalued processing of in TSV works correctly.
+
+    1. CURIE does not contain pipe "|" character to ensure that multivalued processing of in TSV
+       works correctly.
+
     :param msdf: MappingSetDataFrame
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there are errors
+    :param fail_on_error: if true, the function will throw an ValidationError exception when there
+        are errors
+
     :raises ValidationError: If any entity reference does not follow the strict CURIE format
     """
     import itertools as itt

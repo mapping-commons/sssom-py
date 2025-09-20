@@ -164,8 +164,7 @@ class TestParse(unittest.TestCase):
     def test_parse_alignment_xml(self) -> None:
         """Test parsing an alignment XML.
 
-        This issue should fail because entity 1 of the second mapping
-        is not in prefix map.
+        This issue should fail because entity 1 of the second mapping is not in prefix map.
         """
         alignment_api_xml = dedent(
             """\

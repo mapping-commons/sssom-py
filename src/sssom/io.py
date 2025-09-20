@@ -71,17 +71,21 @@ def parse_file(
 ) -> None:
     """Parse an SSSOM metadata file and write to a table.
 
-    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :param input_path: The path to the input file in one of the legal formats, eg obographs,
+        aligmentapi-xml
     :param output: The path to the output file.
     :param input_format: The string denoting the input format.
-    :param metadata_path: The path to a file containing the sssom metadata (including prefix_map)
-        to be used during parse.
-    :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or replaced with
-        the SSSOM default prefix map derived from the :mod:`bioregistry`.
-    :param clean_prefixes: If True (default), records with unknown prefixes are removed from the SSSOM file.
+    :param metadata_path: The path to a file containing the sssom metadata (including prefix_map) to
+        be used during parse.
+    :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or
+        replaced with the SSSOM default prefix map derived from the :mod:`bioregistry`.
+    :param clean_prefixes: If True (default), records with unknown prefixes are removed from the
+        SSSOM file.
     :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
-    :param embedded_mode:If True (default), the dataframe and metadata are exported in one file (tsv), else two separate files (tsv and yaml).
-    :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the same.
+    :param embedded_mode: If True (default), the dataframe and metadata are exported in one file
+        (tsv), else two separate files (tsv and yaml).
+    :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the
+        same.
     """
     raise_for_bad_path(input_path)
     converter, meta = _get_converter_and_metadata(
@@ -112,9 +116,11 @@ def validate_file(
 ) -> dict[SchemaValidationType, ValidationReport]:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
-    :param input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :param input_path: The path to the input file in one of the legal formats, eg obographs,
+        aligmentapi-xml
     :param validation_types: A list of validation types to run.
     :param fail_on_error: Should an exception be raised on error of _any_ validator?
+
     :returns: A dictionary from validation types to validation reports
     """
     # Two things to check:
@@ -127,7 +133,8 @@ def validate_file(
 def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     """Split an SSSOM TSV by prefixes and relations.
 
-    :param  input_path: The path to the input file in one of the legal formats, eg obographs, aligmentapi-xml
+    :param input_path: The path to the input file in one of the legal formats, eg obographs,
+        aligmentapi-xml
     :param output_directory: The directory to which the split file should be exported.
     """
     raise_for_bad_path(input_path)
@@ -151,12 +158,12 @@ def get_metadata_and_prefix_map(
 def _get_converter_and_metadata(
     metadata_path: Union[None, str, Path] = None, *, prefix_map_mode: Optional[MergeMode] = None
 ) -> Tuple[Converter, MetadataType]:
-    """
-    Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
+    """Load SSSOM metadata from a YAML file, and then augment it with default prefixes.
 
     :param metadata_path: The metadata file in YAML format
     :param prefix_map_mode: one of metadata_only, sssom_default_only, merged
-    :return: A converter and remaining metadata from the YAML file
+
+    :returns: A converter and remaining metadata from the YAML file
     """
     if metadata_path is None:
         return get_converter(), get_default_metadata()
@@ -184,12 +191,12 @@ def _merge_converter(
 
 
 def extract_iris(input: RecursivePathList, converter: Converter) -> List[str]:
-    """
-    Recursively extracts a list of IRIs from a string or file.
+    """Recursively extracts a list of IRIs from a string or file.
 
     :param input: CURIE OR list of CURIEs OR file path containing the same.
     :param converter: Prefix map of mapping set (possibly) containing custom prefix:IRI combination.
-    :return: A list of IRIs.
+
+    :returns: A list of IRIs.
     """
     if isinstance(input, (str, Path)) and os.path.isfile(input):
         pred_list = Path(input).read_text().splitlines()
@@ -264,20 +271,22 @@ def run_sql_query(
 
     Each of the N inputs is assigned a table name df1, df2, ..., dfN
 
-    Alternatively, the filenames can be used as table names - these are first stemmed
-    E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
+    Alternatively, the filenames can be used as table names - these are first stemmed E.g.
+    ~/dir/my.sssom.tsv becomes a table called 'my'
 
     Example:
         sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
 
     Example:
-        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
-        FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
+        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS
+        ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM
+        file1.sssom.tsv file2.sssom.tsv`
 
     :param query: Query to be executed over a pandas DataFrame (msdf.df).
     :param inputs: Input files that form the source tables for query.
     :param output: Output.
-    :return: Filtered MappingSetDataFrame object.
+
+    :returns: Filtered MappingSetDataFrame object.
     """
     from pansql import sqldf
 
@@ -306,18 +315,21 @@ def run_sql_query(
 def filter_file(input: str, output: Optional[TextIO] = None, **kwargs: Any) -> MappingSetDataFrame:
     """Filter a dataframe by dynamically generating queries based on user input.
 
-    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
+    e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:%
+    tests/data/basic.tsv
 
     yields the query:
 
-    "SELECT * FROM df WHERE (subject_id LIKE 'x:%'  OR subject_id LIKE 'y:%')
-     AND (object_id LIKE 'y:%'  OR object_id LIKE 'z:%') " and displays the output.
+    "SELECT * FROM df WHERE (subject_id LIKE 'x:%' OR subject_id LIKE 'y:%')
+        AND (object_id LIKE 'y:%' OR object_id LIKE 'z:%') " and displays the output.
 
     :param input: DataFrame to be queried over.
     :param output: Output location.
     :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
+
+    :returns: Filtered MappingSetDataFrame object.
+
     :raises ValueError: If parameter provided is invalid.
-    :return: Filtered MappingSetDataFrame object.
     """
     params = {k: v for k, v in kwargs.items() if v}
     query = "SELECT * FROM df WHERE ("
@@ -356,11 +368,11 @@ def annotate_file(
 
     :param input: SSSOM tsv file to be queried over.
     :param output: Output location.
-    :param replace_multivalued: Multivalued slots should be
-        replaced or not, defaults to False
-    :param kwargs: Options provided by user
-        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
-    :return: Annotated MappingSetDataFrame object.
+    :param replace_multivalued: Multivalued slots should be replaced or not, defaults to False
+    :param kwargs: Options provided by user which are added to the metadata (e.g. ``--mapping_set_id
+        http://example.org/abcd``)
+
+    :returns: Annotated MappingSetDataFrame object.
     """
     params = {k: v for k, v in kwargs.items() if v}
     are_params_slots(params)

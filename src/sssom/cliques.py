@@ -79,10 +79,12 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     """Split a MappingSetDataFrames documents corresponding to a strongly connected components of the associated graph.
 
     :param msdf: MappingSetDataFrame object
+
+    :returns: List of MappingSetDocument objects
+
     :raises TypeError: If Mappings is not of type List
     :raises TypeError: If each mapping is not of type Mapping
     :raises TypeError: If Mappings is not of type List
-    :return: List of MappingSetDocument objects
     """
     import networkx as nx
 
@@ -131,7 +133,8 @@ def get_src(src: Optional[str], curie: str) -> str:
 
     :param src: Source
     :param curie: CURIE
-    :return: Source
+
+    :returns: Source
     """
     if src is None:
         return curie.split(":")[0]
