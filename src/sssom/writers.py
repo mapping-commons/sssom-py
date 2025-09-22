@@ -1,12 +1,28 @@
 """Serialization functions for SSSOM."""
 
+from __future__ import annotations
+
 import json
 import logging as _logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, Optional, TextIO, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Collection,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 
 import pandas as pd
+import rdflib
 import yaml
 from curies import Converter
 from deprecation import deprecated
@@ -19,7 +35,7 @@ from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
+from .constants import CURIE_MAP, PREDICATE_MODIFIER_NOT, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
 from .util import (
@@ -32,6 +48,9 @@ from .util import (
     sort_df_rows_columns,
 )
 
+if TYPE_CHECKING:
+    import rdflib_endpoint
+
 logging = _logging.getLogger(__name__)
 
 # noinspection PyProtectedMember
@@ -42,6 +61,12 @@ OWL_ANNOTATION_PROPERTY = "http://www.w3.org/2002/07/owl#AnnotationProperty"
 OWL_CLASS = "http://www.w3.org/2002/07/owl#Class"
 OWL_EQUIV_OBJECTPROPERTY = "http://www.w3.org/2002/07/owl#equivalentProperty"
 SSSOM_NS = SSSOM_URI_PREFIX
+
+NO_TERM_REF = rdflib.URIRef("https://w3id.org/sssom/NoTermFound")
+PREDICATE_MODIFIER = rdflib.URIRef("https://w3id.org/sssom/predicate_modifier")
+OBJECT_NOT = rdflib.URIRef("https://w3id.org/sssom/NegatedPredicate")
+LITERAL_NOT = rdflib.Literal(PREDICATE_MODIFIER_NOT)
+NEGATED_NODES: set[rdflib.Node] = {OBJECT_NOT, LITERAL_NOT}
 
 # Writers
 
@@ -104,8 +129,18 @@ def write_rdf(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
     serialisation: Optional[str] = None,
+    *,
+    hydrate: bool = False,
 ) -> None:
-    """Write a mapping set dataframe to the file as RDF."""
+    """Write a mapping set dataframe to the file as RDF.
+
+    :param msdf: A mapping set dataframe
+    :param file: The path or file object to write to
+    :param serialisation: The RDF format to serialize to, see :data:`RDF_FORMATS`. Defaults to
+        turtle.
+    :param hydrate: If true, will add subject-predicate-objects directly representing mappings. This
+        is opt-in behavior.
+    """
     if serialisation is None:
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
     elif serialisation not in RDF_FORMATS:
@@ -116,42 +151,41 @@ def write_rdf(
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
     check_all_prefixes_in_curie_map(msdf)
-    graph = to_rdf_graph(msdf=msdf)
+    graph = to_rdf_graph(msdf=msdf, hydrate=hydrate)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     with _open_text_writer(file) as fh:
         print(t.decode(), file=fh)
 
 
-def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="json") -> None:
+def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "json") -> None:
     """Write a mapping set dataframe to the file as JSON.
 
     :param msdf: A mapping set dataframe
     :param output: A path or write-supported file object to write JSON to
     :param serialisation: The JSON format to use. Supported formats are:
 
-     - ``fhir_json``: Outputs JSON in FHIR ConceptMap format (https://fhir-ru.github.io/conceptmap.html)
-       https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
-     - ``json``: Outputs to SSSOM JSON https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
-     - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
-       https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
+        - ``fhir_json``: Outputs JSON in FHIR ConceptMap format
+          (https://fhir-ru.github.io/conceptmap.html)
+          https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_fhir_json
+        - ``json``: Outputs to SSSOM JSON
+          https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_json
+        - ``ontoportal_json``: Outputs JSON in Ontoportal format (https://ontoportal.org/)
+          https://mapping-commons.github.io/sssom-py/sssom.html#sssom.writers.to_ontoportal_json
     """
-    func_map: Dict[str, Callable] = {
-        "fhir_json": to_fhir_json,
-        "json": to_json,
-        "ontoportal_json": to_ontoportal_json,
-    }
-    if serialisation not in func_map:
+    if serialisation not in JSON_CONVERTERS:
         raise ValueError(
-            f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(func_map.keys())}"
+            f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(JSON_CONVERTERS.keys())}"
         )
-    func: Callable = func_map[serialisation]
+    func = JSON_CONVERTERS[serialisation]
     data = func(msdf)
     with _open_text_writer(output) as fh:
         json.dump(data, fh, indent=2)
 
 
-@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
-def write_fhir_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="fhir_json") -> None:
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore[misc]
+def write_fhir_json(
+    msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "fhir_json"
+) -> None:
     """Write a mapping set dataframe to the file as FHIR ConceptMap JSON."""
     if serialisation != "fhir_json":
         raise ValueError(
@@ -160,7 +194,7 @@ def write_fhir_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation="
     write_json(msdf, output, serialisation="fhir_json")
 
 
-@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore
 def write_ontoportal_json(
     msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "ontoportal_json"
 ) -> None:
@@ -175,7 +209,7 @@ def write_ontoportal_json(
 def write_owl(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
-    serialisation=SSSOM_DEFAULT_RDF_SERIALISATION,
+    serialisation: str = SSSOM_DEFAULT_RDF_SERIALISATION,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
     if serialisation not in RDF_FORMATS:
@@ -195,6 +229,33 @@ def write_owl(
 # Converters convert a mappingsetdataframe to an object of the supportes types (json, pandas dataframe)
 
 
+def _hydrate_axioms(
+    graph: rdflib.Graph,
+    *,
+    add_negative: bool = True,
+    add_no_term_found: bool = True,
+) -> None:
+    for axiom in graph.subjects(RDF.type, OWL.Axiom):
+        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
+            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
+                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
+                    if not add_negative and _is_negated(graph, axiom):
+                        continue
+                    if not add_no_term_found and _is_no_term_found(s, o):
+                        continue
+                    graph.add((s, p, o))
+
+
+def _is_no_term_found(s: rdflib.Node, o: rdflib.Node) -> bool:
+    return s == NO_TERM_REF or o == NO_TERM_REF
+
+
+def _is_negated(graph: rdflib.Graph, axiom: rdflib.Node) -> bool:
+    return any(
+        obj in NEGATED_NODES for obj in graph.objects(subject=axiom, predicate=PREDICATE_MODIFIER)
+    )
+
+
 def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     """Convert a mapping set dataframe to OWL in an RDF graph."""
     msdf.df = invert_mappings(
@@ -208,11 +269,8 @@ def to_owl_graph(msdf: MappingSetDataFrame) -> Graph:
     for _s, _p, o in graph.triples((None, URIRef(URI_SSSOM_MAPPINGS), None)):
         graph.add((o, URIRef(RDF_TYPE), OWL.Axiom))
 
-    for axiom in graph.subjects(RDF.type, OWL.Axiom):
-        for p in graph.objects(subject=axiom, predicate=OWL.annotatedProperty):
-            for s in graph.objects(subject=axiom, predicate=OWL.annotatedSource):
-                for o in graph.objects(subject=axiom, predicate=OWL.annotatedTarget):
-                    graph.add((s, p, o))
+    # TODO consider making this not add negative or term not found
+    _hydrate_axioms(graph, add_negative=True, add_no_term_found=True)
 
     sparql_prefixes = """
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -298,7 +356,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     return graph
 
 
-def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
+def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
     doc = to_mapping_set_document(msdf)
     graph = rdflib_dumper.as_rdf_graph(
@@ -307,26 +365,72 @@ def to_rdf_graph(msdf: MappingSetDataFrame) -> Graph:
         # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
         prefix_map=msdf.converter.bimap,
     )
-    return graph
+    if hydrate:
+        _hydrate_axioms(graph, add_no_term_found=False, add_negative=False)
+    return cast(Graph, graph)
 
 
-def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
+EXAMPLE_SPARQL_QUERY = """\
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX sssom: <https://w3id.org/sssom/>
+    PREFIX obo: <http://purl.obolibrary.org/obo/>
+    PREFIX semapv: <https://w3id.org/semapv/vocab/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX pav: <http://purl.org/pav/>
+    PREFIX orcid: <https://orcid.org/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT ?s ?p ?o ?justification {
+      [] a owl:Axiom ;
+        owl:annotatedSource ?s ;
+        owl:annotatedProperty ?p ;
+        owl:annotatedTarget ?o ;
+        sssom:mapping_justification ?justification ;
+    }
+    LIMIT 50
+"""
+
+
+def get_rdflib_endpoint_app(
+    msdf: MappingSetDataFrame, *, hydrate: bool = True
+) -> rdflib_endpoint.SparqlEndpoint:
+    """Get a FastAPI app that serves the mappings from a SPARQL endpoint."""
+    from rdflib_endpoint import SparqlEndpoint
+
+    graph = to_rdf_graph(msdf, hydrate=hydrate)
+    app = SparqlEndpoint(
+        graph=graph,
+        cors_enabled=True,
+        title=f"SSSOM SPARQL Endpoint for {msdf.metadata['mapping_set_id']}",
+        description=msdf.metadata.get("mapping_set_description"),
+        example_query=EXAMPLE_SPARQL_QUERY,
+    )
+    return app
+
+
+def to_fhir_json(msdf: MappingSetDataFrame) -> Dict[str, Any]:
     """Convert a mapping set dataframe to a JSON object.
 
-    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/ additional metadata.
-    :return: Dict: A Dictionary serializable as JSON.
+    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/
+        additional metadata.
 
-    Resources:
-      - ConceptMap::SSSOM mapping spreadsheet:
-      https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
+    :returns: Dict: A Dictionary serializable as JSON.
 
-    TODO: add to CLI & to these functions: r4 vs r5 param
-    TODO: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
-     - todo: later: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))
+    .. seealso::
 
-    Minor todos
-    todo: mapping_justification: consider `ValueString` -> `ValueCoding` https://github.com/timsbiomed/issues/issues/152
-    todo: when/how to conform to R5 instead of R4?: https://build.fhir.org/conceptmap.html
+        ConceptMap=SSSOM mapping spreadsheet
+        https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118
+
+    .. todo:: add to CLI & to these functions: r4 vs r5 param
+
+    .. todo:: What if the msdf doesn't have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?
+
+    .. todo:: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))
+
+    .. todo:: mapping_justification consider `ValueString` -> `ValueCoding` https://github.com/timsbiomed/issues/issues/152
+
+    .. todo:: when/how to conform to R5 instead of R4? https://build.fhir.org/conceptmap.html
     """
     # Constants
     df: pd.DataFrame = msdf.df
@@ -491,7 +595,7 @@ def to_fhir_json(msdf: MappingSetDataFrame) -> Dict:
     return json_obj
 
 
-def _update_sssom_context_with_prefixmap(converter: Converter):
+def _update_sssom_context_with_prefixmap(converter: Converter) -> dict[str, Any]:
     """Prepare a JSON-LD context and dump to a string."""
     context = _load_sssom_context()
     for k, v in converter.bimap.items():
@@ -513,7 +617,7 @@ def to_json(msdf: MappingSetDataFrame) -> JsonObj:
     return json_obj
 
 
-def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
+def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict[str, Any]]:
     """Convert a mapping set dataframe to a list of ontoportal mapping JSON objects."""
     converter = msdf.converter
     metadata: Dict[str, Any] = msdf.metadata
@@ -549,7 +653,9 @@ def to_ontoportal_json(msdf: MappingSetDataFrame) -> List[Dict]:
 
 # Support methods
 
-WRITER_FUNCTIONS: Dict[str, Tuple[Callable, Optional[str]]] = {
+WRITER_FUNCTIONS: Dict[
+    str, Tuple[Callable[[MappingSetDataFrame, PathOrIO], None], Optional[str]]
+] = {
     "tsv": (write_table, None),
     "owl": (write_owl, SSSOM_DEFAULT_RDF_SERIALISATION),
     "ontoportal_json": (write_json, "ontoportal_json"),
@@ -568,8 +674,10 @@ def get_writer_function(
 
     :param output: Output file
     :param output_format: Output file format, defaults to None
+
+    :returns: Type of writer function
+
     :raises ValueError: Unknown output format
-    :return: Type of writer function
     """
     if output_format is None:
         output_format = get_file_extension(output) or "tsv"
@@ -596,7 +704,8 @@ def write_tables(sssom_dict: Dict[str, MappingSetDataFrame], output_dir: Union[s
         logging.info(f"Writing {path} complete!")
 
 
-def _inject_annotation_properties(graph: Graph, elements) -> None:
+def _inject_annotation_properties(graph: Graph, elements: Collection[str]) -> None:
+    # TODO unused, delete
     for var in [
         slot
         for slot in dir(slots)
@@ -622,3 +731,10 @@ def _get_separator(serialisation: Optional[str] = None) -> str:
     else:
         raise ValueError(f"Unknown table format: {serialisation}, should be one of tsv or csv")
     return sep
+
+
+JSON_CONVERTERS: Dict[str, Callable[[MappingSetDataFrame], Any]] = {
+    "fhir_json": to_fhir_json,
+    "json": to_json,
+    "ontoportal_json": to_ontoportal_json,
+}

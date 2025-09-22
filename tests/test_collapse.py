@@ -6,6 +6,7 @@ import pandas as pd
 
 from sssom.parsers import parse_sssom_table
 from sssom.util import (
+    PrefixReconciliation,
     collapse,
     compare_dataframes,
     dataframe_to_ptable,
@@ -23,7 +24,7 @@ class TestCollapse(unittest.TestCase):
         """Set up the test case."""
         self.df = pd.read_csv(data_dir / "basic.tsv", sep="\t", comment="#")
 
-    def test_row_count(self):
+    def test_row_count(self) -> None:
         """Test the dataframe has the correct number of rows."""
         df = self.df
         self.assertEqual(
@@ -32,27 +33,27 @@ class TestCollapse(unittest.TestCase):
             f"Dataframe should have a different number of rows {df.head(10)}",
         )
 
-    def test_collapse(self):
+    def test_collapse(self) -> None:
         """Test the row count after collapsing the dataframe."""
         df = collapse(self.df)
         self.assertEqual(len(df), 91, f"Dataframe should have a different {df.head(10)}")
 
-    def test_filter(self):
+    def test_filter(self) -> None:
         """Test the row count after filtering redundant rows."""
         df = filter_redundant_rows(self.df)
         self.assertEqual(len(df), 92)
 
-    def test_ptable(self):
+    def test_ptable(self) -> None:
         """Test the row count of the ptable export."""
         rows = dataframe_to_ptable(self.df)
         self.assertEqual(91, len(rows))
 
-    def test_groupings(self):
+    def test_groupings(self) -> None:
         """Test the row count after grouping mappings."""
         mappings = group_mappings(self.df)
         self.assertEqual(len(mappings), 91)
 
-    def test_diff(self):
+    def test_diff(self) -> None:
         """Test the comparison between two dataframes."""
         diff = compare_dataframes(self.df, self.df)
         self.assertEqual(0, len(diff.unique_tuples1))
@@ -71,7 +72,7 @@ class TestCollapse(unittest.TestCase):
         self.assertEqual(76, len(diff.common_tuples))
         diff_df = diff.combined_dataframe
 
-    def test_reconcile_prefix(self):
+    def test_reconcile_prefix(self) -> None:
         """Test curie reconciliation is performing as expected."""
         msdf = parse_sssom_table(data_dir / "basic3.tsv")
 
@@ -91,7 +92,7 @@ class TestCollapse(unittest.TestCase):
             },
             msdf.prefix_map,
         )
-        prefix_reconciliation = {
+        prefix_reconciliation: PrefixReconciliation = {
             "prefix_synonyms": {
                 "a": "c",
                 "c": "c2",

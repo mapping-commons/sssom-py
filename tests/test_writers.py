@@ -5,8 +5,10 @@ import os
 import unittest
 from typing import Any, Dict
 
+import curies
 import pandas as pd
 from curies import Converter
+from fastapi.testclient import TestClient
 
 from sssom import MappingSetDataFrame
 from sssom.constants import (
@@ -20,7 +22,9 @@ from sssom.constants import (
 )
 from sssom.parsers import parse_sssom_json, parse_sssom_rdf, parse_sssom_table
 from sssom.writers import (
+    EXAMPLE_SPARQL_QUERY,
     _update_sssom_context_with_prefixmap,
+    get_rdflib_endpoint_app,
     to_json,
     write_json,
     write_owl,
@@ -40,7 +44,7 @@ class TestWrite(unittest.TestCase):
         # self.msdf = read_sssom_table(f"{test_data_dir}/basic-simple.tsv")
         self.mapping_count = 141  # 141 for basic.tsv
 
-    def test_write_sssom_dataframe(self):
+    def test_write_sssom_dataframe(self) -> None:
         """Test writing as a dataframe."""
         tmp_path = os.path.join(test_out_dir, "test_write_sssom_dataframe.tsv")
         write_table(self.msdf, tmp_path)
@@ -51,7 +55,7 @@ class TestWrite(unittest.TestCase):
             f"{tmp_path} has the wrong number of mappings.",
         )
 
-    def test_write_sssom_rdf(self):
+    def test_write_sssom_rdf(self) -> None:
         """Test writing as RDF."""
         path_1 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf")
         write_rdf(self.msdf, path_1)
@@ -66,7 +70,7 @@ class TestWrite(unittest.TestCase):
         path_2 = os.path.join(test_out_dir, "test_write_sssom_rdf.rdf.tsv")
         write_table(self.msdf, path_2)
 
-    def test_write_sssom_json(self):
+    def test_write_sssom_json(self) -> None:
         """Test writing as JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_json.json")
         write_json(self.msdf, path)
@@ -77,7 +81,7 @@ class TestWrite(unittest.TestCase):
             f"{path} has the wrong number of mappings.",
         )
 
-    def test_write_sssom_json_context(self):
+    def test_write_sssom_json_context(self) -> None:
         """Test when writing to JSON, the context is correctly written as well."""
         rows = [
             (
@@ -107,7 +111,7 @@ class TestWrite(unittest.TestCase):
         self.assertIn("DOID", json_object["@context"])
         self.assertIn("mapping_set_id", json_object["@context"])
 
-    def test_update_sssom_context_with_prefixmap(self):
+    def test_update_sssom_context_with_prefixmap(self) -> None:
         """Test when writing to JSON, the context is correctly written as well."""
         records = [
             {
@@ -166,12 +170,12 @@ class TestWrite(unittest.TestCase):
         #  - I'm getting: subsumes, owl:equivalentClass (and see what else in basic.tsv)
         # todo: mapping_justification extensionprint()  # TODO: temp
 
-    def test_write_sssom_owl(self):
+    def test_write_sssom_owl(self) -> None:
         """Test writing as OWL."""
         tmp_file = os.path.join(test_out_dir, "test_write_sssom_owl.owl")
         write_owl(self.msdf, tmp_file)
 
-    def test_write_sssom_ontoportal_json(self):
+    def test_write_sssom_ontoportal_json(self) -> None:
         """Test writing as ontoportal JSON."""
         path = os.path.join(test_out_dir, "test_write_sssom_ontoportal_json.json")
         write_json(self.msdf, path, "ontoportal_json")
@@ -183,4 +187,41 @@ class TestWrite(unittest.TestCase):
             len(d),
             self.mapping_count,
             f"{path} has the wrong number of mappings.",
+        )
+
+    def test_rdflib_endpoint(self) -> None:
+        """Test serving SPARQL."""
+        rows = [
+            (
+                "DOID:0050601",
+                "skos:exactMatch",
+                "UMLS:C1863204",
+                SEMAPV.ManualMappingCuration.value,
+            )
+        ]
+        columns = [
+            SUBJECT_ID,
+            PREDICATE_ID,
+            OBJECT_ID,
+            SEMAPV.ManualMappingCuration.value,
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        converter = curies.Converter.from_prefix_map(
+            {
+                "DOID": "http://purl.obolibrary.org/obo/DOID_",
+                "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
+            }
+        )
+        msdf = MappingSetDataFrame(df, converter=converter)
+        app = get_rdflib_endpoint_app(msdf)
+        client = TestClient(app)
+        response = client.get(
+            "/", params={"query": EXAMPLE_SPARQL_QUERY}, headers={"Accept": "application/json"}
+        )
+        self.assertEqual(200, response.status_code)
+        results = response.json()["results"]["bindings"]
+        self.assertEqual(1, len(results))
+        self.assertEqual("http://purl.obolibrary.org/obo/DOID_0050601", results[0]["s"]["value"])
+        self.assertEqual(
+            "https://uts.nlm.nih.gov/uts/umls/concept/C1863204", results[0]["o"]["value"]
         )

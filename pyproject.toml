@@ -10,11 +10,11 @@ authors = [
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
-requires-python = ">=3.9,<4.0.0"
+requires-python = ">=3.10,<4.0.0"
 
 dependencies = [
     "click>=8.1.6",
-    "curies>=0.10.18",
+    "curies>=0.10.23",
     "linkml-runtime>=1.7.5",
     "linkml>1.7.10",
     "pandas>1.0.3",
@@ -24,7 +24,6 @@ dependencies = [
     "deprecation>=2.1.0",
     "pyyaml>=6.0.1",
     "rdflib>=6.0.0",
-    "importlib-resources>=6.1.1",
 ]
 
 # see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies
@@ -45,6 +44,12 @@ docs = [
     "sphinx-click>=4.3.0",
     "myst-parser>=0.18.1",
 ]
+rdflib-endpoint = [
+    "uvicorn",
+    "fastapi",
+    "rdflib-endpoint",
+    "httpx",  # only used in tests, but this is small
+]
 
 [project.scripts]
 sssom = "sssom.cli:main"
@@ -60,7 +65,7 @@ style = "pep440"
 
 [tool.black]
 line-length = 100
-target-version = ["py38", "py39", "py310"]
+target-version = ["py310", "py311", "py312", "py313"]
 
 [[tool.mypy.overrides]]
  module = [

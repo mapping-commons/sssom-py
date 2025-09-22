@@ -4,6 +4,7 @@ import io
 import json
 import math
 import os
+import typing
 import unittest
 from collections import ChainMap
 from pathlib import Path
@@ -22,6 +23,7 @@ from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_convert
 from sssom.io import parse_file
 from sssom.parsers import (
     PARSING_FUNCTIONS,
+    SplitMethod,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
@@ -32,8 +34,8 @@ from sssom.parsers import (
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
-from tests.test_data import data_dir as test_data_dir
-from tests.test_data import test_out_dir
+from tests.constants import data_dir as test_data_dir
+from tests.constants import test_out_dir
 
 
 class TestParse(unittest.TestCase):
@@ -74,7 +76,7 @@ class TestParse(unittest.TestCase):
         self.metadata = get_default_metadata()
         self.converter = get_converter()
 
-    def test_parse_sssom_dataframe_from_file(self):
+    def test_parse_sssom_dataframe_from_file(self) -> None:
         """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
         msdf = parse_sssom_table(input_path)
@@ -87,7 +89,7 @@ class TestParse(unittest.TestCase):
             f"{input_path} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_dataframe_from_stringio(self):
+    def test_parse_sssom_dataframe_from_stringio(self) -> None:
         """Test parsing a TSV."""
         input_path = test_data_dir.joinpath("basic.tsv")
         with input_path.open() as file:
@@ -103,7 +105,7 @@ class TestParse(unittest.TestCase):
             f"{input_path} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_dataframe_from_url(self):
+    def test_parse_sssom_dataframe_from_url(self) -> None:
         """Test parsing a TSV from a URL."""
         msdf = parse_sssom_table(self.df_url)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
@@ -115,7 +117,7 @@ class TestParse(unittest.TestCase):
             f"{self.df_url} has the wrong number of mappings.",
         )
 
-    def test_parse_obographs(self):
+    def test_parse_obographs(self) -> None:
         """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs,
@@ -133,7 +135,7 @@ class TestParse(unittest.TestCase):
             f"{self.obographs_file} has the wrong number of mappings.",
         )
 
-    def test_parse_tsv(self):
+    def test_parse_tsv(self) -> None:
         """Test parsing TSV."""
         msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_converter, meta=self.df_meta)
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
@@ -145,7 +147,7 @@ class TestParse(unittest.TestCase):
             f"{self.df_file} has the wrong number of mappings.",
         )
 
-    def test_parse_alignment_minidom(self):
+    def test_parse_alignment_minidom(self) -> None:
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml,
@@ -161,11 +163,10 @@ class TestParse(unittest.TestCase):
             f"{self.alignmentxml_file} has the wrong number of mappings.",
         )
 
-    def test_parse_alignment_xml(self):
+    def test_parse_alignment_xml(self) -> None:
         """Test parsing an alignment XML.
 
-        This issue should fail because entity 1 of the second mapping
-        is not in prefix map.
+        This issue should fail because entity 1 of the second mapping is not in prefix map.
         """
         alignment_api_xml = dedent(
             """\
@@ -246,7 +247,7 @@ class TestParse(unittest.TestCase):
         )
         self.assertEqual(expected_row_values, msdf_without_prefixmap.df.iloc[0].tolist())
 
-    def test_parse_sssom_rdf(self):
+    def test_parse_sssom_rdf(self) -> None:
         """Test parsing RDF."""
         msdf = from_sssom_rdf(g=self.rdf_graph, prefix_map=self.df_converter, meta=self.metadata)
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
@@ -258,7 +259,7 @@ class TestParse(unittest.TestCase):
             f"{self.rdf_graph_file} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_json(self):
+    def test_parse_sssom_json(self) -> None:
         """Test parsing JSON."""
         msdf = from_sssom_json(
             jsondoc=self.json,
@@ -289,7 +290,7 @@ class TestParse(unittest.TestCase):
     #     new_match_type = new_msdf.df["mapping_justification"]
     #     self.assertTrue(old_match_type.equals(new_match_type))
 
-    def test_read_sssom_table(self):
+    def test_read_sssom_table(self) -> None:
         """Test read SSSOM method to validate import of all columns."""
         input_path = os.path.join(test_data_dir, "basic3.tsv")
         msdf = parse_sssom_table(input_path)
@@ -318,7 +319,7 @@ class TestParse(unittest.TestCase):
                     else:
                         self.assertEqual(imported_df.iloc[idx][k], v)
 
-    def test_parse_obographs_merged(self):
+    def test_parse_obographs_merged(self) -> None:
         """Test parsing OBO Graph JSON using custom prefix_map."""
         hp_json = f"{test_data_dir}/hp-subset.json"
         hp_meta = f"{test_data_dir}/hp-subset-metadata.yml"
@@ -340,7 +341,7 @@ class TestParse(unittest.TestCase):
         msdf = parse_sssom_table(outfile)
         self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
 
-    def test_parse_trailing_tabs_in_metadata_header(self):
+    def test_parse_trailing_tabs_in_metadata_header(self) -> None:
         """Test parsing a file containing trailing tabs in header."""
         input_path = f"{test_data_dir}/trailing-tabs.sssom.tsv"
         msdf = parse_sssom_table(input_path)
@@ -355,7 +356,7 @@ class TestParse(unittest.TestCase):
 class TestParseExplicit(unittest.TestCase):
     """This test case contains explicit tests for parsing."""
 
-    def _basic_round_trip(self, key: str):
+    def _basic_round_trip(self, key: str) -> None:
         """Test TSV => JSON => TSV using convert() + parse()."""
         parse_func = PARSING_FUNCTIONS[key]
         write_func, _write_format = WRITER_FUNCTIONS[key]
@@ -448,19 +449,19 @@ class TestParseExplicit(unittest.TestCase):
         # to the MappingSet if they are not present, but not updated if they are already present.
         self.assertEqual(combine_meta, reconstituted_msdf_with_meta.metadata)
 
-    def test_round_trip_json(self):
+    def test_round_trip_json(self) -> None:
         """Test writing then reading JSON."""
         self._basic_round_trip("json")
 
-    def test_round_trip_rdf(self):
+    def test_round_trip_rdf(self) -> None:
         """Test writing then reading RDF."""
         self._basic_round_trip("rdf")
 
-    def test_round_trip_tsv(self):
+    def test_round_trip_tsv(self) -> None:
         """Test writing then reading TSV."""
         self._basic_round_trip("tsv")
 
-    def test_strict_parsing(self):
+    def test_strict_parsing(self) -> None:
         """Test Strict parsing mode."""
         input_path = f"{test_data_dir}/basic_strict_fail.tsv"
         with open(input_path, "r") as file:
@@ -477,7 +478,7 @@ class TestParseExplicit(unittest.TestCase):
         msdf = parse_sssom_table(stream2, strict=False)
         self.assertEqual(2, len(msdf.df))
 
-    def test_check_irregular_metadata(self):
+    def test_check_irregular_metadata(self) -> None:
         """Test if irregular metadata check works according to https://w3id.org/sssom/spec."""
         meta_fail_because_undeclared_extension = {
             "licenses": "http://licen.se",
@@ -543,30 +544,55 @@ class TestSplit(unittest.TestCase):
             ("p4:1", "skos:exactMatch", "p1:1", "semapv:ManualMappingCuration"),
             ("p5:1", "skos:broadMatch", "p6:1", "semapv:ManualMappingCuration"),
             ("p1:7", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            # the following rows have CURIEs whose prefixes aren't in the converter
+            ("x:1", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "x:2", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "skos:broadMatch", "x:3", "semapv:ManualMappingCuration"),
         ]
         columns = ["subject_id", "predicate_id", "object_id", "mapping_justification"]
         df = pd.DataFrame(rows, columns=columns)
         msdf = from_sssom_dataframe(df, converter)
 
+        sdf = pd.DataFrame(subrows, columns=columns)
+
+        for method in [None, *typing.get_args(SplitMethod)]:
+            with self.subTest(method=method):
+                self.assert_msdf(msdf, sdf, method)
+
+    def assert_msdf(
+        self, msdf: MappingSetDataFrame, sdf: pd.DataFrame, method: SplitMethod | None
+    ) -> None:
+        """Test the dataframe."""
         # test that if there's ever an empty list, then it returns an empty dict
-        self.assertFalse(split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"]))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], [], method=method))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"], method=method)
+        )
 
         # test that missing prefixes don't result in anything
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"]))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"]))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"]))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"], method=method)
+        )
 
-        sdf = pd.DataFrame(subrows, columns=columns)
         # test an explicit return with only single entries
-        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"])
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"], method=method)
         self.assertEqual(1, len(rv), msg="nothing was indexed")
         self.assertIn("p1_exactmatch_p2", rv)
         self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
 
         # test an explicit return with multiple entries
-        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"])
+        rv = split_dataframe_by_prefix(
+            msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"], method=method
+        )
         self.assertEqual(2, len(rv), msg="nothing was indexed")
         self.assertIn("p1_exactmatch_p2", rv)
         self.assertIn("p1_exactmatch_p3", rv)
