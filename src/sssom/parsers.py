@@ -1111,10 +1111,16 @@ def _patrick_split(
     mappings_by_group: defaultdict[SSSOMSplitGroup, List[object]] = defaultdict(list)
     parse_curie = msdf.converter.parse_curie
 
+    # FIXME this doesn't work on mappings with subject, predicate, or object
+    #  that has a prefix not registered correctly with the converter.
+    #  current functionality requires it skips
+
+
     expected_split_groups = [
         SSSOMSplitGroup(
             subject_prefix,
             object_prefix,
+            # FIXME
             parse_curie(relation, strict=True),
         )
         for subject_prefix, relation, object_prefix in itt.product(
@@ -1123,6 +1129,7 @@ def _patrick_split(
     ]
 
     for mapping in msdf.df.itertuples(index=False):
+        # FIXME
         group = SSSOMSplitGroup(
             parse_curie(getattr(mapping, SUBJECT_ID), strict=True).prefix,
             parse_curie(getattr(mapping, OBJECT_ID), strict=True).prefix,
