@@ -4,6 +4,7 @@ import io
 import json
 import math
 import os
+import typing
 import unittest
 from collections import ChainMap
 from pathlib import Path
@@ -22,6 +23,7 @@ from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_convert
 from sssom.io import parse_file
 from sssom.parsers import (
     PARSING_FUNCTIONS,
+    SplitMethod,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
@@ -551,25 +553,46 @@ class TestSplit(unittest.TestCase):
         df = pd.DataFrame(rows, columns=columns)
         msdf = from_sssom_dataframe(df, converter)
 
+        sdf = pd.DataFrame(subrows, columns=columns)
+
+        for method in [None, *typing.get_args(SplitMethod)]:
+            with self.subTest(method=method):
+                self.assert_msdf(msdf, sdf, method)
+
+    def assert_msdf(
+        self, msdf: MappingSetDataFrame, sdf: pd.DataFrame, method: SplitMethod | None
+    ) -> None:
+        """Test the dataframe."""
         # test that if there's ever an empty list, then it returns an empty dict
-        self.assertFalse(split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"]))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], []))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"]))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], [], method=method))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"], method=method)
+        )
 
         # test that missing prefixes don't result in anything
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"]))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"]))
-        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"]))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"], method=method)
+        )
 
-        sdf = pd.DataFrame(subrows, columns=columns)
         # test an explicit return with only single entries
-        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"])
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"], method=method)
         self.assertEqual(1, len(rv), msg="nothing was indexed")
         self.assertIn("p1_exactmatch_p2", rv)
         self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
 
         # test an explicit return with multiple entries
-        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"])
+        rv = split_dataframe_by_prefix(
+            msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"], method=method
+        )
         self.assertEqual(2, len(rv), msg="nothing was indexed")
         self.assertIn("p1_exactmatch_p2", rv)
         self.assertIn("p1_exactmatch_p3", rv)

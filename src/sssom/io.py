@@ -31,7 +31,7 @@ from .constants import (
     get_default_metadata,
 )
 from .context import get_converter
-from .parsers import get_parsing_function, parse_sssom_table, split_dataframe
+from .parsers import SplitMethod, get_parsing_function, parse_sssom_table, split_dataframe
 from .util import MappingSetDataFrame, are_params_slots, augment_metadata, raise_for_bad_path
 from .writers import get_writer_function, write_table, write_tables
 
@@ -130,7 +130,9 @@ def validate_file(
     return validate(msdf=msdf, validation_types=validation_types, fail_on_error=fail_on_error)
 
 
-def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
+def split_file(
+    input_path: str, output_directory: Union[str, Path], *, method: SplitMethod | None = None
+) -> None:
     """Split an SSSOM TSV by prefixes and relations.
 
     :param input_path: The path to the input file in one of the legal formats, eg obographs,
@@ -139,7 +141,7 @@ def split_file(input_path: str, output_directory: Union[str, Path]) -> None:
     """
     raise_for_bad_path(input_path)
     msdf = parse_sssom_table(input_path)
-    splitted = split_dataframe(msdf)
+    splitted = split_dataframe(msdf, method=method)
     write_tables(splitted, output_directory)
 
 
