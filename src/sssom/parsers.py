@@ -990,14 +990,6 @@ def split_dataframe(
     )
 
 
-class SSSOMSplitGroup(NamedTuple):
-    """The key of a group of mappings in a split MappingSetDataFrame."""
-
-    subject_prefix: str
-    object_prefix: str
-    relation_tup: ReferenceTuple
-
-
 def split_dataframe_by_prefix(
     msdf: MappingSetDataFrame,
     subject_prefixes: Iterable[str],
@@ -1058,6 +1050,14 @@ def split_dataframe_by_prefix(
         )
 
     return split_to_msdf
+
+
+class SSSOMSplitGroup(NamedTuple):
+    """The key of a group of mappings in a split MappingSetDataFrame."""
+
+    subject_prefix: str
+    object_prefix: str
+    relation_tup: ReferenceTuple
 
 
 def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]):
