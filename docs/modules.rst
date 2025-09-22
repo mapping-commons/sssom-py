@@ -2,6 +2,6 @@ sssom
 =====
 
 .. toctree::
-   :maxdepth: 4
+    :maxdepth: 4
 
-   sssom
+    sssom

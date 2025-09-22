@@ -1,11 +1,13 @@
 """Rewriting functionality for RDFlib graphs."""
 
+from __future__ import annotations
+
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 import curies
 from linkml_runtime.utils.metamodelcore import URIorCURIE
-from rdflib import Graph, URIRef
+from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
 from .parsers import to_mapping_set_document
@@ -61,27 +63,26 @@ def rewire_graph(
         for k, v in rewire_map.items()
     }
 
-    def rewire_node(n: Any):
+    def rewire_node(n: Node) -> Node:
         """Rewire node."""
-        if isinstance(n, URIRef):
-            if n in uri_ref_rewire_map:
-                return uri_ref_rewire_map[n]
-            else:
-                return n
-        else:
+        if not isinstance(n, URIRef):
             return n
+        elif n not in uri_ref_rewire_map:
+            return n
+        else:
+            return uri_ref_rewire_map[n]
 
-    triples = []
-    new_triples = []
+    triples: list[tuple[Node, Node, Node]] = []
+    new_triples: list[tuple[Node, Node, Node]] = []
     num_changed = 0
-    for t in g.triples((None, None, None)):
-        t2 = [rewire_node(x) for x in t]
-        triples.append(t)
-        new_triples.append(tuple(t2))
-        if t2 != t:
+    for raw_triple in g.triples((None, None, None)):
+        triples.append(raw_triple)
+        rewired_triple = cast(tuple[Node, Node, Node], tuple(rewire_node(x) for x in raw_triple))
+        new_triples.append(rewired_triple)
+        if rewired_triple != raw_triple:
             num_changed += 1
-    for t in triples:
-        g.remove(t)
-    for t in new_triples:
-        g.add(t)
+    for raw_triple in triples:
+        g.remove(raw_triple)
+    for raw_triple in new_triples:
+        g.add(raw_triple)
     return num_changed
