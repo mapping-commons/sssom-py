@@ -1026,6 +1026,14 @@ def split_dataframe_by_prefix(
     :param method: The method for calculating splits
     :return: a dict of SSSOM data frame names to MappingSetDataFrame
     """
+    if method is None:
+        return _split_dataframe_by_prefix_old(
+            msdf,
+            subject_prefixes=subject_prefixes,
+            object_prefixes=object_prefixes,
+            relations=relations,
+        )
+
     predicates: List[ReferenceTuple] = []
     for relation in relations:
         if reference_tuple := msdf.converter.parse_curie(relation):
@@ -1050,19 +1058,56 @@ def split_dataframe_by_prefix(
     return rv
 
 
+def _split_dataframe_by_prefix_old(
+    msdf: MappingSetDataFrame,
+    subject_prefixes: Iterable[str],
+    object_prefixes: Iterable[str],
+    relations: Iterable[str],
+) -> Dict[str, MappingSetDataFrame]:
+    df = msdf.df
+    meta = msdf.metadata
+    split_to_msdf: Dict[str, MappingSetDataFrame] = {}
+    for subject_prefix, object_prefix, relation in itt.product(
+        subject_prefixes, object_prefixes, relations
+    ):
+        relation_prefix, relation_id = relation.split(":")
+        split = _get_split_key(subject_prefix, relation_id, object_prefix)
+        if subject_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing subject prefix - {subject_prefix}")
+            continue
+        if object_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing object prefix - {object_prefix}")
+            continue
+        df_subset = df[
+            (df[SUBJECT_ID].str.startswith(subject_prefix + ":"))
+            & (df[PREDICATE_ID] == relation)
+            & (df[OBJECT_ID].str.startswith(object_prefix + ":"))
+        ]
+        if 0 == len(df_subset):
+            logging.debug(f"No matches ({len(df_subset)} matches found)")
+            continue
+        subconverter = msdf.converter.get_subconverter(
+            [subject_prefix, object_prefix, relation_prefix]
+        )
+        split_to_msdf[split] = from_sssom_dataframe(
+            df_subset, prefix_map=dict(subconverter.bimap), meta=meta
+        )
+    return split_to_msdf
+
+
 def _help_split_dataframe_by_prefix(
     df: pd.DataFrame,
     subject_prefixes: str | Iterable[str],
     predicates: curies.ReferenceTuple | Iterable[curies.ReferenceTuple],
     object_prefixes: str | Iterable[str],
     *,
-    method: SplitMethod | None = None,
+    method: SplitMethod,
 ) -> Iterable[tuple[tuple[str, curies.ReferenceTuple, str], pd.DataFrame]]:
     subject_prefixes = _clean_list(subject_prefixes)
     predicates = [predicates] if isinstance(predicates, curies.ReferenceTuple) else list(predicates)
     object_prefixes = _clean_list(object_prefixes)
 
-    if method == "disjoint-indexes" or method is None:
+    if method == "disjoint-indexes":
         s_indexes: dict[str, pd.Series[bool]] = {
             subject_prefix: get_filter_df_by_prefixes_index(
                 df, column="subject_id", prefixes=subject_prefix
