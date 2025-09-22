@@ -9,7 +9,7 @@ import json
 import logging as _logging
 import os.path
 import typing
-from collections import ChainMap, Counter
+from collections import ChainMap, Counter, defaultdict
 from pathlib import Path
 from typing import (
     Any,
@@ -17,6 +17,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    NamedTuple,
     Optional,
     TextIO,
     Tuple,
@@ -994,7 +995,7 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
     return mapping_set
 
 
-SplitMethod: TypeAlias = Literal["disjoint-indexes", "dense-indexes"]
+SplitMethod: TypeAlias = Literal["disjoint-indexes", "dense-indexes", "patrick"]
 
 
 def split_dataframe(
@@ -1051,6 +1052,13 @@ def split_dataframe_by_prefix(
             object_prefixes=object_prefixes,
             relations=relations,
         )
+    if method == "patrick":
+        return _patrick_split(
+            msdf,
+            subject_prefixes=subject_prefixes,
+            object_prefixes=object_prefixes,
+            relations=relations,
+        )
 
     predicates: List[ReferenceTuple] = []
     for relation in relations:
@@ -1074,6 +1082,78 @@ def split_dataframe_by_prefix(
         split = _get_split_key(subject_prefix, relation_t.identifier, object_prefix)
         rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
     return rv
+
+
+class SSSOMSplitGroup(NamedTuple):
+    """The key of a group of mappings in a split MappingSetDataFrame."""
+
+    subject_prefix: str
+    object_prefix: str
+    relation_tup: ReferenceTuple
+
+
+def _patrick_split(
+    msdf: MappingSetDataFrame,
+    subject_prefixes: Iterable[str],
+    object_prefixes: Iterable[str],
+    relations: Iterable[str],
+) -> Dict[str, MappingSetDataFrame]:
+    """Split a mapping set dataframe by prefix.
+
+    :param msdf: An SSSOM MappingSetDataFrame
+    :param subject_prefixes: a list of prefixes pertaining to the subject
+    :param object_prefixes: a list of prefixes pertaining to the object
+    :param relations: a list of relations of interest
+    :return: a dict of SSSOM data frame names to MappingSetDataFrame
+    """
+    meta = msdf.metadata
+    split_to_msdf: Dict[str, MappingSetDataFrame] = {}
+    mappings_by_group: defaultdict[SSSOMSplitGroup, List[object]] = defaultdict(list)
+    parse_curie = msdf.converter.parse_curie
+
+    expected_split_groups = [
+        SSSOMSplitGroup(
+            subject_prefix,
+            object_prefix,
+            parse_curie(relation, strict=True),
+        )
+        for subject_prefix, relation, object_prefix in itt.product(
+            subject_prefixes, relations, object_prefixes
+        )
+    ]
+
+    for mapping in msdf.df.itertuples(index=False):
+        group = SSSOMSplitGroup(
+            parse_curie(getattr(mapping, SUBJECT_ID), strict=True).prefix,
+            parse_curie(getattr(mapping, OBJECT_ID), strict=True).prefix,
+            parse_curie(getattr(mapping, PREDICATE_ID), strict=True),
+        )
+        mappings_by_group[group].append(mapping)
+
+    for group in expected_split_groups:
+        split = _get_split_key(
+            group.subject_prefix, group.relation_tup.identifier, group.object_prefix
+        )
+        mappings = mappings_by_group.get(group, None)
+
+        if group.subject_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing subject prefix - {group.subject_prefix}")
+            continue
+        elif group.object_prefix not in msdf.converter.bimap:
+            logging.warning(f"{split} - missing object prefix - {group.object_prefix}")
+            continue
+        elif mappings is None:
+            logging.debug(f"{split} - No matches matches found")
+            continue
+
+        subconverter = msdf.converter.get_subconverter(
+            [group.subject_prefix, group.object_prefix, group.relation_tup.prefix]
+        )
+        split_to_msdf[split] = from_sssom_dataframe(
+            pd.DataFrame(mappings), prefix_map=dict(subconverter.bimap), meta=meta
+        )
+
+    return split_to_msdf
 
 
 def _split_dataframe_by_prefix_old(
