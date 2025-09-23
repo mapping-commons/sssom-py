@@ -23,7 +23,7 @@ dependencies = [
     "validators>=0.20.0",
     "deprecation>=2.1.0",
     "pyyaml>=6.0.1",
-    "rdflib>=6.0.0",
+    "rdflib>=7.1.3",
 ]
 
 # see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies
