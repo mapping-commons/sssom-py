@@ -1743,3 +1743,68 @@ def pandas_set_no_silent_downcasting(no_silent_downcasting: bool = True) -> None
     except KeyError:
         # Option does not exist in this version of pandas
         pass
+
+
+#: A mapping from slots to the weight they have for calculating the FAIRness of a mapping
+FAIR_WEIGHTS: dict[str, float] = {
+    # required
+    "object_id": 1.0,
+    "predicate_id": 1.0,
+    "subject_id": 1.0,
+    "mapping_justification": 1.0,
+    # Not required, but important
+    "license": 1.0,
+    "author_id": 1.0,
+    "creator_id": 1.0,
+    "reviewer_id": 1.0,
+    "confidence": 1.0,
+    #
+    "publication_date": 1.0,
+    "mapping_date": 1.0,
+    "issue_tracker_item": 1.0,
+    "curation_rule": 1.0,
+    "curation_rule_text": 1.0,
+    "similarity_measure": 1.0,
+    "subject_preprocessing": 1.0,
+    "object_category": 1.0,
+    "subject_source_version": 1.0,
+    "mapping_source": 1.0,
+    "subject_match_field": 1.0,
+    "subject_source": 1.0,
+    "object_source": 1.0,
+    "object_source_version": 1.0,
+    "object_preprocessing": 1.0,
+    "object_match_field": 1.0,
+    "mapping_tool": 1.0,
+    "mapping_tool_version": 1.0,
+    "subject_type": 1.0,
+    "similarity_score": 1.0,
+    "mapping_provider": 1.0,
+    "match_string": 1.0,
+    "object_type": 1.0,
+    "subject_category": 1.0,
+    # These give extra context, but are not critical
+    "predicate_label": 0.1,
+    "object_label": 0.1,
+    "subject_label": 0.1,
+    # These don't matter / are not actionable for FAIR
+    "comment": 0.0,
+    "other": 0.0,
+    "creator_label": 0.0,
+    "reviewer_label": 0.0,
+    "author_label": 0.0,
+    # These might not be relevant, so don't penalize if missing
+    "predicate_modifier": 0.0,
+    "mapping_cardinality": 0.0,
+    "see_also": 0.0,
+}
+FAIR_TOTAL_WEIGHT = sum(FAIR_WEIGHTS.values())
+
+
+def calculate_fairness(mapping: SSSOM_Mapping) -> float:
+    """Calculate FAIRness of a mapping."""
+    s: float = sum(weight for key, weight in FAIR_WEIGHTS.items() if getattr(mapping, key, None))
+    # Penalize for using label fields instead of ID fields
+
+    rv: float = s / FAIR_TOTAL_WEIGHT
+    return rv
