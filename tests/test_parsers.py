@@ -147,6 +147,11 @@ class TestParse(unittest.TestCase):
             f"{self.df_file} has the wrong number of mappings.",
         )
 
+    def test_parse_tsv_with_literal_mappings(self) -> None:
+        """Test parsing a SSSOM/TSV file containing literal mappings."""
+        msdf = parse_sssom_table(f"{test_data_dir}/literals.sssom.tsv")
+        self.assertEqual(len(msdf.df), 9, "literals.sssom.tsv has the wrong number of mappings.")
+
     def test_parse_alignment_minidom(self) -> None:
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(

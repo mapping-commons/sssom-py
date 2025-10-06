@@ -42,7 +42,7 @@ from linkml_runtime.loaders.json_loader import JSONLoader
 from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph
-from sssom_schema import Mapping, MappingSet
+from sssom_schema import EntityTypeEnum, Mapping, MappingSet
 from typing_extensions import Literal, TypeAlias
 
 from sssom.constants import (
@@ -1187,12 +1187,12 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]) -> Optional[Mapping]:
 
     try:
         m = Mapping(**mdict)
-        if m.subject_type == "rdfs literal":
+        if m.subject_type == EntityTypeEnum(EntityTypeEnum["rdfs literal"]):
             if m.subject_label is None:
                 raise ValueError("Missing subject_label")
         elif m.subject_id is None:
             raise ValueError("Missing subject_id")
-        if m.object_type == "rdfs literal":
+        if m.object_type == EntityTypeEnum(EntityTypeEnum["rdfs literal"]):
             if m.object_label is None:
                 raise ValueError("Missing object_label")
         elif m.object_id is None:
