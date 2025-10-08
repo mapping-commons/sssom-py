@@ -259,11 +259,10 @@ NEW_ENUM_VALUES = [
 
 
 class SSSOMSchemaView(object):
-    """
-    SchemaView class from linkml which is instantiated when necessary.
+    """SchemaView class from linkml which is instantiated when necessary.
 
-    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322
-    Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
+    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322 Implemented via PR:
+    https://github.com/mapping-commons/sssom-py/pull/323
     """
 
     instance: ClassVar[SSSOMSchemaView]
@@ -391,14 +390,11 @@ def generate_mapping_set_id() -> str:
 def get_default_metadata() -> MetadataType:
     """Get default metadata.
 
-    :returns: A metadata dictionary containing a default
-        license with value :data:`DEFAULT_LICENSE` and an
-        auto-generated mapping set ID
+    :returns: A metadata dictionary containing a default license with value :data:`DEFAULT_LICENSE`
+        and an auto-generated mapping set ID
 
-    If you want to combine some metadata you loaded
-    but ensure that there is also default metadata,
-    the best tool is :class:`collections.ChainMap`.
-    You can do:
+    If you want to combine some metadata you loaded but ensure that there is also default metadata,
+    the best tool is :class:`collections.ChainMap`. You can do:
 
     .. code-block:: python
 
@@ -407,10 +403,7 @@ def get_default_metadata() -> MetadataType:
         from collections import ChainMap
         from sssom import get_default_metadata
 
-        metadata = dict(ChainMap(
-            my_metadata or {},
-            get_default_metadata()
-        ))
+        metadata = dict(ChainMap(my_metadata or {}, get_default_metadata()))
     """
     return {
         "mapping_set_id": generate_mapping_set_id(),

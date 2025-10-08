@@ -30,7 +30,6 @@ import curies
 import numpy as np
 import pandas as pd
 import validators
-import yaml
 from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
@@ -64,7 +63,6 @@ from .constants import (
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
     RDFS_SUBCLASS_OF,
-    SCHEMA_YAML,
     SEMAPV,
     SKOS_BROAD_MATCH,
     SKOS_CLOSE_MATCH,
@@ -171,6 +169,7 @@ class MappingSetDataFrame:
         :param mapping_set: A mapping set
         :param converter: A prefix map or pre-instantiated converter. If none given, uses a default
             prefix map derived from the Bioregistry.
+
         :returns: A mapping set dataframe
         """
         doc = MappingSetDocument(converter=ensure_converter(converter), mapping_set=mapping_set)
@@ -252,9 +251,10 @@ class MappingSetDataFrame:
         """Merge two MappingSetDataframes.
 
         :param msdfs: Multiple/Single MappingSetDataFrame(s) to merge with self
-        :param inplace: If true, msdf2 is merged into the calling MappingSetDataFrame,
-                        if false, it simply return the merged data frame.
-        :return: Merged MappingSetDataFrame
+        :param inplace: If true, msdf2 is merged into the calling MappingSetDataFrame, if false, it
+            simply return the merged data frame.
+
+        :returns: Merged MappingSetDataFrame
         """
         msdf = merge_msdf(self, *msdfs)
         if inplace:
@@ -277,11 +277,11 @@ class MappingSetDataFrame:
         return description
 
     def clean_prefix_map(self, strict: bool = True) -> None:
-        """
-        Remove unused prefixes from the internal prefix map based on the internal dataframe.
+        """Remove unused prefixes from the internal prefix map based on the internal dataframe.
 
-        :param strict: Boolean if True, errors out if all prefixes in dataframe are not
-                       listed in the 'curie_map'.
+        :param strict: Boolean if True, errors out if all prefixes in dataframe are not listed in
+            the 'curie_map'.
+
         :raises ValueError: If prefixes absent in 'curie_map' and strict flag = True
         """
         prefixes_in_table = get_prefixes_used_in_table(self.df)
@@ -329,22 +329,19 @@ class MappingSetDataFrame:
     def propagate(self, fill_empty: bool = False) -> List[str]:
         """Propagate slot values from the set level down to individual records.
 
-        Propagation, as defined by the SSSOM specification, is the process by
-        which the values of so-called "propagatable slots" in the set metadata
-        are moved to the corresponding slots in each individual mapping
-        records.
+        Propagation, as defined by the SSSOM specification, is the process by which the values of
+        so-called "propagatable slots" in the set metadata are moved to the corresponding slots in
+        each individual mapping records.
 
-        Propagation of a slot is only allowed iff no individual records
-        already have a value for that slot.
+        Propagation of a slot is only allowed iff no individual records already have a value for
+        that slot.
 
-        :param fill_empty: If True, propagation of a slot is allowed even if
-                           some individual records already have a value for
-                           that slot. The set-level value will be propagated to
-                           all the records for which the slot is empty. Note
-                           that (1) this is not spec-compliant behaviour, and
-                           (2) this makes the operation non-reversible by a
-                           subsequent condensation.
-        :return: The list of slots that were effectively propagated.
+        :param fill_empty: If True, propagation of a slot is allowed even if some individual records
+            already have a value for that slot. The set-level value will be propagated to all the
+            records for which the slot is empty. Note that (1) this is not spec-compliant behaviour,
+            and (2) this makes the operation non-reversible by a subsequent condensation.
+
+        :returns: The list of slots that were effectively propagated.
         """
         schema = SSSOMSchemaView()
         propagated = []
@@ -375,16 +372,14 @@ class MappingSetDataFrame:
     def condense(self) -> List[str]:
         """Condense record-level slot values to the set whenever possible.
 
-        Condensation is the opposite of propagation. It is the process by
-        which the values of so-called "propagatable" slots found in individual
-        mapping records are moved to the corresponding slots in the set
-        metadata.
+        Condensation is the opposite of propagation. It is the process by which the values of
+        so-called "propagatable" slots found in individual mapping records are moved to the
+        corresponding slots in the set metadata.
 
-        Condensation of a slot is only allowed iff (1) all records have the
-        same value for that slot and (2) the slot does not already have a
-        different value in the set metadata.
+        Condensation of a slot is only allowed iff (1) all records have the same value for that slot
+        and (2) the slot does not already have a different value in the set metadata.
 
-        :return: The list of slots that were effectively condensed.
+        :returns: The list of slots that were effectively condensed.
         """
         schema = SSSOMSchemaView()
         condensed = []
@@ -422,23 +417,22 @@ class MappingSetDataFrame:
     def infer_cardinality(self, scope: Optional[List[str]] = None) -> None:
         """Infer cardinality values in the set.
 
-        This method will automatically fill the `mapping_cardinality` slot for
-        all records in the set, overwriting any pre-existing values.
+        This method will automatically fill the `mapping_cardinality` slot for all records in the
+        set, overwriting any pre-existing values.
 
-        See <https://mapping-commons.github.io/sssom/spec-model/#mapping-cardinality-and-cardinality-scope>
+        See
+        <https://mapping-commons.github.io/sssom/spec-model/#mapping-cardinality-and-cardinality-scope>
         for more information about cardinality computation,
-        <https://mapping-commons.github.io/sssom/spec-model/#literal-mappings>
-        for how to deal with literal mapping records, and
-        <https://mapping-commons.github.io/sssom/spec-model/#representing-unmapped-entities>
-        for how to deal with mapping records involving `sssom:NoTermFound`.
+        <https://mapping-commons.github.io/sssom/spec-model/#literal-mappings> for how to deal with
+        literal mapping records, and
+        <https://mapping-commons.github.io/sssom/spec-model/#representing-unmapped-entities> for how
+        to deal with mapping records involving `sssom:NoTermFound`.
 
-        :param scope: A list of slot names that defines the subset of the
-                      records in which cardinality will be computed. For
-                      example, with a scope of `['predicate_id']`, for any
-                      given record the cardinality will be computed relatively
-                      to the subset of records that have the same predicate.
-                      The default is an empty list, meaning that cardinality is
-                      computed relatively to the entire set of records.
+        :param scope: A list of slot names that defines the subset of the records in which
+            cardinality will be computed. For example, with a scope of `['predicate_id']`, for any
+            given record the cardinality will be computed relatively to the subset of records that
+            have the same predicate. The default is an empty list, meaning that cardinality is
+            computed relatively to the entire set of records.
         """
         if scope is None:
             scope = []
@@ -620,9 +614,13 @@ def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str
     """Standardize a CURIE or IRI, returning the original if not possible.
 
     :param curie_or_iri: Either a string representing a CURIE or an IRI
-    :returns:
-        - If the string represents an IRI, tries to standardize it. If not possible, returns the original value
-        - If the string represents a CURIE, tries to standardize it. If not possible, returns the original value
+
+    :returns: A standardized CURIE or IRI
+
+        - If the string represents an IRI, tries to standardize it. If not possible, returns the
+          original value
+        - If the string represents a CURIE, tries to standardize it. If not possible, returns the
+          original value
         - Otherwise, return the original value
     """
     return converter.compress_or_standardize(curie_or_iri, passthrough=True)
@@ -677,8 +675,7 @@ def _standardize_metadata(
 
 @dataclass
 class EntityPair:
-    """
-    A tuple of entities.
+    """A tuple of entities.
 
     Note that (e1,e2) == (e2,e1)
     """
@@ -696,12 +693,11 @@ class EntityPair:
 
 @dataclass
 class MappingSetDiff:
-    """
-    Represents a difference between two mapping sets.
+    """Represents a difference between two mapping sets.
 
-    Currently this is limited to diffs at the level of entity-pairs.
-    For example, if file1 has A owl:equivalentClass B, and file2 has A skos:closeMatch B,
-    this is considered a mapping in common.
+    Currently this is limited to diffs at the level of entity-pairs. For example, if file1 has A
+    owl:equivalentClass B, and file2 has A skos:closeMatch B, this is considered a mapping in
+    common.
     """
 
     unique_tuples1: Set[EntityPair]
@@ -709,10 +705,7 @@ class MappingSetDiff:
     common_tuples: Set[EntityPair]
 
     combined_dataframe: pd.DataFrame
-    """
-    Dataframe that combines with left and right dataframes with information injected into
-    the comment column
-    """
+    """Dataframe that combines with left and right dataframes with information injected into the comment column"""
 
 
 def collapse(df: pd.DataFrame) -> pd.DataFrame:
@@ -725,7 +718,8 @@ def sort_sssom(df: pd.DataFrame) -> pd.DataFrame:
     """Sort SSSOM by columns.
 
     :param df: SSSOM DataFrame to be sorted.
-    :return: Sorted SSSOM DataFrame
+
+    :returns: Sorted SSSOM DataFrame
     """
     df.sort_values(by=sorted(df.columns), ascending=False, inplace=True)
     return df
@@ -736,7 +730,8 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
 
     :param df: Pandas DataFrame to filter
     :param ignore_predicate: If true, the predicate_id column is ignored, defaults to False
-    :return: Filtered pandas DataFrame
+
+    :returns: Filtered pandas DataFrame
     """
     # tie-breaker
     # create a 'sort' method and then replce the following line by sort()
@@ -824,21 +819,24 @@ def get_row_based_on_hierarchy(df: pd.DataFrame) -> pd.DataFrame:
     """Get row based on hierarchy of predicates.
 
     The hierarchy is as follows:
-    # owl:equivalentClass
-    # owl:equivalentProperty
-    # rdfs:subClassOf
-    # rdfs:subPropertyOf
-    # owl:sameAs
-    # skos:exactMatch
-    # skos:closeMatch
-    # skos:broadMatch
-    # skos:narrowMatch
-    # oboInOwl:hasDbXref
-    # skos:relatedMatch
-    # rdfs:seeAlso
+
+    1. owl:equivalentClass
+    2. owl:equivalentProperty
+    3. rdfs:subClassOf
+    4. rdfs:subPropertyOf
+    5. owl:sameAs
+    6. skos:exactMatch
+    7. skos:closeMatch
+    8. skos:broadMatch
+    9. skos:narrowMatch
+    10. oboInOwl:hasDbXref
+    11. skos:relatedMatch
+    12. rdfs:seeAlso
 
     :param df: Dataframe containing multiple predicates for same subject and object.
-    :return: Dataframe with a single row which ranks higher in the hierarchy.
+
+    :returns: Dataframe with a single row which ranks higher in the hierarchy.
+
     :raises KeyError: if no rows are available
     """
     for pred in PREDICATE_LIST:
@@ -854,7 +852,9 @@ def assign_default_confidence(
     """Assign :data:`numpy.nan` to confidence that are blank.
 
     :param df: SSSOM DataFrame
-    :return: A Tuple consisting of the original DataFrame and dataframe consisting of empty confidence values.
+
+    :returns: A Tuple consisting of the original DataFrame and dataframe consisting of empty
+        confidence values.
     """
     # Get rows having numpy.NaN as confidence
     if df is None:
@@ -872,20 +872,22 @@ def assign_default_confidence(
 def remove_unmatched(df: pd.DataFrame) -> pd.DataFrame:
     """Remove rows where no match is found.
 
-    TODO: https://github.com/OBOFoundry/SSSOM/issues/28
     :param df: Pandas DataFrame
-    :return: Pandas DataFrame with 'PREDICATE_ID' not 'noMatch'.
+
+    :returns: Pandas DataFrame with 'PREDICATE_ID' not 'noMatch'.
+
+    .. todo:: https://github.com/OBOFoundry/SSSOM/issues/28
     """
     return df[df[PREDICATE_ID] != "noMatch"]
 
 
 def create_entity(identifier: str, mappings: Dict[str, Any]) -> Uriorcurie:
-    """
-    Create an Entity object.
+    """Create an Entity object.
 
     :param identifier: Entity Id
     :param mappings: Mapping dictionary
-    :return: An Entity object
+
+    :returns: An Entity object
     """
     entity = Uriorcurie(identifier)  # Entity(id=identifier)
     for key, value in mappings.items():
@@ -923,9 +925,12 @@ def compare_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> MappingSetDiff:
 
     :param df1: A mapping dataframe
     :param df2: A mapping dataframe
+
     :returns: A mapping set diff
 
-    .. warning:: currently does not discriminate between mappings with different predicates
+    .. warning::
+
+        currently does not discriminate between mappings with different predicates
     """
     mappings1 = group_mappings(df1.copy())
     mappings2 = group_mappings(df2.copy())
@@ -969,7 +974,8 @@ def add_default_confidence(df: pd.DataFrame, confidence: float = np.nan) -> pd.D
     If `confidence` column already exists, only fill in the None ones by 0.95.
 
     :param df: DataFrame whose `confidence` column needs to be filled.
-    :return: DataFrame with a complete `confidence` column.
+
+    :returns: DataFrame with a complete `confidence` column.
     """
     if CONFIDENCE in df.columns:
         df[CONFIDENCE] = df[CONFIDENCE].apply(lambda x: confidence * x if x is not None else x)
@@ -991,9 +997,11 @@ def dataframe_to_ptable(
     :param df: Pandas DataFrame
     :param inverse_factor: Multiplier to (1 - confidence), defaults to 0.5
     :param default_confidence: Default confidence to be assigned if absent.
+
+    :returns: List of rows
+
     :raises ValueError: Predicate value error
     :raises ValueError: Predicate type value error
-    :return: List of rows
     """
     if not inverse_factor:
         inverse_factor = 0.5
@@ -1108,11 +1116,11 @@ def merge_msdf(
     """Merge multiple MappingSetDataFrames into one.
 
     :param msdfs: A Tuple of MappingSetDataFrames to be merged
-    :param reconcile: If reconcile=True, then dedupe(remove redundant lower confidence mappings)
-        and reconcile (if msdf contains a higher confidence _negative_ mapping,
-        then remove lower confidence positive one. If confidence is the same,
-        prefer HumanCurated. If both HumanCurated, prefer negative mapping).
-        Defaults to True.
+    :param reconcile: If reconcile=True, then dedupe(remove redundant lower confidence mappings) and
+        reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower
+        confidence positive one. If confidence is the same, prefer HumanCurated. If both
+        HumanCurated, prefer negative mapping). Defaults to True.
+
     :returns: Merged MappingSetDataFrame.
     """
     # Inject metadata of msdf into df
@@ -1149,25 +1157,25 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     Rule: negative trumps positive if modulus of confidence values are equal.
 
     :param df: Merged Pandas DataFrame
-    :return: Pandas DataFrame with negations addressed
+
+    :returns: Pandas DataFrame with negations addressed
+
     :raises ValueError: If the dataframe is none after assigning default confidence
     """
-    """
-        1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
-            the one in mapping1 is preserved).
-        2. Reconciling means two things
-            [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
-                only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
-            [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
-                    If same confidence prefer "HumanCurated" .If same again prefer negative.
-        3. Prefixes:
-            [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different,
-            throw an error and fail hard
-                else just merge the two prefix maps
-        4. Metadata: same as rule 1.
-
-        #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
-    """
+    # 1. Mappings in mapping1 trump mappings in mapping2 (if mapping2 contains a conflicting mapping in mapping1,
+    #     the one in mapping1 is preserved).
+    # 2. Reconciling means two things
+    #     [i] if the same s,p,o (subject_id, object_id, predicate_id) is present multiple times,
+    #         only preserve the highest confidence one. If confidence is same, rule 1 (above) applies.
+    #     [ii] If s,!p,o and s,p,o , then prefer higher confidence and remove the other.
+    #             If same confidence prefer "HumanCurated" .If same again prefer negative.
+    # 3. Prefixes:
+    #     [i] if there is the same prefix in mapping1 as in mapping2, and the prefix URL is different,
+    #     throw an error and fail hard
+    #         else just merge the two prefix maps
+    # 4. Metadata: same as rule 1.
+    #
+    # #1; #2(i) #3 and $4 are taken care of by 'filtered_merged_df' Only #2(ii) should be performed here.
 
     # Handle DataFrames with no 'confidence' column (basically adding a np.nan to all non-numeric confidences)
     confidence_in_original = CONFIDENCE in df.columns
@@ -1294,14 +1302,12 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
 
     :param msdf: MappingSetDataFrame with metadata separate.
 
-    :return: MappingSetDataFrame with metadata as columns
+    :returns: MappingSetDataFrame with metadata as columns
     """
     # TODO add this into the "standardize" function introduced in
     #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    with SCHEMA_YAML.open() as file:
-        schema = yaml.safe_load(file)
-    slots = schema["classes"]["mapping"]["slots"]
+    slots = SSSOMSchemaView().mapping_slots
     for k, v in msdf.metadata.items():
         if k not in msdf.df.columns and k in slots:
             if k == MAPPING_SET_ID:
@@ -1319,7 +1325,8 @@ def get_file_extension(file: PathOrIO) -> Optional[ExtensionLiteral]:
     """Get file extension.
 
     :param file: File path
-    :return: format of the file passed, default tsv
+
+    :returns: format of the file passed, default tsv
     """
     if not isinstance(file, (str, Path)):
         if not hasattr(file, "name"):
@@ -1343,7 +1350,8 @@ def _extract_global_metadata(msdoc: MappingSetDocument) -> MetadataType:
     """Extract metadata.
 
     :param msdoc: MappingSetDocument object
-    :return: Dictionary containing metadata
+
+    :returns: Dictionary containing metadata
     """
     meta = {}
     ms_meta = msdoc.mapping_set
@@ -1364,17 +1372,18 @@ def to_mapping_set_dataframe(doc: MappingSetDocument) -> MappingSetDataFrame:
     """Convert MappingSetDocument into MappingSetDataFrame.
 
     :param doc: MappingSetDocument object
-    :return: MappingSetDataFrame object
+
+    :returns: MappingSetDataFrame object
     """
     return MappingSetDataFrame.from_mapping_set_document(doc)
 
 
 def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) -> dict[str, Any]:
-    """
-    Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
+    """Get information for linkml objects (MatchTypeEnum, PredicateModifierEnum) from the Mapping object and return the dictionary form of the object.
 
     :param map_obj: Mapping object
-    :return: Dictionary
+
+    :returns: Dictionary
     """
     map_dict = {}
     sssom_schema_object = _get_sssom_schema_object()
@@ -1486,7 +1495,8 @@ def filter_out_prefixes(
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
     :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
-    :return: Pandas Dataframe
+
+    :returns: Pandas Dataframe
     """
     if features is None:
         features = KEY_FEATURES
@@ -1514,7 +1524,8 @@ def filter_prefixes(
     :param filter_prefixes: List of prefixes
     :param features: List of dataframe column names dataframe to consider
     :param require_all_prefixes: If True, all prefixes must be present in a row to be filtered out
-    :return: Pandas Dataframe
+
+    :returns: Pandas Dataframe
     """
     if features is None:
         features = KEY_FEATURES
@@ -1534,6 +1545,7 @@ def raise_for_bad_path(file_path: Union[str, Path]) -> None:
     """Raise exception if file path is invalid.
 
     :param file_path: File path
+
     :raises FileNotFoundError: Invalid file path
     """
     if isinstance(file_path, Path):
@@ -1549,7 +1561,8 @@ def is_multivalued_slot(slot: str) -> bool:
     """Check whether the slot is multivalued according to the SSSOM specification.
 
     :param slot: Slot name
-    :return: Slot is multivalued or no
+
+    :returns: Slot is multivalued or no
     """
     return slot in _get_sssom_schema_object().multivalued_slots
 
@@ -1568,13 +1581,13 @@ def reconcile_prefix_and_data(
 
     :param msdf: Mapping Set DataFrame.
     :param prefix_reconciliation: Prefix reconcilation dictionary from a YAML file
-    :return: Mapping Set DataFrame with reconciled prefix_map and data.
 
-    This method is build on :func:`curies.remap_curie_prefixes` and
-    :func:`curies.rewire`. Note that if you want to overwrite a CURIE prefix in the Bioregistry
-    extended prefix map, you need to provide a place for the old one to go as in
-    ``{"geo": "ncbi.geo", "geogeo": "geo"}``.
-    Just doing ``{"geogeo": "geo"}`` would not work since `geo` already exists.
+    :returns: Mapping Set DataFrame with reconciled prefix_map and data.
+
+    This method is build on :func:`curies.remap_curie_prefixes` and :func:`curies.rewire`. Note that
+    if you want to overwrite a CURIE prefix in the Bioregistry extended prefix map, you need to
+    provide a place for the old one to go as in ``{"geo": "ncbi.geo", "geogeo": "geo"}``. Just doing
+    ``{"geogeo": "geo"}`` would not work since `geo` already exists.
     """
     # Discussion about this found here:
     # https://github.com/mapping-commons/sssom-py/issues/216#issue-1171701052
@@ -1589,13 +1602,13 @@ def reconcile_prefix_and_data(
 def sort_df_rows_columns(
     df: pd.DataFrame, by_columns: bool = True, by_rows: bool = True
 ) -> pd.DataFrame:
-    """
-    Canonical sorting of DataFrame columns.
+    """Canonical sorting of DataFrame columns.
 
     :param df: Pandas DataFrame with random column sequence.
     :param by_columns: Boolean flag to sort columns canonically.
     :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
-    :return: Pandas DataFrame columns sorted canonically.
+
+    :returns: Pandas DataFrame columns sorted canonically.
     """
     if by_columns and len(df.columns) > 0:
         column_sequence = [
@@ -1611,9 +1624,11 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
     """Fetch all prefixes in the MappingSetDataFrame.
 
     :param msdf: MappingSetDataFrame
+
+    :returns: List of all prefixes.
+
     :raises ValidationError: If slot is wrong.
     :raises ValidationError: If slot is wrong.
-    :return:  List of all prefixes.
     """
     # FIXME investigate the logic for this function -
     #  some of the falsy checks don't make sense
@@ -1659,10 +1674,11 @@ def augment_metadata(
 
     :param msdf: MappingSetDataFrame (MSDF) object.
     :param meta: Dictionary that needs to be added/updated to the metadata of the MSDF.
-    :param replace_multivalued: Multivalued slots should be
-        replaced or not, defaults to False.
+    :param replace_multivalued: Multivalued slots should be replaced or not, defaults to False.
+
+    :returns: MSDF with updated metadata.
+
     :raises ValueError: If type of slot is neither str nor list.
-    :return: MSDF with updated metadata.
     """
     # TODO this now partially redundant of the MSDF built-in standardize functionality
     are_params_slots(meta)
@@ -1694,8 +1710,10 @@ def are_params_slots(params: dict[str, Any]) -> bool:
     """Check if parameters conform to the slots in MAPPING_SET_SLOTS.
 
     :param params: Dictionary of parameters.
+
+    :returns: True/False
+
     :raises ValueError: If params are not slots.
-    :return: True/False
     """
     empty_params = {k for k, v in params.items() if v is None or v == ""}
     if len(empty_params) > 0:
@@ -1721,12 +1739,13 @@ def invert_mappings(
 
     :param df: Pandas dataframe.
     :param subject_prefix: Prefix of subjects desired.
-    :param merge_inverted: If True (default), add inverted dataframe to input else,
-                          just return inverted data.
-    :param update_justification: If True (default), the justification is updated to "sempav:MappingInversion",
-                          else it is left as it is.
+    :param merge_inverted: If True (default), add inverted dataframe to input else, just return
+        inverted data.
+    :param update_justification: If True (default), the justification is updated to
+        "sempav:MappingInversion", else it is left as it is.
     :param predicate_invert_dictionary: YAML file providing the inverse mapping for predicates.
-    :return: Pandas dataframe with all subject IDs having the same prefix.
+
+    :returns: Pandas dataframe with all subject IDs having the same prefix.
     """
     if predicate_invert_dictionary:
         predicate_invert_map = predicate_invert_dictionary
@@ -1807,7 +1826,8 @@ def safe_compress(uri: str, converter: Converter) -> str:
 
     :param uri: The URI to parse. If this is already a CURIE, return directly.
     :param converter: Converter used for compression
-    :return: A CURIE
+
+    :returns: A CURIE
     """
     return converter.compress_or_standardize(uri, strict=True)
 

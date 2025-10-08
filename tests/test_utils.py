@@ -304,7 +304,7 @@ class TestUtils(unittest.TestCase):
         )
 
     def test_standardize_metadata_multivalued_type_error(self) -> None:
-        """Test raising on a  non-string, non-list object given to a multivalued slot."""
+        """Test raising on a non-string, non-list object given to a multivalued slot."""
         metadata = {"creator_id": object()}
         msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
         with self.assertRaises(TypeError):

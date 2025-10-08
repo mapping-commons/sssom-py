@@ -22,11 +22,9 @@ class TestValidate(unittest.TestCase):
         self.shacl_validation_types = [SchemaValidationType.Shacl]
 
     def test_validate_json(self) -> None:
-        """
-        Test JSONSchemaValidation.
+        """Test JSONSchemaValidation.
 
-        Validate of the incoming file (basic.tsv) abides
-        by the rules set by `sssom-schema`.
+        Validate of the incoming file (basic.tsv) abides by the rules set by `sssom-schema`.
         """
         rv = validate(self.correct_msdf1, self.validation_types)
         self.assertIsNotNone(rv)
@@ -51,17 +49,15 @@ class TestValidate(unittest.TestCase):
     """
     )
     def test_validate_json_fail(self) -> None:
-        """
-        Test if JSONSchemaValidation fail is as expected.
+        """Test if JSONSchemaValidation fail is as expected.
 
-        In this particular test case, the 'mapping_justification' slot
-        does not have EntityReference objects, but strings.
+        In this particular test case, the 'mapping_justification' slot does not have EntityReference
+        objects, but strings.
         """
         self.assertRaises(ValidationError, validate, self.bad_msdf1, self.validation_types)
 
     def test_validate_shacl(self) -> None:
-        """
-        Test Shacl validation (Not implemented).
+        """Test Shacl validation (Not implemented).
 
         Validate shacl based on `sssom-schema`.
         """
