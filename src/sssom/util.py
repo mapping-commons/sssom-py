@@ -48,7 +48,6 @@ from .constants import (
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
     MAPPING_SET_SOURCE,
-    NEW_ENUM_VALUES,
     NO_TERM_FOUND,
     OBJECT_CATEGORY,
     OBJECT_ID,
@@ -530,7 +529,7 @@ class MappingSetDataFrame:
                 versions.add(version)
 
         # Then take care of enum values
-        for new_enum_value in NEW_ENUM_VALUES:
+        for new_enum_value in schema.get_new_enum_values():
             for slot in new_enum_value.slots:
                 if self.metadata.get(slot) == new_enum_value.value or (
                     slot in self.df.columns and new_enum_value.value in self.df[slot].values
@@ -588,7 +587,7 @@ class MappingSetDataFrame:
             for name in msdf.metadata.keys()
             if not _keep(name, schema.get_minimum_version(name, "mapping set"))
         ]
-        for new_enum_value in [v for v in NEW_ENUM_VALUES if v.added_in > target_version]:
+        for new_enum_value in schema.get_new_enum_values(after=target_version):
             for slot in new_enum_value.slots:
                 if msdf.metadata.get(slot) == new_enum_value.value:
                     to_remove.append(slot)
@@ -602,7 +601,7 @@ class MappingSetDataFrame:
             if not _keep(name, schema.get_minimum_version(name, "mapping"))
         ]
         msdf.df.drop(columns=to_remove, inplace=True)
-        for new_enum_value in [v for v in NEW_ENUM_VALUES if v.added_in > target_version]:
+        for new_enum_value in schema.get_new_enum_values(after=target_version):
             for slot in new_enum_value.slots:
                 if slot in msdf.df.columns:
                     msdf.df.loc[msdf.df[slot] == new_enum_value.value, slot] = ""

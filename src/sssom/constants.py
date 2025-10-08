@@ -328,6 +328,17 @@ class SSSOMSchemaView(object):
                 slots.append(slot_name)
         return slots
 
+    def get_new_enum_values(self, after: Tuple[int, int] = (1, 0)) -> List[NewEnumValue]:
+        """Get enum values introduced after a given version of the specification.
+
+        :param after: The target version of the SSSOM specification, as
+                      a (major, minor) tuple. The default is (1,0),
+                      meaning all enum values introduced in any version
+                      after 1.0 will be returned.
+        :return: The list of newly introduced enum values.
+        """
+        return [v for v in NEW_ENUM_VALUES if v.added_in > after]
+
     def get_minimum_version(
         self, slot_name: str, class_name: str = "mapping"
     ) -> Optional[Tuple[int, int]]:
