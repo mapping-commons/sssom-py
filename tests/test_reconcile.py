@@ -41,7 +41,7 @@ class TestReconcile(unittest.TestCase):
         msdf3 = parse_sssom_table(data_dir / "basic.tsv")
         merged_msdf1 = merge_msdf(self.msdf1, msdf3)
 
-        self.assertEqual(152, len(merged_msdf1.df))
+        self.assertEqual(149, len(merged_msdf1.df))
 
         merged_msdf2 = merge_msdf(self.msdf2, msdf3)
         self.assertEqual(174, len(merged_msdf2.df))

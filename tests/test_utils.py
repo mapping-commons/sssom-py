@@ -38,7 +38,6 @@ from sssom.util import (
     get_dict_from_mapping,
     get_file_extension,
     get_prefixes_used_in_table,
-    inject_metadata_into_df,
     invert_mappings,
     is_multivalued_slot,
 )
@@ -212,14 +211,6 @@ class TestIO(unittest.TestCase):
         original_subject_labels = msdf.df["subject_label"].values
         inverted_object_labels = inverted_df["object_label"].values
         self.assertNotIn(False, original_subject_labels == inverted_object_labels)
-
-    def test_inject_metadata_into_df(self) -> None:
-        """Test injecting metadata into DataFrame is as expected."""
-        expected_creators = "orcid:0000-0001-5839-2535|orcid:0000-0001-5839-2532"
-        msdf = parse_sssom_table(f"{data_dir}/test_inject_metadata_msdf.tsv")
-        msdf_with_meta = inject_metadata_into_df(msdf)
-        creator_ids = msdf_with_meta.df["creator_id"].drop_duplicates().values.item()
-        self.assertEqual(creator_ids, expected_creators)
 
 
 class TestUtils(unittest.TestCase):

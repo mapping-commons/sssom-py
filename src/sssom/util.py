@@ -47,7 +47,7 @@ from .constants import (
     MAPPING_CARDINALITY,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
-    MAPPING_SET_SOURCE,
+    MAPPING_SOURCE,
     NO_TERM_FOUND,
     OBJECT_CATEGORY,
     OBJECT_ID,
@@ -1118,25 +1118,35 @@ def merge_msdf(
     :param reconcile: If reconcile=True, then dedupe(remove redundant lower confidence mappings) and
         reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower
         confidence positive one. If confidence is the same, prefer HumanCurated. If both
-        HumanCurated, prefer negative mapping). Defaults to True.
+        HumanCurated, prefer negative mapping). Defaults to False.
 
     :returns: Merged MappingSetDataFrame.
     """
-    # Inject metadata of msdf into df
-    msdf_with_meta = [inject_metadata_into_df(msdf) for msdf in msdfs]
+    # Propagate slots, inject source if possible
+    source_injected = 0
+    for msdf in msdfs:
+        msdf.propagate()
+        if MAPPING_SET_ID in msdf.metadata and MAPPING_SOURCE not in msdf.df.columns:
+            msdf.df[MAPPING_SOURCE] = msdf.metadata[MAPPING_SET_ID]
+            source_injected += 1
 
-    # merge df [# 'outer' join in pandas == FULL JOIN in SQL]
-    # df_merged = reduce(
-    #     lambda left, right: left.merge(right, how="outer", on=list(left.columns)),
-    #     [msdf.df for msdf in msdf_with_meta],
-    # )
-    # Concat is an alternative to merge when columns are not the same.
+    columns = set([c for msdf in msdfs for c in msdf.df.columns])
+    if source_injected > 1:
+        # If we injected a mapping_source slot into each individual
+        # record for at least two of the input sets, then we must ignore
+        # that slot when attempting to remove duplicates below, because
+        # the mere presence of that slot would cause two identical
+        # records to appear different just because they come from
+        # different sources (which they would not do if we had not
+        # injected the mapping_source above).
+        columns.remove(MAPPING_SOURCE)
+
     df_merged = reduce(
         lambda left, right: pd.concat([left, right], axis=0, ignore_index=True),
-        [msdf.df for msdf in msdf_with_meta],
-    ).drop_duplicates(ignore_index=True)
+        [msdf.df for msdf in msdfs],
+    ).drop_duplicates(ignore_index=True, subset=columns)
 
-    converter = curies.chain([msdf.converter for msdf in msdf_with_meta])
+    converter = curies.chain([msdf.converter for msdf in msdfs])
     merged_msdf = MappingSetDataFrame.with_converter(df=df_merged, converter=converter)
     if reconcile:
         merged_msdf.df = filter_redundant_rows(merged_msdf.df)
@@ -1294,27 +1304,6 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
 
     return return_df
-
-
-def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
-    """Inject metadata dictionary key-value pair into DataFrame columns in a MappingSetDataFrame.DataFrame.
-
-    :param msdf: MappingSetDataFrame with metadata separate.
-
-    :returns: MappingSetDataFrame with metadata as columns
-    """
-    # TODO add this into the "standardize" function introduced in
-    #  https://github.com/mapping-commons/sssom-py/pull/438
-    # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    slots = SSSOMSchemaView().mapping_slots
-    for k, v in msdf.metadata.items():
-        if k not in msdf.df.columns and k in slots:
-            if k == MAPPING_SET_ID:
-                k = MAPPING_SET_SOURCE
-            if isinstance(v, list):
-                v = "|".join(x for x in v)
-            msdf.df[k] = str(v)
-    return msdf
 
 
 ExtensionLiteral = Literal["tsv", "csv"]
