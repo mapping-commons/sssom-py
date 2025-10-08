@@ -5,13 +5,28 @@ from __future__ import annotations
 import importlib.resources
 import pathlib
 import uuid
+from dataclasses import dataclass
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, ClassVar, Dict, List, Literal, Mapping, Set, TextIO, Union, cast
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
+from sssom_schema.datamodel.sssom_schema import SssomVersionEnum
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
@@ -77,6 +92,7 @@ MAPPING_SET_ID = "mapping_set_id"
 MAPPING_SET_VERSION = "mapping_set_version"
 MAPPING_SET_GROUP = "mapping_set_group"
 MAPPING_SET_DESCRIPTION = "mapping_set_description"
+MAPPING_SET_CONFIDENCE = "mapping_set_confidence"
 CREATOR_ID = "creator_id"
 CREATOR_LABEL = "creator_label"
 AUTHOR_ID = "author_id"
@@ -94,6 +110,7 @@ MAPPING_SOURCE = "mapping_source"
 MAPPING_CARDINALITY = "mapping_cardinality"
 CARDINALITY_SCOPE = "cardinality_scope"
 MAPPING_TOOL = "mapping_tool"
+MAPPING_TOOL_ID = "mapping_tool_id"
 MAPPING_TOOL_VERSION = "mapping_tool_version"
 MAPPING_DATE = "mapping_date"
 PBLICATION_DATE = "publication_date"
@@ -108,6 +125,8 @@ SEMANTIC_SIMILARITY_MEASURE = "semantic_similarity_measure"
 SEE_ALSO = "see_also"
 OTHER = "other"
 COMMENT = "comment"
+EXTENSION_DEFINITIONS = "extension_definitions"
+EXTENSION_SLOT_NAME = "slot_name"
 
 CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
@@ -217,6 +236,28 @@ DEFAULT_VALIDATION_TYPES: List[SchemaValidationType] = [
 ]
 
 
+@dataclass
+class NewEnumValue(object):
+    """Represents a enum value that had been added posteriorly to 1.0.
+
+    Ideally that information should be encoded in the LinkML schema and
+    made available through the SSSOMSchemaView class below, but it does
+    not seem possible to annotate enum values in LinkML the way it can
+    be done for slots. So the information comes from the spec instead,
+    at <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
+    """
+
+    slots: list[str]  # Impacted slots
+    value: str  # The new value
+    added_in: tuple[int, int]  # Version that introduced the new value
+
+
+NEW_ENUM_VALUES = [
+    NewEnumValue([SUBJECT_TYPE, OBJECT_TYPE], "composed entity expression", (1, 1)),
+    NewEnumValue([MAPPING_CARDINALITY], "0:0", (1, 1)),
+]
+
+
 class SSSOMSchemaView(object):
     """SchemaView class from linkml which is instantiated when necessary.
 
@@ -286,6 +327,54 @@ class SSSOMSchemaView(object):
             if annotations is not None and "propagated" in annotations:
                 slots.append(slot_name)
         return slots
+
+    def get_new_enum_values(self, after: Tuple[int, int] = (1, 0)) -> List[NewEnumValue]:
+        """Get enum values introduced after a given version of the specification.
+
+        :param after: The target version of the SSSOM specification, as
+                      a (major, minor) tuple. The default is (1,0),
+                      meaning all enum values introduced in any version
+                      after 1.0 will be returned.
+        :return: The list of newly introduced enum values.
+        """
+        return [v for v in NEW_ENUM_VALUES if v.added_in > after]
+
+    def get_minimum_version(
+        self, slot_name: str, class_name: str = "mapping"
+    ) -> Optional[Tuple[int, int]]:
+        """Get the minimum version of SSSOM required for a given slot.
+
+        :param slot_name: The queried slot.
+        :param class_name: The class the slot belongs to. This is needed
+                           because a slot may have been added to a class
+                           in a later version than the version in which
+                           it was first introduced in the schema.
+        :return: A tuple containing the major and minor numbers of the
+                 earliest version of SSSOM that defines the given slot
+                 in the given class. May be None if the requested slot
+                 name is not a valid slot name.
+        """
+        try:
+            slot = self.view.induced_slot(slot_name, class_name)
+            return parse_sssom_version(slot.annotations.added_in.value)
+        except AttributeError:  # No added_in annotation, defaults to 1.0
+            return (1, 0)
+        except ValueError:  # No such slot
+            return None
+
+
+def parse_sssom_version(version: str) -> Tuple[int, int]:
+    """Parse a string into a valid SSSOM version number.
+
+    :param version: The string to parse into a version number.
+    :return: A (major, minor) tuple.
+    """
+    v = [int(n) for n in SssomVersionEnum(version).code.text.split(".")]
+    if len(v) != 2:
+        # Should never happen, should be caught by the SssomVersionEnum
+        # constructor before we arrive here
+        raise ValueError("Invalid version")
+    return (v[0], v[1])
 
 
 @lru_cache(1)

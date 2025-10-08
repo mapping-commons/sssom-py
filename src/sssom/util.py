@@ -42,6 +42,8 @@ from .constants import (
     COLUMN_INVERT_DICTIONARY,
     COMMENT,
     CONFIDENCE,
+    EXTENSION_DEFINITIONS,
+    EXTENSION_SLOT_NAME,
     MAPPING_CARDINALITY,
     MAPPING_JUSTIFICATION,
     MAPPING_SET_ID,
@@ -78,6 +80,7 @@ from .constants import (
     SSSOMSchemaView,
     _get_sssom_schema_object,
     get_default_metadata,
+    parse_sssom_version,
 )
 from .context import (
     SSSOM_BUILT_IN_PREFIXES,
@@ -508,6 +511,102 @@ class MappingSetDataFrame:
         else:
             # No scope, so remove any pre-existing "cardinality_scope" column
             self.df.drop(columns=CARDINALITY_SCOPE, inplace=True, errors="ignore")
+
+    def get_compatible_version(self) -> str:
+        """Get the minimum version of SSSOM this set is compatible with."""
+        schema = SSSOMSchemaView()
+        versions: Set[Tuple[int, int]] = set()
+
+        # First get the minimum versions required by the slots present
+        # in the set; this is entirely provided by the SSSOM model.
+        for slot in self.metadata.keys():
+            version = schema.get_minimum_version(slot, "mapping set")
+            if version is not None:
+                versions.add(version)
+        for slot in self.df.columns:
+            version = schema.get_minimum_version(slot, "mapping")
+            if version is not None:
+                versions.add(version)
+
+        # Then take care of enum values
+        for new_enum_value in schema.get_new_enum_values():
+            for slot in new_enum_value.slots:
+                if self.metadata.get(slot) == new_enum_value.value or (
+                    slot in self.df.columns and new_enum_value.value in self.df[slot].values
+                ):
+                    versions.add(new_enum_value.added_in)
+
+        # Get the highest of the accumulated versions.
+        return ".".join([str(i) for i in max(versions)])
+
+    def enforce_version(
+        self, version: str, strict: bool = False, inplace: bool = False
+    ) -> "MappingSetDataFrame":
+        """Ensure the set is compliant with a given version of the SSSOM specification.
+
+        This method will forcefully remove any slot or enum value that
+        is not defined in the specified version of the specification.
+
+        :param version: The targeted version of the specification, as a
+                        string of the form `X.Y`.
+        :param strict: If `True`, unknown slots will be removed as well,
+                       unless they are properly declared as extensions.
+        :param inplace: if `True`, the method will modify and return the
+                        set it has been called upon. The default is to
+                        leave that set untouched and to return a
+                        modified copy.
+        :return: A set that is compliant with the requested version of
+                 the SSSOM specification.
+        """
+        if inplace:
+            msdf = self
+        else:
+            msdf = MappingSetDataFrame(df=self.df.copy(), metadata=self.metadata.copy())
+
+        schema = SSSOMSchemaView()
+        target_version = parse_sssom_version(version)
+        defined_extensions = [
+            ext.get(EXTENSION_SLOT_NAME) for ext in msdf.metadata.get(EXTENSION_DEFINITIONS, [])
+        ]
+
+        # Helper method to decide whether to keep or discard a slot
+        def _keep(name: str, version: Optional[Tuple[int, int]]) -> bool:
+            if version is not None:
+                # This is a known slot, keep if compatible with target version
+                return version <= target_version
+            elif strict:
+                # Unknown slot in strict mode, keep only if declared as an extension
+                return name in defined_extensions
+            else:
+                # Unknown slot in non-strict mode, always keep
+                return True
+
+        # First the mapping set slots
+        to_remove = [
+            name
+            for name in msdf.metadata.keys()
+            if not _keep(name, schema.get_minimum_version(name, "mapping set"))
+        ]
+        for new_enum_value in schema.get_new_enum_values(after=target_version):
+            for slot in new_enum_value.slots:
+                if msdf.metadata.get(slot) == new_enum_value.value:
+                    to_remove.append(slot)
+        for slot in to_remove:
+            msdf.metadata.pop(slot)
+
+        # Then the individual mapping record slots
+        to_remove = [
+            name
+            for name in msdf.df.columns
+            if not _keep(name, schema.get_minimum_version(name, "mapping"))
+        ]
+        msdf.df.drop(columns=to_remove, inplace=True)
+        for new_enum_value in schema.get_new_enum_values(after=target_version):
+            for slot in new_enum_value.slots:
+                if slot in msdf.df.columns:
+                    msdf.df.loc[msdf.df[slot] == new_enum_value.value, slot] = ""
+
+        return msdf
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:

@@ -1,0 +1,33 @@
+#sssom_version: "1.1"
+#curie_map:
+#  d: http://example.org/d/
+#  orcid: https://orcid.org/
+#  x: http://example.org/x/
+#  z: http://example.org/z/
+#mapping_set_id: https://w3id.org/sssom/mapping/tests/data/sssom11-extensions.sssom.tsv
+#mapping_set_confidence: 0.9
+#creator_id:
+#  - orcid:1234
+#  - orcid:5678
+#license: https://creativecommons.org/publicdomain/zero/1.0/
+#extension_definitions:
+#  - slot_name: ext_fooable
+#    property: d:fooableProperty
+#    type_hint: xsd:boolean
+#  - slot_name: ext_fooability_scale
+#    property: d:fooableScaleProperty
+#    type_hint: xsd:integer
+#ext_fooability_scale: 79
+#ext_undefined: bar
+subject_id	predicate_id	object_id	mapping_justification	subject_type	mapping_tool_id	mapping_date	ext_fooable	ext_undefined
+x:appendage	owl:equivalentClass	z:appendage	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_element	owl:equivalentClass	z:bone_element	semapv:LexicalMatching	composed entity expression	d:matcher	2020-05-30	false	bar
+x:bone_element	owl:equivalentClass	z:bone_element	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_element	owl:equivalentClass	z:bone_element	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_element	owl:equivalentClass	z:bone_tissue	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_element	owl:equivalentClass	z:bone_tissue	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_tissue	owl:equivalentClass	z:bone_element	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_tissue	owl:equivalentClass	z:bone_element	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_tissue	owl:equivalentClass	z:bone_tissue	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_tissue	owl:equivalentClass	z:bone_tissue	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
+x:bone_tissue	owl:equivalentClass	z:bone_tissue	semapv:LexicalMatching	owl class	d:matcher	2020-05-30	true	bar
