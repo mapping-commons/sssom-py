@@ -30,7 +30,6 @@ import curies
 import numpy as np
 import pandas as pd
 import validators
-import yaml
 from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
@@ -61,7 +60,6 @@ from .constants import (
     PREDICATE_MODIFIER,
     PREDICATE_MODIFIER_NOT,
     RDFS_SUBCLASS_OF,
-    SCHEMA_YAML,
     SEMAPV,
     SKOS_BROAD_MATCH,
     SKOS_CLOSE_MATCH,
@@ -1209,9 +1207,7 @@ def inject_metadata_into_df(msdf: MappingSetDataFrame) -> MappingSetDataFrame:
     # TODO add this into the "standardize" function introduced in
     #  https://github.com/mapping-commons/sssom-py/pull/438
     # TODO Check if 'k' is a valid 'slot' for 'mapping' [sssom.yaml]
-    with SCHEMA_YAML.open() as file:
-        schema = yaml.safe_load(file)
-    slots = schema["classes"]["mapping"]["slots"]
+    slots = SSSOMSchemaView().mapping_slots
     for k, v in msdf.metadata.items():
         if k not in msdf.df.columns and k in slots:
             if k == MAPPING_SET_ID:
