@@ -103,12 +103,19 @@ fields_option = click.option(
     default=("subject_category", "object_category"),
     help="Fields.",
 )
-
 predicate_filter_option = click.option(
     "-F",
     "--mapping-predicate-filter",
     multiple=True,
     help="A list of predicates or a file path containing the list of predicates to be considered.",
+)
+propagate_option = click.option(
+    "--propagate/--no-propagate",
+    default=True,
+    help="Automatically propagate condensed slots upon parsing.",
+)
+condense_option = click.option(
+    "--condense/--no-condense", default=True, help="Automatically condense slots upon writing."
 )
 
 
@@ -148,9 +155,19 @@ def help(ctx: click.Context, subcommand: str) -> None:
 @input_argument
 @output_option
 @output_format_option
-def convert(input: str, output: TextIO, output_format: str) -> None:
+@propagate_option
+@condense_option
+def convert(
+    input: str, output: TextIO, output_format: str, propagate: bool, condense: bool
+) -> None:
     """Convert a file."""
-    convert_file(input_path=input, output=output, output_format=output_format)
+    convert_file(
+        input_path=input,
+        output=output,
+        output_format=output_format,
+        propagate=propagate,
+        condense=condense,
+    )
 
 
 # Input and metadata would be files (file paths). Check if exists.
@@ -193,6 +210,8 @@ def convert(input: str, output: TextIO, output_format: str) -> None:
 )
 @predicate_filter_option
 @output_option
+@propagate_option
+@condense_option
 def parse(
     input: str,
     input_format: str,
@@ -203,6 +222,8 @@ def parse(
     output: TextIO,
     embedded_mode: bool,
     mapping_predicate_filter: list[str],
+    propagate: bool,
+    condense: bool,
 ) -> None:
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     parse_file(
@@ -215,6 +236,8 @@ def parse(
         strict_clean_prefixes=strict_clean_prefixes,
         embedded_mode=embedded_mode,
         mapping_predicate_filter=mapping_predicate_filter,
+        propagate=propagate,
+        condense=condense,
     )
 
 
@@ -227,10 +250,11 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
-def validate(input: str, validation_types: List[SchemaValidationType]) -> None:
+@propagate_option
+def validate(input: str, validation_types: List[SchemaValidationType], propagate: bool) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
-    validate_file(input_path=input, validation_types=validation_type_list)
+    validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
 
 
 @main.command()
@@ -522,11 +546,15 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
     help="If true, the deduplicate (i.e., remove redundant lower confidence mappings) and reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower confidence positive one. If confidence is the same, prefer HumanCurated. If both HumanCurated, prefer negative mapping)",
 )
 @output_option
-def merge(inputs: str, output: TextIO, reconcile: bool = False) -> None:
+@propagate_option
+@condense_option
+def merge(
+    inputs: str, output: TextIO, propagate: bool, condense: bool, reconcile: bool = False
+) -> None:
     """Merge multiple MappingSetDataFrames into one."""  # noqa: DAR101
-    msdfs = [parse_sssom_table(i) for i in inputs]
+    msdfs = [parse_sssom_table(i, propagate=propagate) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
-    write_table(merged_msdf, output)
+    write_table(merged_msdf, output, condense=condense)
 
 
 @main.command(

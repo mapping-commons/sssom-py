@@ -221,6 +221,7 @@ def write_owl(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
     serialisation: str = SSSOM_DEFAULT_RDF_SERIALISATION,
+    condense: bool = False,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
     if serialisation not in RDF_FORMATS:
@@ -230,6 +231,8 @@ def write_owl(
         )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
+    if condense:
+        msdf.condense()
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     with _open_text_writer(file) as fh:
