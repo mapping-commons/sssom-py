@@ -152,6 +152,19 @@ class TestParse(unittest.TestCase):
         msdf = parse_sssom_table(f"{test_data_dir}/literals.sssom.tsv")
         self.assertEqual(len(msdf.df), 9, "literals.sssom.tsv has the wrong number of mappings.")
 
+        # Same, but with the object_type slot being condensed
+        msdf = parse_sssom_table(f"{test_data_dir}/literals-condensed.sssom.tsv")
+        self.assertEqual(len(msdf.df), 9, "literal-condensed.tsv has the wrong number of mappings")
+
+        # With propagation disabled, this should fail because the
+        # validator can't know that the mappings are literal mappings
+        msdf = parse_sssom_table(f"{test_data_dir}/literals-condensed.sssom.tsv", propagate=False)
+        self.assertEqual(
+            len(msdf.df),
+            0,
+            "Unexpected success, got literal mappings we should not have been able to read from a condensed set",
+        )
+
     def test_parse_alignment_minidom(self) -> None:
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
@@ -298,7 +311,10 @@ class TestParse(unittest.TestCase):
     def test_read_sssom_table(self) -> None:
         """Test read SSSOM method to validate import of all columns."""
         input_path = os.path.join(test_data_dir, "basic3.tsv")
-        msdf = parse_sssom_table(input_path)
+        # basic3.tsv is in a "half-condensed" state, so for the tests below
+        # to pass propagation must be disabled so that the original state
+        # is preserved
+        msdf = parse_sssom_table(input_path, propagate=False)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t").fillna("")
         imported_df = sort_df_rows_columns(imported_df)
         msdf.df = sort_df_rows_columns(msdf.df)

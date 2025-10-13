@@ -43,18 +43,22 @@ def convert_file(
     input_path: str,
     output: TextIO,
     output_format: Optional[str] = None,
+    propagate: bool = True,
+    condense: bool = True,
 ) -> None:
     """Convert a file from one format to another.
 
     :param input_path: The path to the input SSSOM tsv file
     :param output: The path to the output file. If none is given, will default to using stdout.
     :param output_format: The format to which the SSSOM TSV should be converted.
+    :param propagate: Propagate condensed slots in the input file.
+    :param condense: Condense slots in the output file.
     """
     raise_for_bad_path(input_path)
-    doc = parse_sssom_table(input_path)
+    doc = parse_sssom_table(input_path, propagate=propagate)
     write_func, fileformat = get_writer_function(output_format=output_format, output=output)
     # TODO cthoyt figure out how to use protocols for this
-    write_func(doc, output, serialisation=fileformat)  # type:ignore
+    write_func(doc, output, serialisation=fileformat, condense=condense)  # type:ignore
 
 
 def parse_file(
@@ -68,6 +72,8 @@ def parse_file(
     strict_clean_prefixes: bool = True,
     embedded_mode: bool = True,
     mapping_predicate_filter: RecursivePathList | None = None,
+    propagate: bool = True,
+    condense: bool = True,
 ) -> None:
     """Parse an SSSOM metadata file and write to a table.
 
@@ -86,6 +92,8 @@ def parse_file(
         (tsv), else two separate files (tsv and yaml).
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the
         same.
+    :param propagate: If true, propagate all condensed slots in the input set.
+    :param condense: If true, condense slots in the output set.
     """
     raise_for_bad_path(input_path)
     converter, meta = _get_converter_and_metadata(
@@ -102,17 +110,19 @@ def parse_file(
         prefix_map=converter,
         meta=meta,
         mapping_predicates=mapping_predicates,
+        propagate=propagate,
     )
     if clean_prefixes:
         # We do this because we got a lot of prefixes from the default SSSOM prefixes!
         doc.clean_prefix_map(strict=strict_clean_prefixes)
-    write_table(doc, output, embedded_mode)
+    write_table(doc, output, embedded_mode, condense=condense)
 
 
 def validate_file(
     input_path: str,
     validation_types: Optional[List[SchemaValidationType]] = None,
     fail_on_error: bool = True,
+    propagate: bool = True,
 ) -> dict[SchemaValidationType, ValidationReport]:
     """Validate the incoming SSSOM TSV according to the SSSOM specification.
 
@@ -120,13 +130,14 @@ def validate_file(
         aligmentapi-xml
     :param validation_types: A list of validation types to run.
     :param fail_on_error: Should an exception be raised on error of _any_ validator?
+    :param propagate: If true, propagate condensed slots in the input set.
 
     :returns: A dictionary from validation types to validation reports
     """
     # Two things to check:
     # 1. All prefixes in the DataFrame are define in prefix_map
     # 2. All columns in the DataFrame abide by sssom-schema.
-    msdf = parse_sssom_table(file_path=input_path)
+    msdf = parse_sssom_table(file_path=input_path, propagate=propagate)
     return validate(msdf=msdf, validation_types=validation_types, fail_on_error=fail_on_error)
 
 

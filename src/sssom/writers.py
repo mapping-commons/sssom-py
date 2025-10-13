@@ -88,9 +88,13 @@ def write_table(
     embedded_mode: bool = True,
     serialisation: str = "tsv",
     sort: bool = False,
+    condense: bool = True,
 ) -> None:
     """Write a mapping set dataframe to the file as a table."""
     sep = _get_separator(serialisation)
+
+    if condense:
+        msdf.condense()
 
     meta: Dict[str, Any] = {}
     meta.update(msdf.metadata)
@@ -131,6 +135,7 @@ def write_rdf(
     serialisation: Optional[str] = None,
     *,
     hydrate: bool = False,
+    condense: bool = False,
 ) -> None:
     """Write a mapping set dataframe to the file as RDF.
 
@@ -141,6 +146,8 @@ def write_rdf(
     :param hydrate: If true, will add subject-predicate-objects directly representing mappings. This
         is opt-in behavior.
     """
+    if condense:
+        msdf.condense()
     if serialisation is None:
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
     elif serialisation not in RDF_FORMATS:
@@ -157,7 +164,9 @@ def write_rdf(
         print(t.decode(), file=fh)
 
 
-def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "json") -> None:
+def write_json(
+    msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "json", condense: bool = True
+) -> None:
     """Write a mapping set dataframe to the file as JSON.
 
     :param msdf: A mapping set dataframe
@@ -177,6 +186,8 @@ def write_json(msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str =
             f"Unknown JSON format: {serialisation}. Supported flavors: {', '.join(JSON_CONVERTERS.keys())}"
         )
     func = JSON_CONVERTERS[serialisation]
+    if condense:
+        msdf.condense()
     data = func(msdf)
     with _open_text_writer(output) as fh:
         json.dump(data, fh, indent=2)
@@ -191,7 +202,7 @@ def write_fhir_json(
         raise ValueError(
             f"Unknown json format: {serialisation}, currently only fhir_json supported"
         )
-    write_json(msdf, output, serialisation="fhir_json")
+    write_json(msdf, output, serialisation="fhir_json", condense=False)
 
 
 @deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore
@@ -203,13 +214,14 @@ def write_ontoportal_json(
         raise ValueError(
             f"Unknown json format: {serialisation}, currently only ontoportal_json supported"
         )
-    write_json(msdf, output, serialisation="ontoportal_json")
+    write_json(msdf, output, serialisation="ontoportal_json", condense=False)
 
 
 def write_owl(
     msdf: MappingSetDataFrame,
     file: PathOrIO,
     serialisation: str = SSSOM_DEFAULT_RDF_SERIALISATION,
+    condense: bool = False,
 ) -> None:
     """Write a mapping set dataframe to the file as OWL."""
     if serialisation not in RDF_FORMATS:
@@ -219,6 +231,8 @@ def write_owl(
         )
         serialisation = SSSOM_DEFAULT_RDF_SERIALISATION
 
+    if condense:
+        msdf.condense()
     graph = to_owl_graph(msdf)
     t = graph.serialize(format=serialisation, encoding="utf-8")
     with _open_text_writer(file) as fh:

@@ -87,6 +87,7 @@ from .util import (
     MappingSetDataFrame,
     get_file_extension,
     is_multivalued_slot,
+    propagate_condensed_slots,
     raise_for_bad_path,
     safe_compress,
     to_mapping_set_dataframe,
@@ -304,6 +305,7 @@ def parse_sssom_table(
     *,
     strict: bool = False,
     sep: Optional[str] = None,
+    propagate: bool = True,
     **kwargs: Any,
 ) -> MappingSetDataFrame:
     """Parse a SSSOM CSV or TSV file.
@@ -315,6 +317,7 @@ def parse_sssom_table(
         within the document itself. For example, this may come from a companion SSSOM YAML file.
     :param strict: If true, will fail parsing for undefined prefixes, CURIEs, or IRIs
     :param sep: The seperator. If not given, inferred from file name
+    :param propagate: If true, propagate all condensed slots.
     :param kwargs: Additional keyword arguments (unhandled)
 
     :returns: A parsed dataframe wrapper object
@@ -358,6 +361,9 @@ def parse_sssom_table(
         )
     )
 
+    if propagate:
+        propagate_condensed_slots(df, combine_meta)
+
     msdf = from_sssom_dataframe(df, prefix_map=converter, meta=combine_meta)
     return msdf
 
@@ -379,6 +385,7 @@ def parse_sssom_rdf(
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     serialisation: str = SSSOM_DEFAULT_RDF_SERIALISATION,
+    propagate: bool = True,
     **kwargs: Any,
     # mapping_predicates: Optional[List[str]] = None,
 ) -> MappingSetDataFrame:
@@ -406,6 +413,8 @@ def parse_sssom_rdf(
         ]
     )
     msdf = from_sssom_rdf(g, prefix_map=converter, meta=meta)
+    if propagate:
+        msdf.propagate()
     # df: pd.DataFrame = msdf.df
     # if mapping_predicates and not df.empty():
     #     msdf.df = df[df["predicate_id"].isin(mapping_predicates)]
@@ -416,6 +425,7 @@ def parse_sssom_json(
     file_path: Union[str, Path],
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
+    propagate: bool = True,
     **kwargs: Any,
 ) -> MappingSetDataFrame:
     """Parse a TSV to a :class:`MappingSetDocument` to a :class:`MappingSetDataFrame`."""
@@ -443,6 +453,8 @@ def parse_sssom_json(
     )
 
     msdf = from_sssom_json(jsondoc=jsondoc, prefix_map=converter, meta=meta)
+    if propagate:
+        msdf.propagate()
     return msdf
 
 
@@ -454,6 +466,7 @@ def parse_obographs_json(
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
+    propagate: bool = False,
 ) -> MappingSetDataFrame:
     """Parse an obographs file as a JSON object and translates it into a MappingSetDataFrame.
 
@@ -461,6 +474,7 @@ def parse_obographs_json(
     :param prefix_map: an optional prefix map
     :param meta: an optional dictionary of metadata elements
     :param mapping_predicates: an optional list of mapping predicates that should be extracted
+    :param propagate: If true, propagate all condensed slots.
 
     :returns: A SSSOM MappingSetDataFrame
     """
@@ -471,12 +485,15 @@ def parse_obographs_json(
     with open(file_path) as json_file:
         jsondoc = json.load(json_file)
 
-    return from_obographs(
+    msdf = from_obographs(
         jsondoc,
         prefix_map=converter,
         meta=meta,
         mapping_predicates=mapping_predicates,
     )
+    if propagate:
+        msdf.propagate()
+    return msdf
 
 
 def _get_prefix_map_and_metadata(
@@ -539,6 +556,7 @@ def parse_alignment_xml(
     prefix_map: ConverterHint = None,
     meta: Optional[MetadataType] = None,
     mapping_predicates: Optional[List[str]] = None,
+    propagate: bool = False,
 ) -> MappingSetDataFrame:
     """Parse a TSV -> MappingSetDocument -> MappingSetDataFrame."""
     raise_for_bad_path(file_path)
@@ -552,6 +570,8 @@ def parse_alignment_xml(
         meta=meta,
         mapping_predicates=mapping_predicates,
     )
+    if propagate:
+        msdf.propagate()
     return msdf
 
 

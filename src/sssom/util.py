@@ -342,31 +342,7 @@ class MappingSetDataFrame:
 
         :returns: The list of slots that were effectively propagated.
         """
-        schema = SSSOMSchemaView()
-        propagated = []
-
-        for slot in schema.propagatable_slots:
-            if slot not in self.metadata:  # Nothing to propagate
-                continue
-            is_present = slot in self.df.columns
-            if is_present and not fill_empty:
-                logging.warning(
-                    f"Not propagating value for '{slot}' because the slot is already set on individual records."
-                )
-                continue
-
-            if schema.view.get_slot(slot).multivalued:
-                value = "|".join(self.metadata.pop(slot))
-            else:
-                value = self.metadata.pop(slot)
-
-            if is_present:
-                self.df.loc[self.df[slot].eq("") | self.df[slot].isna(), slot] = value
-            else:
-                self.df[slot] = value
-            propagated.append(slot)
-
-        return propagated
+        return propagate_condensed_slots(self.df, self.metadata, fill_empty)
 
     def condense(self) -> List[str]:
         """Condense record-level slot values to the set whenever possible.
@@ -1304,6 +1280,51 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
 
     return return_df
+
+
+def propagate_condensed_slots(
+    df: pd.DataFrame, metadata: MetadataType, fill_empty: bool = False
+) -> List[str]:
+    """Propagate slot values from the set level down to individual records.
+
+    This function performs the same operation as the `MappingSetDataFrame#propagate()`
+    method. It is intended to allow propagating a mapping set before an instance of
+    the `MappingSetDataFrame` class can be obtained.
+
+    :param df: The DataFrame into which values should be propagated.
+    :param metadata: The dictionary of set-level metadata.
+    :param fill_empty: If True, propagation of a slot is allowed even if some individual records
+        already have a value for that slot. The set-level value will be propagated to all the
+        records for which the slot is empty. Note that (1) this is not spec-compliant behaviour,
+        and (2) this makes the operation non-reversible by a subsequent condensation.
+
+    :returns: The list of slots that were effectively propagated.
+    """
+    schema = SSSOMSchemaView()
+    propagated = []
+
+    for slot in schema.propagatable_slots:
+        if slot not in metadata:  # Nothing to propagate
+            continue
+        is_present = slot in df.columns
+        if is_present and not fill_empty:
+            logging.warning(
+                f"Not propagating value for '{slot}' because the slot is already set on individual records."
+            )
+            continue
+
+        if schema.view.get_slot(slot).multivalued:
+            value = "|".join(metadata.pop(slot))
+        else:
+            value = metadata.pop(slot)
+
+        if is_present:
+            df.loc[df[slot].eq("") | df[slot].isna(), slot] = value
+        else:
+            df[slot] = value
+        propagated.append(slot)
+
+    return propagated
 
 
 ExtensionLiteral = Literal["tsv", "csv"]

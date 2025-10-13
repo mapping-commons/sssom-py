@@ -524,7 +524,8 @@ class TestUtils(unittest.TestCase):
 
     def test_propagation_and_condensation(self) -> None:
         """Test propagating/condensing values of propagatable slots."""
-        msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv")
+        # Disable parsing-time propagation so that we can test it explicitly
+        msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv", propagate=False)
 
         propagated_slots = msdf.propagate()
         # creator_id is not a propagatable slot
@@ -565,7 +566,6 @@ class TestUtils(unittest.TestCase):
     def test_condensation_with_existing_set_values(self) -> None:
         """Test that condensation works as expected with the mapping set already contains values for the to-be-condensed slots."""
         msdf = parse_sssom_table(f"{data_dir}/propagatable.tsv")
-        msdf.propagate()
         # Following propagation, all records in msdf have the same
         # mapping_provider ("https://example.org/mappings/)"
 

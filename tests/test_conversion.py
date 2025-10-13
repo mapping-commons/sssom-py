@@ -43,7 +43,11 @@ class SSSOMReadWriteTestSuite(unittest.TestCase):
                         meta = yaml.safe_load(f)
                 else:
                     meta = None
-                msdf = read_func(test.filepath, prefix_map=test.prefix_map, meta=meta)
+                # Some test cases are in half-condensed state, so propagation
+                # has to be disabled
+                msdf = read_func(
+                    test.filepath, prefix_map=test.prefix_map, meta=meta, propagate=False
+                )
                 mdoc = to_mapping_set_document(msdf)
                 logging.info(f"Testing {test.filepath}")
                 self.assertEqual(
