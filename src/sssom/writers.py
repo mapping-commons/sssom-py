@@ -18,7 +18,6 @@ from typing import (
     TextIO,
     Tuple,
     Union,
-    cast,
 )
 
 import pandas as pd
@@ -27,17 +26,17 @@ import yaml
 from curies import Converter
 from deprecation import deprecated
 from jsonasobj2 import JsonObj
-from linkml_runtime.dumpers import JSONDumper, rdflib_dumper
-from linkml_runtime.utils.schemaview import SchemaView
+from linkml_runtime.dumpers import JSONDumper
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDF
 from sssom_schema import slots
 
 from sssom.validators import check_all_prefixes_in_curie_map
 
-from .constants import CURIE_MAP, PREDICATE_MODIFIER_NOT, SCHEMA_YAML, SSSOM_URI_PREFIX, PathOrIO
+from .constants import CURIE_MAP, PREDICATE_MODIFIER_NOT, SSSOM_URI_PREFIX, PathOrIO
 from .context import _load_sssom_context
 from .parsers import to_mapping_set_document
+from .rdf_internal import MappingSetRDFConverter
 from .util import (
     RDF_FORMATS,
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -372,16 +371,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 
 def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
-    doc = to_mapping_set_document(msdf)
-    graph = rdflib_dumper.as_rdf_graph(
-        element=doc.mapping_set,
-        schemaview=SchemaView(SCHEMA_YAML),
-        # TODO Use msdf.converter directly via https://github.com/linkml/linkml-runtime/pull/278
-        prefix_map=msdf.converter.bimap,
-    )
-    if hydrate:
-        _hydrate_axioms(graph, add_no_term_found=False, add_negative=False)
-    return cast(Graph, graph)
+    return MappingSetRDFConverter.to_rdf(msdf, hydrate=hydrate)
 
 
 EXAMPLE_SPARQL_QUERY = """\
