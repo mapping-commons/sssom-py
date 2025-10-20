@@ -13,6 +13,7 @@ from fastapi.testclient import TestClient
 from sssom import MappingSetDataFrame
 from sssom.constants import (
     CREATOR_ID,
+    MAPPING_JUSTIFICATION,
     OBJECT_ID,
     OBJECT_LABEL,
     PREDICATE_ID,
@@ -203,13 +204,15 @@ class TestWrite(unittest.TestCase):
             SUBJECT_ID,
             PREDICATE_ID,
             OBJECT_ID,
-            SEMAPV.ManualMappingCuration.value,
+            MAPPING_JUSTIFICATION,
         ]
         df = pd.DataFrame(rows, columns=columns)
         converter = curies.Converter.from_prefix_map(
             {
                 "DOID": "http://purl.obolibrary.org/obo/DOID_",
                 "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "semapv": "https://w3id.org/semapv/vocab/",
             }
         )
         msdf = MappingSetDataFrame(df, converter=converter)
