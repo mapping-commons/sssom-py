@@ -126,7 +126,7 @@ class TestConvert(unittest.TestCase):
                 "skos:exactMatch",
                 "HP:0003348",
                 SEMAPV.ManualMappingCuration.value,
-                "NOT",
+                "Not",
             ),
             (
                 "mesh:C563052",
@@ -158,6 +158,8 @@ class TestConvert(unittest.TestCase):
                 "UMLS": "https://uts.nlm.nih.gov/uts/umls/concept/",
                 "mesh": "http://id.nlm.nih.gov/mesh/",
                 "sssom": "https://w3id.org/sssom/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "semapv": "https://w3id.org/semapv/vocab/",
             }
         )
         msdf = MappingSetDataFrame(df, converter=converter)
