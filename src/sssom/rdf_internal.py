@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date
-from typing import Any, Dict, List, Optional, Set, Union, cast
+from typing import Any, Dict, List, Optional, Set, Type, Union, cast
 
 from curies import Converter
 from linkml_runtime.linkml_model.meta import SlotDefinition
@@ -284,6 +284,50 @@ class EnumValueConverter(ValueConverter):
             return Literal(value)
 
 
+class ValueConverterFactory(object):
+    """Helper object to create value converters."""
+
+    constructors: Dict[str, Type[ValueConverter]]
+
+    def __init__(self) -> None:
+        """Create a new instance."""
+        self.constructors = {
+            "date": DateValueConverter,
+            "double": DoubleValueConverter,
+            "string": StringValueConverter,
+            "ncname": StringValueConverter,
+            "EntityReference": EntityReferenceValueConverter,
+            "uriorcurie": EntityReferenceValueConverter,
+            "NonRelativeURI": NonRelativeURIValueConverter,
+        }
+
+    def create(
+        self, range_name: str, schema: SchemaView, curie_converter: Converter
+    ) -> ValueConverter:
+        """Create a new value converter.
+
+        :param range_name: The range for which a value converter is
+            wanted.
+        :param schema: The SSSOM LinkML schema.
+        :param curie_converter: The CURIE converter to use, for the
+            converters that need one.
+
+        :returns: A suitable value converter for the range.
+        """
+        ctor = self.constructors.get(range_name)
+        if ctor is not None:
+            if ctor == EntityReferenceValueConverter:
+                return EntityReferenceValueConverter(curie_converter)
+            else:
+                return ctor()
+        elif range_name.endswith("_enum"):
+            return EnumValueConverter(schema, range_name)
+        else:
+            # This should only happen if a brand new type of slot has
+            # been introduced in the SSSOM schema
+            raise NotImplementedError(f"Range {range_name} is not supported")
+
+
 class ObjectConverter(object):
     """Base class for conversion of SSSOM objects to and from RDF.
 
@@ -331,31 +375,20 @@ class ObjectConverter(object):
         self.schema = SSSOMSchemaView()
         self.curie_converter = curie_converter
 
-        str_value_converter = StringValueConverter()
-        er_value_converter = EntityReferenceValueConverter(curie_converter)
-        self.value_converters = {
-            "string": str_value_converter,
-            "ncname": str_value_converter,
-            "EntityReference": er_value_converter,
-            "uriorcurie": er_value_converter,
-            "NonRelativeURI": NonRelativeURIValueConverter(),
-            "date": DateValueConverter(),
-            "double": DoubleValueConverter(),
-            "entity_type_enum": EnumValueConverter(self.schema.view, "entity_type_enum"),
-            "sssom_version_enum": EnumValueConverter(self.schema.view, "sssom_version_enum"),
-            "mapping_cardinality_enum": EnumValueConverter(
-                self.schema.view, "mapping_cardinality_enum"
-            ),
-            "predicate_modifier_enum": EnumValueConverter(
-                self.schema.view, "predicate_modifier_enum"
-            ),
-        }
-
         self.slots_by_name = {}
         self.slots_by_uri = {}
+        ranges: List[SlotDefinition] = []
         for slot in self.schema.view.class_induced_slots(class_name):
             self.slots_by_name[slot.name] = slot
             self.slots_by_uri[self._get_slot_uri(slot)] = slot
+            ranges.append(slot.range)
+
+        self.value_converters = {}
+        factory = ValueConverterFactory()
+        for rng in set(ranges):
+            if self.schema.view.get_class(rng) is not None:
+                continue
+            self.value_converters[rng] = factory.create(rng, self.schema.view, curie_converter)
 
         self.name = self._fix_class_name(class_name)
         object_class = self.schema.view.get_class(class_name)
@@ -583,8 +616,8 @@ class ObjectConverter(object):
         """
         converter = self.value_converters.get(slot.range)
         if converter is None:
-            # This should only happen if a brand new type of slot has
-            # been introduced in the SSSOM schema
+            # This should have been caught already at init time by the
+            # ValueConverterFactory
             raise NotImplementedError(f"Unsupported range {slot.range} for {slot.name}")
         return converter
 
