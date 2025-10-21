@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Union, cast, override
+from typing import Any, Dict, List, Optional, Union, cast
 
 from curies import Converter
 from linkml_runtime.linkml_model.meta import PermissibleValue, SlotDefinition
@@ -19,6 +19,7 @@ from sssom_schema import (
     PredicateModifierEnum,
     SssomVersionEnum,
 )
+from typing_extensions import override
 
 from .constants import (
     ENTITY_TYPE_RDFS_LITERAL,
