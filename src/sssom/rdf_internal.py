@@ -3,22 +3,16 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Union, cast
+from datetime import date
+from typing import Any, Dict, List, Optional, Set, Union, cast
 
 from curies import Converter
-from linkml_runtime.linkml_model.meta import PermissibleValue, SlotDefinition
-from linkml_runtime.utils.enumerations import EnumDefinitionMeta
+from linkml_runtime.linkml_model.meta import SlotDefinition
+from linkml_runtime.utils.schemaview import SchemaView
 from pandas import DataFrame
 from rdflib import BNode, Graph, Literal, Node, URIRef
 from rdflib.namespace import RDF, XSD
-from sssom_schema import (
-    EntityReference,
-    EntityTypeEnum,
-    MappingCardinalityEnum,
-    PredicateModifierEnum,
-    SssomVersionEnum,
-)
+from sssom_schema import EntityReference
 from typing_extensions import override
 
 from .constants import (
@@ -93,7 +87,7 @@ class StringValueConverter(ValueConverter):
             return str(obj)
         elif isinstance(obj, Literal):
             if obj.datatype is None or obj.datatype == XSD.string:
-                return str(obj)
+                return str(obj.value)
 
         raise ValueError("Invalid node type (string literal expected)")
 
@@ -120,14 +114,14 @@ class NonRelativeURIValueConverter(ValueConverter):
             return str(obj)
         elif isinstance(obj, Literal):
             if obj.datatype is None or (obj.datatype == XSD.string or obj.datatype == XSD.anyURI):
-                return str(obj)
+                return str(obj.value)
 
         raise ValueError("Invalid node type (xsd:anyURI literal expected)")
 
     @override
     def to_rdf(self, value: str) -> Node:
         """Convert a SSSOM URI value into a RDF node."""
-        return URIRef(value)
+        return URIRef(str(value))
 
 
 class EntityReferenceValueConverter(ValueConverter):
@@ -162,7 +156,7 @@ class EntityReferenceValueConverter(ValueConverter):
             return self.prefix_manager.compress(str(obj), passthrough=True)
         elif isinstance(obj, Literal):
             if obj.datatype is None or obj.datatype == XSD.string:
-                return self.prefix_manager.compress(str(obj), passthrough=True)
+                return self.prefix_manager.compress(obj.value, passthrough=True)
 
         raise ValueError("Invalid node type (IRI expected)")
 
@@ -187,8 +181,8 @@ class DateValueConverter(ValueConverter):
     def from_rdf(self, obj: Node) -> date:
         """Convert a RDF node into a SSSOM date value."""
         if isinstance(obj, Literal) and obj.datatype == XSD.date:
-            # Let any ValueError raise to caller
-            return datetime.strptime(str(obj), "%Y-%m-%d").date()
+            # RDFLib guarantees us to return a date
+            return cast(date, obj.toPython())
 
         raise ValueError("Invalid node type (xsd:date literal expected)")
 
@@ -196,7 +190,7 @@ class DateValueConverter(ValueConverter):
     def to_rdf(self, value: Union[str, date]) -> Node:
         """Convert a SSSOM date value into a RDF node."""
         if isinstance(value, date):
-            return Literal(value.isoformat(), datatype=XSD.date)
+            return Literal(value, datatype=XSD.date)
         else:
             # Let's just hope the value is already in the shape
             # of an ISO-formatted date...
@@ -213,8 +207,8 @@ class DoubleValueConverter(ValueConverter):
     def from_rdf(self, obj: Node) -> float:
         """Convert a RDF node into a SSSOM double value."""
         if isinstance(obj, Literal) and obj.datatype == XSD.double:
-            # Let any ValueError raise to caller
-            return float(str(obj))
+            # RDFLib guarantees us to return a float
+            return cast(float, obj.toPython())
 
         raise ValueError("Invalid node type (xsd:double expected)")
 
@@ -235,56 +229,59 @@ class EnumValueConverter(ValueConverter):
     both the named resource form and the string literal form.
     """
 
-    enum: EnumDefinitionMeta
-    values_by_iri: Dict[URIRef, PermissibleValue]
+    allowed_values: Set[str]
+    values_by_uri: Dict[URIRef, str]
+    uris_by_value: Dict[str, URIRef]
 
-    def __init__(self, enum: EnumDefinitionMeta):
+    def __init__(self, schema: SchemaView, name: str):
         """Create a new instance.
 
         :param enum: The class that implements the enum type to convert
             to and from.
         """
-        self.enum = enum
         self.values_by_iri = {}
-        # There should be a better way to get the allowed values from
-        # the enum implementation...
-        for attr in dir(enum):
-            pv = getattr(enum, attr)
-            if isinstance(pv, PermissibleValue) and pv.meaning is not None:
-                # pv.meaning is already in expanded form
-                self.values_by_iri[URIRef(pv.meaning)] = pv
+        self.uris_by_value = {}
+
+        definition = schema.get_enum(name)
+        self.allowed_values = set(definition.permissible_values.keys())
+        for k, v in definition.permissible_values.items():
+            if v.meaning is not None:
+                uri = URIRef(schema.expand_curie(v.meaning))
+                self.values_by_iri[uri] = k
+                self.uris_by_value[k] = uri
 
     @override
     def from_rdf(self, obj: Node) -> Any:
         """Convert a RDF node into a SSSOM enum value."""
         if isinstance(obj, URIRef):
-            pv = self.values_by_iri.get(obj)
-            if pv is None:
+            value = self.values_by_iri.get(obj)
+            if value is None:
                 raise ValueError(f"Invalid enum value {obj}")
-            return str(self.enum(pv))
+            return value
         elif isinstance(obj, Literal):
             if obj.datatype is None or obj.datatype == XSD.string:
-                # Let any ValueError raise to the caller
-                return str(self.enum(obj.value))
+                if obj.value not in self.allowed_values:
+                    raise ValueError(f"Invalid enum value {obj}")
+                return obj.value
 
         raise ValueError("Invalid node type (IRI or string literal expected)")
 
     @override
     def to_rdf(self, value: Any) -> Node:
         """Convert a SSSOM enum value into a RDF node."""
-        if value is not self.enum:
-            # Assume the value is the text representation of the enum
-            # value. We do _not_ catch the possible ValueError here,
-            # because if the slot contains a value that is not, in fact,
-            # a permitted value for the slot, then something wring
-            # happened upstream of us (a set was constructed or accepted
-            # with invalid values) and it's not up to us to deal with
-            # the fallout.
-            value = self.enum(value)
-        if value.code.meaning is not None:
-            return URIRef(value.code.meaning)
+        # Make sure we have a _text_ value, regardless what the rest of
+        # SSSOM-Py can give us...
+        value = str(value)
+        uri = self.uris_by_value.get(value)
+        if uri is not None:
+            return uri
         else:
-            return Literal(value.code.text)
+            # We do _not_ check whether the value is a valid value for
+            # the enum. If it is not, then something wrong happened
+            # upstream of us (a set was constructed or accepted with
+            # invalid values) and it's not up to us to deal with the
+            # the fallout.
+            return Literal(value)
 
 
 class ObjectConverter(object):
@@ -344,10 +341,14 @@ class ObjectConverter(object):
             "NonRelativeURI": NonRelativeURIValueConverter(),
             "date": DateValueConverter(),
             "double": DoubleValueConverter(),
-            "entity_type_enum": EnumValueConverter(EntityTypeEnum),
-            "sssom_version_enum": EnumValueConverter(SssomVersionEnum),
-            "mapping_cardinality_enum": EnumValueConverter(MappingCardinalityEnum),
-            "predicate_modifier_enum": EnumValueConverter(PredicateModifierEnum),
+            "entity_type_enum": EnumValueConverter(self.schema.view, "entity_type_enum"),
+            "sssom_version_enum": EnumValueConverter(self.schema.view, "sssom_version_enum"),
+            "mapping_cardinality_enum": EnumValueConverter(
+                self.schema.view, "mapping_cardinality_enum"
+            ),
+            "predicate_modifier_enum": EnumValueConverter(
+                self.schema.view, "predicate_modifier_enum"
+            ),
         }
 
         self.slots_by_name = {}
