@@ -11,8 +11,7 @@ from linkml_runtime.linkml_model.meta import SlotDefinition
 from linkml_runtime.utils.schemaview import SchemaView
 from pandas import DataFrame
 from rdflib import BNode, Graph, Literal, Node, URIRef
-from rdflib.namespace import RDF, XSD
-from sssom_schema import EntityReference
+from rdflib.namespace import RDF, RDFS, XSD
 from typing_extensions import override
 
 from .constants import (
@@ -38,6 +37,21 @@ from .util import MappingSetDataFrame, sort_df_rows_columns
 TRIPLE = tuple[Node, Node, Node]
 MAPPINGS_IRI = URIRef(MAPPINGS, SSSOM_URI_PREFIX)
 EXTENSION_DEFINITION_IRI = URIRef(EXTENSION_DEFINITIONS, SSSOM_URI_PREFIX)
+
+
+class CurieConverterProvider(object):
+    """An interface for an object that can provide a CURIE converter.
+
+    We need this contraption because we have to create objects that
+    will need to use a CURIE converter at some point, but we want to
+    create such objects _before_ we get the converter -- because the
+    converter to use will be specific to a given MSDF or a given RDF
+    graph, which is not yet known at initialisation time.
+    """
+
+    def get(self) -> Converter:
+        """Get the CURIE converter."""
+        raise NotImplementedError
 
 
 class ValueConverter(object):
@@ -72,7 +86,64 @@ class ValueConverter(object):
         raise NotImplementedError
 
 
-class StringValueConverter(ValueConverter):
+class BaseStringValueConverter(ValueConverter):
+    """Converter for all string-based slots."""
+
+    primary_type: URIRef
+    allowed_types: Set[URIRef]
+
+    def __init__(
+        self,
+        primary_type: URIRef = XSD.string,
+        allowed_types: Optional[List[URIRef]] = None,
+    ):
+        """Create a new instance.
+
+        :param primary_type: The datatype used to represent the value in
+            RDF context, according to the SSSOM/RDF specification. A
+            value of `rdfs:Resource` means the value is represented as
+            a named resource rather than as a literal.
+        :param allowed_types: Additional RDF types that are acceptable
+            to represent the value in RDF context.
+        """
+        self.primary_type = primary_type
+        if allowed_types is not None:
+            self.allowed_types = set(allowed_types)
+        else:
+            self.allowed_types = set()
+
+    @override
+    def from_rdf(self, obj: Node) -> str:
+        """Convert a RDF node into a string-based value."""
+        if isinstance(obj, URIRef) and (
+            self.primary_type == RDFS.Resource or RDFS.Resource in self.allowed_types
+        ):
+            return str(obj)
+        elif isinstance(obj, Literal):
+            # A "naked" literal is a xsd:string literal
+            datatype = obj.datatype or XSD.string
+            if datatype == self.primary_type or datatype in self.allowed_types:
+                return str(obj.value)
+
+        if self.primary_type == RDFS.Resource:
+            msg = "Invalid node type (named resource expected)"
+        else:
+            msg = f"Invalid node type ({self.primary_type} literal expected)"
+        raise ValueError(msg)
+
+    @override
+    def to_rdf(self, value: str) -> Node:
+        """Convert a string-based value into a RDF node."""
+        if self.primary_type == RDFS.Resource:
+            return URIRef(value)
+        elif self.primary_type == XSD.string:
+            # Datatype is not needed for a xsd:string
+            return Literal(value)
+        else:
+            return Literal(value, datatype=self.primary_type)
+
+
+class StringValueConverter(BaseStringValueConverter):
     """Converter for string-typed slots.
 
     A string-typed slot is quite naturally represented by a string
@@ -80,24 +151,12 @@ class StringValueConverter(ValueConverter):
     we also accept a named resource when converting from RDF.
     """
 
-    @override
-    def from_rdf(self, obj: Node) -> str:
-        """Convert a RDF node into a SSSOM string value."""
-        if isinstance(obj, URIRef):
-            return str(obj)
-        elif isinstance(obj, Literal):
-            if obj.datatype is None or obj.datatype == XSD.string:
-                return str(obj.value)
-
-        raise ValueError("Invalid node type (string literal expected)")
-
-    @override
-    def to_rdf(self, value: str) -> Node:
-        """Convert a SSSOM string value into a RDF node."""
-        return Literal(str(value))
+    def __init__(self) -> None:
+        """Create a new instance."""
+        super().__init__(allowed_types=[RDFS.Resource])
 
 
-class NonRelativeURIValueConverter(ValueConverter):
+class NonRelativeURIValueConverter(BaseStringValueConverter):
     """Converter for SSSOM URI-typed slots.
 
     As par the SSSOM/RDF specification, a URI-typed slot is represented
@@ -107,24 +166,12 @@ class NonRelativeURIValueConverter(ValueConverter):
     with the LinkML-based loader).
     """
 
-    @override
-    def from_rdf(self, obj: Node) -> str:
-        """Convert a RDF node into a SSSOM URI value."""
-        if isinstance(obj, URIRef):
-            return str(obj)
-        elif isinstance(obj, Literal):
-            if obj.datatype is None or (obj.datatype == XSD.string or obj.datatype == XSD.anyURI):
-                return str(obj.value)
-
-        raise ValueError("Invalid node type (xsd:anyURI literal expected)")
-
-    @override
-    def to_rdf(self, value: str) -> Node:
-        """Convert a SSSOM URI value into a RDF node."""
-        return URIRef(str(value))
+    def __init__(self) -> None:
+        """Create a new instance."""
+        super().__init__(primary_type=RDFS.Resource, allowed_types=[XSD.string, XSD.anyURI])
 
 
-class EntityReferenceValueConverter(ValueConverter):
+class EntityReferenceValueConverter(BaseStringValueConverter):
     """Converter for EntityReference-typed slots.
 
     Entity references are represented as named resources in RDF, but we
@@ -136,38 +183,28 @@ class EntityReferenceValueConverter(ValueConverter):
     expanding them when converting to RDF.
     """
 
-    prefix_manager: Converter
+    cc_provider: CurieConverterProvider
 
-    def __init__(self, prefix_manager: Converter):
+    def __init__(self, cc_provider: CurieConverterProvider):
         """Create a new instance.
 
-        :param prefix_manager: The CURIEs converter to use for
-            expanding and compressing entity references.
+        :param cc_provider: An object that shall provide the CURIE
+            converter to use for CURIE expansion/contraction.
         """
-        self.prefix_manager = prefix_manager
+        super().__init__(primary_type=RDFS.Resource, allowed_types=[XSD.string])
+        self.cc_provider = cc_provider
 
     @override
     def from_rdf(self, obj: Node) -> str:
-        """Convert a RDF node into a SSSOM entity reference value."""
-        if isinstance(obj, URIRef):
-            # Pass-through because we should probably not assume
-            # that the CURIE converter will know how to compress
-            # every single IRI found in the graph
-            return self.prefix_manager.compress(str(obj), passthrough=True)
-        elif isinstance(obj, Literal):
-            if obj.datatype is None or obj.datatype == XSD.string:
-                return self.prefix_manager.compress(obj.value, passthrough=True)
-
-        raise ValueError("Invalid node type (IRI expected)")
+        """Convert a RDF node into an entity reference value."""
+        value = super().from_rdf(obj)
+        return self.cc_provider.get().compress(value, passthrough=True)
 
     @override
-    def to_rdf(self, value: Union[str, EntityReference]) -> Node:
-        """Convert a SSSOM entity reference value into a RDF node."""
-        # Pass-through because even though all entity references in a
-        # MappingSetDataFrame should really be in CURIE form, it happens
-        # frequently that they are not -- including in some of our own
-        # test cases. :(
-        return URIRef(self.prefix_manager.expand(str(value), passthrough=True))
+    def to_rdf(self, value: str) -> Node:
+        """Convert an entity reference value into a RDF node."""
+        value = self.cc_provider.get().expand(value, passthrough=True)
+        return super().to_rdf(value)
 
 
 class DateValueConverter(ValueConverter):
@@ -236,8 +273,8 @@ class EnumValueConverter(ValueConverter):
     def __init__(self, schema: SchemaView, name: str):
         """Create a new instance.
 
-        :param enum: The class that implements the enum type to convert
-            to and from.
+        :param schema: The SSSOM LinkML schema.
+        :param name: The name of the enum type.
         """
         self.values_by_iri = {}
         self.uris_by_value = {}
@@ -302,33 +339,38 @@ class ValueConverterFactory(object):
         }
 
     def create(
-        self, range_name: str, schema: SchemaView, curie_converter: Converter
-    ) -> ValueConverter:
+        self, range_name: str, schema: SchemaView, cc_provider: CurieConverterProvider
+    ) -> Optional[ValueConverter]:
         """Create a new value converter.
 
         :param range_name: The range for which a value converter is
             wanted.
         :param schema: The SSSOM LinkML schema.
-        :param curie_converter: The CURIE converter to use, for the
-            converters that need one.
+        :param cc_provider: The object that will provide the CURIE
+            converter to use, for the value converters that need one.
 
         :returns: A suitable value converter for the range.
         """
-        ctor = self.constructors.get(range_name)
-        if ctor is not None:
-            if ctor == EntityReferenceValueConverter:
-                return EntityReferenceValueConverter(curie_converter)
-            else:
-                return ctor()
-        elif range_name.endswith("_enum"):
+        if schema.get_class(range_name) is not None:
+            # This range is for objects, not scalar values
+            return None
+
+        if range_name.endswith("_enum"):
             return EnumValueConverter(schema, range_name)
+
+        ctor = self.constructors.get(range_name)
+        if ctor == EntityReferenceValueConverter:
+            # CURIE provider needed
+            return EntityReferenceValueConverter(cc_provider)
+        elif ctor is not None:
+            return ctor()
         else:
             # This should only happen if a brand new type of slot has
             # been introduced in the SSSOM schema
             raise NotImplementedError(f"Range {range_name} is not supported")
 
 
-class ObjectConverter(object):
+class ObjectConverter(CurieConverterProvider):
     """Base class for conversion of SSSOM objects to and from RDF.
 
     One instance of this class will handle the (de)serialisation of one
@@ -386,9 +428,9 @@ class ObjectConverter(object):
         self.value_converters = {}
         factory = ValueConverterFactory()
         for rng in set(ranges):
-            if self.schema.view.get_class(rng) is not None:
-                continue
-            self.value_converters[rng] = factory.create(rng, self.schema.view, curie_converter)
+            vc = factory.create(rng, self.schema.view, self)
+            if vc is not None:
+                self.value_converters[rng] = vc
 
         self.name = self._fix_class_name(class_name)
         object_class = self.schema.view.get_class(class_name)
@@ -396,6 +438,12 @@ class ObjectConverter(object):
             self.object_uri = URIRef(self.schema.view.expand_curie(object_class.class_uri))
         else:
             self.object_uri = URIRef(self.name, SSSOM_URI_PREFIX)
+
+    # CurieConverterProvider implementation
+    @override
+    def get(self) -> Converter:
+        """Get the CURIE converter."""
+        return self.curie_converter
 
     # Methods for conversion from RDF
 
