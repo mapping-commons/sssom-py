@@ -371,7 +371,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 
 def to_rdf_graph(msdf: MappingSetDataFrame, *, hydrate: bool = False) -> Graph:
     """Convert a mapping set dataframe to an RDF graph."""
-    return MappingSetRDFConverter.to_rdf(msdf, hydrate=hydrate)
+    return MappingSetRDFConverter().msdf_to_rdf(msdf, hydrate=hydrate)
 
 
 EXAMPLE_SPARQL_QUERY = """\

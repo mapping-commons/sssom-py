@@ -633,7 +633,7 @@ def from_sssom_rdf(
         )
     )
 
-    return MappingSetRDFConverter.from_rdf(g, curie_converter=converter, default_meta=combine_meta)
+    return MappingSetRDFConverter().msdf_from_rdf(g, cc=converter, meta=combine_meta)
 
 
 def from_sssom_json(
