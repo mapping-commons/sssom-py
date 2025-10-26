@@ -538,9 +538,9 @@ def _get_mapping_dict(
     # only if the value exists, is not NaN, and the key is in the schema's mapping slots.
     # The value could be a string or a list and is handled accordingly via _address_multivalued_slot().
 
-    mdict = {
+    mdict: dict[str, str | list[str]] = {
         k: _address_multivalued_slot(k, v)
-        for k, v in row.items()
+        for k, v in row.to_dict().items()
         if v and pd.notna(v) and k in mapping_slots
     }
 
@@ -1002,7 +1002,7 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
 
     mapping_slots = set(_get_sssom_schema_object().mapping_slots)
 
-    df.apply(
+    df.apply( # type:ignore
         lambda row: _add_valid_mapping_to_list(
             _get_mapping_dict(row, bad_attrs, mapping_slots), mapping_set.mappings
         ),

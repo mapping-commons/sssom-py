@@ -440,7 +440,8 @@ class MappingSetDataFrame:
 
         # We iterate over the records a first time to collect the different
         # objects mapped to each subject and vice versa
-        for _, row in self.df.iterrows():
+        for _, row_series in self.df.iterrows():
+            row = row_series.to_dict()
             if row.get(SUBJECT_ID) == NO_TERM_FOUND or row.get(OBJECT_ID) == NO_TERM_FOUND:
                 # Mappings to sssom:NoTermFound are ignored for cardinality computations
                 continue
@@ -455,7 +456,8 @@ class MappingSetDataFrame:
         # must not modify a row while we are iterating over the dataframe, we
         # collect the values in a separate array.
         cards = []
-        for _, row in self.df.iterrows():
+        for _, row_series in self.df.iterrows():
+            row = row_series.to_dict()
             # Special cases involving sssom:NoTermFound on either side
             if row.get(SUBJECT_ID) == NO_TERM_FOUND:
                 if row.get(OBJECT_ID) == NO_TERM_FOUND:
@@ -718,7 +720,6 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
         key = [SUBJECT_ID, OBJECT_ID]
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
-    dfmax: pd.DataFrame
     if not df.empty:
         dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
         max_conf: Dict[Tuple[str, ...], float] = {}
@@ -1197,7 +1198,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
-    max_confidence_df = combined_normalized_subset.groupby(TRIPLES_IDS, as_index=False)[
+    max_confidence_df = combined_normalized_subset.groupby(TRIPLES_IDS, as_index=False)[ # type:ignore
         CONFIDENCE
     ].max()
 
@@ -1267,14 +1268,14 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # This needs to happen because the columns in df
     # not in reconciled_df_subset will be NaN otherwise
     # which is incorrect.
-    reconciled_df = df.merge(
+    reconciled_df: pd.DataFrame = df.merge(
         reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
     ).fillna(df)
 
     if nan_df.empty:
         return_df = reconciled_df
     else:
-        return_df = reconciled_df.append(nan_df).drop_duplicates()
+        return_df = pd.concat([reconciled_df, nan_df]).drop_duplicates()
 
     if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)

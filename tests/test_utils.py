@@ -208,9 +208,9 @@ class TestIO(unittest.TestCase):
         msdf = parse_sssom_table(f"{data_dir}/asymmetric.tsv")
         inverted_df = invert_mappings(msdf.df, merge_inverted=False)
         self.assertEqual(len(inverted_df), len(msdf.df))
-        original_subject_labels = msdf.df["subject_label"].values
-        inverted_object_labels = inverted_df["object_label"].values
-        self.assertNotIn(False, original_subject_labels == inverted_object_labels)
+        original_subject_labels = msdf.df["subject_label"]
+        inverted_object_labels = inverted_df["object_label"]
+        self.assertTrue((original_subject_labels == inverted_object_labels).all())
 
 
 class TestUtils(unittest.TestCase):
