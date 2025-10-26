@@ -4,7 +4,7 @@ import hashlib
 import statistics
 import uuid
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, DefaultDict, Dict, List, Optional, Set
 
 import pandas as pd
 from sssom_schema import Mapping, MappingSet

@@ -1002,7 +1002,7 @@ def _get_mapping_set_from_df(df: pd.DataFrame, meta: Optional[MetadataType] = No
 
     mapping_slots = set(_get_sssom_schema_object().mapping_slots)
 
-    df.apply( # type:ignore
+    df.apply(  # type:ignore
         lambda row: _add_valid_mapping_to_list(
             _get_mapping_dict(row, bad_attrs, mapping_slots), mapping_set.mappings
         ),
