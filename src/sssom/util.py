@@ -426,7 +426,7 @@ class MappingSetDataFrame:
         # Helper function to transform a row into a string that represents
         # a subject (or object) in a given scope; `side` is either `subject`
         # or `object`.
-        def _to_string(row: dict[str, Any], side: str) -> str:
+        def _to_string(row: pd.Series, side: str) -> str:
             # We prepend a one-letter code (`L` or `E`) to the actual subject
             # or object so that literal and non-literal mapping records are
             # always distinguishable and can be counted separately.
@@ -440,8 +440,7 @@ class MappingSetDataFrame:
 
         # We iterate over the records a first time to collect the different
         # objects mapped to each subject and vice versa
-        for _, row_series in self.df.iterrows():
-            row = row_series.to_dict()
+        for _, row in self.df.iterrows():
             if row.get(SUBJECT_ID) == NO_TERM_FOUND or row.get(OBJECT_ID) == NO_TERM_FOUND:
                 # Mappings to sssom:NoTermFound are ignored for cardinality computations
                 continue
@@ -456,8 +455,7 @@ class MappingSetDataFrame:
         # must not modify a row while we are iterating over the dataframe, we
         # collect the values in a separate array.
         cards = []
-        for _, row_series in self.df.iterrows():
-            row = row_series.to_dict()
+        for _, row in self.df.iterrows():
             # Special cases involving sssom:NoTermFound on either side
             if row.get(SUBJECT_ID) == NO_TERM_FOUND:
                 if row.get(OBJECT_ID) == NO_TERM_FOUND:
