@@ -533,8 +533,8 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
         for j, v in row.items():
             logging.info(f"{i} x {j} = {v}")
             rows.append((v, i, j))
-    for row in sorted(rows, key=itemgetter(0)):
-        print(*row, sep="\t")
+    for rrow in sorted(rows, key=itemgetter(0)):
+        print(*rrow, sep="\t")
 
 
 @main.command()

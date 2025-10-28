@@ -326,19 +326,20 @@ class TestParse(unittest.TestCase):
             "mapping_justification",
         ]
         for idx, row in msdf.df.iterrows():
-            for k, v in row.items():
+            for k, v in row.to_dict().items():
+                xxx = imported_df.iloc[idx][k]  # type:ignore
                 if v == np.nan:
-                    self.assertTrue(math.isnan(imported_df.iloc[idx][k]))
+                    self.assertTrue(math.isnan(xxx))
                 else:
                     if k not in list_cols:
                         if v is np.nan:
-                            self.assertTrue(imported_df.iloc[idx][k] is v)
+                            self.assertTrue(xxx is v)
                         else:
-                            self.assertEqual(imported_df.iloc[idx][k], v)
+                            self.assertEqual(xxx, v)
                     elif k == "mapping_justification":
-                        self.assertEqual(imported_df.iloc[idx][k], v)
+                        self.assertEqual(xxx, v)
                     else:
-                        self.assertEqual(imported_df.iloc[idx][k], v)
+                        self.assertEqual(xxx, v)
 
     def test_parse_obographs_merged(self) -> None:
         """Test parsing OBO Graph JSON using custom prefix_map."""
