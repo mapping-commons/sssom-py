@@ -10,7 +10,7 @@ from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
-from typing import Any, Dict, Union, get_args
+from typing import Any, Dict, Union, cast, get_args
 from xml.dom import minidom
 
 import numpy as np
@@ -329,13 +329,13 @@ class TestParse(unittest.TestCase):
             CONFIDENCE: 0.7,
             MAPPING_DATE: date(2025, 10, 27),
         }
-        assert_dict_contains(self, expected_values, msdf.df.loc[0])
+        assert_dict_contains(self, expected_values, cast(pd.Series, msdf.df.loc[0]))
 
         msdf = parse_sssom_rdf(f"{test_data_dir}/pre-standard-rdf.ttl")
         self.assertEqual(msdf.metadata[MAPPING_SET_ID], "https://example.org/sets/standard-rdf")
         self.assertEqual(msdf.metadata[LICENSE], "https://creativecommons.org/licenses/by/4.0/")
         self.assertEqual(msdf.metadata[PUBLICATION_DATE], date(2025, 10, 28))
-        assert_dict_contains(self, expected_values, msdf.df.loc[0])
+        assert_dict_contains(self, expected_values, cast(pd.Series, msdf.df.loc[0]))
 
     def test_parse_rdf_with_record_id(self) -> None:
         """Test parsing a RDF file containing record IDs as named resources."""

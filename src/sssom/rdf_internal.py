@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Type, Union, cast
 from curies import Converter
 from linkml_runtime.linkml_model.meta import SlotDefinition
 from linkml_runtime.utils.schemaview import SchemaView
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from rdflib import BNode, Graph, Literal, Node, URIRef
 from rdflib.namespace import RDF, RDFS, XSD
 from typing_extensions import override
@@ -36,6 +36,7 @@ from .util import MappingSetDataFrame, sort_df_rows_columns
 __all__ = ["MappingSetRDFConverter"]
 
 TRIPLE = tuple[Node, Node, Node]
+DICT_OR_SERIES = Union[Dict[str, Any], Series]
 MAPPINGS_IRI = URIRef(MAPPINGS, SSSOM_URI_PREFIX)
 EXTENSION_DEFINITION_IRI = URIRef(EXTENSION_DEFINITIONS, SSSOM_URI_PREFIX)
 
@@ -563,7 +564,7 @@ class ObjectConverter(object):
     # Conversion to RDF
     #
 
-    def dict_to_rdf(self, g: Graph, obj: Dict[str, Any]) -> Node:
+    def dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
         """Export a SSSOM object to a RDF graph.
 
         :param g: The graph to export the object to.
@@ -576,10 +577,11 @@ class ObjectConverter(object):
         g.add(cast(TRIPLE, [subject, RDF.type, self.object_uri]))
 
         for k, v in obj.items():
-            if self._process_slot(g, subject, k, v):
+            key = str(k)
+            if self._process_slot(g, subject, key, v):
                 continue
 
-            slot = self.slots_by_name.get(k)
+            slot = self.slots_by_name.get(key)
             if slot is not None:
                 pred = self._get_slot_uri(slot)
                 converter = self._get_value_converter(slot)
@@ -591,8 +593,8 @@ class ObjectConverter(object):
                 else:
                     if not self._is_empty(v):
                         g.add(cast(TRIPLE, [subject, pred, converter.to_rdf(v)]))
-            elif not self._extension_to_rdf(g, subject, k, v):
-                logging.warning(f"Ignoring unexpected {k}={v} slot")
+            elif not self._extension_to_rdf(g, subject, key, v):
+                logging.warning(f"Ignoring unexpected {key}={v} slot")
 
         return subject
 
@@ -611,7 +613,7 @@ class ObjectConverter(object):
         """
         return value is None or (hasattr(value, "__len__") and len(value) == 0)
 
-    def _init_dict_to_rdf(self, g: Graph, obj: Dict[str, Any]) -> Node:
+    def _init_dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
         """Create the root node representing a SSSOM object.
 
         Subclasses should override this method to customize the way
@@ -897,7 +899,7 @@ class MappingSetRDFConverter(ObjectConverter):
         return g
 
     @override
-    def _init_dict_to_rdf(self, g: Graph, obj: Dict[str, Any]) -> Node:
+    def _init_dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
         if MAPPING_SET_ID in obj:
             return URIRef(obj[MAPPING_SET_ID])
         else:
@@ -926,7 +928,7 @@ class MappingSetRDFConverter(ObjectConverter):
         return done
 
     def _mapping_to_rdf(
-        self, g: Graph, subject: Node, mapping: Dict[str, Any], hydrate: bool
+        self, g: Graph, subject: Node, mapping: DICT_OR_SERIES, hydrate: bool
     ) -> None:
         mapping_node = self.mapping_converter.dict_to_rdf(g, mapping)
         g.add(cast(TRIPLE, [subject, MAPPINGS_IRI, mapping_node]))
@@ -979,7 +981,7 @@ class MappingConverter(ObjectConverter):
             dest[slot_name] = dest[slot_name] + "|" + value
 
     @override
-    def _init_dict_to_rdf(self, g: Graph, obj: Dict[str, Any]) -> Node:
+    def _init_dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
         if RECORD_ID in obj:
             return URIRef(self.ccp().expand(obj[RECORD_ID]))
         else:
