@@ -60,4 +60,5 @@ jobs:
         run: |
           poetry add "pandas<2.0.0"
           poetry add "numpy<1.24"
+          poetry add "scipy<1.16.3"
           poetry run tox -e py
