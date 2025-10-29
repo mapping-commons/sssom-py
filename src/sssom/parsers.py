@@ -39,7 +39,6 @@ from curies.dataframe import (
     get_filter_df_by_prefixes_index,
 )
 from linkml_runtime.loaders.json_loader import JSONLoader
-from linkml_runtime.loaders.rdflib_loader import RDFLibLoader
 from pandas.errors import EmptyDataError
 from rdflib import Graph
 from sssom_schema import EntityTypeEnum, Mapping, MappingSet
@@ -80,6 +79,7 @@ from sssom.constants import (
 )
 
 from .context import ConverterHint, _get_built_in_prefix_map, ensure_converter
+from .rdf_internal import MappingSetRDFConverter
 from .sssom_document import MappingSetDocument
 from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
@@ -617,24 +617,15 @@ def from_sssom_rdf(
     :returns: MappingSetDataFrame object
     """
     converter = ensure_converter(prefix_map)
-    mapping_set = cast(
-        MappingSet,
-        RDFLibLoader().load(
-            source=g,
-            target_class=MappingSet,
-            schemaview=_get_sssom_schema_object().view,
-            prefix_map=converter.bimap,
-            ignore_unmapped_predicates=True,
-        ),
-    )
 
     # The priority order for combining metadata is:
     #  1. Metadata appearing in the SSSOM document
     #  2. Metadata passed through ``meta`` to this function
     #  3. Default metadata
 
-    # As the Metadata appearing in the SSSOM document is already parsed by LinkML
-    # we only need to overwrite the metadata from 2 and 3 if it is not present
+    # We prepare a default dictionary with (2) and (3), which will be
+    # automatically combined with the metadata extracted from the RDF
+    # graph by the RDF converter.
     combine_meta = dict(
         ChainMap(
             meta or {},
@@ -642,9 +633,7 @@ def from_sssom_rdf(
         )
     )
 
-    _set_metadata_in_mapping_set(mapping_set, metadata=combine_meta, overwrite=False)
-    mdoc = MappingSetDocument(mapping_set=mapping_set, converter=converter)
-    return to_mapping_set_dataframe(mdoc)
+    return MappingSetRDFConverter().msdf_from_rdf(g, cc=converter, meta=combine_meta)
 
 
 def from_sssom_json(
