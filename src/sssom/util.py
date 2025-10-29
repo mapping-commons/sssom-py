@@ -426,7 +426,7 @@ class MappingSetDataFrame:
         # Helper function to transform a row into a string that represents
         # a subject (or object) in a given scope; `side` is either `subject`
         # or `object`.
-        def _to_string(row: dict[str, Any], side: str) -> str:
+        def _to_string(row: pd.Series, side: str) -> str:
             # We prepend a one-letter code (`L` or `E`) to the actual subject
             # or object so that literal and non-literal mapping records are
             # always distinguishable and can be counted separately.
@@ -718,7 +718,6 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
         key = [SUBJECT_ID, OBJECT_ID]
     else:
         key = [SUBJECT_ID, OBJECT_ID, PREDICATE_ID]
-    dfmax: pd.DataFrame
     if not df.empty:
         dfmax = df.groupby(key, as_index=False)[CONFIDENCE].apply(max).drop_duplicates()
         max_conf: Dict[Tuple[str, ...], float] = {}
@@ -1197,7 +1196,9 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
 
     # GroupBy and SELECT ONLY maximum confidence
     max_confidence_df: pd.DataFrame
-    max_confidence_df = combined_normalized_subset.groupby(TRIPLES_IDS, as_index=False)[
+    max_confidence_df = combined_normalized_subset.groupby(
+        TRIPLES_IDS, as_index=False
+    )[  # type:ignore
         CONFIDENCE
     ].max()
 
@@ -1267,14 +1268,14 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     # This needs to happen because the columns in df
     # not in reconciled_df_subset will be NaN otherwise
     # which is incorrect.
-    reconciled_df = df.merge(
+    reconciled_df: pd.DataFrame = df.merge(
         reconciled_df_subset, how="right", on=list(reconciled_df_subset.columns)
     ).fillna(df)
 
     if nan_df.empty:
         return_df = reconciled_df
     else:
-        return_df = reconciled_df.append(nan_df).drop_duplicates()
+        return_df = reconciled_df.append(nan_df).drop_duplicates()  # type:ignore
 
     if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)

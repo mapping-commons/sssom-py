@@ -208,7 +208,7 @@ def check_strict_curie_format(
 
     for column in entity_reference_slots:
         if column in msdf.df.columns:
-            for index, value in msdf.df[column].items():
+            for index, value in msdf.df[column].to_dict().items():
                 if pd.notna(value) and "|" in str(value):
                     message = f"{value} contains a pipe ('|') character (row {index + 1}, column '{column}')."
                     validation_results.append(
