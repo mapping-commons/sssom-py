@@ -4,12 +4,13 @@ import io
 import json
 import math
 import os
-import typing
 import unittest
 from collections import ChainMap
+from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
+from typing import Any, Dict, Union, cast, get_args
 from xml.dom import minidom
 
 import numpy as np
@@ -18,7 +19,25 @@ import yaml
 from curies import Converter
 from rdflib import Graph
 
-from sssom.constants import CURIE_MAP, get_default_metadata
+from sssom.constants import (
+    CONFIDENCE,
+    CURIE_MAP,
+    LICENSE,
+    MAPPING_CARDINALITY,
+    MAPPING_DATE,
+    MAPPING_JUSTIFICATION,
+    MAPPING_SET_ID,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    PREDICATE_ID,
+    PREDICATE_MODIFIER,
+    PUBLICATION_DATE,
+    RECORD_ID,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+    SUBJECT_TYPE,
+    get_default_metadata,
+)
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
@@ -29,6 +48,7 @@ from sssom.parsers import (
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
+    parse_sssom_rdf,
     parse_sssom_table,
     split_dataframe_by_prefix,
 )
@@ -36,6 +56,19 @@ from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
 from tests.constants import data_dir as test_data_dir
 from tests.constants import test_out_dir
+
+
+def assert_dict_contains(
+    test: unittest.TestCase,
+    expected_values: Dict[str, Any],
+    actual_values: Union[Dict[str, Any], pd.Series],
+) -> None:
+    """Check that a dictionary contains expected values."""
+    for k, v in expected_values.items():
+        if isinstance(v, float):
+            test.assertTrue(np.isclose(v, actual_values[k]))
+        else:
+            test.assertEqual(v, actual_values[k])
 
 
 class TestParse(unittest.TestCase):
@@ -276,6 +309,38 @@ class TestParse(unittest.TestCase):
             141,
             f"{self.rdf_graph_file} has the wrong number of mappings.",
         )
+
+    def test_parse_standard_and_old_style_rdf(self) -> None:
+        """Test parsing a RDF conforming to pre-standard and standard SSSOM/RDF serialisation."""
+        msdf = parse_sssom_rdf(f"{test_data_dir}/standard-rdf.ttl")
+        self.assertEqual(msdf.metadata[MAPPING_SET_ID], "https://example.org/sets/standard-rdf")
+        self.assertEqual(msdf.metadata[LICENSE], "https://creativecommons.org/licenses/by/4.0/")
+        self.assertEqual(msdf.metadata[PUBLICATION_DATE], date(2025, 10, 28))
+        expected_values = {
+            SUBJECT_ID: "ORGENT:0001",
+            OBJECT_ID: "COMENT:0011",
+            PREDICATE_ID: "skos:closeMatch",
+            MAPPING_JUSTIFICATION: "semapv:ManualMappingCuration",
+            SUBJECT_LABEL: "alice",
+            OBJECT_LABEL: "alpha",
+            SUBJECT_TYPE: "owl class",
+            MAPPING_CARDINALITY: "1:1",
+            PREDICATE_MODIFIER: "Not",
+            CONFIDENCE: 0.7,
+            MAPPING_DATE: date(2025, 10, 27),
+        }
+        assert_dict_contains(self, expected_values, cast(pd.Series, msdf.df.loc[0]))
+
+        msdf = parse_sssom_rdf(f"{test_data_dir}/pre-standard-rdf.ttl")
+        self.assertEqual(msdf.metadata[MAPPING_SET_ID], "https://example.org/sets/standard-rdf")
+        self.assertEqual(msdf.metadata[LICENSE], "https://creativecommons.org/licenses/by/4.0/")
+        self.assertEqual(msdf.metadata[PUBLICATION_DATE], date(2025, 10, 28))
+        assert_dict_contains(self, expected_values, cast(pd.Series, msdf.df.loc[0]))
+
+    def test_parse_rdf_with_record_id(self) -> None:
+        """Test parsing a RDF file containing record IDs as named resources."""
+        msdf = parse_sssom_rdf(f"{test_data_dir}/record-id-as-node.ttl")
+        self.assertEqual("mymaps:0001", msdf.df.loc[0][RECORD_ID])
 
     def test_parse_sssom_json(self) -> None:
         """Test parsing JSON."""
@@ -577,7 +642,7 @@ class TestSplit(unittest.TestCase):
 
         sdf = pd.DataFrame(subrows, columns=columns)
 
-        for method in [None, *typing.get_args(SplitMethod)]:
+        for method in [None, *get_args(SplitMethod)]:
             with self.subTest(method=method):
                 self.assert_msdf(msdf, sdf, method)
 

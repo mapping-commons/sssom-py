@@ -1,0 +1,25 @@
+@prefix COMENT: <https://example.com/entities/> .
+@prefix ORGENT: <https://example.org/entities/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix semapv: <https://w3id.org/semapv/vocab/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.org/sets/standard-rdf> a sssom:MappingSet;
+  dcterms:issued "2025-10-28"^^xsd:date;
+  dcterms:license <https://creativecommons.org/licenses/by/4.0/>;
+  sssom:mappings [ a owl:Axiom;
+      dcterms:created "2025-10-27"^^xsd:date;
+      owl:annotatedProperty skos:closeMatch;
+      owl:annotatedSource ORGENT:0001;
+      owl:annotatedTarget COMENT:0011;
+      sssom:confidence 7.0E-1;
+      sssom:mapping_cardinality "1:1";
+      sssom:mapping_justification semapv:ManualMappingCuration;
+      sssom:object_label "alpha";
+      sssom:predicate_modifier sssom:NegatedPredicate;
+      sssom:subject_label "alice";
+      sssom:subject_type owl:Class
+    ] .

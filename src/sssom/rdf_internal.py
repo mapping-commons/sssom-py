@@ -966,7 +966,7 @@ class MappingConverter(ObjectConverter):
         # If the root node is a named resource, then it is interpreted
         # as the RECORD_ID for the mapping.
         if isinstance(subject, URIRef):
-            dest[RECORD_ID] = str(subject)
+            dest[RECORD_ID] = self.ccp().compress(str(subject), passthrough=True)
         elif not isinstance(subject, BNode):
             raise ValueError(f"Invalid node type for a {self.name} object")
 
