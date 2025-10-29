@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date
-from typing import Any, Callable, Dict, List, Optional, Set, Type, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Set, Type, TypeAlias, Union, cast
 
 from curies import Converter
 from linkml_runtime.linkml_model.meta import SlotDefinition
@@ -35,12 +35,12 @@ from .util import MappingSetDataFrame, sort_df_rows_columns
 
 __all__ = ["MappingSetRDFConverter"]
 
-TRIPLE = tuple[Node, Node, Node]
-DICT_OR_SERIES = Union[Dict[str, Any], Series]
+Triple: TypeAlias = tuple[Node, Node, Node]
+DictOrSeries: TypeAlias = Union[Dict[str, Any], Series]
 MAPPINGS_IRI = URIRef(MAPPINGS, SSSOM_URI_PREFIX)
 EXTENSION_DEFINITION_IRI = URIRef(EXTENSION_DEFINITIONS, SSSOM_URI_PREFIX)
 
-CurieConverterProvider = Callable[[], Converter]
+CurieConverterProvider: TypeAlias = Callable[[], Converter]
 """A function that can provide a CURIE converter.
 
 We need this contraption because we have to create objects that will
@@ -51,7 +51,7 @@ known at initialisation time.
 """
 
 
-class ValueConverter(object):
+class ValueConverter:
     """Base class for all value converters.
 
     A value converter converts a slot value to or from its RDF
@@ -318,7 +318,7 @@ class EnumValueConverter(ValueConverter):
             return Literal(value)
 
 
-class ValueConverterFactory(object):
+class ValueConverterFactory:
     """Helper object to create value converters."""
 
     constructors: Dict[str, Type[ValueConverter]]
@@ -368,7 +368,7 @@ class ValueConverterFactory(object):
             raise NotImplementedError(f"Range {range_name} is not supported")
 
 
-class ObjectConverter(object):
+class ObjectConverter:
     """Base class for conversion of SSSOM objects to and from RDF.
 
     One instance of this class will handle the (de)serialisation of one
@@ -417,7 +417,7 @@ class ObjectConverter(object):
         # Prepare the slot tables...
         self.slots_by_name = {}
         self.slots_by_uri = {}
-        ranges: List[SlotDefinition] = []
+        ranges: List[str] = []
         for slot in self.schema.view.class_induced_slots(class_name):
             self.slots_by_name[slot.name] = slot
             self.slots_by_uri[self._get_slot_uri(slot)] = slot
@@ -477,7 +477,7 @@ class ObjectConverter(object):
                     raise ValueError(f"Invalid type {obj} for a {self.name} object")
                 continue
 
-            if self._process_triple(g, cast(TRIPLE, [subject, pred, obj]), dest):
+            if self._process_triple(g, cast(Triple, [subject, pred, obj]), dest):
                 continue
 
             slot = self.slots_by_uri.get(pred)
@@ -490,7 +490,7 @@ class ObjectConverter(object):
                     self._multivalue_from_rdf(value, slot.name, dest)
                 else:
                     dest[slot.name] = value
-            elif not self._extension_from_rdf(cast(TRIPLE, [subject, pred, obj]), dest):
+            elif not self._extension_from_rdf(cast(Triple, [subject, pred, obj]), dest):
                 logging.warning(f"Ignoring unexpected triple {subject} {pred} {obj}")
 
         return dest
@@ -516,7 +516,7 @@ class ObjectConverter(object):
         if not isinstance(subject, BNode):
             raise ValueError(f"Invalid node type for a {self.name} object")
 
-    def _process_triple(self, g: Graph, triple: TRIPLE, dest: Dict[str, Any]) -> bool:
+    def _process_triple(self, g: Graph, triple: Triple, dest: Dict[str, Any]) -> bool:
         """Process an individual triple associated with a SSSOM object.
 
         This method is intended to allow subclasses to implement custom
@@ -532,7 +532,7 @@ class ObjectConverter(object):
         """
         return False
 
-    def _extension_from_rdf(self, triple: TRIPLE, dest: Dict[str, Any]) -> bool:
+    def _extension_from_rdf(self, triple: Triple, dest: Dict[str, Any]) -> bool:
         """Process a triple that may represent an extension slot.
 
         :param triple: The triple to process.
@@ -564,7 +564,7 @@ class ObjectConverter(object):
     # Conversion to RDF
     #
 
-    def dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
+    def dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
         """Export a SSSOM object to a RDF graph.
 
         :param g: The graph to export the object to.
@@ -574,7 +574,7 @@ class ObjectConverter(object):
         :returns: The root node representing the exporting object.
         """
         subject = self._init_dict_to_rdf(g, obj)
-        g.add(cast(TRIPLE, [subject, RDF.type, self.object_uri]))
+        g.add(cast(Triple, [subject, RDF.type, self.object_uri]))
 
         for k, v in obj.items():
             key = str(k)
@@ -589,10 +589,10 @@ class ObjectConverter(object):
                     for value in self._get_multi_values(v):
                         if not self._is_empty(value):
                             o = converter.to_rdf(value)
-                            g.add(cast(TRIPLE, [subject, pred, o]))
+                            g.add(cast(Triple, [subject, pred, o]))
                 else:
                     if not self._is_empty(v):
-                        g.add(cast(TRIPLE, [subject, pred, converter.to_rdf(v)]))
+                        g.add(cast(Triple, [subject, pred, converter.to_rdf(v)]))
             elif not self._extension_to_rdf(g, subject, key, v):
                 logging.warning(f"Ignoring unexpected {key}={v} slot")
 
@@ -613,7 +613,7 @@ class ObjectConverter(object):
         """
         return value is None or (hasattr(value, "__len__") and len(value) == 0)
 
-    def _init_dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
+    def _init_dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
         """Create the root node representing a SSSOM object.
 
         Subclasses should override this method to customize the way
@@ -842,7 +842,7 @@ class MappingSetRDFConverter(ObjectConverter):
             dest[EXTENSION_DEFINITIONS] = extension_definitions
 
     @override
-    def _process_triple(self, g: Graph, triple: TRIPLE, dest: Dict[str, Any]) -> bool:
+    def _process_triple(self, g: Graph, triple: Triple, dest: Dict[str, Any]) -> bool:
         done = False
         if triple[1] == MAPPINGS_IRI:
             mapping = self.mapping_converter.dict_from_rdf(g, triple[2])
@@ -899,7 +899,7 @@ class MappingSetRDFConverter(ObjectConverter):
         return g
 
     @override
-    def _init_dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
+    def _init_dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
         if MAPPING_SET_ID in obj:
             return URIRef(obj[MAPPING_SET_ID])
         else:
@@ -914,7 +914,7 @@ class MappingSetRDFConverter(ObjectConverter):
         elif name == EXTENSION_DEFINITIONS:
             for ed in value:
                 ed_node = self.extension_definition_converter.dict_to_rdf(g, ed)
-                g.add(cast(TRIPLE, [subject, EXTENSION_DEFINITION_IRI, ed_node]))
+                g.add(cast(Triple, [subject, EXTENSION_DEFINITION_IRI, ed_node]))
             done = True
         elif name == MAPPINGS:
             # We don't really expect to have any mappings here, as the
@@ -928,10 +928,10 @@ class MappingSetRDFConverter(ObjectConverter):
         return done
 
     def _mapping_to_rdf(
-        self, g: Graph, subject: Node, mapping: DICT_OR_SERIES, hydrate: bool
+        self, g: Graph, subject: Node, mapping: DictOrSeries, hydrate: bool
     ) -> None:
         mapping_node = self.mapping_converter.dict_to_rdf(g, mapping)
-        g.add(cast(TRIPLE, [subject, MAPPINGS_IRI, mapping_node]))
+        g.add(cast(Triple, [subject, MAPPINGS_IRI, mapping_node]))
 
         if hydrate:
             subject_id = mapping.get(SUBJECT_ID)
@@ -951,7 +951,7 @@ class MappingSetRDFConverter(ObjectConverter):
                 subject_ref = URIRef(self.curie_converter.expand(subject_id))
                 pred_ref = URIRef(self.curie_converter.expand(predicate_id))
                 object_ref = URIRef(self.curie_converter.expand(object_id))
-                g.add(cast(TRIPLE, [subject_ref, pred_ref, object_ref]))
+                g.add(cast(Triple, [subject_ref, pred_ref, object_ref]))
 
 
 class MappingConverter(ObjectConverter):
@@ -981,7 +981,7 @@ class MappingConverter(ObjectConverter):
             dest[slot_name] = dest[slot_name] + "|" + value
 
     @override
-    def _init_dict_to_rdf(self, g: Graph, obj: DICT_OR_SERIES) -> Node:
+    def _init_dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
         if RECORD_ID in obj:
             return URIRef(self.ccp().expand(obj[RECORD_ID]))
         else:
