@@ -446,7 +446,7 @@ class ObjectConverter:
     #
 
     def dict_from_rdf(
-        self, g: Graph, subject: Node, dest: Optional[Dict[str, Any]] = None
+        self, graph: Graph, subject: Node, dest: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Parse a SSSOM object from a RDF node.
 
@@ -454,7 +454,7 @@ class ObjectConverter:
         constructs a dictionary from all the triples where the node is
         the subject.
 
-        :param g: The graph to parse the object from.
+        :param graph: The graph to parse the object from.
         :param subject: The root node of the object to extract.
         :param dest: The dictionary into which the parsed object will be
             stored, if specified. Client code may use this argument to
@@ -470,16 +470,16 @@ class ObjectConverter:
         """
         if dest is None:
             dest = {}
-        self._init_dict_from_rdf(g, subject, dest)
+        self._init_dict_from_rdf(graph, subject, dest)
 
-        for pred, obj in g.predicate_objects(subject):
+        for pred, obj in graph.predicate_objects(subject):
             pred = cast(URIRef, pred)
             if pred == RDF.type:
                 if obj != self.object_uri:
                     raise ValueError(f"Invalid type {obj} for a {self.name} object")
                 continue
 
-            if self._process_triple(g, cast(Triple, [subject, pred, obj]), dest):
+            if self._process_triple(graph, cast(Triple, [subject, pred, obj]), dest):
                 continue
 
             slot = self.slots_by_uri.get(pred)
@@ -499,7 +499,7 @@ class ObjectConverter:
 
     # Helper methods for conversion from RDF
 
-    def _init_dict_from_rdf(self, g: Graph, subject: Node, dest: Dict[str, Any]) -> None:
+    def _init_dict_from_rdf(self, graph: Graph, subject: Node, dest: Dict[str, Any]) -> None:
         """Initialize a dictionary representing a parsed object.
 
         This method is used to check that the subject node is of a
@@ -508,7 +508,7 @@ class ObjectConverter:
         any additional specific operations at the beginning of the
         conversion.
 
-        :param g: The graph to parse the object from.
+        :param graph: The graph to parse the object from.
         :param subject: The root node of the object to extract.
         :param dest: The dictionary in which to store the parsed object.
 
@@ -518,14 +518,14 @@ class ObjectConverter:
         if not isinstance(subject, BNode):
             raise ValueError(f"Invalid node type for a {self.name} object")
 
-    def _process_triple(self, g: Graph, triple: Triple, dest: Dict[str, Any]) -> bool:
+    def _process_triple(self, graph: Graph, triple: Triple, dest: Dict[str, Any]) -> bool:
         """Process an individual triple associated with a SSSOM object.
 
         This method is intended to allow subclasses to implement custom
         processing of some RDF triples, before letting the triple being
         handled by the common logic in the `dict_from_rdf` method.
 
-        :param g: The graph to parse the object from.
+        :param graph: The graph to parse the object from.
         :param triple: The triple to process.
         :param dest: The dictionary in which to store the parsed object.
 
@@ -567,21 +567,21 @@ class ObjectConverter:
     # Conversion to RDF
     #
 
-    def dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
+    def dict_to_rdf(self, graph: Graph, obj: DictOrSeries) -> Node:
         """Export a SSSOM object to a RDF graph.
 
-        :param g: The graph to export the object to.
+        :param graph: The graph to export the object to.
         :param obj: The dictionary representing the SSSOM object to
             export.
 
         :returns: The root node representing the exporting object.
         """
-        subject = self._init_dict_to_rdf(g, obj)
-        g.add(cast(Triple, [subject, RDF.type, self.object_uri]))
+        subject = self._init_dict_to_rdf(graph, obj)
+        graph.add(cast(Triple, [subject, RDF.type, self.object_uri]))
 
         for k, v in obj.items():
             key = str(k)
-            if self._process_slot(g, subject, key, v):
+            if self._process_slot(graph, subject, key, v):
                 continue
 
             slot = self.slots_by_name.get(key)
@@ -592,11 +592,11 @@ class ObjectConverter:
                     for value in self._get_multi_values(v):
                         if not self._is_empty(value):
                             o = converter.to_rdf(value)
-                            g.add(cast(Triple, [subject, pred, o]))
+                            graph.add(cast(Triple, [subject, pred, o]))
                 else:
                     if not self._is_empty(v):
-                        g.add(cast(Triple, [subject, pred, converter.to_rdf(v)]))
-            elif not self._extension_to_rdf(g, subject, key, v):
+                        graph.add(cast(Triple, [subject, pred, converter.to_rdf(v)]))
+            elif not self._extension_to_rdf(graph, subject, key, v):
                 logging.warning(f"Ignoring unexpected {key}={v} slot")
 
         return subject
@@ -616,23 +616,29 @@ class ObjectConverter:
         """
         return value is None or (hasattr(value, "__len__") and len(value) == 0)
 
-    def _init_dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
+    def _init_dict_to_rdf(self, graph: Graph, obj: DictOrSeries) -> Node:
         """Create the root node representing a SSSOM object.
 
         Subclasses should override this method to customize the way
         their SSSOM object is represented in RDF. The default behaviour
         is to represent the object as a blank node.
+
+        :param graph: The graph the object is exported to.
+        :param obj: The dictionary representing the SSSOM object to
+            export.
+
+        :returns: The node representing the exported object.
         """
         return BNode()
 
-    def _process_slot(self, g: Graph, subject: Node, name: str, value: Any) -> bool:
+    def _process_slot(self, graph: Graph, subject: Node, name: str, value: Any) -> bool:
         """Process an individual slot for RDF export.
 
         This method is intended to allow subclasses to implement custom
         processing to export some SSSOM slots, before letting the slot
         being handled by the common logic in the `dict_to_rdf` method.
 
-        :param g: The graph the object is exported to.
+        :param graph: The graph the object is exported to.
         :param subject: The node representing the exported object.
         :param name: The name of the slot to process.
         :param value: The value of the slot:
@@ -642,10 +648,10 @@ class ObjectConverter:
         """
         return False
 
-    def _extension_to_rdf(self, g: Graph, subject: Node, name: str, value: Any) -> bool:
+    def _extension_to_rdf(self, graph: Graph, subject: Node, name: str, value: Any) -> bool:
         """Export an extension slot to RDF.
 
-        :param g: The graph to export to.
+        :param graph: The graph to export to.
         :param subject: The node representing the exported object.
         :param name: The name of the extension slot.
         :param value: The value of the extension slot.
@@ -786,34 +792,37 @@ class MappingSetRDFConverter(ObjectConverter):
     #
 
     def msdf_from_rdf(
-        self, g: Graph, cc: Optional[Converter] = None, meta: Optional[Dict[str, Any]] = None
+        self,
+        graph: Graph,
+        curie_converter: Optional[Converter] = None,
+        meta: Optional[Dict[str, Any]] = None,
     ) -> MappingSetDataFrame:
         """Extract a MappingSetDataFrame from a RDF graph.
 
         This is the main method intended for use by client code for RDF
         parsing.
 
-        :param g: The graph to parse from.
-        :param cc: The CURIE converter to use for all CURIE expansion
-            or contraction operations. If not specified, a converter
-            based on the namespaces declared within the graph will be
-            used instead. This is the converter that will be associated
-            with the returned MappingSetDataFrame object.
+        :param graph: The graph to parse from.
+        :param curie_converter: The CURIE converter to use for all CURIE
+            expansion or contraction operations. If not specified, a
+            converter based on the namespaces declared within the graph
+            will be used instead. This is the converter that will be
+            associated with the returned MappingSetDataFrame object.
         :param meta: Default metadata to use, if any.
 
         :returns: The first MappingSetDataFrame found in the graph.
         """
-        if cc is None:
-            cc = Converter.from_rdflib(g)
-        self.curie_converter = cc
+        if curie_converter is None:
+            curie_converter = Converter.from_rdflib(graph)
+        self.curie_converter = curie_converter
 
-        sets = [s for s in g.subjects(RDF.type, self.object_uri)]
+        sets = [s for s in graph.subjects(RDF.type, self.object_uri)]
         if len(sets) == 0:
             raise Exception("No mapping set in graph")
         elif len(sets) > 1:
             logging.warning("More than one mapping set in graph, ignoring supernumerary sets")
 
-        meta = self.dict_from_rdf(g, sets[0], dest=meta)
+        meta = self.dict_from_rdf(graph, sets[0], dest=meta)
         if MAPPINGS in meta:
             # dict_from_rdf returns a dictionary containing everything,
             # including the mappings. We must take the mappings out and
@@ -824,10 +833,10 @@ class MappingSetRDFConverter(ObjectConverter):
             # Empty set?
             df = DataFrame()
 
-        return MappingSetDataFrame.with_converter(df=df, metadata=meta, converter=cc)
+        return MappingSetDataFrame.with_converter(df=df, metadata=meta, converter=curie_converter)
 
     @override
-    def _init_dict_from_rdf(self, g: Graph, subject: Node, dest: Dict[str, Any]) -> None:
+    def _init_dict_from_rdf(self, graph: Graph, subject: Node, dest: Dict[str, Any]) -> None:
         # A mapping set can (and in fact *should*) be represented by a
         # named resource, which is then interpreted as the value of the
         # MAPPING_SET_ID slot.
@@ -839,17 +848,17 @@ class MappingSetRDFConverter(ObjectConverter):
         # Extension definitions should be processed early on, so that we
         # have them at hand when we'll process the individual triples.
         extension_definitions: List[Dict[str, Any]] = []
-        for ed_node in g.objects(subject, EXTENSION_DEFINITION_IRI):
-            ed = self.extension_definition_converter.dict_from_rdf(g, ed_node)
+        for ed_node in graph.objects(subject, EXTENSION_DEFINITION_IRI):
+            ed = self.extension_definition_converter.dict_from_rdf(graph, ed_node)
             extension_definitions.append(ed)
         if len(extension_definitions) > 0:
             dest[EXTENSION_DEFINITIONS] = extension_definitions
 
     @override
-    def _process_triple(self, g: Graph, triple: Triple, dest: Dict[str, Any]) -> bool:
+    def _process_triple(self, graph: Graph, triple: Triple, dest: Dict[str, Any]) -> bool:
         done = False
         if triple[1] == MAPPINGS_IRI:
-            mapping = self.mapping_converter.dict_from_rdf(g, triple[2])
+            mapping = self.mapping_converter.dict_from_rdf(graph, triple[2])
             if MAPPINGS not in dest:
                 dest[MAPPINGS] = [mapping]
             else:
@@ -868,8 +877,8 @@ class MappingSetRDFConverter(ObjectConverter):
     def msdf_to_rdf(
         self,
         msdf: MappingSetDataFrame,
-        g: Optional[Graph] = None,
-        cc: Optional[Converter] = None,
+        graph: Optional[Graph] = None,
+        curie_converter: Optional[Converter] = None,
         hydrate: Optional[bool] = None,
     ) -> Graph:
         """Export a MappingSetDataFrame into a RDF graph.
@@ -878,47 +887,49 @@ class MappingSetRDFConverter(ObjectConverter):
         export.
 
         :param msdf: The MappingSetDataFrame to export.
-        :param g: The graph to export to. If not given a new graph will
-            be created.
-        :param cc: The CURIE converter to use for all CURIE expansion or
-            contraction operations. If not given, the converter bound to
-            the MappingSetDataFrame will be used instead.
+        :param graph: The graph to export to. If not given a new graph
+            will be created.
+        :param curie_converter: The CURIE converter to use for all CURIE
+            expansion or contraction operations. If not given, the
+            converter bound to the MappingSetDataFrame will be used
+            instead.
         :param hydrate: Whether to generate "direct triples" for each
             mapping in the MappingSetDataFrame.
 
         :returns: The RDF graph with the exported MappingSetDataFrame.
-            This will be the same object as the `g` argument, if given.
+            This will be the same object as the `graph` argument, if
+            given.
         """
-        if g is None:
-            g = Graph()
-        self.curie_converter = cc or msdf.converter
+        if graph is None:
+            graph = Graph()
+        self.curie_converter = curie_converter or msdf.converter
         for k, v in self.curie_converter.bimap.items():
-            g.namespace_manager.bind(k, v)
+            graph.namespace_manager.bind(k, v)
         if hydrate is None:
             hydrate = self.hydrate
-        ms_node = self.dict_to_rdf(g, msdf.metadata)
+        ms_node = self.dict_to_rdf(graph, msdf.metadata)
         for _, row in msdf.df.iterrows():
-            self._mapping_to_rdf(g, ms_node, row, hydrate)
+            self._mapping_to_rdf(graph, ms_node, row, hydrate)
 
-        return g
+        return graph
 
     @override
-    def _init_dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
+    def _init_dict_to_rdf(self, graph: Graph, obj: DictOrSeries) -> Node:
         if MAPPING_SET_ID in obj:
             return URIRef(obj[MAPPING_SET_ID])
         else:
             return BNode()
 
     @override
-    def _process_slot(self, g: Graph, subject: Node, name: str, value: Any) -> bool:
+    def _process_slot(self, graph: Graph, subject: Node, name: str, value: Any) -> bool:
         done = False
         if name == MAPPING_SET_ID:
             # Already dealt with in the initialisation step
             done = True
         elif name == EXTENSION_DEFINITIONS:
             for ed in value:
-                ed_node = self.extension_definition_converter.dict_to_rdf(g, ed)
-                g.add(cast(Triple, [subject, EXTENSION_DEFINITION_IRI, ed_node]))
+                ed_node = self.extension_definition_converter.dict_to_rdf(graph, ed)
+                graph.add(cast(Triple, [subject, EXTENSION_DEFINITION_IRI, ed_node]))
             done = True
         elif name == MAPPINGS:
             # We don't really expect to have any mappings here, as the
@@ -926,16 +937,16 @@ class MappingSetRDFConverter(ObjectConverter):
             # metadata part of a MappingSetDataFrame. Still, we cover
             # possibility, just in case.
             for mapping in value:
-                self._mapping_to_rdf(g, subject, mapping, self.hydrate)
+                self._mapping_to_rdf(graph, subject, mapping, self.hydrate)
             done = True
 
         return done
 
     def _mapping_to_rdf(
-        self, g: Graph, subject: Node, mapping: DictOrSeries, hydrate: bool
+        self, graph: Graph, subject: Node, mapping: DictOrSeries, hydrate: bool
     ) -> None:
-        mapping_node = self.mapping_converter.dict_to_rdf(g, mapping)
-        g.add(cast(Triple, [subject, MAPPINGS_IRI, mapping_node]))
+        mapping_node = self.mapping_converter.dict_to_rdf(graph, mapping)
+        graph.add(cast(Triple, [subject, MAPPINGS_IRI, mapping_node]))
 
         if hydrate:
             subject_id = mapping.get(SUBJECT_ID)
@@ -955,7 +966,7 @@ class MappingSetRDFConverter(ObjectConverter):
                 subject_ref = URIRef(self.curie_converter.expand(subject_id))
                 pred_ref = URIRef(self.curie_converter.expand(predicate_id))
                 object_ref = URIRef(self.curie_converter.expand(object_id))
-                g.add(cast(Triple, [subject_ref, pred_ref, object_ref]))
+                graph.add(cast(Triple, [subject_ref, pred_ref, object_ref]))
 
 
 class MappingConverter(ObjectConverter):
@@ -966,7 +977,7 @@ class MappingConverter(ObjectConverter):
         super().__init__("mapping", ccp)
 
     @override
-    def _init_dict_from_rdf(self, g: Graph, subject: Node, dest: Dict[str, Any]) -> None:
+    def _init_dict_from_rdf(self, graph: Graph, subject: Node, dest: Dict[str, Any]) -> None:
         # If the root node is a named resource, then it is interpreted
         # as the RECORD_ID for the mapping.
         if isinstance(subject, URIRef):
@@ -985,7 +996,7 @@ class MappingConverter(ObjectConverter):
             dest[slot_name] = dest[slot_name] + "|" + value
 
     @override
-    def _init_dict_to_rdf(self, g: Graph, obj: DictOrSeries) -> Node:
+    def _init_dict_to_rdf(self, graph: Graph, obj: DictOrSeries) -> Node:
         if RECORD_ID in obj:
             return URIRef(self.ccp().expand(obj[RECORD_ID]))
         else:
