@@ -617,7 +617,7 @@ class ObjectConverter:
         """Create the root node representing a SSSOM object.
 
         Subclasses should override this method to customize the way
-        their SSSOM object is represented in RDF. The default bhaviour
+        their SSSOM object is represented in RDF. The default behaviour
         is to represent the object as a blank node.
         """
         return BNode()
