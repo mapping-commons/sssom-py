@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import logging
+import logging as _logging
 from datetime import date
 from typing import Any, Callable, Dict, List, Optional, Set, Type, TypeAlias, Union, cast
 
@@ -34,6 +34,8 @@ from .constants import (
 from .util import MappingSetDataFrame, sort_df_rows_columns
 
 __all__ = ["MappingSetRDFConverter"]
+
+logging = _logging.getLogger(__name__)
 
 Triple: TypeAlias = tuple[Node, Node, Node]
 DictOrSeries: TypeAlias = Union[Dict[str, Any], Series]
@@ -542,6 +544,7 @@ class ObjectConverter:
             slot, False otherwise.
         """
         # FIXME: Not implemented yet, ignore all for now
+        logging.warning(f"Ignoring possible extension slot {triple[1]}")
         return False
 
     def _multivalue_from_rdf(self, value: Any, slot_name: str, dest: Dict[str, Any]) -> None:
@@ -651,6 +654,7 @@ class ObjectConverter:
             otherwise False.
         """
         # FIXME: Not implemented yet, ignore all for now
+        logging.warning(f"Ignoring extension slot {name}")
         return False
 
     def _get_multi_values(self, value: Any) -> List[Any]:
