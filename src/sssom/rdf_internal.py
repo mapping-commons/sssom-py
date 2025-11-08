@@ -806,7 +806,7 @@ class MappingSetRDFConverter(ObjectConverter):
             # Empty set?
             df = DataFrame()
 
-        return MappingSetDataFrame.with_converter(df=df, metadata=meta, converter=curie_converter)
+        return MappingSetDataFrame.with_converter(df=df, metadata=meta, converter=self.ccp)
 
     @override
     def _init_dict_from_rdf(self, graph: Graph, subject: Node, dest: Dict[str, Any]) -> None:
@@ -870,7 +870,7 @@ class MappingSetRDFConverter(ObjectConverter):
         """
         if graph is None:
             graph = Graph()
-        for k, v in self.curie_converter.bimap.items():
+        for k, v in self.ccp.bimap.items():
             graph.namespace_manager.bind(k, v)
         if hydrate is None:
             hydrate = self.hydrate
@@ -930,9 +930,9 @@ class MappingSetRDFConverter(ObjectConverter):
                 and object_id != NO_TERM_FOUND
                 and predicate_id is not None
             ):
-                subject_ref = URIRef(self.curie_converter.expand(subject_id))
-                pred_ref = URIRef(self.curie_converter.expand(predicate_id))
-                object_ref = URIRef(self.curie_converter.expand(object_id))
+                subject_ref = URIRef(self.ccp.expand(subject_id))
+                pred_ref = URIRef(self.ccp.expand(predicate_id))
+                object_ref = URIRef(self.ccp.expand(object_id))
                 graph.add(cast(Triple, [subject_ref, pred_ref, object_ref]))
 
 
