@@ -6,6 +6,7 @@ import logging as _logging
 from datetime import date
 from typing import Any, Callable, Dict, List, Optional, Set, Type, TypeAlias, Union, cast
 
+import curies
 from curies import Converter
 from linkml_runtime.linkml_model.meta import SlotDefinition
 from linkml_runtime.utils.schemaview import SchemaView
@@ -41,16 +42,6 @@ Triple: TypeAlias = tuple[Node, Node, Node]
 DictOrSeries: TypeAlias = Union[Dict[str, Any], Series]
 MAPPINGS_IRI = URIRef(MAPPINGS, SSSOM_URI_PREFIX)
 EXTENSION_DEFINITION_IRI = URIRef(EXTENSION_DEFINITIONS, SSSOM_URI_PREFIX)
-
-CurieConverterProvider: TypeAlias = Callable[[], Converter]
-"""A function that can provide a CURIE converter.
-
-We need this contraption because we have to create objects that will
-need to use a CURIE converter at some point, but we want to create such
-objects _before_ we get the converter -- because the converter to use
-will be specific to a given MSDF or a given RDF graph, which is not yet
-known at initialisation time.
-"""
 
 
 class ValueConverter:
@@ -182,9 +173,9 @@ class EntityReferenceValueConverter(BaseStringValueConverter):
     expanding them when converting to RDF.
     """
 
-    ccp: CurieConverterProvider
+    ccp: curies.Converter
 
-    def __init__(self, ccp: CurieConverterProvider):
+    def __init__(self, ccp: curies.Converter):
         """Create a new instance.
 
         :param ccp: An object that shall provide the CURIE converter to
@@ -197,12 +188,12 @@ class EntityReferenceValueConverter(BaseStringValueConverter):
     def from_rdf(self, obj: Node) -> str:
         """Convert a RDF node into an entity reference value."""
         value = super().from_rdf(obj)
-        return self.ccp().compress(value, passthrough=True)
+        return self.ccp.compress(value, passthrough=True)
 
     @override
     def to_rdf(self, value: str) -> Node:
         """Convert an entity reference value into a RDF node."""
-        value = self.ccp().expand(value, passthrough=True)
+        value = self.ccp.expand(value, passthrough=True)
         return super().to_rdf(value)
 
 
@@ -338,7 +329,7 @@ class ValueConverterFactory:
         }
 
     def create(
-        self, range_name: str, schema: SchemaView, ccp: CurieConverterProvider
+        self, range_name: str, schema: SchemaView, ccp: curies.Converter
     ) -> Optional[ValueConverter]:
         """Create a new value converter.
 
@@ -402,10 +393,10 @@ class ObjectConverter:
     schema: SSSOMSchemaView
     """Helper object to access information from the SSSOM schema."""
 
-    ccp: CurieConverterProvider
+    ccp: curies.Converter
     """The object to call when CURIE expansion/contraction is needed."""
 
-    def __init__(self, class_name: str, ccp: CurieConverterProvider):
+    def __init__(self, class_name: str, ccp: curies.Converter):
         """Create a new instance for a class of objects.
 
         :param class_name: The name of the SSSOM class of objects to
@@ -766,26 +757,18 @@ class MappingSetRDFConverter(ObjectConverter):
 
     mapping_converter: ObjectConverter
     extension_definition_converter: ObjectConverter
-    curie_converter: Converter
     hydrate: bool
 
-    def __init__(self, hydrate: bool = False):
+    def __init__(self, *, hydrate: bool = False, ccp: curies.Converter):
         """Create a new instance.
 
         :param hydrate: Default value for the `hydrate` parameter of the
             `msdf_to_rdf` method.
         """
-        super().__init__("mapping set", self.get_curie_converter)
-        self.mapping_converter = MappingConverter(self.get_curie_converter)
-        self.extension_definition_converter = ObjectConverter(
-            "extension definition", self.get_curie_converter
-        )
+        super().__init__("mapping set", ccp)
+        self.mapping_converter = MappingConverter(ccp)
+        self.extension_definition_converter = ObjectConverter("extension definition", ccp)
         self.hydrate = hydrate
-        self.curie_converter = Converter()
-
-    def get_curie_converter(self) -> Converter:
-        """Provide the current CURIE converter."""
-        return self.curie_converter
 
     #
     # Conversion from RDF
@@ -794,7 +777,6 @@ class MappingSetRDFConverter(ObjectConverter):
     def msdf_from_rdf(
         self,
         graph: Graph,
-        curie_converter: Optional[Converter] = None,
         meta: Optional[Dict[str, Any]] = None,
     ) -> MappingSetDataFrame:
         """Extract a MappingSetDataFrame from a RDF graph.
@@ -803,19 +785,10 @@ class MappingSetRDFConverter(ObjectConverter):
         parsing.
 
         :param graph: The graph to parse from.
-        :param curie_converter: The CURIE converter to use for all CURIE
-            expansion or contraction operations. If not specified, a
-            converter based on the namespaces declared within the graph
-            will be used instead. This is the converter that will be
-            associated with the returned MappingSetDataFrame object.
         :param meta: Default metadata to use, if any.
 
         :returns: The first MappingSetDataFrame found in the graph.
         """
-        if curie_converter is None:
-            curie_converter = Converter.from_rdflib(graph)
-        self.curie_converter = curie_converter
-
         sets = [s for s in graph.subjects(RDF.type, self.object_uri)]
         if len(sets) == 0:
             raise Exception("No mapping set in graph")
@@ -878,7 +851,6 @@ class MappingSetRDFConverter(ObjectConverter):
         self,
         msdf: MappingSetDataFrame,
         graph: Optional[Graph] = None,
-        curie_converter: Optional[Converter] = None,
         hydrate: Optional[bool] = None,
     ) -> Graph:
         """Export a MappingSetDataFrame into a RDF graph.
@@ -889,10 +861,6 @@ class MappingSetRDFConverter(ObjectConverter):
         :param msdf: The MappingSetDataFrame to export.
         :param graph: The graph to export to. If not given a new graph
             will be created.
-        :param curie_converter: The CURIE converter to use for all CURIE
-            expansion or contraction operations. If not given, the
-            converter bound to the MappingSetDataFrame will be used
-            instead.
         :param hydrate: Whether to generate "direct triples" for each
             mapping in the MappingSetDataFrame.
 
@@ -902,7 +870,6 @@ class MappingSetRDFConverter(ObjectConverter):
         """
         if graph is None:
             graph = Graph()
-        self.curie_converter = curie_converter or msdf.converter
         for k, v in self.curie_converter.bimap.items():
             graph.namespace_manager.bind(k, v)
         if hydrate is None:
@@ -972,7 +939,7 @@ class MappingSetRDFConverter(ObjectConverter):
 class MappingConverter(ObjectConverter):
     """Specialised class to (de)serialise Mapping objects."""
 
-    def __init__(self, ccp: CurieConverterProvider) -> None:
+    def __init__(self, ccp: curies.Converter) -> None:
         """Create a new instance."""
         super().__init__("mapping", ccp)
 
@@ -981,7 +948,7 @@ class MappingConverter(ObjectConverter):
         # If the root node is a named resource, then it is interpreted
         # as the RECORD_ID for the mapping.
         if isinstance(subject, URIRef):
-            dest[RECORD_ID] = self.ccp().compress(str(subject), passthrough=True)
+            dest[RECORD_ID] = self.ccp.compress(str(subject), passthrough=True)
         elif not isinstance(subject, BNode):
             raise ValueError(f"Invalid node type for a {self.name} object")
 
@@ -998,7 +965,7 @@ class MappingConverter(ObjectConverter):
     @override
     def _init_dict_to_rdf(self, graph: Graph, obj: DictOrSeries) -> Node:
         if RECORD_ID in obj:
-            return URIRef(self.ccp().expand(obj[RECORD_ID]))
+            return URIRef(self.ccp.expand(obj[RECORD_ID]))
         else:
             return BNode()
 

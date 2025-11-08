@@ -633,7 +633,16 @@ def from_sssom_rdf(
         )
     )
 
-    return MappingSetRDFConverter().msdf_from_rdf(g, curie_converter=converter, meta=combine_meta)
+    # TODO decide on priority order of contexts
+    # FIXME pop a prefix map from `meta`
+    converter = curies.chain(
+        [
+            curies.Converter.from_rdflib(g),
+            converter,
+        ]
+    )
+
+    return MappingSetRDFConverter(ccp=converter).msdf_from_rdf(g, meta=combine_meta)
 
 
 def from_sssom_json(
