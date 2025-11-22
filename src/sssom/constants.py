@@ -82,6 +82,7 @@ PREDICATE_MODIFIER = "predicate_modifier"
 PREDICATE_MODIFIER_NOT = "Not"
 PREDICATE_LABEL = "predicate_label"
 PREDICATE_TYPE = "predicate_type"
+PUBLICATION_DATE = "publication_date"
 OBJECT_ID = "object_id"
 OBJECT_LABEL = "object_label"
 OBJECT_CATEGORY = "object_category"
@@ -120,6 +121,7 @@ OBJECT_MATCH_FIELD = "object_match_field"
 MATCH_STRING = "match_string"
 SUBJECT_PREPROCESSING = "subject_preprocessing"
 OBJECT_PREPROCESSING = "object_preprocessing"
+RECORD_ID = "record_id"
 SEMANTIC_SIMILARITY_SCORE = "semantic_similarity_score"
 SEMANTIC_SIMILARITY_MEASURE = "semantic_similarity_measure"
 SEE_ALSO = "see_also"
@@ -135,6 +137,8 @@ OBJECT_SOURCE_ID = "object_source_id"
 # Special value for "unmapped" entities
 # see <https://mapping-commons.github.io/sssom/spec-model/#representing-unmapped-entities>
 NO_TERM_FOUND = "sssom:NoTermFound"
+
+ENTITY_TYPE_RDFS_LITERAL = "rdfs literal"
 
 # PREDICATES
 OWL_EQUIVALENT_CLASS = "owl:equivalentClass"
