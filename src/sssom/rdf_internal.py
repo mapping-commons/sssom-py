@@ -6,6 +6,7 @@ import logging as _logging
 from datetime import date
 from typing import Any, Callable, Dict, List, Optional, Set, Type, TypeAlias, Union, cast
 
+import pandas as pd
 from curies import Converter
 from linkml_runtime.linkml_model.meta import SlotDefinition
 from linkml_runtime.utils.schemaview import SchemaView
@@ -1004,4 +1005,8 @@ class MappingConverter(ObjectConverter):
 
     @override
     def _get_multi_values(self, value: Any) -> List[Any]:
-        return cast(List[Any], value.split("|"))
+        if pd.isna(value):
+            return []
+        if isinstance(value, str):
+            return value.split("|")
+        raise NotImplementedError(f"unhandled value can not be split: {value}")
