@@ -10,6 +10,7 @@ import re
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
+from packaging.version import parse
 from pathlib import Path
 from typing import (
     Any,
@@ -109,7 +110,7 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 # A value is trying to be set on a copy of a slice from a DataFrame
 pd.options.mode.copy_on_write = True
 # Get the version of pandas as a tuple of integers
-pandas_version = tuple(map(int, pd.__version__.split(".")))
+pandas_version = parse(pd.__version__).release  # Returns (major, minor, micro)
 
 
 @dataclass
