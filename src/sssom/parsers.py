@@ -539,7 +539,7 @@ def _get_mapping_dict(
     # The value could be a string or a list and is handled accordingly via _address_multivalued_slot().
 
     mdict: dict[str, str | list[str]] = {
-        k: _address_multivalued_slot(k, v)
+        k: _address_multivalued_slot(k, v)  # type: ignore[misc, arg-type]
         for k, v in row.to_dict().items()
         if v and pd.notna(v) and k in mapping_slots
     }
