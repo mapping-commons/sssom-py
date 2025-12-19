@@ -210,7 +210,9 @@ def check_strict_curie_format(
         if column in msdf.df.columns:
             for index, value in enumerate(msdf.df[column], start=1):
                 if pd.notna(value) and "|" in str(value):
-                    message = f"{value} contains a pipe ('|') character (row {index}, column '{column}')."
+                    message = (
+                        f"{value} contains a pipe ('|') character (row {index}, column '{column}')."
+                    )
                     validation_results.append(
                         ValidationResult(
                             type="strict curie test",
