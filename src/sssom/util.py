@@ -10,7 +10,6 @@ import re
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
-from packaging.version import parse
 from pathlib import Path
 from typing import (
     Any,
@@ -34,6 +33,7 @@ import validators
 from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
+from packaging.version import parse
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 from typing_extensions import TypedDict
