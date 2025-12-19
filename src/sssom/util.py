@@ -33,6 +33,7 @@ import validators
 from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
+from packaging.version import parse
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 from typing_extensions import TypedDict
@@ -109,7 +110,7 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 # A value is trying to be set on a copy of a slice from a DataFrame
 pd.options.mode.copy_on_write = True
 # Get the version of pandas as a tuple of integers
-pandas_version = tuple(map(int, pd.__version__.split(".")))
+pandas_version = parse(pd.__version__).release  # Returns (major, minor, micro)
 
 
 @dataclass
