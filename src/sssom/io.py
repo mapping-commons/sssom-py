@@ -156,7 +156,7 @@ def split_file(
     write_tables(splitted, output_directory)
 
 
-@deprecated(  # type:ignore[misc]
+@deprecated(  # type: ignore[untyped-decorator]
     deprecated_in="0.4.3",
     details="This functionality for loading SSSOM metadata from a YAML file is deprecated from the "
     "public API since it has internal assumptions which are usually not valid for downstream users.",
