@@ -192,7 +192,7 @@ def write_json(
         json.dump(data, fh, indent=2)
 
 
-@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore[misc]
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type: ignore[untyped-decorator]
 def write_fhir_json(
     msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "fhir_json"
 ) -> None:
