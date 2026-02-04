@@ -102,7 +102,7 @@ def write_table(
         msdf.df = sort_df_rows_columns(msdf.df)
 
     if embedded_mode:
-        lines = yaml.safe_dump(meta).split("\n")
+        lines = yaml.safe_dump(meta, allow_unicode=True).split("\n")
         lines = [f"# {line}" for line in lines if line != ""]
         s = msdf.df.to_csv(sep=sep, index=False).rstrip("\n")
         lines = lines + [s]
@@ -118,7 +118,7 @@ def write_table(
         # Export MSDF as tsv
         msdf.df.to_csv(file, sep=sep, index=False)
         with open(yml_filepath, "w") as y:
-            yaml.safe_dump(meta, y)
+            yaml.safe_dump(meta, y, allow_unicode=True)
 
 
 def write_tsv(
