@@ -204,7 +204,7 @@ def write_fhir_json(
     write_json(msdf, output, serialisation="fhir_json", condense=False)
 
 
-@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type:ignore
+@deprecated(deprecated_in="0.4.7", details="Use write_json() instead")  # type: ignore
 def write_ontoportal_json(
     msdf: MappingSetDataFrame, output: PathOrIO, serialisation: str = "ontoportal_json"
 ) -> None:
@@ -296,9 +296,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 """
     queries = []
 
-    queries.append(
-        sparql_prefixes
-        + """
+    queries.append(sparql_prefixes + """
     INSERT {
       ?c rdf:type owl:Class .
       ?d rdf:type owl:Class .
@@ -306,12 +304,9 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     WHERE {
      ?c owl:equivalentClass ?d .
     }
-    """
-    )
+    """)
 
-    queries.append(
-        sparql_prefixes
-        + """
+    queries.append(sparql_prefixes + """
         INSERT {
           ?c rdf:type owl:ObjectProperty .
           ?d rdf:type owl:ObjectProperty .
@@ -319,12 +314,9 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
         WHERE {
          ?c owl:equivalentProperty ?d .
         }
-        """
-    )
+        """)
 
-    queries.append(
-        sparql_prefixes
-        + """
+    queries.append(sparql_prefixes + """
     DELETE {
       ?o rdf:type sssom:MappingSet .
     }
@@ -334,24 +326,18 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     WHERE {
      ?o rdf:type sssom:MappingSet .
     }
-    """
-    )
+    """)
 
-    queries.append(
-        sparql_prefixes
-        + """
+    queries.append(sparql_prefixes + """
     DELETE {
       ?o sssom:mappings ?mappings .
     }
     WHERE {
      ?o sssom:mappings ?mappings .
     }
-    """
-    )
+    """)
 
-    queries.append(
-        sparql_prefixes
-        + """
+    queries.append(sparql_prefixes + """
     INSERT {
         ?p rdf:type owl:AnnotationProperty .
     }
@@ -360,8 +346,7 @@ PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
         ?p ?v .
         FILTER(?p!=rdf:type && ?p!=owl:annotatedProperty && ?p!=owl:annotatedTarget && ?p!=owl:annotatedSource)
     }
-    """
-    )
+    """)
 
     for query in queries:
         graph.update(query)

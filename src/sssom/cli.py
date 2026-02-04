@@ -301,8 +301,7 @@ def dedupe(input: str, output: TextIO) -> None:
     write_table(msdf_out, output)
 
 
-@main.command(
-    help="""\
+@main.command(help="""\
 Each of the N inputs is assigned a table name df1, df2, ..., dfN
 
 Alternatively, the filenames can be used as table names - these are first stemmed
@@ -313,8 +312,7 @@ Examples:
 $ sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
 
 $ sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv
-"""
-)
+""")
 @click.option("-Q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
@@ -486,7 +484,7 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str
     """Write sssom summary cross-tabulated by categories."""
     df = remove_unmatched(parse_sssom_table(input).df)
     logging.info(f"#CROSSTAB ON {fields}")
-    (f1, f2) = fields
+    f1, f2 = fields
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
@@ -513,7 +511,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
         exit(1)
 
     logging.info(f"#CROSSTAB ON {fields}")
-    (f1, f2) = fields
+    f1, f2 = fields
 
     logging.info(f"F1 {f1} UNIQUE: {df[f1].unique()}")
     logging.info(f"F2 {f2} UNIQUE: {df[f2].unique()}")
@@ -557,13 +555,11 @@ def merge(
     write_table(merged_msdf, output, condense=condense)
 
 
-@main.command(
-    help="""\
+@main.command(help="""\
 Example:
 
 $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
-"""
-)
+""")
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
 @click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
