@@ -58,7 +58,7 @@ def convert_file(
     doc = parse_sssom_table(input_path, propagate=propagate)
     write_func, fileformat = get_writer_function(output_format=output_format, output=output)
     # TODO cthoyt figure out how to use protocols for this
-    write_func(doc, output, serialisation=fileformat, condense=condense)  # type:ignore
+    write_func(doc, output, serialisation=fileformat, condense=condense)  # type: ignore
 
 
 def parse_file(

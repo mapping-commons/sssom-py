@@ -32,8 +32,7 @@ class TestValidate(unittest.TestCase):
         json_validation = rv[SchemaValidationType.JsonSchema]
         self.assertEqual([], json_validation.results)
 
-    @unittest.skip(
-        reason="""\
+    @unittest.skip(reason="""\
 
     This test did not previously do what was expected. It was raising a validation error
     not because of the text below suggesting the validator was able to identify an issue
@@ -46,8 +45,7 @@ class TestValidate(unittest.TestCase):
     which includes `orcid` is added on parse, and this error goes away. Therefore, this test
     now fails, but again, this is a sporadic failure since the test was not correct in the first
     place. Therefore, this test is now skipped and marked for FIXME.
-    """
-    )
+    """)
     def test_validate_json_fail(self) -> None:
         """Test if JSONSchemaValidation fail is as expected.
 
