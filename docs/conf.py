@@ -13,9 +13,9 @@ from sssom import __version__
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 sys.path.insert(0, os.path.abspath("../"))
 
-project = 'sssom-py'
+project = "sssom-py"
 copyright = f"{date.today().year}, Chris Mungall; Nicolas Matentzoglu; Harshad Hegde"
-author = 'Chris Mungall; Nicolas Matentzoglu; Harshad Hegde'
+author = "Chris Mungall; Nicolas Matentzoglu; Harshad Hegde"
 release = __version__
 
 # -- General configuration ---------------------------------------------------
@@ -78,7 +78,7 @@ html_context = {
     "github_repo": "sssom-py",
     "github_version": "master/docs/",
     "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
-    "conf_py_path": "/master/docs/",   # Path in the checkout to the docs root
+    "conf_py_path": "/master/docs/",  # Path in the checkout to the docs root
 }
 
 # The name of an image file (relative to this directory) to place at the top
