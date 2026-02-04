@@ -118,7 +118,7 @@ def write_table(
         # Export MSDF as tsv
         msdf.df.to_csv(file, sep=sep, index=False)
         with open(yml_filepath, "w") as y:
-            yaml.safe_dump(meta, y)
+            yaml.safe_dump(meta, y, allow_unicode=True)
 
 
 def write_tsv(
