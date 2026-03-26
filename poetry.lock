@@ -2858,4 +2858,4 @@ scipy = ["scipy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0.0"
-content-hash = "d79271e045eb18df7f2b0f2e753b6a8e202578220871a3f5b85dd69e336f346c"
+content-hash = "edca5370037f67deae5f91150520b039f3789f3b62a713b76911f086842e8d97"
