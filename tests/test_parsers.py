@@ -163,7 +163,8 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             # this number went up from 8099 when the curies.Converter was introduced
             # since it was able to handle CURIE prefix and URI prefix synonyms
-            8966,
+            # updated to 9275 after obo.epm.json update (2026-03)
+            9275,
             len(msdf.df),
             f"{self.obographs_file} has the wrong number of mappings.",
         )
