@@ -1,15 +1,17 @@
 """Utilities for loading JSON-LD contexts."""
 
+from __future__ import annotations
+
 import json
 from functools import lru_cache
-from typing import Mapping, Union
+from typing import Any, Mapping, Union, cast
 
 import curies
-import importlib_resources
 from curies import Converter
 from rdflib.namespace import is_ncname
+from typing_extensions import TypeAlias
 
-from .constants import EXTENDED_PREFIX_MAP
+from .constants import EXTENDED_PREFIX_MAP, SCHEMA_RESOURCES
 
 __all__ = [
     "SSSOM_BUILT_IN_PREFIXES",
@@ -19,9 +21,7 @@ __all__ = [
 ]
 
 SSSOM_BUILT_IN_PREFIXES = ("sssom", "owl", "rdf", "rdfs", "skos", "semapv")
-SSSOM_CONTEXT = importlib_resources.files("sssom_schema").joinpath(
-    "context/sssom_schema.context.jsonld"
-)
+SSSOM_CONTEXT = SCHEMA_RESOURCES.joinpath("context/sssom_schema.context.jsonld")
 
 
 @lru_cache(1)
@@ -42,9 +42,12 @@ def _get_default_converter() -> Converter:
     return Converter(records)
 
 
-def _load_sssom_context():
-    with open(SSSOM_CONTEXT) as file:
-        return json.load(file, strict=False)
+Context: TypeAlias = dict[str, Any]
+
+
+def _load_sssom_context() -> Context:
+    with SSSOM_CONTEXT.open() as file:
+        return cast(Context, json.load(file, strict=False))
 
 
 @lru_cache(1)
@@ -73,20 +76,19 @@ def ensure_converter(prefix_map: ConverterHint = None, *, use_defaults: bool = T
 
     :param prefix_map: One of the following:
 
-        1. An empty dictionary or ``None``. This results in using the default
-           extended prefix map (currently based on a variant of the Bioregistry)
-           if ``use_defaults`` is set to true, otherwise just the builtin prefix
-           map including the prefixes in :data:`SSSOM_BUILT_IN_PREFIXES`
-        2. A non-empty dictionary representing a prefix map. This is loaded as a
-           converter with :meth:`Converter.from_prefix_map`. It is chained
-           behind the builtin prefix map to ensure none of the
-           :data:`SSSOM_BUILT_IN_PREFIXES` are overwritten with non-default values
-        3. A pre-instantiated :class:`curies.Converter`. Similarly to a prefix
-           map passed into this function, this is chained behind the builtin prefix
-           map
-    :param use_defaults: If an empty dictionary or None is passed to this function,
-        this parameter chooses if the extended prefix map (currently based on a
-        variant of the Bioregistry) gets loaded.
+        1. An empty dictionary or ``None``. This results in using the default extended prefix map
+           (currently based on a variant of the Bioregistry) if ``use_defaults`` is set to true,
+           otherwise just the builtin prefix map including the prefixes in
+           :data:`SSSOM_BUILT_IN_PREFIXES`
+        2. A non-empty dictionary representing a prefix map. This is loaded as a converter with
+           :meth:`Converter.from_prefix_map`. It is chained behind the builtin prefix map to ensure
+           none of the :data:`SSSOM_BUILT_IN_PREFIXES` are overwritten with non-default values
+        3. A pre-instantiated :class:`curies.Converter`. Similarly to a prefix map passed into this
+           function, this is chained behind the builtin prefix map
+    :param use_defaults: If an empty dictionary or None is passed to this function, this parameter
+        chooses if the extended prefix map (currently based on a variant of the Bioregistry) gets
+        loaded.
+
     :returns: A re-usable converter
     """
     if not prefix_map:

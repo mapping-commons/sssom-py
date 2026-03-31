@@ -1,0 +1,22 @@
+#curie_map:
+#  c: http://example.org/c/
+#  orcid: https://orcid.org/
+#  x: http://example.org/x/
+#  y: http://example.org/y/
+#  z: http://example.org/z/
+#mapping_set_id: https://w3id.org/sssom/mapping/tests/data/propagatable.tsv
+#creator_id:
+#  - orcid:1234
+#  - orcid:5678
+#license: https://creativecommons.org/publicdomain/zero/1.0/
+#mapping_provider: https://example.org/mappings
+#mapping_tool: https://github.com/cmungall/rdf_matcher
+#subject_preprocessing:
+#  - c:rule1
+#  - c:rule2
+subject_id	predicate_id	object_id	mapping_justification	mapping_tool
+x:appendage	owl:equivalentClass	y:appendage	semapv:ManualMappingCuration	
+x:appendage	owl:equivalentClass	z:appendage	semapv:LexicalMatching	
+x:appendage	owl:equivalentClass	z:appendage	semapv:ManualMappingCuration	foo matcher
+x:bone_element	owl:equivalentClass	y:bone	semapv:LexicalMatching	
+x:bone_element	owl:equivalentClass	y:bone	semapv:ManualMappingCuration	

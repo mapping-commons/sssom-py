@@ -1,30 +1,22 @@
-"""Command line interface for SSSOM.
+"""Command line interface for SSSOM."""
 
-Why does this file exist, and why not put this in ``__main__``? You might be tempted to import things from ``__main__``
-later, but that will cause problems--the code will get executed twice:
-
-- When you run ``python3 -m sssom`` python will execute``__main__.py`` as a script. That means there won't be any
-  ``sssom.__main__`` in ``sys.modules``.
-- When you import __main__ it will get executed again (as a module) because
-  there's no ``sssom.__main__`` in ``sys.modules`` .
-
-.. seealso:: https://click.palletsprojects.com/en/8.0.x/setuptools/
-"""
+from __future__ import annotations
 
 import logging as _logging
 import os
 import sys
+import typing
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, TextIO, Tuple, get_args
+from typing import Any, Callable, List, Optional, TextIO, Tuple, TypeVar, get_args
 
 import click
 import curies
 import pandas as pd
 import yaml
 from curies import Converter
-from rdflib import Graph
-from scipy.stats import chi2_contingency
+from rdflib import Graph, URIRef
+from typing_extensions import ParamSpec
 
 from sssom.constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -44,7 +36,7 @@ from .io import (
     split_file,
     validate_file,
 )
-from .parsers import PARSING_FUNCTIONS, parse_sssom_table
+from .parsers import PARSING_FUNCTIONS, SplitMethod, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
@@ -60,7 +52,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .writers import WRITER_FUNCTIONS, write_table
+from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint_app, write_table
 
 logging = _logging.getLogger(__name__)
 
@@ -74,7 +66,7 @@ input_format_option = click.option(
     "-I",
     "--input-format",
     help="The string denoting the input format.",
-    type=click.Choice(PARSING_FUNCTIONS),
+    type=click.Choice(list(PARSING_FUNCTIONS)),
 )
 output_option = click.option(
     "-o",
@@ -87,7 +79,7 @@ output_format_option = click.option(
     "-O",
     "--output-format",
     help="Desired output format.",
-    type=click.Choice(WRITER_FUNCTIONS),
+    type=click.Choice(list(WRITER_FUNCTIONS)),
 )
 output_directory_option = click.option(
     "-d",
@@ -111,12 +103,19 @@ fields_option = click.option(
     default=("subject_category", "object_category"),
     help="Fields.",
 )
-
 predicate_filter_option = click.option(
     "-F",
     "--mapping-predicate-filter",
     multiple=True,
     help="A list of predicates or a file path containing the list of predicates to be considered.",
+)
+propagate_option = click.option(
+    "--propagate/--no-propagate",
+    default=True,
+    help="Automatically propagate condensed slots upon parsing.",
+)
+condense_option = click.option(
+    "--condense/--no-condense", default=True, help="Automatically condense slots upon writing."
 )
 
 
@@ -124,7 +123,7 @@ predicate_filter_option = click.option(
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
 @click.version_option(__version__)
-def main(verbose: int, quiet: bool):
+def main(verbose: int, quiet: bool) -> None:
     """Run the SSSOM CLI."""
     logger = _logging.getLogger()
 
@@ -143,7 +142,7 @@ def main(verbose: int, quiet: bool):
 @main.command()
 @click.argument("subcommand")
 @click.pass_context
-def help(ctx, subcommand):
+def help(ctx: click.Context, subcommand: str) -> None:
     """Echoes help for subcommands."""
     subcommand_obj = main.get_command(ctx, subcommand)
     if subcommand_obj is None:
@@ -156,13 +155,19 @@ def help(ctx, subcommand):
 @input_argument
 @output_option
 @output_format_option
-def convert(input: str, output: TextIO, output_format: str):
-    """Convert a file.
-
-    Example:
-        sssom convert my.sssom.tsv --output-format rdfxml --output my.sssom.owl
-    """  # noqa: DAR101
-    convert_file(input_path=input, output=output, output_format=output_format)
+@propagate_option
+@condense_option
+def convert(
+    input: str, output: TextIO, output_format: str, propagate: bool, condense: bool
+) -> None:
+    """Convert a file."""
+    convert_file(
+        input_path=input,
+        output=output,
+        output_format=output_format,
+        propagate=propagate,
+        condense=condense,
+    )
 
 
 # Input and metadata would be files (file paths). Check if exists.
@@ -205,6 +210,8 @@ def convert(input: str, output: TextIO, output_format: str):
 )
 @predicate_filter_option
 @output_option
+@propagate_option
+@condense_option
 def parse(
     input: str,
     input_format: str,
@@ -214,8 +221,10 @@ def parse(
     strict_clean_prefixes: bool,
     output: TextIO,
     embedded_mode: bool,
-    mapping_predicate_filter: Optional[tuple],
-):
+    mapping_predicate_filter: list[str],
+    propagate: bool,
+    condense: bool,
+) -> None:
     """Parse a file in one of the supported formats (such as obographs) into an SSSOM TSV file."""
     parse_file(
         input_path=input,
@@ -227,6 +236,8 @@ def parse(
         strict_clean_prefixes=strict_clean_prefixes,
         embedded_mode=embedded_mode,
         mapping_predicate_filter=mapping_predicate_filter,
+        propagate=propagate,
+        condense=condense,
     )
 
 
@@ -235,22 +246,24 @@ def parse(
 @click.option(
     "--validation-types",
     "-V",
-    type=click.Choice(SchemaValidationType),
+    type=click.Choice(list(SchemaValidationType)),
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
-def validate(input: str, validation_types: List[SchemaValidationType]):
+@propagate_option
+def validate(input: str, validation_types: List[SchemaValidationType], propagate: bool) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
-    validate_file(input_path=input, validation_types=validation_type_list)
+    validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
 
 
 @main.command()
 @input_argument
 @output_directory_option
-def split(input: str, output_directory: str):
+@click.option("--method", type=click.Choice(typing.get_args(SplitMethod)))
+def split(input: str, output_directory: str, method: SplitMethod) -> None:
     """Split input file into multiple output broken down by prefixes."""
-    split_file(input_path=input, output_directory=output_directory)
+    split_file(input_path=input, output_directory=output_directory, method=method)
 
 
 @main.command()
@@ -262,7 +275,7 @@ def split(input: str, output_directory: str):
     type=click.FloatRange(0, 1),
     help="Default confidence to be assigned if absent.",
 )
-def ptable(input, output: TextIO, inverse_factor: float, default_confidence: float):
+def ptable(input: str, output: TextIO, inverse_factor: float, default_confidence: float) -> None:
     """Convert an SSSOM file to a ptable for kboom/`boomer <https://github.com/INCATools/boomer>`_."""
     # TODO should maybe move to boomer (but for now it can live here, so cjm can tweak
     msdf = parse_sssom_table(input)
@@ -276,7 +289,7 @@ def ptable(input, output: TextIO, inverse_factor: float, default_confidence: flo
 @main.command()
 @input_argument
 @output_option
-def dedupe(input: str, output: TextIO):
+def dedupe(input: str, output: TextIO) -> None:
     """Remove lower confidence duplicate lines from an SSSOM file."""
     # df = parse(input)
     msdf = parse_sssom_table(input)
@@ -288,27 +301,31 @@ def dedupe(input: str, output: TextIO):
     write_table(msdf_out, output)
 
 
-@main.command()
+@main.command(help="""\
+Each of the N inputs is assigned a table name df1, df2, ..., dfN
+
+Alternatively, the filenames can be used as table names - these are first stemmed
+E.g. ``~/dir/my.sssom.tsv`` becomes a table called 'my'
+
+Examples:
+
+$ sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
+
+$ sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv
+""")
 @click.option("-Q", "--query", help='SQL query. Use "df" as table name.')
 @click.argument("inputs", nargs=-1)
 @output_option
-def dosql(query: str, inputs: List[str], output: TextIO):
-    """Run a SQL query over one or more SSSOM files.
-
-    Each of the N inputs is assigned a table name df1, df2, ..., dfN
-
-    Alternatively, the filenames can be used as table names - these are first stemmed
-    E.g. ~/dir/my.sssom.tsv becomes a table called 'my'
-
-    Example:
-        sssom dosql -Q "SELECT * FROM df1 WHERE confidence>0.5 ORDER BY confidence" my.sssom.tsv
-
-    Example:
-        `sssom dosql -Q "SELECT file1.*,file2.object_id AS ext_object_id, file2.object_label AS ext_object_label \
-        FROM file1 INNER JOIN file2 WHERE file1.object_id = file2.subject_id" FROM file1.sssom.tsv file2.sssom.tsv`
-    """  # noqa: DAR101
+def dosql(query: str, inputs: List[str], output: TextIO) -> None:
+    """Run a SQL query over one or more SSSOM files."""
     # should start with from_tsv and MOST should return write_sssom
-    run_sql_query(query=query, inputs=inputs, output=output)
+    try:
+        run_sql_query(query=query, inputs=inputs, output=output)
+    except ModuleNotFoundError as e:
+        if e.name == "pansql":
+            raise click.ClickException("The dosql command requires the optional pansql module.")
+        raise
+
     # n = 1
     # new_msdf = MappingSetDataFrame()
     # while len(inputs) >= n:
@@ -341,14 +358,14 @@ def dosql(query: str, inputs: List[str], output: TextIO):
 @click.option("-P", "--prefix", type=click.Tuple([str, str]), multiple=True)
 @output_option
 def sparql(
-    url: str,
-    config,
-    graph: str,
-    limit: int,
+    url: str | None,
+    config: TextIO | None,
+    graph: str | None,
+    limit: int | None,
     object_labels: bool,
     prefix: List[Tuple[str, str]],
     output: TextIO,
-):
+) -> None:
     """Run a SPARQL query."""
     # FIXME this usage needs _serious_ refactoring
     endpoint = EndpointConfig(converter=Converter.from_prefix_map(dict(prefix)))  # type: ignore
@@ -358,7 +375,7 @@ def sparql(
     if url is not None:
         endpoint.url = url
     if graph is not None:
-        endpoint.graph = graph
+        endpoint.graph = URIRef(graph)
     if limit is not None:
         endpoint.limit = limit
     if object_labels is not None:
@@ -371,7 +388,7 @@ def sparql(
 @main.command()
 @output_option
 @click.argument("inputs", nargs=2)
-def diff(inputs: Tuple[str, str], output: TextIO):
+def diff(inputs: Tuple[str, str], output: TextIO) -> None:
     """Compare two SSSOM files.
 
     The output is a new SSSOM file with the union of all mappings, and
@@ -393,13 +410,11 @@ def diff(inputs: Tuple[str, str], output: TextIO):
         )
 
     prefix_map_list = [msdf1, msdf2]
-    converter = curies.chain(m.converter for m in prefix_map_list)
+    converter = curies.chain([m.converter for m in prefix_map_list])
     msdf = MappingSetDataFrame.with_converter(
         df=d.combined_dataframe.drop_duplicates(), converter=converter
     )
-    msdf.metadata[  # type:ignore
-        "comment"
-    ] = (
+    msdf.metadata["comment"] = (
         f"Diff between {input1} and {input2}. See comment column for information."
     )
     write_table(msdf, output)
@@ -408,13 +423,20 @@ def diff(inputs: Tuple[str, str], output: TextIO):
 @main.command()
 @output_directory_option
 @click.argument("inputs", nargs=-1)
-def partition(inputs: List[str], output_directory: str):
+def partition(inputs: List[str], output_directory: str) -> None:
     """Partition an SSSOM into one file for each strongly connected component."""
     docs = [parse_sssom_table(input) for input in inputs]
     doc = docs.pop()
     """for d2 in docs:
         doc.mapping_set.mappings += d2.mapping_set.mappings"""
-    cliquedocs = split_into_cliques(doc)
+    try:
+        cliquedocs = split_into_cliques(doc)
+    except ModuleNotFoundError as e:
+        if e.name == "networkx":
+            raise click.ClickException(
+                "The partition command requires the optional networkx module."
+            )
+        raise
     for n, cdoc in enumerate(cliquedocs, start=1):
         ofn = f"{output_directory}/clique_{n}.sssom.tsv"
         # logging.info(f'Writing to {ofn}. Size={len(cdoc.mapping_set.mappings)}')
@@ -431,14 +453,21 @@ def partition(inputs: List[str], output_directory: str):
 @output_option
 @metadata_option
 @click.option("-s", "--statsfile")
-def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
+def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str) -> None:
     """Calculate summaries for each clique in a SSSOM file."""
     if metadata is None:
         doc = parse_sssom_table(input)
     else:
         meta_obj = yaml.safe_load(open(metadata))
         doc = parse_sssom_table(input, meta=meta_obj)
-    df = summarize_cliques(doc)
+    try:
+        df = summarize_cliques(doc)
+    except ModuleNotFoundError as e:
+        if e.name == "networkx":
+            raise click.ClickException(
+                "The cliquesummary command requires the optional networkx module."
+            )
+        raise
     df.to_csv(output, sep="\t")
     if statsfile is None:
         logging.info(df.describe)
@@ -451,11 +480,11 @@ def cliquesummary(input: str, output: TextIO, metadata: str, statsfile: str):
 @output_option
 @transpose_option
 @fields_option
-def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
+def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]) -> None:
     """Write sssom summary cross-tabulated by categories."""
     df = remove_unmatched(parse_sssom_table(input).df)
     logging.info(f"#CROSSTAB ON {fields}")
-    (f1, f2) = fields
+    f1, f2 = fields
     ct = pd.crosstab(df[f1], df[f2])
     if transpose:
         ct = ct.transpose()
@@ -467,8 +496,13 @@ def crosstab(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str
 @transpose_option
 @fields_option
 @input_argument
-def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]):
+def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str, str]) -> None:
     """Calculate correlations."""
+    try:
+        from scipy.stats import chi2_contingency
+    except ModuleNotFoundError:
+        raise click.ClickException("The correlations command requires the optional scipy module.")
+
     msdf = parse_sssom_table(input)
     df = remove_unmatched(msdf.df)
     if len(df) == 0:
@@ -477,7 +511,7 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
         exit(1)
 
     logging.info(f"#CROSSTAB ON {fields}")
-    (f1, f2) = fields
+    f1, f2 = fields
 
     logging.info(f"F1 {f1} UNIQUE: {df[f1].unique()}")
     logging.info(f"F2 {f2} UNIQUE: {df[f2].unique()}")
@@ -497,8 +531,8 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
         for j, v in row.items():
             logging.info(f"{i} x {j} = {v}")
             rows.append((v, i, j))
-    for row in sorted(rows, key=itemgetter(0)):
-        print(*row, sep="\t")
+    for rrow in sorted(rows, key=itemgetter(0)):
+        print(*rrow, sep="\t")
 
 
 @main.command()
@@ -507,23 +541,25 @@ def correlations(input: str, output: TextIO, transpose: bool, fields: Tuple[str,
     "-R",
     "--reconcile",
     default=False,
-    help="Boolean indicating the need for reconciliation of the SSSOM tsv file.",
+    help="If true, the deduplicate (i.e., remove redundant lower confidence mappings) and reconcile (if msdf contains a higher confidence _negative_ mapping, then remove lower confidence positive one. If confidence is the same, prefer HumanCurated. If both HumanCurated, prefer negative mapping)",
 )
 @output_option
-def merge(inputs: str, output: TextIO, reconcile: bool = False):
-    """Merge multiple MappingSetDataFrames into one .
-
-    if reconcile=True, then dedupe(remove redundant lower confidence mappings) and
-    reconcile (if msdf contains a higher confidence _negative_ mapping,
-    then remove lower confidence positive one. If confidence is the same,
-    prefer HumanCurated. If both HumanCurated, prefer negative mapping).
-    """  # noqa: DAR101
-    msdfs = [parse_sssom_table(i) for i in inputs]
+@propagate_option
+@condense_option
+def merge(
+    inputs: str, output: TextIO, propagate: bool, condense: bool, reconcile: bool = False
+) -> None:
+    """Merge multiple MappingSetDataFrames into one."""  # noqa: DAR101
+    msdfs = [parse_sssom_table(i, propagate=propagate) for i in inputs]
     merged_msdf = merge_msdf(*msdfs, reconcile=reconcile)
-    write_table(merged_msdf, output)
+    write_table(merged_msdf, output, condense=condense)
 
 
-@main.command()
+@main.command(help="""\
+Example:
+
+$ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+""")
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
 @click.option("-I", "--input-format", default="turtle", help="Ontology input format.")
@@ -535,20 +571,14 @@ def merge(inputs: str, output: TextIO, reconcile: bool = False):
 )
 @output_option
 def rewire(
-    input,
-    mapping_file,
-    precedence,
+    input: str,
+    mapping_file: str,
+    precedence: list[str],
     output: TextIO,
-    input_format,
-    output_format,
-):
-    """Rewire an ontology using equivalent classes/properties from a mapping file.
-
-    Example:
-        sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
-
-    # noqa: DAR101
-    """
+    input_format: str,
+    output_format: str,
+) -> None:
+    """Rewire an ontology using equivalent classes/properties from a mapping file."""
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
@@ -565,14 +595,8 @@ def rewire(
     help="Provide YAML file with prefix reconciliation information.",
 )
 @output_option
-def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
-    """
-    Reconcile prefix_map based on provided YAML file.
-
-    :param input: MappingSetDataFrame filename
-    :param reconcile_prefix_file: YAML file containing the prefix reconcilation rules.
-    :param output: Target file path.
-    """
+def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO) -> None:
+    """Reconcile prefix_map based on provided YAML file."""
     msdf = parse_sssom_table(input)
     with open(reconcile_prefix_file, "rb") as rp_file:
         rp_dict = yaml.safe_load(rp_file)
@@ -595,55 +619,27 @@ def reconcile_prefixes(input: str, reconcile_prefix_file: Path, output: TextIO):
     default=True,
     help="Sort rows by DataFrame column #1 (ascending).",
 )
-def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool):
-    """
-    Sort DataFrame columns canonically.
-
-    :param input: SSSOM TSV file.
-    :param by_columns: Boolean flag to sort columns canonically.
-    :param by_rows: Boolean flag to sort rows by column #1 (ascending order).
-    :param output: SSSOM TSV file with columns sorted.
-    """
+def sort(input: str, output: TextIO, by_columns: bool, by_rows: bool) -> None:
+    """Sort DataFrame columns canonically."""
     msdf = parse_sssom_table(input)
     msdf.df = sort_df_rows_columns(msdf.df, by_columns, by_rows)
     write_table(msdf, output)
 
 
-# @main.command()
-# @input_argument
-# @click.option(
-#     "-P",
-#     "--prefix",
-#     multiple=True,
-#     help="Prefixes that need to be filtered.",
-# )
-# @click.option(
-#     "-D",
-#     "--predicate",
-#     multiple=True,
-#     help="Predicates that need to be filtered.",
-# )
-# @output_option
-# def filter(input: str, output: TextIO, prefix: tuple, predicate: tuple):
-#     """Filter mapping file based on prefix and predicates provided.
-
-#     :param input: Input mapping file (tsv)
-#     :param output: SSSOM TSV file.
-#     :param prefix: Prefixes to be retained.
-#     :param predicate: Predicates to be retained.
-#     """
-#     filtered_msdf = filter_file(input=input, prefix=prefix, predicate=predicate)
-#     write_table(msdf=filtered_msdf, file=output)
+P = ParamSpec("P")
+T = TypeVar("T")
 
 
-def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
+def dynamically_generate_sssom_options(
+    options: List[str],
+) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """Dynamically generate click options.
 
     :param options: List of all possible options.
     :return: Click options deduced from user input into parameters.
     """
 
-    def _decorator(f):
+    def _decorator(f: Callable[P, T]) -> Callable[P, T]:
         for sssom_slot in reversed(options):
             click.option("--" + sssom_slot, multiple=True)(f)
         return f
@@ -655,7 +651,7 @@ def dynamically_generate_sssom_options(options) -> Callable[[Any], Any]:
 @input_argument
 @output_option
 @dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_slots)
-def filter(input: str, output: TextIO, **kwargs):
+def filter(input: str, output: TextIO, **kwargs: Any) -> None:
     """Filter a dataframe by dynamically generating queries based on user input.
 
     e.g. sssom filter --subject_id x:% --subject_id y:% --object_id y:% --object_id z:% tests/data/basic.tsv
@@ -669,7 +665,12 @@ def filter(input: str, output: TextIO, **kwargs):
     :param output: Output location.
     :param kwargs: Filter options provided by user which generate queries (e.g.: --subject_id x:%).
     """
-    filter_file(input=input, output=output, **kwargs)
+    try:
+        filter_file(input=input, output=output, **kwargs)
+    except ModuleNotFoundError as e:
+        if e.name == "pansql":
+            raise click.ClickException("The filter command requires the pansql optional module.")
+        raise
 
 
 @main.command()
@@ -683,19 +684,12 @@ def filter(input: str, output: TextIO, **kwargs):
     "--replace-multivalued",
     default=False,
     type=bool,
-    help="Multivalued slots should be replaced or not. [default: False]",
+    show_default=True,
+    help="Multivalued slots should be replaced or not.",
 )
 @dynamically_generate_sssom_options(SSSOM_SV_OBJECT.mapping_set_slots)
-def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
-    """Annotate metadata of a mapping set.
-
-    :param input: Input path of the SSSOM tsv file.
-    :param output: Output location.
-    :param replace_multivalued: Multivalued slots should be
-        replaced or not, defaults to False
-    :param kwargs: Options provided by user
-        which are added to the metadata (e.g.: --mapping_set_id http://example.org/abcd)
-    """
+def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs: Any) -> None:
+    """Annotate metadata of a mapping set."""
     annotate_file(input=input, output=output, replace_multivalued=replace_multivalued, **kwargs)
 
 
@@ -707,13 +701,8 @@ def annotate(input: str, output: TextIO, replace_multivalued: bool, **kwargs):
     help="Mapping file path that needs to be removed from input.",
 )
 @output_option
-def remove(input: str, output: TextIO, remove_map: str):
-    """Remove mappings from an input mapping.
-
-    :param input: Input SSSOM tsv file.
-    :param output: Output path.
-    :param remove_map: Mapping to be removed.
-    """
+def remove(input: str, output: TextIO, remove_map: str) -> None:
+    """Remove mappings from an input mapping."""
     input_msdf = parse_sssom_table(input)
     remove_msdf = parse_sssom_table(remove_map)
     input_msdf.remove_mappings(remove_msdf)
@@ -749,7 +738,7 @@ def invert(
     merge_inverted: bool,
     update_justification: bool,
     inverse_map: TextIO,
-):
+) -> None:
     """
     Invert subject and object IDs such that all subjects have the prefix provided.
 
@@ -778,6 +767,26 @@ def invert(
         predicate_invert_dictionary=inverse_predicate_map,
     )
     write_table(msdf, output)
+
+
+@main.command(name="serve-rdf")
+@input_argument
+@click.option(
+    "--hydrate/--no-hydrate",
+    is_flag=True,
+    default=True,
+    show_default=True,
+    help="Infer S-P-O simple triples from axioms. On by default.",
+)
+@click.option("--host", default="127.0.0.1", show_default=True)
+@click.option("--port", type=int, default=8000, show_default=True)
+def serve_rdf(input: str, host: str, port: int, hydrate: bool) -> None:
+    """Serve the SSSOM file as an RDF SPARQL endpoint."""
+    import uvicorn
+
+    msdf = parse_sssom_table(input)
+    app = get_rdflib_endpoint_app(msdf, hydrate=hydrate)
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":

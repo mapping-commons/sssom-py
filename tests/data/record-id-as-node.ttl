@@ -1,0 +1,19 @@
+@prefix COMENT: <https://example.com/entities/> .
+@prefix ORGENT: <https://example.org/entities/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix mymaps: <https://example.org/sets/mapping/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix semapv: <https://w3id.org/semapv/vocab/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+mymaps:0001 a owl:Axiom;
+  owl:annotatedProperty skos:closeMatch;
+  owl:annotatedSource ORGENT:0001;
+  owl:annotatedTarget COMENT:0011;
+  sssom:mapping_justification semapv:ManualMappingCuration .
+
+<https://example.org/sets/standard-rdf> a sssom:MappingSet;
+  dcterms:license <https://creativecommons.org/licenses/by/4.0/>;
+  sssom:mappings mymaps:0001 .

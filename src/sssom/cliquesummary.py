@@ -1,10 +1,6 @@
-"""
-Auto generated from cliquesummary.yaml by pythongen.py version: 0.9.0
-Generation date: 2021-08-19 18:02
-Schema: sssom-cliquesummary
+"""Auto generated from cliquesummary.yaml by pythongen.py version: 0.9.0 Generation date: 2021-08-19 18:02 Schema: sssom-cliquesummary
 
-id: https://w3id.org/sssom/schema/cliquesummary/
-description: Data dictionary for clique summaries
+id: https://w3id.org/sssom/schema/cliquesummary/ description: Data dictionary for clique summaries
 license: https://creativecommons.org/publicdomain/zero/1.0/
 """
 
@@ -198,9 +194,7 @@ class CliqueId(extended_str):
 
 @dataclass
 class Clique(YAMLRoot):
-    """
-    A clique
-    """
+    """A clique"""
 
     _inherited_slots: ClassVar[List[str]] = []
 

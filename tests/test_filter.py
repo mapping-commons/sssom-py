@@ -2,6 +2,7 @@
 
 import unittest
 from os.path import join
+from typing import Any
 
 from sssom.constants import PREDICATE_MODIFIER
 from sssom.io import filter_file
@@ -19,9 +20,9 @@ class TestSort(unittest.TestCase):
         self.predicates = ["owl:subClassOf", "skos:exactMatch", "skos:broadMatch"]
         self.validation_file = join(data_dir, "test_filter_sssom.tsv")
 
-    def test_filter(self):
+    def test_filter(self) -> None:
         """Test filtering of rows."""
-        kwargs = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%", "a:%")}
+        kwargs: dict[str, Any] = {"subject_id": ("x:%", "y:%"), "object_id": ("y:%", "z:%", "a:%")}
         filtered_msdf = filter_file(input=self.input, **kwargs)
         validation_msdf = parse_sssom_table(self.validation_file)
 
@@ -34,8 +35,8 @@ class TestSort(unittest.TestCase):
         # Pandas does something weird with assert_frame_equal
         # assert_frame_equal(filtered_df.sort_index(axis=1), validation_msdf.df.sort_index(axis=1), check_like=True)
 
-    def test_filter_fail(self):
+    def test_filter_fail(self) -> None:
         """Pass invalid param to see if it fails."""
-        kwargs = {"subject_ids": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
+        kwargs: dict[str, Any] = {"subject_ids": ("x:%", "y:%"), "object_id": ("y:%", "z:%")}
         with self.assertRaises(ValueError):
             filter_file(input=self.input, **kwargs)

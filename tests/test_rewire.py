@@ -20,7 +20,7 @@ class TestRewire(unittest.TestCase):
         g.parse(os.path.join(data_dir, "cob.owl"), format="xml")
         self.graph = g
 
-    def test_rewire(self):
+    def test_rewire(self) -> None:
         """Test running the require function."""
         with self.assertRaises(ValueError):
             # we expect this to fail due to PR/CHEBI ambiguity

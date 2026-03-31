@@ -2,6 +2,12 @@
 
 import pathlib
 
+__all__ = [
+    "cwd",
+    "data_dir",
+    "test_out_dir",
+]
+
 cwd = pathlib.Path(__file__).parent.resolve()
 data_dir = cwd / "data"
 

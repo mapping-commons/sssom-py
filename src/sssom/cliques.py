@@ -30,12 +30,12 @@ if TYPE_CHECKING:
     import networkx
 
 
-def to_digraph(msdf: MappingSetDataFrame) -> "networkx.DiGraph":
+def to_digraph(msdf: MappingSetDataFrame) -> "networkx.DiGraph[str]":
     """Convert to a graph where the nodes are entities' CURIEs and edges are their mappings."""
     import networkx as nx
 
     doc = to_mapping_set_document(msdf)
-    g = nx.DiGraph()
+    g: "networkx.DiGraph[str]" = nx.DiGraph()
     if doc.mapping_set.mappings is not None:
         for mapping in doc.mapping_set.mappings:
             if not isinstance(mapping, Mapping):
@@ -79,10 +79,12 @@ def split_into_cliques(msdf: MappingSetDataFrame) -> List[MappingSetDocument]:
     """Split a MappingSetDataFrames documents corresponding to a strongly connected components of the associated graph.
 
     :param msdf: MappingSetDataFrame object
+
+    :returns: List of MappingSetDocument objects
+
     :raises TypeError: If Mappings is not of type List
     :raises TypeError: If each mapping is not of type Mapping
     :raises TypeError: If Mappings is not of type List
-    :return: List of MappingSetDocument objects
     """
     import networkx as nx
 
@@ -126,12 +128,13 @@ def group_values(d: Dict[str, str]) -> Dict[str, List[str]]:
     return dict(rv)
 
 
-def get_src(src: Optional[str], curie: str):
+def get_src(src: Optional[str], curie: str) -> str:
     """Get prefix of subject/object in the MappingSetDataFrame.
 
     :param src: Source
     :param curie: CURIE
-    :return: Source
+
+    :returns: Source
     """
     if src is None:
         return curie.split(":")[0]
@@ -139,7 +142,7 @@ def get_src(src: Optional[str], curie: str):
         return src
 
 
-def summarize_cliques(doc: MappingSetDataFrame):
+def summarize_cliques(doc: MappingSetDataFrame) -> pd.DataFrame:
     """Summarize stats on a clique doc."""
     cliquedocs = split_into_cliques(doc)
     items = []

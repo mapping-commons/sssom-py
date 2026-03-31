@@ -1,0 +1,19 @@
+#curie_map:
+#  FBcv: http://purl.obolibrary.org/obo/FBcv_
+#  ORCID: https://orcid.org/
+#  obo: http://purl.obolibrary.org/obo/
+#mapping_set_id: http://purl.obolibrary.org/obo/fbcv/agr-vocabs.sssom.tsv
+#mapping_set_description: Mappings between the FlyBase Controlled Vocabulary (FBcv) and vocabulary terms from the Alliance of Genome Resources.
+#creator_id:
+#  - ORCID:0000-0002-6095-8718
+#license: https://creativecommons.org/licenses/by/4.0/
+subject_id	subject_label	predicate_id	object_label	object_category	mapping_justification	subject_source	object_type
+FBcv:0000222	male	skos:exactMatch	male	Genetic Sex	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0000334	female	skos:exactMatch	female	Genetic Sex	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003124	species study	skos:exactMatch	species	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003125	strain study	skos:exactMatch	genome variation	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003127	developmental stage study	skos:exactMatch	developmental stage	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003128	circadian rhythm study	skos:narrowMatch	time of day	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003129	cell cycle study	skos:exactMatch	cell cycle	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003130	tissue type study	skos:narrowMatch	anatomical structure	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal
+FBcv:0003131	cell type study	skos:exactMatch	cell type	Data Set Category Tags	semapv:ManualMappingCuration	obo:fbcv.owl	rdfs literal

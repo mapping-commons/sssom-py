@@ -1,0 +1,8 @@
+#curie_map:
+#  OBJ: https://example.org/object/
+#  SUBJ: https://example.org/subject/
+#mapping_set_id: https://example.org/sets/cardinality-with-literal-mappings
+#license: https://creativecommons.org/licenses/by/4.0/
+subject_id	predicate_id	object_id	object_label	mapping_justification	object_type	mapping_cardinality	comment
+SUBJ:0001	skos:exactMatch	OBJ:0001		semapv:LexicalMatching		1:n	S1 mapped to O1 (entity) and O1 (literal)
+SUBJ:0001	skos:exactMatch	OBJ:0001	OBJ:0001	semapv:MappingReview	rdfs literal	1:n	S1 mapped to O1 (entity) and O1 (literal)

@@ -21,12 +21,10 @@ class TestValidate(unittest.TestCase):
         self.validation_types = DEFAULT_VALIDATION_TYPES
         self.shacl_validation_types = [SchemaValidationType.Shacl]
 
-    def test_validate_json(self):
-        """
-        Test JSONSchemaValidation.
+    def test_validate_json(self) -> None:
+        """Test JSONSchemaValidation.
 
-        Validate of the incoming file (basic.tsv) abides
-        by the rules set by `sssom-schema`.
+        Validate of the incoming file (basic.tsv) abides by the rules set by `sssom-schema`.
         """
         rv = validate(self.correct_msdf1, self.validation_types)
         self.assertIsNotNone(rv)
@@ -34,8 +32,7 @@ class TestValidate(unittest.TestCase):
         json_validation = rv[SchemaValidationType.JsonSchema]
         self.assertEqual([], json_validation.results)
 
-    @unittest.skip(
-        reason="""\
+    @unittest.skip(reason="""\
 
     This test did not previously do what was expected. It was raising a validation error
     not because of the text below suggesting the validator was able to identify an issue
@@ -48,20 +45,17 @@ class TestValidate(unittest.TestCase):
     which includes `orcid` is added on parse, and this error goes away. Therefore, this test
     now fails, but again, this is a sporadic failure since the test was not correct in the first
     place. Therefore, this test is now skipped and marked for FIXME.
-    """
-    )
-    def test_validate_json_fail(self):
-        """
-        Test if JSONSchemaValidation fail is as expected.
+    """)
+    def test_validate_json_fail(self) -> None:
+        """Test if JSONSchemaValidation fail is as expected.
 
-        In this particular test case, the 'mapping_justification' slot
-        does not have EntityReference objects, but strings.
+        In this particular test case, the 'mapping_justification' slot does not have EntityReference
+        objects, but strings.
         """
         self.assertRaises(ValidationError, validate, self.bad_msdf1, self.validation_types)
 
-    def test_validate_shacl(self):
-        """
-        Test Shacl validation (Not implemented).
+    def test_validate_shacl(self) -> None:
+        """Test Shacl validation (Not implemented).
 
         Validate shacl based on `sssom-schema`.
         """
@@ -72,7 +66,7 @@ class TestValidate(unittest.TestCase):
             self.shacl_validation_types,
         )
 
-    def test_validate_sparql(self):
+    def test_validate_sparql(self) -> None:
         """Test Shacl validation (Not implemented)."""
         self.assertRaises(
             NotImplementedError,
@@ -81,6 +75,6 @@ class TestValidate(unittest.TestCase):
             self.shacl_validation_types,
         )
 
-    def test_validate_nando(self):
+    def test_validate_nando(self) -> None:
         """Test Shacl validation (Not implemented)."""
         self.assertRaises(ValidationError, validate, self.bad_nando, self.validation_types)

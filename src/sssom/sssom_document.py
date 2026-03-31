@@ -13,16 +13,13 @@ __all__ = [
 
 @dataclass()
 class MappingSetDocument:
-    """
-    Represents a single SSSOM document.
+    """Represents a single SSSOM document.
 
     A document is simply a holder for a MappingSet object plus a CURIE map
     """
 
     mapping_set: MappingSet
-    """
-    The main part of the document: a set of mappings plus metadata
-    """
+    """The main part of the document: a set of mappings plus metadata"""
 
     converter: Converter
 

@@ -6,9 +6,11 @@ import math
 import os
 import unittest
 from collections import ChainMap
+from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
+from typing import Any, Dict, Union, cast, get_args
 from xml.dom import minidom
 
 import numpy as np
@@ -17,22 +19,56 @@ import yaml
 from curies import Converter
 from rdflib import Graph
 
-from sssom.constants import CURIE_MAP, get_default_metadata
+from sssom.constants import (
+    CONFIDENCE,
+    CURIE_MAP,
+    LICENSE,
+    MAPPING_CARDINALITY,
+    MAPPING_DATE,
+    MAPPING_JUSTIFICATION,
+    MAPPING_SET_ID,
+    OBJECT_ID,
+    OBJECT_LABEL,
+    PREDICATE_ID,
+    PREDICATE_MODIFIER,
+    PUBLICATION_DATE,
+    RECORD_ID,
+    SUBJECT_ID,
+    SUBJECT_LABEL,
+    SUBJECT_TYPE,
+    get_default_metadata,
+)
 from sssom.context import SSSOM_BUILT_IN_PREFIXES, ensure_converter, get_converter
 from sssom.io import parse_file
 from sssom.parsers import (
     PARSING_FUNCTIONS,
+    SplitMethod,
     from_alignment_minidom,
     from_obographs,
     from_sssom_dataframe,
     from_sssom_json,
     from_sssom_rdf,
+    parse_sssom_rdf,
     parse_sssom_table,
+    split_dataframe_by_prefix,
 )
 from sssom.util import MappingSetDataFrame, sort_df_rows_columns
 from sssom.writers import WRITER_FUNCTIONS, write_table
-from tests.test_data import data_dir as test_data_dir
-from tests.test_data import test_out_dir
+from tests.constants import data_dir as test_data_dir
+from tests.constants import test_out_dir
+
+
+def assert_dict_contains(
+    test: unittest.TestCase,
+    expected_values: Dict[str, Any],
+    actual_values: Union[Dict[str, Any], pd.Series],
+) -> None:
+    """Check that a dictionary contains expected values."""
+    for k, v in expected_values.items():
+        if isinstance(v, float):
+            test.assertTrue(np.isclose(v, actual_values[k]))
+        else:
+            test.assertEqual(v, actual_values[k])
 
 
 class TestParse(unittest.TestCase):
@@ -73,7 +109,7 @@ class TestParse(unittest.TestCase):
         self.metadata = get_default_metadata()
         self.converter = get_converter()
 
-    def test_parse_sssom_dataframe_from_file(self):
+    def test_parse_sssom_dataframe_from_file(self) -> None:
         """Test parsing a TSV."""
         input_path = f"{test_data_dir}/basic.tsv"
         msdf = parse_sssom_table(input_path)
@@ -86,7 +122,7 @@ class TestParse(unittest.TestCase):
             f"{input_path} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_dataframe_from_stringio(self):
+    def test_parse_sssom_dataframe_from_stringio(self) -> None:
         """Test parsing a TSV."""
         input_path = test_data_dir.joinpath("basic.tsv")
         with input_path.open() as file:
@@ -102,7 +138,7 @@ class TestParse(unittest.TestCase):
             f"{input_path} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_dataframe_from_url(self):
+    def test_parse_sssom_dataframe_from_url(self) -> None:
         """Test parsing a TSV from a URL."""
         msdf = parse_sssom_table(self.df_url)
         output_path = os.path.join(test_out_dir, "test_parse_sssom_dataframe_url.tsv")
@@ -114,7 +150,7 @@ class TestParse(unittest.TestCase):
             f"{self.df_url} has the wrong number of mappings.",
         )
 
-    def test_parse_obographs(self):
+    def test_parse_obographs(self) -> None:
         """Test parsing OBO Graph JSON."""
         msdf = from_obographs(
             jsondoc=self.obographs,
@@ -127,12 +163,13 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             # this number went up from 8099 when the curies.Converter was introduced
             # since it was able to handle CURIE prefix and URI prefix synonyms
-            8966,
+            # updated to 9275 after obo.epm.json update (2026-03)
+            9275,
             len(msdf.df),
             f"{self.obographs_file} has the wrong number of mappings.",
         )
 
-    def test_parse_tsv(self):
+    def test_parse_tsv(self) -> None:
         """Test parsing TSV."""
         msdf = from_sssom_dataframe(df=self.df, prefix_map=self.df_converter, meta=self.df_meta)
         path = os.path.join(test_out_dir, "test_parse_tsv.tsv")
@@ -144,7 +181,25 @@ class TestParse(unittest.TestCase):
             f"{self.df_file} has the wrong number of mappings.",
         )
 
-    def test_parse_alignment_minidom(self):
+    def test_parse_tsv_with_literal_mappings(self) -> None:
+        """Test parsing a SSSOM/TSV file containing literal mappings."""
+        msdf = parse_sssom_table(f"{test_data_dir}/literals.sssom.tsv")
+        self.assertEqual(len(msdf.df), 9, "literals.sssom.tsv has the wrong number of mappings.")
+
+        # Same, but with the object_type slot being condensed
+        msdf = parse_sssom_table(f"{test_data_dir}/literals-condensed.sssom.tsv")
+        self.assertEqual(len(msdf.df), 9, "literal-condensed.tsv has the wrong number of mappings")
+
+        # With propagation disabled, this should fail because the
+        # validator can't know that the mappings are literal mappings
+        msdf = parse_sssom_table(f"{test_data_dir}/literals-condensed.sssom.tsv", propagate=False)
+        self.assertEqual(
+            len(msdf.df),
+            0,
+            "Unexpected success, got literal mappings we should not have been able to read from a condensed set",
+        )
+
+    def test_parse_alignment_minidom(self) -> None:
         """Test parsing an alignment XML."""
         msdf = from_alignment_minidom(
             dom=self.alignmentxml,
@@ -160,14 +215,12 @@ class TestParse(unittest.TestCase):
             f"{self.alignmentxml_file} has the wrong number of mappings.",
         )
 
-    def test_parse_alignment_xml(self):
+    def test_parse_alignment_xml(self) -> None:
         """Test parsing an alignment XML.
 
-        This issue should fail because entity 1 of the second mapping
-        is not in prefix map.
+        This issue should fail because entity 1 of the second mapping is not in prefix map.
         """
-        alignment_api_xml = dedent(
-            """\
+        alignment_api_xml = dedent("""\
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -198,8 +251,7 @@ class TestParse(unittest.TestCase):
                     </map>
                 </Alignment>
             </rdf:RDF>
-            """
-        )
+            """)
         alignmentxml = minidom.parseString(alignment_api_xml)
 
         prefix_map_without_prefix = {
@@ -245,7 +297,7 @@ class TestParse(unittest.TestCase):
         )
         self.assertEqual(expected_row_values, msdf_without_prefixmap.df.iloc[0].tolist())
 
-    def test_parse_sssom_rdf(self):
+    def test_parse_sssom_rdf(self) -> None:
         """Test parsing RDF."""
         msdf = from_sssom_rdf(g=self.rdf_graph, prefix_map=self.df_converter, meta=self.metadata)
         path = os.path.join(test_out_dir, "test_parse_sssom_rdf.tsv")
@@ -257,7 +309,39 @@ class TestParse(unittest.TestCase):
             f"{self.rdf_graph_file} has the wrong number of mappings.",
         )
 
-    def test_parse_sssom_json(self):
+    def test_parse_standard_and_old_style_rdf(self) -> None:
+        """Test parsing a RDF conforming to pre-standard and standard SSSOM/RDF serialisation."""
+        msdf = parse_sssom_rdf(f"{test_data_dir}/standard-rdf.ttl")
+        self.assertEqual(msdf.metadata[MAPPING_SET_ID], "https://example.org/sets/standard-rdf")
+        self.assertEqual(msdf.metadata[LICENSE], "https://creativecommons.org/licenses/by/4.0/")
+        self.assertEqual(msdf.metadata[PUBLICATION_DATE], date(2025, 10, 28))
+        expected_values = {
+            SUBJECT_ID: "ORGENT:0001",
+            OBJECT_ID: "COMENT:0011",
+            PREDICATE_ID: "skos:closeMatch",
+            MAPPING_JUSTIFICATION: "semapv:ManualMappingCuration",
+            SUBJECT_LABEL: "alice",
+            OBJECT_LABEL: "alpha",
+            SUBJECT_TYPE: "owl class",
+            MAPPING_CARDINALITY: "1:1",
+            PREDICATE_MODIFIER: "Not",
+            CONFIDENCE: 0.7,
+            MAPPING_DATE: date(2025, 10, 27),
+        }
+        assert_dict_contains(self, expected_values, cast(pd.Series, msdf.df.loc[0]))
+
+        msdf = parse_sssom_rdf(f"{test_data_dir}/pre-standard-rdf.ttl")
+        self.assertEqual(msdf.metadata[MAPPING_SET_ID], "https://example.org/sets/standard-rdf")
+        self.assertEqual(msdf.metadata[LICENSE], "https://creativecommons.org/licenses/by/4.0/")
+        self.assertEqual(msdf.metadata[PUBLICATION_DATE], date(2025, 10, 28))
+        assert_dict_contains(self, expected_values, cast(pd.Series, msdf.df.loc[0]))
+
+    def test_parse_rdf_with_record_id(self) -> None:
+        """Test parsing a RDF file containing record IDs as named resources."""
+        msdf = parse_sssom_rdf(f"{test_data_dir}/record-id-as-node.ttl")
+        self.assertEqual("mymaps:0001", msdf.df.loc[0][RECORD_ID])
+
+    def test_parse_sssom_json(self) -> None:
         """Test parsing JSON."""
         msdf = from_sssom_json(
             jsondoc=self.json,
@@ -288,7 +372,7 @@ class TestParse(unittest.TestCase):
     #     new_match_type = new_msdf.df["mapping_justification"]
     #     self.assertTrue(old_match_type.equals(new_match_type))
 
-    def test_read_sssom_table(self):
+    def test_read_sssom_table(self) -> None:
         """Test read SSSOM method to validate import of all columns."""
         input_path = os.path.join(test_data_dir, "basic3.tsv")
         msdf = parse_sssom_table(input_path)
@@ -318,6 +402,10 @@ class TestParse(unittest.TestCase):
             list(msdf.df.columns),
         )
 
+        # basic3.tsv is in a "half-condensed" state, so for the tests below
+        # to pass propagation must be disabled so that the original state
+        # is preserved
+        msdf = parse_sssom_table(input_path, propagate=False)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t").fillna("")
         imported_df = sort_df_rows_columns(imported_df)
         msdf.df = sort_df_rows_columns(msdf.df)
@@ -329,21 +417,22 @@ class TestParse(unittest.TestCase):
             "mapping_justification",
         ]
         for idx, row in msdf.df.iterrows():
-            for k, v in row.items():
+            for k, v in row.to_dict().items():
+                xxx = imported_df.iloc[idx][k]  # type: ignore
                 if v == np.nan:
-                    self.assertTrue(math.isnan(imported_df.iloc[idx][k]))
+                    self.assertTrue(math.isnan(xxx))
                 else:
                     if k not in list_cols:
                         if v is np.nan:
-                            self.assertTrue(imported_df.iloc[idx][k] is v)
+                            self.assertTrue(xxx is v)
                         else:
-                            self.assertEqual(imported_df.iloc[idx][k], v)
+                            self.assertEqual(xxx, v)
                     elif k == "mapping_justification":
-                        self.assertEqual(imported_df.iloc[idx][k], v)
+                        self.assertEqual(xxx, v)
                     else:
-                        self.assertEqual(imported_df.iloc[idx][k], v)
+                        self.assertEqual(xxx, v)
 
-    def test_parse_obographs_merged(self):
+    def test_parse_obographs_merged(self) -> None:
         """Test parsing OBO Graph JSON using custom prefix_map."""
         hp_json = f"{test_data_dir}/hp-subset.json"
         hp_meta = f"{test_data_dir}/hp-subset-metadata.yml"
@@ -365,7 +454,7 @@ class TestParse(unittest.TestCase):
         msdf = parse_sssom_table(outfile)
         self.assertTrue(custom_curie_map.items() <= msdf.prefix_map.items())
 
-    def test_parse_trailing_tabs_in_metadata_header(self):
+    def test_parse_trailing_tabs_in_metadata_header(self) -> None:
         """Test parsing a file containing trailing tabs in header."""
         input_path = f"{test_data_dir}/trailing-tabs.sssom.tsv"
         msdf = parse_sssom_table(input_path)
@@ -380,7 +469,7 @@ class TestParse(unittest.TestCase):
 class TestParseExplicit(unittest.TestCase):
     """This test case contains explicit tests for parsing."""
 
-    def _basic_round_trip(self, key: str):
+    def _basic_round_trip(self, key: str) -> None:
         """Test TSV => JSON => TSV using convert() + parse()."""
         parse_func = PARSING_FUNCTIONS[key]
         write_func, _write_format = WRITER_FUNCTIONS[key]
@@ -473,19 +562,19 @@ class TestParseExplicit(unittest.TestCase):
         # to the MappingSet if they are not present, but not updated if they are already present.
         self.assertEqual(combine_meta, reconstituted_msdf_with_meta.metadata)
 
-    def test_round_trip_json(self):
+    def test_round_trip_json(self) -> None:
         """Test writing then reading JSON."""
         self._basic_round_trip("json")
 
-    def test_round_trip_rdf(self):
+    def test_round_trip_rdf(self) -> None:
         """Test writing then reading RDF."""
         self._basic_round_trip("rdf")
 
-    def test_round_trip_tsv(self):
+    def test_round_trip_tsv(self) -> None:
         """Test writing then reading TSV."""
         self._basic_round_trip("tsv")
 
-    def test_strict_parsing(self):
+    def test_strict_parsing(self) -> None:
         """Test Strict parsing mode."""
         input_path = f"{test_data_dir}/basic_strict_fail.tsv"
         with open(input_path, "r") as file:
@@ -496,10 +585,13 @@ class TestParseExplicit(unittest.TestCase):
             parse_sssom_table(stream, strict=True)
 
         # Make sure it parses in non-strict mode
-        msdf = parse_sssom_table(stream)
-        self.assertEqual(len(msdf.df), 2)
+        with open(input_path, "r") as file:
+            input_string = file.read()
+        stream2 = io.StringIO(input_string)
+        msdf = parse_sssom_table(stream2, strict=False)
+        self.assertEqual(2, len(msdf.df))
 
-    def test_check_irregular_metadata(self):
+    def test_check_irregular_metadata(self) -> None:
         """Test if irregular metadata check works according to https://w3id.org/sssom/spec."""
         meta_fail_because_undeclared_extension = {
             "licenses": "http://licen.se",
@@ -536,3 +628,85 @@ class TestParseExplicit(unittest.TestCase):
         self.assertTrue(is_irregular_metadata_fail_missing_property_case)
         self.assertTrue(is_valid_extension)
         self.assertFalse(is_irregular_metadata_ok_case)
+
+
+class TestSplit(unittest.TestCase):
+    """A test case for dataframe utilities."""
+
+    def test_split_df(self) -> None:
+        """Test the precursor to SSSOM function."""
+        converter = Converter.from_prefix_map(
+            {
+                "p1": "https://example.org/p1/",
+                "p2": "https://example.org/p2/",
+                "p3": "https://example.org/p3/",
+                "p4": "https://example.org/p4/",
+                "p5": "https://example.org/p5/",
+                "p6": "https://example.org/p6/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "semapv": "https://w3id.org/semapv/vocab/",
+            }
+        )
+        subrows = [
+            ("p1:1", "skos:exactMatch", "p2:1", "semapv:ManualMappingCuration"),
+            ("p1:2", "skos:exactMatch", "p2:2", "semapv:ManualMappingCuration"),
+        ]
+        rows = [
+            *subrows,
+            ("p1:2", "skos:exactMatch", "p3:2", "semapv:ManualMappingCuration"),
+            ("p4:1", "skos:exactMatch", "p1:1", "semapv:ManualMappingCuration"),
+            ("p5:1", "skos:broadMatch", "p6:1", "semapv:ManualMappingCuration"),
+            ("p1:7", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            # the following rows have CURIEs whose prefixes aren't in the converter
+            ("x:1", "skos:broadMatch", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "x:2", "p2:7", "semapv:ManualMappingCuration"),
+            ("p1:1", "skos:broadMatch", "x:3", "semapv:ManualMappingCuration"),
+        ]
+        columns = ["subject_id", "predicate_id", "object_id", "mapping_justification"]
+        df = pd.DataFrame(rows, columns=columns)
+        msdf = from_sssom_dataframe(df, converter)
+
+        sdf = pd.DataFrame(subrows, columns=columns)
+
+        for method in [None, *get_args(SplitMethod)]:
+            with self.subTest(method=method):
+                self.assert_msdf(msdf, sdf, method)
+
+    def assert_msdf(
+        self, msdf: MappingSetDataFrame, sdf: pd.DataFrame, method: SplitMethod | None
+    ) -> None:
+        """Test the dataframe."""
+        # test that if there's ever an empty list, then it returns an empty dict
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, [], ["p2"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(split_dataframe_by_prefix(msdf, ["p1"], ["p2"], [], method=method))
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], [], ["skos:exactMatch"], method=method)
+        )
+
+        # test that missing prefixes don't result in anything
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["nope"], ["p2"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], ["nope"], ["skos:exactMatch"], method=method)
+        )
+        self.assertFalse(
+            split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["nope:nope"], method=method)
+        )
+
+        # test an explicit return with only single entries
+        rv = split_dataframe_by_prefix(msdf, ["p1"], ["p2"], ["skos:exactMatch"], method=method)
+        self.assertEqual(1, len(rv), msg="nothing was indexed")
+        self.assertIn("p1_exactmatch_p2", rv)
+        self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
+
+        # test an explicit return with multiple entries
+        rv = split_dataframe_by_prefix(
+            msdf, ["p1"], ["p2", "p3"], ["skos:exactMatch"], method=method
+        )
+        self.assertEqual(2, len(rv), msg="nothing was indexed")
+        self.assertIn("p1_exactmatch_p2", rv)
+        self.assertIn("p1_exactmatch_p3", rv)
+        self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())

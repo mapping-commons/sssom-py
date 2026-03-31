@@ -25,7 +25,7 @@ def get_test_file(filename: str) -> str:
 class SSSOMTestCase:
     """A dynamic test case for data tests."""
 
-    def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]):
+    def __init__(self, config: Mapping[str, Any], queries: Mapping[str, str]) -> None:
         """Initialize the SSSOM test case.
 
         :param config: A dictionary of configuration values
@@ -44,7 +44,9 @@ class SSSOMTestCase:
         self.prefix_map = config.get(CURIE_MAP)
 
     @staticmethod
-    def _query_tuple(config, tuple_id, queries_dict):
+    def _query_tuple(
+        config: Mapping[str, Any], tuple_id: str, queries_dict: Mapping[str, str]
+    ) -> list[tuple[str, Any]]:
         queries = []
         for t in config[tuple_id]:
             query = queries_dict[t]

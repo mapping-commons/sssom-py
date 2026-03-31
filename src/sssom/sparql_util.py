@@ -63,8 +63,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         cols.insert(-1, "object_label")
     colstr = " ".join(f"?{c}" for c in cols)
     olq = "OPTIONAL { ?object_id rdfs:label ?object_label }" if config.include_object_labels else ""
-    sparql = dedent(
-        f"""\
+    sparql = dedent(f"""\
     PREFIX rdfs: {RDFS.uri.n3()}
     SELECT {colstr}
     WHERE {{
@@ -76,8 +75,7 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
         {olq}
         BIND({g} as ?mapping_provider)
     }} {limitstr}
-    """
-    )
+    """)
     logging.info(sparql)
 
     sparql_wrapper = SPARQLWrapper(config.url, returnFormat=JSON)

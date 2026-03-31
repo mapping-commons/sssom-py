@@ -3,6 +3,7 @@
 import unittest
 from os.path import join
 
+from sssom.constants import MetadataType
 from sssom.io import annotate_file
 from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir
@@ -17,9 +18,9 @@ class TestSort(unittest.TestCase):
 
         self.validation_file = join(data_dir, "test_annotate_sssom.tsv")
 
-    def test_annotate(self):
+    def test_annotate(self) -> None:
         """Test annotation of metadata."""
-        kwargs = {
+        kwargs: MetadataType = {
             "mapping_set_id": ("http://w3id.org/my/mapping.sssom.tsv",),
             "mapping_set_version": ("2021-01-01",),
         }
@@ -30,9 +31,9 @@ class TestSort(unittest.TestCase):
         self.assertEqual(annotated_msdf.prefix_map, validation_msdf.prefix_map)
         self.assertEqual(len(annotated_msdf.df), len(validation_msdf.df))
 
-    def test_annotate_multivalued(self):
+    def test_annotate_multivalued(self) -> None:
         """Test annotation of metadata which are multivalued."""
-        kwargs = {
+        kwargs: MetadataType = {
             "creator_id": ("orcid:0123",),
         }
         annotated_msdf = annotate_file(input=self.input, **kwargs)
@@ -40,14 +41,14 @@ class TestSort(unittest.TestCase):
         self.assertTrue(len(annotated_msdf.metadata["creator_id"]), 3)
 
         # Pass same ORCID.
-        kwargs = {
+        kwargs_2: MetadataType = {
             "creator_id": ("orcid:1234",),
         }
-        annotated_msdf_2 = annotate_file(input=self.input, **kwargs)
+        annotated_msdf_2 = annotate_file(input=self.input, **kwargs_2)
         self.assertTrue(len(annotated_msdf_2.metadata["creator_id"]), 2)
 
-    def test_annotate_fail(self):
+    def test_annotate_fail(self) -> None:
         """Pass invalid param to see if it fails."""
-        kwargs = {"abcd": ("x:%", "y:%")}
+        kwargs: MetadataType = {"abcd": ("x:%", "y:%")}
         with self.assertRaises(ValueError):
             annotate_file(input=self.input, **kwargs)

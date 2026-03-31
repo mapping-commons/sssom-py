@@ -1,19 +1,37 @@
 """Constants."""
 
+from __future__ import annotations
+
+import importlib.resources
 import pathlib
 import uuid
+from dataclasses import dataclass
 from enum import Enum
 from functools import cached_property, lru_cache
-from typing import Any, Dict, List, Literal, Set, TextIO, Union
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 
-import importlib_resources
 import yaml
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
+from sssom_schema.datamodel.sssom_schema import SssomVersionEnum
 
 HERE = pathlib.Path(__file__).parent.resolve()
 
-SCHEMA_YAML = importlib_resources.files("sssom_schema").joinpath("schema/sssom_schema.yaml")
+SCHEMA_RESOURCES = importlib.resources.files("sssom_schema")
+SCHEMA_YAML = SCHEMA_RESOURCES.joinpath("schema/sssom_schema.yaml")
 EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
@@ -64,6 +82,7 @@ PREDICATE_MODIFIER = "predicate_modifier"
 PREDICATE_MODIFIER_NOT = "Not"
 PREDICATE_LABEL = "predicate_label"
 PREDICATE_TYPE = "predicate_type"
+PUBLICATION_DATE = "publication_date"
 OBJECT_ID = "object_id"
 OBJECT_LABEL = "object_label"
 OBJECT_CATEGORY = "object_category"
@@ -74,6 +93,7 @@ MAPPING_SET_ID = "mapping_set_id"
 MAPPING_SET_VERSION = "mapping_set_version"
 MAPPING_SET_GROUP = "mapping_set_group"
 MAPPING_SET_DESCRIPTION = "mapping_set_description"
+MAPPING_SET_CONFIDENCE = "mapping_set_confidence"
 CREATOR_ID = "creator_id"
 CREATOR_LABEL = "creator_label"
 AUTHOR_ID = "author_id"
@@ -89,7 +109,9 @@ MAPPING_PROVIDER = "mapping_provider"
 MAPPING_SET_SOURCE = "mapping_set_source"
 MAPPING_SOURCE = "mapping_source"
 MAPPING_CARDINALITY = "mapping_cardinality"
+CARDINALITY_SCOPE = "cardinality_scope"
 MAPPING_TOOL = "mapping_tool"
+MAPPING_TOOL_ID = "mapping_tool_id"
 MAPPING_TOOL_VERSION = "mapping_tool_version"
 MAPPING_DATE = "mapping_date"
 PBLICATION_DATE = "publication_date"
@@ -99,15 +121,24 @@ OBJECT_MATCH_FIELD = "object_match_field"
 MATCH_STRING = "match_string"
 SUBJECT_PREPROCESSING = "subject_preprocessing"
 OBJECT_PREPROCESSING = "object_preprocessing"
+RECORD_ID = "record_id"
 SEMANTIC_SIMILARITY_SCORE = "semantic_similarity_score"
 SEMANTIC_SIMILARITY_MEASURE = "semantic_similarity_measure"
 SEE_ALSO = "see_also"
 OTHER = "other"
 COMMENT = "comment"
+EXTENSION_DEFINITIONS = "extension_definitions"
+EXTENSION_SLOT_NAME = "slot_name"
 
 CURIE_MAP = "curie_map"
 SUBJECT_SOURCE_ID = "subject_source_id"
 OBJECT_SOURCE_ID = "object_source_id"
+
+# Special value for "unmapped" entities
+# see <https://mapping-commons.github.io/sssom/spec-model/#representing-unmapped-entities>
+NO_TERM_FOUND = "sssom:NoTermFound"
+
+ENTITY_TYPE_RDFS_LITERAL = "rdfs literal"
 
 # PREDICATES
 OWL_EQUIVALENT_CLASS = "owl:equivalentClass"
@@ -150,7 +181,7 @@ with open(HERE / "inverse_map.yaml", "r") as im:
 
 PREDICATE_INVERT_DICTIONARY = inverse_map["inverse_predicate_map"]
 
-COLUMN_INVERT_DICTIONARY = {
+COLUMN_INVERT_DICTIONARY: Mapping[str, str] = {
     SUBJECT_ID: OBJECT_ID,
     SUBJECT_LABEL: OBJECT_LABEL,
     SUBJECT_CATEGORY: OBJECT_CATEGORY,
@@ -202,22 +233,45 @@ class SchemaValidationType(str, Enum):
     StrictCurieFormat = "StrictCurieFormat"
 
 
-DEFAULT_VALIDATION_TYPES = [
+DEFAULT_VALIDATION_TYPES: List[SchemaValidationType] = [
     SchemaValidationType.JsonSchema,
     SchemaValidationType.PrefixMapCompleteness,
     SchemaValidationType.StrictCurieFormat,
 ]
 
 
+@dataclass
+class NewEnumValue(object):
+    """Represents a enum value that had been added posteriorly to 1.0.
+
+    Ideally that information should be encoded in the LinkML schema and
+    made available through the SSSOMSchemaView class below, but it does
+    not seem possible to annotate enum values in LinkML the way it can
+    be done for slots. So the information comes from the spec instead,
+    at <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
+    """
+
+    slots: list[str]  # Impacted slots
+    value: str  # The new value
+    added_in: tuple[int, int]  # Version that introduced the new value
+
+
+NEW_ENUM_VALUES = [
+    NewEnumValue([SUBJECT_TYPE, OBJECT_TYPE], "composed entity expression", (1, 1)),
+    NewEnumValue([MAPPING_CARDINALITY], "0:0", (1, 1)),
+]
+
+
 class SSSOMSchemaView(object):
-    """
-    SchemaView class from linkml which is instantiated when necessary.
+    """SchemaView class from linkml which is instantiated when necessary.
 
-    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322
-    Implemented via PR: https://github.com/mapping-commons/sssom-py/pull/323
+    Reason for this: https://github.com/mapping-commons/sssom-py/issues/322 Implemented via PR:
+    https://github.com/mapping-commons/sssom-py/pull/323
     """
 
-    def __new__(cls):
+    instance: ClassVar[SSSOMSchemaView]
+
+    def __new__(cls) -> SSSOMSchemaView:
         """Create a instance of the SSSOM schema view if non-existent."""
         if not hasattr(cls, "instance"):
             cls.instance = super(SSSOMSchemaView, cls).__new__(cls)
@@ -229,19 +283,19 @@ class SSSOMSchemaView(object):
         return SchemaView(SCHEMA_YAML)
 
     @cached_property
-    def dict(self) -> dict:
+    def dict(self) -> Dict[str, Any]:
         """Return SchemaView as a dictionary."""
-        return schema_as_dict(self.view.schema)
+        return schema_as_dict(self.view.schema)  # type: ignore
 
     @cached_property
     def mapping_slots(self) -> List[str]:
         """Return list of mapping slots."""
-        return self.view.get_class("mapping").slots
+        return self.view.get_class("mapping").slots  # type: ignore
 
     @cached_property
     def mapping_set_slots(self) -> List[str]:
         """Return list of mapping set slots."""
-        return self.view.get_class("mapping set").slots
+        return cast(List[str], self.view.get_class("mapping set").slots)
 
     @cached_property
     def multivalued_slots(self) -> Set[str]:
@@ -261,12 +315,70 @@ class SSSOMSchemaView(object):
     @cached_property
     def slots(self) -> Dict[str, str]:
         """Return the slots for SSSOMSchemaView object."""
-        return self.dict["slots"]
+        return self.dict["slots"]  # type: ignore
 
     @cached_property
     def double_slots(self) -> Set[str]:
         """Return the slot names for SSSOMSchemaView object."""
         return {k for k, v in self.dict["slots"].items() if v["range"] == "double"}
+
+    @cached_property
+    def propagatable_slots(self) -> List[str]:
+        """Return the names of all propagatable slots."""
+        slots = []
+        for slot_name in self.mapping_set_slots:
+            annotations = self.view.annotation_dict(slot_name)
+            if annotations is not None and "propagated" in annotations:
+                slots.append(slot_name)
+        return slots
+
+    def get_new_enum_values(self, after: Tuple[int, int] = (1, 0)) -> List[NewEnumValue]:
+        """Get enum values introduced after a given version of the specification.
+
+        :param after: The target version of the SSSOM specification, as
+                      a (major, minor) tuple. The default is (1,0),
+                      meaning all enum values introduced in any version
+                      after 1.0 will be returned.
+        :return: The list of newly introduced enum values.
+        """
+        return [v for v in NEW_ENUM_VALUES if v.added_in > after]
+
+    def get_minimum_version(
+        self, slot_name: str, class_name: str = "mapping"
+    ) -> Optional[Tuple[int, int]]:
+        """Get the minimum version of SSSOM required for a given slot.
+
+        :param slot_name: The queried slot.
+        :param class_name: The class the slot belongs to. This is needed
+                           because a slot may have been added to a class
+                           in a later version than the version in which
+                           it was first introduced in the schema.
+        :return: A tuple containing the major and minor numbers of the
+                 earliest version of SSSOM that defines the given slot
+                 in the given class. May be None if the requested slot
+                 name is not a valid slot name.
+        """
+        try:
+            slot = self.view.induced_slot(slot_name, class_name)
+            return parse_sssom_version(slot.annotations.added_in.value)
+        except AttributeError:  # No added_in annotation, defaults to 1.0
+            return (1, 0)
+        except ValueError:  # No such slot
+            return None
+
+
+def parse_sssom_version(version: str) -> Tuple[int, int]:
+    """Parse a string into a valid SSSOM version number.
+
+    :param version: The string to parse into a version number.
+    :return: A (major, minor) tuple.
+    """
+    v = [int(n) for n in SssomVersionEnum(version).code.text.split(".")]
+    if len(v) != 2:
+        # Should never happen, should be caught by the SssomVersionEnum
+        # constructor before we arrive here
+        raise ValueError("Invalid version")
+    return (v[0], v[1])
 
 
 @lru_cache(1)
@@ -293,14 +405,11 @@ def generate_mapping_set_id() -> str:
 def get_default_metadata() -> MetadataType:
     """Get default metadata.
 
-    :returns: A metadata dictionary containing a default
-        license with value :data:`DEFAULT_LICENSE` and an
-        auto-generated mapping set ID
+    :returns: A metadata dictionary containing a default license with value :data:`DEFAULT_LICENSE`
+        and an auto-generated mapping set ID
 
-    If you want to combine some metadata you loaded
-    but ensure that there is also default metadata,
-    the best tool is :class:`collections.ChainMap`.
-    You can do:
+    If you want to combine some metadata you loaded but ensure that there is also default metadata,
+    the best tool is :class:`collections.ChainMap`. You can do:
 
     .. code-block:: python
 
@@ -309,10 +418,7 @@ def get_default_metadata() -> MetadataType:
         from collections import ChainMap
         from sssom import get_default_metadata
 
-        metadata = dict(ChainMap(
-            my_metadata or {},
-            get_default_metadata()
-        ))
+        metadata = dict(ChainMap(my_metadata or {}, get_default_metadata()))
     """
     return {
         "mapping_set_id": generate_mapping_set_id(),
