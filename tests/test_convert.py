@@ -204,3 +204,21 @@ class TestConvert(unittest.TestCase):
     def assert_not_ask(self, graph: rdflib.Graph, query: str, *, msg: str | None = None) -> None:
         """Assert that the query returns a false answer."""
         self.assertFalse(graph.query(query).askAnswer, msg=msg)
+
+    def test_catch_mapping(self) -> None:
+        """Test _get_multi_values doesn't explode on a NaN."""
+        columns = ["subject_id", "predicate_id", "object_id", "mapping_justification", "creator_id"]
+        rows = [
+            ("ex:1", "ex:2", "ex:3", "semapv:UnspecifiedMapping", None),
+            ("ex:4", "ex:5", "ex:6", "semapv:UnspecifiedMapping", "ex:7|ex:8"),
+        ]
+        df = pd.DataFrame(rows, columns=columns)
+        converter = curies.Converter.from_prefix_map(
+            {
+                "ex": "https://example.org/",
+                "semapv": "https://w3id.org/semapv/vocab/",
+            }
+        )
+        metadata = {"mapping_set_id": "https://example.org/test.sssom.tsv"}
+        msdf = MappingSetDataFrame(df=df, converter=converter, metadata=metadata)
+        to_rdf_graph(msdf, hydrate=True)
