@@ -163,7 +163,8 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             # this number went up from 8099 when the curies.Converter was introduced
             # since it was able to handle CURIE prefix and URI prefix synonyms
-            8966,
+            # updated to 9275 after obo.epm.json update (2026-03)
+            9275,
             len(msdf.df),
             f"{self.obographs_file} has the wrong number of mappings.",
         )
@@ -219,8 +220,7 @@ class TestParse(unittest.TestCase):
 
         This issue should fail because entity 1 of the second mapping is not in prefix map.
         """
-        alignment_api_xml = dedent(
-            """\
+        alignment_api_xml = dedent("""\
             <?xml version="1.0" encoding="utf-8"?>
             <rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment"
                 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -251,8 +251,7 @@ class TestParse(unittest.TestCase):
                     </map>
                 </Alignment>
             </rdf:RDF>
-            """
-        )
+            """)
         alignmentxml = minidom.parseString(alignment_api_xml)
 
         prefix_map_without_prefix = {
@@ -392,7 +391,7 @@ class TestParse(unittest.TestCase):
         ]
         for idx, row in msdf.df.iterrows():
             for k, v in row.to_dict().items():
-                xxx = imported_df.iloc[idx][k]  # type:ignore
+                xxx = imported_df.iloc[idx][k]  # type: ignore
                 if v == np.nan:
                     self.assertTrue(math.isnan(xxx))
                 else:

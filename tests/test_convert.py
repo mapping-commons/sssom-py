@@ -42,57 +42,47 @@ class TestConvert(unittest.TestCase):
     def test_to_owl(self) -> None:
         """Test converting the basic example to an OWL RDF graph."""
         g = to_owl_graph(self.msdf)
-        results = g.query(
-            """SELECT DISTINCT ?e1 ?e2
+        results = g.query("""SELECT DISTINCT ?e1 ?e2
                 WHERE {
                   ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
-                }"""
-        )
+                }""")
         size = len(results)
         self.assertEqual(size, 90)
 
     def test_cob_to_owl(self) -> None:
         """Test converting the COB example to an OWL RDF graph."""
         g = to_owl_graph(self.cob)
-        results = g.query(
-            """SELECT DISTINCT ?e1 ?e2
+        results = g.query("""SELECT DISTINCT ?e1 ?e2
                 WHERE {
                   ?e1 <http://www.w3.org/2002/07/owl#equivalentClass> ?e2 .
-                }"""
-        )
+                }""")
         # g.serialize(destination="tmp/cob-external-test.owl", format="turtle")
         size = len(results)
         self.assertEqual(size, 60)
 
-        results = g.query(
-            """SELECT DISTINCT ?e1 ?e2
+        results = g.query("""SELECT DISTINCT ?e1 ?e2
                 WHERE {
                   ?e1 <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?e2 .
-                }"""
-        )
+                }""")
         size = len(results)
         self.assertEqual(size, 22)
 
-        results = g.query(
-            """SELECT DISTINCT ?e1 ?e2
+        results = g.query("""SELECT DISTINCT ?e1 ?e2
                 WHERE {
                   ?e1 <https://w3id.org/sssom/superClassOf> ?e2 .
-                }"""
-        )
+                }""")
         size = len(results)
         self.assertEqual(size, 0)
 
     def test_to_rdf(self) -> None:
         """Test converting the basic example to a basic RDF graph."""
         g = to_rdf_graph(self.msdf)
-        results = g.query(
-            """SELECT DISTINCT ?e1 ?e2 WHERE {
+        results = g.query("""SELECT DISTINCT ?e1 ?e2 WHERE {
                 ?ax a owl:Axiom ;
                         owl:annotatedSource ?e1 ;
                         owl:annotatedProperty owl:equivalentClass ;
                         owl:annotatedTarget ?e2 .
-                }"""
-        )
+                }""")
         size = len(results)
         self.assertEqual(size, 90)
 

@@ -33,6 +33,7 @@ import validators
 from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
+from packaging.version import parse
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 from typing_extensions import TypedDict
@@ -109,7 +110,7 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 # A value is trying to be set on a copy of a slice from a DataFrame
 pd.options.mode.copy_on_write = True
 # Get the version of pandas as a tuple of integers
-pandas_version = tuple(map(int, pd.__version__.split(".")))
+pandas_version = parse(pd.__version__).release  # Returns (major, minor, micro)
 
 
 @dataclass
@@ -1198,7 +1199,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     max_confidence_df: pd.DataFrame
     max_confidence_df = combined_normalized_subset.groupby(
         TRIPLES_IDS, as_index=False
-    )[  # type:ignore
+    )[  # type: ignore
         CONFIDENCE
     ].max()
 
@@ -1275,7 +1276,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
     if nan_df.empty:
         return_df = reconciled_df
     else:
-        return_df = reconciled_df.append(nan_df).drop_duplicates()  # type:ignore
+        return_df = reconciled_df.append(nan_df).drop_duplicates()  # type: ignore
 
     if not confidence_in_original:
         return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
@@ -1404,12 +1405,12 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
             continue
 
         slot_of_interest = sssom_schema_object.slots[property]
-        is_enum = slot_of_interest["range"] in sssom_schema_object.mapping_enum_keys  # type:ignore
+        is_enum = slot_of_interest["range"] in sssom_schema_object.mapping_enum_keys  # type: ignore
 
         # Check if the mapping_property is a list
         if isinstance(mapping_property, list):
             # If the property is an enumeration and it allows multiple values
-            if is_enum and slot_of_interest["multivalued"]:  # type:ignore
+            if is_enum and slot_of_interest["multivalued"]:  # type: ignore
                 # Join all the enum values into a string separated by '|'
                 map_dict[property] = "|".join(
                     enum_value.code.text for enum_value in mapping_property
@@ -1703,10 +1704,8 @@ def augment_metadata(
             elif isinstance(msdf.metadata[k], list):
                 tmp_value = msdf.metadata[k]
             else:
-                raise TypeError(
-                    f"{k} is of type {type(msdf.metadata[k])} and \
-                    as of now only slots of type 'str' or 'list' are handled."
-                )
+                raise TypeError(f"{k} is of type {type(msdf.metadata[k])} and \
+                    as of now only slots of type 'str' or 'list' are handled.")
             tmp_value.extend(v)
             msdf.metadata[k] = list(set(tmp_value))
         elif k in _get_sssom_schema_object().multivalued_slots and replace_multivalued:

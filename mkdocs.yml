@@ -1,0 +1,96 @@
+site_name: sssom-py
+site_description: Python library and CLI for working with SSSOM (Simple Standard for Sharing Ontology Mappings)
+site_url: https://mapping-commons.github.io/sssom-py
+repo_url: https://github.com/mapping-commons/sssom-py
+repo_name: mapping-commons/sssom-py
+edit_uri: edit/master/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.copy
+    - content.code.annotate
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - mkdocs-click
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_root_heading: true
+            heading_level: 3
+            members_order: source
+            docstring_style: numpy
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Quick Start: quickstart.md
+  - CLI Reference:
+    - Overview: cli/index.md
+    - Commands: cli/commands.md
+  - Python API:
+    - Overview: api/index.md
+    - Parsers: api/parsers.md
+    - Writers: api/writers.md
+    - Utilities: api/util.md
+    - I/O: api/io.md
+    - Validators: api/validators.md
+    - RDF Utilities: api/rdf_util.md
+    - Constants: api/constants.md
+  - Contributing: contributing.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/mapping-commons/sssom-py
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/sssom/
+
+copyright: Copyright &copy; 2022-2026 Chris Mungall, Nicolas Matentzoglu, Harshad Hegde
