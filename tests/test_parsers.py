@@ -375,7 +375,11 @@ class TestParse(unittest.TestCase):
     def test_read_sssom_table(self) -> None:
         """Test read SSSOM method to validate import of all columns."""
         input_path = os.path.join(test_data_dir, "basic3.tsv")
-        msdf = parse_sssom_table(input_path)
+        # basic3.tsv is in a "half-condensed" state, so for the tests below
+        # to pass propagation must be disabled so that the original state
+        # is preserved
+        msdf = parse_sssom_table(input_path, propagate=False)
+
         self.assertIn("comment", set(msdf.df.columns))
 
         # note that the subject_category and object_category get re-organized
@@ -402,10 +406,6 @@ class TestParse(unittest.TestCase):
             list(msdf.df.columns),
         )
 
-        # basic3.tsv is in a "half-condensed" state, so for the tests below
-        # to pass propagation must be disabled so that the original state
-        # is preserved
-        msdf = parse_sssom_table(input_path, propagate=False)
         imported_df = pd.read_csv(input_path, comment="#", sep="\t").fillna("")
         imported_df = sort_df_rows_columns(imported_df)
         msdf.df = sort_df_rows_columns(msdf.df)
