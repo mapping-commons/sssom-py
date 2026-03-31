@@ -379,6 +379,33 @@ class TestParse(unittest.TestCase):
         # to pass propagation must be disabled so that the original state
         # is preserved
         msdf = parse_sssom_table(input_path, propagate=False)
+
+        self.assertIn("comment", set(msdf.df.columns))
+
+        # note that the subject_category and object_category get re-organized
+        self.assertEqual(
+            [
+                "subject_id",
+                "subject_label",
+                "subject_category",
+                "predicate_id",
+                "predicate_modifier",
+                "object_id",
+                "object_label",
+                "object_category",
+                "mapping_justification",
+                "subject_source",
+                "object_source",
+                "mapping_tool",
+                "confidence",
+                "subject_match_field",
+                "object_match_field",
+                "match_string",
+                "comment",
+            ],
+            list(msdf.df.columns),
+        )
+
         imported_df = pd.read_csv(input_path, comment="#", sep="\t").fillna("")
         imported_df = sort_df_rows_columns(imported_df)
         msdf.df = sort_df_rows_columns(msdf.df)
