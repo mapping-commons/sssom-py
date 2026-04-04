@@ -1,5 +1,6 @@
 """Tests for SSSOM writers."""
 
+import importlib.util
 import json
 import os
 import unittest
@@ -8,7 +9,6 @@ from typing import Any, Dict
 import curies
 import pandas as pd
 from curies import Converter
-from fastapi.testclient import TestClient
 
 from sssom import MappingSetDataFrame
 from sssom.constants import (
@@ -190,8 +190,14 @@ class TestWrite(unittest.TestCase):
             f"{path} has the wrong number of mappings.",
         )
 
+    @unittest.skipUnless(
+        all(importlib.util.find_spec(name) for name in ("rdflib_endpoint", "fastapi", "httpx")),
+        "required packages not installed",
+    )
     def test_rdflib_endpoint(self) -> None:
         """Test serving SPARQL."""
+        from fastapi.testclient import TestClient
+
         rows = [
             (
                 "DOID:0050601",
