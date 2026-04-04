@@ -33,10 +33,10 @@ jobs:
         run: echo "${HOME}/.local/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Check code quality with flake8
-        run: uv run tox -e flake8
+        run: uvx tox -e flake8
 
       - name: Check static typing with MyPy
-        run: uv run tox -e mypy
+        run: uvx tox -e mypy
 
       - name: Test with pytest and generate coverage file
-        run: uv run tox -e py
+        run: uvx tox -e py
