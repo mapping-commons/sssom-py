@@ -3,7 +3,7 @@
 import logging
 from dataclasses import dataclass
 from textwrap import dedent
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 import pandas as pd
 from curies import Converter
@@ -80,11 +80,12 @@ def query_mappings(config: EndpointConfig) -> MappingSetDataFrame:
 
     sparql_wrapper = SPARQLWrapper(config.url, returnFormat=JSON)
     sparql_wrapper.setQuery(sparql)
-    results = sparql_wrapper.query().convert()
+    results = dict(sparql_wrapper.query().convert())  # type: ignore[arg-type]
+    bindings = cast(list[dict[str, dict[str, str]]], results["results"]["bindings"])
     df = pd.DataFrame(
         [
             {key: safe_compress(v["value"], config.converter) for key, v in result.items()}
-            for result in results["results"]["bindings"]
+            for result in bindings
         ]
     )
     return MappingSetDataFrame.with_converter(df=df, converter=config.converter)

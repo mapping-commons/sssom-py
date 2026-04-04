@@ -388,11 +388,12 @@ def get_rdflib_endpoint_app(
     from rdflib_endpoint import SparqlEndpoint
 
     graph = to_rdf_graph(msdf, hydrate=hydrate)
+    title = f"SSSOM SPARQL Endpoint for {msdf.metadata['mapping_set_id']}"
     app = SparqlEndpoint(
         graph=graph,
         cors_enabled=True,
-        title=f"SSSOM SPARQL Endpoint for {msdf.metadata['mapping_set_id']}",
-        description=msdf.metadata.get("mapping_set_description"),
+        title=title,
+        description=msdf.metadata.get("mapping_set_description") or title,
         example_query=EXAMPLE_SPARQL_QUERY,
     )
     return app
