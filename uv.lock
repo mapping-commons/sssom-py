@@ -2460,7 +2460,7 @@ wheels = [
 
 [[package]]
 name = "sssom"
-version = "0.4.18"
+version = "0.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -2516,7 +2516,7 @@ requires-dist = [
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.1" },
     { name = "packaging", specifier = ">=20.0" },
-    { name = "pandas", specifier = ">1.0.3" },
+    { name = "pandas", specifier = ">=2.0.0" },
     { name = "pansql", marker = "extra == 'pansql'", specifier = ">=0.0.1" },
     { name = "pyyaml", specifier = ">=6.0.1" },
     { name = "rdflib", specifier = ">=7.1.3" },
