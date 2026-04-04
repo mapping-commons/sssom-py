@@ -4,21 +4,20 @@ Contributions to sssom-py are welcome! Here's how to get started.
 
 ## Development setup
 
-```bash
-git clone https://github.com/mapping-commons/sssom-py
-cd sssom-py
-poetry install --all-extras
+```console
+$ git clone https://github.com/mapping-commons/sssom-py
+$ cd sssom-py
+$ uv sync --all-extras
 ```
 
 ## Running tests
 
-```bash
+```console
 # Run all tests
-poetry run pytest
+$ uv run pytest
 
 # Run with tox (includes linting, type checking, etc.)
-pip install tox
-tox
+$ uvx tox
 ```
 
 ## Code quality
@@ -33,15 +32,14 @@ The project uses:
 Run formatting before committing:
 
 ```bash
-poetry run black src/ tests/
-poetry run isort src/ tests/
+$ uvx black src/ tests/
+$ uvx isort src/ tests/
 ```
 
 ## Building documentation locally
 
-```bash
-poetry install --extras docs
-poetry run mkdocs serve
+```console
+$ uv run --extra docs mkdocs serve
 ```
 
 Then open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
