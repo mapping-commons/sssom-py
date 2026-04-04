@@ -786,7 +786,7 @@ def filter_redundant_rows(df: pd.DataFrame, ignore_predicate: bool = False) -> p
         ).drop_duplicates()
 
     if not confidence_in_original:
-        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
+        return_df = return_df.drop(columns=[CONFIDENCE])
     return return_df
 
 
@@ -1279,7 +1279,7 @@ def deal_with_negation(df: pd.DataFrame) -> pd.DataFrame:
         return_df = reconciled_df.append(nan_df).drop_duplicates()  # type: ignore
 
     if not confidence_in_original:
-        return_df = return_df.drop(columns=[CONFIDENCE], axis=1)
+        return_df = return_df.drop(columns=[CONFIDENCE])
 
     return return_df
 
