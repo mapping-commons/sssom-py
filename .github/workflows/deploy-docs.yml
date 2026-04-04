@@ -16,19 +16,15 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
+    - name: Install uv
+      uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
       with:
-        version: 2.1.3
-
-    - name: Install dependencies.
-      run: |
-        poetry add setuptools@latest
-        poetry install --extras docs
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
 
     - name: Build documentation.
       run: |
-        poetry run mkdocs build --strict
+        uv run --extra docs mkdocs build --strict
 
     - name: Deploy documentation.
       if: ${{ github.event_name == 'push' }}
