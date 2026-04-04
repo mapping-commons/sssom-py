@@ -5126,7 +5126,7 @@ common.</p>
 <a id="__codelineno-0-786" name="__codelineno-0-786"></a>        <span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 <a id="__codelineno-0-787" name="__codelineno-0-787"></a>
 <a id="__codelineno-0-788" name="__codelineno-0-788"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">confidence_in_original</span><span class="p">:</span>
-<a id="__codelineno-0-789" name="__codelineno-0-789"></a>        <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-789" name="__codelineno-0-789"></a>        <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">])</span>
 <a id="__codelineno-0-790" name="__codelineno-0-790"></a>    <span class="k">return</span> <span class="n">return_df</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -6311,7 +6311,7 @@ common.</p>
 <a id="__codelineno-0-1279" name="__codelineno-0-1279"></a>        <span class="n">return_df</span> <span class="o">=</span> <span class="n">reconciled_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nan_df</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-0-1280" name="__codelineno-0-1280"></a>
 <a id="__codelineno-0-1281" name="__codelineno-0-1281"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">confidence_in_original</span><span class="p">:</span>
-<a id="__codelineno-0-1282" name="__codelineno-0-1282"></a>        <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-1282" name="__codelineno-0-1282"></a>        <span class="n">return_df</span> <span class="o">=</span> <span class="n">return_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIDENCE</span><span class="p">])</span>
 <a id="__codelineno-0-1283" name="__codelineno-0-1283"></a>
 <a id="__codelineno-0-1284" name="__codelineno-0-1284"></a>    <span class="k">return</span> <span class="n">return_df</span>
 </code></pre></div></td></tr></table></div>
