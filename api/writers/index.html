@@ -2127,21 +2127,23 @@
 <span class="normal"><a href="#__codelineno-0-395">395</a></span>
 <span class="normal"><a href="#__codelineno-0-396">396</a></span>
 <span class="normal"><a href="#__codelineno-0-397">397</a></span>
-<span class="normal"><a href="#__codelineno-0-398">398</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-384" name="__codelineno-0-384"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_rdflib_endpoint_app</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-398">398</a></span>
+<span class="normal"><a href="#__codelineno-0-399">399</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-384" name="__codelineno-0-384"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_rdflib_endpoint_app</span><span class="p">(</span>
 <a id="__codelineno-0-385" name="__codelineno-0-385"></a>    <span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">hydrate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <a id="__codelineno-0-386" name="__codelineno-0-386"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rdflib_endpoint</span><span class="o">.</span><span class="n">SparqlEndpoint</span><span class="p">:</span>
 <a id="__codelineno-0-387" name="__codelineno-0-387"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a FastAPI app that serves the mappings from a SPARQL endpoint.&quot;&quot;&quot;</span>
 <a id="__codelineno-0-388" name="__codelineno-0-388"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib_endpoint</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparqlEndpoint</span>
 <a id="__codelineno-0-389" name="__codelineno-0-389"></a>
 <a id="__codelineno-0-390" name="__codelineno-0-390"></a>    <span class="n">graph</span> <span class="o">=</span> <span class="n">to_rdf_graph</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">hydrate</span><span class="o">=</span><span class="n">hydrate</span><span class="p">)</span>
-<a id="__codelineno-0-391" name="__codelineno-0-391"></a>    <span class="n">app</span> <span class="o">=</span> <span class="n">SparqlEndpoint</span><span class="p">(</span>
-<a id="__codelineno-0-392" name="__codelineno-0-392"></a>        <span class="n">graph</span><span class="o">=</span><span class="n">graph</span><span class="p">,</span>
-<a id="__codelineno-0-393" name="__codelineno-0-393"></a>        <span class="n">cors_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-0-394" name="__codelineno-0-394"></a>        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;SSSOM SPARQL Endpoint for </span><span class="si">{</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;mapping_set_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-395" name="__codelineno-0-395"></a>        <span class="n">description</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_description&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-396" name="__codelineno-0-396"></a>        <span class="n">example_query</span><span class="o">=</span><span class="n">EXAMPLE_SPARQL_QUERY</span><span class="p">,</span>
-<a id="__codelineno-0-397" name="__codelineno-0-397"></a>    <span class="p">)</span>
-<a id="__codelineno-0-398" name="__codelineno-0-398"></a>    <span class="k">return</span> <span class="n">app</span>
+<a id="__codelineno-0-391" name="__codelineno-0-391"></a>    <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SSSOM SPARQL Endpoint for </span><span class="si">{</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;mapping_set_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-0-392" name="__codelineno-0-392"></a>    <span class="n">app</span> <span class="o">=</span> <span class="n">SparqlEndpoint</span><span class="p">(</span>
+<a id="__codelineno-0-393" name="__codelineno-0-393"></a>        <span class="n">graph</span><span class="o">=</span><span class="n">graph</span><span class="p">,</span>
+<a id="__codelineno-0-394" name="__codelineno-0-394"></a>        <span class="n">cors_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-0-395" name="__codelineno-0-395"></a>        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+<a id="__codelineno-0-396" name="__codelineno-0-396"></a>        <span class="n">description</span><span class="o">=</span><span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_description&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">title</span><span class="p">,</span>
+<a id="__codelineno-0-397" name="__codelineno-0-397"></a>        <span class="n">example_query</span><span class="o">=</span><span class="n">EXAMPLE_SPARQL_QUERY</span><span class="p">,</span>
+<a id="__codelineno-0-398" name="__codelineno-0-398"></a>    <span class="p">)</span>
+<a id="__codelineno-0-399" name="__codelineno-0-399"></a>    <span class="k">return</span> <span class="n">app</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2176,8 +2178,7 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/sssom/writers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-401">401</a></span>
-<span class="normal"><a href="#__codelineno-0-402">402</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-402">402</a></span>
 <span class="normal"><a href="#__codelineno-0-403">403</a></span>
 <span class="normal"><a href="#__codelineno-0-404">404</a></span>
 <span class="normal"><a href="#__codelineno-0-405">405</a></span>
@@ -2359,190 +2360,191 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 <span class="normal"><a href="#__codelineno-0-581">581</a></span>
 <span class="normal"><a href="#__codelineno-0-582">582</a></span>
 <span class="normal"><a href="#__codelineno-0-583">583</a></span>
-<span class="normal"><a href="#__codelineno-0-584">584</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-401" name="__codelineno-0-401"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a id="__codelineno-0-402" name="__codelineno-0-402"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.</span>
-<a id="__codelineno-0-403" name="__codelineno-0-403"></a>
-<a id="__codelineno-0-404" name="__codelineno-0-404"></a><span class="sd">    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/</span>
-<a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="sd">        additional metadata.</span>
-<a id="__codelineno-0-406" name="__codelineno-0-406"></a>
-<a id="__codelineno-0-407" name="__codelineno-0-407"></a><span class="sd">    :returns: Dict: A Dictionary serializable as JSON.</span>
-<a id="__codelineno-0-408" name="__codelineno-0-408"></a>
-<a id="__codelineno-0-409" name="__codelineno-0-409"></a><span class="sd">    .. seealso::</span>
-<a id="__codelineno-0-410" name="__codelineno-0-410"></a>
-<a id="__codelineno-0-411" name="__codelineno-0-411"></a><span class="sd">        ConceptMap=SSSOM mapping spreadsheet</span>
-<a id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sd">        https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</span>
-<a id="__codelineno-0-413" name="__codelineno-0-413"></a>
-<a id="__codelineno-0-414" name="__codelineno-0-414"></a><span class="sd">    .. todo:: add to CLI &amp; to these functions: r4 vs r5 param</span>
-<a id="__codelineno-0-415" name="__codelineno-0-415"></a>
-<a id="__codelineno-0-416" name="__codelineno-0-416"></a><span class="sd">    .. todo:: What if the msdf doesn&#39;t have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?</span>
-<a id="__codelineno-0-417" name="__codelineno-0-417"></a>
-<a id="__codelineno-0-418" name="__codelineno-0-418"></a><span class="sd">    .. todo:: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))</span>
-<a id="__codelineno-0-419" name="__codelineno-0-419"></a>
-<a id="__codelineno-0-420" name="__codelineno-0-420"></a><span class="sd">    .. todo:: mapping_justification consider `ValueString` -&gt; `ValueCoding` https://github.com/timsbiomed/issues/issues/152</span>
-<a id="__codelineno-0-421" name="__codelineno-0-421"></a>
-<a id="__codelineno-0-422" name="__codelineno-0-422"></a><span class="sd">    .. todo:: when/how to conform to R5 instead of R4? https://build.fhir.org/conceptmap.html</span>
-<a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-424" name="__codelineno-0-424"></a>    <span class="c1"># Constants</span>
-<a id="__codelineno-0-425" name="__codelineno-0-425"></a>    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
-<a id="__codelineno-0-426" name="__codelineno-0-426"></a>    <span class="c1"># TODO: R4 (try this first)</span>
-<a id="__codelineno-0-427" name="__codelineno-0-427"></a>    <span class="c1">#  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint</span>
-<a id="__codelineno-0-428" name="__codelineno-0-428"></a>    <span class="c1">#  https://www.hl7.org/fhir/r4/conceptmap.html</span>
-<a id="__codelineno-0-429" name="__codelineno-0-429"></a>    <span class="c1"># todo: r4: if not found, should likely be `null` or something. check docs to see if nullable, else ask on Zulip</span>
-<a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="c1"># TODO: R5 Needs to be one of:</span>
-<a id="__codelineno-0-431" name="__codelineno-0-431"></a>    <span class="c1">#  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to</span>
-<a id="__codelineno-0-432" name="__codelineno-0-432"></a>    <span class="c1">#  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html</span>
-<a id="__codelineno-0-433" name="__codelineno-0-433"></a>    <span class="c1">#  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones</span>
-<a id="__codelineno-0-434" name="__codelineno-0-434"></a>    <span class="c1">#  and then add the original SSSOM mapping CURIE fields somewhere else</span>
-<a id="__codelineno-0-435" name="__codelineno-0-435"></a>    <span class="c1"># https://www.hl7.org/fhir/valueset-concept-map-equivalence.html</span>
-<a id="__codelineno-0-436" name="__codelineno-0-436"></a>    <span class="c1"># https://github.com/mapping-commons/sssom-py/issues/258</span>
-<a id="__codelineno-0-437" name="__codelineno-0-437"></a>    <span class="n">equivalence_map</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-438" name="__codelineno-0-438"></a>        <span class="c1"># relateedto: The concepts are related to each other, and have at least some overlap in meaning, but the exact</span>
-<a id="__codelineno-0-439" name="__codelineno-0-439"></a>        <span class="c1">#   relationship is not known.</span>
-<a id="__codelineno-0-440" name="__codelineno-0-440"></a>        <span class="s2">&quot;skos:related&quot;</span><span class="p">:</span> <span class="s2">&quot;relatedto&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-441" name="__codelineno-0-441"></a>        <span class="s2">&quot;skos:relatedMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;relatedto&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
-<a id="__codelineno-0-442" name="__codelineno-0-442"></a>        <span class="c1"># equivalent: The definitions of the concepts mean the same thing (including when structural implications of</span>
-<a id="__codelineno-0-443" name="__codelineno-0-443"></a>        <span class="c1">#   meaning are considered) (i.e. extensionally identical).</span>
-<a id="__codelineno-0-444" name="__codelineno-0-444"></a>        <span class="s2">&quot;skos:exactMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;equivalent&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-445" name="__codelineno-0-445"></a>        <span class="c1"># equal: The definitions of the concepts are exactly the same (i.e. only grammatical differences) and structural</span>
-<a id="__codelineno-0-446" name="__codelineno-0-446"></a>        <span class="c1">#   implications of meaning are identical or irrelevant (i.e. intentionally identical).</span>
-<a id="__codelineno-0-447" name="__codelineno-0-447"></a>        <span class="s2">&quot;equal&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">,</span>  <span class="c1"># todo what&#39;s difference between this and above? which to use?</span>
-<a id="__codelineno-0-448" name="__codelineno-0-448"></a>        <span class="c1"># wider: The target mapping is wider in meaning than the source concept.</span>
-<a id="__codelineno-0-449" name="__codelineno-0-449"></a>        <span class="s2">&quot;skos:broader&quot;</span><span class="p">:</span> <span class="s2">&quot;wider&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-450" name="__codelineno-0-450"></a>        <span class="s2">&quot;skos:broadMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;wider&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
-<a id="__codelineno-0-451" name="__codelineno-0-451"></a>        <span class="c1"># subsumes: The target mapping subsumes the meaning of the source concept (e.g. the source is-a target).</span>
-<a id="__codelineno-0-452" name="__codelineno-0-452"></a>        <span class="s2">&quot;rdfs:subClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;subsumes&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-453" name="__codelineno-0-453"></a>        <span class="c1"># narrower: The target mapping is narrower in meaning than the source concept. The sense in which the mapping is</span>
-<a id="__codelineno-0-454" name="__codelineno-0-454"></a>        <span class="c1">#   narrower SHALL be described in the comments in this case, and applications should be careful when attempting</span>
-<a id="__codelineno-0-455" name="__codelineno-0-455"></a>        <span class="c1">#   to use these mappings operationally.</span>
-<a id="__codelineno-0-456" name="__codelineno-0-456"></a>        <span class="s2">&quot;skos:narrower&quot;</span><span class="p">:</span> <span class="s2">&quot;narrower&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-457" name="__codelineno-0-457"></a>        <span class="s2">&quot;skos:narrowMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;narrower&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
-<a id="__codelineno-0-458" name="__codelineno-0-458"></a>        <span class="c1"># specializes: The target mapping specializes the meaning of the source concept (e.g. the target is-a source).</span>
-<a id="__codelineno-0-459" name="__codelineno-0-459"></a>        <span class="s2">&quot;sssom:superClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;specializes&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-460" name="__codelineno-0-460"></a>        <span class="c1"># inexact: The target mapping overlaps with the source concept, but both source and target cover additional</span>
-<a id="__codelineno-0-461" name="__codelineno-0-461"></a>        <span class="c1"># meaning, or the definitions are imprecise and it is uncertain whether they have the same boundaries to their</span>
-<a id="__codelineno-0-462" name="__codelineno-0-462"></a>        <span class="c1"># meaning. The sense in which the mapping is inexact SHALL be described in the comments in this case, and</span>
-<a id="__codelineno-0-463" name="__codelineno-0-463"></a>        <span class="c1"># applications should be careful when attempting to use these mappings operationally</span>
-<a id="__codelineno-0-464" name="__codelineno-0-464"></a>        <span class="s2">&quot;skos:closeMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;inexact&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-465" name="__codelineno-0-465"></a>        <span class="c1"># unmatched: There is no match for this concept in the target code system.</span>
-<a id="__codelineno-0-466" name="__codelineno-0-466"></a>        <span class="c1">#   todo: this is more complicated. This will be a combination of predicate_id and predicate_modifier (if</span>
-<a id="__codelineno-0-467" name="__codelineno-0-467"></a>        <span class="c1">#    present). See: https://github.com/mapping-commons/sssom/issues/185</span>
-<a id="__codelineno-0-468" name="__codelineno-0-468"></a>        <span class="s2">&quot;unmatched&quot;</span><span class="p">:</span> <span class="s2">&quot;unmatched&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-469" name="__codelineno-0-469"></a>        <span class="c1"># disjoint: This is an explicit assertion that there is no mapping between the</span>
-<a id="__codelineno-0-470" name="__codelineno-0-470"></a>        <span class="c1"># source and target concept.</span>
-<a id="__codelineno-0-471" name="__codelineno-0-471"></a>        <span class="s2">&quot;owl:disjointWith&quot;</span><span class="p">:</span> <span class="s2">&quot;disjoint&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-472" name="__codelineno-0-472"></a>    <span class="p">}</span>
-<a id="__codelineno-0-473" name="__codelineno-0-473"></a>
-<a id="__codelineno-0-474" name="__codelineno-0-474"></a>    <span class="c1"># Intermediary variables</span>
-<a id="__codelineno-0-475" name="__codelineno-0-475"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
-<a id="__codelineno-0-476" name="__codelineno-0-476"></a>    <span class="n">mapping_set_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-477" name="__codelineno-0-477"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mapping_set_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.sssom.tsv&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-478" name="__codelineno-0-478"></a>
-<a id="__codelineno-0-479" name="__codelineno-0-479"></a>    <span class="c1"># Construct JSON</span>
-<a id="__codelineno-0-480" name="__codelineno-0-480"></a>    <span class="n">json_obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-481" name="__codelineno-0-481"></a>        <span class="s2">&quot;resourceType&quot;</span><span class="p">:</span> <span class="s2">&quot;ConceptMap&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-482" name="__codelineno-0-482"></a>        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">mapping_set_id</span><span class="p">,</span>
-<a id="__codelineno-0-483" name="__codelineno-0-483"></a>        <span class="c1"># Assumes mapping_set_id is a URI w/ artefact name at end. System becomes URI stem, value becomes artefact name</span>
-<a id="__codelineno-0-484" name="__codelineno-0-484"></a>        <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-485" name="__codelineno-0-485"></a>            <span class="p">{</span>
-<a id="__codelineno-0-486" name="__codelineno-0-486"></a>                <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapping_set_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-487" name="__codelineno-0-487"></a>                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">mapping_set_id</span><span class="p">,</span>
-<a id="__codelineno-0-488" name="__codelineno-0-488"></a>            <span class="p">}</span>
-<a id="__codelineno-0-489" name="__codelineno-0-489"></a>        <span class="p">],</span>
-<a id="__codelineno-0-490" name="__codelineno-0-490"></a>        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_version&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-491" name="__codelineno-0-491"></a>        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-<a id="__codelineno-0-492" name="__codelineno-0-492"></a>        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;draft&quot;</span><span class="p">,</span>  <span class="c1"># todo: when done: draft | active | retired | unknown</span>
-<a id="__codelineno-0-493" name="__codelineno-0-493"></a>        <span class="s2">&quot;experimental&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># todo: False when converter finished</span>
-<a id="__codelineno-0-494" name="__codelineno-0-494"></a>        <span class="c1"># todo: should this be date of last converted to FHIR json instead?</span>
-<a id="__codelineno-0-495" name="__codelineno-0-495"></a>        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-496" name="__codelineno-0-496"></a>        <span class="c1"># &quot;publisher&quot;: &quot;HL7, Inc&quot;,  # todo: conceptmap</span>
-<a id="__codelineno-0-497" name="__codelineno-0-497"></a>        <span class="c1"># &quot;contact&quot;: [{  # todo: conceptmap</span>
-<a id="__codelineno-0-498" name="__codelineno-0-498"></a>        <span class="c1">#     &quot;name&quot;: &quot;FHIR project team (example)&quot;,</span>
-<a id="__codelineno-0-499" name="__codelineno-0-499"></a>        <span class="c1">#     &quot;telecom&quot;: [{</span>
-<a id="__codelineno-0-500" name="__codelineno-0-500"></a>        <span class="c1">#         &quot;system&quot;: &quot;url&quot;,</span>
-<a id="__codelineno-0-501" name="__codelineno-0-501"></a>        <span class="c1">#         &quot;value&quot;: &quot;http://hl7.org/fhir&quot;}]</span>
-<a id="__codelineno-0-502" name="__codelineno-0-502"></a>        <span class="c1"># }],</span>
-<a id="__codelineno-0-503" name="__codelineno-0-503"></a>        <span class="c1"># &quot;description&quot;: &quot;&quot;,  # todo: conceptmap</span>
-<a id="__codelineno-0-504" name="__codelineno-0-504"></a>        <span class="c1"># &quot;useContext&quot;: [{  # todo: conceptmap</span>
-<a id="__codelineno-0-505" name="__codelineno-0-505"></a>        <span class="c1">#     &quot;code&quot;: {</span>
-<a id="__codelineno-0-506" name="__codelineno-0-506"></a>        <span class="c1">#         &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/usage-context-type&quot;,</span>
-<a id="__codelineno-0-507" name="__codelineno-0-507"></a>        <span class="c1">#         &quot;code&quot;: &quot;venue&quot; },</span>
-<a id="__codelineno-0-508" name="__codelineno-0-508"></a>        <span class="c1">#     &quot;valueCodeableConcept&quot;: {</span>
-<a id="__codelineno-0-509" name="__codelineno-0-509"></a>        <span class="c1">#         &quot;text&quot;: &quot;for CCDA Usage&quot; }</span>
-<a id="__codelineno-0-510" name="__codelineno-0-510"></a>        <span class="c1"># }],</span>
-<a id="__codelineno-0-511" name="__codelineno-0-511"></a>        <span class="c1"># &quot;jurisdiction&quot;: [{  # todo: conceptmap</span>
-<a id="__codelineno-0-512" name="__codelineno-0-512"></a>        <span class="c1">#     &quot;coding&quot;: [{</span>
-<a id="__codelineno-0-513" name="__codelineno-0-513"></a>        <span class="c1">#         &quot;system&quot;: &quot;urn:iso:std:iso:3166&quot;,</span>
-<a id="__codelineno-0-514" name="__codelineno-0-514"></a>        <span class="c1">#         &quot;code&quot;: &quot;US&quot; }]</span>
-<a id="__codelineno-0-515" name="__codelineno-0-515"></a>        <span class="c1"># }],</span>
-<a id="__codelineno-0-516" name="__codelineno-0-516"></a>        <span class="c1"># &quot;purpose&quot;: &quot;&quot;,  # todo: conceptmap</span>
-<a id="__codelineno-0-517" name="__codelineno-0-517"></a>        <span class="s2">&quot;copyright&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;license&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-518" name="__codelineno-0-518"></a>        <span class="c1"># TODO: Might want to make each &quot;group&quot; first, if there is more than 1 set of ontology1::ontology2</span>
-<a id="__codelineno-0-519" name="__codelineno-0-519"></a>        <span class="c1">#  ...within a given MappingSet / set of SSSOM TSV rows.</span>
-<a id="__codelineno-0-520" name="__codelineno-0-520"></a>        <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-521" name="__codelineno-0-521"></a>            <span class="p">{</span>
-<a id="__codelineno-0-522" name="__codelineno-0-522"></a>                <span class="s2">&quot;element&quot;</span><span class="p">:</span> <span class="p">[]</span>
-<a id="__codelineno-0-523" name="__codelineno-0-523"></a>                <span class="c1"># &quot;unmapped&quot;: {  # todo: conceptmap</span>
-<a id="__codelineno-0-524" name="__codelineno-0-524"></a>                <span class="c1">#     &quot;mode&quot;: &quot;fixed&quot;,</span>
-<a id="__codelineno-0-525" name="__codelineno-0-525"></a>                <span class="c1">#     &quot;code&quot;: &quot;temp&quot;,</span>
-<a id="__codelineno-0-526" name="__codelineno-0-526"></a>                <span class="c1">#     &quot;display&quot;: &quot;temp&quot;</span>
-<a id="__codelineno-0-527" name="__codelineno-0-527"></a>                <span class="c1"># }</span>
-<a id="__codelineno-0-528" name="__codelineno-0-528"></a>            <span class="p">}</span>
-<a id="__codelineno-0-529" name="__codelineno-0-529"></a>        <span class="p">],</span>
-<a id="__codelineno-0-530" name="__codelineno-0-530"></a>    <span class="p">}</span>
-<a id="__codelineno-0-531" name="__codelineno-0-531"></a>    <span class="k">if</span> <span class="s2">&quot;mapping_set_title&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-<a id="__codelineno-0-532" name="__codelineno-0-532"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_title&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-533" name="__codelineno-0-533"></a>
-<a id="__codelineno-0-534" name="__codelineno-0-534"></a>    <span class="c1"># todo: Override? but how? (2024/04/05 Joe: idr what I was trying to override)</span>
-<a id="__codelineno-0-535" name="__codelineno-0-535"></a>    <span class="k">if</span> <span class="s2">&quot;subject_source&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-<a id="__codelineno-0-536" name="__codelineno-0-536"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;sourceUri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;subject_source&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-537" name="__codelineno-0-537"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;subject_source&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-538" name="__codelineno-0-538"></a>    <span class="k">if</span> <span class="s2">&quot;object_source&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-<a id="__codelineno-0-539" name="__codelineno-0-539"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;targetUri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;object_source&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-540" name="__codelineno-0-540"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;object_source&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-541" name="__codelineno-0-541"></a>
-<a id="__codelineno-0-542" name="__codelineno-0-542"></a>    <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-<a id="__codelineno-0-543" name="__codelineno-0-543"></a>        <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-544" name="__codelineno-0-544"></a>            <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-545" name="__codelineno-0-545"></a>            <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: if empty, don&#39;t add this key</span>
-<a id="__codelineno-0-546" name="__codelineno-0-546"></a>            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-547" name="__codelineno-0-547"></a>                <span class="p">{</span>
-<a id="__codelineno-0-548" name="__codelineno-0-548"></a>                    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-549" name="__codelineno-0-549"></a>                    <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: if empty, don&#39;t add this key</span>
-<a id="__codelineno-0-550" name="__codelineno-0-550"></a>                    <span class="s2">&quot;equivalence&quot;</span><span class="p">:</span> <span class="n">equivalence_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-0-551" name="__codelineno-0-551"></a>                        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-552" name="__codelineno-0-552"></a>                    <span class="p">),</span>  <span class="c1"># r4</span>
-<a id="__codelineno-0-553" name="__codelineno-0-553"></a>                    <span class="c1"># &quot;relationship&quot;: row[&#39;predicate_id&#39;],  # r5</span>
-<a id="__codelineno-0-554" name="__codelineno-0-554"></a>                    <span class="c1"># &quot;comment&quot;: &#39;&#39;,</span>
-<a id="__codelineno-0-555" name="__codelineno-0-555"></a>                    <span class="s2">&quot;extension&quot;</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-556" name="__codelineno-0-556"></a>                        <span class="p">{</span>
-<a id="__codelineno-0-557" name="__codelineno-0-557"></a>                            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://example.org/fhir/StructureDefinition/mapping_justification&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-558" name="__codelineno-0-558"></a>                            <span class="s2">&quot;valueString&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-0-559" name="__codelineno-0-559"></a>                                <span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-560" name="__codelineno-0-560"></a>                                <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a id="__codelineno-0-561" name="__codelineno-0-561"></a>                                    <span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
-<a id="__codelineno-0-562" name="__codelineno-0-562"></a>                                <span class="p">),</span>  <span class="c1"># todo: if empty, don&#39;t add this key</span>
-<a id="__codelineno-0-563" name="__codelineno-0-563"></a>                            <span class="p">),</span>
-<a id="__codelineno-0-564" name="__codelineno-0-564"></a>                        <span class="p">}</span>
-<a id="__codelineno-0-565" name="__codelineno-0-565"></a>                    <span class="p">],</span>
-<a id="__codelineno-0-566" name="__codelineno-0-566"></a>                <span class="p">}</span>
-<a id="__codelineno-0-567" name="__codelineno-0-567"></a>            <span class="p">],</span>
-<a id="__codelineno-0-568" name="__codelineno-0-568"></a>        <span class="p">}</span>
-<a id="__codelineno-0-569" name="__codelineno-0-569"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;element&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
-<a id="__codelineno-0-570" name="__codelineno-0-570"></a>
-<a id="__codelineno-0-571" name="__codelineno-0-571"></a>    <span class="c1"># Delete empty fields</span>
-<a id="__codelineno-0-572" name="__codelineno-0-572"></a>    <span class="c1"># todo: This should be recursive? yes</span>
-<a id="__codelineno-0-573" name="__codelineno-0-573"></a>    <span class="c1">#  - it catches empty &#39;sourceUri&#39; and &#39;targetUri&#39;, but not &#39;source&#39; and &#39;target&#39;</span>
-<a id="__codelineno-0-574" name="__codelineno-0-574"></a>    <span class="n">keys_to_delete</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-575" name="__codelineno-0-575"></a>    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-0-576" name="__codelineno-0-576"></a>        <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span>
-<a id="__codelineno-0-577" name="__codelineno-0-577"></a>            <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-578" name="__codelineno-0-578"></a>            <span class="s2">&quot;&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-579" name="__codelineno-0-579"></a>        <span class="p">]:</span>  <span class="c1"># need to allow for `0`, `False`, and maybe some other cases</span>
-<a id="__codelineno-0-580" name="__codelineno-0-580"></a>            <span class="n">keys_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-<a id="__codelineno-0-581" name="__codelineno-0-581"></a>    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_delete</span><span class="p">:</span>
-<a id="__codelineno-0-582" name="__codelineno-0-582"></a>        <span class="k">del</span> <span class="n">json_obj</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-<a id="__codelineno-0-583" name="__codelineno-0-583"></a>
-<a id="__codelineno-0-584" name="__codelineno-0-584"></a>    <span class="k">return</span> <span class="n">json_obj</span>
+<span class="normal"><a href="#__codelineno-0-584">584</a></span>
+<span class="normal"><a href="#__codelineno-0-585">585</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-402" name="__codelineno-0-402"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_fhir_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-403" name="__codelineno-0-403"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.</span>
+<a id="__codelineno-0-404" name="__codelineno-0-404"></a>
+<a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="sd">    :param msdf: MappingSetDataFrame: Collection of mappings represented as DataFrame, together w/</span>
+<a id="__codelineno-0-406" name="__codelineno-0-406"></a><span class="sd">        additional metadata.</span>
+<a id="__codelineno-0-407" name="__codelineno-0-407"></a>
+<a id="__codelineno-0-408" name="__codelineno-0-408"></a><span class="sd">    :returns: Dict: A Dictionary serializable as JSON.</span>
+<a id="__codelineno-0-409" name="__codelineno-0-409"></a>
+<a id="__codelineno-0-410" name="__codelineno-0-410"></a><span class="sd">    .. seealso::</span>
+<a id="__codelineno-0-411" name="__codelineno-0-411"></a>
+<a id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sd">        ConceptMap=SSSOM mapping spreadsheet</span>
+<a id="__codelineno-0-413" name="__codelineno-0-413"></a><span class="sd">        https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgYle0/edit#gid=1389897118</span>
+<a id="__codelineno-0-414" name="__codelineno-0-414"></a>
+<a id="__codelineno-0-415" name="__codelineno-0-415"></a><span class="sd">    .. todo:: add to CLI &amp; to these functions: r4 vs r5 param</span>
+<a id="__codelineno-0-416" name="__codelineno-0-416"></a>
+<a id="__codelineno-0-417" name="__codelineno-0-417"></a><span class="sd">    .. todo:: What if the msdf doesn&#39;t have everything we need? (i) metadata, e.g. yml, (ii) what if we need to override?</span>
+<a id="__codelineno-0-418" name="__codelineno-0-418"></a>
+<a id="__codelineno-0-419" name="__codelineno-0-419"></a><span class="sd">    .. todo:: allow any nested arbitrary override: (get in kwargs, else metadata.get(key, None))</span>
+<a id="__codelineno-0-420" name="__codelineno-0-420"></a>
+<a id="__codelineno-0-421" name="__codelineno-0-421"></a><span class="sd">    .. todo:: mapping_justification consider `ValueString` -&gt; `ValueCoding` https://github.com/timsbiomed/issues/issues/152</span>
+<a id="__codelineno-0-422" name="__codelineno-0-422"></a>
+<a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="sd">    .. todo:: when/how to conform to R5 instead of R4? https://build.fhir.org/conceptmap.html</span>
+<a id="__codelineno-0-424" name="__codelineno-0-424"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-425" name="__codelineno-0-425"></a>    <span class="c1"># Constants</span>
+<a id="__codelineno-0-426" name="__codelineno-0-426"></a>    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span>
+<a id="__codelineno-0-427" name="__codelineno-0-427"></a>    <span class="c1"># TODO: R4 (try this first)</span>
+<a id="__codelineno-0-428" name="__codelineno-0-428"></a>    <span class="c1">#  relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint</span>
+<a id="__codelineno-0-429" name="__codelineno-0-429"></a>    <span class="c1">#  https://www.hl7.org/fhir/r4/conceptmap.html</span>
+<a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="c1"># todo: r4: if not found, should likely be `null` or something. check docs to see if nullable, else ask on Zulip</span>
+<a id="__codelineno-0-431" name="__codelineno-0-431"></a>    <span class="c1"># TODO: R5 Needs to be one of:</span>
+<a id="__codelineno-0-432" name="__codelineno-0-432"></a>    <span class="c1">#  related-to | equivalent | source-is-narrower-than-target | source-is-broader-than-target | not-related-to</span>
+<a id="__codelineno-0-433" name="__codelineno-0-433"></a>    <span class="c1">#  https://www.hl7.org/fhir/r4/valueset-concept-map-equivalence.html</span>
+<a id="__codelineno-0-434" name="__codelineno-0-434"></a>    <span class="c1">#  ill update that next time. i can map SSSOM SKOS/etc mappings to FHIR ones</span>
+<a id="__codelineno-0-435" name="__codelineno-0-435"></a>    <span class="c1">#  and then add the original SSSOM mapping CURIE fields somewhere else</span>
+<a id="__codelineno-0-436" name="__codelineno-0-436"></a>    <span class="c1"># https://www.hl7.org/fhir/valueset-concept-map-equivalence.html</span>
+<a id="__codelineno-0-437" name="__codelineno-0-437"></a>    <span class="c1"># https://github.com/mapping-commons/sssom-py/issues/258</span>
+<a id="__codelineno-0-438" name="__codelineno-0-438"></a>    <span class="n">equivalence_map</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-439" name="__codelineno-0-439"></a>        <span class="c1"># relateedto: The concepts are related to each other, and have at least some overlap in meaning, but the exact</span>
+<a id="__codelineno-0-440" name="__codelineno-0-440"></a>        <span class="c1">#   relationship is not known.</span>
+<a id="__codelineno-0-441" name="__codelineno-0-441"></a>        <span class="s2">&quot;skos:related&quot;</span><span class="p">:</span> <span class="s2">&quot;relatedto&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-442" name="__codelineno-0-442"></a>        <span class="s2">&quot;skos:relatedMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;relatedto&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
+<a id="__codelineno-0-443" name="__codelineno-0-443"></a>        <span class="c1"># equivalent: The definitions of the concepts mean the same thing (including when structural implications of</span>
+<a id="__codelineno-0-444" name="__codelineno-0-444"></a>        <span class="c1">#   meaning are considered) (i.e. extensionally identical).</span>
+<a id="__codelineno-0-445" name="__codelineno-0-445"></a>        <span class="s2">&quot;skos:exactMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;equivalent&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-446" name="__codelineno-0-446"></a>        <span class="c1"># equal: The definitions of the concepts are exactly the same (i.e. only grammatical differences) and structural</span>
+<a id="__codelineno-0-447" name="__codelineno-0-447"></a>        <span class="c1">#   implications of meaning are identical or irrelevant (i.e. intentionally identical).</span>
+<a id="__codelineno-0-448" name="__codelineno-0-448"></a>        <span class="s2">&quot;equal&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">,</span>  <span class="c1"># todo what&#39;s difference between this and above? which to use?</span>
+<a id="__codelineno-0-449" name="__codelineno-0-449"></a>        <span class="c1"># wider: The target mapping is wider in meaning than the source concept.</span>
+<a id="__codelineno-0-450" name="__codelineno-0-450"></a>        <span class="s2">&quot;skos:broader&quot;</span><span class="p">:</span> <span class="s2">&quot;wider&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-451" name="__codelineno-0-451"></a>        <span class="s2">&quot;skos:broadMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;wider&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
+<a id="__codelineno-0-452" name="__codelineno-0-452"></a>        <span class="c1"># subsumes: The target mapping subsumes the meaning of the source concept (e.g. the source is-a target).</span>
+<a id="__codelineno-0-453" name="__codelineno-0-453"></a>        <span class="s2">&quot;rdfs:subClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;subsumes&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-454" name="__codelineno-0-454"></a>        <span class="c1"># narrower: The target mapping is narrower in meaning than the source concept. The sense in which the mapping is</span>
+<a id="__codelineno-0-455" name="__codelineno-0-455"></a>        <span class="c1">#   narrower SHALL be described in the comments in this case, and applications should be careful when attempting</span>
+<a id="__codelineno-0-456" name="__codelineno-0-456"></a>        <span class="c1">#   to use these mappings operationally.</span>
+<a id="__codelineno-0-457" name="__codelineno-0-457"></a>        <span class="s2">&quot;skos:narrower&quot;</span><span class="p">:</span> <span class="s2">&quot;narrower&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-458" name="__codelineno-0-458"></a>        <span class="s2">&quot;skos:narrowMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;narrower&quot;</span><span class="p">,</span>  <span class="c1"># canonical</span>
+<a id="__codelineno-0-459" name="__codelineno-0-459"></a>        <span class="c1"># specializes: The target mapping specializes the meaning of the source concept (e.g. the target is-a source).</span>
+<a id="__codelineno-0-460" name="__codelineno-0-460"></a>        <span class="s2">&quot;sssom:superClassOf&quot;</span><span class="p">:</span> <span class="s2">&quot;specializes&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-461" name="__codelineno-0-461"></a>        <span class="c1"># inexact: The target mapping overlaps with the source concept, but both source and target cover additional</span>
+<a id="__codelineno-0-462" name="__codelineno-0-462"></a>        <span class="c1"># meaning, or the definitions are imprecise and it is uncertain whether they have the same boundaries to their</span>
+<a id="__codelineno-0-463" name="__codelineno-0-463"></a>        <span class="c1"># meaning. The sense in which the mapping is inexact SHALL be described in the comments in this case, and</span>
+<a id="__codelineno-0-464" name="__codelineno-0-464"></a>        <span class="c1"># applications should be careful when attempting to use these mappings operationally</span>
+<a id="__codelineno-0-465" name="__codelineno-0-465"></a>        <span class="s2">&quot;skos:closeMatch&quot;</span><span class="p">:</span> <span class="s2">&quot;inexact&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-466" name="__codelineno-0-466"></a>        <span class="c1"># unmatched: There is no match for this concept in the target code system.</span>
+<a id="__codelineno-0-467" name="__codelineno-0-467"></a>        <span class="c1">#   todo: this is more complicated. This will be a combination of predicate_id and predicate_modifier (if</span>
+<a id="__codelineno-0-468" name="__codelineno-0-468"></a>        <span class="c1">#    present). See: https://github.com/mapping-commons/sssom/issues/185</span>
+<a id="__codelineno-0-469" name="__codelineno-0-469"></a>        <span class="s2">&quot;unmatched&quot;</span><span class="p">:</span> <span class="s2">&quot;unmatched&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-470" name="__codelineno-0-470"></a>        <span class="c1"># disjoint: This is an explicit assertion that there is no mapping between the</span>
+<a id="__codelineno-0-471" name="__codelineno-0-471"></a>        <span class="c1"># source and target concept.</span>
+<a id="__codelineno-0-472" name="__codelineno-0-472"></a>        <span class="s2">&quot;owl:disjointWith&quot;</span><span class="p">:</span> <span class="s2">&quot;disjoint&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-473" name="__codelineno-0-473"></a>    <span class="p">}</span>
+<a id="__codelineno-0-474" name="__codelineno-0-474"></a>
+<a id="__codelineno-0-475" name="__codelineno-0-475"></a>    <span class="c1"># Intermediary variables</span>
+<a id="__codelineno-0-476" name="__codelineno-0-476"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
+<a id="__codelineno-0-477" name="__codelineno-0-477"></a>    <span class="n">mapping_set_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-478" name="__codelineno-0-478"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mapping_set_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.sssom.tsv&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-479" name="__codelineno-0-479"></a>
+<a id="__codelineno-0-480" name="__codelineno-0-480"></a>    <span class="c1"># Construct JSON</span>
+<a id="__codelineno-0-481" name="__codelineno-0-481"></a>    <span class="n">json_obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-482" name="__codelineno-0-482"></a>        <span class="s2">&quot;resourceType&quot;</span><span class="p">:</span> <span class="s2">&quot;ConceptMap&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-483" name="__codelineno-0-483"></a>        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">mapping_set_id</span><span class="p">,</span>
+<a id="__codelineno-0-484" name="__codelineno-0-484"></a>        <span class="c1"># Assumes mapping_set_id is a URI w/ artefact name at end. System becomes URI stem, value becomes artefact name</span>
+<a id="__codelineno-0-485" name="__codelineno-0-485"></a>        <span class="s2">&quot;identifier&quot;</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-486" name="__codelineno-0-486"></a>            <span class="p">{</span>
+<a id="__codelineno-0-487" name="__codelineno-0-487"></a>                <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapping_set_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-488" name="__codelineno-0-488"></a>                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">mapping_set_id</span><span class="p">,</span>
+<a id="__codelineno-0-489" name="__codelineno-0-489"></a>            <span class="p">}</span>
+<a id="__codelineno-0-490" name="__codelineno-0-490"></a>        <span class="p">],</span>
+<a id="__codelineno-0-491" name="__codelineno-0-491"></a>        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_version&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-492" name="__codelineno-0-492"></a>        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+<a id="__codelineno-0-493" name="__codelineno-0-493"></a>        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;draft&quot;</span><span class="p">,</span>  <span class="c1"># todo: when done: draft | active | retired | unknown</span>
+<a id="__codelineno-0-494" name="__codelineno-0-494"></a>        <span class="s2">&quot;experimental&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># todo: False when converter finished</span>
+<a id="__codelineno-0-495" name="__codelineno-0-495"></a>        <span class="c1"># todo: should this be date of last converted to FHIR json instead?</span>
+<a id="__codelineno-0-496" name="__codelineno-0-496"></a>        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-497" name="__codelineno-0-497"></a>        <span class="c1"># &quot;publisher&quot;: &quot;HL7, Inc&quot;,  # todo: conceptmap</span>
+<a id="__codelineno-0-498" name="__codelineno-0-498"></a>        <span class="c1"># &quot;contact&quot;: [{  # todo: conceptmap</span>
+<a id="__codelineno-0-499" name="__codelineno-0-499"></a>        <span class="c1">#     &quot;name&quot;: &quot;FHIR project team (example)&quot;,</span>
+<a id="__codelineno-0-500" name="__codelineno-0-500"></a>        <span class="c1">#     &quot;telecom&quot;: [{</span>
+<a id="__codelineno-0-501" name="__codelineno-0-501"></a>        <span class="c1">#         &quot;system&quot;: &quot;url&quot;,</span>
+<a id="__codelineno-0-502" name="__codelineno-0-502"></a>        <span class="c1">#         &quot;value&quot;: &quot;http://hl7.org/fhir&quot;}]</span>
+<a id="__codelineno-0-503" name="__codelineno-0-503"></a>        <span class="c1"># }],</span>
+<a id="__codelineno-0-504" name="__codelineno-0-504"></a>        <span class="c1"># &quot;description&quot;: &quot;&quot;,  # todo: conceptmap</span>
+<a id="__codelineno-0-505" name="__codelineno-0-505"></a>        <span class="c1"># &quot;useContext&quot;: [{  # todo: conceptmap</span>
+<a id="__codelineno-0-506" name="__codelineno-0-506"></a>        <span class="c1">#     &quot;code&quot;: {</span>
+<a id="__codelineno-0-507" name="__codelineno-0-507"></a>        <span class="c1">#         &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/usage-context-type&quot;,</span>
+<a id="__codelineno-0-508" name="__codelineno-0-508"></a>        <span class="c1">#         &quot;code&quot;: &quot;venue&quot; },</span>
+<a id="__codelineno-0-509" name="__codelineno-0-509"></a>        <span class="c1">#     &quot;valueCodeableConcept&quot;: {</span>
+<a id="__codelineno-0-510" name="__codelineno-0-510"></a>        <span class="c1">#         &quot;text&quot;: &quot;for CCDA Usage&quot; }</span>
+<a id="__codelineno-0-511" name="__codelineno-0-511"></a>        <span class="c1"># }],</span>
+<a id="__codelineno-0-512" name="__codelineno-0-512"></a>        <span class="c1"># &quot;jurisdiction&quot;: [{  # todo: conceptmap</span>
+<a id="__codelineno-0-513" name="__codelineno-0-513"></a>        <span class="c1">#     &quot;coding&quot;: [{</span>
+<a id="__codelineno-0-514" name="__codelineno-0-514"></a>        <span class="c1">#         &quot;system&quot;: &quot;urn:iso:std:iso:3166&quot;,</span>
+<a id="__codelineno-0-515" name="__codelineno-0-515"></a>        <span class="c1">#         &quot;code&quot;: &quot;US&quot; }]</span>
+<a id="__codelineno-0-516" name="__codelineno-0-516"></a>        <span class="c1"># }],</span>
+<a id="__codelineno-0-517" name="__codelineno-0-517"></a>        <span class="c1"># &quot;purpose&quot;: &quot;&quot;,  # todo: conceptmap</span>
+<a id="__codelineno-0-518" name="__codelineno-0-518"></a>        <span class="s2">&quot;copyright&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;license&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-519" name="__codelineno-0-519"></a>        <span class="c1"># TODO: Might want to make each &quot;group&quot; first, if there is more than 1 set of ontology1::ontology2</span>
+<a id="__codelineno-0-520" name="__codelineno-0-520"></a>        <span class="c1">#  ...within a given MappingSet / set of SSSOM TSV rows.</span>
+<a id="__codelineno-0-521" name="__codelineno-0-521"></a>        <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-522" name="__codelineno-0-522"></a>            <span class="p">{</span>
+<a id="__codelineno-0-523" name="__codelineno-0-523"></a>                <span class="s2">&quot;element&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<a id="__codelineno-0-524" name="__codelineno-0-524"></a>                <span class="c1"># &quot;unmapped&quot;: {  # todo: conceptmap</span>
+<a id="__codelineno-0-525" name="__codelineno-0-525"></a>                <span class="c1">#     &quot;mode&quot;: &quot;fixed&quot;,</span>
+<a id="__codelineno-0-526" name="__codelineno-0-526"></a>                <span class="c1">#     &quot;code&quot;: &quot;temp&quot;,</span>
+<a id="__codelineno-0-527" name="__codelineno-0-527"></a>                <span class="c1">#     &quot;display&quot;: &quot;temp&quot;</span>
+<a id="__codelineno-0-528" name="__codelineno-0-528"></a>                <span class="c1"># }</span>
+<a id="__codelineno-0-529" name="__codelineno-0-529"></a>            <span class="p">}</span>
+<a id="__codelineno-0-530" name="__codelineno-0-530"></a>        <span class="p">],</span>
+<a id="__codelineno-0-531" name="__codelineno-0-531"></a>    <span class="p">}</span>
+<a id="__codelineno-0-532" name="__codelineno-0-532"></a>    <span class="k">if</span> <span class="s2">&quot;mapping_set_title&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+<a id="__codelineno-0-533" name="__codelineno-0-533"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mapping_set_title&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-534" name="__codelineno-0-534"></a>
+<a id="__codelineno-0-535" name="__codelineno-0-535"></a>    <span class="c1"># todo: Override? but how? (2024/04/05 Joe: idr what I was trying to override)</span>
+<a id="__codelineno-0-536" name="__codelineno-0-536"></a>    <span class="k">if</span> <span class="s2">&quot;subject_source&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+<a id="__codelineno-0-537" name="__codelineno-0-537"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;sourceUri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;subject_source&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-538" name="__codelineno-0-538"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;subject_source&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-539" name="__codelineno-0-539"></a>    <span class="k">if</span> <span class="s2">&quot;object_source&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+<a id="__codelineno-0-540" name="__codelineno-0-540"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;targetUri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;object_source&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-541" name="__codelineno-0-541"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;object_source&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-542" name="__codelineno-0-542"></a>
+<a id="__codelineno-0-543" name="__codelineno-0-543"></a>    <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+<a id="__codelineno-0-544" name="__codelineno-0-544"></a>        <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-545" name="__codelineno-0-545"></a>            <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-546" name="__codelineno-0-546"></a>            <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: if empty, don&#39;t add this key</span>
+<a id="__codelineno-0-547" name="__codelineno-0-547"></a>            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-548" name="__codelineno-0-548"></a>                <span class="p">{</span>
+<a id="__codelineno-0-549" name="__codelineno-0-549"></a>                    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-550" name="__codelineno-0-550"></a>                    <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>  <span class="c1"># todo: if empty, don&#39;t add this key</span>
+<a id="__codelineno-0-551" name="__codelineno-0-551"></a>                    <span class="s2">&quot;equivalence&quot;</span><span class="p">:</span> <span class="n">equivalence_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a id="__codelineno-0-552" name="__codelineno-0-552"></a>                        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-553" name="__codelineno-0-553"></a>                    <span class="p">),</span>  <span class="c1"># r4</span>
+<a id="__codelineno-0-554" name="__codelineno-0-554"></a>                    <span class="c1"># &quot;relationship&quot;: row[&#39;predicate_id&#39;],  # r5</span>
+<a id="__codelineno-0-555" name="__codelineno-0-555"></a>                    <span class="c1"># &quot;comment&quot;: &#39;&#39;,</span>
+<a id="__codelineno-0-556" name="__codelineno-0-556"></a>                    <span class="s2">&quot;extension&quot;</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-557" name="__codelineno-0-557"></a>                        <span class="p">{</span>
+<a id="__codelineno-0-558" name="__codelineno-0-558"></a>                            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://example.org/fhir/StructureDefinition/mapping_justification&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-559" name="__codelineno-0-559"></a>                            <span class="s2">&quot;valueString&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a id="__codelineno-0-560" name="__codelineno-0-560"></a>                                <span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-561" name="__codelineno-0-561"></a>                                <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a id="__codelineno-0-562" name="__codelineno-0-562"></a>                                    <span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-0-563" name="__codelineno-0-563"></a>                                <span class="p">),</span>  <span class="c1"># todo: if empty, don&#39;t add this key</span>
+<a id="__codelineno-0-564" name="__codelineno-0-564"></a>                            <span class="p">),</span>
+<a id="__codelineno-0-565" name="__codelineno-0-565"></a>                        <span class="p">}</span>
+<a id="__codelineno-0-566" name="__codelineno-0-566"></a>                    <span class="p">],</span>
+<a id="__codelineno-0-567" name="__codelineno-0-567"></a>                <span class="p">}</span>
+<a id="__codelineno-0-568" name="__codelineno-0-568"></a>            <span class="p">],</span>
+<a id="__codelineno-0-569" name="__codelineno-0-569"></a>        <span class="p">}</span>
+<a id="__codelineno-0-570" name="__codelineno-0-570"></a>        <span class="n">json_obj</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;element&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+<a id="__codelineno-0-571" name="__codelineno-0-571"></a>
+<a id="__codelineno-0-572" name="__codelineno-0-572"></a>    <span class="c1"># Delete empty fields</span>
+<a id="__codelineno-0-573" name="__codelineno-0-573"></a>    <span class="c1"># todo: This should be recursive? yes</span>
+<a id="__codelineno-0-574" name="__codelineno-0-574"></a>    <span class="c1">#  - it catches empty &#39;sourceUri&#39; and &#39;targetUri&#39;, but not &#39;source&#39; and &#39;target&#39;</span>
+<a id="__codelineno-0-575" name="__codelineno-0-575"></a>    <span class="n">keys_to_delete</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-576" name="__codelineno-0-576"></a>    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-577" name="__codelineno-0-577"></a>        <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span>
+<a id="__codelineno-0-578" name="__codelineno-0-578"></a>            <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-579" name="__codelineno-0-579"></a>            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-580" name="__codelineno-0-580"></a>        <span class="p">]:</span>  <span class="c1"># need to allow for `0`, `False`, and maybe some other cases</span>
+<a id="__codelineno-0-581" name="__codelineno-0-581"></a>            <span class="n">keys_to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+<a id="__codelineno-0-582" name="__codelineno-0-582"></a>    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_to_delete</span><span class="p">:</span>
+<a id="__codelineno-0-583" name="__codelineno-0-583"></a>        <span class="k">del</span> <span class="n">json_obj</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+<a id="__codelineno-0-584" name="__codelineno-0-584"></a>
+<a id="__codelineno-0-585" name="__codelineno-0-585"></a>    <span class="k">return</span> <span class="n">json_obj</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2565,19 +2567,19 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/sssom/writers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-600">600</a></span>
-<span class="normal"><a href="#__codelineno-0-601">601</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-601">601</a></span>
 <span class="normal"><a href="#__codelineno-0-602">602</a></span>
 <span class="normal"><a href="#__codelineno-0-603">603</a></span>
 <span class="normal"><a href="#__codelineno-0-604">604</a></span>
 <span class="normal"><a href="#__codelineno-0-605">605</a></span>
-<span class="normal"><a href="#__codelineno-0-606">606</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-600" name="__codelineno-0-600"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
-<a id="__codelineno-0-601" name="__codelineno-0-601"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
-<a id="__codelineno-0-602" name="__codelineno-0-602"></a>    <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
-<a id="__codelineno-0-603" name="__codelineno-0-603"></a>    <span class="n">context</span> <span class="o">=</span> <span class="n">_update_sssom_context_with_prefixmap</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
-<a id="__codelineno-0-604" name="__codelineno-0-604"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">JSONDumper</span><span class="p">()</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
-<a id="__codelineno-0-605" name="__codelineno-0-605"></a>    <span class="n">json_obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<a id="__codelineno-0-606" name="__codelineno-0-606"></a>    <span class="k">return</span> <span class="n">json_obj</span>
+<span class="normal"><a href="#__codelineno-0-606">606</a></span>
+<span class="normal"><a href="#__codelineno-0-607">607</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-601" name="__codelineno-0-601"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonObj</span><span class="p">:</span>
+<a id="__codelineno-0-602" name="__codelineno-0-602"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a JSON object.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-603" name="__codelineno-0-603"></a>    <span class="n">doc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">msdf</span><span class="p">)</span>
+<a id="__codelineno-0-604" name="__codelineno-0-604"></a>    <span class="n">context</span> <span class="o">=</span> <span class="n">_update_sssom_context_with_prefixmap</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">converter</span><span class="p">)</span>
+<a id="__codelineno-0-605" name="__codelineno-0-605"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">JSONDumper</span><span class="p">()</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">mapping_set</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+<a id="__codelineno-0-606" name="__codelineno-0-606"></a>    <span class="n">json_obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-0-607" name="__codelineno-0-607"></a>    <span class="k">return</span> <span class="n">json_obj</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2600,8 +2602,7 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/sssom/writers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-609">609</a></span>
-<span class="normal"><a href="#__codelineno-0-610">610</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-610">610</a></span>
 <span class="normal"><a href="#__codelineno-0-611">611</a></span>
 <span class="normal"><a href="#__codelineno-0-612">612</a></span>
 <span class="normal"><a href="#__codelineno-0-613">613</a></span>
@@ -2631,38 +2632,39 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 <span class="normal"><a href="#__codelineno-0-637">637</a></span>
 <span class="normal"><a href="#__codelineno-0-638">638</a></span>
 <span class="normal"><a href="#__codelineno-0-639">639</a></span>
-<span class="normal"><a href="#__codelineno-0-640">640</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-609" name="__codelineno-0-609"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<a id="__codelineno-0-610" name="__codelineno-0-610"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a list of ontoportal mapping JSON objects.&quot;&quot;&quot;</span>
-<a id="__codelineno-0-611" name="__codelineno-0-611"></a>    <span class="n">converter</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span>
-<a id="__codelineno-0-612" name="__codelineno-0-612"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
-<a id="__codelineno-0-613" name="__codelineno-0-613"></a>    <span class="n">m_list</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-614" name="__codelineno-0-614"></a>    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-<a id="__codelineno-0-615" name="__codelineno-0-615"></a>        <span class="n">mapping_justification</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-616" name="__codelineno-0-616"></a>        <span class="k">if</span> <span class="s2">&quot;creator_id&quot;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
-<a id="__codelineno-0-617" name="__codelineno-0-617"></a>            <span class="n">creators</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-618" name="__codelineno-0-618"></a>        <span class="k">elif</span> <span class="s2">&quot;creator_id&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-<a id="__codelineno-0-619" name="__codelineno-0-619"></a>            <span class="n">creators</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-620" name="__codelineno-0-620"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-621" name="__codelineno-0-621"></a>            <span class="n">creators</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-622" name="__codelineno-0-622"></a>
-<a id="__codelineno-0-623" name="__codelineno-0-623"></a>        <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-624" name="__codelineno-0-624"></a>            <span class="s2">&quot;classes&quot;</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-625" name="__codelineno-0-625"></a>                <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]),</span>
-<a id="__codelineno-0-626" name="__codelineno-0-626"></a>                <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]),</span>
-<a id="__codelineno-0-627" name="__codelineno-0-627"></a>            <span class="p">],</span>
-<a id="__codelineno-0-628" name="__codelineno-0-628"></a>            <span class="s2">&quot;subject_source_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-629" name="__codelineno-0-629"></a>            <span class="s2">&quot;object_source_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-630" name="__codelineno-0-630"></a>            <span class="s2">&quot;source_name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-631" name="__codelineno-0-631"></a>            <span class="s2">&quot;source_contact_info&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">creators</span><span class="p">),</span>
-<a id="__codelineno-0-632" name="__codelineno-0-632"></a>            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-<a id="__codelineno-0-633" name="__codelineno-0-633"></a>            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-634" name="__codelineno-0-634"></a>            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">mapping_justification</span><span class="p">)</span> <span class="k">if</span> <span class="n">mapping_justification</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-635" name="__codelineno-0-635"></a>            <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-636" name="__codelineno-0-636"></a>            <span class="s2">&quot;relation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">])],</span>
-<a id="__codelineno-0-637" name="__codelineno-0-637"></a>        <span class="p">}</span>
-<a id="__codelineno-0-638" name="__codelineno-0-638"></a>        <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">and</span> <span class="n">v</span><span class="p">}</span>
-<a id="__codelineno-0-639" name="__codelineno-0-639"></a>        <span class="n">m_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
-<a id="__codelineno-0-640" name="__codelineno-0-640"></a>    <span class="k">return</span> <span class="n">m_list</span>
+<span class="normal"><a href="#__codelineno-0-640">640</a></span>
+<span class="normal"><a href="#__codelineno-0-641">641</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-610" name="__codelineno-0-610"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_ontoportal_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<a id="__codelineno-0-611" name="__codelineno-0-611"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a mapping set dataframe to a list of ontoportal mapping JSON objects.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-612" name="__codelineno-0-612"></a>    <span class="n">converter</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">converter</span>
+<a id="__codelineno-0-613" name="__codelineno-0-613"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">msdf</span><span class="o">.</span><span class="n">metadata</span>
+<a id="__codelineno-0-614" name="__codelineno-0-614"></a>    <span class="n">m_list</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-615" name="__codelineno-0-615"></a>    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+<a id="__codelineno-0-616" name="__codelineno-0-616"></a>        <span class="n">mapping_justification</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_justification&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-617" name="__codelineno-0-617"></a>        <span class="k">if</span> <span class="s2">&quot;creator_id&quot;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+<a id="__codelineno-0-618" name="__codelineno-0-618"></a>            <span class="n">creators</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-619" name="__codelineno-0-619"></a>        <span class="k">elif</span> <span class="s2">&quot;creator_id&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+<a id="__codelineno-0-620" name="__codelineno-0-620"></a>            <span class="n">creators</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-621" name="__codelineno-0-621"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-622" name="__codelineno-0-622"></a>            <span class="n">creators</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-623" name="__codelineno-0-623"></a>
+<a id="__codelineno-0-624" name="__codelineno-0-624"></a>        <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-625" name="__codelineno-0-625"></a>            <span class="s2">&quot;classes&quot;</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-626" name="__codelineno-0-626"></a>                <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]),</span>
+<a id="__codelineno-0-627" name="__codelineno-0-627"></a>                <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]),</span>
+<a id="__codelineno-0-628" name="__codelineno-0-628"></a>            <span class="p">],</span>
+<a id="__codelineno-0-629" name="__codelineno-0-629"></a>            <span class="s2">&quot;subject_source_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-630" name="__codelineno-0-630"></a>            <span class="s2">&quot;object_source_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object_source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-631" name="__codelineno-0-631"></a>            <span class="s2">&quot;source_name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-632" name="__codelineno-0-632"></a>            <span class="s2">&quot;source_contact_info&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">creators</span><span class="p">),</span>
+<a id="__codelineno-0-633" name="__codelineno-0-633"></a>            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_date&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
+<a id="__codelineno-0-634" name="__codelineno-0-634"></a>            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mapping_set_title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-635" name="__codelineno-0-635"></a>            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">mapping_justification</span><span class="p">)</span> <span class="k">if</span> <span class="n">mapping_justification</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-636" name="__codelineno-0-636"></a>            <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-637" name="__codelineno-0-637"></a>            <span class="s2">&quot;relation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">converter</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;predicate_id&quot;</span><span class="p">])],</span>
+<a id="__codelineno-0-638" name="__codelineno-0-638"></a>        <span class="p">}</span>
+<a id="__codelineno-0-639" name="__codelineno-0-639"></a>        <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">and</span> <span class="n">v</span><span class="p">}</span>
+<a id="__codelineno-0-640" name="__codelineno-0-640"></a>        <span class="n">m_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
+<a id="__codelineno-0-641" name="__codelineno-0-641"></a>    <span class="k">return</span> <span class="n">m_list</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2689,8 +2691,7 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/sssom/writers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-659">659</a></span>
-<span class="normal"><a href="#__codelineno-0-660">660</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-660">660</a></span>
 <span class="normal"><a href="#__codelineno-0-661">661</a></span>
 <span class="normal"><a href="#__codelineno-0-662">662</a></span>
 <span class="normal"><a href="#__codelineno-0-663">663</a></span>
@@ -2706,24 +2707,25 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 <span class="normal"><a href="#__codelineno-0-673">673</a></span>
 <span class="normal"><a href="#__codelineno-0-674">674</a></span>
 <span class="normal"><a href="#__codelineno-0-675">675</a></span>
-<span class="normal"><a href="#__codelineno-0-676">676</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-659" name="__codelineno-0-659"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_writer_function</span><span class="p">(</span>
-<a id="__codelineno-0-660" name="__codelineno-0-660"></a>    <span class="o">*</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span>
-<a id="__codelineno-0-661" name="__codelineno-0-661"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MSDFWriter</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-0-662" name="__codelineno-0-662"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get appropriate writer function based on file format.</span>
-<a id="__codelineno-0-663" name="__codelineno-0-663"></a>
-<a id="__codelineno-0-664" name="__codelineno-0-664"></a><span class="sd">    :param output: Output file</span>
-<a id="__codelineno-0-665" name="__codelineno-0-665"></a><span class="sd">    :param output_format: Output file format, defaults to None</span>
-<a id="__codelineno-0-666" name="__codelineno-0-666"></a>
-<a id="__codelineno-0-667" name="__codelineno-0-667"></a><span class="sd">    :returns: Type of writer function</span>
-<a id="__codelineno-0-668" name="__codelineno-0-668"></a>
-<a id="__codelineno-0-669" name="__codelineno-0-669"></a><span class="sd">    :raises ValueError: Unknown output format</span>
-<a id="__codelineno-0-670" name="__codelineno-0-670"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-671" name="__codelineno-0-671"></a>    <span class="k">if</span> <span class="n">output_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-672" name="__codelineno-0-672"></a>        <span class="n">output_format</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;tsv&quot;</span>
-<a id="__codelineno-0-673" name="__codelineno-0-673"></a>    <span class="k">if</span> <span class="n">output_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">:</span>
-<a id="__codelineno-0-674" name="__codelineno-0-674"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown output format: </span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-675" name="__codelineno-0-675"></a>    <span class="n">func</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">[</span><span class="n">output_format</span><span class="p">]</span>
-<a id="__codelineno-0-676" name="__codelineno-0-676"></a>    <span class="k">return</span> <span class="n">func</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">or</span> <span class="n">output_format</span>
+<span class="normal"><a href="#__codelineno-0-676">676</a></span>
+<span class="normal"><a href="#__codelineno-0-677">677</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-660" name="__codelineno-0-660"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_writer_function</span><span class="p">(</span>
+<a id="__codelineno-0-661" name="__codelineno-0-661"></a>    <span class="o">*</span><span class="p">,</span> <span class="n">output_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">TextIO</span>
+<a id="__codelineno-0-662" name="__codelineno-0-662"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MSDFWriter</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-663" name="__codelineno-0-663"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get appropriate writer function based on file format.</span>
+<a id="__codelineno-0-664" name="__codelineno-0-664"></a>
+<a id="__codelineno-0-665" name="__codelineno-0-665"></a><span class="sd">    :param output: Output file</span>
+<a id="__codelineno-0-666" name="__codelineno-0-666"></a><span class="sd">    :param output_format: Output file format, defaults to None</span>
+<a id="__codelineno-0-667" name="__codelineno-0-667"></a>
+<a id="__codelineno-0-668" name="__codelineno-0-668"></a><span class="sd">    :returns: Type of writer function</span>
+<a id="__codelineno-0-669" name="__codelineno-0-669"></a>
+<a id="__codelineno-0-670" name="__codelineno-0-670"></a><span class="sd">    :raises ValueError: Unknown output format</span>
+<a id="__codelineno-0-671" name="__codelineno-0-671"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-672" name="__codelineno-0-672"></a>    <span class="k">if</span> <span class="n">output_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-673" name="__codelineno-0-673"></a>        <span class="n">output_format</span> <span class="o">=</span> <span class="n">get_file_extension</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;tsv&quot;</span>
+<a id="__codelineno-0-674" name="__codelineno-0-674"></a>    <span class="k">if</span> <span class="n">output_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">:</span>
+<a id="__codelineno-0-675" name="__codelineno-0-675"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown output format: </span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-676" name="__codelineno-0-676"></a>    <span class="n">func</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">WRITER_FUNCTIONS</span><span class="p">[</span><span class="n">output_format</span><span class="p">]</span>
+<a id="__codelineno-0-677" name="__codelineno-0-677"></a>    <span class="k">return</span> <span class="n">func</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">or</span> <span class="n">output_format</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2748,8 +2750,7 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/sssom/writers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-679">679</a></span>
-<span class="normal"><a href="#__codelineno-0-680">680</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-680">680</a></span>
 <span class="normal"><a href="#__codelineno-0-681">681</a></span>
 <span class="normal"><a href="#__codelineno-0-682">682</a></span>
 <span class="normal"><a href="#__codelineno-0-683">683</a></span>
@@ -2762,21 +2763,22 @@ https://docs.google.com/spreadsheets/d/1J19foBAYO8PCHwOfksaIGjNu-q5ILUKFh2HpOCgY
 <span class="normal"><a href="#__codelineno-0-690">690</a></span>
 <span class="normal"><a href="#__codelineno-0-691">691</a></span>
 <span class="normal"><a href="#__codelineno-0-692">692</a></span>
-<span class="normal"><a href="#__codelineno-0-693">693</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-679" name="__codelineno-0-679"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_tables</span><span class="p">(</span><span class="n">sssom_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-680" name="__codelineno-0-680"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Write table from MappingSetDataFrame object.</span>
-<a id="__codelineno-0-681" name="__codelineno-0-681"></a>
-<a id="__codelineno-0-682" name="__codelineno-0-682"></a><span class="sd">    :param sssom_dict: Dictionary of MappingSetDataframes</span>
-<a id="__codelineno-0-683" name="__codelineno-0-683"></a><span class="sd">    :param output_dir: The directory in which the derived SSSOM files are written</span>
-<a id="__codelineno-0-684" name="__codelineno-0-684"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-685" name="__codelineno-0-685"></a>    <span class="c1"># FIXME documentation does not actually describe what this is doing</span>
-<a id="__codelineno-0-686" name="__codelineno-0-686"></a>    <span class="c1"># FIXME explanation of sssom_dict does not make sense</span>
-<a id="__codelineno-0-687" name="__codelineno-0-687"></a>    <span class="c1"># FIXME sssom_dict is a bad variable name</span>
-<a id="__codelineno-0-688" name="__codelineno-0-688"></a>    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-<a id="__codelineno-0-689" name="__codelineno-0-689"></a>    <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">sssom_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-0-690" name="__codelineno-0-690"></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">split_id</span><span class="si">}</span><span class="s2">.sssom.tsv&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-691" name="__codelineno-0-691"></a>        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-<a id="__codelineno-0-692" name="__codelineno-0-692"></a>            <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-<a id="__codelineno-0-693" name="__codelineno-0-693"></a>        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> complete!&quot;</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-693">693</a></span>
+<span class="normal"><a href="#__codelineno-0-694">694</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-680" name="__codelineno-0-680"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_tables</span><span class="p">(</span><span class="n">sssom_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MappingSetDataFrame</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-681" name="__codelineno-0-681"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Write table from MappingSetDataFrame object.</span>
+<a id="__codelineno-0-682" name="__codelineno-0-682"></a>
+<a id="__codelineno-0-683" name="__codelineno-0-683"></a><span class="sd">    :param sssom_dict: Dictionary of MappingSetDataframes</span>
+<a id="__codelineno-0-684" name="__codelineno-0-684"></a><span class="sd">    :param output_dir: The directory in which the derived SSSOM files are written</span>
+<a id="__codelineno-0-685" name="__codelineno-0-685"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-686" name="__codelineno-0-686"></a>    <span class="c1"># FIXME documentation does not actually describe what this is doing</span>
+<a id="__codelineno-0-687" name="__codelineno-0-687"></a>    <span class="c1"># FIXME explanation of sssom_dict does not make sense</span>
+<a id="__codelineno-0-688" name="__codelineno-0-688"></a>    <span class="c1"># FIXME sssom_dict is a bad variable name</span>
+<a id="__codelineno-0-689" name="__codelineno-0-689"></a>    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<a id="__codelineno-0-690" name="__codelineno-0-690"></a>    <span class="k">for</span> <span class="n">split_id</span><span class="p">,</span> <span class="n">msdf</span> <span class="ow">in</span> <span class="n">sssom_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-691" name="__codelineno-0-691"></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">split_id</span><span class="si">}</span><span class="s2">.sssom.tsv&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-692" name="__codelineno-0-692"></a>        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-693" name="__codelineno-0-693"></a>            <span class="n">write_table</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+<a id="__codelineno-0-694" name="__codelineno-0-694"></a>        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> complete!&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
