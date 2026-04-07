@@ -7,6 +7,11 @@ authors = [
     { name = "Nicolas Matentzoglu", email = "nicolas.matentzoglu@gmail.com" },
     { name = "Harshad Hegde", email = "hhegde@lbl.gov" },
 ]
+maintainers = [
+    { name = "Nicolas Matentzoglu", email = "nicolas.matentzoglu@gmail.com" },
+    { name = "Charles Tapley Hoyt", email = "cthoyt@gmail.com" },
+    { name = "Damien Goutte-Gattat", email = "dgouttegattat@incenp.org" },
+]
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
