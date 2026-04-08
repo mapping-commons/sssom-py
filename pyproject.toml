@@ -19,7 +19,7 @@ dependencies = [
     "linkml>=1.10.0",
     "packaging>=20.0",
     "pandas>=2.0.0",
-    "sssom-schema==1.1.0a3",
+    "sssom-schema==1.1.0a4",
     "sparqlwrapper>=2.0.0",
     "validators>=0.20.0",
     "deprecation>=2.1.0",
