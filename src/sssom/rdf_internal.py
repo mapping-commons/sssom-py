@@ -615,7 +615,7 @@ class ObjectConverter:
 
         :returns: True if the value is empty.
         """
-        return value is None or (hasattr(value, "__len__") and len(value) == 0)
+        return value is None or pd.isna(value) or (hasattr(value, "__len__") and len(value) == 0)
 
     def _init_dict_to_rdf(self, graph: Graph, obj: DictOrSeries) -> Node:
         """Create the root node representing a SSSOM object.
