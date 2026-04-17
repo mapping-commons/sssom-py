@@ -291,16 +291,16 @@ wheels = [
 
 [[package]]
 name = "curies"
-version = "0.13.1"
+version = "0.13.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "pystow" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/08/33/b472c81804f9a2fb035c03e60e723c63891ef9436acd7dcddcc01fcbeb59/curies-0.13.1.tar.gz", hash = "sha256:358d8fccb2564639e6cba012115fe51210c3cd40518a7d9667a28abe6db3a8b3", size = 66252, upload-time = "2026-03-25T15:54:15.405Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/cd/2fb15b5fe0410853699e53305febf9abcfa6269b0c37b2b7a288609cdecc/curies-0.13.4.tar.gz", hash = "sha256:c493e486e3a9f05725ea5bfc75b194da69239e46e3b621f30901388c97788ebc", size = 69198, upload-time = "2026-04-17T07:58:44.645Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/83/996b21b71f3ac4ad55144a6cd5ddfbebb2b5bd85bb785afd7c35e37b3372/curies-0.13.1-py3-none-any.whl", hash = "sha256:e8680d5d2396afd3d3ed476617db41133f568209015b8e31ad691617fca92dcc", size = 73430, upload-time = "2026-03-25T15:54:13.833Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/11/fb58bd953fcd0e9d4a941ba09a3be0d23050fdb9da8c02f125cc9bf41248/curies-0.13.4-py3-none-any.whl", hash = "sha256:d13c738cef9a8773cfb8adf354315b290e8ca5164862a8185cbe14e9961da30d", size = 78430, upload-time = "2026-04-17T07:58:43.431Z" },
 ]
 
 [[package]]
@@ -2505,7 +2505,7 @@ scipy = [
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.1.6" },
-    { name = "curies", specifier = ">=0.10.23" },
+    { name = "curies", specifier = ">=0.13.4" },
     { name = "deprecation", specifier = ">=2.1.0" },
     { name = "fastapi", marker = "extra == 'rdflib-endpoint'" },
     { name = "httpx", marker = "extra == 'rdflib-endpoint'" },
