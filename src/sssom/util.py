@@ -588,18 +588,16 @@ class MappingSetDataFrame:
 
     def get_mapping_sameness_identifiers(self) -> list[str]:
         """Get mapping sameness identifiers for all records."""
-        identifiers = []
         expand = partial(self.converter.expand, strict=True)
-        for subject_curie, predicate_curie, object_curie, predicate_modifier in self.df[
-            ["subject_id", "predicate_id", "object_id", "predicate_modifier"]
-        ].values:
-            mapping_sameness_identifier = encode_uri_triple(
-                (expand(subject_curie), expand(predicate_curie), expand(object_curie))
+        return [
+            encode_uri_triple(
+                (expand(subject_curie), expand(predicate_curie), expand(object_curie)),
+                negate=predicate_modifier == "Not",
             )
-            if predicate_modifier == "Not":
-                mapping_sameness_identifier += "~"
-            identifiers.append(mapping_sameness_identifier)
-        return identifiers
+            for subject_curie, predicate_curie, object_curie, predicate_modifier in self.df[
+                ["subject_id", "predicate_id", "object_id", "predicate_modifier"]
+            ].values
+        ]
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
