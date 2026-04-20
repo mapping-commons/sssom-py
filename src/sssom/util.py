@@ -592,11 +592,20 @@ class MappingSetDataFrame:
 
     def get_mapping_sameness_identifiers(self) -> list[str]:
         """Get mapping sameness identifiers for all records."""
-        return _get_msi_for_df(self.df, self.converter)
+        return get_mapping_sameness_identifier_for_rows(self.df, self.converter)
 
 
-def _get_msi_for_df(df: pd.DataFrame, converter: curies.Converter) -> list[str]:
-    """Get mapping sameness identifiers for all records."""
+def get_mapping_sameness_identifier_for_rows(
+    df: pd.DataFrame, converter: curies.Converter
+) -> list[str]:
+    """Get mapping sameness identifiers for all records.
+
+    >>> import sssom
+    >>> from sssom.util import get_mapping_sameness_identifiers_for_rows
+    >>> url = "https://w3id.org/biopragmatics/biomappings/sssom/biomappings.sssom.tsv"
+    >>> msdf = sssom.parse_tsv(url)
+    >>> identifiers = get_mapping_sameness_identifiers_for_rows(msdf.df, msdf.converter)
+    """
     expand = partial(converter.expand, strict=True)
     return [
         encode_uri_triple(
@@ -612,7 +621,34 @@ def _get_msi_for_df(df: pd.DataFrame, converter: curies.Converter) -> list[str]:
 def get_mapping_sameness_identifier_from_mapping(
     semantic_mapping: Mapping[str, str], converter: curies.Converter
 ) -> str:
-    """Get the Mapping Sameness Identifier for a dictionary representation of a single semantic mapping record."""
+    """Get the Mapping Sameness Identifier for a dictionary representation of a single semantic mapping record.
+
+    >>> from sssom.util import get_mapping_sameness_identifier_from_mapping
+    >>> from curies import Converter
+    >>> converter = Converter.from_prefix_map(
+    ...     {
+    ...         "CHEBI": "http://purl.obolibrary.org/obo/CHEBI_",
+    ...         "mesh": "http://id.nlm.nih.gov/mesh/",
+    ...         "skos": "http://www.w3.org/2004/02/skos/core#",
+    ...         "semapv": "https://w3id.org/semapv/vocab/",
+    ...     }
+    ... )
+    >>> semantic_mapping = {
+    ...     "subject_id": "mesh:C000089",
+    ...     "predicate_id": "skos:exactMatch",
+    ...     "object_id": "CHEBI:28646",
+    ... }
+    >>> get_mapping_sameness_identifier_from_mapping(semantic_mapping, converter)
+    '36a1f9244ea7641a90987c82f33c25c0c13712ee8f48207b2a0825f8a4e4e26a'
+    >>> negated_semantic_mapping = {
+    ...     "subject_id": "mesh:C000089",
+    ...     "predicate_id": "skos:exactMatch",
+    ...     "predicate_modifier": "Not",
+    ...     "object_id": "CHEBI:28646",
+    ... }
+    >>> get_mapping_sameness_identifier_from_mapping(negated_semantic_mapping, converter)
+    '36a1f9244ea7641a90987c82f33c25c0c13712ee8f48207b2a0825f8a4e4e26a~'
+    """
     return encode_uri_triple(
         (
             converter.expand(semantic_mapping["subject_id"], strict=True),
