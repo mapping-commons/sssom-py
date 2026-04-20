@@ -32,7 +32,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
-from curies.triples import encode_uri_triple
+from curies.triples import encode_curie_triple, encode_uri_triple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from packaging.version import parse
@@ -606,10 +606,10 @@ def get_mapping_sameness_identifier_for_rows(
     >>> msdf = sssom.parse_tsv(url)
     >>> identifiers = get_mapping_sameness_identifiers_for_rows(msdf.df, msdf.converter)
     """
-    expand = partial(converter.expand, strict=True)
     return [
-        encode_uri_triple(
-            (expand(subject_curie), expand(predicate_curie), expand(object_curie)),
+        encode_curie_triple(
+            (subject_curie, predicate_curie, object_curie),
+            converter,
             negate=predicate_modifier == "Not",
         )
         for subject_curie, predicate_curie, object_curie, predicate_modifier in df[
@@ -649,12 +649,13 @@ def get_mapping_sameness_identifier_from_mapping(
     >>> get_mapping_sameness_identifier_from_mapping(negated_semantic_mapping, converter)
     '36a1f9244ea7641a90987c82f33c25c0c13712ee8f48207b2a0825f8a4e4e26a~'
     """
-    return encode_uri_triple(
+    return encode_curie_triple(
         (
-            converter.expand(semantic_mapping["subject_id"], strict=True),
-            converter.expand(semantic_mapping["predicate_id"], strict=True),
-            converter.expand(semantic_mapping["object_id"], strict=True),
+            semantic_mapping["subject_id"],
+            semantic_mapping["predicate_id"],
+            semantic_mapping["object_id"],
         ),
+        converter,
         negate=semantic_mapping.get("predicate_modifier") == "Not",
     )
 
@@ -663,12 +664,13 @@ def get_mapping_sameness_identifier_from_obj(
     semantic_mapping: sssom_schema.Mapping, converter: curies.Converter
 ) -> str:
     """Get the Mapping Sameness Identifier for a LinkML representation of a single semantic mapping record."""
-    return encode_uri_triple(
+    return encode_curie_triple(
         (
-            converter.expand(semantic_mapping.subject_id, strict=True),
-            converter.expand(semantic_mapping.predicate_id, strict=True),
-            converter.expand(semantic_mapping.object_id, strict=True),
+            semantic_mapping.subject_id,
+            semantic_mapping.predicate_id,
+            semantic_mapping.object_id,
         ),
+        converter,
         negate=semantic_mapping.predicate_modifier == "Not",
     )
 
