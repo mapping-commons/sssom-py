@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     DefaultDict,
     Dict,
@@ -92,6 +93,9 @@ from .context import (
     get_converter,
 )
 from .sssom_document import MappingSetDocument
+
+if TYPE_CHECKING:
+    import sssom_schema
 
 logging = _logging.getLogger(__name__)
 
@@ -588,16 +592,45 @@ class MappingSetDataFrame:
 
     def get_mapping_sameness_identifiers(self) -> list[str]:
         """Get mapping sameness identifiers for all records."""
-        expand = partial(self.converter.expand, strict=True)
-        return [
-            encode_uri_triple(
-                (expand(subject_curie), expand(predicate_curie), expand(object_curie)),
-                negate=predicate_modifier == "Not",
-            )
-            for subject_curie, predicate_curie, object_curie, predicate_modifier in self.df[
-                ["subject_id", "predicate_id", "object_id", "predicate_modifier"]
-            ].values
-        ]
+        return _get_msi_for_df(self.df, self.converter)
+
+
+def _get_msi_for_df(df: pd.DataFrame, converter: curies.Converter) -> list[str]:
+    """Get mapping sameness identifiers for all records."""
+    expand = partial(converter.expand, strict=True)
+    return [
+        encode_uri_triple(
+            (expand(subject_curie), expand(predicate_curie), expand(object_curie)),
+            negate=predicate_modifier == "Not",
+        )
+        for subject_curie, predicate_curie, object_curie, predicate_modifier in df[
+            ["subject_id", "predicate_id", "object_id", "predicate_modifier"]
+        ].values
+    ]
+
+
+def _get_msi_from_row(row: Mapping[str, str], converter: curies.Converter) -> str:
+    """Get the Mapping Sameness Identifier for a dictionary representation of a single semantic mapping record."""
+    return encode_uri_triple(
+        (
+            converter.expand(row["subject_id"], strict=True),
+            converter.expand(row["predicate_id"], strict=True),
+            converter.expand(row["object_id"], strict=True),
+        ),
+        negate=row.get("predicate_modifier") == "Not",
+    )
+
+
+def _get_sameness_identifier(mapping: sssom_schema.Mapping, converter: curies.Converter) -> str:
+    """Get the Mapping Sameness Identifier for a LinkML representation of a single semantic mapping record."""
+    return encode_uri_triple(
+        (
+            converter.expand(mapping.subject_id, strict=True),
+            converter.expand(mapping.predicate_id, strict=True),
+            converter.expand(mapping.object_id, strict=True),
+        ),
+        negate=mapping.predicate_modifier == "Not",
+    )
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
