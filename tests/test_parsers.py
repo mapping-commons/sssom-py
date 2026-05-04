@@ -710,3 +710,42 @@ class TestSplit(unittest.TestCase):
         self.assertIn("p1_exactmatch_p2", rv)
         self.assertIn("p1_exactmatch_p3", rv)
         self.assertEqual(sdf.values.tolist(), rv["p1_exactmatch_p2"].df.values.tolist())
+
+    def test_split_preserves_metadata_prefixes(self) -> None:
+        """Regression test for https://github.com/mapping-commons/sssom-py/issues/573.
+
+        Prefixes that appear only in metadata values (e.g. ``subject_source: infores:mondo``)
+        must be carried over to each split's converter, otherwise ``write_table`` silently
+        drops them from the emitted ``# curie_map``.
+        """
+        converter = Converter.from_prefix_map(
+            {
+                "p1": "https://example.org/p1/",
+                "p2": "https://example.org/p2/",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "semapv": "https://w3id.org/semapv/vocab/",
+                "infores": "https://w3id.org/information-resource-registry/",
+            }
+        )
+        df = pd.DataFrame(
+            [("p1:1", "skos:exactMatch", "p2:1", "semapv:ManualMappingCuration")],
+            columns=["subject_id", "predicate_id", "object_id", "mapping_justification"],
+        )
+        meta = {
+            "mapping_set_id": "https://example.org/test",
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "subject_source": "infores:p1",
+        }
+        msdf = from_sssom_dataframe(df, converter, meta=meta)
+
+        for method in [None, *get_args(SplitMethod)]:
+            with self.subTest(method=method):
+                rv = split_dataframe_by_prefix(
+                    msdf, ["p1"], ["p2"], ["skos:exactMatch"], method=method
+                )
+                self.assertIn("p1_exactmatch_p2", rv)
+                self.assertIn(
+                    "infores",
+                    rv["p1_exactmatch_p2"].converter.bimap,
+                    msg="metadata-only prefix dropped from split converter",
+                )

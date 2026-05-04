@@ -86,6 +86,7 @@ from .util import (
     ExtensionLiteral,
     MappingSetDataFrame,
     get_file_extension,
+    get_prefixes_used_in_metadata,
     is_multivalued_slot,
     propagate_condensed_slots,
     raise_for_bad_path,
@@ -1075,10 +1076,11 @@ def split_dataframe_by_prefix(
         object_prefixes=object_prefixes,
         method=method,
     )
+    metadata_prefixes = get_prefixes_used_in_metadata(msdf.metadata) & msdf.converter.get_prefixes()
     rv = {}
     for (subject_prefix, relation_t, object_prefix), df in rr:
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, relation_t.prefix]
+            [subject_prefix, object_prefix, relation_t.prefix, *metadata_prefixes]
         )
         split = _get_split_key(subject_prefix, relation_t.identifier, object_prefix)
         rv[split] = from_sssom_dataframe(df, prefix_map=subconverter, meta=msdf.metadata)
@@ -1093,6 +1095,7 @@ def _split_dataframe_by_prefix_old(
 ) -> Dict[str, MappingSetDataFrame]:
     df = msdf.df
     meta = msdf.metadata
+    metadata_prefixes = get_prefixes_used_in_metadata(meta) & msdf.converter.get_prefixes()
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
     for subject_prefix, object_prefix, relation in itt.product(
         subject_prefixes, object_prefixes, relations
@@ -1114,7 +1117,7 @@ def _split_dataframe_by_prefix_old(
             logging.debug(f"No matches ({len(df_subset)} matches found)")
             continue
         subconverter = msdf.converter.get_subconverter(
-            [subject_prefix, object_prefix, relation_prefix]
+            [subject_prefix, object_prefix, relation_prefix, *metadata_prefixes]
         )
         split_to_msdf[split] = from_sssom_dataframe(
             df_subset, prefix_map=dict(subconverter.bimap), meta=meta
