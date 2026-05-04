@@ -1076,6 +1076,8 @@ def split_dataframe_by_prefix(
         object_prefixes=object_prefixes,
         method=method,
     )
+    # Intersect with the converter's prefixes so any garbage CURIE-shaped value
+    # in the metadata doesn't propagate as an unknown prefix to the subconverter.
     metadata_prefixes = get_prefixes_used_in_metadata(msdf.metadata) & msdf.converter.get_prefixes()
     rv = {}
     for (subject_prefix, relation_t, object_prefix), df in rr:
@@ -1095,6 +1097,8 @@ def _split_dataframe_by_prefix_old(
 ) -> Dict[str, MappingSetDataFrame]:
     df = msdf.df
     meta = msdf.metadata
+    # Intersect with the converter's prefixes so any garbage CURIE-shaped value
+    # in the metadata doesn't propagate as an unknown prefix to the subconverter.
     metadata_prefixes = get_prefixes_used_in_metadata(meta) & msdf.converter.get_prefixes()
     split_to_msdf: Dict[str, MappingSetDataFrame] = {}
     for subject_prefix, object_prefix, relation in itt.product(
