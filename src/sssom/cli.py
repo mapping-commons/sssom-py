@@ -39,6 +39,9 @@ from .io import (
 from .parsers import PARSING_FUNCTIONS, SplitMethod, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
+from linkml.validator.report import Severity
+
+from .validators import format_report, print_linkml_report
 from .util import (
     MappingSetDataFrame,
     compare_dataframes,
@@ -250,11 +253,43 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
+@click.option(
+    "--report-format",
+    "-r",
+    type=click.Choice(["pretty", "raw"]),
+    default="pretty",
+    show_default=True,
+    help="How to render the validation report. 'pretty' prints one line per unique problem; 'raw' uses LinkML's default per-error logging.",
+)
 @propagate_option
-def validate(input: str, validation_types: List[SchemaValidationType], propagate: bool) -> None:
+def validate(
+    input: str,
+    validation_types: List[SchemaValidationType],
+    propagate: bool,
+    report_format: str,
+) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
-    validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
+    reports = validate_file(
+        input_path=input,
+        validation_types=validation_type_list,
+        fail_on_error=False,
+        propagate=propagate,
+    )
+    has_errors = False
+    for vt, report in reports.items():
+        if any(r.severity in (Severity.FATAL, Severity.ERROR) for r in report.results):
+            has_errors = True
+        if report_format == "raw":
+            print_linkml_report(report, fail_on_error=False)
+            continue
+        formatted = format_report(report, label=vt.name)
+        if formatted:
+            click.echo(formatted)
+    if not has_errors:
+        click.echo("No issues found.")
+    else:
+        sys.exit(1)
 
 
 @main.command()
