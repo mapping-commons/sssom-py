@@ -15,6 +15,7 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
+from linkml.validator.report import Severity
 from rdflib import Graph, URIRef
 from typing_extensions import ParamSpec
 
@@ -39,9 +40,6 @@ from .io import (
 from .parsers import PARSING_FUNCTIONS, SplitMethod, parse_sssom_table
 from .rdf_util import rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
-from linkml.validator.report import Severity
-
-from .validators import format_report, print_linkml_report
 from .util import (
     MappingSetDataFrame,
     compare_dataframes,
@@ -55,6 +53,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
+from .validators import format_report, print_linkml_report
 from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint_app, write_table
 
 logging = _logging.getLogger(__name__)
