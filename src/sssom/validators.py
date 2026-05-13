@@ -44,7 +44,7 @@ def format_report(report: ValidationReport, label: str = "") -> str:
     """Format a ValidationReport as one line per unique JSON path, dropping the instance blob."""
     prefix = f"[{label}] " if label else ""
     lines: list[str] = []
-    seen: set[tuple] = set()
+    seen: set[tuple[Any, ...]] = set()
     for r in report.results:
         src = r.source
         if src is not None:
