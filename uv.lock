@@ -2523,7 +2523,7 @@ requires-dist = [
     { name = "rdflib-endpoint", marker = "extra == 'rdflib-endpoint'" },
     { name = "scipy", marker = "extra == 'scipy'" },
     { name = "sparqlwrapper", specifier = ">=2.0.0" },
-    { name = "sssom-schema", specifier = "==1.1.0a4" },
+    { name = "sssom-schema", specifier = "==1.1.0a5" },
     { name = "uvicorn", marker = "extra == 'rdflib-endpoint'" },
     { name = "validators", specifier = ">=0.20.0" },
 ]
@@ -2531,16 +2531,16 @@ provides-extras = ["networkx", "pansql", "scipy", "docs", "rdflib-endpoint"]
 
 [[package]]
 name = "sssom-schema"
-version = "1.1.0a4"
+version = "1.1.0a5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinjanator" },
     { name = "linkml" },
     { name = "linkml-runtime" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f8/33/8bf173f6942bc1bb0e57f158918d59b475e858306c42e786fdb487d4e659/sssom_schema-1.1.0a4.tar.gz", hash = "sha256:5324cd9c42b0f0b5f9432b3a2ef11cd0cead9e9d688464d2669051f37b11b6ec", size = 42631, upload-time = "2026-04-07T12:48:04.8Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/fa/8ff4a12cab071f8631d2fcc60209ccc9f72ad2d183b20d6174cd1ba241ac/sssom_schema-1.1.0a5.tar.gz", hash = "sha256:39afcd364b4521a4dc6411c94ee657c9e2c1848f260b4a9085397c8ab5595f78", size = 43238, upload-time = "2026-05-22T20:56:41.945Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/95/ec/b175a9b07df4b2858510e1dcb01e4be2f9c99050b3dbe094cc0140c7e0ac/sssom_schema-1.1.0a4-py3-none-any.whl", hash = "sha256:3f5fa3e2216e303646bed8ed2e927850007183be2e0751ac2ba0cdc132ef483e", size = 42484, upload-time = "2026-04-07T12:48:06.353Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/b2/763d00c0969a68f5a114cd200a2d7ce2ed4a40c78f0551756e9ae658f28e/sssom_schema-1.1.0a5-py3-none-any.whl", hash = "sha256:3eca51b349b12441a369d0e0db40fd3d8bc58fc69896976361b4e96df146b04c", size = 43069, upload-time = "2026-05-22T20:56:40.264Z" },
 ]
 
 [[package]]
