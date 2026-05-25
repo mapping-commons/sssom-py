@@ -1,5 +1,6 @@
 """Tests for the command line interface."""
 
+import importlib.util
 import os
 import subprocess  # noqa
 import unittest
@@ -67,9 +68,10 @@ class SSSOMCLITestSuite(unittest.TestCase):
                     self.run_crosstab(runner, test)
                     self.run_correlations(runner, test)
                     self.run_reconcile_prefix(runner, test)
-                    self.run_dosql(runner, test)
+                    if importlib.util.find_spec("pansql"):
+                        self.run_dosql(runner, test)
+                        self.run_filter(runner, test)
                     self.run_sort_rows_columns(runner, test)
-                    self.run_filter(runner, test)
                     self.run_annotate(runner, test)
                     self.run_remove(runner, test)
 
