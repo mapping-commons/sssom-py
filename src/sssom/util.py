@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from functools import partial, reduce
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     DefaultDict,
     Dict,
@@ -31,6 +32,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
+from curies.triples import encode_curie_triple, encode_uri_triple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from packaging.version import parse
@@ -91,6 +93,9 @@ from .context import (
     get_converter,
 )
 from .sssom_document import MappingSetDocument
+
+if TYPE_CHECKING:
+    import sssom_schema
 
 logging = _logging.getLogger(__name__)
 
@@ -584,6 +589,90 @@ class MappingSetDataFrame:
                     msdf.df.loc[msdf.df[slot] == new_enum_value.value, slot] = ""
 
         return msdf
+
+    def get_mapping_sameness_identifiers(self) -> list[str]:
+        """Get mapping sameness identifiers for all records."""
+        return get_mapping_sameness_identifier_for_rows(self.df, self.converter)
+
+
+def get_mapping_sameness_identifier_for_rows(
+    df: pd.DataFrame, converter: curies.Converter
+) -> list[str]:
+    """Get mapping sameness identifiers for all records.
+
+    >>> import sssom
+    >>> from sssom.util import get_mapping_sameness_identifiers_for_rows
+    >>> url = "https://w3id.org/biopragmatics/biomappings/sssom/biomappings.sssom.tsv"
+    >>> msdf = sssom.parse_tsv(url)
+    >>> identifiers = get_mapping_sameness_identifiers_for_rows(msdf.df, msdf.converter)
+    """
+    return [
+        encode_curie_triple(
+            (subject_curie, predicate_curie, object_curie),
+            converter,
+            negate=predicate_modifier == "Not",
+        )
+        for subject_curie, predicate_curie, object_curie, predicate_modifier in df[
+            ["subject_id", "predicate_id", "object_id", "predicate_modifier"]
+        ].values
+    ]
+
+
+def get_mapping_sameness_identifier_from_mapping(
+    semantic_mapping: Mapping[str, str], converter: curies.Converter
+) -> str:
+    """Get the Mapping Sameness Identifier for a dictionary representation of a single semantic mapping record.
+
+    >>> from sssom.util import get_mapping_sameness_identifier_from_mapping
+    >>> from curies import Converter
+    >>> converter = Converter.from_prefix_map(
+    ...     {
+    ...         "CHEBI": "http://purl.obolibrary.org/obo/CHEBI_",
+    ...         "mesh": "http://id.nlm.nih.gov/mesh/",
+    ...         "skos": "http://www.w3.org/2004/02/skos/core#",
+    ...         "semapv": "https://w3id.org/semapv/vocab/",
+    ...     }
+    ... )
+    >>> semantic_mapping = {
+    ...     "subject_id": "mesh:C000089",
+    ...     "predicate_id": "skos:exactMatch",
+    ...     "object_id": "CHEBI:28646",
+    ... }
+    >>> get_mapping_sameness_identifier_from_mapping(semantic_mapping, converter)
+    '36a1f9244ea7641a90987c82f33c25c0c13712ee8f48207b2a0825f8a4e4e26a'
+    >>> negated_semantic_mapping = {
+    ...     "subject_id": "mesh:C000089",
+    ...     "predicate_id": "skos:exactMatch",
+    ...     "predicate_modifier": "Not",
+    ...     "object_id": "CHEBI:28646",
+    ... }
+    >>> get_mapping_sameness_identifier_from_mapping(negated_semantic_mapping, converter)
+    '36a1f9244ea7641a90987c82f33c25c0c13712ee8f48207b2a0825f8a4e4e26a~'
+    """
+    return encode_curie_triple(
+        (
+            semantic_mapping["subject_id"],
+            semantic_mapping["predicate_id"],
+            semantic_mapping["object_id"],
+        ),
+        converter,
+        negate=semantic_mapping.get("predicate_modifier") == "Not",
+    )
+
+
+def get_mapping_sameness_identifier_from_obj(
+    semantic_mapping: sssom_schema.Mapping, converter: curies.Converter
+) -> str:
+    """Get the Mapping Sameness Identifier for a LinkML representation of a single semantic mapping record."""
+    return encode_curie_triple(
+        (
+            semantic_mapping.subject_id,
+            semantic_mapping.predicate_id,
+            semantic_mapping.object_id,
+        ),
+        converter,
+        negate=semantic_mapping.predicate_modifier == "Not",
+    )
 
 
 def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
