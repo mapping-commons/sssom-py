@@ -33,7 +33,6 @@ import validators
 from curies import Converter, ReferenceTuple
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
-from packaging.version import parse
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 from typing_extensions import TypedDict
@@ -105,12 +104,8 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
 TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
-# ! This will be unnecessary when pandas >= 3.0.0 is released
-# ! https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.infer_objects.html#
-# A value is trying to be set on a copy of a slice from a DataFrame
+# Enable copy-on-write for pandas 2.x (default in pandas 3.x).
 pd.options.mode.copy_on_write = True
-# Get the version of pandas as a tuple of integers
-pandas_version = parse(pd.__version__).release  # Returns (major, minor, micro)
 
 
 @dataclass
@@ -195,12 +190,7 @@ class MappingSetDataFrame:
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
 
-        if pandas_version >= (2, 0, 0):
-            # For pandas >= 2.0.0, use the 'copy' parameter
-            non_double_cols = non_double_cols.infer_objects(copy=False)
-        else:
-            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
-            non_double_cols = non_double_cols.infer_objects()
+        non_double_cols = non_double_cols.infer_objects()
 
         non_double_cols.replace(np.nan, "", inplace=True)
         df.update(non_double_cols)
