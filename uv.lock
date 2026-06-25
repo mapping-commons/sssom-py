@@ -14,6 +14,15 @@ resolution-markers = [
     "python_full_version < '3.11'",
 ]
 
+[manifest]
+constraints = [
+    { name = "idna", specifier = ">=3.15" },
+    { name = "pymdown-extensions", specifier = ">=10.21.3" },
+    { name = "pytest", specifier = ">=9.0.3" },
+    { name = "starlette", specifier = ">=1.3.1" },
+    { name = "urllib3", specifier = ">=2.7.0" },
+]
+
 [[package]]
 name = "alabaster"
 version = "1.0.0"
