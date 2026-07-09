@@ -40,29 +40,49 @@ def validate(
     return {vt: VALIDATION_METHODS[vt](msdf, fail_on_error) for vt in validation_types}
 
 
+def format_report(report: ValidationReport, label: str = "") -> str:
+    """Format a ValidationReport as one line per unique JSON path, dropping the instance blob."""
+    prefix = f"[{label}] " if label else ""
+    lines: list[str] = []
+    seen: set[tuple[Any, ...]] = set()
+    for r in report.results:
+        src = r.source
+        if src is not None:
+            path = tuple(src.absolute_path)
+            if path in seen:
+                continue
+            seen.add(path)
+            path_str = "/".join(str(p) for p in path) or "<root>"
+            lines.append(f"{prefix}{path_str}: {src.message}")
+        else:
+            lines.append(f"{prefix}{r.message}")
+    return "\n".join(lines)
+
+
+_FAILING_SEVERITIES = (Severity.FATAL, Severity.ERROR)
+
+
+def _raise_if_errors(report: ValidationReport, fail_on_error: bool) -> None:
+    """Raise a ValidationError summarising ERROR/FATAL results, if ``fail_on_error``."""
+    n = sum(1 for r in report.results if r.severity in _FAILING_SEVERITIES)
+    if fail_on_error and n:
+        raise ValidationError(f"You mapping set has {n} validation errors!")
+
+
 def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) -> None:
-    """Print the error messages in the report. Optionally throw exception.
+    """Log each result in the report and optionally raise on errors.
 
-    :param report: A LinkML validation report
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there
-        are errors
+    Retained for callers that want logging-style output; the built-in validators no longer
+    invoke it themselves so that callers can choose their own rendering (e.g. ``format_report``).
     """
-    validation_errors = 0
-
+    for result in report.results:
+        if result.severity in (Severity.FATAL, Severity.ERROR, Severity.WARN):
+            logging.error(result.message)
+        else:
+            logging.info(result.message)
     if not report.results:
         logging.info("The instance is valid!")
-    else:
-        for result in report.results:
-            validation_errors += 1
-            if (result.severity == Severity.FATAL) or (result.severity == Severity.ERROR):
-                logging.error(result.message)
-            elif result.severity == Severity.WARN:
-                logging.error(result.message)
-            elif result.severity == Severity.INFO:
-                logging.info(result.message)
-
-    if fail_on_error and validation_errors:
-        raise ValidationError(f"You mapping set has {validation_errors} validation errors!")
+    _raise_if_errors(report, fail_on_error)
 
 
 # TODO This should not be necessary: https://github.com/linkml/linkml/issues/2117,
@@ -115,7 +135,7 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
     mapping_set_dict = json_dumper.to_dict(mapping_set)
 
     report = validator.validate(mapping_set_dict, "mapping set")
-    print_linkml_report(report, fail_on_error)
+    _raise_if_errors(report, fail_on_error)
     return report
 
 
@@ -172,7 +192,7 @@ def check_all_prefixes_in_curie_map(
             )
         )
     report = ValidationReport(results=validation_results)
-    print_linkml_report(report, fail_on_error)
+    _raise_if_errors(report, fail_on_error)
     return report
 
 
@@ -222,7 +242,7 @@ def check_strict_curie_format(
                     )
 
     report = ValidationReport(results=validation_results)
-    print_linkml_report(report, fail_on_error)
+    _raise_if_errors(report, fail_on_error)
     return report
 
 
