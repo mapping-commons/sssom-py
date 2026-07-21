@@ -1216,9 +1216,7 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]) -> Optional[Mapping]:
         return m
 
 
-def _add_valid_mapping_to_list(
-    mdict: Dict[str, Any], mlist: List[Mapping]
-) -> None:
+def _add_valid_mapping_to_list(mdict: Dict[str, Any], mlist: List[Mapping]) -> None:
     """Validate the mapping and append to the list if valid.
 
     Parameters: - mdict (dict): A dictionary containing the mapping metadata. - mlist (list): The
