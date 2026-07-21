@@ -710,7 +710,7 @@ def from_alignment_minidom(
                         mdict: Dict[str, Any] = _cell_element_values(
                             c_node, converter, mapping_predicates=mapping_predicates
                         )
-                        _add_valid_mapping_to_list(mdict, mlist, flip_superclass_assertions=True)
+                        _add_valid_mapping_to_list(mdict, mlist)
 
                 elif node_name == "xml":
                     if e.firstChild.nodeValue != "yes":  # type: ignore[union-attr]
@@ -890,13 +890,6 @@ def get_parsing_function(
     if func is None:
         raise ValueError(f"Unknown input format: {input_format}")
     return func
-
-
-def _flip_superclass_assertion(mapping: Mapping) -> Mapping:
-    if mapping.predicate_id != "sssom:superClassOf":
-        return mapping
-    mapping.predicate_id = "rdfs:subClassOf"
-    return _swap_object_subject(mapping)
 
 
 def _swap_object_subject(mapping: Mapping) -> Mapping:
@@ -1224,17 +1217,14 @@ def _ensure_valid_mapping_from_dict(mdict: Dict[str, Any]) -> Optional[Mapping]:
 
 
 def _add_valid_mapping_to_list(
-    mdict: Dict[str, Any], mlist: List[Mapping], *, flip_superclass_assertions: bool = False
+    mdict: Dict[str, Any], mlist: List[Mapping]
 ) -> None:
     """Validate the mapping and append to the list if valid.
 
     Parameters: - mdict (dict): A dictionary containing the mapping metadata. - mlist (list): The
-    list to which the valid mapping should be appended. - flip_superclass_assertions (bool): an
-    optional paramter that flips sssom:superClassOf to rdfs:subClassOf
+    list to which the valid mapping should be appended.
     """
     mapping = _ensure_valid_mapping_from_dict(mdict)
     if not mapping:
         return None
-    if flip_superclass_assertions:
-        mapping = _flip_superclass_assertion(mapping)
     mlist.append(mapping)
