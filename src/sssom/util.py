@@ -68,7 +68,6 @@ from .constants import (
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
-    SSSOM_SUPERCLASS_OF,
     SSSOM_URI_PREFIX,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
@@ -997,8 +996,6 @@ def dataframe_to_ptable(
             predicate_type = PREDICATE_SUBCLASS
         elif predicate == SKOS_BROAD_MATCH:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == SSSOM_SUPERCLASS_OF:
-            predicate_type = PREDICATE_SUPERCLASS
         elif predicate == SKOS_NARROW_MATCH:
             predicate_type = PREDICATE_SUPERCLASS
         elif predicate == OWL_DIFFERENT_FROM:

@@ -18,7 +18,6 @@ from sssom.constants import (
     SKOS_CLOSE_MATCH,
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
-    SSSOM_SUPERCLASS_OF,
     SSSOM_URI_PREFIX,
 )
 
@@ -58,8 +57,6 @@ def to_digraph(msdf: MappingSetDataFrame) -> "networkx.DiGraph[str]":
                 pi = 0
             elif p == SKOS_BROAD_MATCH:
                 pi = 0
-            elif p == SSSOM_SUPERCLASS_OF:
-                pi = 1
             elif p == SKOS_NARROW_MATCH:
                 pi = 1
             elif p == OWL_DIFFERENT_FROM:

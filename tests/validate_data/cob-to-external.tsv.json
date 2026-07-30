@@ -3,848 +3,721 @@
   "license": "https://creativecommons.org/publicdomain/zero/1.0/",
   "mappings": [
     {
-      "subject_id": "COB:0000002",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "RO:0000058",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000002",
       "subject_label": "is concretized as",
+      "object_id": "RO:0000058",
       "object_label": "is concretized as"
     },
     {
-      "subject_id": "COB:0000003",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "PATO:0000125",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000003",
       "subject_label": "mass",
+      "object_id": "PATO:0000125",
       "object_label": "mass"
     },
     {
-      "subject_id": "COB:0000004",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "PATO:0002193",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000004",
       "subject_label": "charge",
+      "object_id": "PATO:0002193",
       "object_label": "electric"
     },
     {
-      "subject_id": "COB:0000005",
       "predicate_id": "rdfs:subClassOf",
-      "object_id": "owl:Thing",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000005",
       "subject_label": "elementary charge",
+      "object_id": "owl:Thing",
       "object_label": "owl:Thing"
     },
     {
-      "subject_id": "COB:0000006",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000040",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000006",
       "subject_label": "material entity",
+      "object_id": "BFO:0000040",
       "object_label": "material entity"
     },
     {
-      "subject_id": "COB:0000006",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "SO:0000110",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "material entity",
-      "object_label": "sequence_feature"
-    },
-    {
-      "subject_id": "COB:0000006",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "SO:0001060",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "material entity",
-      "object_label": "sequence_variant"
-    },
-    {
-      "subject_id": "COB:0000006",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "SO:0001260",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "material entity",
-      "object_label": "sequence_collection"
-    },
-    {
-      "subject_id": "COB:0000007",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:36342",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000007",
       "subject_label": "subatomic particle",
+      "object_id": "CHEBI:36342",
       "object_label": "subatomic particle"
     },
     {
-      "subject_id": "COB:0000008",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:24636",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000008",
       "subject_label": "proton",
+      "object_id": "CHEBI:24636",
       "object_label": "proton"
     },
     {
-      "subject_id": "COB:0000009",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:30222",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000009",
       "subject_label": "neutron",
+      "object_id": "CHEBI:30222",
       "object_label": "neutron"
     },
     {
-      "subject_id": "COB:0000010",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:10545",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000010",
       "subject_label": "electron",
+      "object_id": "CHEBI:10545",
       "object_label": "electron"
     },
     {
-      "subject_id": "COB:0000011",
       "predicate_id": "skos:closeMatch",
-      "object_id": "CHEBI:33250",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000011",
       "subject_label": "atom",
+      "object_id": "CHEBI:33250",
       "object_label": "atom"
     },
     {
-      "subject_id": "COB:0000012",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:33252",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000012",
       "subject_label": "atomic nucleus",
+      "object_id": "CHEBI:33252",
       "object_label": "atomic nucleus"
     },
     {
-      "subject_id": "COB:0000013",
       "predicate_id": "skos:closeMatch",
-      "object_id": "CHEBI:23367",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000013",
       "subject_label": "molecular entity",
+      "object_id": "CHEBI:23367",
       "object_label": "molecular entity"
     },
     {
-      "subject_id": "COB:0000013",
       "predicate_id": "skos:closeMatch",
-      "object_id": "CHEBI:25367",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000013",
       "subject_label": "molecular entity",
+      "object_id": "CHEBI:25367",
       "object_label": "molecule"
     },
     {
-      "subject_id": "COB:0000015",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:16541",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000015",
       "subject_label": "protein",
+      "object_id": "CHEBI:16541",
       "object_label": "protein polypeptide chain"
     },
     {
-      "subject_id": "COB:0000015",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "PR:000000001",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000015",
       "subject_label": "protein",
+      "object_id": "PR:000000001",
       "object_label": "protein"
     },
     {
-      "subject_id": "COB:0000016",
       "predicate_id": "rdfs:subPropertyOf",
-      "object_id": "owl:topObjectProperty",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000016",
       "subject_label": "executed by",
+      "object_id": "owl:topObjectProperty",
       "object_label": "topObjectProperty"
     },
     {
-      "subject_id": "COB:0000017",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CL:0000000",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000017",
       "subject_label": "cell",
+      "object_id": "CL:0000000",
       "object_label": "cell"
     },
     {
-      "subject_id": "COB:0000017",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "PO:0009002",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "cell",
-      "object_label": "plant cell"
-    },
-    {
-      "subject_id": "COB:0000018",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CL:0000003",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000018",
       "subject_label": "native cell",
+      "object_id": "CL:0000003",
       "object_label": "native cell"
     },
     {
-      "subject_id": "COB:0000018",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "PO:0025606",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "native cell",
-      "object_label": "native plant cell"
-    },
-    {
-      "subject_id": "COB:0000018",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "XAO:0003012",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "native cell",
-      "object_label": "xenopus cell"
-    },
-    {
-      "subject_id": "COB:0000018",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "ZFA:0009000",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "native cell",
-      "object_label": "zebrafish cell"
-    },
-    {
-      "subject_id": "COB:0000019",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CL:0001034",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000019",
       "subject_label": "cell in vitro",
+      "object_id": "CL:0001034",
       "object_label": "cell in vitro"
     },
     {
-      "subject_id": "COB:0000020",
       "predicate_id": "rdfs:subClassOf",
-      "object_id": "owl:Thing",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000020",
       "subject_label": "subcellular structure",
+      "object_id": "owl:Thing",
       "object_label": "owl:Thing"
     },
     {
-      "subject_id": "COB:0000021",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CARO:0001008",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000021",
       "subject_label": "gross anatomical part",
+      "object_id": "CARO:0001008",
       "object_label": "gross anatomical part"
     },
     {
-      "subject_id": "COB:0000021",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "UBERON:0010000",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "gross anatomical part",
-      "object_label": "multicellular anatomical structure"
-    },
-    {
-      "subject_id": "COB:0000022",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CARO:0001010",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000022",
       "subject_label": "organism",
+      "object_id": "CARO:0001010",
       "object_label": "organism or virus or viroid"
     },
     {
-      "subject_id": "COB:0000022",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "NCBITaxon:1",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000022",
       "subject_label": "organism",
+      "object_id": "NCBITaxon:1",
       "object_label": "root"
     },
     {
-      "subject_id": "COB:0000022",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0100026",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000022",
       "subject_label": "organism",
+      "object_id": "OBI:0100026",
       "object_label": "organism"
     },
     {
-      "subject_id": "COB:0000023",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "RO:0000052",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000023",
       "subject_label": "characteristic of",
+      "object_id": "RO:0000052",
       "object_label": "inheres in"
     },
     {
-      "subject_id": "COB:0000024",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "RO:0000056",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000024",
       "subject_label": "participates in",
+      "object_id": "RO:0000056",
       "object_label": "participates in"
     },
     {
-      "subject_id": "COB:0000025",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000245",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000025",
       "subject_label": "organization",
+      "object_id": "OBI:0000245",
       "object_label": "organization"
     },
     {
-      "subject_id": "COB:0000026",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000047",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000026",
       "subject_label": "processed material entity",
+      "object_id": "OBI:0000047",
       "object_label": "processed material"
     },
     {
-      "subject_id": "COB:0000027",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "OBI:0000295",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000027",
       "subject_label": "is specified input of",
+      "object_id": "OBI:0000295",
       "object_label": "is_specified_input_of"
     },
     {
-      "subject_id": "COB:0000028",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "OBI:0000312",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000028",
       "subject_label": "is specified output of",
+      "object_id": "OBI:0000312",
       "object_label": "is_specified_output_of"
     },
     {
-      "subject_id": "COB:0000029",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "BFO:0000054",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000029",
       "subject_label": "realized in",
+      "object_id": "BFO:0000054",
       "object_label": "realized in"
     },
     {
-      "subject_id": "COB:0000031",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000041",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000031",
       "subject_label": "immaterial entity",
+      "object_id": "BFO:0000041",
       "object_label": "immaterial entity"
     },
     {
-      "subject_id": "COB:0000032",
       "predicate_id": "rdfs:subClassOf",
-      "object_id": "owl:Thing",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000032",
       "subject_label": "geographical location",
+      "object_id": "owl:Thing",
       "object_label": "owl:Thing"
     },
     {
-      "subject_id": "COB:0000033",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000017",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000033",
       "subject_label": "realizable",
+      "object_id": "BFO:0000017",
       "object_label": "realizable entity"
     },
     {
-      "subject_id": "COB:0000034",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000015",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000034",
       "subject_label": "process",
+      "object_id": "BFO:0000015",
       "object_label": "process"
     },
     {
-      "subject_id": "COB:0000035",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000011",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000035",
       "subject_label": "planned process",
+      "object_id": "OBI:0000011",
       "object_label": "planned process"
     },
     {
-      "subject_id": "COB:0000036",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "BFO:0000067",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000036",
       "subject_label": "contains process",
+      "object_id": "BFO:0000067",
       "object_label": "contains process"
     },
     {
-      "subject_id": "COB:0000037",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "GO:0008150",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000037",
       "subject_label": "biological process",
+      "object_id": "GO:0008150",
       "object_label": "biological process"
     },
     {
-      "subject_id": "COB:0000038",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "GO:0003674",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000038",
       "subject_label": "gene product or complex activity",
+      "object_id": "GO:0003674",
       "object_label": "molecular function"
     },
     {
-      "subject_id": "COB:0000039",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "OBI:0000293",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000039",
       "subject_label": "has specified input",
+      "object_id": "OBI:0000293",
       "object_label": "has_specified_input"
     },
     {
-      "subject_id": "COB:0000040",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "OBI:0000299",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000040",
       "subject_label": "has specified output",
+      "object_id": "OBI:0000299",
       "object_label": "has_specified_output"
     },
     {
-      "subject_id": "COB:0000042",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:24867",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000042",
       "subject_label": "monoatomic ion",
+      "object_id": "CHEBI:24867",
       "object_label": "monoatomic ion"
     },
     {
-      "subject_id": "COB:0000043",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:33250",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000043",
       "subject_label": "uncharged atom",
+      "object_id": "CHEBI:33250",
       "object_label": "atom"
     },
     {
-      "subject_id": "COB:0000047",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "BFO:0000051",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000047",
       "subject_label": "has part",
+      "object_id": "BFO:0000051",
       "object_label": "has part"
     },
     {
-      "subject_id": "COB:0000049",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CHEBI:10545",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000049",
       "subject_label": "nucleic acid polymer",
+      "object_id": "CHEBI:10545",
       "object_label": "nucleic acid"
     },
     {
-      "subject_id": "COB:0000055",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "PCO:0000000",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000055",
       "subject_label": "collection of organisms",
+      "object_id": "PCO:0000000",
       "object_label": "collection of organisms"
     },
     {
-      "subject_id": "COB:0000056",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "PO:0025117",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "immaterial anatomical entity",
-      "object_label": "plant anatomical space"
-    },
-    {
-      "subject_id": "COB:0000056",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "UBERON:0000466",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "immaterial anatomical entity",
-      "object_label": "immaterial anatomical entity"
-    },
-    {
-      "subject_id": "COB:0000057",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000029",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000057",
       "subject_label": "site",
+      "object_id": "BFO:0000029",
       "object_label": "site"
     },
     {
-      "subject_id": "COB:0000058",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0001909",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000058",
       "subject_label": "conclusion based on data",
+      "object_id": "OBI:0001909",
       "object_label": "conclusion based on data"
     },
     {
-      "subject_id": "COB:0000061",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "IAO:0000030",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000061",
       "subject_label": "information",
+      "object_id": "IAO:0000030",
       "object_label": "information content entity"
     },
     {
-      "subject_id": "COB:0000062",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OGMS:0000073",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000062",
       "subject_label": "disease diagnosis",
+      "object_id": "OGMS:0000073",
       "object_label": "diagnosis"
     },
     {
-      "subject_id": "COB:0000063",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OGMS:0000014",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000063",
       "subject_label": "phenotypic finding",
+      "object_id": "OGMS:0000014",
       "object_label": "clinical finding"
     },
     {
-      "subject_id": "COB:0000064",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OGMS:0000063",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000064",
       "subject_label": "disease course",
+      "object_id": "OGMS:0000063",
       "object_label": "disease course"
     },
     {
-      "subject_id": "COB:0000065",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "ENVO:02500000",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000065",
       "subject_label": "environmental process",
+      "object_id": "ENVO:02500000",
       "object_label": "environmental system process"
     },
     {
-      "subject_id": "COB:0000066",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "MOP:0000543",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000066",
       "subject_label": "physico-chemical process",
+      "object_id": "MOP:0000543",
       "object_label": "molecular process"
     },
     {
-      "subject_id": "COB:0000067",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "ENVO:01001110",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000067",
       "subject_label": "ecosystem",
+      "object_id": "ENVO:01001110",
       "object_label": "ecosystem"
     },
     {
-      "subject_id": "COB:0000068",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "ENVO:01000813",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000068",
       "subject_label": "geophysical entity",
+      "object_id": "ENVO:01000813",
       "object_label": "astronomical body part"
     },
     {
-      "subject_id": "COB:0000068",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "GEO:000000370",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "geophysical entity",
-      "object_label": "geographical entity"
-    },
-    {
-      "subject_id": "COB:0000069",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "IAO:0000033",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000069",
       "subject_label": "directive information entity",
+      "object_id": "IAO:0000033",
       "object_label": "directive information entity"
     },
     {
-      "subject_id": "COB:0000070",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "RO:0000057",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000070",
       "subject_label": "has participant",
+      "object_id": "RO:0000057",
       "object_label": "has participant"
     },
     {
-      "subject_id": "COB:0000071",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "BFO:0000066",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000071",
       "subject_label": "occurs in",
+      "object_id": "BFO:0000066",
       "object_label": "occurs in"
     },
     {
-      "subject_id": "COB:0000072",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "BFO:0000050",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000072",
       "subject_label": "part of",
+      "object_id": "BFO:0000050",
       "object_label": "part of"
     },
     {
-      "subject_id": "COB:0000073",
       "predicate_id": "rdfs:subClassOf",
-      "object_id": "owl:Thing",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000073",
       "subject_label": "gene product",
+      "object_id": "owl:Thing",
       "object_label": "owl:Thing"
     },
     {
-      "subject_id": "COB:0000074",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "RO:0002333",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000074",
       "subject_label": "enabled by",
+      "object_id": "RO:0002333",
       "object_label": "enabled by"
     },
     {
-      "subject_id": "COB:0000075",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "GO:0032991",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000075",
       "subject_label": "protein-containing macromolecular complex",
+      "object_id": "GO:0032991",
       "object_label": "protein-containing complex"
     },
     {
-      "subject_id": "COB:0000076",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "IAO:0000005",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000076",
       "subject_label": "objective specification",
+      "object_id": "IAO:0000005",
       "object_label": "objective specification"
     },
     {
-      "subject_id": "COB:0000079",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "IAO:0000104",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000079",
       "subject_label": "plan specification",
+      "object_id": "IAO:0000104",
       "object_label": "plan specification"
     },
     {
-      "subject_id": "COB:0000080",
       "predicate_id": "rdfs:subClassOf",
-      "object_id": "owl:Thing",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000080",
       "subject_label": "complex of molecular entities",
+      "object_id": "owl:Thing",
       "object_label": "owl:Thing"
     },
     {
-      "subject_id": "COB:0000086",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "STATO:0000102",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000086",
       "subject_label": "executes",
+      "object_id": "STATO:0000102",
       "object_label": "executes"
     },
     {
-      "subject_id": "COB:0000088",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "DRON:0000005",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000088",
       "subject_label": "drug product",
+      "object_id": "DRON:0000005",
       "object_label": "drug product"
     },
     {
-      "subject_id": "COB:0000088",
       "predicate_id": "rdfs:seeAlso",
-      "object_id": "CHEBI:23888",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000088",
       "subject_label": "drug product",
+      "object_id": "CHEBI:23888",
       "object_label": "drug"
     },
     {
-      "subject_id": "COB:0000101",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "IAO:0000310",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000101",
       "subject_label": "document",
+      "object_id": "IAO:0000310",
       "object_label": "document"
     },
     {
-      "subject_id": "COB:0000102",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "IAO:0000027",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000102",
       "subject_label": "data item",
+      "object_id": "IAO:0000027",
       "object_label": "data item"
     },
     {
-      "subject_id": "COB:0000103",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "GO:0005634",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000103",
       "subject_label": "cell nucleus",
+      "object_id": "GO:0005634",
       "object_label": "nucleus"
     },
     {
-      "subject_id": "COB:0000107",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000070",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000107",
       "subject_label": "assay",
+      "object_id": "OBI:0000070",
       "object_label": "assay"
     },
     {
-      "subject_id": "COB:0000108",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0200000",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000108",
       "subject_label": "data transformation",
+      "object_id": "OBI:0200000",
       "object_label": "data transformation"
     },
     {
-      "subject_id": "COB:0000109",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000066",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000109",
       "subject_label": "investigation",
+      "object_id": "OBI:0000066",
       "object_label": "investigation"
     },
     {
-      "subject_id": "COB:0000110",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000094",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000110",
       "subject_label": "material processing",
+      "object_id": "OBI:0000094",
       "object_label": "material processing"
     },
     {
-      "subject_id": "COB:0000111",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000016",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000111",
       "subject_label": "disposition",
+      "object_id": "BFO:0000016",
       "object_label": "disposition"
     },
     {
-      "subject_id": "COB:0000112",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000034",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000112",
       "subject_label": "function",
+      "object_id": "BFO:0000034",
       "object_label": "function"
     },
     {
-      "subject_id": "COB:0000113",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "OBI:0000260",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000113",
       "subject_label": "plan",
+      "object_id": "OBI:0000260",
       "object_label": "plan"
     },
     {
-      "subject_id": "COB:0000114",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000023",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000114",
       "subject_label": "role",
+      "object_id": "BFO:0000023",
       "object_label": "role"
     },
     {
-      "subject_id": "COB:0000116",
       "predicate_id": "rdfs:subClassOf",
-      "object_id": "owl:Thing",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000116",
       "subject_label": "cellular membrane",
+      "object_id": "owl:Thing",
       "object_label": "owl:Thing"
     },
     {
-      "subject_id": "COB:0000118",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "CARO:0010004",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000118",
       "subject_label": "cellular organism",
+      "object_id": "CARO:0010004",
       "object_label": "cellular organism"
     },
     {
-      "subject_id": "COB:0000118",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "NCBITaxon:131567",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000118",
       "subject_label": "cellular organism",
+      "object_id": "NCBITaxon:131567",
       "object_label": "cellular organisms"
     },
     {
-      "subject_id": "COB:0000118",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "PO:0000003",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "cellular organism",
-      "object_label": "whole plant"
-    },
-    {
-      "subject_id": "COB:0000118",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "UBERON:0000468",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "cellular organism",
-      "object_label": "multicellular organism"
-    },
-    {
-      "subject_id": "COB:0000123",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "SEPIO:0000048",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000123",
       "subject_label": "agent role",
+      "object_id": "SEPIO:0000048",
       "object_label": "agent role"
     },
     {
-      "subject_id": "COB:0000123",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "OBI:0000202",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "agent role",
-      "object_label": "investigation agent role"
-    },
-    {
-      "subject_id": "COB:0000502",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "BFO:0000020",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000502",
       "subject_label": "characteristic",
+      "object_id": "BFO:0000020",
       "object_label": "specifically dependent continuant"
     },
     {
-      "subject_id": "COB:0000502",
       "predicate_id": "owl:equivalentClass",
-      "object_id": "PATO:0000001",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000502",
       "subject_label": "characteristic",
+      "object_id": "PATO:0000001",
       "object_label": "quality"
     },
     {
-      "subject_id": "COB:0000502",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "CHEBI:50906",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "characteristic",
-      "object_label": "role"
-    },
-    {
-      "subject_id": "COB:0000502",
-      "predicate_id": "sssom:superClassOf",
-      "object_id": "SO:0000400",
-      "mapping_justification": "semapv:ManualMappingCuration",
-      "subject_label": "characteristic",
-      "object_label": "sequence_attribute"
-    },
-    {
-      "subject_id": "COB:0000511",
       "predicate_id": "rdfs:subPropertyOf",
-      "object_id": "owl:topObjectProperty",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000511",
       "subject_label": "has quantity",
+      "object_id": "owl:topObjectProperty",
       "object_label": "topObjectProperty"
     },
     {
-      "subject_id": "COB:0000512",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "RO:0000053",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000512",
       "subject_label": "has characteristic",
+      "object_id": "RO:0000053",
       "object_label": "bearer of"
     },
     {
-      "subject_id": "COB:0000513",
       "predicate_id": "owl:equivalentProperty",
-      "object_id": "IAO:0000136",
       "mapping_justification": "semapv:ManualMappingCuration",
+      "subject_id": "COB:0000513",
       "subject_label": "is about",
+      "object_id": "IAO:0000136",
       "object_label": "is about"
     }
   ],
   "@type": "MappingSet",
   "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
     "dcterms": "http://purl.org/dc/terms/",
     "linkml": "https://w3id.org/linkml/",
     "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
@@ -856,95 +729,138 @@
     "semapv": "https://w3id.org/semapv/vocab/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "sssom": "https://w3id.org/sssom/",
-    "xsd": "http://www.w3.org/2001/XMLSchema#",
     "@vocab": "https://w3id.org/sssom/",
     "author_id": {
       "@type": "rdfs:Resource",
       "@id": "pav:authoredBy"
     },
+    "author_label": {
+      "@id": "author_label"
+    },
+    "cardinality_scope": {
+      "@id": "cardinality_scope"
+    },
     "comment": {
       "@id": "rdfs:comment"
     },
     "confidence": {
-      "@type": "xsd:double"
+      "@type": "xsd:double",
+      "@id": "confidence"
     },
     "creator_id": {
       "@type": "rdfs:Resource",
       "@id": "dcterms:creator"
     },
+    "creator_label": {
+      "@id": "creator_label"
+    },
     "curation_rule": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "curation_rule"
+    },
+    "curation_rule_text": {
+      "@id": "curation_rule_text"
     },
     "curie_map": {
-      "@type": "@id"
+      "@type": "@id",
+      "@id": "curie_map"
     },
     "documentation": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "documentation"
+    },
+    "extension_definitions": {
+      "@type": "@id",
+      "@id": "extension_definitions"
+    },
+    "property": {
+      "@type": "xsd:anyURI",
+      "@id": "property"
+    },
+    "slot_name": {
+      "@id": "slot_name"
+    },
+    "type_hint": {
+      "@type": "xsd:anyURI",
+      "@id": "type_hint"
     },
     "homepage": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "homepage"
     },
     "imports": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "imports"
     },
     "issue_tracker": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "issue_tracker"
     },
     "issue_tracker_item": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "issue_tracker_item"
     },
     "last_updated": {
-      "@type": "xsd:date"
+      "@type": "xsd:date",
+      "@id": "last_updated"
     },
     "license": {
-      "@type": "@id",
+      "@type": "xsd:anyURI",
       "@id": "dcterms:license"
     },
-    "literal": {
-      "@id": "owl:annotatedTarget"
-    },
-    "literal_datatype": {
-      "@type": "@id",
-      "@id": "rdf:datatype"
-    },
-    "literal_preprocessing": {
-      "@type": "rdfs:Resource"
-    },
-    "literal_source": {
-      "@type": "rdfs:Resource"
+    "local_name": {
+      "@id": "local_name"
     },
     "mapping_cardinality": {
       "@context": {
-        "@vocab": "@null",
         "text": "skos:notation",
         "description": "skos:prefLabel",
         "meaning": "@id"
-      }
+      },
+      "@id": "mapping_cardinality"
     },
     "mapping_date": {
       "@type": "xsd:date",
-      "@id": "pav:authoredOn"
+      "@id": "dcterms:created"
     },
     "mapping_justification": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "mapping_justification"
     },
     "mapping_provider": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "mapping_provider"
+    },
+    "mapping_registry_description": {
+      "@id": "mapping_registry_description"
     },
     "mapping_registry_id": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "mapping_registry_id"
+    },
+    "mapping_registry_title": {
+      "@id": "mapping_registry_title"
+    },
+    "mapping_set_confidence": {
+      "@type": "xsd:double",
+      "@id": "mapping_set_confidence"
     },
     "mapping_set_description": {
       "@id": "dcterms:description"
     },
+    "mapping_set_group": {
+      "@id": "mapping_set_group"
+    },
     "mapping_set_id": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "mapping_set_id"
     },
     "mapping_set_references": {
-      "@type": "@id"
+      "@type": "@id",
+      "@id": "mapping_set_references"
     },
     "mapping_set_source": {
-      "@type": "@id",
+      "@type": "xsd:anyURI",
       "@id": "prov:wasDerivedFrom"
     },
     "mapping_set_title": {
@@ -954,103 +870,213 @@
       "@id": "owl:versionInfo"
     },
     "mapping_source": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "mapping_source"
+    },
+    "mapping_tool": {
+      "@id": "mapping_tool"
+    },
+    "mapping_tool_id": {
+      "@type": "rdfs:Resource",
+      "@id": "mapping_tool_id"
+    },
+    "mapping_tool_version": {
+      "@id": "mapping_tool_version"
     },
     "mappings": {
-      "@type": "@id"
+      "@type": "@id",
+      "@id": "mappings"
+    },
+    "match_string": {
+      "@id": "match_string"
     },
     "mirror_from": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "mirror_from"
+    },
+    "object_category": {
+      "@id": "object_category"
     },
     "object_id": {
       "@type": "rdfs:Resource",
       "@id": "owl:annotatedTarget"
     },
+    "object_label": {
+      "@id": "object_label"
+    },
     "object_match_field": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "object_match_field"
     },
     "object_preprocessing": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "object_preprocessing"
     },
     "object_source": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "object_source"
+    },
+    "object_source_version": {
+      "@id": "object_source_version"
     },
     "object_type": {
       "@context": {
-        "@vocab": "@null",
         "text": "skos:notation",
         "description": "skos:prefLabel",
         "meaning": "@id"
-      }
+      },
+      "@id": "object_type"
+    },
+    "other": {
+      "@id": "other"
     },
     "predicate_id": {
       "@type": "rdfs:Resource",
       "@id": "owl:annotatedProperty"
     },
+    "predicate_label": {
+      "@id": "predicate_label"
+    },
     "predicate_modifier": {
       "@context": {
-        "@vocab": "@null",
         "text": "skos:notation",
         "description": "skos:prefLabel",
         "meaning": "@id"
-      }
+      },
+      "@id": "predicate_modifier"
     },
     "predicate_type": {
       "@context": {
-        "@vocab": "@null",
         "text": "skos:notation",
         "description": "skos:prefLabel",
         "meaning": "@id"
-      }
+      },
+      "@id": "predicate_type"
+    },
+    "prefix_name": {
+      "@id": "prefix_name"
     },
     "prefix_url": {
-      "@type": "@id"
+      "@type": "xsd:anyURI",
+      "@id": "prefix_url"
+    },
+    "propagated": {
+      "@type": "xsd:boolean",
+      "@id": "propagated"
     },
     "publication_date": {
       "@type": "xsd:date",
-      "@id": "dcterms:created"
+      "@id": "dcterms:issued"
+    },
+    "record_id": {
+      "@type": "rdfs:Resource",
+      "@id": "record_id"
     },
     "registry_confidence": {
-      "@type": "xsd:double"
+      "@type": "xsd:double",
+      "@id": "registry_confidence"
+    },
+    "review_date": {
+      "@type": "xsd:date",
+      "@id": "review_date"
+    },
+    "reviewer_agreement": {
+      "@type": "xsd:double",
+      "@id": "reviewer_agreement"
     },
     "reviewer_id": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "reviewer_id"
+    },
+    "reviewer_label": {
+      "@id": "reviewer_label"
     },
     "see_also": {
+      "@type": "xsd:anyURI",
       "@id": "rdfs:seeAlso"
     },
-    "semantic_similarity_score": {
-      "@type": "xsd:double"
+    "similarity_measure": {
+      "@id": "similarity_measure"
     },
     "similarity_score": {
-      "@type": "xsd:double"
+      "@type": "xsd:double",
+      "@id": "similarity_score"
+    },
+    "sssom_version": {
+      "@context": {
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      },
+      "@id": "sssom_version"
+    },
+    "subject_category": {
+      "@id": "subject_category"
     },
     "subject_id": {
       "@type": "rdfs:Resource",
       "@id": "owl:annotatedSource"
     },
+    "subject_label": {
+      "@id": "subject_label"
+    },
     "subject_match_field": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "subject_match_field"
     },
     "subject_preprocessing": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "subject_preprocessing"
     },
     "subject_source": {
-      "@type": "rdfs:Resource"
+      "@type": "rdfs:Resource",
+      "@id": "subject_source"
+    },
+    "subject_source_version": {
+      "@id": "subject_source_version"
     },
     "subject_type": {
       "@context": {
-        "@vocab": "@null",
         "text": "skos:notation",
         "description": "skos:prefLabel",
         "meaning": "@id"
-      }
+      },
+      "@id": "subject_type"
     },
-    "LiteralMapping": {
-      "@id": "owl:Axiom"
+    "added_in": {
+      "@context": {
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      },
+      "@id": "added_in"
+    },
+    "ExtensionDefinition": {
+      "@id": "ExtensionDefinition"
     },
     "Mapping": {
       "@id": "owl:Axiom"
+    },
+    "MappingRegistry": {
+      "@id": "MappingRegistry"
+    },
+    "MappingSet": {
+      "@id": "MappingSet"
+    },
+    "MappingSetReference": {
+      "@id": "MappingSetReference"
+    },
+    "NoTermFound": {
+      "@id": "NoTermFound"
+    },
+    "Prefix": {
+      "@id": "Prefix"
+    },
+    "Propagatable": {
+      "@id": "Propagatable"
+    },
+    "Versionable": {
+      "@id": "Versionable"
     },
     "BFO": "http://purl.obolibrary.org/obo/BFO_",
     "CARO": "http://purl.obolibrary.org/obo/CARO_",
