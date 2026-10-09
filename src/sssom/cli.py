@@ -180,7 +180,6 @@ def convert(
     "--prefix-map-mode",
     default="metadata_only",
     show_default=True,
-    required=True,
     type=click.Choice(get_args(MergeMode), case_sensitive=False),
     help="Defines whether the prefix map in the metadata should be extended or replaced with "
     "the SSSOM default prefix map.",
@@ -190,7 +189,6 @@ def convert(
     "--clean-prefixes / --no-clean-prefixes",
     default=True,
     is_flag=True,
-    required=True,
     help="If True (default), prefixes the mapping set does not use are removed from its curie_map.",
 )
 @click.option(
