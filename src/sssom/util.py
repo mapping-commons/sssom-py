@@ -1655,13 +1655,15 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
         if slot in _get_sssom_schema_object().entity_reference_slots
     }
     for slot in keys:
-        if slot not in metadata_keys:
+        if slot in msdf.df.columns:
             prefixes.update(
                 prefix
                 for curie in _split_multivalued(msdf.df[slot].unique(), slot)
                 if (prefix := get_prefix_from_curie(curie))
             )
-        elif isinstance(msdf.metadata[slot], list):
+        if slot not in metadata_keys:
+            continue
+        if isinstance(msdf.metadata[slot], list):
             for curie in msdf.metadata[slot]:
                 prefix = get_prefix_from_curie(curie)
                 if not prefix:

@@ -1,5 +1,6 @@
 """Test for sorting MappingSetDataFrame columns."""
 
+import io
 import unittest
 
 from jsonschema import ValidationError
@@ -88,3 +89,19 @@ class TestValidate(unittest.TestCase):
             {"Missing prefix: my-vocab", "Missing prefix: other"},
             {r.message for r in report.results},
         )
+
+    def test_validate_prefix_map_completeness_set_and_records(self) -> None:
+        """Test that a slot given on the set and on its records is read in both places."""
+        stream = io.StringIO(
+            "# curie_map:\n"
+            "#   ex: http://example.org/ex/\n"
+            "# mapping_set_id: https://example.org/sets/set-and-records\n"
+            "# license: https://creativecommons.org/publicdomain/zero/1.0/\n"
+            "# subject_source: ex:source\n"
+            "subject_id\tpredicate_id\tobject_id\tmapping_justification\tsubject_source\n"
+            "ex:1\tskos:exactMatch\tex:2\tsemapv:ManualMappingCuration\tother:source\n"
+        )
+        msdf = parse_sssom_table(stream)
+        validation_type = SchemaValidationType.PrefixMapCompleteness
+        report = validate(msdf, [validation_type], fail_on_error=False)[validation_type]
+        self.assertEqual({"Missing prefix: other"}, {r.message for r in report.results})
