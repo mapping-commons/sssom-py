@@ -1469,7 +1469,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     new_prefixes = {
         ReferenceTuple.from_curie(row).prefix
         for col in entity_reference_slots
-        for row in _split_multivalued(df[col], col)
+        for row in _split_multivalued(df[col].unique(), col)
         if not _is_iri(row) and _is_curie(row)
         # we don't use the converter here since get_prefixes_used_in_table
         # is often used to identify prefixes that are not properly registered
