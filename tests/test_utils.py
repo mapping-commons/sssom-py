@@ -1,5 +1,6 @@
 """Test for merging MappingSetDataFrames."""
 
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -37,6 +38,7 @@ from sssom.util import (
     filter_prefixes,
     get_dict_from_mapping,
     get_file_extension,
+    get_prefixes_used_in_metadata,
     get_prefixes_used_in_table,
     invert_mappings,
     is_multivalued_slot,
@@ -197,6 +199,27 @@ class TestIO(unittest.TestCase):
         )
         msdf.clean_prefix_map(strict=True)
         self.assertLessEqual({"ex", "my-vocab", "other"}, set(msdf.prefix_map))
+
+    def test_clean_prefix_map_reads_metadata_identifiers(self) -> None:
+        """Test that clean prefix map reads identifier slots and extension definitions only."""
+        stream = io.StringIO(
+            "# curie_map:\n"
+            "#   ex: http://example.org/ex/\n"
+            "#   myext: http://example.org/myext/\n"
+            "# mapping_set_id: https://example.org/sets/metadata-identifiers\n"
+            "# mapping_set_title: re-map:v2\n"
+            "# other: my-key:v1\n"
+            "# license: https://creativecommons.org/publicdomain/zero/1.0/\n"
+            "# extension_definitions:\n"
+            "#   - slot_name: ext_score\n"
+            "#     property: myext:score\n"
+            "subject_id\tpredicate_id\tobject_id\tmapping_justification\text_score\n"
+            "ex:1\tskos:exactMatch\tex:2\tsemapv:ManualMappingCuration\t0.5\n"
+        )
+        msdf = parse_sssom_table(stream)
+        self.assertNotIn("my-key", get_prefixes_used_in_metadata(msdf.metadata))
+        msdf.clean_prefix_map(strict=True)
+        self.assertIn("myext", msdf.prefix_map)
 
     def test_invert_nodes(self) -> None:
         """Test invert nodes."""
