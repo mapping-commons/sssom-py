@@ -191,13 +191,14 @@ def convert(
     default=True,
     is_flag=True,
     required=True,
-    help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
+    help="If True (default), prefixes the mapping set does not use are removed from its curie_map.",
 )
 @click.option(
     "--strict-clean-prefixes / --no-strict-clean-prefixes",
     default=True,
     is_flag=True,
-    help="If True (default), `clean_prefixes(strict = True)`.",
+    help="If True (default), --clean-prefixes fails on a used prefix that the prefix map does not "
+    "declare. If False, it declares the prefix with a placeholder IRI.",
 )
 @click.option(
     "-E",
