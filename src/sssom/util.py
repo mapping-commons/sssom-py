@@ -1417,7 +1417,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
+CURIE_PATTERN = r"[A-Za-z0-9_.-]+[:][A-Za-z0-9_]"
 CURIE_RE = re.compile(CURIE_PATTERN)
 
 

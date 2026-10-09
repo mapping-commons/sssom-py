@@ -78,3 +78,10 @@ class TestValidate(unittest.TestCase):
     def test_validate_nando(self) -> None:
         """Test Shacl validation (Not implemented)."""
         self.assertRaises(ValidationError, validate, self.bad_nando, self.validation_types)
+
+    def test_validate_prefix_map_completeness(self) -> None:
+        """Test that a prefix containing a hyphen must be declared."""
+        msdf = parse_sssom_table(f"{data_dir}/hyphen-and-pipe-prefixes.sssom.tsv")
+        validation_type = SchemaValidationType.PrefixMapCompleteness
+        report = validate(msdf, [validation_type], fail_on_error=False)[validation_type]
+        self.assertEqual({"Missing prefix: my-vocab"}, {r.message for r in report.results})
