@@ -187,13 +187,16 @@ class TestIO(unittest.TestCase):
         )
 
     def test_clean_prefix_map_keeps_used_prefixes(self) -> None:
-        """Test that clean prefix map keeps a used prefix containing a hyphen."""
-        prefix_map = {"my-vocab": "http://example.org/my-vocab/"}
+        """Test that clean prefix map keeps used prefixes containing a hyphen or following a pipe."""
+        prefix_map = {
+            "my-vocab": "http://example.org/my-vocab/",
+            "other": "http://example.org/other/",
+        }
         msdf = parse_sssom_table(
             f"{data_dir}/hyphen-and-pipe-prefixes.sssom.tsv", prefix_map=prefix_map
         )
         msdf.clean_prefix_map(strict=True)
-        self.assertIn("my-vocab", msdf.prefix_map)
+        self.assertLessEqual({"ex", "my-vocab", "other"}, set(msdf.prefix_map))
 
     def test_invert_nodes(self) -> None:
         """Test invert nodes."""
