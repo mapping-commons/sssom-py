@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, cast
 
 from click.testing import CliRunner, Result
+from rdflib import Graph, URIRef
 
 from sssom.cli import (
     annotate,
@@ -25,6 +26,7 @@ from sssom.cli import (
     ptable,
     reconcile_prefixes,
     remove,
+    rewire,
     sort,
     split,
     validate,
@@ -370,3 +372,50 @@ class SSSOMCLITestSuite(unittest.TestCase):
             "owl",
         ]
         result = subprocess.check_output(args, shell=True)  # noqa
+
+    def test_rewire_flavor(self) -> None:
+        """Test rewiring a graph by skos:exactMatch mappings through the exact flavor."""
+        runner = CliRunner()
+        out_file = os.path.join(test_out_dir, "rewire-predicates-exact.ttl")
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--flavor",
+                "exact",
+                "-o",
+                out_file,
+            ],
+        )
+        self.run_successful(result, "rewire --flavor exact")
+        nodes = set(Graph().parse(out_file, format="turtle").all_nodes())
+        self.assertIn(URIRef("https://example.org/target/Equivalent"), nodes)
+        self.assertIn(URIRef("https://example.org/target/Exact"), nodes)
+        self.assertNotIn(URIRef("https://example.org/source/Exact"), nodes)
+        self.assertIn(URIRef("https://example.org/source/Broad"), nodes)
+        self.assertNotIn(URIRef("https://example.org/target/Broad"), nodes)
+
+    def test_rewire_predicates(self) -> None:
+        """Test rewiring a graph by a comma-separated list of predicates in place of the default."""
+        runner = CliRunner()
+        out_file = os.path.join(test_out_dir, "rewire-predicates-broad-narrow.ttl")
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skos:broadMatch,skos:narrowMatch",
+                "-o",
+                out_file,
+            ],
+        )
+        self.run_successful(result, "rewire --predicates")
+        nodes = set(Graph().parse(out_file, format="turtle").all_nodes())
+        self.assertIn(URIRef("https://example.org/target/Broad"), nodes)
+        self.assertIn(URIRef("https://example.org/target/Narrow"), nodes)
+        self.assertIn(URIRef("https://example.org/target/ExactParent"), nodes)
+        self.assertIn(URIRef("https://example.org/source/Equivalent"), nodes)
