@@ -85,9 +85,10 @@ def parse_file(
         be used during parse.
     :param prefix_map_mode: Defines whether the prefix map in the metadata should be extended or
         replaced with the SSSOM default prefix map derived from the :mod:`bioregistry`.
-    :param clean_prefixes: If True (default), records with unknown prefixes are removed from the
-        SSSOM file.
-    :param strict_clean_prefixes: If True (default), clean_prefixes() will be in strict mode.
+    :param clean_prefixes: If True (default), prefixes the mapping set does not use are removed
+        from its curie_map.
+    :param strict_clean_prefixes: If True (default), cleaning fails on a used prefix that the
+        prefix map does not declare. If False, the prefix is declared with a placeholder IRI.
     :param embedded_mode: If True (default), the dataframe and metadata are exported in one file
         (tsv), else two separate files (tsv and yaml).
     :param mapping_predicate_filter: Optional list of mapping predicates or filepath containing the
