@@ -1,0 +1,6 @@
+# curie_map:
+#   ex: http://example.org/ex/
+# mapping_set_id: https://example.org/sets/hyphen-and-pipe-prefixes
+# license: https://creativecommons.org/publicdomain/zero/1.0/
+subject_id	predicate_id	object_id	mapping_justification	author_id
+ex:1	skos:exactMatch	my-vocab:1	semapv:ManualMappingCuration	ex:jane|other:jane
