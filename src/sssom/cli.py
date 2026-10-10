@@ -37,7 +37,7 @@ from .io import (
     validate_file,
 )
 from .parsers import PARSING_FUNCTIONS, SplitMethod, parse_sssom_table
-from .rdf_util import rewire_graph
+from .rdf_util import REWIRE_FLAVORS, rewire_graph
 from .sparql_util import EndpointConfig, query_mappings
 from .util import (
     MappingSetDataFrame,
@@ -556,9 +556,32 @@ def merge(
 
 
 @main.command(help="""\
-Example:
+Rewire an RDF graph, such as an OWL ontology, by replacing every mapped entity with its mapping
+partner. A graph expressed in one vocabulary is then expressed in another.
 
-$ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+The command applies each mapping from subject to object: it replaces the mapping's subject with
+the mapping's object wherever the subject occurs in the graph. It uses only mappings with a chosen
+predicate. By default these are owl:equivalentClass and owl:equivalentProperty. The --flavor
+option names a wider set, and the --predicates option lists predicates one by one. Each flavor
+contains the one before it:
+
+\b
+  equivalence  owl:equivalentClass and owl:equivalentProperty (the default)
+  exact        adds skos:exactMatch
+  exact-broad  adds skos:broadMatch, whose mappings are never applied in reverse
+  any          adds skos:closeMatch, skos:narrowMatch and skos:relatedMatch
+
+When an entity has several candidate replacements, the command chooses the one under the
+strongest predicate. The order, strongest first, is OWL equivalence, then skos:exactMatch, then
+skos:closeMatch, then skos:broadMatch and skos:narrowMatch, then skos:relatedMatch. When
+candidates are equally strong, --precedence chooses between them by the prefix of the
+replacement. Without --precedence, the command fails because the choice is ambiguous.
+
+Examples:
+
+\b
+$ sssom rewire -I xml -m tests/data/cob-to-external.tsv --precedence PR tests/data/cob.owl
+$ sssom rewire -m schema-mappings.sssom.tsv --flavor exact data.ttl
 """)
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
@@ -569,20 +592,49 @@ $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv -
     multiple=True,
     help="List of prefixes in order of precedence.",
 )
+@click.option(
+    "--predicates",
+    multiple=True,
+    help="Mapping predicates to rewire by, as CURIEs or IRIs. Repeat the option, or separate "
+    "the values with commas. Alone, these predicates replace the default ones. With --flavor, "
+    "they are added to the flavor's predicates.",
+)
+@click.option(
+    "--flavor",
+    type=click.Choice(list(REWIRE_FLAVORS)),
+    help="A named set of mapping predicates to rewire by, described above.",
+)
 @output_option
 def rewire(
     input: str,
     mapping_file: str,
     precedence: list[str],
+    predicates: tuple[str, ...],
+    flavor: Optional[str],
     output: TextIO,
     input_format: str,
     output_format: str,
 ) -> None:
-    """Rewire an ontology using equivalent classes/properties from a mapping file."""
+    """Rewire an RDF graph using the mappings in a mapping file.
+
+    :param input: Path to the RDF graph to rewire.
+    :param mapping_file: Path to the SSSOM mapping file.
+    :param precedence: Prefixes in order of preference, used to decide between candidate
+        replacements.
+    :param predicates: Mapping predicates to rewire by. Each value may be a comma-separated list.
+    :param flavor: A named set of predicates to rewire by, a key of
+        :data:`sssom.rdf_util.REWIRE_FLAVORS`.
+    :param output: Where to write the rewired graph.
+    :param input_format: The RDF serialisation of the input graph.
+    :param output_format: The RDF serialisation to write.
+    """
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
-    rewire_graph(g, msdf, precedence=precedence)
+    chosen = {p.strip() for value in predicates for p in value.split(",") if p.strip()}
+    if flavor is not None:
+        chosen.update(REWIRE_FLAVORS[flavor])
+    rewire_graph(g, msdf, precedence=precedence, predicates=chosen or None)
     rdfstr = g.serialize(format=output_format)
     print(rdfstr, file=output)
 
