@@ -1,0 +1,18 @@
+#curie_map:
+#  ex: "https://example.org/source/"
+#  tgt: "https://example.org/target/"
+#  alt: "https://example.org/alternative/"
+#  owl: "http://www.w3.org/2002/07/owl#"
+#  skos: "http://www.w3.org/2004/02/skos/core#"
+#  semapv: "https://w3id.org/semapv/vocab/"
+#license: "https://creativecommons.org/publicdomain/zero/1.0/"
+#mapping_set_id: "https://w3id.org/sssom/mapping/tests/data/rewire-predicates.tsv"
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+ex:Equivalent	equivalent	owl:equivalentClass	tgt:Equivalent	equivalent	semapv:ManualMappingCuration
+ex:Equivalent	equivalent	skos:exactMatch	tgt:Equivalent	equivalent	semapv:ManualMappingCuration
+ex:Exact	exact	skos:exactMatch	tgt:Exact	exact	semapv:ManualMappingCuration
+ex:Exact	exact	skos:broadMatch	tgt:ExactParent	exact parent	semapv:ManualMappingCuration
+ex:Broad	broad	skos:broadMatch	tgt:Broad	broad	semapv:ManualMappingCuration
+ex:Narrow	narrow	skos:narrowMatch	tgt:Narrow	narrow	semapv:ManualMappingCuration
+ex:Close	close	skos:closeMatch	tgt:Close	close	semapv:ManualMappingCuration
+ex:Close	close	skos:closeMatch	alt:Close	close	semapv:ManualMappingCuration

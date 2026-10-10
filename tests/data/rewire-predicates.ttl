@@ -1,0 +1,25 @@
+@prefix ex: <https://example.org/source/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# One class per mapping predicate in rewire-predicates.tsv, plus one that no mapping names.
+
+ex:Equivalent a owl:Class ;
+    rdfs:label "equivalent" .
+
+ex:Exact a owl:Class ;
+    rdfs:label "exact" ;
+    rdfs:subClassOf ex:Broad .
+
+ex:Broad a owl:Class ;
+    rdfs:label "broad" .
+
+ex:Narrow a owl:Class ;
+    rdfs:label "narrow" .
+
+ex:Close a owl:Class ;
+    rdfs:label "close" .
+
+ex:Unmapped a owl:Class ;
+    rdfs:label "unmapped" ;
+    rdfs:subClassOf ex:Exact .
