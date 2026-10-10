@@ -30,7 +30,7 @@ __all__ = [
     "rewire_graph",
 ]
 
-#: The predicates :func:`rewire_graph` honours when it is given none: the OWL equivalences.
+#: The predicates that :func:`rewire_graph` uses when it is given none: the OWL equivalences.
 EQUIVALENCE_PREDICATES: FrozenSet[str] = frozenset({OWL_EQUIVALENT_CLASS, OWL_EQUIVALENT_PROPERTY})
 
 #: Every SKOS mapping predicate.
@@ -51,8 +51,8 @@ REWIRE_FLAVORS: Dict[str, FrozenSet[str]] = {
     "any": EQUIVALENCE_PREDICATES | SKOS_MATCH_PREDICATES,
 }
 
-#: How strongly each predicate binds its two sides, strongest first. When a node has candidate
-#: replacements under several predicates, the one under the strongest predicate wins.
+#: The strength of each predicate, strongest first. When a node has candidate replacements under
+#: several predicates, the candidate under the strongest predicate is chosen.
 #: Predicates not listed here rank below all of them.
 _PREDICATE_RANK: Dict[str, int] = {
     OWL_EQUIVALENT_CLASS: 0,
@@ -83,30 +83,32 @@ def rewire_graph(
     precedence: Optional[Sequence[str]] = None,
     predicates: Optional[Collection[str]] = None,
 ) -> int:
-    """Rewire an RDF graph in place, replacing each mapped entity by its mapping partner.
+    """Rewire an RDF graph in place, replacing each mapped entity with its mapping partner.
 
-    Only mappings whose predicate is in ``predicates`` are used. Each one replaces its subject by
-    its object wherever the subject occurs in the graph, or its object by its subject when
-    ``subject_to_object`` is False. The hierarchical predicates in :data:`HIERARCHICAL_PREDICATES`
-    (``skos:broadMatch`` and ``skos:narrowMatch``) are never reversed: their mappings are applied
-    from subject to object only and are skipped when ``subject_to_object`` is False.
+    The function uses only mappings whose predicate is in ``predicates``. Each one replaces its
+    subject with its object wherever the subject occurs in the graph, or its object with its
+    subject when ``subject_to_object`` is False. The hierarchical predicates in
+    :data:`HIERARCHICAL_PREDICATES` (``skos:broadMatch`` and ``skos:narrowMatch``) are never
+    reversed. Their mappings are applied from subject to object only, and the function skips them
+    when ``subject_to_object`` is False.
 
-    When a node has several candidate replacements, the candidate under the strongest predicate
-    wins: OWL equivalence, then ``skos:exactMatch``, then ``skos:closeMatch``, then
-    ``skos:broadMatch`` and ``skos:narrowMatch``, then ``skos:relatedMatch``, then any other
-    predicate. Between candidates under equally strong predicates ``precedence`` decides: a
-    candidate whose prefix is listed beats one whose prefix is not, an earlier prefix beats a
-    later one, and otherwise the candidate from the earlier mapping stays. Without ``precedence``
-    such a tie raises :class:`ValueError`. Several mappings that agree on the replacement are not
-    a tie.
+    When a node has several candidate replacements, the function chooses the candidate under the
+    strongest predicate. The order, strongest first, is OWL equivalence, then
+    ``skos:exactMatch``, then ``skos:closeMatch``, then ``skos:broadMatch`` and
+    ``skos:narrowMatch``, then ``skos:relatedMatch``, then any other predicate. ``precedence``
+    decides between candidates under equally strong predicates. A candidate whose prefix is listed
+    is chosen over one whose prefix is not, and an earlier prefix is chosen over a later one.
+    Otherwise the candidate from the earlier mapping is kept. Without ``precedence``, the function
+    raises :class:`ValueError` on such a tie. Several mappings that agree on the replacement are
+    not a tie.
 
     :param g: The graph to rewire. It is modified in place.
-    :param mset: The mapping set whose mappings drive the rewiring.
-    :param subject_to_object: If True (the default), replace subjects by objects. If False,
-        replace objects by subjects for the symmetric predicates and skip the hierarchical ones.
+    :param mset: The mapping set to rewire by.
+    :param subject_to_object: If True (the default), replace subjects with objects. If False,
+        replace objects with subjects for the symmetric predicates and skip the hierarchical ones.
     :param precedence: Prefixes in order of preference, used to decide between candidate
         replacements under equally strong predicates.
-    :param predicates: The mapping predicates to honour, as CURIEs or IRIs. Defaults to
+    :param predicates: The mapping predicates to use, as CURIEs or IRIs. Defaults to
         :data:`EQUIVALENCE_PREDICATES`, that is ``owl:equivalentClass`` and
         ``owl:equivalentProperty``. The named sets in :data:`REWIRE_FLAVORS` are convenient values.
     :return: The number of triples that changed.

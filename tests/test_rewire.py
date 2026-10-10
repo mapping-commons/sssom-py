@@ -42,11 +42,11 @@ class TestRewire(unittest.TestCase):
 
 
 class TestRewirePredicates(unittest.TestCase):
-    """Test case for choosing the mapping predicates that drive rewiring.
+    """Test case for choosing the mapping predicates that rewiring uses.
 
-    The mapping set has one mapping per predicate from a source term to its target term, a second
-    agreeing mapping for the equivalent term, a weaker broad mapping for the exact term, and two
-    competing close mappings for the close term.
+    The mapping set has one mapping per predicate from a source term to its target term. It also
+    has a second, agreeing mapping for the equivalent term, a weaker broad mapping for the exact
+    term, and two competing close mappings for the close term.
     """
 
     def setUp(self) -> None:
@@ -83,7 +83,7 @@ class TestRewirePredicates(unittest.TestCase):
         self.assert_rewired(self.graph, {"Equivalent", "Exact"})
 
     def test_exact_broad(self) -> None:
-        """Test that the exact-broad flavor adds skos:broadMatch and that exact beats broad."""
+        """Test that the exact-broad flavor adds skos:broadMatch and chooses exact over broad."""
         n = rewire_graph(self.graph, self.mset, predicates=REWIRE_FLAVORS["exact-broad"])
         self.assertEqual(8, n)
         self.assert_rewired(self.graph, {"Equivalent", "Exact", "Broad"})
@@ -109,7 +109,7 @@ class TestRewirePredicates(unittest.TestCase):
         self.assertNotIn(SOURCE.Close, nodes)
 
     def test_explicit_predicates(self) -> None:
-        """Test that given predicates replace the default ones, spelled as a CURIE or an IRI."""
+        """Test that given predicates, spelled as a CURIE or an IRI, replace the default ones."""
         for predicate in (SKOS_BROAD_MATCH, SKOS_BROAD_MATCH_URI):
             graph = Graph()
             graph.parse(data_dir / "rewire-predicates.ttl", format="turtle")
