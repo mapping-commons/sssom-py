@@ -103,6 +103,27 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.assertIn("Error: Your mapping set has 1 validation error:", result.output)
         self.assertIn("'not_a_uri' is not a 'uri' in /mapping_set_id", result.output)
 
+    def test_validate_lists_all_errors(self) -> None:
+        """Test that the CLI lists every validation error, not only the first few."""
+        lines = (data_dir / "basic.tsv").read_text().splitlines()
+        header_index = next(i for i, line in enumerate(lines) if not line.startswith("#"))
+        confidence_index = lines[header_index].split("\t").index("confidence")
+        first_row_index = header_index + 1
+        rows = []
+        for line in lines[first_row_index:]:
+            row = line.split("\t")
+            row[confidence_index] = "1.5"
+            rows.append("\t".join(row))
+        bad_file = Path(test_out_dir) / "basic_bad_confidence.tsv"
+        bad_file.write_text("\n".join(lines[:first_row_index] + rows) + "\n")
+
+        result = CliRunner().invoke(validate, [bad_file.as_posix()])
+        self.assertEqual(1, result.exit_code)
+        self.assertIn(f"Your mapping set has {len(rows)} validation errors:", result.output)
+        self.assertNotIn("... and", result.output)
+        for i in range(len(rows)):
+            self.assertIn(f"in /mappings/{i}/confidence", result.output)
+
     def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
         if result.exit_code:

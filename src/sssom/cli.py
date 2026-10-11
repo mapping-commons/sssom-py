@@ -53,6 +53,7 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
+from .validators import SSSOMValidationError, format_validation_results
 from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint_app, write_table
 
 logging = _logging.getLogger(__name__)
@@ -257,6 +258,8 @@ def validate(input: str, validation_types: List[SchemaValidationType], propagate
     validation_type_list = [t for t in validation_types]
     try:
         validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
+    except SSSOMValidationError as e:
+        raise click.ClickException(format_validation_results(e.results, limit=None)) from e
     except ValidationError as e:
         raise click.ClickException(e.message) from e
 

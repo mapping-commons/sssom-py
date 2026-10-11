@@ -7,7 +7,12 @@ from linkml.validator.report import Severity, ValidationReport, ValidationResult
 
 from sssom.constants import DEFAULT_VALIDATION_TYPES, SchemaValidationType
 from sssom.parsers import parse_sssom_table
-from sssom.validators import print_linkml_report, validate
+from sssom.validators import (
+    SSSOMValidationError,
+    format_validation_results,
+    print_linkml_report,
+    validate,
+)
 from tests.constants import data_dir
 
 
@@ -96,6 +101,30 @@ class TestValidate(unittest.TestCase):
         messages = [r.message for r in rv[SchemaValidationType.JsonSchema].results]
         self.assertEqual(["'not_a_uri' is not a 'uri' in /mapping_set_id"], messages)
 
+    def test_validate_reports_problems_of_all_validation_types(self) -> None:
+        """Test that a failing validation type does not hide the problems found by the others."""
+        self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
+        self.correct_msdf1.df.loc[0, "subject_id"] = "zzz:123"
+        with self.assertRaises(SSSOMValidationError) as ctx:
+            validate(self.correct_msdf1, self.validation_types)
+        messages = [r.message for r in ctx.exception.results]
+        self.assertIn("'not_a_uri' is not a 'uri' in /mapping_set_id", messages)
+        self.assertIn("Missing prefix: zzz", messages)
+
+    def test_validate_without_failing_returns_report_per_type(self) -> None:
+        """Test that each validation type gets its own report when not failing on error."""
+        self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
+        self.correct_msdf1.df.loc[0, "subject_id"] = "zzz:123"
+        rv = validate(self.correct_msdf1, self.validation_types, fail_on_error=False)
+        self.assertEqual(
+            ["'not_a_uri' is not a 'uri' in /mapping_set_id"],
+            [r.message for r in rv[SchemaValidationType.JsonSchema].results],
+        )
+        self.assertEqual(
+            ["Missing prefix: zzz"],
+            [r.message for r in rv[SchemaValidationType.PrefixMapCompleteness].results],
+        )
+
     def test_validate_inject_metadata_fixture(self) -> None:
         """Test that the test_inject_metadata_msdf.tsv fixture is a valid mapping set."""
         msdf = parse_sssom_table(data_dir / "test_inject_metadata_msdf.tsv")
@@ -134,10 +163,23 @@ class TestPrintLinkMLReport(unittest.TestCase):
 
     def test_error_message_truncates_long_reports(self) -> None:
         """Test that the raised error caps the number of listed problems."""
-        with self.assertRaises(ValidationError) as ctx:
+        with self.assertRaises(SSSOMValidationError) as ctx:
             print_linkml_report(self._report(25))
         lines = str(ctx.exception).splitlines()
         self.assertEqual("Your mapping set has 25 validation errors:", lines[0])
         self.assertEqual("  - problem 19", lines[20])
         self.assertEqual("  ... and 5 more", lines[21])
         self.assertEqual(22, len(lines))
+        self.assertEqual(25, len(ctx.exception.results))
+
+    def test_error_is_a_jsonschema_validation_error(self) -> None:
+        """Test that callers catching jsonschema's ValidationError keep working."""
+        with self.assertRaises(ValidationError):
+            print_linkml_report(self._report(1))
+
+    def test_format_without_limit_lists_all_problems(self) -> None:
+        """Test that all problems are listed when no limit is given."""
+        text = format_validation_results(self._report(25).results, limit=None)
+        lines = text.splitlines()
+        self.assertEqual(26, len(lines))
+        self.assertEqual("  - problem 24", lines[-1])

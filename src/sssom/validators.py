@@ -29,15 +29,24 @@ def validate(
 ) -> dict[SchemaValidationType, ValidationReport]:
     """Validate SSSOM files against `sssom-schema` using linkML's validator function.
 
+    All requested validation types are run before anything is raised, so that the problems found
+    by all of them are reported together.
+
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
     :param fail_on_error: If true, throw an error when execution of a method has failed
 
     :returns: A dictionary from validation types to validation reports
+
+    :raises SSSOMValidationError: If fail_on_error is true and any validation type reports
+        problems.
     """
     if validation_types is None:
         validation_types = DEFAULT_VALIDATION_TYPES
-    return {vt: VALIDATION_METHODS[vt](msdf, fail_on_error) for vt in validation_types}
+    reports = {vt: _REPORT_METHODS[vt](msdf) for vt in validation_types}
+    results = [result for report in reports.values() for result in report.results]
+    print_linkml_report(ValidationReport(results=results), fail_on_error)
+    return reports
 
 
 #: Maximum number of problems listed in the message of a raised ValidationError
@@ -51,14 +60,46 @@ _LOG_LEVELS = {
 }
 
 
+def format_validation_results(
+    results: List[ValidationResult], limit: Optional[int] = MAX_REPORTED_PROBLEMS
+) -> str:
+    """Format validation results as a human-readable list of problems.
+
+    :param results: The validation results to format.
+    :param limit: The maximum number of problems to list, or None to list all of them.
+
+    :returns: A summary line followed by one line per problem.
+    """
+    noun = "error" if len(results) == 1 else "errors"
+    lines = [f"Your mapping set has {len(results)} validation {noun}:"]
+    shown = results if limit is None else results[:limit]
+    lines.extend(f"  - {r.message}" for r in shown)
+    if len(results) > len(shown):
+        lines.append(f"  ... and {len(results) - len(shown)} more")
+    return "\n".join(lines)
+
+
+class SSSOMValidationError(ValidationError):
+    """Raised when a mapping set fails validation.
+
+    The message lists at most :data:`MAX_REPORTED_PROBLEMS` problems; all of them are available
+    in :attr:`results`.
+    """
+
+    def __init__(self, results: List[ValidationResult]) -> None:
+        """Instantiate the error from the validation results that caused it."""
+        super().__init__(format_validation_results(results))
+        self.results = results
+
+
 def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) -> None:
     """Print the error messages in the report. Optionally throw exception.
 
     :param report: A LinkML validation report
-    :param fail_on_error: if true, the function will throw an ValidationError exception when there
-        are errors, listing the problems in its message. Otherwise, the problems are logged.
+    :param fail_on_error: if true, the function will throw an SSSOMValidationError exception when
+        there are errors, listing the problems in its message. Otherwise, the problems are logged.
 
-    :raises ValidationError: If fail_on_error is true and the report has results.
+    :raises SSSOMValidationError: If fail_on_error is true and the report has results.
     """
     results = report.results
     if not results:
@@ -66,12 +107,7 @@ def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) ->
         return
 
     if fail_on_error:
-        noun = "error" if len(results) == 1 else "errors"
-        lines = [f"Your mapping set has {len(results)} validation {noun}:"]
-        lines.extend(f"  - {r.message}" for r in results[:MAX_REPORTED_PROBLEMS])
-        if len(results) > MAX_REPORTED_PROBLEMS:
-            lines.append(f"  ... and {len(results) - MAX_REPORTED_PROBLEMS} more")
-        raise ValidationError("\n".join(lines))
+        raise SSSOMValidationError(results)
 
     for result in results:
         logging.log(_LOG_LEVELS.get(result.severity, logging.ERROR), result.message)
@@ -116,6 +152,12 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
     :param fail_on_error: if true, the function will throw an ValidationError exception when there
         are errors
     """
+    report = _json_schema_report(msdf)
+    print_linkml_report(report, fail_on_error)
+    return report
+
+
+def _json_schema_report(msdf: MappingSetDataFrame) -> ValidationReport:
     validator = Validator(
         schema=SCHEMA_YAML,
         validation_plugins=[JsonschemaValidationPlugin(closed=False)],
@@ -126,9 +168,7 @@ def validate_json_schema(msdf: MappingSetDataFrame, fail_on_error: bool = True) 
     # mapping_set_dict = _clean_dict(mapping_set_yaml)
     mapping_set_dict = json_dumper.to_dict(mapping_set)
 
-    report = validator.validate(mapping_set_dict, "mapping set")
-    print_linkml_report(report, fail_on_error)
-    return report
+    return validator.validate(mapping_set_dict, "mapping set")
 
 
 def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> ValidationReport:
@@ -170,6 +210,12 @@ def check_all_prefixes_in_curie_map(
 
     :raises ValidationError: If all prefixes not in curie_map.
     """
+    report = _prefix_map_completeness_report(msdf)
+    print_linkml_report(report, fail_on_error)
+    return report
+
+
+def _prefix_map_completeness_report(msdf: MappingSetDataFrame) -> ValidationReport:
     msdf.clean_context()
     missing_prefixes = get_all_prefixes(msdf).difference(msdf.converter.bimap)
     validation_results = []
@@ -183,9 +229,7 @@ def check_all_prefixes_in_curie_map(
                 message=f"Missing prefix: {prefix}",
             )
         )
-    report = ValidationReport(results=validation_results)
-    print_linkml_report(report, fail_on_error)
-    return report
+    return ValidationReport(results=validation_results)
 
 
 def check_strict_curie_format(
@@ -204,6 +248,12 @@ def check_strict_curie_format(
 
     :raises ValidationError: If any entity reference does not follow the strict CURIE format
     """
+    report = _strict_curie_format_report(msdf)
+    print_linkml_report(report, fail_on_error)
+    return report
+
+
+def _strict_curie_format_report(msdf: MappingSetDataFrame) -> ValidationReport:
     import itertools as itt
 
     import pandas as pd
@@ -233,9 +283,11 @@ def check_strict_curie_format(
                         )
                     )
 
-    report = ValidationReport(results=validation_results)
-    print_linkml_report(report, fail_on_error)
-    return report
+    return ValidationReport(results=validation_results)
+
+
+def _not_implemented_report(msdf: MappingSetDataFrame) -> ValidationReport:
+    raise NotImplementedError
 
 
 VALIDATION_METHODS: Mapping[SchemaValidationType, Callable[..., ValidationReport]] = {
@@ -244,4 +296,15 @@ VALIDATION_METHODS: Mapping[SchemaValidationType, Callable[..., ValidationReport
     SchemaValidationType.Sparql: validate_sparql,
     SchemaValidationType.PrefixMapCompleteness: check_all_prefixes_in_curie_map,
     SchemaValidationType.StrictCurieFormat: check_strict_curie_format,
+}
+
+#: Functions that build the report of each validation type without logging or raising
+_REPORT_METHODS: Mapping[
+    SchemaValidationType, Callable[[MappingSetDataFrame], ValidationReport]
+] = {
+    SchemaValidationType.JsonSchema: _json_schema_report,
+    SchemaValidationType.Shacl: _not_implemented_report,
+    SchemaValidationType.Sparql: _not_implemented_report,
+    SchemaValidationType.PrefixMapCompleteness: _prefix_map_completeness_report,
+    SchemaValidationType.StrictCurieFormat: _strict_curie_format_report,
 }
