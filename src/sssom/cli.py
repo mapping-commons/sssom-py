@@ -15,6 +15,7 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
+from jsonschema import ValidationError
 from rdflib import Graph, URIRef
 from typing_extensions import ParamSpec
 
@@ -254,7 +255,10 @@ def parse(
 def validate(input: str, validation_types: List[SchemaValidationType], propagate: bool) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
-    validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
+    try:
+        validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
+    except ValidationError as e:
+        raise click.ClickException(e.message) from e
 
 
 @main.command()

@@ -87,6 +87,22 @@ class SSSOMCLITestSuite(unittest.TestCase):
 
         self.assertTrue(len(test_cases) >= 2)
 
+    def test_validate_reports_errors_without_traceback(self) -> None:
+        """Test that validation errors are reported as a clean CLI error."""
+        text = (data_dir / "basic.tsv").read_text()
+        bad_file = Path(test_out_dir) / "basic_non_uri_mapping_set_id.tsv"
+        bad_file.write_text(
+            text.replace(
+                "#mapping_set_id: https://w3id.org/sssom/mapping/tests/data/basic.tsv",
+                "#mapping_set_id: not_a_uri",
+            )
+        )
+        result = CliRunner().invoke(validate, [bad_file.as_posix()])
+        self.assertEqual(1, result.exit_code)
+        self.assertIsInstance(result.exception, SystemExit)
+        self.assertIn("Error: Your mapping set has 1 validation error:", result.output)
+        self.assertIn("'not_a_uri' is not a 'uri' in /mapping_set_id", result.output)
+
     def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
         if result.exit_code:

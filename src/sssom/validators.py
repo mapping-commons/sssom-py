@@ -40,29 +40,41 @@ def validate(
     return {vt: VALIDATION_METHODS[vt](msdf, fail_on_error) for vt in validation_types}
 
 
+#: Maximum number of problems listed in the message of a raised ValidationError
+MAX_REPORTED_PROBLEMS = 20
+
+_LOG_LEVELS = {
+    Severity.FATAL: logging.CRITICAL,
+    Severity.ERROR: logging.ERROR,
+    Severity.WARN: logging.WARNING,
+    Severity.INFO: logging.INFO,
+}
+
+
 def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) -> None:
     """Print the error messages in the report. Optionally throw exception.
 
     :param report: A LinkML validation report
     :param fail_on_error: if true, the function will throw an ValidationError exception when there
-        are errors
+        are errors, listing the problems in its message. Otherwise, the problems are logged.
+
+    :raises ValidationError: If fail_on_error is true and the report has results.
     """
-    validation_errors = 0
-
-    if not report.results:
+    results = report.results
+    if not results:
         logging.info("The instance is valid!")
-    else:
-        for result in report.results:
-            validation_errors += 1
-            if (result.severity == Severity.FATAL) or (result.severity == Severity.ERROR):
-                logging.error(result.message)
-            elif result.severity == Severity.WARN:
-                logging.error(result.message)
-            elif result.severity == Severity.INFO:
-                logging.info(result.message)
+        return
 
-    if fail_on_error and validation_errors:
-        raise ValidationError(f"You mapping set has {validation_errors} validation errors!")
+    if fail_on_error:
+        noun = "error" if len(results) == 1 else "errors"
+        lines = [f"Your mapping set has {len(results)} validation {noun}:"]
+        lines.extend(f"  - {r.message}" for r in results[:MAX_REPORTED_PROBLEMS])
+        if len(results) > MAX_REPORTED_PROBLEMS:
+            lines.append(f"  ... and {len(results) - MAX_REPORTED_PROBLEMS} more")
+        raise ValidationError("\n".join(lines))
+
+    for result in results:
+        logging.log(_LOG_LEVELS.get(result.severity, logging.ERROR), result.message)
 
 
 # TODO This should not be necessary: https://github.com/linkml/linkml/issues/2117,
