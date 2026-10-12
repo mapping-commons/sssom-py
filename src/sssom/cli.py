@@ -259,7 +259,7 @@ def validate(input: str, validation_types: List[SchemaValidationType], propagate
     try:
         validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
     except SSSOMValidationError as e:
-        raise click.ClickException(format_validation_results(e.results, limit=None)) from e
+        raise click.ClickException(format_validation_results(e.results)) from e
     except ValidationError as e:
         raise click.ClickException(e.message) from e
 

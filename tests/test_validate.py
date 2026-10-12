@@ -177,9 +177,15 @@ class TestPrintLinkMLReport(unittest.TestCase):
         with self.assertRaises(ValidationError):
             print_linkml_report(self._report(1))
 
+    def test_error_message_is_a_summary(self) -> None:
+        """Test that the error's message attribute summarizes, and its string lists problems."""
+        error = SSSOMValidationError(self._report(2).results)
+        self.assertEqual("Your mapping set has 2 validation errors", error.message)
+        self.assertIn("  - problem 1", str(error))
+
     def test_format_without_limit_lists_all_problems(self) -> None:
         """Test that all problems are listed when no limit is given."""
-        text = format_validation_results(self._report(25).results, limit=None)
+        text = format_validation_results(self._report(25).results)
         lines = text.splitlines()
         self.assertEqual(26, len(lines))
         self.assertEqual("  - problem 24", lines[-1])
