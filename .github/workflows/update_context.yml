@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
+        with:
+          persist-credentials: false
         
       - name: Work around permission issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
