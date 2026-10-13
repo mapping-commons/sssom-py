@@ -1,8 +1,11 @@
 """Test for merging MappingSetDataFrames."""
 
+from __future__ import annotations
+
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -136,8 +139,15 @@ class TestIO(unittest.TestCase):
 
     def test_extract_prefixes_from_metadata(self) -> None:
         """Test extracting prefixes from metadata dictionary."""
-        params = [
-            (set(), {}, "empty example"),
+        # TODO get_prefixes_used_in_metadata does not get prefixes from extension
+        #  slots, this is being updated in https://github.com/mapping-commons/sssom-py/pull/676
+        params: list[tuple[set[str], dict[str, Any], str]] = [
+            (set(), dict(), "empty example"),
+            (
+                set(),
+                {"curie_map": {"wikidata": "http://www.wikidata.org/entity/"}},
+                "skips non-string, non-list entries",
+            ),
             (
                 set(),
                 {"license": "https://creativecommons.org/licenses/by/4.0/"},
