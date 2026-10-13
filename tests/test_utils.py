@@ -37,6 +37,7 @@ from sssom.util import (
     filter_prefixes,
     get_dict_from_mapping,
     get_file_extension,
+    get_prefixes_used_in_metadata,
     get_prefixes_used_in_table,
     invert_mappings,
     is_multivalued_slot,
@@ -132,6 +133,41 @@ class TestIO(unittest.TestCase):
         original_msdf.remove_mappings(new_msdf)
         # len(self.msdf.df) = 141 and len(new_msdf.df) = 5
         self.assertEqual(len(original_msdf.df), original_length - len(new_msdf.df))
+
+    def test_extract_prefixes_from_metadata(self) -> None:
+        """Test extracting prefixes from metadata dictionary."""
+        params = [
+            (set(), {}, "empty example"),
+            (
+                set(),
+                {"license": "https://creativecommons.org/licenses/by/4.0/"},
+                "https is not extracted from license",
+            ),
+            (
+                set(),
+                {
+                    "mapping_set_source": [
+                        "https://w3id.org/biopragmatics/biomappings/sssom/biomappings.sssom.tsv"
+                    ]
+                },
+                "https is not extracted from a multivalued slot",
+            ),
+            (
+                {"orcid"},
+                {"author_id": ["orcid:0000-0003-4423-4370"]},
+                "orcid is extracted from a multivalued slot",
+            ),
+            (
+                {"wikidata"},
+                {"mapping_set_id": "wikidata:Q138902949"},
+                "wikidata is extracted from a single-valued slot",
+            ),
+        ]
+        for prefixes, metadata, description in params:
+            with self.subTest(description):
+                self.assertEqual(
+                    prefixes.union(SSSOM_BUILT_IN_PREFIXES), get_prefixes_used_in_metadata(metadata)
+                )
 
     def test_clean_prefix_map(self) -> None:
         """Test clean prefix map."""
