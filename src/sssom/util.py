@@ -31,7 +31,6 @@ import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
 from curies.w3c import CURIE_RE
-from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
