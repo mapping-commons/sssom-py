@@ -15,7 +15,7 @@ maintainers = [
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
-requires-python = ">=3.10,<4.0.0"
+requires-python = ">=3.11"
 
 dependencies = [
     "click>=8.1.6",
@@ -78,7 +78,7 @@ style = "pep440"
 
 [tool.black]
 line-length = 100
-target-version = ["py310", "py311", "py312", "py313"]
+target-version = ["py311", "py312", "py313", "py314", "py315"]
 
 [[tool.mypy.overrides]]
  module = [
