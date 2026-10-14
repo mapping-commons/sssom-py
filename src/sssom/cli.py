@@ -15,7 +15,6 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
-from jsonschema import ValidationError
 from rdflib import Graph, URIRef
 from typing_extensions import ParamSpec
 
@@ -260,8 +259,6 @@ def validate(input: str, validation_types: List[SchemaValidationType], propagate
         validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
     except SSSOMValidationError as e:
         raise click.ClickException(format_validation_results(e.results)) from e
-    except ValidationError as e:
-        raise click.ClickException(e.message) from e
 
 
 @main.command()

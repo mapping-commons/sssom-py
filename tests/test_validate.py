@@ -111,6 +111,16 @@ class TestValidate(unittest.TestCase):
         self.assertIn("'not_a_uri' is not a 'uri' in /mapping_set_id", messages)
         self.assertIn("Missing prefix: zzz", messages)
 
+    def test_validate_reports_non_curie_in_multivalued_metadata(self) -> None:
+        """Test that a non-CURIE in a multivalued metadata slot is reported with other problems."""
+        self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
+        self.correct_msdf1.metadata["creator_id"] = ["orcid:1234", "nocolon"]
+        with self.assertRaises(SSSOMValidationError) as ctx:
+            validate(self.correct_msdf1, self.validation_types)
+        messages = [r.message for r in ctx.exception.results]
+        self.assertIn("'not_a_uri' is not a 'uri' in /mapping_set_id", messages)
+        self.assertIn("Slot 'creator_id' has an incorrect value: nocolon", messages)
+
     def test_validate_without_failing_returns_report_per_type(self) -> None:
         """Test that each validation type gets its own report when not failing on error."""
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"

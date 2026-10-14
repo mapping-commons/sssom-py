@@ -12,7 +12,7 @@ from linkml.validator.report import Severity, ValidationResult
 from linkml_runtime.dumpers import json_dumper
 
 from sssom.parsers import to_mapping_set_document
-from sssom.util import MappingSetDataFrame, get_all_prefixes
+from sssom.util import MappingSetDataFrame, get_all_prefixes, get_prefix_from_curie
 
 from .constants import (
     DEFAULT_VALIDATION_TYPES,
@@ -238,6 +238,19 @@ def _prefix_map_completeness_report(msdf: MappingSetDataFrame) -> ValidationRepo
                 message=f"Missing prefix: {prefix}",
             )
         )
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+    for slot, value in msdf.metadata.items():
+        if slot not in entity_reference_slots or not isinstance(value, list):
+            continue
+        for curie in value:
+            if not get_prefix_from_curie(curie):
+                validation_results.append(
+                    ValidationResult(
+                        type="prefix validation",
+                        severity=Severity.ERROR,
+                        message=f"Slot '{slot}' has an incorrect value: {curie}",
+                    )
+                )
     return ValidationReport(results=validation_results)
 
 
