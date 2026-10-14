@@ -6,7 +6,6 @@ import itertools as itt
 import json
 import logging as _logging
 import os
-import re
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
@@ -31,6 +30,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
+from curies.w3c import CURIE_RE
 from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
@@ -1415,10 +1415,6 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
             map_dict[property] = mapping_property
 
     return map_dict
-
-
-CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
-CURIE_RE = re.compile(CURIE_PATTERN)
 
 
 def _is_curie(string: str) -> bool:
