@@ -1439,7 +1439,7 @@ def _is_iri(string: str) -> bool:
 
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
-    if _is_curie(curie):
+    if not _is_iri(curie) and _is_curie(curie):
         return ReferenceTuple.from_curie(curie).prefix
     else:
         return ""
@@ -1474,9 +1474,13 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
         return prefixes
     for value in meta.values():
         if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
-        else:
-            if prefix := get_prefix_from_curie(str(value)):
+            prefixes.update(
+                prefix
+                for curie in value
+                if isinstance(curie, str) and (prefix := get_prefix_from_curie(curie))
+            )
+        elif isinstance(value, str):
+            if prefix := get_prefix_from_curie(value):
                 prefixes.add(prefix)
     return prefixes
 
