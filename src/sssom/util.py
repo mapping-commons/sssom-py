@@ -15,6 +15,7 @@ from typing import (
     Any,
     DefaultDict,
     Dict,
+    Iterable,
     List,
     Literal,
     Mapping,
@@ -1417,7 +1418,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
+CURIE_PATTERN = r"[A-Za-z0-9_.-]+[:][A-Za-z0-9_]"
 CURIE_RE = re.compile(CURIE_PATTERN)
 
 
@@ -1445,6 +1446,19 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
+def _split_multivalued(values: Iterable[Any], slot: str) -> Iterable[Any]:
+    """Return the values in a slot's column, with the cells of a multivalued slot split on pipes."""
+    if not is_multivalued_slot(slot):
+        return values
+    parts: List[Any] = []
+    for value in values:
+        if isinstance(value, str):
+            parts.extend(part.strip() for part in value.split("|"))
+        else:
+            parts.append(value)
+    return parts
+
+
 def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
@@ -1455,7 +1469,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     new_prefixes = {
         ReferenceTuple.from_curie(row).prefix
         for col in entity_reference_slots
-        for row in df[col]
+        for row in _split_multivalued(df[col].unique(), col)
         if not _is_iri(row) and _is_curie(row)
         # we don't use the converter here since get_prefixes_used_in_table
         # is often used to identify prefixes that are not properly registered
@@ -1467,17 +1481,32 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     return prefixes
 
 
+def _get_extension_prefixes(meta: MetadataType) -> Set[str]:
+    """Get the prefixes of the property CURIEs in the metadata's extension definitions."""
+    # The type hint is left out: its usual prefix, xsd, is not in SSSOM_BUILT_IN_PREFIXES, so
+    # reading it would report xsd as missing from every curie_map that does not declare it.
+    return {
+        prefix
+        for definition in meta.get(EXTENSION_DEFINITIONS, [])
+        if (prefix := get_prefix_from_curie(definition.get("property", "")))
+    }
+
+
 def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
-    """Get a set of prefixes used in CURIEs in the metadata."""
+    """Get a set of prefixes used in CURIEs in the entity reference slots of the metadata.
+
+    The property of an extension definition is a CURIE too, so its prefix is included.
+    """
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
-    for value in meta.values():
-        if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
-        else:
-            if prefix := get_prefix_from_curie(str(value)):
-                prefixes.add(prefix)
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+    for slot, value in meta.items():
+        if slot not in entity_reference_slots:
+            continue
+        values = value if isinstance(value, list) else _split_multivalued([str(value)], slot)
+        prefixes.update(prefix for curie in values if (prefix := get_prefix_from_curie(curie)))
+    prefixes.update(_get_extension_prefixes(meta))
     return prefixes
 
 
@@ -1641,13 +1670,15 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
         if slot in _get_sssom_schema_object().entity_reference_slots
     }
     for slot in keys:
-        if slot not in metadata_keys:
+        if slot in msdf.df.columns:
             prefixes.update(
                 prefix
-                for curie in msdf.df[slot].unique()
+                for curie in _split_multivalued(msdf.df[slot].unique(), slot)
                 if (prefix := get_prefix_from_curie(curie))
             )
-        elif isinstance(msdf.metadata[slot], list):
+        if slot not in metadata_keys:
+            continue
+        if isinstance(msdf.metadata[slot], list):
             for curie in msdf.metadata[slot]:
                 prefix = get_prefix_from_curie(curie)
                 if not prefix:
@@ -1662,6 +1693,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
                 continue
             prefixes.add(prefix)
 
+    prefixes.update(_get_extension_prefixes(msdf.metadata))
     return prefixes
 
 
