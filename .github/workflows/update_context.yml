@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
+        with:
+          persist-credentials: false
         
       - name: Work around permission issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -18,7 +20,7 @@ jobs:
           make deploy-dm -B
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@18f7dc018cc2cd597073088f7c7591b9d1c02672 # v3.14.0
         if: ${{ success() }}
         with:
           commit-message: Update SSSOM Extended Prefix Map

@@ -7,12 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3.0.2
       with:
         fetch-depth: 0
+        persist-credentials: false
 
     - name: Set up Python 3.
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566 # v3.1.4
       with:
         python-version: "3.11"
 
@@ -28,7 +29,7 @@ jobs:
 
     - name: Deploy documentation.
       if: ${{ github.event_name == 'push' }}
-      uses: JamesIves/github-pages-deploy-action@v4.4.1
+      uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6 # v4.4.1
       with:
         branch: gh-pages
         force: true
