@@ -1,0 +1,27 @@
+@prefix airo: <https://w3id.org/airo#> .
+@prefix eticas-ai-risk-taxonomy: <https://taxonomy.eticas.ai/> .
+@prefix nexus: <https://w3id.org/ai-atlas-nexus/> .
+@prefix schema: <http://schema.org/> .
+
+# The three Eticas risks that rewire-predicates.tsv maps, and the groups they are part of, as the
+# AI Atlas Nexus knowledge graph records them in eticas_ai_risk_taxonomy_data.yaml:
+# https://github.com/IBM/ai-atlas-nexus/blob/a2f2b2074d6f304bd30f00d0868d2e57d1c52a88/src/ai_atlas_nexus/data/knowledge_graph/eticas_ai_risk_taxonomy_data.yaml
+# No mapping names the groups.
+
+eticas-ai-risk-taxonomy:eticas-bias-outcome-disparities a nexus:RiskGroup ;
+    schema:name "Outcome disparities" .
+
+eticas-ai-risk-taxonomy:eticas-bias-representational-harm a nexus:RiskGroup ;
+    schema:name "Representational harm" .
+
+eticas-ai-risk-taxonomy:eticas-performance-equity a airo:Risk ;
+    schema:name "Differential performance across populations" ;
+    schema:isPartOf eticas-ai-risk-taxonomy:eticas-bias-outcome-disparities .
+
+eticas-ai-risk-taxonomy:eticas-harmful-content-toxicity a airo:Risk ;
+    schema:name "Harmful content and toxicity" ;
+    schema:isPartOf eticas-ai-risk-taxonomy:eticas-bias-representational-harm .
+
+eticas-ai-risk-taxonomy:eticas-sentiment-fairness a airo:Risk ;
+    schema:name "Sentiment and quality disparity across groups" ;
+    schema:isPartOf eticas-ai-risk-taxonomy:eticas-bias-representational-harm .

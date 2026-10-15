@@ -5,14 +5,23 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 from functools import partial
-from typing import Dict, List, Optional, Sequence, cast
+from typing import Collection, Dict, Optional, Sequence, cast
 
 import curies
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
-from .constants import OWL_EQUIVALENT_CLASS, OWL_EQUIVALENT_PROPERTY, PREDICATE_MODIFIER_NOT
+from .constants import (
+    OWL_EQUIVALENT_CLASS,
+    OWL_EQUIVALENT_PROPERTY,
+    PREDICATE_MODIFIER_NOT,
+    SKOS_BROAD_MATCH,
+    SKOS_CLOSE_MATCH,
+    SKOS_EXACT_MATCH,
+    SKOS_NARROW_MATCH,
+    SKOS_RELATED_MATCH,
+)
 from .parsers import to_mapping_set_document
 from .util import MappingSetDataFrame
 
@@ -20,11 +29,35 @@ __all__ = [
     "rewire_graph",
 ]
 
-# Rewiring uses only the mappings with these predicates.
+# Rewiring uses the mappings with these predicates when no predicates are given.
 _REWIRE_PREDICATE_CURIES = {
     OWL_EQUIVALENT_CLASS,
     OWL_EQUIVALENT_PROPERTY,
 }
+
+# The strength rank of each predicate, where 0 is the strongest. A predicate not listed here
+# ranks below all of them.
+_PREDICATE_RANK: Dict[str, int] = {
+    OWL_EQUIVALENT_CLASS: 0,
+    OWL_EQUIVALENT_PROPERTY: 0,
+    SKOS_EXACT_MATCH: 1,
+    SKOS_CLOSE_MATCH: 2,
+    SKOS_BROAD_MATCH: 3,
+    SKOS_NARROW_MATCH: 3,
+    SKOS_RELATED_MATCH: 4,
+}
+_UNRANKED = max(_PREDICATE_RANK.values()) + 1
+
+
+def _to_iri(converter: curies.Converter, reference: str) -> str:
+    """Expand a CURIE to an IRI so that both spellings of a predicate compare equal.
+
+    :param converter: The converter whose prefix map is used for the expansion.
+    :param reference: A CURIE or an IRI.
+
+    :return: The IRI, or ``reference`` unchanged when it is an IRI already or cannot be expanded.
+    """
+    return converter.expand(reference, passthrough=True) or reference
 
 
 def _precedence_index(curie: str, *, converter: curies.Converter, precedence: Sequence[str]) -> int:
@@ -46,52 +79,72 @@ def rewire_graph(
     mset: MappingSetDataFrame,
     *,
     subject_to_object: bool = True,
-    precedence: Optional[List[str]] = None,
+    precedence: Optional[Sequence[str]] = None,
+    predicates: Optional[Collection[str]] = None,
     strict: bool = False,
 ) -> int:
-    """Rewire an RDF graph in place, replacing nodes by their equivalents in a mapping set.
+    """Rewire an RDF graph in place, replacing each mapped node by its mapping partner.
+
+    When a node has several candidates, the one under the strongest predicate wins. The order,
+    strongest first, is the OWL equivalences, ``skos:exactMatch``, ``skos:closeMatch``,
+    ``skos:broadMatch`` and ``skos:narrowMatch``, ``skos:relatedMatch``, then any other. Mappings
+    that agree on a candidate count once, under their strongest predicate. Only the equivalences
+    keep the graph's meaning: a ``skos:broadMatch`` mapping puts the broader entity even in the
+    triples that describe the narrower one. Negated mappings are skipped.
 
     :param g: The graph to rewire.
-    :param mset: The mapping set. Rewiring uses only its ``owl:equivalentClass`` and
-        ``owl:equivalentProperty`` mappings.
+    :param mset: The mapping set to rewire by.
     :param subject_to_object: If true, replace the subject of each mapping by its object. If
         false, replace the object by the subject.
-    :param precedence: Prefixes in order of preference, which choose between the candidates for
-        a node.
+    :param precedence: Prefixes in order of preference, which choose between equally strong
+        candidates for a node. When it does not decide, the earlier mapping wins.
+    :param predicates: The mapping predicates to rewire by, as CURIEs or IRIs. Defaults to
+        ``owl:equivalentClass`` and ``owl:equivalentProperty``.
     :param strict: If true, raise an error when no mapping is left to rewire by, instead of
         logging a warning.
 
     :return: The number of triples that changed.
-    :raises ValueError: If a node has more than one candidate and no ``precedence`` is given, or
-        if ``strict`` is true and no mapping is left to rewire by.
+    :raises TypeError: If the mapping set has no mappings, or a mapping in use has a subject or
+        object that is not an entity reference.
+    :raises ValueError: If equally strong candidates tie and no ``precedence`` is given, or if
+        ``strict`` is true and no mapping is left to rewire by.
     """
     mdoc = to_mapping_set_document(mset)
     if mdoc.mapping_set.mappings is None:
         raise TypeError
 
     converter: curies.Converter = mdoc.converter
-    # Map each node to its candidate replacements, in the order of their first mapping.
-    candidates: defaultdict[URIorCURIE, set[URIorCURIE]] = defaultdict(set)
+    if predicates is None:
+        predicates = _REWIRE_PREDICATE_CURIES
+    # Compare predicates as IRIs, so that a CURIE and its IRI count as the same predicate.
+    predicate_iris = {_to_iri(converter, p) for p in predicates}
+    rank_by_iri = {_to_iri(converter, p): rank for p, rank in _PREDICATE_RANK.items()}
+
+    # Map each node to its candidate replacements, in the order of their first mapping, each with
+    # the rank of its strongest mapping.
+    candidates: defaultdict[URIorCURIE, Dict[URIorCURIE, int]] = defaultdict(dict)
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
             continue
         # A negated mapping records that the two entities do not match.
         if m.predicate_modifier == PREDICATE_MODIFIER_NOT:
             continue
-        if m.predicate_id in _REWIRE_PREDICATE_CURIES:
-            if subject_to_object:
-                src, tgt = m.subject_id, m.object_id
-            else:
-                src, tgt = m.object_id, m.subject_id
-            if not isinstance(src, EntityReference) or not isinstance(tgt, EntityReference):
-                raise TypeError
-            candidates[src].add(tgt)
+        predicate_iri = _to_iri(converter, str(m.predicate_id))
+        if predicate_iri not in predicate_iris:
+            continue
+        if subject_to_object:
+            src, tgt = m.subject_id, m.object_id
+        else:
+            src, tgt = m.object_id, m.subject_id
+        if not isinstance(src, EntityReference) or not isinstance(tgt, EntityReference):
+            raise TypeError
+        rank = rank_by_iri.get(predicate_iri, _UNRANKED)
+        # A candidate keeps the rank of its strongest mapping, so agreeing mappings count once.
+        candidates[src][tgt] = min(rank, candidates[src].get(tgt, rank))
 
     # Warn, or fail when strict, rather than return the graph unchanged and say nothing.
     if not candidates:
-        message = (
-            f"No mapping to rewire by with the predicates {', '.join(_REWIRE_PREDICATE_CURIES)}"
-        )
+        message = f"No mapping to rewire by with the predicates {', '.join(sorted(predicates))}"
         if strict:
             raise ValueError(message)
         logging.warning(f"{message}, so the graph is unchanged")
@@ -101,20 +154,24 @@ def rewire_graph(
     else:
         key = None
 
-    # Choose only after reading every mapping, so that only distinct candidates tie.
+    # Choose only after reading every mapping, so that only distinct candidates tie and the order
+    # of the rows does not matter.
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
-    for subject_curie, object_curies in candidates.items():
-        if len(object_curies) == 1:
-            rewire_map[subject_curie] = next(iter(object_curies))
+    for subject_curie, ranked in candidates.items():
+        # Only the candidates under the strongest predicate compete for the node.
+        strongest = min(ranked.values())
+        tied = [tgt for tgt, rank in ranked.items() if rank == strongest]
+        if len(tied) == 1:
+            rewire_map[subject_curie] = tied[0]
             continue
-        message = f"Ambiguous: {subject_curie} -> {' vs '.join(sorted(object_curies))}"
+        message = f"Ambiguous: {subject_curie} -> {' vs '.join(sorted(tied))}"
         if not precedence:
             # TODO make erroring opt-in, can use lexical sort
             #  to be deterministic otherwise
             raise ValueError(message)
         logging.info(message)
         # When two keys are equal, min keeps the first, so the earlier mapping wins.
-        rewire_map[subject_curie] = min(object_curies, key=key)
+        rewire_map[subject_curie] = min(tied, key=key)
         logging.info(f"{rewire_map[subject_curie]} has precedence, due to {precedence}")
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {

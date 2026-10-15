@@ -1,0 +1,15 @@
+#curie_map:
+#  ibm-risk-atlas: "https://www.ibm.com/docs/en/watsonx/saas?topic="
+#  owasp-llm-2.0: "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+#  semapv: "https://w3id.org/semapv/vocab/"
+#  skos: "http://www.w3.org/2004/02/skos/core#"
+#license: "https://www.apache.org/licenses/LICENSE-2.0.html"
+#mapping_set_id: "https://w3id.org/sssom/mapping/tests/data/rewire-no-match.tsv"
+#mapping_set_title: "IBM AI Risk Atlas to the OWASP Top 10 for LLM Applications 2025, one risk"
+#mapping_set_description: "Mappings of an IBM risk from the OWASP mapping set in IBM AI Atlas Nexus. The curators wrote the rejected candidate with the predicate noMatch, which is a negated skos:relatedMatch here, as in IBM/ai-atlas-nexus#299."
+#see_also:
+#  - "https://github.com/IBM/ai-atlas-nexus/blob/a2f2b2074d6f304bd30f00d0868d2e57d1c52a88/src/ai_atlas_nexus/data/mappings/ibm2owasp.tsv"
+#  - "https://github.com/IBM/ai-atlas-nexus/pull/299"
+subject_id	subject_label	predicate_id	predicate_modifier	object_id	object_label	mapping_justification
+ibm-risk-atlas:atlas-attribute-inference-attack	Attribute inference attack	skos:relatedMatch	Not	owasp-llm-2.0:llm01-prompt-injection	LLM01:2025 Prompt Injection	semapv:ManualMappingCuration
+ibm-risk-atlas:atlas-attribute-inference-attack	Attribute inference attack	skos:relatedMatch		owasp-llm-2.0:llm022025-sensitive-information-disclosure	LLM02:2025 Sensitive Information Disclosure	semapv:ManualMappingCuration
