@@ -572,11 +572,17 @@ $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv -
     multiple=True,
     help="List of prefixes in order of precedence.",
 )
+@click.option(
+    "--strict",
+    is_flag=True,
+    help="Fail, instead of only warning, when no mapping is left to rewire by.",
+)
 @output_option
 def rewire(
     input: str,
     mapping_file: str,
     precedence: list[str],
+    strict: bool,
     output: TextIO,
     input_format: str,
     output_format: str,
@@ -585,7 +591,11 @@ def rewire(
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
-    rewire_graph(g, msdf, precedence=precedence)
+    # Show an ambiguity or a --strict failure as a one-line error, not a traceback.
+    try:
+        rewire_graph(g, msdf, precedence=precedence, strict=strict)
+    except ValueError as e:
+        raise click.ClickException(str(e)) from e
     rdfstr = g.serialize(format=output_format)
     print(rdfstr, file=output)
 

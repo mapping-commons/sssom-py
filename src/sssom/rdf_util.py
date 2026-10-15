@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, List, Optional, cast
+from typing import Dict, List, Optional, Sequence, cast
 
 import curies
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
+from .constants import PREDICATE_MODIFIER_NOT
 from .parsers import to_mapping_set_document
 from .util import MappingSetDataFrame
 
@@ -18,11 +19,25 @@ __all__ = [
 ]
 
 
+def _precedence_index(converter: curies.Converter, precedence: Sequence[str], curie: str) -> int:
+    """Find how strongly ``precedence`` prefers a CURIE, by the position of its prefix.
+
+    :param converter: The converter that parses the CURIE.
+    :param precedence: Prefixes in order of preference.
+    :param curie: A candidate replacement.
+    :return: The position of the prefix in ``precedence``, or the length of ``precedence`` when
+        the prefix is not listed, so that a smaller number is a stronger preference.
+    """
+    prefix = converter.parse_curie(curie, strict=True).prefix
+    return precedence.index(prefix) if prefix in precedence else len(precedence)
+
+
 def rewire_graph(
     g: Graph,
     mset: MappingSetDataFrame,
     subject_to_object: bool = True,
     precedence: Optional[List[str]] = None,
+    strict: bool = False,
 ) -> int:
     """Rewire an RDF Graph replacing using equivalence mappings."""
     mdoc = to_mapping_set_document(mset)
@@ -30,9 +45,13 @@ def rewire_graph(
         raise TypeError
 
     converter: curies.Converter = mdoc.converter
-    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
+    # The candidate replacements of each node, in the order of their first mapping.
+    candidates: Dict[URIorCURIE, List[URIorCURIE]] = {}
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
+            continue
+        # A negated mapping records that the two entities do not match.
+        if m.predicate_modifier == PREDICATE_MODIFIER_NOT:
             continue
         if m.predicate_id in {"owl:equivalentClass", "owl:equivalentProperty"}:
             if subject_to_object:
@@ -41,22 +60,35 @@ def rewire_graph(
                 src, tgt = m.object_id, m.subject_id
             if not isinstance(src, EntityReference) or not isinstance(tgt, EntityReference):
                 raise TypeError
-            if src in rewire_map:
-                curr_tgt = rewire_map[src]
-                logging.info(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
-                if precedence:
-                    curr_pfx = converter.parse_curie(curr_tgt, strict=True).prefix
-                    tgt_pfx = converter.parse_curie(tgt, strict=True).prefix
-                    if tgt_pfx in precedence:
-                        if curr_pfx not in precedence or precedence.index(
-                            tgt_pfx
-                        ) < precedence.index(curr_pfx):
-                            rewire_map[src] = tgt
-                            logging.info(f"{tgt} has precedence, due to {precedence}")
-                else:
-                    raise ValueError(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
-            else:
-                rewire_map[src] = tgt
+            targets = candidates.setdefault(src, [])
+            # A mapping that repeats a candidate adds nothing, so agreeing mappings count once.
+            if tgt not in targets:
+                targets.append(tgt)
+
+    # Choose only after reading every mapping, so that mappings that agree count once.
+    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
+    for src, targets in candidates.items():
+        if len(targets) == 1:
+            rewire_map[src] = targets[0]
+            continue
+        logging.info(f"Ambiguous: {src} -> {' vs '.join(targets)}")
+        if not precedence:
+            raise ValueError(f"Ambiguous: {src} -> {' vs '.join(targets)}")
+        # On equal keys, min keeps the first, so the earlier mapping wins.
+        rewire_map[src] = min(
+            targets, key=lambda tgt: _precedence_index(converter, precedence, tgt)
+        )
+        logging.info(f"{rewire_map[src]} has precedence, due to {precedence}")
+
+    # Say when nothing will change, instead of returning the graph unchanged.
+    if not rewire_map:
+        message = (
+            "No mapping to rewire by with the predicates "
+            "owl:equivalentClass, owl:equivalentProperty"
+        )
+        if strict:
+            raise ValueError(message)
+        logging.warning(f"{message}, so the graph is unchanged")
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {
         URIRef(converter.expand_strict(k)): URIRef(converter.expand_strict(v))

@@ -2,8 +2,9 @@
 
 import os
 import unittest
+from typing import Any, Tuple
 
-from rdflib import Graph
+from rdflib import OWL, RDF, Graph, URIRef
 
 from sssom.parsers import parse_sssom_table
 from sssom.rdf_util import rewire_graph
@@ -30,3 +31,76 @@ class TestRewire(unittest.TestCase):
         self.assertLessEqual(0, n)
         with open(test_out_dir / "rewired-cob.ttl", "w") as stream:
             stream.write(self.graph.serialize(format="turtle"))
+
+
+class TestRewireBasic(unittest.TestCase):
+    """Test case for rewiring by rows of the basic mapping set."""
+
+    def setUp(self) -> None:
+        """Load the basic mapping set."""
+        self.msdf = parse_sssom_table(data_dir / "basic.tsv")
+
+    def node(self, curie: str) -> URIRef:
+        """Expand a CURIE with the prefix map of the basic mapping set.
+
+        :param curie: A CURIE.
+        :return: The node that the CURIE names.
+        """
+        return URIRef(self.msdf.converter.expand_strict(curie))
+
+    def rewire(self, *subjects: str, **kwargs: Any) -> Tuple[Graph, int]:
+        """Rewire a graph of the given classes by their own mappings in the basic mapping set.
+
+        :param subjects: The CURIEs of the classes, and of the mapping subjects to keep.
+        :param kwargs: Further arguments to :func:`rewire_graph`.
+        :return: The rewired graph, and the number of triples that changed.
+        """
+        # Keep only the rows of these subjects, because other rows in the file tie and would raise.
+        self.msdf.df = self.msdf.df[self.msdf.df["subject_id"].isin(subjects)]
+        graph = Graph()
+        for subject in subjects:
+            graph.add((self.node(subject), RDF.type, OWL.Class))
+        return graph, rewire_graph(graph, self.msdf, **kwargs)
+
+    def test_negated_mapping_is_skipped(self) -> None:
+        """Test that a negated mapping is not applied."""
+        graph, n = self.rewire("x:eyeball", "d:something")
+        self.assertEqual(1, n)
+        self.assertEqual({self.node("z:eyeball"), self.node("d:something")}, set(graph.subjects()))
+
+    def test_agreeing_mappings_are_no_tie(self) -> None:
+        """Test that two mappings to the same replacement are not a tie."""
+        graph, n = self.rewire("x:hindlimb")
+        self.assertEqual(1, n)
+        self.assertEqual({self.node("z:hindlimb")}, set(graph.subjects()))
+
+    def test_precedence_decides_a_tie(self) -> None:
+        """Test that two different replacements are a tie, which precedence decides."""
+        with self.assertRaises(ValueError):
+            self.rewire("x:organ")
+        graph, n = self.rewire("x:organ", precedence=["z"])
+        self.assertEqual(1, n)
+        self.assertEqual({self.node("z:organ")}, set(graph.subjects()))
+
+
+class TestRewireNoMapping(unittest.TestCase):
+    """Test case for a mapping set with no mapping that rewiring uses.
+
+    The MONDO to NANDO mapping set has only ``skos:exactMatch`` mappings.
+    """
+
+    def setUp(self) -> None:
+        """Load the MONDO to NANDO mapping set."""
+        self.msdf = parse_sssom_table(data_dir / "mondo-nando.sssom.tsv")
+
+    def test_warning(self) -> None:
+        """Test that rewiring warns when no mapping is left to rewire by."""
+        with self.assertLogs(level="WARNING") as logs:
+            n = rewire_graph(Graph(), self.msdf)
+        self.assertEqual(0, n)
+        self.assertIn("No mapping to rewire by", logs.output[0])
+
+    def test_strict(self) -> None:
+        """Test that strict rewiring fails when no mapping is left to rewire by."""
+        with self.assertRaises(ValueError):
+            rewire_graph(Graph(), self.msdf, strict=True)
