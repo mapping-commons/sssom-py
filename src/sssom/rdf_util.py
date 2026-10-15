@@ -13,6 +13,7 @@ from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
 from .constants import (
+    NO_TERM_FOUND,
     OWL_EQUIVALENT_CLASS,
     OWL_EQUIVALENT_PROPERTY,
     PREDICATE_MODIFIER_NOT,
@@ -90,7 +91,8 @@ def rewire_graph(
     ``skos:broadMatch`` and ``skos:narrowMatch``, ``skos:relatedMatch``, then any other. Mappings
     that agree on a candidate count once, under their strongest predicate. Only the equivalences
     keep the graph's meaning: a ``skos:broadMatch`` mapping puts the broader entity even in the
-    triples that describe the narrower one. Negated mappings are skipped.
+    triples that describe the narrower one. Negated mappings, and mappings to
+    ``sssom:NoTermFound``, are skipped.
 
     :param g: The graph to rewire.
     :param mset: The mapping set to rewire by.
@@ -128,6 +130,9 @@ def rewire_graph(
             continue
         # A negated mapping records that the two entities do not match.
         if m.predicate_modifier == PREDICATE_MODIFIER_NOT:
+            continue
+        # A mapping to sssom:NoTermFound records that an entity has no match.
+        if NO_TERM_FOUND in (m.subject_id, m.object_id):
             continue
         predicate_iri = _to_iri(converter, str(m.predicate_id))
         if predicate_iri not in predicate_iris:

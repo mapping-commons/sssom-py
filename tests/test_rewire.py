@@ -266,10 +266,11 @@ class TestRewirePredicates(unittest.TestCase):
 
 
 class TestRewireNoMatch(unittest.TestCase):
-    """Test case for mappings that record that two entities do not match.
+    """Test case for mappings that record that there is no match.
 
-    The mapping set holds the curated mappings of an IBM risk to the OWASP Top 10 for LLM
-    applications, from IBM AI Atlas Nexus. The curators accepted one candidate and rejected one.
+    The mapping set holds the curated mappings of two IBM risks to the OWASP Top 10 for LLM
+    applications, from IBM AI Atlas Nexus. The curators accepted one candidate for attribute
+    inference and rejected another, and found no candidate for a lack of model transparency.
     """
 
     def setUp(self) -> None:
@@ -284,3 +285,11 @@ class TestRewireNoMatch(unittest.TestCase):
         self.assertEqual(1, n)
         disclosure = OWASP_LLM["llm022025-sensitive-information-disclosure"]
         self.assertEqual({(disclosure, RDF.type, AIRO.Risk)}, set(self.graph))
+
+    def test_no_term_found_is_skipped(self) -> None:
+        """Test that a risk mapped to sssom:NoTermFound is left as it is."""
+        risk = IBM_RISK_ATLAS["atlas-lack-of-model-transparency"]
+        self.graph.add((risk, RDF.type, AIRO.Risk))
+        n = rewire_graph(self.graph, self.mset, predicates={SKOS_RELATED_MATCH})
+        self.assertEqual(1, n)
+        self.assertIn((risk, RDF.type, AIRO.Risk), set(self.graph))
