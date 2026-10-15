@@ -81,3 +81,26 @@ class TestRewireBasic(unittest.TestCase):
         graph, n = self.rewire("x:organ", precedence=["z"])
         self.assertEqual(1, n)
         self.assertEqual({self.node("z:organ")}, set(graph.subjects()))
+
+
+class TestRewireNoMapping(unittest.TestCase):
+    """Test case for a mapping set with no mapping that rewiring uses.
+
+    The MONDO to NANDO mapping set has only ``skos:exactMatch`` mappings.
+    """
+
+    def setUp(self) -> None:
+        """Load the MONDO to NANDO mapping set."""
+        self.msdf = parse_sssom_table(data_dir / "mondo-nando.sssom.tsv")
+
+    def test_warning(self) -> None:
+        """Test that rewiring warns when no mapping is left to rewire by."""
+        with self.assertLogs(level="WARNING") as logs:
+            n = rewire_graph(Graph(), self.msdf)
+        self.assertEqual(0, n)
+        self.assertIn("No mapping to rewire by", logs.output[0])
+
+    def test_strict(self) -> None:
+        """Test that strict rewiring fails when no mapping is left to rewire by."""
+        with self.assertRaises(ValueError):
+            rewire_graph(Graph(), self.msdf, strict=True)

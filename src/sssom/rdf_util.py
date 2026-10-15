@@ -37,6 +37,7 @@ def rewire_graph(
     mset: MappingSetDataFrame,
     subject_to_object: bool = True,
     precedence: Optional[List[str]] = None,
+    strict: bool = False,
 ) -> int:
     """Rewire an RDF Graph replacing using equivalence mappings."""
     mdoc = to_mapping_set_document(mset)
@@ -78,6 +79,16 @@ def rewire_graph(
             targets, key=lambda tgt: _precedence_index(converter, precedence, tgt)
         )
         logging.info(f"{rewire_map[src]} has precedence, due to {precedence}")
+
+    # Say when nothing will change, instead of returning the graph unchanged.
+    if not rewire_map:
+        message = (
+            "No mapping to rewire by with the predicates "
+            "owl:equivalentClass, owl:equivalentProperty"
+        )
+        if strict:
+            raise ValueError(message)
+        logging.warning(f"{message}, so the graph is unchanged")
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {
         URIRef(converter.expand_strict(k)): URIRef(converter.expand_strict(v))
