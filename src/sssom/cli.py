@@ -567,8 +567,9 @@ the mapping's object wherever the subject occurs in the graph. It uses only mapp
 predicate. By default these are owl:equivalentClass and owl:equivalentProperty, and the
 --predicates option chooses others in their place. Only the equivalences keep what the graph
 says. A skos:broadMatch mapping, for example, puts the broader entity in every triple about the
-narrower one, including the triples that describe it. Negated mappings are skipped. When no
-mapping is left to rewire by, the command warns, or fails with --strict.
+narrower one, including the triples that describe it. Negated mappings, and mappings to
+sssom:NoTermFound, are skipped. When no mapping is left to rewire by, the command warns, or fails
+with --strict.
 
 When an entity has several candidate replacements, the command chooses the one under the
 strongest predicate. The order, strongest first, is OWL equivalence, then skos:exactMatch, then

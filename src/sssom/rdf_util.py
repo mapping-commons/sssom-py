@@ -11,6 +11,7 @@ from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
 from .constants import (
+    NO_TERM_FOUND,
     OWL_EQUIVALENT_CLASS,
     OWL_EQUIVALENT_PROPERTY,
     PREDICATE_MODIFIER_NOT,
@@ -78,9 +79,10 @@ def rewire_graph(
     """Rewire an RDF graph in place, replacing each mapped entity with its mapping partner.
 
     Each mapping whose predicate is in ``predicates`` replaces its subject with its object, or its
-    object with its subject when ``subject_to_object`` is False. Negated mappings are skipped. Only
-    the equivalences keep what the graph says: a ``skos:broadMatch`` mapping puts the broader entity
-    even in the triples that describe the narrower one.
+    object with its subject when ``subject_to_object`` is False. Negated mappings and mappings to
+    ``sssom:NoTermFound`` are skipped. Only the equivalences keep what the graph says: a
+    ``skos:broadMatch`` mapping puts the broader entity even in the triples that describe the
+    narrower one.
 
     When a node has several candidates, the one under the strongest predicate wins. The order,
     strongest first, is the OWL equivalences, ``skos:exactMatch``, ``skos:closeMatch``,
@@ -121,6 +123,9 @@ def rewire_graph(
             continue
         # A negated mapping records that the two entities do not match.
         if m.predicate_modifier == PREDICATE_MODIFIER_NOT:
+            continue
+        # A mapping to sssom:NoTermFound records that an entity has no match.
+        if NO_TERM_FOUND in (m.subject_id, m.object_id):
             continue
         predicate_iri = _to_iri(converter, str(m.predicate_id))
         if predicate_iri not in predicate_iris:
