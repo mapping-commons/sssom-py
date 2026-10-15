@@ -559,9 +559,29 @@ def merge(
 
 
 @main.command(help="""\
-Example:
+Rewire an RDF graph, such as an OWL ontology, by replacing every mapped entity with its mapping
+partner. A graph expressed in one vocabulary is then expressed in another.
 
-$ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+The command applies each mapping from subject to object: it replaces the mapping's subject with
+the mapping's object wherever the subject occurs in the graph. It uses only mappings with a chosen
+predicate. By default these are owl:equivalentClass and owl:equivalentProperty, and the
+--predicates option chooses others in their place. Only the equivalences keep what the graph
+says. A skos:broadMatch mapping, for example, puts the broader entity in every triple about the
+narrower one, including the triples that describe it. Negated mappings, and mappings to
+sssom:NoTermFound, are skipped. When no mapping is left to rewire by, the command warns, or fails
+with --strict.
+
+When an entity has several candidate replacements, the command chooses the one under the
+strongest predicate. The order, strongest first, is OWL equivalence, then skos:exactMatch, then
+skos:closeMatch, then skos:broadMatch and skos:narrowMatch, then skos:relatedMatch. When
+candidates are equally strong, --precedence chooses between them by the prefix of the
+replacement. Without --precedence, the command fails because the choice is ambiguous.
+
+Examples:
+
+\b
+$ sssom rewire -I xml -m tests/data/cob-to-external.tsv --precedence PR tests/data/cob.owl
+$ sssom rewire -m tests/data/rewire-predicates.tsv --predicates skos:exactMatch tests/data/rewire-predicates.ttl
 """)
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
@@ -572,20 +592,50 @@ $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv -
     multiple=True,
     help="List of prefixes in order of precedence.",
 )
+@click.option(
+    "--predicates",
+    multiple=True,
+    help="Mapping predicates to rewire by, as CURIEs or IRIs, in place of the default ones. "
+    "Repeat the option, or separate the values with commas.",
+)
+@click.option(
+    "--strict",
+    is_flag=True,
+    help="Fail, instead of only warning, when no mapping is left to rewire by.",
+)
 @output_option
 def rewire(
     input: str,
     mapping_file: str,
     precedence: list[str],
+    predicates: tuple[str, ...],
+    strict: bool,
     output: TextIO,
     input_format: str,
     output_format: str,
 ) -> None:
-    """Rewire an ontology using equivalent classes/properties from a mapping file."""
+    """Rewire an RDF graph using the mappings in a mapping file.
+
+    :param input: Path to the RDF graph to rewire.
+    :param mapping_file: Path to the SSSOM mapping file.
+    :param precedence: Prefixes in order of preference, used to decide between candidate
+        replacements.
+    :param predicates: Mapping predicates to rewire by. Each value may be a comma-separated list.
+    :param strict: Whether to fail when no mapping is left to rewire by.
+    :param output: Where to write the rewired graph.
+    :param input_format: The RDF serialisation of the input graph.
+    :param output_format: The RDF serialisation to write.
+    """
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
-    rewire_graph(g, msdf, precedence=precedence)
+    # Split comma-separated values. With no --predicates, rewire_graph uses its defaults.
+    chosen = {p.strip() for value in predicates for p in value.split(",") if p.strip()}
+    # Show an ambiguity or a --strict failure as a one-line error, not a traceback.
+    try:
+        rewire_graph(g, msdf, precedence=precedence, predicates=chosen or None, strict=strict)
+    except ValueError as e:
+        raise click.ClickException(str(e)) from e
     rdfstr = g.serialize(format=output_format)
     print(rdfstr, file=output)
 

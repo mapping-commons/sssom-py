@@ -1,0 +1,21 @@
+#curie_map:
+#  eticas-ai-risk-taxonomy: "https://taxonomy.eticas.ai/"
+#  ibm-risk-atlas: "https://www.ibm.com/docs/en/watsonx/saas?topic="
+#  mit-ai-risk-repository: "https://airisk.mit.edu/"
+#  nist-ai-rmf: "https://www.nist.gov/itl/ai-risk-management-framework/"
+#  semapv: "https://w3id.org/semapv/vocab/"
+#  skos: "http://www.w3.org/2004/02/skos/core#"
+#license: "https://www.apache.org/licenses/LICENSE-2.0.html"
+#mapping_set_id: "https://w3id.org/sssom/mapping/tests/data/rewire-predicates.tsv"
+#mapping_set_title: "Eticas AI Risk Taxonomy to IBM AI Atlas Nexus, three risks"
+#mapping_set_description: "The mappings of three Eticas risks, from the Eticas mapping set in IBM AI Atlas Nexus. The labels are the names in the AI Atlas Nexus knowledge graph."
+#see_also:
+#  - "https://github.com/IBM/ai-atlas-nexus/blob/a2f2b2074d6f304bd30f00d0868d2e57d1c52a88/src/ai_atlas_nexus/data/mappings/eticas2atlas_nexus_full.tsv"
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+eticas-ai-risk-taxonomy:eticas-performance-equity	Differential performance across populations	skos:closeMatch	mit-ai-risk-repository:mit-ai-risk-subdomain-1.3	Unequal performance across groups	semapv:ManualMappingCuration
+eticas-ai-risk-taxonomy:eticas-performance-equity	Differential performance across populations	skos:exactMatch	ibm-risk-atlas:atlas-output-bias	Output bias	semapv:ManualMappingCuration
+eticas-ai-risk-taxonomy:eticas-harmful-content-toxicity	Harmful content and toxicity	skos:closeMatch	mit-ai-risk-repository:mit-ai-risk-subdomain-1.2	Exposure to toxic content	semapv:ManualMappingCuration
+eticas-ai-risk-taxonomy:eticas-harmful-content-toxicity	Harmful content and toxicity	skos:closeMatch	nist-ai-rmf:nist-dangerous-violent-or-hateful-content	Dangerous, Violent, or Hateful Content	semapv:ManualMappingCuration
+eticas-ai-risk-taxonomy:eticas-harmful-content-toxicity	Harmful content and toxicity	skos:exactMatch	ibm-risk-atlas:atlas-toxic-output	Toxic output	semapv:ManualMappingCuration
+eticas-ai-risk-taxonomy:eticas-harmful-content-toxicity	Harmful content and toxicity	skos:closeMatch	ibm-risk-atlas:atlas-harmful-output	Harmful output	semapv:ManualMappingCuration
+eticas-ai-risk-taxonomy:eticas-sentiment-fairness	Sentiment and quality disparity across groups	skos:narrowMatch	mit-ai-risk-repository:mit-ai-risk-subdomain-1.1	Unfair discrimination and misrepresentation	semapv:ManualMappingCuration

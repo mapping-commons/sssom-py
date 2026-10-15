@@ -37,7 +37,7 @@ sssom [OPTIONS] COMMAND [ARGS]...
 | [`crosstab`](commands.md#sssom-crosstab) | Cross-tabulate mappings by categories. |
 | [`correlations`](commands.md#sssom-correlations) | Calculate correlations between mapping categories. |
 | [`ptable`](commands.md#sssom-ptable) | Convert to ptable format for boomer. |
-| [`rewire`](commands.md#sssom-rewire) | Rewire an ontology using mappings. |
+| [`rewire`](commands.md#sssom-rewire) | Rewire an RDF graph using equivalence or SKOS mappings. |
 | [`reconcile-prefixes`](commands.md#sssom-reconcile-prefixes) | Reconcile prefixes using a YAML config. |
 | [`serve-rdf`](commands.md#sssom-serve-rdf) | Serve mappings as an RDF SPARQL endpoint. |
 

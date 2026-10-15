@@ -1,0 +1,14 @@
+#curie_map:
+#  aiuc1: "https://www.aiuc1.com/framework/"
+#  ibm-risk-atlas: "https://www.ibm.com/docs/en/watsonx/saas?topic="
+#  semapv: "https://w3id.org/semapv/vocab/"
+#  skos: "http://www.w3.org/2004/02/skos/core#"
+#license: "https://www.apache.org/licenses/LICENSE-2.0.html"
+#mapping_set_id: "https://w3id.org/sssom/mapping/tests/data/rewire-agreeing.tsv"
+#mapping_set_title: "IBM AI Risk Atlas to AIUC-1, one risk"
+#mapping_set_description: "Two mappings of one IBM risk to the same AIUC-1 requirement, under two predicates, from the AIUC-1 mapping set in IBM AI Atlas Nexus."
+#see_also:
+#  - "https://github.com/IBM/ai-atlas-nexus/blob/a2f2b2074d6f304bd30f00d0868d2e57d1c52a88/src/ai_atlas_nexus/data/mappings/aiuc1_to_ibm_from_tsv_data.tsv"
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+ibm-risk-atlas:atlas-lack-of-model-transparency	Lack of model transparency	skos:relatedMatch	aiuc1:aiuc1-req-e017	Document system transparency policy	semapv:ManualMappingCuration
+ibm-risk-atlas:atlas-lack-of-model-transparency	Lack of model transparency	skos:closeMatch	aiuc1:aiuc1-req-e017	Document system transparency policy	semapv:ManualMappingCuration
