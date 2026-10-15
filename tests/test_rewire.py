@@ -67,3 +67,17 @@ class TestRewireBasic(unittest.TestCase):
         graph, n = self.rewire("x:eyeball", "d:something")
         self.assertEqual(1, n)
         self.assertEqual({self.node("z:eyeball"), self.node("d:something")}, set(graph.subjects()))
+
+    def test_agreeing_mappings_are_no_tie(self) -> None:
+        """Test that two mappings to the same replacement are not a tie."""
+        graph, n = self.rewire("x:hindlimb")
+        self.assertEqual(1, n)
+        self.assertEqual({self.node("z:hindlimb")}, set(graph.subjects()))
+
+    def test_precedence_decides_a_tie(self) -> None:
+        """Test that two different replacements are a tie, which precedence decides."""
+        with self.assertRaises(ValueError):
+            self.rewire("x:organ")
+        graph, n = self.rewire("x:organ", precedence=["z"])
+        self.assertEqual(1, n)
+        self.assertEqual({self.node("z:organ")}, set(graph.subjects()))
