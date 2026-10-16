@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 from typing import Any, Callable, List, Mapping, Optional
 
-from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
 from linkml.validator.plugins import JsonschemaValidationPlugin
 from linkml.validator.report import Severity, ValidationResult
@@ -93,7 +92,7 @@ class SSSOMValidationError(ValueError):
 
     def __init__(self, results: List[ValidationResult]) -> None:
         """Instantiate the error from the validation results that caused it."""
-        super().__init__()
+        super().__init__(results)
         self.results = results
 
     def __str__(self) -> str:
