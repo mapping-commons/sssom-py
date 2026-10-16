@@ -84,6 +84,8 @@ def format_validation_results(results: List[ValidationResult], limit: Optional[i
     return "\n".join(lines)
 
 
+# TODO it's not clear why this is subclassing from jsonschema.ValidationError,
+#  should be ValueError instead, but some cryptic tests rely on this
 class SSSOMValidationError(ValidationError):
     """Raised when a mapping set fails validation.
 
@@ -93,11 +95,12 @@ class SSSOMValidationError(ValidationError):
 
     def __init__(self, results: List[ValidationResult]) -> None:
         """Instantiate the error from the validation results that caused it."""
-        super().__init__(results)
+        super().__init__(_summarize(results))
+        self.results = results
 
     def __str__(self) -> str:
         """List the problems, up to :data:`MAX_REPORTED_PROBLEMS` of them."""
-        return format_validation_results(self.args[0], limit=MAX_REPORTED_PROBLEMS)
+        return format_validation_results(self.results, limit=MAX_REPORTED_PROBLEMS)
 
 
 def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) -> None:
