@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Callable, List, Mapping, Optional
 
+from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
 from linkml.validator.plugins import JsonschemaValidationPlugin
 from linkml.validator.report import Severity, ValidationResult
@@ -83,7 +84,7 @@ def format_validation_results(results: List[ValidationResult], limit: Optional[i
     return "\n".join(lines)
 
 
-class SSSOMValidationError(ValueError):
+class SSSOMValidationError(ValidationError):
     """Raised when a mapping set fails validation.
 
     All problems are available in :attr:`results`. The string representation lists at most
