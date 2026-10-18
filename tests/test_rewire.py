@@ -4,7 +4,7 @@ import os
 import unittest
 from typing import Any, Tuple
 
-from rdflib import OWL, RDF, Graph, URIRef
+from rdflib import OWL, RDF, Graph
 
 from sssom.constants import PREDICATE_MODIFIER_NOT
 from sssom.parsers import parse_sssom_table
@@ -41,14 +41,6 @@ class TestRewireBasic(unittest.TestCase):
         """Load the basic mapping set."""
         self.msdf = parse_sssom_table(data_dir / "basic.tsv")
 
-    def node(self, curie: str) -> URIRef:
-        """Expand a CURIE with the prefix map of the basic mapping set.
-
-        :param curie: A CURIE.
-        :return: The node that the CURIE names.
-        """
-        return URIRef(self.msdf.converter.expand_strict(curie))
-
     def rewire(self, *subjects: str, **kwargs: Any) -> Tuple[Graph, int]:
         """Rewire a graph of the given classes by their own mappings in the basic mapping set.
 
@@ -60,14 +52,20 @@ class TestRewireBasic(unittest.TestCase):
         self.msdf.df = self.msdf.df[self.msdf.df["subject_id"].isin(subjects)]
         graph = Graph()
         for subject in subjects:
-            graph.add((self.node(subject), RDF.type, OWL.Class))
+            graph.add((self.msdf.converter.expand_rdflib(subject), RDF.type, OWL.Class))
         return graph, rewire_graph(graph, self.msdf, **kwargs)
 
     def test_negated_mapping_is_skipped(self) -> None:
         """Test that a negated mapping is not applied."""
         graph, n = self.rewire("x:eyeball", "d:something")
         self.assertEqual(1, n)
-        self.assertEqual({self.node("z:eyeball"), self.node("d:something")}, set(graph.subjects()))
+        self.assertEqual(
+            {
+                self.msdf.converter.expand_rdflib("z:eyeball"),
+                self.msdf.converter.expand_rdflib("d:something"),
+            },
+            set(graph.subjects()),
+        )
 
     def test_negated_mapping_is_no_tie(self) -> None:
         """Test that a negated mapping does not tie with a positive mapping for the same node."""
@@ -77,7 +75,7 @@ class TestRewireBasic(unittest.TestCase):
         df.loc[df["subject_id"] == "z:organ", "predicate_modifier"] = PREDICATE_MODIFIER_NOT
         self.msdf.df = df
         graph = Graph()
-        graph.add((self.node("y:organ"), RDF.type, OWL.Class))
+        graph.add((self.msdf.converter.expand_rdflib("y:organ"), RDF.type, OWL.Class))
         n = rewire_graph(graph, self.msdf, subject_to_object=False)
         self.assertEqual(1, n)
-        self.assertEqual({self.node("x:organ")}, set(graph.subjects()))
+        self.assertEqual({self.msdf.converter.expand_rdflib("x:organ")}, set(graph.subjects()))
