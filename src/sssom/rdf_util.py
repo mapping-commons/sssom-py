@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections import defaultdict
 from typing import Dict, List, Optional, Sequence, cast
 
 import curies
@@ -44,7 +45,7 @@ def rewire_graph(
 
     converter: curies.Converter = mdoc.converter
     # Map each node to its candidate replacements, in the order of their first mapping.
-    candidates: Dict[URIorCURIE, List[URIorCURIE]] = {}
+    candidates: defaultdict[URIorCURIE, List[URIorCURIE]] = defaultdict(set)
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
             continue
@@ -55,18 +56,15 @@ def rewire_graph(
                 src, tgt = m.object_id, m.subject_id
             if not isinstance(src, EntityReference) or not isinstance(tgt, EntityReference):
                 raise TypeError
-            targets = candidates.setdefault(src, [])
-            # A mapping that repeats a candidate adds nothing, so agreeing mappings count once.
-            if tgt not in targets:
-                targets.append(tgt)
+            candidates[src].add(tgt)
 
     # Choose only after reading every mapping, so that only distinct candidates tie.
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for src, targets in candidates.items():
         if len(targets) == 1:
-            rewire_map[src] = targets[0]
+            rewire_map[src] = next(iter(targets))
             continue
-        message = f"Ambiguous: {src} -> {' vs '.join(targets)}"
+        message = f"Ambiguous: {src} -> {' vs '.join(sorted(targets))}"
         if not precedence:
             raise ValueError(message)
         logging.info(message)
