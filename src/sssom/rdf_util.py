@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, List, Optional, cast
+from collections import defaultdict
+from functools import partial
+from typing import Dict, List, Optional, Sequence, cast
 
 import curies
 from linkml_runtime.utils.metamodelcore import URIorCURIE
@@ -23,6 +25,20 @@ _REWIRE_PREDICATE_CURIES = {
     OWL_EQUIVALENT_CLASS,
     OWL_EQUIVALENT_PROPERTY,
 }
+
+
+def _precedence_index(curie: str, *, converter: curies.Converter, precedence: Sequence[str]) -> int:
+    """Find how strongly ``precedence`` prefers a CURIE, by the position of its prefix.
+
+    :param curie: A candidate replacement.
+    :param converter: The converter that parses the CURIE.
+    :param precedence: Prefixes in order of preference.
+
+    :return: The position of the prefix in ``precedence``, or the length of ``precedence`` when
+        the prefix is not listed, so that a smaller number is a stronger preference.
+    """
+    prefix = converter.parse_curie(curie, strict=True).prefix
+    return precedence.index(prefix) if prefix in precedence else len(precedence)
 
 
 def rewire_graph(
@@ -54,7 +70,8 @@ def rewire_graph(
         raise TypeError
 
     converter: curies.Converter = mdoc.converter
-    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
+    # Map each node to its candidate replacements, in the order of their first mapping.
+    candidates: defaultdict[URIorCURIE, set[URIorCURIE]] = defaultdict(set)
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
             continue
@@ -68,31 +85,37 @@ def rewire_graph(
                 src, tgt = m.object_id, m.subject_id
             if not isinstance(src, EntityReference) or not isinstance(tgt, EntityReference):
                 raise TypeError
-            if src in rewire_map:
-                curr_tgt = rewire_map[src]
-                logging.info(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
-                if precedence:
-                    curr_pfx = converter.parse_curie(curr_tgt, strict=True).prefix
-                    tgt_pfx = converter.parse_curie(tgt, strict=True).prefix
-                    if tgt_pfx in precedence:
-                        if curr_pfx not in precedence or precedence.index(
-                            tgt_pfx
-                        ) < precedence.index(curr_pfx):
-                            rewire_map[src] = tgt
-                            logging.info(f"{tgt} has precedence, due to {precedence}")
-                else:
-                    raise ValueError(f"Ambiguous: {src} -> {tgt} vs {curr_tgt}")
-            else:
-                rewire_map[src] = tgt
+            candidates[src].add(tgt)
 
     # Warn, or fail when strict, rather than return the graph unchanged and say nothing.
-    if not rewire_map:
+    if not candidates:
         message = (
             f"No mapping to rewire by with the predicates {', '.join(_REWIRE_PREDICATE_CURIES)}"
         )
         if strict:
             raise ValueError(message)
         logging.warning(f"{message}, so the graph is unchanged")
+
+    if precedence is not None:
+        key = partial(_precedence_index, converter=converter, precedence=precedence)
+    else:
+        key = None
+
+    # Choose only after reading every mapping, so that only distinct candidates tie.
+    rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
+    for subject_curie, object_curies in candidates.items():
+        if len(object_curies) == 1:
+            rewire_map[subject_curie] = next(iter(object_curies))
+            continue
+        message = f"Ambiguous: {subject_curie} -> {' vs '.join(sorted(object_curies))}"
+        if not precedence:
+            # TODO make erroring opt-in, can use lexical sort
+            #  to be deterministic otherwise
+            raise ValueError(message)
+        logging.info(message)
+        # When two keys are equal, min keeps the first, so the earlier mapping wins.
+        rewire_map[subject_curie] = min(object_curies, key=key)
+        logging.info(f"{rewire_map[subject_curie]} has precedence, due to {precedence}")
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {
         URIRef(converter.expand_strict(k)): URIRef(converter.expand_strict(v))

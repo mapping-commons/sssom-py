@@ -78,6 +78,20 @@ class TestRewireBasic(unittest.TestCase):
             graph.add((self.msdf.converter.expand_rdflib(subject), RDF.type, OWL.Class))
         return graph, rewire_graph(graph, self.msdf, **kwargs)
 
+    def test_agreeing_mappings_are_no_tie(self) -> None:
+        """Test that two mappings to the same replacement are not a tie."""
+        graph, n = self.rewire("x:hindlimb")
+        self.assertEqual(1, n)
+        self.assertEqual({self.msdf.converter.expand_rdflib("z:hindlimb")}, set(graph.subjects()))
+
+    def test_precedence_decides_a_tie(self) -> None:
+        """Test that two different replacements are a tie, which precedence decides."""
+        with self.assertRaises(ValueError):
+            self.rewire("x:organ")
+        graph, n = self.rewire("x:organ", precedence=["z"])
+        self.assertEqual(1, n)
+        self.assertEqual({self.msdf.converter.expand_rdflib("z:organ")}, set(graph.subjects()))
+
     def test_negated_mapping_is_skipped(self) -> None:
         """Test that a negated mapping is not applied."""
         graph, n = self.rewire("x:eyeball", "d:something")
