@@ -10,7 +10,7 @@ from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
-from .constants import OWL_EQUIVALENT_CLASS, OWL_EQUIVALENT_PROPERTY
+from .constants import OWL_EQUIVALENT_CLASS, OWL_EQUIVALENT_PROPERTY, PREDICATE_MODIFIER_NOT
 from .parsers import to_mapping_set_document
 from .util import MappingSetDataFrame
 
@@ -55,6 +55,9 @@ def rewire_graph(
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
+            continue
+        # A negated mapping records that the two entities do not match.
+        if m.predicate_modifier == PREDICATE_MODIFIER_NOT:
             continue
         if m.predicate_id in _REWIRE_PREDICATE_CURIES:
             if subject_to_object:
