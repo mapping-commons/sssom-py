@@ -40,14 +40,6 @@ class TestRewireBasic(unittest.TestCase):
         """Load the basic mapping set."""
         self.msdf = parse_sssom_table(data_dir / "basic.tsv")
 
-    def node(self, curie: str) -> URIRef:
-        """Expand a CURIE with the prefix map of the basic mapping set.
-
-        :param curie: A CURIE.
-        :return: The node that the CURIE names.
-        """
-        return URIRef(self.msdf.converter.expand_strict(curie))
-
     def rewire(self, *subjects: str, **kwargs: Any) -> Tuple[Graph, int]:
         """Rewire a graph of the given classes by their own mappings in the basic mapping set.
 
@@ -59,14 +51,14 @@ class TestRewireBasic(unittest.TestCase):
         self.msdf.df = self.msdf.df[self.msdf.df["subject_id"].isin(subjects)]
         graph = Graph()
         for subject in subjects:
-            graph.add((self.node(subject), RDF.type, OWL.Class))
+            graph.add((self.msdf.converter.expand_rdflib(subject), RDF.type, OWL.Class))
         return graph, rewire_graph(graph, self.msdf, **kwargs)
 
     def test_agreeing_mappings_are_no_tie(self) -> None:
         """Test that two mappings to the same replacement are not a tie."""
         graph, n = self.rewire("x:hindlimb")
         self.assertEqual(1, n)
-        self.assertEqual({self.node("z:hindlimb")}, set(graph.subjects()))
+        self.assertEqual({self.msdf.converter.expand_rdflib("z:hindlimb")}, set(graph.subjects()))
 
     def test_precedence_decides_a_tie(self) -> None:
         """Test that two different replacements are a tie, which precedence decides."""
@@ -74,4 +66,4 @@ class TestRewireBasic(unittest.TestCase):
             self.rewire("x:organ")
         graph, n = self.rewire("x:organ", precedence=["z"])
         self.assertEqual(1, n)
-        self.assertEqual({self.node("z:organ")}, set(graph.subjects()))
+        self.assertEqual({self.msdf.converter.expand_rdflib("z:organ")}, set(graph.subjects()))
