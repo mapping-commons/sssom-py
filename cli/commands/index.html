@@ -1945,7 +1945,7 @@
 </tr>
 <tr>
 <td><code>-O</code>, <code>--output-format</code></td>
-<td>choice (<code>tsv</code> &#x7C; <code>owl</code> &#x7C; <code>ontoportal_json</code> &#x7C; <code>fhir_json</code> &#x7C; <code>json</code> &#x7C; <code>rdf</code> &#x7C; <code>ttl</code> &#x7C; <code>xml</code> &#x7C; <code>turtle</code> &#x7C; <code>nt</code>)</td>
+<td>choice (<code>tsv</code> &#x7C; <code>owl</code> &#x7C; <code>ontoportal_json</code> &#x7C; <code>fhir_json</code> &#x7C; <code>json</code> &#x7C; <code>rdf</code> &#x7C; <code>turtle</code> &#x7C; <code>ttl</code> &#x7C; <code>nt</code> &#x7C; <code>xml</code>)</td>
 <td>Desired output format.</td>
 <td><code>Sentinel.UNSET</code></td>
 </tr>
@@ -2894,6 +2894,12 @@ E.g. <code>~/dir/my.sssom.tsv</code> becomes a table called 'my'</p>
 <td><code>--precedence</code></td>
 <td>text</td>
 <td>List of prefixes in order of precedence.</td>
+<td><code>Sentinel.UNSET</code></td>
+</tr>
+<tr>
+<td><code>--strict</code></td>
+<td>boolean</td>
+<td>Fail, instead of only warning, when no mapping is left to rewire by.</td>
 <td><code>Sentinel.UNSET</code></td>
 </tr>
 <tr>
