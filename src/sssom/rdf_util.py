@@ -50,17 +50,6 @@ _PREDICATE_RANK: Dict[str, int] = {
 _UNRANKED = max(_PREDICATE_RANK.values()) + 1
 
 
-def _to_iri(converter: curies.Converter, reference: str) -> str:
-    """Expand a CURIE to an IRI so that both spellings of a predicate compare equal.
-
-    :param converter: The converter whose prefix map is used for the expansion.
-    :param reference: A CURIE or an IRI.
-
-    :return: The IRI, or ``reference`` unchanged when it is an IRI already or cannot be expanded.
-    """
-    return converter.expand(reference, passthrough=True) or reference
-
-
 def _precedence_index(curie: str, *, converter: curies.Converter, precedence: Sequence[str]) -> int:
     """Find how strongly ``precedence`` prefers a CURIE, by the position of its prefix.
 
@@ -119,8 +108,11 @@ def rewire_graph(
     if predicates is None:
         predicates = _REWIRE_PREDICATE_CURIES
     # Compare predicates as IRIs, so that a CURIE and its IRI count as the same predicate.
-    predicate_iris = {_to_iri(converter, p) for p in predicates}
-    rank_by_iri = {_to_iri(converter, p): rank for p, rank in _PREDICATE_RANK.items()}
+    predicate_iris = {converter.expand(predicate, passthrough=True) for predicate in predicates}
+    rank_by_iri = {
+        converter.expand(predicate, passthrough=True): rank
+        for predicate, rank in _PREDICATE_RANK.items()
+    }
 
     # Map each node to its candidate replacements, in the order of their first mapping, each with
     # the rank of its strongest mapping.
@@ -134,7 +126,7 @@ def rewire_graph(
         # A mapping to sssom:NoTermFound records that an entity has no match.
         if NO_TERM_FOUND in (m.subject_id, m.object_id):
             continue
-        predicate_iri = _to_iri(converter, str(m.predicate_id))
+        predicate_iri = converter.expand(m.predicate_id, passthrough=True)
         if predicate_iri not in predicate_iris:
             continue
         if subject_to_object:
