@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from functools import partial
 from typing import Dict, List, Optional, Sequence, cast
 
 import curies
@@ -19,12 +20,13 @@ __all__ = [
 ]
 
 
-def _precedence_index(converter: curies.Converter, precedence: Sequence[str], curie: str) -> int:
+def _precedence_index(curie: str, converter: curies.Converter, precedence: Sequence[str]) -> int:
     """Find how strongly ``precedence`` prefers a CURIE, by the position of its prefix.
 
+    :param curie: A candidate replacement.
     :param converter: The converter that parses the CURIE.
     :param precedence: Prefixes in order of preference.
-    :param curie: A candidate replacement.
+
     :return: The position of the prefix in ``precedence``, or the length of ``precedence`` when
         the prefix is not listed, so that a smaller number is a stronger preference.
     """
@@ -58,6 +60,8 @@ def rewire_graph(
                 raise TypeError
             candidates[src].add(tgt)
 
+    key = partial(_precedence_index, converter, precedence, tgt)
+
     # Choose only after reading every mapping, so that only distinct candidates tie.
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
     for src, targets in candidates.items():
@@ -69,9 +73,7 @@ def rewire_graph(
             raise ValueError(message)
         logging.info(message)
         # When two keys are equal, min keeps the first, so the earlier mapping wins.
-        rewire_map[src] = min(
-            targets, key=lambda tgt: _precedence_index(converter, precedence, tgt)
-        )
+        rewire_map[src] = min(targets, key=key)
         logging.info(f"{rewire_map[src]} has precedence, due to {precedence}")
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {
