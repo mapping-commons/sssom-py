@@ -25,6 +25,7 @@ from sssom.cli import (
     ptable,
     reconcile_prefixes,
     remove,
+    rewire,
     sort,
     split,
     validate,
@@ -407,3 +408,37 @@ class SSSOMCLITestSuite(unittest.TestCase):
             "owl",
         ]
         result = subprocess.check_output(args, shell=True)  # noqa
+
+    def test_rewire_strict(self) -> None:
+        """Test that rewire fails with --strict when no mapping is left to rewire by."""
+        runner = CliRunner()
+        args = [
+            os.path.join(data_dir, "cob.owl"),
+            "-I",
+            "xml",
+            "-m",
+            os.path.join(data_dir, "mondo-nando.sssom.tsv"),
+            "-o",
+            os.path.join(test_out_dir, "rewire-strict.ttl"),
+        ]
+        self.run_successful(runner.invoke(rewire, args), "rewire without --strict")
+        result = runner.invoke(rewire, [*args, "--strict"])
+        self.assertEqual(1, result.exit_code)
+        self.assertIn("No mapping to rewire by", result.output)
+
+    def test_rewire_ambiguous(self) -> None:
+        """Test that rewire reports an ambiguous mapping as a one-line error, not a traceback."""
+        runner = CliRunner()
+        args = [
+            os.path.join(data_dir, "cob.owl"),
+            "-I",
+            "xml",
+            "-m",
+            os.path.join(data_dir, "basic.tsv"),
+            "-o",
+            os.path.join(test_out_dir, "rewire-ambiguous.ttl"),
+        ]
+        result = runner.invoke(rewire, args)
+        self.assertEqual(1, result.exit_code)
+        # Only a ClickException shows in the output, as "Error: <message>".
+        self.assertIn("Error: Ambiguous", result.output)
