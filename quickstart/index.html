@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1347,10 +1347,10 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sssom</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Parse a local file</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">&quot;my_mappings.sssom.tsv&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">"my_mappings.sssom.tsv"</span><span class="p">)</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Parse from a URL</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/mapping-commons/mh_mapping_initiative/master/mappings/mp_hp_eye_impc.sssom.tsv&quot;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/mapping-commons/mh_mapping_initiative/master/mappings/mp_hp_eye_impc.sssom.tsv"</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </code></pre></div>
 <p>The returned <code>MappingSetDataFrame</code> object contains:</p>
@@ -1361,12 +1361,12 @@
 </ul>
 <h3 id="write-to-different-formats">Write to different formats<a class="headerlink" href="#write-to-different-formats" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Write back to TSV</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_tsv</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">&quot;output.sssom.tsv&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_tsv</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">"output.sssom.tsv"</span><span class="p">)</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Convert to other formats</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">&quot;output.json&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_owl</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">&quot;output.owl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_rdf</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">&quot;output.ttl&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">"output.json"</span><span class="p">)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_owl</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">"output.owl"</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">sssom</span><span class="o">.</span><span class="n">write_rdf</span><span class="p">(</span><span class="n">msdf</span><span class="p">,</span> <span class="s2">"output.ttl"</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1375,10 +1375,10 @@
 <h3 id="inspect-mappings">Inspect mappings<a class="headerlink" href="#inspect-mappings" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sssom</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">&quot;my_mappings.sssom.tsv&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">"my_mappings.sssom.tsv"</span><span class="p">)</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Access the DataFrame</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of mappings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of mappings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Access metadata</span>
@@ -1387,20 +1387,20 @@
 <h3 id="compare-two-mapping-sets">Compare two mapping sets<a class="headerlink" href="#compare-two-mapping-sets" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sssom</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">msdf1</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">&quot;set1.sssom.tsv&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">msdf2</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">&quot;set2.sssom.tsv&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">msdf1</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">"set1.sssom.tsv"</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">msdf2</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">"set2.sssom.tsv"</span><span class="p">)</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">diff</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">compare_dataframes</span><span class="p">(</span><span class="n">msdf1</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">msdf2</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Common mappings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">common_tuples</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique to set1: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">unique_tuples1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique to set2: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">unique_tuples2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Common mappings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">common_tuples</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unique to set1: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">unique_tuples1</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unique to set2: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">unique_tuples2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="filter-redundant-mappings">Filter redundant mappings<a class="headerlink" href="#filter-redundant-mappings" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sssom</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">&quot;my_mappings.sssom.tsv&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">msdf</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">parse_tsv</span><span class="p">(</span><span class="s2">"my_mappings.sssom.tsv"</span><span class="p">)</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">filtered_df</span> <span class="o">=</span> <span class="n">sssom</span><span class="o">.</span><span class="n">filter_redundant_rows</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows, After: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Before: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">msdf</span><span class="o">.</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows, After: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="command-line">Command line<a class="headerlink" href="#command-line" title="Permanent link">&para;</a></h2>
 <h3 id="parse-and-convert">Parse and convert<a class="headerlink" href="#parse-and-convert" title="Permanent link">&para;</a></h3>
@@ -1423,7 +1423,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sssom<span class="w"> </span>merge<span class="w"> </span>set1.sssom.tsv<span class="w"> </span>set2.sssom.tsv<span class="w"> </span>-o<span class="w"> </span>merged.sssom.tsv
 </code></pre></div>
 <h3 id="query-with-sql">Query with SQL<a class="headerlink" href="#query-with-sql" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sssom<span class="w"> </span>dosql<span class="w"> </span>-Q<span class="w"> </span><span class="s2">&quot;SELECT * FROM df1 WHERE confidence &gt; 0.5 ORDER BY confidence&quot;</span><span class="w"> </span>my_mappings.sssom.tsv
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sssom<span class="w"> </span>dosql<span class="w"> </span>-Q<span class="w"> </span><span class="s2">"SELECT * FROM df1 WHERE confidence &gt; 0.5 ORDER BY confidence"</span><span class="w"> </span>my_mappings.sssom.tsv
 </code></pre></div>
 <h3 id="filter-mappings">Filter mappings<a class="headerlink" href="#filter-mappings" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sssom<span class="w"> </span>filter<span class="w"> </span>--subject_id<span class="w"> </span>HP:%<span class="w"> </span>--object_id<span class="w"> </span>MP:%<span class="w"> </span>my_mappings.sssom.tsv
@@ -1558,7 +1558,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.code.annotate", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
