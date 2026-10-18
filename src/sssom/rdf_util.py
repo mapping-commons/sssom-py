@@ -94,17 +94,17 @@ def rewire_graph(
 
     # Choose only after reading every mapping, so that only distinct candidates tie.
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}
-    for src, targets in candidates.items():
-        if len(targets) == 1:
-            rewire_map[src] = next(iter(targets))
+    for subject_curie, object_curies in candidates.items():
+        if len(object_curies) == 1:
+            rewire_map[subject_curie] = next(iter(object_curies))
             continue
-        message = f"Ambiguous: {src} -> {' vs '.join(sorted(targets))}"
+        message = f"Ambiguous: {subject_curie} -> {' vs '.join(sorted(object_curies))}"
         if not precedence:
             raise ValueError(message)
         logging.info(message)
         # When two keys are equal, min keeps the first, so the earlier mapping wins.
-        rewire_map[src] = min(targets, key=key)
-        logging.info(f"{rewire_map[src]} has precedence, due to {precedence}")
+        rewire_map[subject_curie] = min(object_curies, key=key)
+        logging.info(f"{rewire_map[subject_curie]} has precedence, due to {precedence}")
 
     # Warn, or fail when strict, rather than return the graph unchanged and say nothing.
     if not rewire_map:
