@@ -10,6 +10,7 @@ from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
 
+from .constants import OWL_EQUIVALENT_CLASS, OWL_EQUIVALENT_PROPERTY
 from .parsers import to_mapping_set_document
 from .util import MappingSetDataFrame
 
@@ -18,7 +19,10 @@ __all__ = [
 ]
 
 # Rewiring uses only the mappings with these predicates.
-_REWIRE_PREDICATES = ("owl:equivalentClass", "owl:equivalentProperty")
+_REWIRE_PREDICATE_CURIES = {
+    OWL_EQUIVALENT_CLASS,
+    OWL_EQUIVALENT_PROPERTY,
+}
 
 
 def rewire_graph(
@@ -52,7 +56,7 @@ def rewire_graph(
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
             continue
-        if m.predicate_id in _REWIRE_PREDICATES:
+        if m.predicate_id in _REWIRE_PREDICATE_CURIES:
             if subject_to_object:
                 src, tgt = m.subject_id, m.object_id
             else:
@@ -78,7 +82,9 @@ def rewire_graph(
 
     # Warn, or fail when strict, rather than return the graph unchanged and say nothing.
     if not rewire_map:
-        message = f"No mapping to rewire by with the predicates {', '.join(_REWIRE_PREDICATES)}"
+        message = (
+            f"No mapping to rewire by with the predicates {', '.join(_REWIRE_PREDICATE_CURIES)}"
+        )
         if strict:
             raise ValueError(message)
         logging.warning(f"{message}, so the graph is unchanged")
