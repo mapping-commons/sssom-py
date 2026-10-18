@@ -87,6 +87,15 @@ def rewire_graph(
                 raise TypeError
             candidates[src].add(tgt)
 
+    # Warn, or fail when strict, rather than return the graph unchanged and say nothing.
+    if not candidates:
+        message = (
+            f"No mapping to rewire by with the predicates {', '.join(_REWIRE_PREDICATE_CURIES)}"
+        )
+        if strict:
+            raise ValueError(message)
+        logging.warning(f"{message}, so the graph is unchanged")
+
     if precedence is not None:
         key = partial(_precedence_index, converter=converter, precedence=precedence)
     else:
@@ -107,15 +116,6 @@ def rewire_graph(
         # When two keys are equal, min keeps the first, so the earlier mapping wins.
         rewire_map[subject_curie] = min(object_curies, key=key)
         logging.info(f"{rewire_map[subject_curie]} has precedence, due to {precedence}")
-
-    # Warn, or fail when strict, rather than return the graph unchanged and say nothing.
-    if not rewire_map:
-        message = (
-            f"No mapping to rewire by with the predicates {', '.join(_REWIRE_PREDICATE_CURIES)}"
-        )
-        if strict:
-            raise ValueError(message)
-        logging.warning(f"{message}, so the graph is unchanged")
 
     uri_ref_rewire_map: Dict[URIRef, URIRef] = {
         URIRef(converter.expand_strict(k)): URIRef(converter.expand_strict(v))
