@@ -71,7 +71,7 @@ def rewire_graph(
 
     converter: curies.Converter = mdoc.converter
     # Map each node to its candidate replacements, in the order of their first mapping.
-    candidates: defaultdict[URIorCURIE, List[URIorCURIE]] = defaultdict(set)
+    candidates: defaultdict[URIorCURIE, set[URIorCURIE]] = defaultdict(set)
     for m in mdoc.mapping_set.mappings:
         if not isinstance(m, Mapping):
             continue
