@@ -1153,23 +1153,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/sssom/rdf_util.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-28"> 28</a></span>
-<span class="normal"><a href="#__codelineno-0-29"> 29</a></span>
-<span class="normal"><a href="#__codelineno-0-30"> 30</a></span>
-<span class="normal"><a href="#__codelineno-0-31"> 31</a></span>
-<span class="normal"><a href="#__codelineno-0-32"> 32</a></span>
-<span class="normal"><a href="#__codelineno-0-33"> 33</a></span>
-<span class="normal"><a href="#__codelineno-0-34"> 34</a></span>
-<span class="normal"><a href="#__codelineno-0-35"> 35</a></span>
-<span class="normal"><a href="#__codelineno-0-36"> 36</a></span>
-<span class="normal"><a href="#__codelineno-0-37"> 37</a></span>
-<span class="normal"><a href="#__codelineno-0-38"> 38</a></span>
-<span class="normal"><a href="#__codelineno-0-39"> 39</a></span>
-<span class="normal"><a href="#__codelineno-0-40"> 40</a></span>
-<span class="normal"><a href="#__codelineno-0-41"> 41</a></span>
-<span class="normal"><a href="#__codelineno-0-42"> 42</a></span>
-<span class="normal"><a href="#__codelineno-0-43"> 43</a></span>
-<span class="normal"><a href="#__codelineno-0-44"> 44</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-44"> 44</a></span>
 <span class="normal"><a href="#__codelineno-0-45"> 45</a></span>
 <span class="normal"><a href="#__codelineno-0-46"> 46</a></span>
 <span class="normal"><a href="#__codelineno-0-47"> 47</a></span>
@@ -1249,103 +1233,133 @@
 <span class="normal"><a href="#__codelineno-0-121">121</a></span>
 <span class="normal"><a href="#__codelineno-0-122">122</a></span>
 <span class="normal"><a href="#__codelineno-0-123">123</a></span>
-<span class="normal"><a href="#__codelineno-0-124">124</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">def</span><span class="w"> </span><span class="nf">rewire_graph</span><span class="p">(</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a>    <span class="n">g</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a>    <span class="n">mset</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="o">*</span><span class="p">,</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="n">subject_to_object</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="n">precedence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">    </span><span class="sd">"""Rewire an RDF graph in place, replacing nodes by their equivalents in a mapping set.</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a>
-<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">    :param g: The graph to rewire.</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    :param mset: The mapping set. Rewiring uses only its ``owl:equivalentClass`` and</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">        ``owl:equivalentProperty`` mappings.</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">    :param subject_to_object: If true, replace the subject of each mapping by its object. If</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">        false, replace the object by the subject.</span>
-<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">    :param precedence: Prefixes in order of preference, which choose between the candidates for</span>
-<a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">        a node.</span>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">    :param strict: If true, raise an error when no mapping is left to rewire by, instead of</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">        logging a warning.</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    :return: The number of triples that changed.</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">    :raises ValueError: If a node has more than one candidate and no ``precedence`` is given, or</span>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        if ``strict`` is true and no mapping is left to rewire by.</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    """</span>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="n">mdoc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">mset</span><span class="p">)</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a>    <span class="k">if</span> <span class="n">mdoc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a>        <span class="k">raise</span> <span class="ne">TypeError</span>
-<a id="__codelineno-0-55" name="__codelineno-0-55"></a>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="n">converter</span><span class="p">:</span> <span class="n">curies</span><span class="o">.</span><span class="n">Converter</span> <span class="o">=</span> <span class="n">mdoc</span><span class="o">.</span><span class="n">converter</span>
-<a id="__codelineno-0-57" name="__codelineno-0-57"></a>    <span class="n">rewire_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">URIorCURIE</span><span class="p">,</span> <span class="n">URIorCURIE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-<a id="__codelineno-0-58" name="__codelineno-0-58"></a>    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mdoc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">:</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a>            <span class="k">continue</span>
-<a id="__codelineno-0-61" name="__codelineno-0-61"></a>        <span class="c1"># A negated mapping records that the two entities do not match.</span>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">predicate_modifier</span> <span class="o">==</span> <span class="n">PREDICATE_MODIFIER_NOT</span><span class="p">:</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a>            <span class="k">continue</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">predicate_id</span> <span class="ow">in</span> <span class="n">_REWIRE_PREDICATE_CURIES</span><span class="p">:</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>            <span class="k">if</span> <span class="n">subject_to_object</span><span class="p">:</span>
-<a id="__codelineno-0-66" name="__codelineno-0-66"></a>                <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">subject_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">object_id</span>
-<a id="__codelineno-0-67" name="__codelineno-0-67"></a>            <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a>                <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">subject_id</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">EntityReference</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tgt</span><span class="p">,</span> <span class="n">EntityReference</span><span class="p">):</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>                <span class="k">raise</span> <span class="ne">TypeError</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a>            <span class="k">if</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">rewire_map</span><span class="p">:</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a>                <span class="n">curr_tgt</span> <span class="o">=</span> <span class="n">rewire_map</span><span class="p">[</span><span class="n">src</span><span class="p">]</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a>                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ambiguous: </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">tgt</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">curr_tgt</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74"></a>                <span class="k">if</span> <span class="n">precedence</span><span class="p">:</span>
-<a id="__codelineno-0-75" name="__codelineno-0-75"></a>                    <span class="n">curr_pfx</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">parse_curie</span><span class="p">(</span><span class="n">curr_tgt</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a>                    <span class="n">tgt_pfx</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">parse_curie</span><span class="p">(</span><span class="n">tgt</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">prefix</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a>                    <span class="k">if</span> <span class="n">tgt_pfx</span> <span class="ow">in</span> <span class="n">precedence</span><span class="p">:</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78"></a>                        <span class="k">if</span> <span class="n">curr_pfx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">precedence</span> <span class="ow">or</span> <span class="n">precedence</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a>                            <span class="n">tgt_pfx</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a>                        <span class="p">)</span> <span class="o">&lt;</span> <span class="n">precedence</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">curr_pfx</span><span class="p">):</span>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a>                            <span class="n">rewire_map</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">=</span> <span class="n">tgt</span>
-<a id="__codelineno-0-82" name="__codelineno-0-82"></a>                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">tgt</span><span class="si">}</span><span class="s2"> has precedence, due to </span><span class="si">{</span><span class="n">precedence</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a>                <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a>                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ambiguous: </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">tgt</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">curr_tgt</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a>            <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a>                <span class="n">rewire_map</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">=</span> <span class="n">tgt</span>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="c1"># Warn, or fail when strict, rather than return the graph unchanged and say nothing.</span>
-<a id="__codelineno-0-89" name="__codelineno-0-89"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">rewire_map</span><span class="p">:</span>
-<a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-<a id="__codelineno-0-91" name="__codelineno-0-91"></a>            <span class="sa">f</span><span class="s2">"No mapping to rewire by with the predicates </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_REWIRE_PREDICATE_CURIES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="p">)</span>
-<a id="__codelineno-0-93" name="__codelineno-0-93"></a>        <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
-<a id="__codelineno-0-94" name="__codelineno-0-94"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-<a id="__codelineno-0-95" name="__codelineno-0-95"></a>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">, so the graph is unchanged"</span><span class="p">)</span>
-<a id="__codelineno-0-96" name="__codelineno-0-96"></a>
-<a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="n">uri_ref_rewire_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">URIRef</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-98" name="__codelineno-0-98"></a>        <span class="n">URIRef</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">expand_strict</span><span class="p">(</span><span class="n">k</span><span class="p">)):</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">expand_strict</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-<a id="__codelineno-0-99" name="__codelineno-0-99"></a>        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rewire_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-<a id="__codelineno-0-100" name="__codelineno-0-100"></a>    <span class="p">}</span>
-<a id="__codelineno-0-101" name="__codelineno-0-101"></a>
-<a id="__codelineno-0-102" name="__codelineno-0-102"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rewire_node</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
-<a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="w">        </span><span class="sd">"""Rewire node."""</span>
-<a id="__codelineno-0-104" name="__codelineno-0-104"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
-<a id="__codelineno-0-105" name="__codelineno-0-105"></a>            <span class="k">return</span> <span class="n">n</span>
-<a id="__codelineno-0-106" name="__codelineno-0-106"></a>        <span class="k">elif</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uri_ref_rewire_map</span><span class="p">:</span>
-<a id="__codelineno-0-107" name="__codelineno-0-107"></a>            <span class="k">return</span> <span class="n">n</span>
-<a id="__codelineno-0-108" name="__codelineno-0-108"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-109" name="__codelineno-0-109"></a>            <span class="k">return</span> <span class="n">uri_ref_rewire_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-<a id="__codelineno-0-110" name="__codelineno-0-110"></a>
-<a id="__codelineno-0-111" name="__codelineno-0-111"></a>    <span class="n">triples</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-112" name="__codelineno-0-112"></a>    <span class="n">new_triples</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-113" name="__codelineno-0-113"></a>    <span class="n">num_changed</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-0-114" name="__codelineno-0-114"></a>    <span class="k">for</span> <span class="n">raw_triple</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
-<a id="__codelineno-0-115" name="__codelineno-0-115"></a>        <span class="n">triples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_triple</span><span class="p">)</span>
-<a id="__codelineno-0-116" name="__codelineno-0-116"></a>        <span class="n">rewired_triple</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rewire_node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">raw_triple</span><span class="p">))</span>
-<a id="__codelineno-0-117" name="__codelineno-0-117"></a>        <span class="n">new_triples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rewired_triple</span><span class="p">)</span>
-<a id="__codelineno-0-118" name="__codelineno-0-118"></a>        <span class="k">if</span> <span class="n">rewired_triple</span> <span class="o">!=</span> <span class="n">raw_triple</span><span class="p">:</span>
-<a id="__codelineno-0-119" name="__codelineno-0-119"></a>            <span class="n">num_changed</span> <span class="o">+=</span> <span class="mi">1</span>
-<a id="__codelineno-0-120" name="__codelineno-0-120"></a>    <span class="k">for</span> <span class="n">raw_triple</span> <span class="ow">in</span> <span class="n">triples</span><span class="p">:</span>
-<a id="__codelineno-0-121" name="__codelineno-0-121"></a>        <span class="n">g</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">raw_triple</span><span class="p">)</span>
-<a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="k">for</span> <span class="n">raw_triple</span> <span class="ow">in</span> <span class="n">new_triples</span><span class="p">:</span>
-<a id="__codelineno-0-123" name="__codelineno-0-123"></a>        <span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">raw_triple</span><span class="p">)</span>
-<a id="__codelineno-0-124" name="__codelineno-0-124"></a>    <span class="k">return</span> <span class="n">num_changed</span>
+<span class="normal"><a href="#__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#__codelineno-0-131">131</a></span>
+<span class="normal"><a href="#__codelineno-0-132">132</a></span>
+<span class="normal"><a href="#__codelineno-0-133">133</a></span>
+<span class="normal"><a href="#__codelineno-0-134">134</a></span>
+<span class="normal"><a href="#__codelineno-0-135">135</a></span>
+<span class="normal"><a href="#__codelineno-0-136">136</a></span>
+<span class="normal"><a href="#__codelineno-0-137">137</a></span>
+<span class="normal"><a href="#__codelineno-0-138">138</a></span>
+<span class="normal"><a href="#__codelineno-0-139">139</a></span>
+<span class="normal"><a href="#__codelineno-0-140">140</a></span>
+<span class="normal"><a href="#__codelineno-0-141">141</a></span>
+<span class="normal"><a href="#__codelineno-0-142">142</a></span>
+<span class="normal"><a href="#__codelineno-0-143">143</a></span>
+<span class="normal"><a href="#__codelineno-0-144">144</a></span>
+<span class="normal"><a href="#__codelineno-0-145">145</a></span>
+<span class="normal"><a href="#__codelineno-0-146">146</a></span>
+<span class="normal"><a href="#__codelineno-0-147">147</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="k">def</span><span class="w"> </span><span class="nf">rewire_graph</span><span class="p">(</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="n">g</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">mset</span><span class="p">:</span> <span class="n">MappingSetDataFrame</span><span class="p">,</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="n">subject_to_object</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="n">precedence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="w">    </span><span class="sd">"""Rewire an RDF graph in place, replacing nodes by their equivalents in a mapping set.</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    :param g: The graph to rewire.</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    :param mset: The mapping set. Rewiring uses only its ``owl:equivalentClass`` and</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">        ``owl:equivalentProperty`` mappings.</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">    :param subject_to_object: If true, replace the subject of each mapping by its object. If</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">        false, replace the object by the subject.</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">    :param precedence: Prefixes in order of preference, which choose between the candidates for</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        a node.</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">    :param strict: If true, raise an error when no mapping is left to rewire by, instead of</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        logging a warning.</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    :return: The number of triples that changed.</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">    :raises ValueError: If a node has more than one candidate and no ``precedence`` is given, or</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="sd">        if ``strict`` is true and no mapping is left to rewire by.</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">    """</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a>    <span class="n">mdoc</span> <span class="o">=</span> <span class="n">to_mapping_set_document</span><span class="p">(</span><span class="n">mset</span><span class="p">)</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="k">if</span> <span class="n">mdoc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>        <span class="k">raise</span> <span class="ne">TypeError</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>    <span class="n">converter</span><span class="p">:</span> <span class="n">curies</span><span class="o">.</span><span class="n">Converter</span> <span class="o">=</span> <span class="n">mdoc</span><span class="o">.</span><span class="n">converter</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>    <span class="c1"># Map each node to its candidate replacements, in the order of their first mapping.</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>    <span class="n">candidates</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">[</span><span class="n">URIorCURIE</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">URIorCURIE</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mdoc</span><span class="o">.</span><span class="n">mapping_set</span><span class="o">.</span><span class="n">mappings</span><span class="p">:</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>            <span class="k">continue</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>        <span class="c1"># A negated mapping records that the two entities do not match.</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">predicate_modifier</span> <span class="o">==</span> <span class="n">PREDICATE_MODIFIER_NOT</span><span class="p">:</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>            <span class="k">continue</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">predicate_id</span> <span class="ow">in</span> <span class="n">_REWIRE_PREDICATE_CURIES</span><span class="p">:</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>            <span class="k">if</span> <span class="n">subject_to_object</span><span class="p">:</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>                <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">subject_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">object_id</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>            <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>                <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">subject_id</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">EntityReference</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tgt</span><span class="p">,</span> <span class="n">EntityReference</span><span class="p">):</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a>                <span class="k">raise</span> <span class="ne">TypeError</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>            <span class="n">candidates</span><span class="p">[</span><span class="n">src</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tgt</span><span class="p">)</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="c1"># Warn, or fail when strict, rather than return the graph unchanged and say nothing.</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">candidates</span><span class="p">:</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a>            <span class="sa">f</span><span class="s2">"No mapping to rewire by with the predicates </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_REWIRE_PREDICATE_CURIES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a>        <span class="p">)</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>        <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">, so the graph is unchanged"</span><span class="p">)</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="k">if</span> <span class="n">precedence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a>        <span class="n">key</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_precedence_index</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="n">converter</span><span class="p">,</span> <span class="n">precedence</span><span class="o">=</span><span class="n">precedence</span><span class="p">)</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a>        <span class="n">key</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a>    <span class="c1"># Choose only after reading every mapping, so that only distinct candidates tie.</span>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a>    <span class="n">rewire_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">URIorCURIE</span><span class="p">,</span> <span class="n">URIorCURIE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="k">for</span> <span class="n">subject_curie</span><span class="p">,</span> <span class="n">object_curies</span> <span class="ow">in</span> <span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-107" name="__codelineno-0-107"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">object_curies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-0-108" name="__codelineno-0-108"></a>            <span class="n">rewire_map</span><span class="p">[</span><span class="n">subject_curie</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">object_curies</span><span class="p">))</span>
+<a id="__codelineno-0-109" name="__codelineno-0-109"></a>            <span class="k">continue</span>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a>        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Ambiguous: </span><span class="si">{</span><span class="n">subject_curie</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="s1">' vs '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">object_curies</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">precedence</span><span class="p">:</span>
+<a id="__codelineno-0-112" name="__codelineno-0-112"></a>            <span class="c1"># TODO make erroring opt-in, can use lexical sort</span>
+<a id="__codelineno-0-113" name="__codelineno-0-113"></a>            <span class="c1">#  to be deterministic otherwise</span>
+<a id="__codelineno-0-114" name="__codelineno-0-114"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a>        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<a id="__codelineno-0-116" name="__codelineno-0-116"></a>        <span class="c1"># When two keys are equal, min keeps the first, so the earlier mapping wins.</span>
+<a id="__codelineno-0-117" name="__codelineno-0-117"></a>        <span class="n">rewire_map</span><span class="p">[</span><span class="n">subject_curie</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">object_curies</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+<a id="__codelineno-0-118" name="__codelineno-0-118"></a>        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rewire_map</span><span class="p">[</span><span class="n">subject_curie</span><span class="p">]</span><span class="si">}</span><span class="s2"> has precedence, due to </span><span class="si">{</span><span class="n">precedence</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-0-119" name="__codelineno-0-119"></a>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a>    <span class="n">uri_ref_rewire_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">URIRef</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a>        <span class="n">URIRef</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">expand_strict</span><span class="p">(</span><span class="n">k</span><span class="p">)):</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">converter</span><span class="o">.</span><span class="n">expand_strict</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rewire_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a>    <span class="p">}</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rewire_node</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="w">        </span><span class="sd">"""Rewire node."""</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a>            <span class="k">return</span> <span class="n">n</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a>        <span class="k">elif</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uri_ref_rewire_map</span><span class="p">:</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a>            <span class="k">return</span> <span class="n">n</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132"></a>            <span class="k">return</span> <span class="n">uri_ref_rewire_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133"></a>
+<a id="__codelineno-0-134" name="__codelineno-0-134"></a>    <span class="n">triples</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-135" name="__codelineno-0-135"></a>    <span class="n">new_triples</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-136" name="__codelineno-0-136"></a>    <span class="n">num_changed</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-137" name="__codelineno-0-137"></a>    <span class="k">for</span> <span class="n">raw_triple</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+<a id="__codelineno-0-138" name="__codelineno-0-138"></a>        <span class="n">triples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_triple</span><span class="p">)</span>
+<a id="__codelineno-0-139" name="__codelineno-0-139"></a>        <span class="n">rewired_triple</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rewire_node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">raw_triple</span><span class="p">))</span>
+<a id="__codelineno-0-140" name="__codelineno-0-140"></a>        <span class="n">new_triples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rewired_triple</span><span class="p">)</span>
+<a id="__codelineno-0-141" name="__codelineno-0-141"></a>        <span class="k">if</span> <span class="n">rewired_triple</span> <span class="o">!=</span> <span class="n">raw_triple</span><span class="p">:</span>
+<a id="__codelineno-0-142" name="__codelineno-0-142"></a>            <span class="n">num_changed</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-0-143" name="__codelineno-0-143"></a>    <span class="k">for</span> <span class="n">raw_triple</span> <span class="ow">in</span> <span class="n">triples</span><span class="p">:</span>
+<a id="__codelineno-0-144" name="__codelineno-0-144"></a>        <span class="n">g</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">raw_triple</span><span class="p">)</span>
+<a id="__codelineno-0-145" name="__codelineno-0-145"></a>    <span class="k">for</span> <span class="n">raw_triple</span> <span class="ow">in</span> <span class="n">new_triples</span><span class="p">:</span>
+<a id="__codelineno-0-146" name="__codelineno-0-146"></a>        <span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">raw_triple</span><span class="p">)</span>
+<a id="__codelineno-0-147" name="__codelineno-0-147"></a>    <span class="k">return</span> <span class="n">num_changed</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
