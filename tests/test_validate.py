@@ -190,6 +190,7 @@ class TestPrintLinkMLReport(unittest.TestCase):
     def test_error_message_is_a_summary(self) -> None:
         """Test that the error's message attribute summarizes, and its string lists problems."""
         error = SSSOMValidationError(self._report(2).results)
+        self.assertEqual("Your mapping set has 2 validation errors", error.message)
         self.assertIn("  - problem 1", str(error))
 
     def test_format_without_limit_lists_all_problems(self) -> None:
