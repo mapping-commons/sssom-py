@@ -38,7 +38,7 @@ _REWIRE_PREDICATE_CURIES = {
 
 # The strength rank of each predicate, where 0 is the strongest. A predicate not listed here
 # ranks below all of them.
-_PREDICATE_RANK: Dict[str, int] = {
+_PREDICATE_CURIE_TO_RANK: Dict[str, int] = {
     OWL_EQUIVALENT_CLASS: 0,
     OWL_EQUIVALENT_PROPERTY: 0,
     SKOS_EXACT_MATCH: 1,
@@ -47,7 +47,7 @@ _PREDICATE_RANK: Dict[str, int] = {
     SKOS_NARROW_MATCH: 3,
     SKOS_RELATED_MATCH: 4,
 }
-_UNRANKED = max(_PREDICATE_RANK.values()) + 1
+_UNRANKED = max(_PREDICATE_CURIE_TO_RANK.values()) + 1
 
 
 def _precedence_index(curie: str, *, converter: curies.Converter, precedence: Sequence[str]) -> int:
@@ -108,10 +108,13 @@ def rewire_graph(
     if predicates is None:
         predicates = _REWIRE_PREDICATE_CURIES
     # Compare predicates as IRIs, so that a CURIE and its IRI count as the same predicate.
-    predicate_iris = {converter.expand(predicate, passthrough=True) for predicate in predicates}
+    predicate_iris = {
+        converter.expand(predicat_uri_or_curie, passthrough=True)
+        for predicat_uri_or_curie in predicates
+    }
     rank_by_iri = {
-        converter.expand(predicate, passthrough=True): rank
-        for predicate, rank in _PREDICATE_RANK.items()
+        converter.expand(predicate_curie, passthrough=True): rank
+        for predicate_curie, rank in _PREDICATE_CURIE_TO_RANK.items()
     }
 
     # Map each node to its candidate replacements, in the order of their first mapping, each with
