@@ -28,6 +28,7 @@ _REWIRE_PREDICATE_CURIES = {
 def rewire_graph(
     g: Graph,
     mset: MappingSetDataFrame,
+    *,
     subject_to_object: bool = True,
     precedence: Optional[List[str]] = None,
     strict: bool = False,
@@ -43,6 +44,7 @@ def rewire_graph(
         a node.
     :param strict: If true, raise an error when no mapping is left to rewire by, instead of
         logging a warning.
+
     :return: The number of triples that changed.
     :raises ValueError: If a node has more than one candidate and no ``precedence`` is given, or
         if ``strict`` is true and no mapping is left to rewire by.
