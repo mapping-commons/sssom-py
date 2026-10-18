@@ -84,8 +84,8 @@ def format_validation_results(results: List[ValidationResult], limit: Optional[i
     return "\n".join(lines)
 
 
-# TODO it's not clear why this is subclassing from jsonschema.ValidationError,
-#  should be ValueError instead, but some cryptic tests rely on this
+# Subclasses jsonschema's ValidationError so that callers that caught the
+# plain ValidationError raised before #682 keep working.
 class SSSOMValidationError(ValidationError):
     """Raised when a mapping set fails validation.
 
