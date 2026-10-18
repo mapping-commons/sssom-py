@@ -27,7 +27,7 @@ _REWIRE_PREDICATE_CURIES = {
 }
 
 
-def _precedence_index(curie: str, converter: curies.Converter, precedence: Sequence[str]) -> int:
+def _precedence_index(curie: str, *, converter: curies.Converter, precedence: Sequence[str]) -> int:
     """Find how strongly ``precedence`` prefers a CURIE, by the position of its prefix.
 
     :param curie: A candidate replacement.
@@ -87,7 +87,10 @@ def rewire_graph(
                 raise TypeError
             candidates[src].add(tgt)
 
-    key = partial(_precedence_index, converter, precedence, tgt)
+    if precedence is not None:
+        key = partial(_precedence_index, converter=converter, precedence=precedence)
+    else:
+        key = None
 
     # Choose only after reading every mapping, so that only distinct candidates tie.
     rewire_map: Dict[URIorCURIE, URIorCURIE] = {}

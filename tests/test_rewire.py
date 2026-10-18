@@ -4,7 +4,7 @@ import os
 import unittest
 from typing import Any, Tuple
 
-from rdflib import OWL, RDF, Graph, URIRef
+from rdflib import OWL, RDF, Graph
 
 from sssom.constants import PREDICATE_MODIFIER_NOT
 from sssom.parsers import parse_sssom_table
