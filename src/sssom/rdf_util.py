@@ -126,7 +126,9 @@ def rewire_graph(
         # A mapping to sssom:NoTermFound records that an entity has no match.
         if NO_TERM_FOUND in (m.subject_id, m.object_id):
             continue
-        predicate_iri = converter.expand(m.predicate_id, passthrough=True)
+        # if strict expansion errors, then there's a mapping set integrity
+        # problem that the rewire workflow shouldn't handle
+        predicate_iri = mdoc.converter.expand(m.predicate_id, strict=True)
         if predicate_iri not in predicate_iris:
             continue
         if subject_to_object:
