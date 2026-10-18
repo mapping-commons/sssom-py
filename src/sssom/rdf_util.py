@@ -100,6 +100,8 @@ def rewire_graph(
             continue
         message = f"Ambiguous: {subject_curie} -> {' vs '.join(sorted(object_curies))}"
         if not precedence:
+            # TODO make erroring opt-in, can use lexical sort
+            #  to be deterministic otherwise
             raise ValueError(message)
         logging.info(message)
         # When two keys are equal, min keeps the first, so the earlier mapping wins.
