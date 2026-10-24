@@ -155,6 +155,13 @@ class TestIO(unittest.TestCase):
         with self.assertRaises(ValueError):
             msdf.clean_prefix_map(strict=True)
 
+    def test_clean_prefix_map_keeps_prefix_with_hyphen(self) -> None:
+        """Test that clean prefix map keeps a used prefix that contains a hyphen."""
+        prefix_map = {"owasp-llm-2.0": "https://genai.owasp.org/llmrisk/"}
+        msdf = parse_sssom_table(f"{data_dir}/hyphen-prefix.sssom.tsv", prefix_map=prefix_map)
+        msdf.clean_prefix_map(strict=True)
+        self.assertIn("owasp-llm-2.0", msdf.prefix_map)
+
     def test_clean_prefix_map_not_strict(self) -> None:
         """Test clean prefix map with 'strict'=False."""
         msdf = parse_sssom_table(f"{data_dir}/test_clean_prefix.tsv")
