@@ -1,5 +1,6 @@
 """Test for merging MappingSetDataFrames."""
 
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -37,6 +38,7 @@ from sssom.util import (
     filter_prefixes,
     get_dict_from_mapping,
     get_file_extension,
+    get_prefixes_used_in_metadata,
     get_prefixes_used_in_table,
     invert_mappings,
     is_multivalued_slot,
@@ -193,6 +195,41 @@ class TestIO(unittest.TestCase):
         msdf = parse_sssom_table(f"{data_dir}/test-mapping-list-values.sssom.tsv")
         msdf.clean_prefix_map(strict=True)
         self.assertIn("COMPID", msdf.prefix_map)
+
+    def test_clean_prefix_map_keeps_extension_property_prefix(self) -> None:
+        """Test that clean prefix map keeps the prefix of an extension definition's property."""
+        # The SSSOM specification's example of extension slots, copied from the file its
+        # see_also names. The see_also line is the only one added.
+        msdf = parse_sssom_table(f"{data_dir}/extension-slots.sssom.tsv")
+        # Strict mode also shows that the undeclared prefixes of the type hints are not read.
+        msdf.clean_prefix_map(strict=True)
+        self.assertIn("EXPROP", msdf.prefix_map)
+
+    def test_get_prefixes_used_in_metadata_skips_non_reference_slots(self) -> None:
+        """Test that metadata slots that are not entity reference slots give no prefixes."""
+        stream = io.StringIO(
+            "# curie_map:\n"
+            "#   ex: http://example.org/ex/\n"
+            "# mapping_set_id: https://example.org/sets/metadata-identifiers\n"
+            "# mapping_set_title: remap:v2\n"
+            "# other: mykey:v1\n"
+            "# license: https://creativecommons.org/publicdomain/zero/1.0/\n"
+            "subject_id\tpredicate_id\tobject_id\tmapping_justification\n"
+            "ex:1\tskos:exactMatch\tex:2\tsemapv:ManualMappingCuration\n"
+        )
+        prefixes = get_prefixes_used_in_metadata(parse_sssom_table(stream).metadata)
+        self.assertNotIn("remap", prefixes)
+        self.assertNotIn("mykey", prefixes)
+
+    def test_get_prefixes_used_in_metadata_splits_pipes(self) -> None:
+        """Test that each pipe-separated value of a metadata string gives its prefix."""
+        # The creator_id of the MGI mapping set in test_validation1.sssom.tsv.
+        creator_id = (
+            "orcid:0000-0003-4606-0597|orcid:0000-0002-6490-7723|ror:021sy4w91|wikidata:Q1951035"
+        )
+        prefixes = get_prefixes_used_in_metadata({"creator_id": creator_id})
+        self.assertIn("ror", prefixes)
+        self.assertIn("wikidata", prefixes)
 
     def test_invert_nodes(self) -> None:
         """Test invert nodes."""

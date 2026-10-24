@@ -1476,17 +1476,33 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     return prefixes
 
 
+def _get_extension_prefixes(meta: MetadataType) -> Set[str]:
+    """Get the prefixes of the property CURIEs in the metadata's extension definitions."""
+    # Each definition's type_hint is left out. Its usual prefix, xsd, is not in
+    # SSSOM_BUILT_IN_PREFIXES, so reading it would report xsd as missing from every curie_map
+    # that does not declare it.
+    return {
+        prefix
+        for definition in meta.get(EXTENSION_DEFINITIONS, [])
+        if (prefix := get_prefix_from_curie(definition.get("property", "")))
+    }
+
+
 def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
-    """Get a set of prefixes used in CURIEs in the metadata."""
+    """Get a set of prefixes used in CURIEs in the entity reference slots of the metadata.
+
+    Also include the prefix of each extension definition's property, which is a CURIE too.
+    """
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
-    for value in meta.values():
-        if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
-        else:
-            if prefix := get_prefix_from_curie(str(value)):
-                prefixes.add(prefix)
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+    for slot, value in meta.items():
+        if slot not in entity_reference_slots:
+            continue
+        values = value if isinstance(value, list) else _split_multivalued([str(value)], slot)
+        prefixes.update(prefix for curie in values if (prefix := get_prefix_from_curie(curie)))
+    prefixes.update(_get_extension_prefixes(meta))
     return prefixes
 
 
