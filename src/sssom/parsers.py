@@ -85,9 +85,9 @@ from .util import (
     SSSOM_DEFAULT_RDF_SERIALISATION,
     ExtensionLiteral,
     MappingSetDataFrame,
+    _address_multivalued_slot,
     get_file_extension,
     get_prefixes_used_in_metadata,
-    is_multivalued_slot,
     propagate_condensed_slots,
     raise_for_bad_path,
     safe_compress,
@@ -510,14 +510,6 @@ def _get_prefix_map_and_metadata(
         ]
     )
     return converter, meta
-
-
-def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
-    if isinstance(v, str) and is_multivalued_slot(k):
-        # IF k is multivalued, then v = List[values]
-        return [s.strip() for s in v.split("|")]
-    else:
-        return v
 
 
 def _init_mapping_set(meta: Optional[MetadataType]) -> MappingSet:

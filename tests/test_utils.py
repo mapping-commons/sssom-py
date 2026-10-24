@@ -186,6 +186,14 @@ class TestIO(unittest.TestCase):
             set(new_curie_map),
         )
 
+    def test_clean_prefix_map_keeps_prefix_after_pipe(self) -> None:
+        """Test that clean prefix map keeps a prefix used after a pipe in a multivalued cell."""
+        # sssom-java's test set for multivalued slots, copied from the file its see_also names.
+        # The see_also line is the only one added.
+        msdf = parse_sssom_table(f"{data_dir}/test-mapping-list-values.sssom.tsv")
+        msdf.clean_prefix_map(strict=True)
+        self.assertIn("COMPID", msdf.prefix_map)
+
     def test_invert_nodes(self) -> None:
         """Test invert nodes."""
         subject_prefix = "a"

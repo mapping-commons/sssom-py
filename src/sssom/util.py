@@ -15,6 +15,7 @@ from typing import (
     Any,
     DefaultDict,
     Dict,
+    Iterable,
     List,
     Literal,
     Mapping,
@@ -1444,6 +1445,15 @@ def get_prefix_from_curie(curie: str) -> str:
         return ""
 
 
+def _split_multivalued(values: Iterable[Any], slot: str) -> List[Any]:
+    """Return a slot's values, with each string value of a multivalued slot split on pipes."""
+    parts: List[Any] = []
+    for value in values:
+        split = _address_multivalued_slot(slot, value)
+        parts.extend(split if isinstance(split, list) else [split])
+    return parts
+
+
 def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     """Get a list of prefixes used in CURIEs in key feature columns in a dataframe."""
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
@@ -1454,7 +1464,7 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     new_prefixes = {
         ReferenceTuple.from_curie(row).prefix
         for col in entity_reference_slots
-        for row in df[col]
+        for row in _split_multivalued(df[col], col)
         if not _is_iri(row) and _is_curie(row)
         # we don't use the converter here since get_prefixes_used_in_table
         # is often used to identify prefixes that are not properly registered
@@ -1562,6 +1572,14 @@ def is_multivalued_slot(slot: str) -> bool:
     :returns: Slot is multivalued or no
     """
     return slot in _get_sssom_schema_object().multivalued_slots
+
+
+def _address_multivalued_slot(k: str, v: str) -> Union[str, List[str]]:
+    if isinstance(v, str) and is_multivalued_slot(k):
+        # IF k is multivalued, then v = List[values]
+        return [s.strip() for s in v.split("|")]
+    else:
+        return v
 
 
 class PrefixReconciliation(TypedDict):

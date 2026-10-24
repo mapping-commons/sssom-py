@@ -1,0 +1,11 @@
+#curie_map:
+#  COMENT: https://example.com/entities/
+#  COMPID: https://example.com/people/
+#  ORGENT: https://example.org/entities/
+#  ORGPID: https://example.org/people/
+#mapping_set_id: https://example.org/sets/test-mapping-list-values
+#license: https://creativecommons.org/licenses/by/4.0/
+#see_also:
+#  - https://github.com/gouttegd/sssom-java/blob/main/core/src/test/resources/sets/test-mapping-list-values.sssom.tsv
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	author_id	see_also
+ORGENT:0001	alice	skos:closeMatch	COMENT:0011	alpha	semapv:ManualMappingCuration	ORGPID:0000-0000-0001-1234|COMPID:0000-0000-0002-5678	https://example.org/misc/seeAlso1
