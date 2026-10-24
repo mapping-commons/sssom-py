@@ -1675,7 +1675,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
         if slot not in metadata_keys:
             prefixes.update(
                 prefix
-                for curie in msdf.df[slot].unique()
+                for curie in _split_multivalued(msdf.df[slot].unique(), slot)
                 if (prefix := get_prefix_from_curie(curie))
             )
         elif isinstance(msdf.metadata[slot], list):

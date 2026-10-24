@@ -141,6 +141,13 @@ class TestValidate(unittest.TestCase):
         rv = validate(msdf, self.validation_types)
         self.assertEqual([], rv[SchemaValidationType.JsonSchema].results)
 
+    def test_validate_reports_undeclared_prefix_after_pipe(self) -> None:
+        """Test that an undeclared prefix used after a pipe in a multivalued cell is reported."""
+        msdf = parse_sssom_table(data_dir / "pipe-prefixes.sssom.tsv")
+        validation_type = SchemaValidationType.PrefixMapCompleteness
+        report = validate(msdf, [validation_type], fail_on_error=False)[validation_type]
+        self.assertEqual(["Missing prefix: other"], [r.message for r in report.results])
+
 
 class TestPrintLinkMLReport(unittest.TestCase):
     """Test the formatting of validation reports."""
