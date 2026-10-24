@@ -438,6 +438,34 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.assertNotIn(URIRef(ibm_risk_atlas + "atlas-harmful-output"), nodes)
         self.assertIn(URIRef("https://taxonomy.eticas.ai/eticas-sentiment-fairness"), nodes)
 
+    def test_rewire_predicates_order(self) -> None:
+        """Test that the order of a repeated --predicates option is the order of preference."""
+        runner = CliRunner()
+        out_file = os.path.join(test_out_dir, "rewire-predicates-close-exact.ttl")
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skos:closeMatch",
+                "--predicates",
+                "skos:exactMatch",
+                "--precedence",
+                "ibm-risk-atlas",
+                "-o",
+                out_file,
+            ],
+        )
+        self.run_successful(result, "rewire --predicates, close before exact")
+        nodes = set(Graph().parse(out_file, format="turtle").all_nodes())
+        ibm_risk_atlas = "https://www.ibm.com/docs/en/watsonx/saas?topic="
+        self.assertIn(URIRef("https://airisk.mit.edu/mit-ai-risk-subdomain-1.3"), nodes)
+        self.assertIn(URIRef(ibm_risk_atlas + "atlas-harmful-output"), nodes)
+        self.assertNotIn(URIRef(ibm_risk_atlas + "atlas-output-bias"), nodes)
+        self.assertNotIn(URIRef(ibm_risk_atlas + "atlas-toxic-output"), nodes)
+
     def test_rewire_predicates(self) -> None:
         """Test rewiring a graph by a comma-separated list of predicates in place of the default."""
         runner = CliRunner()

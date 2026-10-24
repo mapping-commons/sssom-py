@@ -198,7 +198,7 @@ class TestRewirePredicates(unittest.TestCase):
     def test_predicate_that_does_not_expand(self) -> None:
         """Test that a chosen predicate whose prefix is not in the prefix map fails loudly."""
         with self.assertRaisesRegex(ValueError, "Could not expand predicate skoss:exactMatch"):
-            rewire_graph(self.graph, self.mset, predicates={"skoss:exactMatch"})
+            rewire_graph(self.graph, self.mset, predicates=["skoss:exactMatch"])
         self.assert_rewired(self.graph, {})
 
     def test_mapping_predicate_that_does_not_expand(self) -> None:
@@ -209,7 +209,7 @@ class TestRewirePredicates(unittest.TestCase):
         """
         self.mset.df.loc[self.mset.df.index[-1], PREDICATE_ID] = "foo:customMatch"
         with self.assertRaisesRegex(ValueError, "Could not expand predicate foo:customMatch"):
-            rewire_graph(self.graph, self.mset, predicates={SKOS_EXACT_MATCH})
+            rewire_graph(self.graph, self.mset, predicates=[SKOS_EXACT_MATCH])
         self.assert_rewired(self.graph, {})
 
     def test_exact(self) -> None:
@@ -217,18 +217,18 @@ class TestRewirePredicates(unittest.TestCase):
         for predicate in (SKOS_EXACT_MATCH, SKOS_EXACT_MATCH_URI):
             with self.subTest(predicate=predicate):
                 graph = self.load_graph()
-                n = rewire_graph(graph, self.mset, predicates={predicate})
+                n = rewire_graph(graph, self.mset, predicates=[predicate])
                 self.assertEqual(6, n)
                 self.assert_rewired(
                     graph, {PERFORMANCE_EQUITY: OUTPUT_BIAS, HARMFUL_CONTENT: TOXIC_OUTPUT}
                 )
 
-    def test_stronger_predicate_wins_over_precedence(self) -> None:
-        """Test that an exact candidate is chosen over close ones whose prefix has precedence."""
+    def test_preferred_predicate_wins_over_precedence(self) -> None:
+        """Test that an exact candidate, listed first, wins over close ones with precedence."""
         n = rewire_graph(
             self.graph,
             self.mset,
-            predicates={SKOS_EXACT_MATCH, SKOS_CLOSE_MATCH},
+            predicates=[SKOS_EXACT_MATCH, SKOS_CLOSE_MATCH],
             precedence=["mit-ai-risk-repository"],
         )
         self.assertEqual(6, n)
@@ -236,21 +236,40 @@ class TestRewirePredicates(unittest.TestCase):
             self.graph, {PERFORMANCE_EQUITY: OUTPUT_BIAS, HARMFUL_CONTENT: TOXIC_OUTPUT}
         )
 
-    def test_stronger_predicate_wins_whatever_the_row_order(self) -> None:
+    def test_preferred_predicate_wins_whatever_the_row_order(self) -> None:
         """Test that close candidates listed before the one exact candidate make no tie."""
-        n = rewire_graph(self.graph, self.mset, predicates={SKOS_EXACT_MATCH, SKOS_CLOSE_MATCH})
+        n = rewire_graph(self.graph, self.mset, predicates=[SKOS_EXACT_MATCH, SKOS_CLOSE_MATCH])
         self.assertEqual(6, n)
         self.assert_rewired(
             self.graph, {PERFORMANCE_EQUITY: OUTPUT_BIAS, HARMFUL_CONTENT: TOXIC_OUTPUT}
         )
 
+    def test_order_of_predicates_is_the_preference(self) -> None:
+        """Test that listing skos:closeMatch before skos:exactMatch prefers the close candidates.
+
+        The close candidates of harmful content then tie, and precedence decides between them.
+        """
+        with self.assertRaises(ValueError):
+            rewire_graph(self.graph, self.mset, predicates=[SKOS_CLOSE_MATCH, SKOS_EXACT_MATCH])
+        self.assert_rewired(self.graph, {})
+        n = rewire_graph(
+            self.graph,
+            self.mset,
+            predicates=[SKOS_CLOSE_MATCH, SKOS_EXACT_MATCH],
+            precedence=["ibm-risk-atlas"],
+        )
+        self.assertEqual(6, n)
+        self.assert_rewired(
+            self.graph, {PERFORMANCE_EQUITY: UNEQUAL_PERFORMANCE, HARMFUL_CONTENT: HARMFUL_OUTPUT}
+        )
+
     def test_precedence_decides_a_tie(self) -> None:
         """Test that precedence chooses between the three close candidates of harmful content."""
         with self.assertRaises(ValueError):
-            rewire_graph(self.graph, self.mset, predicates={SKOS_CLOSE_MATCH})
+            rewire_graph(self.graph, self.mset, predicates=[SKOS_CLOSE_MATCH])
         self.assert_rewired(self.graph, {})
         n = rewire_graph(
-            self.graph, self.mset, predicates={SKOS_CLOSE_MATCH}, precedence=["ibm-risk-atlas"]
+            self.graph, self.mset, predicates=[SKOS_CLOSE_MATCH], precedence=["ibm-risk-atlas"]
         )
         self.assertEqual(6, n)
         self.assert_rewired(
@@ -264,7 +283,7 @@ class TestRewirePredicates(unittest.TestCase):
         requirement = AIUC1["aiuc1-req-e017"]
         graph = Graph()
         graph.add((risk, RDF.type, AIRO.Risk))
-        n = rewire_graph(graph, mset, predicates={SKOS_CLOSE_MATCH, SKOS_RELATED_MATCH})
+        n = rewire_graph(graph, mset, predicates=[SKOS_CLOSE_MATCH, SKOS_RELATED_MATCH])
         self.assertEqual(1, n)
         self.assertEqual({(requirement, RDF.type, AIRO.Risk)}, set(graph))
 
@@ -277,7 +296,7 @@ class TestRewirePredicates(unittest.TestCase):
             graph,
             self.mset,
             subject_to_object=False,
-            predicates={SKOS_EXACT_MATCH, SKOS_NARROW_MATCH},
+            predicates=[SKOS_EXACT_MATCH, SKOS_NARROW_MATCH],
         )
         self.assertEqual(3, n)
         self.assertEqual({(risk, RDF.type, AIRO.Risk) for risk in RISKS}, set(graph))
@@ -299,7 +318,7 @@ class TestRewireNoMatch(unittest.TestCase):
 
     def test_negated_mapping_is_skipped(self) -> None:
         """Test that a rejected candidate is skipped, so it does not tie with the accepted one."""
-        n = rewire_graph(self.graph, self.mset, predicates={SKOS_RELATED_MATCH})
+        n = rewire_graph(self.graph, self.mset, predicates=[SKOS_RELATED_MATCH])
         self.assertEqual(1, n)
         disclosure = OWASP_LLM["llm022025-sensitive-information-disclosure"]
         self.assertEqual({(disclosure, RDF.type, AIRO.Risk)}, set(self.graph))
@@ -308,6 +327,6 @@ class TestRewireNoMatch(unittest.TestCase):
         """Test that a risk mapped to sssom:NoTermFound is left as it is."""
         risk = IBM_RISK_ATLAS["atlas-lack-of-model-transparency"]
         self.graph.add((risk, RDF.type, AIRO.Risk))
-        n = rewire_graph(self.graph, self.mset, predicates={SKOS_RELATED_MATCH})
+        n = rewire_graph(self.graph, self.mset, predicates=[SKOS_RELATED_MATCH])
         self.assertEqual(1, n)
         self.assertIn((risk, RDF.type, AIRO.Risk), set(self.graph))

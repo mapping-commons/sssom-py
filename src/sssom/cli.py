@@ -572,10 +572,10 @@ sssom:NoTermFound, are skipped. When no mapping is left to rewire by, the comman
 with --strict.
 
 When an entity has several candidate replacements, the command chooses the one under the
-strongest predicate. The order, strongest first, is OWL equivalence, then skos:exactMatch, then
-skos:closeMatch, then skos:broadMatch and skos:narrowMatch, then skos:relatedMatch. When
-candidates are equally strong, --precedence chooses between them by the prefix of the
-replacement. Without --precedence, the command fails because the choice is ambiguous.
+predicate listed first in --predicates, so their order is the order of preference. The two
+default predicates are equally preferred. When candidates are equally preferred, --precedence
+chooses between them by the prefix of the replacement. Without --precedence, the command fails
+because the choice is ambiguous.
 
 Examples:
 
@@ -595,8 +595,8 @@ $ sssom rewire -m tests/data/rewire-predicates.tsv --predicates skos:exactMatch 
 @click.option(
     "--predicates",
     multiple=True,
-    help="Mapping predicates to rewire by, as CURIEs or IRIs, in place of the default ones. "
-    "Repeat the option, or separate the values with commas.",
+    help="Mapping predicates to rewire by, as CURIEs or IRIs, in order of preference, in place of "
+    "the default ones. Repeat the option, or separate the values with commas.",
 )
 @click.option(
     "--strict",
@@ -620,7 +620,8 @@ def rewire(
     :param mapping_file: Path to the SSSOM mapping file.
     :param precedence: Prefixes in order of preference, used to decide between candidate
         replacements.
-    :param predicates: Mapping predicates to rewire by. Each value may be a comma-separated list.
+    :param predicates: Mapping predicates to rewire by, in order of preference. Each value may be
+        a comma-separated list.
     :param strict: Whether to fail when no mapping is left to rewire by.
     :param output: Where to write the rewired graph.
     :param input_format: The RDF serialisation of the input graph.
@@ -629,8 +630,9 @@ def rewire(
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
-    # Split comma-separated values. With no --predicates, rewire_graph uses its defaults.
-    chosen = {p.strip() for value in predicates for p in value.split(",") if p.strip()}
+    # Split comma-separated values, keeping their order, which is the order of preference. With no
+    # --predicates, rewire_graph uses its defaults.
+    chosen = [p.strip() for value in predicates for p in value.split(",") if p.strip()]
     # Show a predicate that does not expand, an ambiguity or a --strict failure as a one-line
     # error, not a traceback.
     try:
