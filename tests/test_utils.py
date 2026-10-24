@@ -36,6 +36,7 @@ from sssom.util import (
     MappingSetDataFrame,
     filter_out_prefixes,
     filter_prefixes,
+    get_all_prefixes,
     get_dict_from_mapping,
     get_file_extension,
     get_prefixes_used_in_metadata,
@@ -230,6 +231,11 @@ class TestIO(unittest.TestCase):
         prefixes = get_prefixes_used_in_metadata({"creator_id": creator_id})
         self.assertIn("ror", prefixes)
         self.assertIn("wikidata", prefixes)
+
+    def test_get_all_prefixes_reads_extension_properties(self) -> None:
+        """Test that get all prefixes reads the prefix of an extension definition's property."""
+        msdf = parse_sssom_table(f"{data_dir}/extension-slots.sssom.tsv")
+        self.assertIn("EXPROP", get_all_prefixes(msdf))
 
     def test_invert_nodes(self) -> None:
         """Test invert nodes."""

@@ -1691,6 +1691,7 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
                 continue
             prefixes.add(prefix)
 
+    prefixes.update(_get_extension_prefixes(msdf.metadata))
     return prefixes
 
 
