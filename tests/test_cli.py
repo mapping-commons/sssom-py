@@ -495,3 +495,21 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.assertEqual(1, result.exit_code)
         # Only a ClickException shows in the output, as "Error: <message>".
         self.assertIn("Error: Ambiguous", result.output)
+
+    def test_rewire_predicate_that_does_not_expand(self) -> None:
+        """Test that rewire reports a predicate it cannot expand as a one-line error."""
+        runner = CliRunner()
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skoss:exactMatch",
+                "-o",
+                os.path.join(test_out_dir, "rewire-predicates-typo.ttl"),
+            ],
+        )
+        self.assertEqual(1, result.exit_code)
+        self.assertIn("Error: Could not expand predicate skoss:exactMatch", result.output)

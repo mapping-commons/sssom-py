@@ -8,6 +8,7 @@ from functools import partial
 from typing import Collection, Dict, Optional, Sequence, cast
 
 import curies
+from curies.api import ExpansionError
 from linkml_runtime.utils.metamodelcore import URIorCURIE
 from rdflib import Graph, Node, URIRef
 from sssom_schema import EntityReference, Mapping
@@ -64,6 +65,24 @@ def _precedence_index(curie: str, *, converter: curies.Converter, precedence: Se
     return precedence.index(prefix) if prefix in precedence else len(precedence)
 
 
+def _expand_predicate(predicate: str, *, converter: curies.Converter) -> str:
+    """Expand a predicate CURIE, or standardize a predicate IRI.
+
+    :param predicate: A predicate CURIE or IRI.
+    :param converter: The converter of the mapping set.
+
+    :return: The IRI of the predicate.
+    :raises ValueError: If the prefix of the predicate is not in the mapping set's prefix map.
+    """
+    try:
+        # curies parses a subclass of str, such as an EntityReference, as an IRI, so pass a str.
+        return converter.expand_or_standardize(str(predicate), strict=True)
+    except ExpansionError as e:
+        raise ValueError(
+            f"Could not expand predicate {predicate}; is its prefix in the curie_map?"
+        ) from e
+
+
 def rewire_graph(
     g: Graph,
     mset: MappingSetDataFrame,
@@ -97,8 +116,9 @@ def rewire_graph(
     :return: The number of triples that changed.
     :raises TypeError: If the mapping set has no mappings, or a mapping in use has a subject or
         object that is not an entity reference.
-    :raises ValueError: If equally strong candidates tie and no ``precedence`` is given, or if
-        ``strict`` is true and no mapping is left to rewire by.
+    :raises ValueError: If a chosen predicate, or the predicate of a mapping, does not expand, if
+        equally strong candidates tie and no ``precedence`` is given, or if ``strict`` is true and
+        no mapping is left to rewire by.
     """
     mdoc = to_mapping_set_document(mset)
     if mdoc.mapping_set.mappings is None:
@@ -109,8 +129,8 @@ def rewire_graph(
         predicates = _REWIRE_PREDICATE_CURIES
     # Compare predicates as IRIs, so that a CURIE and its IRI count as the same predicate.
     predicate_iris = {
-        converter.expand(predicat_uri_or_curie, passthrough=True)
-        for predicat_uri_or_curie in predicates
+        _expand_predicate(predicate_uri_or_curie, converter=converter)
+        for predicate_uri_or_curie in predicates
     }
     rank_by_iri = {
         converter.expand(predicate_curie, passthrough=True): rank
@@ -131,7 +151,7 @@ def rewire_graph(
             continue
         # if strict expansion errors, then there's a mapping set integrity
         # problem that the rewire workflow shouldn't handle
-        predicate_iri = mdoc.converter.expand(m.predicate_id, strict=True)
+        predicate_iri = _expand_predicate(m.predicate_id, converter=converter)
         if predicate_iri not in predicate_iris:
             continue
         if subject_to_object:

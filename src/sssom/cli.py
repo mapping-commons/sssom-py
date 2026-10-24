@@ -631,7 +631,8 @@ def rewire(
     g.parse(input, format=input_format)
     # Split comma-separated values. With no --predicates, rewire_graph uses its defaults.
     chosen = {p.strip() for value in predicates for p in value.split(",") if p.strip()}
-    # Show an ambiguity or a --strict failure as a one-line error, not a traceback.
+    # Show a predicate that does not expand, an ambiguity or a --strict failure as a one-line
+    # error, not a traceback.
     try:
         rewire_graph(g, msdf, precedence=precedence, predicates=chosen or None, strict=strict)
     except ValueError as e:

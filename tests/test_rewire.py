@@ -7,6 +7,7 @@ from typing import Any, Dict, Tuple
 from rdflib import OWL, RDF, Graph, Namespace, URIRef
 
 from sssom.constants import (
+    PREDICATE_ID,
     PREDICATE_MODIFIER_NOT,
     SKOS_CLOSE_MATCH,
     SKOS_EXACT_MATCH,
@@ -192,6 +193,23 @@ class TestRewirePredicates(unittest.TestCase):
         """Test that strict rewiring fails when no mapping has one of the chosen predicates."""
         with self.assertRaises(ValueError):
             rewire_graph(self.graph, self.mset, strict=True)
+        self.assert_rewired(self.graph, {})
+
+    def test_predicate_that_does_not_expand(self) -> None:
+        """Test that a chosen predicate whose prefix is not in the prefix map fails loudly."""
+        with self.assertRaisesRegex(ValueError, "Could not expand predicate skoss:exactMatch"):
+            rewire_graph(self.graph, self.mset, predicates={"skoss:exactMatch"})
+        self.assert_rewired(self.graph, {})
+
+    def test_mapping_predicate_that_does_not_expand(self) -> None:
+        """Test that a mapping whose predicate prefix is not in the prefix map fails loudly.
+
+        The last mapping, of sentiment disparity, gets a predicate whose prefix is not in the
+        prefix map. Rewiring by ``skos:exactMatch`` would not use that mapping, but it still fails.
+        """
+        self.mset.df.loc[self.mset.df.index[-1], PREDICATE_ID] = "foo:customMatch"
+        with self.assertRaisesRegex(ValueError, "Could not expand predicate foo:customMatch"):
+            rewire_graph(self.graph, self.mset, predicates={SKOS_EXACT_MATCH})
         self.assert_rewired(self.graph, {})
 
     def test_exact(self) -> None:
