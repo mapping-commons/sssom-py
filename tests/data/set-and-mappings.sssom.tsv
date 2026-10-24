@@ -1,0 +1,27 @@
+#curie_map:
+#  MIXS: "https://w3id.org/mixs/"
+#  dwc: "http://rs.tdwg.org/dwc/terms/"
+#creator_id:
+#  - "https://orcid.org/0000-0002-3237-4547"
+#  - "https://orcid.org/0000-0002-4366-3088"
+#  - "https://orcid.org/0000-0002-8083-6048"
+#  - "https://orcid.org/0000-0001-9625-1899"
+#  - "https://orcid.org/0000-0001-7087-2646"
+#  - "https://orcid.org/0000-0002-2996-719X"
+#  - "https://orcid.org/0000-0002-6601-2165"
+#  - "https://orcid.org/0000-0002-4236-0384"
+#  - "https://orcid.org/0000-0001-6215-3617"
+#  - "https://orcid.org/0000-0003-1691-239X"
+#  - "https://orcid.org/0000-0001-9401-8460"
+#  - "https://orcid.org/0000-0003-3770-3714"
+#  - "https://orcid.org/0000-0001-8815-0078"
+#  - "https://orcid.org/0000-0003-1144-0290"
+#license: "https://creativecommons.org/publicdomain/zero/1.0/"
+#mapping_set_id: "https://w3id.org/sssom/mapping/tests/data/set-and-mappings.sssom.tsv"
+#mapping_set_title: "Darwin Core to MIxS, two semantic mappings"
+#mapping_set_description: "Two mappings from version 2.0.0 of the TDWG Darwin Core to MIxS semantic mapping set. As in that file, the set names its creators by ORCID IRI, and each mapping names its creator by an orcid CURIE. The curie_map leaves out orcid, which that file declares. The mapping_justification stands for the file's match_type of HumanCurated."
+#see_also:
+#  - "https://github.com/tdwg/gbwg/blob/main/dwc-mixs/mapping/DwC-MIxS_mappingSemantic-2.0.0.sssom.tsv"
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	creator_id
+dwc:verbatimCoordinates	Verbatim Coordinates	skos:narrowMatch	MIXS:0000009	lat_lon	semapv:ManualMappingCuration	orcid:0000-0003-1144-0290
+dwc:decimalLatitude	Decimal Latitude	skos:broadMatch	MIXS:0000009	lat_lon	semapv:ManualMappingCuration	orcid:0000-0002-2996-719X

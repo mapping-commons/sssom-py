@@ -148,6 +148,13 @@ class TestValidate(unittest.TestCase):
         report = validate(msdf, [validation_type], fail_on_error=False)[validation_type]
         self.assertEqual(["Missing prefix: other"], [r.message for r in report.results])
 
+    def test_validate_reports_prefixes_of_set_and_mappings(self) -> None:
+        """Test that a slot given on the mapping set and on its mappings is read in both places."""
+        msdf = parse_sssom_table(data_dir / "set-and-mappings.sssom.tsv")
+        validation_type = SchemaValidationType.PrefixMapCompleteness
+        report = validate(msdf, [validation_type], fail_on_error=False)[validation_type]
+        self.assertIn("Missing prefix: orcid", [r.message for r in report.results])
+
 
 class TestPrintLinkMLReport(unittest.TestCase):
     """Test the formatting of validation reports."""
