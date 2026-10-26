@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, cast
 
 from click.testing import CliRunner, Result
+from rdflib import Graph, URIRef
 
 from sssom.cli import (
     annotate,
@@ -409,6 +410,86 @@ class SSSOMCLITestSuite(unittest.TestCase):
         ]
         result = subprocess.check_output(args, shell=True)  # noqa
 
+    def test_rewire_repeated_predicates(self) -> None:
+        """Test rewiring a graph by predicates given in a repeated option, with precedence."""
+        runner = CliRunner()
+        out_file = os.path.join(test_out_dir, "rewire-predicates-exact-close.ttl")
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skos:exactMatch",
+                "--predicates",
+                "skos:closeMatch",
+                "--precedence",
+                "ibm-risk-atlas",
+                "-o",
+                out_file,
+            ],
+        )
+        self.run_successful(result, "rewire --predicates, repeated")
+        nodes = set(Graph().parse(out_file, format="turtle").all_nodes())
+        ibm_risk_atlas = "https://www.ibm.com/docs/en/watsonx/saas?topic="
+        self.assertIn(URIRef(ibm_risk_atlas + "atlas-output-bias"), nodes)
+        self.assertIn(URIRef(ibm_risk_atlas + "atlas-toxic-output"), nodes)
+        self.assertNotIn(URIRef(ibm_risk_atlas + "atlas-harmful-output"), nodes)
+        self.assertIn(URIRef("https://taxonomy.eticas.ai/eticas-sentiment-fairness"), nodes)
+
+    def test_rewire_predicates_order(self) -> None:
+        """Test that the order of a repeated --predicates option is the order of preference."""
+        runner = CliRunner()
+        out_file = os.path.join(test_out_dir, "rewire-predicates-close-exact.ttl")
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skos:closeMatch",
+                "--predicates",
+                "skos:exactMatch",
+                "--precedence",
+                "ibm-risk-atlas",
+                "-o",
+                out_file,
+            ],
+        )
+        self.run_successful(result, "rewire --predicates, close before exact")
+        nodes = set(Graph().parse(out_file, format="turtle").all_nodes())
+        ibm_risk_atlas = "https://www.ibm.com/docs/en/watsonx/saas?topic="
+        self.assertIn(URIRef("https://airisk.mit.edu/mit-ai-risk-subdomain-1.3"), nodes)
+        self.assertIn(URIRef(ibm_risk_atlas + "atlas-harmful-output"), nodes)
+        self.assertNotIn(URIRef(ibm_risk_atlas + "atlas-output-bias"), nodes)
+        self.assertNotIn(URIRef(ibm_risk_atlas + "atlas-toxic-output"), nodes)
+
+    def test_rewire_predicates(self) -> None:
+        """Test rewiring a graph by a comma-separated list of predicates in place of the default."""
+        runner = CliRunner()
+        out_file = os.path.join(test_out_dir, "rewire-predicates-exact-narrow.ttl")
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skos:exactMatch,skos:narrowMatch",
+                "-o",
+                out_file,
+            ],
+        )
+        self.run_successful(result, "rewire --predicates")
+        nodes = set(Graph().parse(out_file, format="turtle").all_nodes())
+        ibm_risk_atlas = "https://www.ibm.com/docs/en/watsonx/saas?topic="
+        self.assertIn(URIRef(ibm_risk_atlas + "atlas-output-bias"), nodes)
+        self.assertIn(URIRef(ibm_risk_atlas + "atlas-toxic-output"), nodes)
+        self.assertIn(URIRef("https://airisk.mit.edu/mit-ai-risk-subdomain-1.1"), nodes)
+        self.assertNotIn(URIRef("https://taxonomy.eticas.ai/eticas-sentiment-fairness"), nodes)
+
     def test_rewire_strict(self) -> None:
         """Test that rewire fails with --strict when no mapping is left to rewire by."""
         runner = CliRunner()
@@ -442,3 +523,21 @@ class SSSOMCLITestSuite(unittest.TestCase):
         self.assertEqual(1, result.exit_code)
         # Only a ClickException shows in the output, as "Error: <message>".
         self.assertIn("Error: Ambiguous", result.output)
+
+    def test_rewire_predicate_that_does_not_expand(self) -> None:
+        """Test that rewire reports a predicate it cannot expand as a one-line error."""
+        runner = CliRunner()
+        result = runner.invoke(
+            rewire,
+            [
+                os.path.join(data_dir, "rewire-predicates.ttl"),
+                "-m",
+                os.path.join(data_dir, "rewire-predicates.tsv"),
+                "--predicates",
+                "skoss:exactMatch",
+                "-o",
+                os.path.join(test_out_dir, "rewire-predicates-typo.ttl"),
+            ],
+        )
+        self.assertEqual(1, result.exit_code)
+        self.assertIn("Error: Could not expand predicate skoss:exactMatch", result.output)
