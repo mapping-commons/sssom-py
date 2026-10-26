@@ -1945,7 +1945,7 @@
 </tr>
 <tr>
 <td><code>-O</code>, <code>--output-format</code></td>
-<td>choice (<code>tsv</code> &#x7C; <code>owl</code> &#x7C; <code>ontoportal_json</code> &#x7C; <code>fhir_json</code> &#x7C; <code>json</code> &#x7C; <code>rdf</code> &#x7C; <code>nt</code> &#x7C; <code>turtle</code> &#x7C; <code>ttl</code> &#x7C; <code>xml</code>)</td>
+<td>choice (<code>tsv</code> &#x7C; <code>owl</code> &#x7C; <code>ontoportal_json</code> &#x7C; <code>fhir_json</code> &#x7C; <code>json</code> &#x7C; <code>rdf</code> &#x7C; <code>turtle</code> &#x7C; <code>nt</code> &#x7C; <code>xml</code> &#x7C; <code>ttl</code>)</td>
 <td>Desired output format.</td>
 <td><code>Sentinel.UNSET</code></td>
 </tr>
@@ -2856,8 +2856,24 @@ E.g. <code>~/dir/my.sssom.tsv</code> becomes a table called 'my'</p>
 </tbody>
 </table>
 <h3 id="sssom-rewire">sssom rewire<a class="headerlink" href="#sssom-rewire" title="Permanent link">&para;</a></h3>
-<p>Example:</p>
-<p>$ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR</p>
+<p>Rewire an RDF graph, such as an OWL ontology, by replacing every mapped entity with its mapping
+partner. A graph expressed in one vocabulary is then expressed in another.</p>
+<p>The command applies each mapping from subject to object: it replaces the mapping's subject with
+the mapping's object wherever the subject occurs in the graph. It uses only mappings with a chosen
+predicate. By default these are owl:equivalentClass and owl:equivalentProperty, and the
+--predicates option chooses others in their place. Only the equivalences keep the graph's
+meaning. A skos:broadMatch mapping, for example, puts the broader entity in every triple about the
+narrower one, including the triples that describe it. Negated mappings, and mappings to
+sssom:NoTermFound, are skipped. When no mapping is left to rewire by, the command warns, or fails
+with --strict.</p>
+<p>When an entity has several candidate replacements, the command chooses the one under the
+predicate listed first in --predicates, so their order is the order of preference. The two
+default predicates are equally preferred. When candidates are equally preferred, --precedence
+chooses between them by the prefix of the replacement. Without --precedence, the command fails
+because the choice is ambiguous.</p>
+<p>Examples:</p>
+<p>$ sssom rewire -I xml -m tests/data/cob-to-external.tsv --precedence PR tests/data/cob.owl
+$ sssom rewire -m tests/data/rewire-predicates.tsv --predicates skos:exactMatch tests/data/rewire-predicates.ttl</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sssom rewire [OPTIONS] INPUT
 </code></pre></div>
@@ -2894,6 +2910,12 @@ E.g. <code>~/dir/my.sssom.tsv</code> becomes a table called 'my'</p>
 <td><code>--precedence</code></td>
 <td>text</td>
 <td>List of prefixes in order of precedence.</td>
+<td><code>Sentinel.UNSET</code></td>
+</tr>
+<tr>
+<td><code>--predicates</code></td>
+<td>text</td>
+<td>Mapping predicates to rewire by, as CURIEs or IRIs, in order of preference, in place of the default ones. Repeat the option, or separate the values with commas.</td>
 <td><code>Sentinel.UNSET</code></td>
 </tr>
 <tr>
