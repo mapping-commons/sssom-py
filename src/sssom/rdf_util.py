@@ -90,8 +90,8 @@ def rewire_graph(
     :param precedence: Prefixes in order of preference, which choose between equally preferred
         candidates for a node. When it does not decide, the earlier mapping wins.
     :param predicates: The mapping predicates to rewire by, as CURIEs or IRIs, in order of
-        preference. Defaults to ``owl:equivalentClass`` and ``owl:equivalentProperty``, which are
-        equally preferred.
+        preference. A single string counts as one predicate. Defaults to ``owl:equivalentClass``
+        and ``owl:equivalentProperty``, which are equally preferred.
     :param strict: If true, raise an error when no mapping is left to rewire by, instead of
         logging a warning.
 
@@ -111,6 +111,9 @@ def rewire_graph(
     equally_preferred = predicates is None
     if predicates is None:
         predicates = sorted(_REWIRE_PREDICATE_CURIES)
+    elif isinstance(predicates, str):
+        # A str is a Sequence[str] too, so it would otherwise be read character by character.
+        predicates = [predicates]
     # Rank each predicate by its place in the order of preference, where 0 is the most preferred,
     # and keep the first rank of a predicate given twice. Compare predicates as IRIs, so that a
     # CURIE and its IRI count as the same predicate.
