@@ -38,9 +38,6 @@ COB:0000003	mass	owl:equivalentClass	PATO:0000125	mass	semapv:ManualMappingCurat
 COB:0000004	charge	owl:equivalentClass	PATO:0002193	electric	semapv:ManualMappingCuration
 COB:0000005	elementary charge	rdfs:subClassOf	owl:Thing	owl:Thing	semapv:ManualMappingCuration
 COB:0000006	material entity	owl:equivalentClass	BFO:0000040	material entity	semapv:ManualMappingCuration
-COB:0000006	material entity	sssom:superClassOf	SO:0000110	sequence_feature	semapv:ManualMappingCuration
-COB:0000006	material entity	sssom:superClassOf	SO:0001060	sequence_variant	semapv:ManualMappingCuration
-COB:0000006	material entity	sssom:superClassOf	SO:0001260	sequence_collection	semapv:ManualMappingCuration
 COB:0000007	subatomic particle	owl:equivalentClass	CHEBI:36342	subatomic particle	semapv:ManualMappingCuration
 COB:0000008	proton	owl:equivalentClass	CHEBI:24636	proton	semapv:ManualMappingCuration
 COB:0000009	neutron	owl:equivalentClass	CHEBI:30222	neutron	semapv:ManualMappingCuration
@@ -53,15 +50,10 @@ COB:0000015	protein	owl:equivalentClass	CHEBI:16541	protein polypeptide chain	se
 COB:0000015	protein	owl:equivalentClass	PR:000000001	protein	semapv:ManualMappingCuration
 COB:0000016	executed by	rdfs:subPropertyOf	owl:topObjectProperty	topObjectProperty	semapv:ManualMappingCuration
 COB:0000017	cell	owl:equivalentClass	CL:0000000	cell	semapv:ManualMappingCuration
-COB:0000017	cell	sssom:superClassOf	PO:0009002	plant cell	semapv:ManualMappingCuration
 COB:0000018	native cell	owl:equivalentClass	CL:0000003	native cell	semapv:ManualMappingCuration
-COB:0000018	native cell	sssom:superClassOf	PO:0025606	native plant cell	semapv:ManualMappingCuration
-COB:0000018	native cell	sssom:superClassOf	XAO:0003012	xenopus cell	semapv:ManualMappingCuration
-COB:0000018	native cell	sssom:superClassOf	ZFA:0009000	zebrafish cell	semapv:ManualMappingCuration
 COB:0000019	cell in vitro	owl:equivalentClass	CL:0001034	cell in vitro	semapv:ManualMappingCuration
 COB:0000020	subcellular structure	rdfs:subClassOf	owl:Thing	owl:Thing	semapv:ManualMappingCuration
 COB:0000021	gross anatomical part	owl:equivalentClass	CARO:0001008	gross anatomical part	semapv:ManualMappingCuration
-COB:0000021	gross anatomical part	sssom:superClassOf	UBERON:0010000	multicellular anatomical structure	semapv:ManualMappingCuration
 COB:0000022	organism	owl:equivalentClass	CARO:0001010	organism or virus or viroid	semapv:ManualMappingCuration
 COB:0000022	organism	owl:equivalentClass	NCBITaxon:1	root	semapv:ManualMappingCuration
 COB:0000022	organism	owl:equivalentClass	OBI:0100026	organism	semapv:ManualMappingCuration
@@ -87,8 +79,6 @@ COB:0000043	uncharged atom	owl:equivalentClass	CHEBI:33250	atom	semapv:ManualMap
 COB:0000047	has part	owl:equivalentProperty	BFO:0000051	has part	semapv:ManualMappingCuration
 COB:0000049	nucleic acid polymer	owl:equivalentClass	CHEBI:10545	nucleic acid	semapv:ManualMappingCuration
 COB:0000055	collection of organisms	owl:equivalentClass	PCO:0000000	collection of organisms	semapv:ManualMappingCuration
-COB:0000056	immaterial anatomical entity	sssom:superClassOf	PO:0025117	plant anatomical space	semapv:ManualMappingCuration
-COB:0000056	immaterial anatomical entity	sssom:superClassOf	UBERON:0000466	immaterial anatomical entity	semapv:ManualMappingCuration
 COB:0000057	site	owl:equivalentClass	BFO:0000029	site	semapv:ManualMappingCuration
 COB:0000058	conclusion based on data	owl:equivalentClass	OBI:0001909	conclusion based on data	semapv:ManualMappingCuration
 COB:0000061	information	owl:equivalentClass	IAO:0000030	information content entity	semapv:ManualMappingCuration
@@ -99,7 +89,6 @@ COB:0000065	environmental process	owl:equivalentClass	ENVO:02500000	environmenta
 COB:0000066	physico-chemical process	owl:equivalentClass	MOP:0000543	molecular process	semapv:ManualMappingCuration
 COB:0000067	ecosystem	owl:equivalentClass	ENVO:01001110	ecosystem	semapv:ManualMappingCuration
 COB:0000068	geophysical entity	owl:equivalentClass	ENVO:01000813	astronomical body part	semapv:ManualMappingCuration
-COB:0000068	geophysical entity	sssom:superClassOf	GEO:000000370	geographical entity	semapv:ManualMappingCuration
 COB:0000069	directive information entity	owl:equivalentClass	IAO:0000033	directive information entity	semapv:ManualMappingCuration
 COB:0000070	has participant	owl:equivalentProperty	RO:0000057	has participant	semapv:ManualMappingCuration
 COB:0000071	occurs in	owl:equivalentProperty	BFO:0000066	occurs in	semapv:ManualMappingCuration
@@ -127,15 +116,9 @@ COB:0000114	role	owl:equivalentClass	BFO:0000023	role	semapv:ManualMappingCurati
 COB:0000116	cellular membrane	rdfs:subClassOf	owl:Thing	owl:Thing	semapv:ManualMappingCuration
 COB:0000118	cellular organism	owl:equivalentClass	CARO:0010004	cellular organism	semapv:ManualMappingCuration
 COB:0000118	cellular organism	owl:equivalentClass	NCBITaxon:131567	cellular organisms	semapv:ManualMappingCuration
-COB:0000118	cellular organism	sssom:superClassOf	PO:0000003	whole plant	semapv:ManualMappingCuration
-COB:0000118	cellular organism	sssom:superClassOf	UBERON:0000468	multicellular organism	semapv:ManualMappingCuration
 COB:0000123	agent role	owl:equivalentClass	SEPIO:0000048	agent role	semapv:ManualMappingCuration
-COB:0000123	agent role	sssom:superClassOf	OBI:0000202	investigation agent role	semapv:ManualMappingCuration
 COB:0000502	characteristic	owl:equivalentClass	BFO:0000020	specifically dependent continuant	semapv:ManualMappingCuration
 COB:0000502	characteristic	owl:equivalentClass	PATO:0000001	quality	semapv:ManualMappingCuration
-COB:0000502	characteristic	sssom:superClassOf	CHEBI:50906	role	semapv:ManualMappingCuration
-COB:0000502	characteristic	sssom:superClassOf	SO:0000400	sequence_attribute	semapv:ManualMappingCuration
 COB:0000511	has quantity	rdfs:subPropertyOf	owl:topObjectProperty	topObjectProperty	semapv:ManualMappingCuration
 COB:0000512	has characteristic	owl:equivalentProperty	RO:0000053	bearer of	semapv:ManualMappingCuration
 COB:0000513	is about	owl:equivalentProperty	IAO:0000136	is about	semapv:ManualMappingCuration
-

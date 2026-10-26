@@ -65,14 +65,7 @@ class TestConvert(unittest.TestCase):
                   ?e1 <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?e2 .
                 }""")
         size = len(results)
-        self.assertEqual(size, 22)
-
-        results = g.query("""SELECT DISTINCT ?e1 ?e2
-                WHERE {
-                  ?e1 <https://w3id.org/sssom/superClassOf> ?e2 .
-                }""")
-        size = len(results)
-        self.assertEqual(size, 0)
+        self.assertEqual(size, 6)
 
     def test_to_rdf(self) -> None:
         """Test converting the basic example to a basic RDF graph."""

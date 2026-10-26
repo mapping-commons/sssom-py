@@ -16,8 +16,6 @@ all_schema: $(patsubst %,schema/sssom%, $(EXTS))
 
 schema/%_datamodel.py: .FORCE
 	wget $(SSSOM_PY) -O $@
-schema/cliquesummary.py: schema/cliquesummary.yaml
-	gen-py-classes $< > $@
 schema/%.schema.json: .FORCE
 	wget $(SSSOM_JSON_SCHEMA) -O $@
 src/sssom/obo.epm.json:

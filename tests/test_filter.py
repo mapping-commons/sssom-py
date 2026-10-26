@@ -1,5 +1,6 @@
 """Test for filtering MappingSetDataFrame columns."""
 
+import importlib.util
 import unittest
 from os.path import join
 from typing import Any
@@ -10,6 +11,7 @@ from sssom.parsers import parse_sssom_table
 from tests.constants import data_dir
 
 
+@unittest.skipUnless(importlib.util.find_spec("pansql"), "pansql not installed")
 class TestSort(unittest.TestCase):
     """A test case for filtering msdf columns."""
 

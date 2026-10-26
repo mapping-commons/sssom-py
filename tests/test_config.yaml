@@ -21,7 +21,7 @@ tests:
     inputformat: "tsv"
     multiple_input: False
     ct_json_elements: 5
-    ct_data_frame_rows: 105
+    ct_data_frame_rows: 89
     ct_graph_queries_owl:
       query_count_equivalent_classes: 60
     ct_graph_queries_rdf:

@@ -5,7 +5,6 @@
 @prefix COB: <http://purl.obolibrary.org/obo/COB_> .
 @prefix DRON: <http://purl.obolibrary.org/obo/DRON_> .
 @prefix ENVO: <http://purl.obolibrary.org/obo/ENVO_> .
-@prefix GEO: <http://purl.obolibrary.org/obo/GEO_> .
 @prefix GO: <http://purl.obolibrary.org/obo/GO_> .
 @prefix IAO: <http://purl.obolibrary.org/obo/IAO_> .
 @prefix MOP: <http://purl.obolibrary.org/obo/MOP_> .
@@ -14,22 +13,19 @@
 @prefix OGMS: <http://purl.obolibrary.org/obo/OGMS_> .
 @prefix PATO: <http://purl.obolibrary.org/obo/PATO_> .
 @prefix PCO: <http://purl.obolibrary.org/obo/PCO_> .
-@prefix PO: <http://purl.obolibrary.org/obo/PO_> .
 @prefix PR: <http://purl.obolibrary.org/obo/PR_> .
 @prefix RO: <http://purl.obolibrary.org/obo/RO_> .
 @prefix SEPIO: <http://purl.obolibrary.org/obo/SEPIO_> .
-@prefix SO: <http://purl.obolibrary.org/obo/SO_> .
 @prefix STATO: <http://purl.obolibrary.org/obo/STATO_> .
-@prefix UBERON: <http://purl.obolibrary.org/obo/UBERON_> .
-@prefix XAO: <http://purl.obolibrary.org/obo/XAO_> .
-@prefix ZFA: <http://purl.obolibrary.org/obo/ZFA_> .
-@prefix dc1: <http://purl.org/dc/terms/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix semapv: <https://w3id.org/semapv/vocab/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix sssom: <https://w3id.org/sssom/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://purl.obolibrary.org/obo/cob/components/cob-to-external.tsv> a owl:Ontology ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> .
 
 sssom:mapping_justification a owl:AnnotationProperty .
 
@@ -37,40 +33,79 @@ sssom:object_label a owl:AnnotationProperty .
 
 sssom:subject_label a owl:AnnotationProperty .
 
-CHEBI:50906 rdfs:subClassOf COB:0000502 .
+BFO:0000015 a owl:Class ;
+    owl:equivalentClass COB:0000034 .
+
+BFO:0000016 a owl:Class ;
+    owl:equivalentClass COB:0000111 .
+
+BFO:0000017 a owl:Class ;
+    owl:equivalentClass COB:0000033 .
+
+BFO:0000020 a owl:Class ;
+    owl:equivalentClass COB:0000502 .
+
+BFO:0000023 a owl:Class ;
+    owl:equivalentClass COB:0000114 .
+
+BFO:0000029 a owl:Class ;
+    owl:equivalentClass COB:0000057 .
+
+BFO:0000034 a owl:Class ;
+    owl:equivalentClass COB:0000112 .
+
+BFO:0000040 a owl:Class ;
+    owl:equivalentClass COB:0000006 .
+
+BFO:0000041 a owl:Class ;
+    owl:equivalentClass COB:0000031 .
+
+CARO:0001008 a owl:Class ;
+    owl:equivalentClass COB:0000021 .
+
+CARO:0001010 a owl:Class ;
+    owl:equivalentClass COB:0000022 .
+
+CARO:0010004 a owl:Class ;
+    owl:equivalentClass COB:0000118 .
+
+CHEBI:16541 a owl:Class ;
+    owl:equivalentClass COB:0000015 .
+
+CHEBI:23367 skos:closeMatch COB:0000013 .
+
+CHEBI:24636 a owl:Class ;
+    owl:equivalentClass COB:0000008 .
+
+CHEBI:24867 a owl:Class ;
+    owl:equivalentClass COB:0000042 .
+
+CHEBI:25367 skos:closeMatch COB:0000013 .
+
+CHEBI:30222 a owl:Class ;
+    owl:equivalentClass COB:0000009 .
+
+CHEBI:33252 a owl:Class ;
+    owl:equivalentClass COB:0000012 .
+
+CHEBI:36342 a owl:Class ;
+    owl:equivalentClass COB:0000007 .
+
+CL:0000000 a owl:Class ;
+    owl:equivalentClass COB:0000017 .
+
+CL:0000003 a owl:Class ;
+    owl:equivalentClass COB:0000018 .
+
+CL:0001034 a owl:Class ;
+    owl:equivalentClass COB:0000019 .
 
 COB:0000002 a owl:ObjectProperty ;
     owl:equivalentProperty RO:0000058 .
 
-COB:0000003 a owl:Class ;
-    owl:equivalentClass PATO:0000125 .
-
-COB:0000004 a owl:Class ;
-    owl:equivalentClass PATO:0002193 .
-
 COB:0000005 rdfs:subClassOf owl:Thing .
 
-COB:0000007 a owl:Class ;
-    owl:equivalentClass CHEBI:36342 .
-
-COB:0000008 a owl:Class ;
-    owl:equivalentClass CHEBI:24636 .
-
-COB:0000009 a owl:Class ;
-    owl:equivalentClass CHEBI:30222 .
-
-COB:0000010 a owl:Class ;
-    owl:equivalentClass CHEBI:10545 .
-
-COB:0000011 skos:closeMatch CHEBI:33250 .
-
-COB:0000012 a owl:Class ;
-    owl:equivalentClass CHEBI:33252 .
-
 COB:0000016 rdfs:subPropertyOf owl:topObjectProperty .
-
-COB:0000019 a owl:Class ;
-    owl:equivalentClass CL:0001034 .
 
 COB:0000020 rdfs:subClassOf owl:Thing .
 
@@ -79,12 +114,6 @@ COB:0000023 a owl:ObjectProperty ;
 
 COB:0000024 a owl:ObjectProperty ;
     owl:equivalentProperty RO:0000056 .
-
-COB:0000025 a owl:Class ;
-    owl:equivalentClass OBI:0000245 .
-
-COB:0000026 a owl:Class ;
-    owl:equivalentClass OBI:0000047 .
 
 COB:0000027 a owl:ObjectProperty ;
     owl:equivalentProperty OBI:0000295 .
@@ -95,28 +124,10 @@ COB:0000028 a owl:ObjectProperty ;
 COB:0000029 a owl:ObjectProperty ;
     owl:equivalentProperty BFO:0000054 .
 
-COB:0000031 a owl:Class ;
-    owl:equivalentClass BFO:0000041 .
-
 COB:0000032 rdfs:subClassOf owl:Thing .
-
-COB:0000033 a owl:Class ;
-    owl:equivalentClass BFO:0000017 .
-
-COB:0000034 a owl:Class ;
-    owl:equivalentClass BFO:0000015 .
-
-COB:0000035 a owl:Class ;
-    owl:equivalentClass OBI:0000011 .
 
 COB:0000036 a owl:ObjectProperty ;
     owl:equivalentProperty BFO:0000067 .
-
-COB:0000037 a owl:Class ;
-    owl:equivalentClass GO:0008150 .
-
-COB:0000038 a owl:Class ;
-    owl:equivalentClass GO:0003674 .
 
 COB:0000039 a owl:ObjectProperty ;
     owl:equivalentProperty OBI:0000293 .
@@ -124,50 +135,8 @@ COB:0000039 a owl:ObjectProperty ;
 COB:0000040 a owl:ObjectProperty ;
     owl:equivalentProperty OBI:0000299 .
 
-COB:0000042 a owl:Class ;
-    owl:equivalentClass CHEBI:24867 .
-
-COB:0000043 a owl:Class ;
-    owl:equivalentClass CHEBI:33250 .
-
 COB:0000047 a owl:ObjectProperty ;
     owl:equivalentProperty BFO:0000051 .
-
-COB:0000049 a owl:Class ;
-    owl:equivalentClass CHEBI:10545 .
-
-COB:0000055 a owl:Class ;
-    owl:equivalentClass PCO:0000000 .
-
-COB:0000057 a owl:Class ;
-    owl:equivalentClass BFO:0000029 .
-
-COB:0000058 a owl:Class ;
-    owl:equivalentClass OBI:0001909 .
-
-COB:0000061 a owl:Class ;
-    owl:equivalentClass IAO:0000030 .
-
-COB:0000062 a owl:Class ;
-    owl:equivalentClass OGMS:0000073 .
-
-COB:0000063 a owl:Class ;
-    owl:equivalentClass OGMS:0000014 .
-
-COB:0000064 a owl:Class ;
-    owl:equivalentClass OGMS:0000063 .
-
-COB:0000065 a owl:Class ;
-    owl:equivalentClass ENVO:02500000 .
-
-COB:0000066 a owl:Class ;
-    owl:equivalentClass MOP:0000543 .
-
-COB:0000067 a owl:Class ;
-    owl:equivalentClass ENVO:01001110 .
-
-COB:0000069 a owl:Class ;
-    owl:equivalentClass IAO:0000033 .
 
 COB:0000070 a owl:ObjectProperty ;
     owl:equivalentProperty RO:0000057 .
@@ -183,52 +152,10 @@ COB:0000073 rdfs:subClassOf owl:Thing .
 COB:0000074 a owl:ObjectProperty ;
     owl:equivalentProperty RO:0002333 .
 
-COB:0000075 a owl:Class ;
-    owl:equivalentClass GO:0032991 .
-
-COB:0000076 a owl:Class ;
-    owl:equivalentClass IAO:0000005 .
-
-COB:0000079 a owl:Class ;
-    owl:equivalentClass IAO:0000104 .
-
 COB:0000080 rdfs:subClassOf owl:Thing .
 
 COB:0000086 a owl:ObjectProperty ;
     owl:equivalentProperty STATO:0000102 .
-
-COB:0000101 a owl:Class ;
-    owl:equivalentClass IAO:0000310 .
-
-COB:0000102 a owl:Class ;
-    owl:equivalentClass IAO:0000027 .
-
-COB:0000103 a owl:Class ;
-    owl:equivalentClass GO:0005634 .
-
-COB:0000107 a owl:Class ;
-    owl:equivalentClass OBI:0000070 .
-
-COB:0000108 a owl:Class ;
-    owl:equivalentClass OBI:0200000 .
-
-COB:0000109 a owl:Class ;
-    owl:equivalentClass OBI:0000066 .
-
-COB:0000110 a owl:Class ;
-    owl:equivalentClass OBI:0000094 .
-
-COB:0000111 a owl:Class ;
-    owl:equivalentClass BFO:0000016 .
-
-COB:0000112 a owl:Class ;
-    owl:equivalentClass BFO:0000034 .
-
-COB:0000113 a owl:Class ;
-    owl:equivalentClass OBI:0000260 .
-
-COB:0000114 a owl:Class ;
-    owl:equivalentClass BFO:0000023 .
 
 COB:0000116 rdfs:subClassOf owl:Thing .
 
@@ -240,53 +167,113 @@ COB:0000512 a owl:ObjectProperty ;
 COB:0000513 a owl:ObjectProperty ;
     owl:equivalentProperty IAO:0000136 .
 
-GEO:000000370 rdfs:subClassOf COB:0000068 .
+DRON:0000005 a owl:Class ;
+    owl:equivalentClass COB:0000088 .
 
-OBI:0000202 rdfs:subClassOf COB:0000123 .
+ENVO:01000813 a owl:Class ;
+    owl:equivalentClass COB:0000068 .
 
-PO:0000003 rdfs:subClassOf COB:0000118 .
+ENVO:01001110 a owl:Class ;
+    owl:equivalentClass COB:0000067 .
 
-PO:0009002 rdfs:subClassOf COB:0000017 .
+ENVO:02500000 a owl:Class ;
+    owl:equivalentClass COB:0000065 .
 
-PO:0025117 rdfs:subClassOf COB:0000056 .
+GO:0003674 a owl:Class ;
+    owl:equivalentClass COB:0000038 .
 
-PO:0025606 rdfs:subClassOf COB:0000018 .
+GO:0005634 a owl:Class ;
+    owl:equivalentClass COB:0000103 .
 
-SO:0000110 rdfs:subClassOf COB:0000006 .
+GO:0008150 a owl:Class ;
+    owl:equivalentClass COB:0000037 .
 
-SO:0000400 rdfs:subClassOf COB:0000502 .
+GO:0032991 a owl:Class ;
+    owl:equivalentClass COB:0000075 .
 
-SO:0001060 rdfs:subClassOf COB:0000006 .
+IAO:0000005 a owl:Class ;
+    owl:equivalentClass COB:0000076 .
 
-SO:0001260 rdfs:subClassOf COB:0000006 .
+IAO:0000027 a owl:Class ;
+    owl:equivalentClass COB:0000102 .
 
-UBERON:0000466 rdfs:subClassOf COB:0000056 .
+IAO:0000030 a owl:Class ;
+    owl:equivalentClass COB:0000061 .
 
-UBERON:0000468 rdfs:subClassOf COB:0000118 .
+IAO:0000033 a owl:Class ;
+    owl:equivalentClass COB:0000069 .
 
-UBERON:0010000 rdfs:subClassOf COB:0000021 .
+IAO:0000104 a owl:Class ;
+    owl:equivalentClass COB:0000079 .
 
-XAO:0003012 rdfs:subClassOf COB:0000018 .
+IAO:0000310 a owl:Class ;
+    owl:equivalentClass COB:0000101 .
 
-ZFA:0009000 rdfs:subClassOf COB:0000018 .
+MOP:0000543 a owl:Class ;
+    owl:equivalentClass COB:0000066 .
 
-BFO:0000015 a owl:Class .
+NCBITaxon:1 a owl:Class ;
+    owl:equivalentClass COB:0000022 .
 
-BFO:0000016 a owl:Class .
+NCBITaxon:131567 a owl:Class ;
+    owl:equivalentClass COB:0000118 .
 
-BFO:0000017 a owl:Class .
+OBI:0000011 a owl:Class ;
+    owl:equivalentClass COB:0000035 .
 
-BFO:0000020 a owl:Class .
+OBI:0000047 a owl:Class ;
+    owl:equivalentClass COB:0000026 .
 
-BFO:0000023 a owl:Class .
+OBI:0000066 a owl:Class ;
+    owl:equivalentClass COB:0000109 .
 
-BFO:0000029 a owl:Class .
+OBI:0000070 a owl:Class ;
+    owl:equivalentClass COB:0000107 .
 
-BFO:0000034 a owl:Class .
+OBI:0000094 a owl:Class ;
+    owl:equivalentClass COB:0000110 .
 
-BFO:0000040 a owl:Class .
+OBI:0000245 a owl:Class ;
+    owl:equivalentClass COB:0000025 .
 
-BFO:0000041 a owl:Class .
+OBI:0000260 a owl:Class ;
+    owl:equivalentClass COB:0000113 .
+
+OBI:0001909 a owl:Class ;
+    owl:equivalentClass COB:0000058 .
+
+OBI:0100026 a owl:Class ;
+    owl:equivalentClass COB:0000022 .
+
+OBI:0200000 a owl:Class ;
+    owl:equivalentClass COB:0000108 .
+
+OGMS:0000014 a owl:Class ;
+    owl:equivalentClass COB:0000063 .
+
+OGMS:0000063 a owl:Class ;
+    owl:equivalentClass COB:0000064 .
+
+OGMS:0000073 a owl:Class ;
+    owl:equivalentClass COB:0000062 .
+
+PATO:0000001 a owl:Class ;
+    owl:equivalentClass COB:0000502 .
+
+PATO:0000125 a owl:Class ;
+    owl:equivalentClass COB:0000003 .
+
+PATO:0002193 a owl:Class ;
+    owl:equivalentClass COB:0000004 .
+
+PCO:0000000 a owl:Class ;
+    owl:equivalentClass COB:0000055 .
+
+PR:000000001 a owl:Class ;
+    owl:equivalentClass COB:0000015 .
+
+SEPIO:0000048 a owl:Class ;
+    owl:equivalentClass COB:0000123 .
 
 BFO:0000050 a owl:ObjectProperty .
 
@@ -298,90 +285,115 @@ BFO:0000066 a owl:ObjectProperty .
 
 BFO:0000067 a owl:ObjectProperty .
 
-CARO:0001008 a owl:Class .
+CHEBI:10545 a owl:Class ;
+    owl:equivalentClass COB:0000010,
+        COB:0000049 .
 
-CARO:0001010 a owl:Class .
+CHEBI:33250 a owl:Class ;
+    owl:equivalentClass COB:0000043 ;
+    skos:closeMatch COB:0000011 .
 
-CARO:0010004 a owl:Class .
+COB:0000003 a owl:Class .
 
-CHEBI:16541 a owl:Class .
+COB:0000004 a owl:Class .
 
-CHEBI:24636 a owl:Class .
+COB:0000006 a owl:Class .
 
-CHEBI:24867 a owl:Class .
+COB:0000007 a owl:Class .
 
-CHEBI:30222 a owl:Class .
+COB:0000008 a owl:Class .
 
-CHEBI:33252 a owl:Class .
+COB:0000009 a owl:Class .
 
-CHEBI:36342 a owl:Class .
+COB:0000010 a owl:Class .
 
-CL:0000000 a owl:Class .
+COB:0000012 a owl:Class .
 
-CL:0000003 a owl:Class .
+COB:0000017 a owl:Class .
 
-CL:0001034 a owl:Class .
+COB:0000018 a owl:Class .
 
-COB:0000013 skos:closeMatch CHEBI:23367,
-        CHEBI:25367 .
+COB:0000019 a owl:Class .
 
-COB:0000015 a owl:Class ;
-    owl:equivalentClass CHEBI:16541,
-        PR:000000001 .
+COB:0000021 a owl:Class .
 
-COB:0000088 a owl:Class ;
-    rdfs:seeAlso CHEBI:23888 ;
-    owl:equivalentClass DRON:0000005 .
+COB:0000025 a owl:Class .
 
-DRON:0000005 a owl:Class .
+COB:0000026 a owl:Class .
 
-ENVO:01000813 a owl:Class .
+COB:0000031 a owl:Class .
 
-ENVO:01001110 a owl:Class .
+COB:0000033 a owl:Class .
 
-ENVO:02500000 a owl:Class .
+COB:0000034 a owl:Class .
 
-GO:0003674 a owl:Class .
+COB:0000035 a owl:Class .
 
-GO:0005634 a owl:Class .
+COB:0000037 a owl:Class .
 
-GO:0008150 a owl:Class .
+COB:0000038 a owl:Class .
 
-GO:0032991 a owl:Class .
+COB:0000042 a owl:Class .
 
-IAO:0000005 a owl:Class .
+COB:0000043 a owl:Class .
 
-IAO:0000027 a owl:Class .
+COB:0000049 a owl:Class .
 
-IAO:0000030 a owl:Class .
+COB:0000055 a owl:Class .
 
-IAO:0000033 a owl:Class .
+COB:0000057 a owl:Class .
 
-IAO:0000104 a owl:Class .
+COB:0000058 a owl:Class .
+
+COB:0000061 a owl:Class .
+
+COB:0000062 a owl:Class .
+
+COB:0000063 a owl:Class .
+
+COB:0000064 a owl:Class .
+
+COB:0000065 a owl:Class .
+
+COB:0000066 a owl:Class .
+
+COB:0000067 a owl:Class .
+
+COB:0000068 a owl:Class .
+
+COB:0000069 a owl:Class .
+
+COB:0000075 a owl:Class .
+
+COB:0000076 a owl:Class .
+
+COB:0000079 a owl:Class .
+
+COB:0000101 a owl:Class .
+
+COB:0000102 a owl:Class .
+
+COB:0000103 a owl:Class .
+
+COB:0000107 a owl:Class .
+
+COB:0000108 a owl:Class .
+
+COB:0000109 a owl:Class .
+
+COB:0000110 a owl:Class .
+
+COB:0000111 a owl:Class .
+
+COB:0000112 a owl:Class .
+
+COB:0000113 a owl:Class .
+
+COB:0000114 a owl:Class .
+
+COB:0000123 a owl:Class .
 
 IAO:0000136 a owl:ObjectProperty .
-
-IAO:0000310 a owl:Class .
-
-MOP:0000543 a owl:Class .
-
-NCBITaxon:1 a owl:Class .
-
-NCBITaxon:131567 a owl:Class .
-
-OBI:0000011 a owl:Class .
-
-OBI:0000047 a owl:Class .
-
-OBI:0000066 a owl:Class .
-
-OBI:0000070 a owl:Class .
-
-OBI:0000094 a owl:Class .
-
-OBI:0000245 a owl:Class .
-
-OBI:0000260 a owl:Class .
 
 OBI:0000293 a owl:ObjectProperty .
 
@@ -390,28 +402,6 @@ OBI:0000295 a owl:ObjectProperty .
 OBI:0000299 a owl:ObjectProperty .
 
 OBI:0000312 a owl:ObjectProperty .
-
-OBI:0001909 a owl:Class .
-
-OBI:0100026 a owl:Class .
-
-OBI:0200000 a owl:Class .
-
-OGMS:0000014 a owl:Class .
-
-OGMS:0000063 a owl:Class .
-
-OGMS:0000073 a owl:Class .
-
-PATO:0000001 a owl:Class .
-
-PATO:0000125 a owl:Class .
-
-PATO:0002193 a owl:Class .
-
-PCO:0000000 a owl:Class .
-
-PR:000000001 a owl:Class .
 
 RO:0000052 a owl:ObjectProperty .
 
@@ -425,164 +415,42 @@ RO:0000058 a owl:ObjectProperty .
 
 RO:0002333 a owl:ObjectProperty .
 
-SEPIO:0000048 a owl:Class .
-
 STATO:0000102 a owl:ObjectProperty .
 
-COB:0000017 a owl:Class ;
-    owl:equivalentClass CL:0000000 .
+COB:0000088 a owl:Class ;
+    rdfs:seeAlso CHEBI:23888 .
 
-COB:0000021 a owl:Class ;
-    owl:equivalentClass CARO:0001008 .
+COB:0000015 a owl:Class .
 
-COB:0000022 a owl:Class ;
-    owl:equivalentClass CARO:0001010,
-        NCBITaxon:1,
-        OBI:0100026 .
+COB:0000118 a owl:Class .
 
-COB:0000068 a owl:Class ;
-    owl:equivalentClass ENVO:01000813 .
+COB:0000502 a owl:Class .
 
-COB:0000123 a owl:Class ;
-    owl:equivalentClass SEPIO:0000048 .
-
-CHEBI:10545 a owl:Class .
-
-CHEBI:33250 a owl:Class .
-
-COB:0000118 a owl:Class ;
-    owl:equivalentClass CARO:0010004,
-        NCBITaxon:131567 .
-
-COB:0000502 a owl:Class ;
-    owl:equivalentClass BFO:0000020,
-        PATO:0000001 .
-
-COB:0000006 a owl:Class ;
-    owl:equivalentClass BFO:0000040 .
-
-COB:0000018 a owl:Class ;
-    owl:equivalentClass CL:0000003 .
+COB:0000022 a owl:Class .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000088 ;
-    owl:annotatedTarget DRON:0000005 ;
+    owl:annotatedSource CHEBI:33252 ;
+    owl:annotatedTarget COB:0000012 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "drug product" ;
-    sssom:subject_label "drug product" .
+    sssom:object_label "atomic nucleus" ;
+    sssom:subject_label "atomic nucleus" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000025 ;
-    owl:annotatedTarget OBI:0000245 ;
+    owl:annotatedSource PATO:0000125 ;
+    owl:annotatedTarget COB:0000003 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "organization" ;
-    sssom:subject_label "organization" .
+    sssom:object_label "mass" ;
+    sssom:subject_label "mass" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000123 ;
-    owl:annotatedTarget SEPIO:0000048 ;
+    owl:annotatedSource BFO:0000041 ;
+    owl:annotatedTarget COB:0000031 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "agent role" ;
-    sssom:subject_label "agent role" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000110 ;
-    owl:annotatedTarget OBI:0000094 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "material processing" ;
-    sssom:subject_label "material processing" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource PO:0000003 ;
-    owl:annotatedTarget COB:0000118 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "cellular organism" ;
-    sssom:subject_label "whole plant" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource CHEBI:50906 ;
-    owl:annotatedTarget COB:0000502 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "characteristic" ;
-    sssom:subject_label "role" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000103 ;
-    owl:annotatedTarget GO:0005634 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "nucleus" ;
-    sssom:subject_label "cell nucleus" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000063 ;
-    owl:annotatedTarget OGMS:0000014 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "clinical finding" ;
-    sssom:subject_label "phenotypic finding" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000114 ;
-    owl:annotatedTarget BFO:0000023 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "role" ;
-    sssom:subject_label "role" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000086 ;
-    owl:annotatedTarget STATO:0000102 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "executes" ;
-    sssom:subject_label "executes" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource PO:0009002 ;
-    owl:annotatedTarget COB:0000017 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "cell" ;
-    sssom:subject_label "plant cell" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000047 ;
-    owl:annotatedTarget BFO:0000051 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "has part" ;
-    sssom:subject_label "has part" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000015 ;
-    owl:annotatedTarget PR:000000001 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "protein" ;
-    sssom:subject_label "protein" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000062 ;
-    owl:annotatedTarget OGMS:0000073 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "diagnosis" ;
-    sssom:subject_label "disease diagnosis" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000049 ;
-    owl:annotatedTarget CHEBI:10545 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "nucleic acid" ;
-    sssom:subject_label "nucleic acid polymer" .
+    sssom:object_label "immaterial entity" ;
+    sssom:subject_label "immaterial entity" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty rdfs:subClassOf ;
@@ -594,51 +462,59 @@ COB:0000018 a owl:Class ;
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000006 ;
-    owl:annotatedTarget BFO:0000040 ;
+    owl:annotatedSource PCO:0000000 ;
+    owl:annotatedTarget COB:0000055 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "collection of organisms" ;
+    sssom:subject_label "collection of organisms" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty skos:closeMatch ;
+    owl:annotatedSource CHEBI:25367 ;
+    owl:annotatedTarget COB:0000013 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "molecular entity" ;
+    sssom:subject_label "molecule" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000029 ;
+    owl:annotatedTarget BFO:0000054 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "realized in" ;
+    sssom:subject_label "realized in" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000086 ;
+    owl:annotatedTarget STATO:0000102 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "executes" ;
+    sssom:subject_label "executes" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource DRON:0000005 ;
+    owl:annotatedTarget COB:0000088 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "drug product" ;
+    sssom:subject_label "drug product" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource IAO:0000104 ;
+    owl:annotatedTarget COB:0000079 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "plan specification" ;
+    sssom:subject_label "plan specification" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource BFO:0000040 ;
+    owl:annotatedTarget COB:0000006 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "material entity" ;
     sssom:subject_label "material entity" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000017 ;
-    owl:annotatedTarget CL:0000000 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "cell" ;
-    sssom:subject_label "cell" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000113 ;
-    owl:annotatedTarget OBI:0000260 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "plan" ;
-    sssom:subject_label "plan" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource PO:0025606 ;
-    owl:annotatedTarget COB:0000018 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "native cell" ;
-    sssom:subject_label "native plant cell" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource COB:0000116 ;
-    owl:annotatedTarget owl:Thing ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "owl:Thing" ;
-    sssom:subject_label "cellular membrane" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000010 ;
-    owl:annotatedTarget CHEBI:10545 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "electron" ;
-    sssom:subject_label "electron" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty rdfs:seeAlso ;
@@ -650,307 +526,59 @@ COB:0000018 a owl:Class ;
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000022 ;
-    owl:annotatedTarget OBI:0100026 ;
+    owl:annotatedSource BFO:0000015 ;
+    owl:annotatedTarget COB:0000034 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "organism" ;
-    sssom:subject_label "organism" .
+    sssom:object_label "process" ;
+    sssom:subject_label "process" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000102 ;
-    owl:annotatedTarget IAO:0000027 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "data item" ;
-    sssom:subject_label "data item" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000111 ;
-    owl:annotatedTarget BFO:0000016 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "disposition" ;
-    sssom:subject_label "disposition" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000043 ;
-    owl:annotatedTarget CHEBI:33250 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "atom" ;
-    sssom:subject_label "uncharged atom" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000057 ;
-    owl:annotatedTarget BFO:0000029 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "site" ;
-    sssom:subject_label "site" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty skos:closeMatch ;
-    owl:annotatedSource COB:0000013 ;
-    owl:annotatedTarget CHEBI:25367 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "molecule" ;
-    sssom:subject_label "molecular entity" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000079 ;
-    owl:annotatedTarget IAO:0000104 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "plan specification" ;
-    sssom:subject_label "plan specification" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource COB:0000073 ;
-    owl:annotatedTarget owl:Thing ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "owl:Thing" ;
-    sssom:subject_label "gene product" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000008 ;
-    owl:annotatedTarget CHEBI:24636 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "proton" ;
-    sssom:subject_label "proton" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000019 ;
-    owl:annotatedTarget CL:0001034 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "cell in vitro" ;
-    sssom:subject_label "cell in vitro" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource GEO:000000370 ;
-    owl:annotatedTarget COB:0000068 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "geophysical entity" ;
-    sssom:subject_label "geographical entity" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000061 ;
-    owl:annotatedTarget IAO:0000030 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "information content entity" ;
-    sssom:subject_label "information" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000003 ;
-    owl:annotatedTarget PATO:0000125 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "mass" ;
-    sssom:subject_label "mass" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000018 ;
-    owl:annotatedTarget CL:0000003 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "native cell" ;
-    sssom:subject_label "native cell" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000074 ;
-    owl:annotatedTarget RO:0002333 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "enabled by" ;
-    sssom:subject_label "enabled by" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000118 ;
-    owl:annotatedTarget CARO:0010004 ;
+    owl:annotatedSource NCBITaxon:131567 ;
+    owl:annotatedTarget COB:0000118 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "cellular organism" ;
-    sssom:subject_label "cellular organism" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource OBI:0000202 ;
-    owl:annotatedTarget COB:0000123 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "agent role" ;
-    sssom:subject_label "investigation agent role" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000029 ;
-    owl:annotatedTarget BFO:0000054 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "realized in" ;
-    sssom:subject_label "realized in" .
+    sssom:subject_label "cellular organisms" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000031 ;
-    owl:annotatedTarget BFO:0000041 ;
+    owl:annotatedSource CARO:0001010 ;
+    owl:annotatedTarget COB:0000022 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "immaterial entity" ;
-    sssom:subject_label "immaterial entity" .
+    sssom:object_label "organism" ;
+    sssom:subject_label "organism or virus or viroid" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subPropertyOf ;
+    owl:annotatedSource COB:0000511 ;
+    owl:annotatedTarget owl:topObjectProperty ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "topObjectProperty" ;
+    sssom:subject_label "has quantity" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000112 ;
-    owl:annotatedTarget BFO:0000034 ;
+    owl:annotatedSource CHEBI:10545 ;
+    owl:annotatedTarget COB:0000010 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "electron" ;
+    sssom:subject_label "electron" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource BFO:0000034 ;
+    owl:annotatedTarget COB:0000112 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "function" ;
     sssom:subject_label "function" .
 
 [] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000071 ;
-    owl:annotatedTarget BFO:0000066 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "occurs in" ;
-    sssom:subject_label "occurs in" .
-
-[] a owl:Axiom ;
     owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource UBERON:0010000 ;
-    owl:annotatedTarget COB:0000021 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "gross anatomical part" ;
-    sssom:subject_label "multicellular anatomical structure" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000026 ;
-    owl:annotatedTarget OBI:0000047 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "processed material" ;
-    sssom:subject_label "processed material entity" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource SO:0001260 ;
-    owl:annotatedTarget COB:0000006 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "material entity" ;
-    sssom:subject_label "sequence_collection" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000009 ;
-    owl:annotatedTarget CHEBI:30222 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "neutron" ;
-    sssom:subject_label "neutron" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource COB:0000020 ;
+    owl:annotatedSource COB:0000005 ;
     owl:annotatedTarget owl:Thing ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "owl:Thing" ;
-    sssom:subject_label "subcellular structure" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000069 ;
-    owl:annotatedTarget IAO:0000033 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "directive information entity" ;
-    sssom:subject_label "directive information entity" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource COB:0000080 ;
-    owl:annotatedTarget owl:Thing ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "owl:Thing" ;
-    sssom:subject_label "complex of molecular entities" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource UBERON:0000468 ;
-    owl:annotatedTarget COB:0000118 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "cellular organism" ;
-    sssom:subject_label "multicellular organism" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000021 ;
-    owl:annotatedTarget CARO:0001008 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "gross anatomical part" ;
-    sssom:subject_label "gross anatomical part" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000067 ;
-    owl:annotatedTarget ENVO:01001110 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "ecosystem" ;
-    sssom:subject_label "ecosystem" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000033 ;
-    owl:annotatedTarget BFO:0000017 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "realizable entity" ;
-    sssom:subject_label "realizable" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000040 ;
-    owl:annotatedTarget OBI:0000299 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "has_specified_output" ;
-    sssom:subject_label "has specified output" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000075 ;
-    owl:annotatedTarget GO:0032991 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "protein-containing complex" ;
-    sssom:subject_label "protein-containing macromolecular complex" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000502 ;
-    owl:annotatedTarget PATO:0000001 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "quality" ;
-    sssom:subject_label "characteristic" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000065 ;
-    owl:annotatedTarget ENVO:02500000 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "environmental system process" ;
-    sssom:subject_label "environmental process" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000513 ;
-    owl:annotatedTarget IAO:0000136 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "is about" ;
-    sssom:subject_label "is about" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000055 ;
-    owl:annotatedTarget PCO:0000000 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "collection of organisms" ;
-    sssom:subject_label "collection of organisms" .
+    sssom:subject_label "elementary charge" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
@@ -962,47 +590,171 @@ COB:0000018 a owl:Class ;
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000066 ;
-    owl:annotatedTarget MOP:0000543 ;
+    owl:annotatedSource PATO:0000001 ;
+    owl:annotatedTarget COB:0000502 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "molecular process" ;
-    sssom:subject_label "physico-chemical process" .
+    sssom:object_label "characteristic" ;
+    sssom:subject_label "quality" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000015 ;
-    owl:annotatedTarget CHEBI:16541 ;
+    owl:annotatedSource OGMS:0000073 ;
+    owl:annotatedTarget COB:0000062 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "protein polypeptide chain" ;
-    sssom:subject_label "protein" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty skos:closeMatch ;
-    owl:annotatedSource COB:0000013 ;
-    owl:annotatedTarget CHEBI:23367 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "molecular entity" ;
-    sssom:subject_label "molecular entity" .
-
-[] a owl:Ontology ;
-    dc1:license "https://creativecommons.org/publicdomain/zero/1.0/"^^xsd:anyURI ;
-    sssom:mapping_set_id "http://purl.obolibrary.org/obo/cob/components/cob-to-external.tsv"^^xsd:anyURI .
+    sssom:object_label "disease diagnosis" ;
+    sssom:subject_label "diagnosis" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000070 ;
-    owl:annotatedTarget RO:0000057 ;
+    owl:annotatedSource COB:0000071 ;
+    owl:annotatedTarget BFO:0000066 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "has participant" ;
-    sssom:subject_label "has participant" .
+    sssom:object_label "occurs in" ;
+    sssom:subject_label "occurs in" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000108 ;
-    owl:annotatedTarget OBI:0200000 ;
+    owl:annotatedSource OGMS:0000063 ;
+    owl:annotatedTarget COB:0000064 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "data transformation" ;
-    sssom:subject_label "data transformation" .
+    sssom:object_label "disease course" ;
+    sssom:subject_label "disease course" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0000066 ;
+    owl:annotatedTarget COB:0000109 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "investigation" ;
+    sssom:subject_label "investigation" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource BFO:0000020 ;
+    owl:annotatedTarget COB:0000502 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "characteristic" ;
+    sssom:subject_label "specifically dependent continuant" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0000070 ;
+    owl:annotatedTarget COB:0000107 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "assay" ;
+    sssom:subject_label "assay" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty rdfs:subClassOf ;
+    owl:annotatedSource COB:0000116 ;
+    owl:annotatedTarget owl:Thing ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "cellular membrane" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000513 ;
+    owl:annotatedTarget IAO:0000136 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is about" ;
+    sssom:subject_label "is about" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000036 ;
+    owl:annotatedTarget BFO:0000067 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "contains process" ;
+    sssom:subject_label "contains process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000002 ;
+    owl:annotatedTarget RO:0000058 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is concretized as" ;
+    sssom:subject_label "is concretized as" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0000260 ;
+    owl:annotatedTarget COB:0000113 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "plan" ;
+    sssom:subject_label "plan" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource IAO:0000310 ;
+    owl:annotatedTarget COB:0000101 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "document" ;
+    sssom:subject_label "document" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CHEBI:24867 ;
+    owl:annotatedTarget COB:0000042 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "monoatomic ion" ;
+    sssom:subject_label "monoatomic ion" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource GO:0003674 ;
+    owl:annotatedTarget COB:0000038 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "gene product or complex activity" ;
+    sssom:subject_label "molecular function" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CARO:0010004 ;
+    owl:annotatedTarget COB:0000118 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cellular organism" ;
+    sssom:subject_label "cellular organism" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource NCBITaxon:1 ;
+    owl:annotatedTarget COB:0000022 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "organism" ;
+    sssom:subject_label "root" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource ENVO:02500000 ;
+    owl:annotatedTarget COB:0000065 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "environmental process" ;
+    sssom:subject_label "environmental system process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000074 ;
+    owl:annotatedTarget RO:0002333 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "enabled by" ;
+    sssom:subject_label "enabled by" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CL:0001034 ;
+    owl:annotatedTarget COB:0000019 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cell in vitro" ;
+    sssom:subject_label "cell in vitro" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CHEBI:33250 ;
+    owl:annotatedTarget COB:0000043 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "uncharged atom" ;
+    sssom:subject_label "atom" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
@@ -1014,123 +766,179 @@ COB:0000018 a owl:Class ;
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000004 ;
-    owl:annotatedTarget PATO:0002193 ;
+    owl:annotatedSource IAO:0000030 ;
+    owl:annotatedTarget COB:0000061 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "electric" ;
-    sssom:subject_label "charge" .
+    sssom:object_label "information" ;
+    sssom:subject_label "information content entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource GO:0005634 ;
+    owl:annotatedTarget COB:0000103 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cell nucleus" ;
+    sssom:subject_label "nucleus" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource XAO:0003012 ;
-    owl:annotatedTarget COB:0000018 ;
+    owl:annotatedSource COB:0000073 ;
+    owl:annotatedTarget owl:Thing ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "native cell" ;
-    sssom:subject_label "xenopus cell" .
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "gene product" .
 
 [] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000038 ;
-    owl:annotatedTarget GO:0003674 ;
+    owl:annotatedProperty skos:closeMatch ;
+    owl:annotatedSource CHEBI:33250 ;
+    owl:annotatedTarget COB:0000011 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "molecular function" ;
-    sssom:subject_label "gene product or complex activity" .
+    sssom:object_label "atom" ;
+    sssom:subject_label "atom" .
 
 [] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000502 ;
-    owl:annotatedTarget BFO:0000020 ;
+    owl:annotatedProperty skos:closeMatch ;
+    owl:annotatedSource CHEBI:23367 ;
+    owl:annotatedTarget COB:0000013 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "specifically dependent continuant" ;
-    sssom:subject_label "characteristic" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000034 ;
-    owl:annotatedTarget BFO:0000015 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "process" ;
-    sssom:subject_label "process" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subPropertyOf ;
-    owl:annotatedSource COB:0000511 ;
-    owl:annotatedTarget owl:topObjectProperty ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "topObjectProperty" ;
-    sssom:subject_label "has quantity" .
+    sssom:object_label "molecular entity" ;
+    sssom:subject_label "molecular entity" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource UBERON:0000466 ;
-    owl:annotatedTarget COB:0000056 ;
+    owl:annotatedSource COB:0000080 ;
+    owl:annotatedTarget owl:Thing ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "immaterial anatomical entity" ;
-    sssom:subject_label "immaterial anatomical entity" .
+    sssom:object_label "owl:Thing" ;
+    sssom:subject_label "complex of molecular entities" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000039 ;
-    owl:annotatedTarget OBI:0000293 ;
+    owl:annotatedSource COB:0000023 ;
+    owl:annotatedTarget RO:0000052 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "has_specified_input" ;
-    sssom:subject_label "has specified input" .
+    sssom:object_label "inheres in" ;
+    sssom:subject_label "characteristic of" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000012 ;
-    owl:annotatedTarget CHEBI:33252 ;
+    owl:annotatedSource PR:000000001 ;
+    owl:annotatedTarget COB:0000015 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "atomic nucleus" ;
-    sssom:subject_label "atomic nucleus" .
+    sssom:object_label "protein" ;
+    sssom:subject_label "protein" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000109 ;
-    owl:annotatedTarget OBI:0000066 ;
+    owl:annotatedSource MOP:0000543 ;
+    owl:annotatedTarget COB:0000066 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "investigation" ;
-    sssom:subject_label "investigation" .
+    sssom:object_label "physico-chemical process" ;
+    sssom:subject_label "molecular process" .
 
 [] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource ZFA:0009000 ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource SEPIO:0000048 ;
+    owl:annotatedTarget COB:0000123 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "agent role" ;
+    sssom:subject_label "agent role" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CARO:0001008 ;
+    owl:annotatedTarget COB:0000021 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "gross anatomical part" ;
+    sssom:subject_label "gross anatomical part" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CHEBI:10545 ;
+    owl:annotatedTarget COB:0000049 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "nucleic acid polymer" ;
+    sssom:subject_label "nucleic acid" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CL:0000003 ;
     owl:annotatedTarget COB:0000018 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "native cell" ;
-    sssom:subject_label "zebrafish cell" .
+    sssom:subject_label "native cell" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000107 ;
-    owl:annotatedTarget OBI:0000070 ;
+    owl:annotatedSource PATO:0002193 ;
+    owl:annotatedTarget COB:0000004 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "assay" ;
-    sssom:subject_label "assay" .
+    sssom:object_label "charge" ;
+    sssom:subject_label "electric" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource IAO:0000033 ;
+    owl:annotatedTarget COB:0000069 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "directive information entity" ;
+    sssom:subject_label "directive information entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource GO:0032991 ;
+    owl:annotatedTarget COB:0000075 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "protein-containing macromolecular complex" ;
+    sssom:subject_label "protein-containing complex" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0000047 ;
+    owl:annotatedTarget COB:0000026 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "processed material entity" ;
+    sssom:subject_label "processed material" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000002 ;
-    owl:annotatedTarget RO:0000058 ;
+    owl:annotatedSource COB:0000070 ;
+    owl:annotatedTarget RO:0000057 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "is concretized as" ;
-    sssom:subject_label "is concretized as" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource SO:0000400 ;
-    owl:annotatedTarget COB:0000502 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "characteristic" ;
-    sssom:subject_label "sequence_attribute" .
+    sssom:object_label "has participant" ;
+    sssom:subject_label "has participant" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000037 ;
-    owl:annotatedTarget GO:0008150 ;
+    owl:annotatedSource CHEBI:36342 ;
+    owl:annotatedTarget COB:0000007 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "biological process" ;
-    sssom:subject_label "biological process" .
+    sssom:object_label "subatomic particle" ;
+    sssom:subject_label "subatomic particle" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0001909 ;
+    owl:annotatedTarget COB:0000058 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "conclusion based on data" ;
+    sssom:subject_label "conclusion based on data" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource BFO:0000016 ;
+    owl:annotatedTarget COB:0000111 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "disposition" ;
+    sssom:subject_label "disposition" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000040 ;
+    owl:annotatedTarget OBI:0000299 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has_specified_output" ;
+    sssom:subject_label "has specified output" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
@@ -1142,147 +950,123 @@ COB:0000018 a owl:Class ;
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000101 ;
-    owl:annotatedTarget IAO:0000310 ;
+    owl:annotatedSource OBI:0100026 ;
+    owl:annotatedTarget COB:0000022 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "document" ;
-    sssom:subject_label "document" .
+    sssom:object_label "organism" ;
+    sssom:subject_label "organism" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000076 ;
-    owl:annotatedTarget IAO:0000005 ;
+    owl:annotatedSource BFO:0000017 ;
+    owl:annotatedTarget COB:0000033 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "realizable" ;
+    sssom:subject_label "realizable entity" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0000245 ;
+    owl:annotatedTarget COB:0000025 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "organization" ;
+    sssom:subject_label "organization" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CL:0000000 ;
+    owl:annotatedTarget COB:0000017 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "cell" ;
+    sssom:subject_label "cell" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource IAO:0000027 ;
+    owl:annotatedTarget COB:0000102 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "data item" ;
+    sssom:subject_label "data item" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CHEBI:30222 ;
+    owl:annotatedTarget COB:0000009 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "neutron" ;
+    sssom:subject_label "neutron" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000039 ;
+    owl:annotatedTarget OBI:0000293 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has_specified_input" ;
+    sssom:subject_label "has specified input" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CHEBI:16541 ;
+    owl:annotatedTarget COB:0000015 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "protein" ;
+    sssom:subject_label "protein polypeptide chain" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OGMS:0000014 ;
+    owl:annotatedTarget COB:0000063 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "phenotypic finding" ;
+    sssom:subject_label "clinical finding" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource CHEBI:24636 ;
+    owl:annotatedTarget COB:0000008 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "proton" ;
+    sssom:subject_label "proton" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0200000 ;
+    owl:annotatedTarget COB:0000108 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "data transformation" ;
+    sssom:subject_label "data transformation" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource IAO:0000005 ;
+    owl:annotatedTarget COB:0000076 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "objective specification" ;
     sssom:subject_label "objective specification" .
 
 [] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource BFO:0000029 ;
+    owl:annotatedTarget COB:0000057 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "site" ;
+    sssom:subject_label "site" .
+
+[] a owl:Axiom ;
     owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource COB:0000005 ;
+    owl:annotatedSource COB:0000020 ;
     owl:annotatedTarget owl:Thing ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
     sssom:object_label "owl:Thing" ;
-    sssom:subject_label "elementary charge" .
+    sssom:subject_label "subcellular structure" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000022 ;
-    owl:annotatedTarget CARO:0001010 ;
+    owl:annotatedSource GO:0008150 ;
+    owl:annotatedTarget COB:0000037 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "organism or virus or viroid" ;
-    sssom:subject_label "organism" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000023 ;
-    owl:annotatedTarget RO:0000052 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "inheres in" ;
-    sssom:subject_label "characteristic of" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource SO:0000110 ;
-    owl:annotatedTarget COB:0000006 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "material entity" ;
-    sssom:subject_label "sequence_feature" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000027 ;
-    owl:annotatedTarget OBI:0000295 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "is_specified_input_of" ;
-    sssom:subject_label "is specified input of" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000068 ;
-    owl:annotatedTarget ENVO:01000813 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "astronomical body part" ;
-    sssom:subject_label "geophysical entity" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000042 ;
-    owl:annotatedTarget CHEBI:24867 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "monoatomic ion" ;
-    sssom:subject_label "monoatomic ion" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource SO:0001060 ;
-    owl:annotatedTarget COB:0000006 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "material entity" ;
-    sssom:subject_label "sequence_variant" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subClassOf ;
-    owl:annotatedSource PO:0025117 ;
-    owl:annotatedTarget COB:0000056 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "immaterial anatomical entity" ;
-    sssom:subject_label "plant anatomical space" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000058 ;
-    owl:annotatedTarget OBI:0001909 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "conclusion based on data" ;
-    sssom:subject_label "conclusion based on data" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000035 ;
-    owl:annotatedTarget OBI:0000011 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "planned process" ;
-    sssom:subject_label "planned process" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentProperty ;
-    owl:annotatedSource COB:0000036 ;
-    owl:annotatedTarget BFO:0000067 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "contains process" ;
-    sssom:subject_label "contains process" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000022 ;
-    owl:annotatedTarget NCBITaxon:1 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "root" ;
-    sssom:subject_label "organism" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000118 ;
-    owl:annotatedTarget NCBITaxon:131567 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "cellular organisms" ;
-    sssom:subject_label "cellular organism" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty rdfs:subPropertyOf ;
-    owl:annotatedSource COB:0000016 ;
-    owl:annotatedTarget owl:topObjectProperty ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "topObjectProperty" ;
-    sssom:subject_label "executed by" .
-
-[] a owl:Axiom ;
-    owl:annotatedProperty skos:closeMatch ;
-    owl:annotatedSource COB:0000011 ;
-    owl:annotatedTarget CHEBI:33250 ;
-    sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "atom" ;
-    sssom:subject_label "atom" .
+    sssom:object_label "biological process" ;
+    sssom:subject_label "biological process" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentProperty ;
@@ -1293,19 +1077,67 @@ COB:0000018 a owl:Class ;
     sssom:subject_label "is specified output of" .
 
 [] a owl:Axiom ;
-    owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000007 ;
-    owl:annotatedTarget CHEBI:36342 ;
+    owl:annotatedProperty rdfs:subPropertyOf ;
+    owl:annotatedSource COB:0000016 ;
+    owl:annotatedTarget owl:topObjectProperty ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "subatomic particle" ;
-    sssom:subject_label "subatomic particle" .
+    sssom:object_label "topObjectProperty" ;
+    sssom:subject_label "executed by" .
 
 [] a owl:Axiom ;
     owl:annotatedProperty owl:equivalentClass ;
-    owl:annotatedSource COB:0000064 ;
-    owl:annotatedTarget OGMS:0000063 ;
+    owl:annotatedSource OBI:0000094 ;
+    owl:annotatedTarget COB:0000110 ;
     sssom:mapping_justification semapv:ManualMappingCuration ;
-    sssom:object_label "disease course" ;
-    sssom:subject_label "disease course" .
+    sssom:object_label "material processing" ;
+    sssom:subject_label "material processing" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource OBI:0000011 ;
+    owl:annotatedTarget COB:0000035 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "planned process" ;
+    sssom:subject_label "planned process" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource BFO:0000023 ;
+    owl:annotatedTarget COB:0000114 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "role" ;
+    sssom:subject_label "role" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000047 ;
+    owl:annotatedTarget BFO:0000051 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "has part" ;
+    sssom:subject_label "has part" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource ENVO:01000813 ;
+    owl:annotatedTarget COB:0000068 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "geophysical entity" ;
+    sssom:subject_label "astronomical body part" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentClass ;
+    owl:annotatedSource ENVO:01001110 ;
+    owl:annotatedTarget COB:0000067 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "ecosystem" ;
+    sssom:subject_label "ecosystem" .
+
+[] a owl:Axiom ;
+    owl:annotatedProperty owl:equivalentProperty ;
+    owl:annotatedSource COB:0000027 ;
+    owl:annotatedTarget OBI:0000295 ;
+    sssom:mapping_justification semapv:ManualMappingCuration ;
+    sssom:object_label "is_specified_input_of" ;
+    sssom:subject_label "is specified input of" .
 
 

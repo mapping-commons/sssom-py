@@ -15,7 +15,6 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
-from linkml.validator.report import Severity
 from rdflib import Graph, URIRef
 from typing_extensions import ParamSpec
 
@@ -53,7 +52,12 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .validators import format_report, print_linkml_report
+from .validators import (
+    SSSOMValidationError,
+    format_validation_results,
+    get_failing_results,
+    print_linkml_report,
+)
 from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint_app, write_table
 
 logging = _logging.getLogger(__name__)
@@ -121,7 +125,7 @@ condense_option = click.option(
 )
 
 
-@click.group()
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("-v", "--verbose", count=True)
 @click.option("-q", "--quiet")
 @click.version_option(__version__)
@@ -182,7 +186,6 @@ def convert(
     "--prefix-map-mode",
     default="metadata_only",
     show_default=True,
-    required=True,
     type=click.Choice(get_args(MergeMode), case_sensitive=False),
     help="Defines whether the prefix map in the metadata should be extended or replaced with "
     "the SSSOM default prefix map.",
@@ -192,14 +195,14 @@ def convert(
     "--clean-prefixes / --no-clean-prefixes",
     default=True,
     is_flag=True,
-    required=True,
-    help="If True (default), records with unknown prefixes are removed from the SSSOM file.",
+    help="If True (default), prefixes the mapping set does not use are removed from its curie_map.",
 )
 @click.option(
     "--strict-clean-prefixes / --no-strict-clean-prefixes",
     default=True,
     is_flag=True,
-    help="If True (default), `clean_prefixes(strict = True)`.",
+    help="If True (default), --clean-prefixes fails on a used prefix that the prefix map does not "
+    "declare. If False, it declares the prefix with a placeholder IRI.",
 )
 @click.option(
     "-E",
@@ -258,7 +261,8 @@ def parse(
     type=click.Choice(["pretty", "raw"]),
     default="pretty",
     show_default=True,
-    help="How to render the validation report. 'pretty' prints one line per unique problem; 'raw' uses LinkML's default per-error logging.",
+    help="How to show the problems. 'pretty' lists each problem once in the error message; "
+    "'raw' logs every result as LinkML reports it.",
 )
 @propagate_option
 def validate(
@@ -269,26 +273,25 @@ def validate(
 ) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
-    reports = validate_file(
-        input_path=input,
-        validation_types=validation_type_list,
-        fail_on_error=False,
-        propagate=propagate,
-    )
-    has_errors = False
-    for vt, report in reports.items():
-        if any(r.severity in (Severity.FATAL, Severity.ERROR) for r in report.results):
-            has_errors = True
-        if report_format == "raw":
+    if report_format == "raw":
+        reports = validate_file(
+            input_path=input,
+            validation_types=validation_type_list,
+            fail_on_error=False,
+            propagate=propagate,
+        )
+        for report in reports.values():
             print_linkml_report(report, fail_on_error=False)
-            continue
-        formatted = format_report(report, label=vt.name)
-        if formatted:
-            click.echo(formatted)
-    if not has_errors:
-        click.echo("No issues found.")
-    else:
-        sys.exit(1)
+        failing = get_failing_results(reports.values())
+        if failing:
+            # The problems are already logged, so the error only summarizes them.
+            error = SSSOMValidationError(failing)
+            raise click.ClickException(error.message) from error
+        return
+    try:
+        validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
+    except SSSOMValidationError as e:
+        raise click.ClickException(format_validation_results(e.results)) from e
 
 
 @main.command()
@@ -590,9 +593,29 @@ def merge(
 
 
 @main.command(help="""\
-Example:
+Rewire an RDF graph, such as an OWL ontology, by replacing every mapped entity with its mapping
+partner. A graph expressed in one vocabulary is then expressed in another.
 
-$ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv --precedence PR
+The command applies each mapping from subject to object: it replaces the mapping's subject with
+the mapping's object wherever the subject occurs in the graph. It uses only mappings with a chosen
+predicate. By default these are owl:equivalentClass and owl:equivalentProperty, and the
+--predicates option chooses others in their place. Only the equivalences keep the graph's
+meaning. A skos:broadMatch mapping, for example, puts the broader entity in every triple about the
+narrower one, including the triples that describe it. Negated mappings, and mappings to
+sssom:NoTermFound, are skipped. When no mapping is left to rewire by, the command warns, or fails
+with --strict.
+
+When an entity has several candidate replacements, the command chooses the one under the
+predicate listed first in --predicates, so their order is the order of preference. The two
+default predicates are equally preferred. When candidates are equally preferred, --precedence
+chooses between them by the prefix of the replacement. Without --precedence, the command fails
+because the choice is ambiguous.
+
+Examples:
+
+\b
+$ sssom rewire -I xml -m tests/data/cob-to-external.tsv --precedence PR tests/data/cob.owl
+$ sssom rewire -m tests/data/rewire-predicates.tsv --predicates skos:exactMatch tests/data/rewire-predicates.ttl
 """)
 @input_argument
 @click.option("-m", "--mapping-file", help="Path to SSSOM file.")
@@ -603,20 +626,53 @@ $ sssom rewire -I xml  -i tests/data/cob.owl -m tests/data/cob-to-external.tsv -
     multiple=True,
     help="List of prefixes in order of precedence.",
 )
+@click.option(
+    "--predicates",
+    multiple=True,
+    help="Mapping predicates to rewire by, as CURIEs or IRIs, in order of preference, in place of "
+    "the default ones. Repeat the option, or separate the values with commas.",
+)
+@click.option(
+    "--strict",
+    is_flag=True,
+    help="Fail, instead of only warning, when no mapping is left to rewire by.",
+)
 @output_option
 def rewire(
     input: str,
     mapping_file: str,
     precedence: list[str],
+    predicates: tuple[str, ...],
+    strict: bool,
     output: TextIO,
     input_format: str,
     output_format: str,
 ) -> None:
-    """Rewire an ontology using equivalent classes/properties from a mapping file."""
+    """Rewire an RDF graph using the mappings in a mapping file.
+
+    :param input: Path to the RDF graph to rewire.
+    :param mapping_file: Path to the SSSOM mapping file.
+    :param precedence: Prefixes in order of preference, used to decide between candidate
+        replacements.
+    :param predicates: Mapping predicates to rewire by, in order of preference. Each value may be
+        a comma-separated list.
+    :param strict: Whether to fail when no mapping is left to rewire by.
+    :param output: Where to write the rewired graph.
+    :param input_format: The RDF serialisation of the input graph.
+    :param output_format: The RDF serialisation to write.
+    """
     msdf = parse_sssom_table(mapping_file)
     g = Graph()
     g.parse(input, format=input_format)
-    rewire_graph(g, msdf, precedence=precedence)
+    # Split comma-separated values, keeping their order, which is the order of preference. With no
+    # --predicates, rewire_graph uses its defaults.
+    chosen = [p.strip() for value in predicates for p in value.split(",") if p.strip()]
+    # Show a predicate that does not expand, an ambiguity or a --strict failure as a one-line
+    # error, not a traceback.
+    try:
+        rewire_graph(g, msdf, precedence=precedence, predicates=chosen or None, strict=strict)
+    except ValueError as e:
+        raise click.ClickException(str(e)) from e
     rdfstr = g.serialize(format=output_format)
     print(rdfstr, file=output)
 

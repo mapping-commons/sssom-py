@@ -37,7 +37,6 @@ EXTENDED_PREFIX_MAP = HERE / "obo.epm.json"
 OWL_EQUIV_CLASS_URI = "http://www.w3.org/2002/07/owl#equivalentClass"
 RDFS_SUBCLASS_OF_URI = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
 RDF_TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-SSSOM_SUPERCLASS_OF_URI = "http://w3id.org/sssom/superClassOf"
 SKOS_EXACT_MATCH_URI = "http://www.w3.org/2004/02/skos/core#exactMatch"
 SKOS_CLOSE_MATCH_URI = "http://www.w3.org/2004/02/skos/core#closeMatch"
 SKOS_BROAD_MATCH_URI = "http://www.w3.org/2004/02/skos/core#broadMatch"
@@ -158,13 +157,11 @@ CROSS_SPECIES_NARROW_MATCH = "semapv:crossSpeciesNarrowMatch"
 CROSS_SPECIES_BROAD_MATCH = "semapv:crossSpeciesBroadMatch"
 RDF_SEE_ALSO = "rdfs:seeAlso"
 RDF_TYPE = "rdf:type"
-SSSOM_SUPERCLASS_OF = "sssom:superClassOf"
 
 PREDICATE_LIST = [
     OWL_EQUIVALENT_CLASS,
     OWL_EQUIVALENT_PROPERTY,
     RDFS_SUBCLASS_OF,
-    SSSOM_SUPERCLASS_OF,
     RDFS_SUBPROPERTY_OF,
     OWL_SAME_AS,
     SKOS_EXACT_MATCH,

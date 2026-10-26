@@ -31,9 +31,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
-from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
-from packaging.version import parse
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
 from typing_extensions import TypedDict
@@ -69,7 +67,6 @@ from .constants import (
     SKOS_EXACT_MATCH,
     SKOS_NARROW_MATCH,
     SKOS_RELATED_MATCH,
-    SSSOM_SUPERCLASS_OF,
     SSSOM_URI_PREFIX,
     SUBJECT_CATEGORY,
     SUBJECT_ID,
@@ -105,12 +102,8 @@ URI_SSSOM_MAPPINGS = f"{SSSOM_URI_PREFIX}mappings"
 KEY_FEATURES = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID, PREDICATE_MODIFIER]
 TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
-# ! This will be unnecessary when pandas >= 3.0.0 is released
-# ! https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.infer_objects.html#
-# A value is trying to be set on a copy of a slice from a DataFrame
+# Enable copy-on-write for pandas 2.x (default in pandas 3.x).
 pd.options.mode.copy_on_write = True
-# Get the version of pandas as a tuple of integers
-pandas_version = parse(pd.__version__).release  # Returns (major, minor, micro)
 
 
 @dataclass
@@ -195,12 +188,7 @@ class MappingSetDataFrame:
         }
         non_double_cols = df.loc[:, ~df.columns.isin(slots_with_double_as_range)]
 
-        if pandas_version >= (2, 0, 0):
-            # For pandas >= 2.0.0, use the 'copy' parameter
-            non_double_cols = non_double_cols.infer_objects(copy=False)
-        else:
-            # For pandas < 2.0.0, call 'infer_objects()' without any parameters
-            non_double_cols = non_double_cols.infer_objects()
+        non_double_cols = non_double_cols.infer_objects()
 
         non_double_cols.replace(np.nan, "", inplace=True)
         df.update(non_double_cols)
@@ -1007,8 +995,6 @@ def dataframe_to_ptable(
             predicate_type = PREDICATE_SUBCLASS
         elif predicate == SKOS_BROAD_MATCH:
             predicate_type = PREDICATE_SUBCLASS
-        elif predicate == SSSOM_SUPERCLASS_OF:
-            predicate_type = PREDICATE_SUPERCLASS
         elif predicate == SKOS_NARROW_MATCH:
             predicate_type = PREDICATE_SUPERCLASS
         elif predicate == OWL_DIFFERENT_FROM:
@@ -1636,10 +1622,8 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
 
     :param msdf: MappingSetDataFrame
 
-    :returns: List of all prefixes.
-
-    :raises ValidationError: If slot is wrong.
-    :raises ValidationError: If slot is wrong.
+    :returns: List of all prefixes. Values of multivalued metadata slots that are not CURIEs are
+        skipped; the prefix map completeness validation reports them.
     """
     # FIXME investigate the logic for this function -
     #  some of the falsy checks don't make sense
@@ -1661,13 +1645,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
                 if (prefix := get_prefix_from_curie(curie))
             )
         elif isinstance(msdf.metadata[slot], list):
-            for curie in msdf.metadata[slot]:
-                prefix = get_prefix_from_curie(curie)
-                if not prefix:
-                    raise ValidationError(
-                        f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
-                    )
-                prefixes.add(prefix)
+            prefixes.update(
+                prefix for curie in msdf.metadata[slot] if (prefix := get_prefix_from_curie(curie))
+            )
         else:
             prefix = get_prefix_from_curie(msdf.metadata[slot])
             if not prefix:
