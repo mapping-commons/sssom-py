@@ -223,6 +223,14 @@ class TestRewirePredicates(unittest.TestCase):
                     graph, {PERFORMANCE_EQUITY: OUTPUT_BIAS, HARMFUL_CONTENT: TOXIC_OUTPUT}
                 )
 
+    def test_single_predicate_as_string(self) -> None:
+        """Test that a single predicate given as a string is not read character by character."""
+        n = rewire_graph(self.graph, self.mset, predicates=SKOS_EXACT_MATCH)
+        self.assertEqual(6, n)
+        self.assert_rewired(
+            self.graph, {PERFORMANCE_EQUITY: OUTPUT_BIAS, HARMFUL_CONTENT: TOXIC_OUTPUT}
+        )
+
     def test_preferred_predicate_wins_over_precedence(self) -> None:
         """Test that an exact candidate, listed first, wins over close ones with precedence."""
         n = rewire_graph(
