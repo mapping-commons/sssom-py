@@ -25,7 +25,7 @@ from typing import (
 )
 
 import yaml
-from linkml_runtime.linkml_model import ElementName, SlotDefinition
+from linkml_runtime.linkml_model import SlotDefinition
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.schemaview import SchemaView
 from sssom_schema.datamodel.sssom_schema import SssomVersionEnum
@@ -430,11 +430,15 @@ PathOrIO = Union[str, pathlib.Path, TextIO]
 
 
 @overload
-def get_slot_definition(slot: str, /, *, strict: Literal[True] = ...) -> SlotDefinition: ...
+def get_slot_definition(  # noqa:E704
+    slot: str, /, *, strict: Literal[True] = ...
+) -> SlotDefinition: ...
 
 
 @overload
-def get_slot_definition(slot: str, /, *, strict: Literal[False] = ...) -> SlotDefinition | None: ...
+def get_slot_definition(  # noqa:E704
+    slot: str, /, *, strict: Literal[False] = ...
+) -> SlotDefinition | None: ...
 
 
 def get_slot_definition(slot_name: str, /, *, strict: bool = False) -> SlotDefinition | None:
@@ -445,5 +449,6 @@ def get_slot_definition(slot_name: str, /, *, strict: bool = False) -> SlotDefin
 
 @lru_cache(None)
 def is_entity_reference_slot(slot_name: str, /) -> bool:
+    """Check if a slot is defined as an entity reference, also returning False for missing/invalid slot."""
     slot_definition = get_slot_definition(slot_name, strict=False)
     return slot_definition is not None and slot_definition.range == ENTITY_REFERENCE
