@@ -1480,6 +1480,8 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
         else:
             if prefix := get_prefix_from_curie(str(value)):
                 prefixes.add(prefix)
+    for extension_slot in meta.get("extension_definitions", []):
+        logging.warning('extension slot found, but prefix extraction has not yet been implemented: %s', extension_slot)
     return prefixes
 
 
