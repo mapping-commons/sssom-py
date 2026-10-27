@@ -181,27 +181,30 @@ class TestIO(unittest.TestCase):
                 {"subject_source": "wikidata:Q7876491"},
                 "curie is extracted from a single-valued slot",
             ),
+            # extension definition examples come from the Bioregistry's
+            # mapping checking workflow at mapping_embedding_similarities
+            # https://raw.githubusercontent.com/biopragmatics/bioregistry/refs/heads/main/exports/analyses/mapping_checking/mapping_embedding_similarities.sssom.tsv
             (
                 set(),
-                {"extension_definitions": [{"slot_name": "ext_fooable"}]},
+                {"extension_definitions": [{"slot_name": "parts_used"}]},
                 "extension definition with no explicit property",
             ),
             (
-                {"d"},
+                {"ex"},
                 {
                     "extension_definitions": [
-                        {"slot_name": "ext_fooable", "property": "d:fooableProperty"},
+                        {"slot_name": "parts_used", "property": "ex:parts_used"},
                     ]
                 },
                 "extension definition with explicit property",
             ),
             (
-                {"d", "xsd"},
+                {"ex", "xsd"},
                 {
                     "extension_definitions": [
                         {
-                            "slot_name": "ext_fooable",
-                            "property": "d:fooableProperty",
+                            "slot_name": "parts_used",
+                            "property": "ex:parts_used",
                             "type_hint": "xsd:string",
                         },
                     ]
@@ -209,12 +212,12 @@ class TestIO(unittest.TestCase):
                 "extension definition with explicit property and explicit xsd type hint",
             ),
             (
-                {"d", "linkml"},
+                {"RO", "linkml"},
                 {
                     "extension_definitions": [
                         {
-                            "slot_name": "ext_fooable",
-                            "property": "d:fooableProperty",
+                            "slot_name": "only_in_taxon",
+                            "property": "RO:0002160",
                             "type_hint": "linkml:Uriorcurie",
                         },
                     ]
