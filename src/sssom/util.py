@@ -1496,7 +1496,9 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     # https://mapping-commons.github.io/sssom/dev/spec-model/#undefined-extensions
     for extension_definition in meta.get("extension_definitions", []):
         for key in ("property", "type_hint"):
-            if (curie := extension_definition.get(key)) and (prefix := get_prefix_from_curie(curie)):
+            if (curie := extension_definition.get(key)) and (
+                prefix := get_prefix_from_curie(curie)
+            ):
                 prefixes.add(prefix)
 
     return prefixes
