@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
-from curies.w3c import CURIE_RE
+from curies.w3c import QUALIFIED_CURIE_RE
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
@@ -1419,11 +1419,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
 def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     if string and isinstance(string, str):
-        return (
-            not string.startswith("https://")
-            and not string.startswith("http://")
-            and bool(CURIE_RE.match(string))
-        )
+        return bool(QUALIFIED_CURIE_RE.match(string))
     else:
         return False
 
