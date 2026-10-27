@@ -62,7 +62,7 @@ _LOG_LEVELS = {
 }
 
 #: Severities that make a mapping set fail validation; warnings and info do not
-FAILING_SEVERITIES = (Severity.FATAL, Severity.ERROR)
+FAILING_SEVERITIES: set[Severity] = {Severity.FATAL, Severity.ERROR}
 
 
 def get_failing_results(reports: Iterable[ValidationReport]) -> List[ValidationResult]:
@@ -72,7 +72,12 @@ def get_failing_results(reports: Iterable[ValidationReport]) -> List[ValidationR
 
     :returns: The results with a severity in :data:`FAILING_SEVERITIES`, in report order.
     """
-    return [r for report in reports for r in report.results if r.severity in FAILING_SEVERITIES]
+    return [
+        result
+        for report in reports
+        for result in report.results
+        if result.severity in FAILING_SEVERITIES
+    ]
 
 
 def _deduplicate_by_path(results: List[ValidationResult]) -> List[ValidationResult]:
