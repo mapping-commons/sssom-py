@@ -1476,20 +1476,34 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
         if not is_entity_reference_slot(slot_name):
             continue
         if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
+            for curie in value:
+                if not isinstance(curie, str):
+                    raise TypeError
+                if prefix := get_prefix_from_curie(curie):
+                    prefixes.add(prefix)
         elif isinstance(value, str):
-            if prefix := get_prefix_from_curie(str(value)):
+            if prefix := get_prefix_from_curie(value):
                 prefixes.add(prefix)
         else:
             raise TypeError(
                 f"invalid value for entity reference slot {slot_name} of type {type(value)}: {value}"
             )
-    for extension_slot in meta.get("extension_definitions", []):
-        logging.warning(
-            "extension slot found, but prefix extraction has not yet been implemented: %s",
-            extension_slot,
-        )
+    for extension_definition in meta.get("extension_definitions", []):
+        prefixes.update(_get_extension_slot_prefixes(extension_definition))
     return prefixes
+
+
+def _get_extension_slot_prefixes(extension_definition: dict[str, Any]) -> Set[str]:
+    rv = set()
+    if not (type_hint_curie := extension_definition.get("type_hint")):
+        rv.add("xsd")
+    elif type_hint_prefix := get_prefix_from_curie(type_hint_curie):
+        rv.add(type_hint_prefix)
+    if not (property_curie := extension_definition.get("property")):
+        rv.add("sssom.invalid")
+    elif property_prefix := get_prefix_from_curie(property_curie):
+        rv.add(property_prefix)
+    return rv
 
 
 def filter_out_prefixes(

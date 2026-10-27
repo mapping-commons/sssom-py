@@ -137,8 +137,9 @@ class TestIO(unittest.TestCase):
 
     def test_extract_prefixes_from_metadata(self) -> None:
         """Test extracting prefixes from metadata dictionary."""
-        # TODO get_prefixes_used_in_metadata does not get prefixes from extension
-        #  slots, this is being updated in https://github.com/mapping-commons/sssom-py/pull/676
+        with self.assertRaises(TypeError):
+            get_prefixes_used_in_metadata({"author_id": [0]})
+
         params: list[tuple[set[str], dict[str, Any], str]] = [
             (set(), dict(), "empty example"),
             (
@@ -174,6 +175,46 @@ class TestIO(unittest.TestCase):
                 {"orcid", "wikidata"},
                 {"author_id": ["orcid:0000-0003-4423-4370", "wikidata:Q47475003"]},
                 "orcid and wikidata is extracted from a multivalued slot",
+            ),
+            (
+                {"sssom.invalid", "xsd"},
+                {"extension_definitions": [{"slot_name": "ext_fooable"}]},
+                "extension definition with no explicit property gets default prefix, implicit xsd",
+            ),
+            (
+                {"d", "xsd"},
+                {
+                    "extension_definitions": [
+                        {"slot_name": "ext_fooable", "property": "d:fooableProperty"},
+                    ]
+                },
+                "extension definition with explicit property  and implicit xsd type hint",
+            ),
+            (
+                {"d", "xsd"},
+                {
+                    "extension_definitions": [
+                        {
+                            "slot_name": "ext_fooable",
+                            "property": "d:fooableProperty",
+                            "type_hint": "xsd:string",
+                        },
+                    ]
+                },
+                "extension definition with explicit property and explicit xsd type hint",
+            ),
+            (
+                {"d", "linkml"},
+                {
+                    "extension_definitions": [
+                        {
+                            "slot_name": "ext_fooable",
+                            "property": "d:fooableProperty",
+                            "type_hint": "linkml:Uriorcurie",
+                        },
+                    ]
+                },
+                "extension definition with explicit property and non-xsd type hint",
             ),
         ]
         for prefixes, metadata, description in params:
