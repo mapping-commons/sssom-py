@@ -182,18 +182,18 @@ class TestIO(unittest.TestCase):
                 "curie is extracted from a single-valued slot",
             ),
             (
-                {"sssom.invalid", "xsd"},
+                set(),
                 {"extension_definitions": [{"slot_name": "ext_fooable"}]},
-                "extension definition with no explicit property gets default prefix, implicit xsd",
+                "extension definition with no explicit property",
             ),
             (
-                {"d", "xsd"},
+                {"d"},
                 {
                     "extension_definitions": [
                         {"slot_name": "ext_fooable", "property": "d:fooableProperty"},
                     ]
                 },
-                "extension definition with explicit property  and implicit xsd type hint",
+                "extension definition with explicit property",
             ),
             (
                 {"d", "xsd"},

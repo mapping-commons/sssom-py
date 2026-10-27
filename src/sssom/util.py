@@ -1491,23 +1491,14 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
             raise TypeError(
                 f"invalid value for entity reference slot {slot_name} of type {type(value)}: {value}"
             )
-    for extension_definition in meta.get("extension_definitions", []):
-        prefixes.update(_get_extension_slot_prefixes(extension_definition))
-    return prefixes
 
-
-def _get_extension_slot_prefixes(extension_definition: dict[str, str]) -> Set[str]:
     # default/implicit rules are defined in the SSSOM spec here:
     # https://mapping-commons.github.io/sssom/dev/spec-model/#undefined-extensions
-    prefixes = set()
-    if not (type_hint_curie := extension_definition.get("type_hint")):
-        prefixes.add("xsd")
-    elif type_hint_prefix := get_prefix_from_curie(type_hint_curie):
-        prefixes.add(type_hint_prefix)
-    if not (property_curie := extension_definition.get("property")):
-        prefixes.add("sssom.invalid")
-    elif property_prefix := get_prefix_from_curie(property_curie):
-        prefixes.add(property_prefix)
+    for extension_definition in meta.get("extension_definitions", []):
+        for key in ("property", "type_hint"):
+            if (curie := extension_definition.get(key)) and (prefix := get_prefix_from_curie(curie)):
+                prefixes.add(prefix)
+
     return prefixes
 
 
