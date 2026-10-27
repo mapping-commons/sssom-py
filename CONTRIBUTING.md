@@ -29,4 +29,27 @@ Note: All the development must be done on a branch on your fork.
 
 ALSO NOTE: github.com lets you create a pull request from the main branch, automating the steps above.
 
+### What we look for in a pull request
+
+- **One change per pull request.** If a PR fixes two independent things, split
+  it into two PRs. Small PRs get reviewed and merged much faster.
+- **Motivate the change with the real input that triggered it.** Link the
+  mapping set, ontology, or file where you found the bug or needed the feature,
+  in the issue or the PR.
+- **A bug fix comes with a test that fails without the fix.** Test fixtures may
+  be real excerpts (link the source, for example in `see_also`) or small
+  synthetic examples; pick whichever makes the test easiest to read.
+- **Write library code that assumes library objects such as SSSOM dataframes are
+  already semantically correct**. For example, use `strict=True` in all
+  expansion and contraction operations of CURIEs/IRIs in serialization code.
+- **Call library functions directly.** Don't add helper functions that only wrap
+  a library call, such as a method of `curies.Converter`. If an error needs a
+  friendlier message, translate it where it is shown to the user (for example in
+  `cli.py`), not in the library code.
+- **Use `curies` for anything to do with prefixes, CURIEs, and IRIs** instead of
+  writing your own regular expressions or string handling.
+- **Run `uvx tox` before pushing.** It runs the tests, formatting (black,
+  isort), flake8 and mypy, the same checks CI runs. See
+  [docs/contributing.md](docs/contributing.md) for the development setup.
+
 > A code review (which happens with both the contributor and the reviewer present) is required for contributing.

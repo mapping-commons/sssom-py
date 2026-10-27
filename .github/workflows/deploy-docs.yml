@@ -15,7 +15,7 @@ jobs:
     - name: Set up Python 3.
       uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566 # v3.1.4
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - name: Install uv
       uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1

@@ -13,7 +13,7 @@
 #   sssom: https://w3id.org/sssom/
 # license: https://creativecommons.org/licenses/by-nc/4.0/
 # mapping_set_description: All C-Path generated mappings of OBO terms to OMOP terms
-# mapping_set_id: cpath_obo_omop
+# mapping_set_id: https://w3id.org/sssom/mappings/cpath_obo_omop
 subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	mapping_date	confidence
 HP:0001250	Seizure	skos:exactMatch	omop:377091	Seizure	semapv:ManualMappingCuration	2023-01-01	1.0
 HP:0001324	Muscle weakness	skos:exactMatch	omop:79908	Muscle weakness	semapv:ManualMappingCuration	2023-01-01	1.0

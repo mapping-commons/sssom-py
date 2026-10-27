@@ -31,7 +31,6 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
-from jsonschema import ValidationError
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
@@ -1417,7 +1416,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-CURIE_PATTERN = r"[A-Za-z0-9_.]+[:][A-Za-z0-9_]"
+CURIE_PATTERN = r"[A-Za-z0-9_.-]+[:][A-Za-z0-9_]"
 CURIE_RE = re.compile(CURIE_PATTERN)
 
 
@@ -1627,10 +1626,8 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
 
     :param msdf: MappingSetDataFrame
 
-    :returns: List of all prefixes.
-
-    :raises ValidationError: If slot is wrong.
-    :raises ValidationError: If slot is wrong.
+    :returns: List of all prefixes. Values of multivalued metadata slots that are not CURIEs are
+        skipped; the prefix map completeness validation reports them.
     """
     # FIXME investigate the logic for this function -
     #  some of the falsy checks don't make sense
@@ -1652,13 +1649,9 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
                 if (prefix := get_prefix_from_curie(curie))
             )
         elif isinstance(msdf.metadata[slot], list):
-            for curie in msdf.metadata[slot]:
-                prefix = get_prefix_from_curie(curie)
-                if not prefix:
-                    raise ValidationError(
-                        f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}"
-                    )
-                prefixes.add(prefix)
+            prefixes.update(
+                prefix for curie in msdf.metadata[slot] if (prefix := get_prefix_from_curie(curie))
+            )
         else:
             prefix = get_prefix_from_curie(msdf.metadata[slot])
             if not prefix:
