@@ -1477,11 +1477,18 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
             continue
         if isinstance(value, list):
             prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
-        else:
+        elif isinstance(value, str):
             if prefix := get_prefix_from_curie(str(value)):
                 prefixes.add(prefix)
+        else:
+            raise TypeError(
+                f"invalid value for entity reference slot {slot_name} of type {type(value)}: {value}"
+            )
     for extension_slot in meta.get("extension_definitions", []):
-        logging.warning('extension slot found, but prefix extraction has not yet been implemented: %s', extension_slot)
+        logging.warning(
+            "extension slot found, but prefix extraction has not yet been implemented: %s",
+            extension_slot,
+        )
     return prefixes
 
 

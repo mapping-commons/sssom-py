@@ -447,4 +447,3 @@ def get_slot_definition(slot_name: str, /, *, strict: bool = False) -> SlotDefin
 def is_entity_reference_slot(slot_name: str, /) -> bool:
     slot_definition = get_slot_definition(slot_name, strict=False)
     return slot_definition is not None and slot_definition.range == ENTITY_REFERENCE
-
