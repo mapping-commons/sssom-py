@@ -78,7 +78,6 @@ from .constants import (
     SSSOMSchemaView,
     _get_sssom_schema_object,
     get_default_metadata,
-    is_entity_reference_slot,
     parse_sssom_version,
 )
 from .context import (
@@ -1472,8 +1471,9 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
     for slot_name, value in meta.items():
-        if not is_entity_reference_slot(slot_name):
+        if slot_name not in entity_reference_slots:
             continue
         if isinstance(value, list):
             for curie in value:
