@@ -15,6 +15,7 @@ import curies
 import pandas as pd
 import yaml
 from curies import Converter
+from curies.api import ExpansionError
 from rdflib import Graph, URIRef
 from typing_extensions import ParamSpec
 
@@ -637,6 +638,10 @@ def rewire(
     # error, not a traceback.
     try:
         rewire_graph(g, msdf, precedence=precedence, predicates=chosen or None, strict=strict)
+    except ExpansionError as e:
+        raise click.ClickException(
+            f"Could not expand predicate {e}; is its prefix in the curie_map?"
+        ) from e
     except ValueError as e:
         raise click.ClickException(str(e)) from e
     rdfstr = g.serialize(format=output_format)
