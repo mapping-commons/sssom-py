@@ -4,6 +4,7 @@ import os
 import unittest
 from typing import Any, Dict, Tuple
 
+from curies.api import ExpansionError
 from rdflib import OWL, RDF, Graph, Namespace, URIRef
 
 from sssom.constants import (
@@ -197,7 +198,7 @@ class TestRewirePredicates(unittest.TestCase):
 
     def test_predicate_that_does_not_expand(self) -> None:
         """Test that a chosen predicate whose prefix is not in the prefix map fails loudly."""
-        with self.assertRaisesRegex(ValueError, "Could not expand predicate skoss:exactMatch"):
+        with self.assertRaisesRegex(ExpansionError, "skoss:exactMatch"):
             rewire_graph(self.graph, self.mset, predicates=["skoss:exactMatch"])
         self.assert_rewired(self.graph, {})
 
@@ -208,7 +209,7 @@ class TestRewirePredicates(unittest.TestCase):
         prefix map. Rewiring by ``skos:exactMatch`` would not use that mapping, but it still fails.
         """
         self.mset.df.loc[self.mset.df.index[-1], PREDICATE_ID] = "foo:customMatch"
-        with self.assertRaisesRegex(ValueError, "Could not expand predicate foo:customMatch"):
+        with self.assertRaisesRegex(ExpansionError, "foo:customMatch"):
             rewire_graph(self.graph, self.mset, predicates=[SKOS_EXACT_MATCH])
         self.assert_rewired(self.graph, {})
 
