@@ -148,6 +148,22 @@ class TestValidate(unittest.TestCase):
         rv = validate(msdf, self.validation_types)
         self.assertEqual([], rv[SchemaValidationType.JsonSchema].results)
 
+    def test_validate_reports_each_problem_once(self) -> None:
+        """Test that a value that JSON Schema validation reports twice counts as one problem."""
+        with self.assertRaises(SSSOMValidationError) as ctx:
+            validate(self.bad_msdf1, self.validation_types)
+        # 11 rows of bad_basic.tsv have a bad mapping_justification, which is reported once for
+        # the pattern and once for the anyOf around it, and one prefix is missing.
+        messages = [r.message for r in ctx.exception.results]
+        self.assertEqual(12, len(messages))
+        self.assertTrue(str(ctx.exception).startswith("Your mapping set has 12 validation errors:"))
+        self.assertIn("Missing prefix: orcid", messages)
+
+    def test_validate_without_failing_keeps_every_result(self) -> None:
+        """Test that the returned reports keep every result, including repeated ones."""
+        rv = validate(self.bad_msdf1, self.validation_types, fail_on_error=False)
+        self.assertEqual(22, len(rv[SchemaValidationType.JsonSchema].results))
+
 
 class TestPrintLinkMLReport(unittest.TestCase):
     """Test the formatting of validation reports."""
@@ -188,6 +204,22 @@ class TestPrintLinkMLReport(unittest.TestCase):
         self.assertEqual("  ... and 5 more", lines[21])
         self.assertEqual(22, len(lines))
         self.assertEqual(25, len(ctx.exception.results))
+
+    def test_only_fatal_and_error_raise(self) -> None:
+        """Test that warnings and info are logged, and only FATAL and ERROR results raise."""
+        for severity in (Severity.WARN, Severity.INFO):
+            with self.subTest(severity=severity):
+                report = ValidationReport(
+                    results=[ValidationResult(type="test", severity=severity, message="fyi")]
+                )
+                print_linkml_report(report)
+        for severity in (Severity.FATAL, Severity.ERROR):
+            with self.subTest(severity=severity):
+                report = ValidationReport(
+                    results=[ValidationResult(type="test", severity=severity, message="broken")]
+                )
+                with self.assertRaises(SSSOMValidationError):
+                    print_linkml_report(report)
 
     def test_error_is_a_jsonschema_validation_error(self) -> None:
         """Test that callers catching jsonschema's ValidationError keep working."""

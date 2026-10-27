@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, List, Mapping, Optional
+from typing import Any, Callable, Iterable, List, Mapping, Optional
 
 from jsonschema import ValidationError
 from linkml.validator import ValidationReport, Validator
@@ -35,20 +35,19 @@ def validate(
 
     :param msdf: MappingSetDataFrame.
     :param validation_types: SchemaValidationType
-    :param fail_on_error: If true, raise an error when any validation type reports problems
+    :param fail_on_error: If true, raise an error when any validation type reports problems with
+        a severity in :data:`FAILING_SEVERITIES`
 
     :returns: A dictionary from validation types to validation reports
 
     :raises SSSOMValidationError: If fail_on_error is true and any validation type reports
-        problems.
+        problems with a severity in :data:`FAILING_SEVERITIES`.
     """
     if validation_types is None:
         validation_types = DEFAULT_VALIDATION_TYPES
     reports = {vt: _REPORT_METHODS[vt](msdf) for vt in validation_types}
-    if fail_on_error:
-        results = [result for report in reports.values() for result in report.results]
-        if results:
-            raise SSSOMValidationError(results)
+    if fail_on_error and (failing := get_failing_results(reports.values())):
+        raise SSSOMValidationError(failing)
     return reports
 
 
@@ -61,6 +60,48 @@ _LOG_LEVELS = {
     Severity.WARN: logging.WARNING,
     Severity.INFO: logging.INFO,
 }
+
+#: Severities that make a mapping set fail validation; warnings and info do not
+FAILING_SEVERITIES: set[Severity] = {Severity.FATAL, Severity.ERROR}
+
+
+def get_failing_results(reports: Iterable[ValidationReport]) -> List[ValidationResult]:
+    """Collect the results that make a mapping set fail validation.
+
+    :param reports: Validation reports.
+
+    :returns: The results with a severity in :data:`FAILING_SEVERITIES`, in report order.
+    """
+    return [
+        result
+        for report in reports
+        for result in report.results
+        if result.severity in FAILING_SEVERITIES
+    ]
+
+
+def _deduplicate_by_path(results: List[ValidationResult]) -> List[ValidationResult]:
+    """Keep only the first result for each JSON path.
+
+    JSON Schema validation reports some problems more than once for the same value, for example
+    once for a failed pattern and once for the ``anyOf`` around it. Results without a path, such
+    as those of prefix validation or problems at the root of the mapping set, are all kept.
+
+    :param results: Validation results.
+
+    :returns: The results, without later ones for a JSON path that an earlier one has.
+    """
+    seen: set[tuple[Any, ...]] = set()
+    kept = []
+    for result in results:
+        # LinkML keeps the jsonschema error, which knows its path, as the source.
+        path = tuple(getattr(result.source, "absolute_path", ()))
+        if path:
+            if path in seen:
+                continue
+            seen.add(path)
+        kept.append(result)
+    return kept
 
 
 def _summarize(results: List[ValidationResult]) -> str:
@@ -89,12 +130,14 @@ def format_validation_results(results: List[ValidationResult], limit: Optional[i
 class SSSOMValidationError(ValidationError):
     """Raised when a mapping set fails validation.
 
-    All problems are available in :attr:`results`. The string representation lists at most
-    :data:`MAX_REPORTED_PROBLEMS` of them, so that tracebacks stay readable.
+    All problems are available in :attr:`results`, with one problem per JSON path, so that a value
+    that JSON Schema validation reports twice counts once. The string representation lists at
+    most :data:`MAX_REPORTED_PROBLEMS` of them, so that tracebacks stay readable.
     """
 
     def __init__(self, results: List[ValidationResult]) -> None:
         """Instantiate the error from the validation results that caused it."""
+        results = _deduplicate_by_path(results)
         super().__init__(_summarize(results))
         self.results = results
 
@@ -108,17 +151,20 @@ def print_linkml_report(report: ValidationReport, fail_on_error: bool = True) ->
 
     :param report: A LinkML validation report
     :param fail_on_error: if true, the function will throw an SSSOMValidationError exception when
-        there are errors, listing the problems in its message. Otherwise, the problems are logged.
+        there are results with a severity in :data:`FAILING_SEVERITIES`, listing them in its
+        message. Otherwise, the problems are logged.
 
-    :raises SSSOMValidationError: If fail_on_error is true and the report has results.
+    :raises SSSOMValidationError: If fail_on_error is true and the report has results with a
+        severity in :data:`FAILING_SEVERITIES`.
     """
     results = report.results
     if not results:
         logging.info("The instance is valid!")
         return
 
-    if fail_on_error:
-        raise SSSOMValidationError(results)
+    failing = get_failing_results([report])
+    if fail_on_error and failing:
+        raise SSSOMValidationError(failing)
 
     for result in results:
         logging.log(_LOG_LEVELS.get(result.severity, logging.ERROR), result.message)

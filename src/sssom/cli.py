@@ -8,7 +8,7 @@ import sys
 import typing
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, TextIO, Tuple, TypeVar, get_args
+from typing import Any, Callable, List, Literal, Optional, TextIO, Tuple, TypeVar, get_args
 
 import click
 import curies
@@ -53,7 +53,12 @@ from .util import (
     sort_df_rows_columns,
     to_mapping_set_dataframe,
 )
-from .validators import SSSOMValidationError, format_validation_results
+from .validators import (
+    SSSOMValidationError,
+    format_validation_results,
+    get_failing_results,
+    print_linkml_report,
+)
 from .writers import WRITER_FUNCTIONS, get_rdflib_endpoint_app, write_table
 
 logging = _logging.getLogger(__name__)
@@ -251,10 +256,38 @@ def parse(
     multiple=True,
     default=DEFAULT_VALIDATION_TYPES,
 )
+@click.option(
+    "--report-format",
+    "-r",
+    type=click.Choice(["pretty", "raw"]),
+    default="pretty",
+    show_default=True,
+    help="How to show the problems. 'pretty' lists each problem once in the error message; "
+    "'raw' logs every result as LinkML reports it.",
+)
 @propagate_option
-def validate(input: str, validation_types: List[SchemaValidationType], propagate: bool) -> None:
+def validate(
+    input: str,
+    validation_types: List[SchemaValidationType],
+    propagate: bool,
+    report_format: Literal["pretty", "raw"],
+) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
+    if report_format == "raw":
+        reports = validate_file(
+            input_path=input,
+            validation_types=validation_type_list,
+            fail_on_error=False,
+            propagate=propagate,
+        )
+        for report in reports.values():
+            print_linkml_report(report, fail_on_error=False)
+        if failing := get_failing_results(reports.values()):
+            # The problems are already logged, so the error only summarizes them.
+            error = SSSOMValidationError(failing)
+            raise click.ClickException(error.message) from error
+        return
     try:
         validate_file(input_path=input, validation_types=validation_type_list, propagate=propagate)
     except SSSOMValidationError as e:

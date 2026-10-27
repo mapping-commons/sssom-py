@@ -126,6 +126,14 @@ class SSSOMCLITestSuite(unittest.TestCase):
         for i in range(len(rows)):
             self.assertIn(f"in /mappings/{i}/confidence", result.output)
 
+    def test_validate_raw_report_format(self) -> None:
+        """Test that the raw report format still fails, with a summary of the problems."""
+        result = CliRunner().invoke(
+            validate, [(data_dir / "bad_basic.tsv").as_posix(), "--report-format", "raw"]
+        )
+        self.assertEqual(1, result.exit_code)
+        self.assertIn("Error: Your mapping set has 12 validation errors", result.output)
+
     def run_successful(self, result: Result, obj: Any) -> None:
         """Check the test result is successful."""
         if result.exit_code:
