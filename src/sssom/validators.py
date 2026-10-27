@@ -46,10 +46,8 @@ def validate(
     if validation_types is None:
         validation_types = DEFAULT_VALIDATION_TYPES
     reports = {vt: _REPORT_METHODS[vt](msdf) for vt in validation_types}
-    if fail_on_error:
-        failing = get_failing_results(reports.values())
-        if failing:
-            raise SSSOMValidationError(failing)
+    if fail_on_error and (failing := get_failing_results(reports.values())):
+        raise SSSOMValidationError(failing)
     return reports
 
 

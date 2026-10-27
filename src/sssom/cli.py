@@ -282,8 +282,7 @@ def validate(
         )
         for report in reports.values():
             print_linkml_report(report, fail_on_error=False)
-        failing = get_failing_results(reports.values())
-        if failing:
+        if failing := get_failing_results(reports.values()):
             # The problems are already logged, so the error only summarizes them.
             error = SSSOMValidationError(failing)
             raise click.ClickException(error.message) from error
