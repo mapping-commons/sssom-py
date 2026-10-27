@@ -1478,7 +1478,10 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
         if isinstance(value, list):
             for curie in value:
                 if not isinstance(curie, str):
-                    raise TypeError
+                    raise TypeError(
+                        f"invalid value for entity reference list slot {slot_name} "
+                        f"of type {type(curie)}: {curie}"
+                    )
                 if prefix := get_prefix_from_curie(curie):
                     prefixes.add(prefix)
         elif isinstance(value, str):
@@ -1493,17 +1496,19 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     return prefixes
 
 
-def _get_extension_slot_prefixes(extension_definition: dict[str, Any]) -> Set[str]:
-    rv = set()
+def _get_extension_slot_prefixes(extension_definition: dict[str, str]) -> Set[str]:
+    # default/implicit rules are defined in the SSSOM spec here:
+    # https://mapping-commons.github.io/sssom/dev/spec-model/#undefined-extensions
+    prefixes = set()
     if not (type_hint_curie := extension_definition.get("type_hint")):
-        rv.add("xsd")
+        prefixes.add("xsd")
     elif type_hint_prefix := get_prefix_from_curie(type_hint_curie):
-        rv.add(type_hint_prefix)
+        prefixes.add(type_hint_prefix)
     if not (property_curie := extension_definition.get("property")):
-        rv.add("sssom.invalid")
+        prefixes.add("sssom.invalid")
     elif property_prefix := get_prefix_from_curie(property_curie):
-        rv.add(property_prefix)
-    return rv
+        prefixes.add(property_prefix)
+    return prefixes
 
 
 def filter_out_prefixes(
