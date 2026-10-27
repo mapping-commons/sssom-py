@@ -39,6 +39,9 @@ ALSO NOTE: github.com lets you create a pull request from the main branch, autom
 - **A bug fix comes with a test that fails without the fix.** Test fixtures may
   be real excerpts (link the source, for example in `see_also`) or small
   synthetic examples; pick whichever makes the test easiest to read.
+- **Write library code that assumes library objects such as SSSOM dataframes are
+  already semantically correct**. For example, use `strict=True` in all
+  expansion and contraction operations of CURIEs/IRIs in serialization code.
 - **Call library functions directly.** Don't add helper functions that only wrap
   a library call, such as a method of `curies.Converter`. If an error needs a
   friendlier message, translate it where it is shown to the user (for example in
