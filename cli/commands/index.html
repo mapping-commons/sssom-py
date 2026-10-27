@@ -3147,6 +3147,12 @@ $ sssom rewire -m tests/data/rewire-predicates.tsv --predicates skos:exactMatch 
 <td><code>[&lt;SchemaValidationType.JsonSchema: 'JsonSchema'&gt;, &lt;SchemaValidationType.PrefixMapCompleteness: 'PrefixMapCompleteness'&gt;, &lt;SchemaValidationType.StrictCurieFormat: 'StrictCurieFormat'&gt;]</code></td>
 </tr>
 <tr>
+<td><code>--report-format</code>, <code>-r</code></td>
+<td>choice (<code>pretty</code> &#x7C; <code>raw</code>)</td>
+<td>How to show the problems. 'pretty' lists each problem once in the error message; 'raw' logs every result as LinkML reports it.</td>
+<td><code>pretty</code></td>
+</tr>
+<tr>
 <td><code>--propagate</code> / <code>--no-propagate</code></td>
 <td>boolean</td>
 <td>Automatically propagate condensed slots upon parsing.</td>
