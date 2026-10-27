@@ -85,6 +85,13 @@ class TestValidate(unittest.TestCase):
         """Test Shacl validation (Not implemented)."""
         self.assertRaises(ValidationError, validate, self.bad_nando, self.validation_types)
 
+    def test_validate_reports_undeclared_prefix_with_hyphen(self) -> None:
+        """Test that an undeclared prefix that contains a hyphen is reported."""
+        msdf = parse_sssom_table(data_dir / "hyphen-prefix.sssom.tsv")
+        validation_type = SchemaValidationType.PrefixMapCompleteness
+        report = validate(msdf, [validation_type], fail_on_error=False)[validation_type]
+        self.assertEqual(["Missing prefix: owasp-llm-2.0"], [r.message for r in report.results])
+
     def test_validate_json_rejects_non_uri_mapping_set_id(self) -> None:
         """Test that a mapping_set_id that is not a URI is rejected, and the error says why."""
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"

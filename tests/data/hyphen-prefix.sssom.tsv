@@ -1,0 +1,13 @@
+#curie_map:
+#  ibm-risk-atlas: "https://www.ibm.com/docs/en/watsonx/saas?topic="
+#  semapv: "https://w3id.org/semapv/vocab/"
+#  skos: "http://www.w3.org/2004/02/skos/core#"
+#license: "https://www.apache.org/licenses/LICENSE-2.0.html"
+#mapping_set_id: "https://w3id.org/sssom/mapping/tests/data/hyphen-prefix.sssom.tsv"
+#mapping_set_title: "IBM AI Risk Atlas to the OWASP Top 10 for LLM Applications 2025, two risks"
+#mapping_set_description: "Two mappings from the OWASP mapping set in IBM AI Atlas Nexus. As in that file, the curie_map does not declare owasp-llm-2.0, a prefix with a hyphen."
+#see_also:
+#  - "https://github.com/IBM/ai-atlas-nexus/blob/3136f67f65920074faacc0dae5040a93d338f27f/src/ai_atlas_nexus/data/mappings/ibm2owasp.tsv"
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+ibm-risk-atlas:atlas-data-poisoning	data poisoning	skos:broadMatch	owasp-llm-2.0:llm042025-data-and-model-poisoning	LLM04:2025 Data and Model Poisoning	semapv:ManualMappingCuration
+ibm-risk-atlas:atlas-jailbreaking	jailbreaking	skos:broadMatch	owasp-llm-2.0:llm01-prompt-injection	LLM01:2025 Prompt Injection	semapv:ManualMappingCuration
