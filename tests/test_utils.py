@@ -177,6 +177,11 @@ class TestIO(unittest.TestCase):
                 "orcid and wikidata is extracted from a multivalued slot",
             ),
             (
+                {"wikidata"},
+                {"subject_source": "wikidata:Q7876491"},
+                "curie is extracted from a single-valued slot",
+            ),
+            (
                 {"sssom.invalid", "xsd"},
                 {"extension_definitions": [{"slot_name": "ext_fooable"}]},
                 "extension definition with no explicit property gets default prefix, implicit xsd",
