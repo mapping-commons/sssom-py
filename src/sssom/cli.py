@@ -8,7 +8,7 @@ import sys
 import typing
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Callable, List, Optional, TextIO, Tuple, TypeVar, get_args
+from typing import Any, Callable, List, Literal, Optional, TextIO, Tuple, TypeVar, get_args
 
 import click
 import curies
@@ -269,7 +269,7 @@ def validate(
     input: str,
     validation_types: List[SchemaValidationType],
     propagate: bool,
-    report_format: str,
+    report_format: Literal["pretty", "raw"],
 ) -> None:
     """Produce an error report for an SSSOM file."""
     validation_type_list = [t for t in validation_types]
