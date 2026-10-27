@@ -34,7 +34,7 @@ ALSO NOTE: github.com lets you create a pull request from the main branch, autom
 - **One change per pull request.** If a PR fixes two independent things, split
   it into two PRs. Small PRs get reviewed and merged much faster.
 - **Motivate the change with the real input that triggered it.** Link the
-  mapping set, ontology or file where you found the bug or needed the feature,
+  mapping set, ontology, or file where you found the bug or needed the feature,
   in the issue or the PR.
 - **A bug fix comes with a test that fails without the fix.** Test fixtures may
   be real excerpts (link the source, for example in `see_also`) or small
@@ -43,7 +43,7 @@ ALSO NOTE: github.com lets you create a pull request from the main branch, autom
   a library call, such as a method of `curies.Converter`. If an error needs a
   friendlier message, translate it where it is shown to the user (for example in
   `cli.py`), not in the library code.
-- **Use `curies` for anything to do with CURIEs, prefixes and IRIs** instead of
+- **Use `curies` for anything to do with prefixes, CURIEs, and IRIs** instead of
   writing your own regular expressions or string handling.
 - **Run `uvx tox` before pushing.** It runs the tests, formatting (black,
   isort), flake8 and mypy, the same checks CI runs. See
