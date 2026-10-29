@@ -1467,12 +1467,36 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
-    for value in meta.values():
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+    for slot_name, value in meta.items():
+        if slot_name not in entity_reference_slots:
+            continue
         if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
-        else:
-            if prefix := get_prefix_from_curie(str(value)):
+            for curie in value:
+                if not isinstance(curie, str):
+                    raise TypeError(
+                        f"invalid value for entity reference list slot {slot_name} "
+                        f"of type {type(curie)}: {curie}"
+                    )
+                if prefix := get_prefix_from_curie(curie):
+                    prefixes.add(prefix)
+        elif isinstance(value, str):
+            if prefix := get_prefix_from_curie(value):
                 prefixes.add(prefix)
+        else:
+            raise TypeError(
+                f"invalid value for entity reference slot {slot_name} of type {type(value)}: {value}"
+            )
+
+    # default/implicit rules are defined in the SSSOM spec here:
+    # https://mapping-commons.github.io/sssom/dev/spec-model/#undefined-extensions
+    for extension_definition in meta.get("extension_definitions", []):
+        for key in ("property", "type_hint"):
+            if (curie := extension_definition.get(key)) and (
+                prefix := get_prefix_from_curie(curie)
+            ):
+                prefixes.add(prefix)
+
     return prefixes
 
 
