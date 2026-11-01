@@ -3,6 +3,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -37,6 +38,7 @@ from sssom.util import (
     filter_prefixes,
     get_dict_from_mapping,
     get_file_extension,
+    get_prefixes_used_in_metadata,
     get_prefixes_used_in_table,
     invert_mappings,
     is_multivalued_slot,
@@ -132,6 +134,104 @@ class TestIO(unittest.TestCase):
         original_msdf.remove_mappings(new_msdf)
         # len(self.msdf.df) = 141 and len(new_msdf.df) = 5
         self.assertEqual(len(original_msdf.df), original_length - len(new_msdf.df))
+
+    def test_extract_prefixes_from_metadata(self) -> None:
+        """Test extracting prefixes from metadata dictionary."""
+        with self.assertRaises(TypeError):
+            get_prefixes_used_in_metadata({"author_id": [0]})
+
+        params: list[tuple[set[str], dict[str, Any], str]] = [
+            (set(), dict(), "empty example"),
+            (
+                set(),
+                {"curie_map": {"wikidata": "http://www.wikidata.org/entity/"}},
+                "skips non-string, non-list entries",
+            ),
+            (
+                set(),
+                {"license": "https://creativecommons.org/licenses/by/4.0/"},
+                "https is not extracted from license",
+            ),
+            (
+                set(),
+                {"license": "spdx:CC0-1.0"},
+                "CURIE is not extracted from license",
+            ),
+            (
+                set(),
+                {
+                    "mapping_set_source": [
+                        "https://w3id.org/biopragmatics/biomappings/sssom/biomappings.sssom.tsv"
+                    ]
+                },
+                "https is not extracted from a multivalued slot",
+            ),
+            (
+                {"orcid"},
+                {"author_id": ["orcid:0000-0003-4423-4370"]},
+                "orcid is extracted from a multivalued slot",
+            ),
+            (
+                {"orcid", "wikidata"},
+                {"author_id": ["orcid:0000-0003-4423-4370", "wikidata:Q47475003"]},
+                "orcid and wikidata is extracted from a multivalued slot",
+            ),
+            (
+                {"wikidata"},
+                {"subject_source": "wikidata:Q7876491"},
+                "curie is extracted from a single-valued slot",
+            ),
+            # extension definition examples come from the Bioregistry's
+            # mapping checking workflow at mapping_embedding_similarities
+            # https://raw.githubusercontent.com/biopragmatics/bioregistry/refs/heads/main/exports/analyses/mapping_checking/mapping_embedding_similarities.sssom.tsv
+            (
+                set(),
+                {"extension_definitions": [{"slot_name": "parts_used"}]},
+                "extension definition with no explicit property",
+            ),
+            (
+                {"ex"},
+                {
+                    "extension_definitions": [
+                        {"slot_name": "parts_used", "property": "ex:parts_used"},
+                    ]
+                },
+                "extension definition with explicit property",
+            ),
+            (
+                {"ex", "xsd"},
+                {
+                    "extension_definitions": [
+                        {
+                            "slot_name": "parts_used",
+                            "property": "ex:parts_used",
+                            "type_hint": "xsd:string",
+                        },
+                    ]
+                },
+                "extension definition with explicit property and explicit xsd type hint",
+            ),
+            (
+                {"RO", "linkml"},
+                {
+                    "extension_definitions": [
+                        {
+                            "slot_name": "only_in_taxon",
+                            "property": "RO:0002160",
+                            "type_hint": "linkml:Uriorcurie",
+                        },
+                    ]
+                },
+                "extension definition with explicit property and non-xsd type hint",
+            ),
+        ]
+        for prefixes, metadata, description in params:
+            with self.subTest(description):
+                self.assertEqual(
+                    prefixes.union(SSSOM_BUILT_IN_PREFIXES),
+                    get_prefixes_used_in_metadata(metadata),
+                    msg=description,
+                )
 
     def test_clean_prefix_map(self) -> None:
         """Test clean prefix map."""

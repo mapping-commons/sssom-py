@@ -94,6 +94,7 @@ class TestValidate(unittest.TestCase):
 
     def test_validate_json_rejects_non_uri_mapping_set_id(self) -> None:
         """Test that a mapping_set_id that is not a URI is rejected, and the error says why."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
         with self.assertRaises(ValidationError) as ctx:
             validate(self.correct_msdf1, [SchemaValidationType.JsonSchema])
@@ -101,8 +102,15 @@ class TestValidate(unittest.TestCase):
         self.assertIn("Your mapping set has 1 validation error:", message)
         self.assertIn("'not_a_uri' is not a 'uri' in /mapping_set_id", message)
 
+    def test_validate_json_accepts_non_uri_mapping_set_id_in_sssom_1_0(self) -> None:
+        """Test that a mapping_set_id that is not a URI is accepted in a SSSOM 1.0 set."""
+        self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
+        rv = validate(self.correct_msdf1, [SchemaValidationType.JsonSchema])
+        self.assertEqual([], rv[SchemaValidationType.JsonSchema].results)
+
     def test_validate_json_non_uri_mapping_set_id_report(self) -> None:
         """Test that a non-URI mapping_set_id is reported when not failing on error."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
         rv = validate(self.correct_msdf1, [SchemaValidationType.JsonSchema], fail_on_error=False)
         messages = [r.message for r in rv[SchemaValidationType.JsonSchema].results]
@@ -110,6 +118,7 @@ class TestValidate(unittest.TestCase):
 
     def test_validate_reports_problems_of_all_validation_types(self) -> None:
         """Test that a failing validation type does not hide the problems found by the others."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
         self.correct_msdf1.df.loc[0, "subject_id"] = "zzz:123"
         with self.assertRaises(SSSOMValidationError) as ctx:
@@ -120,6 +129,7 @@ class TestValidate(unittest.TestCase):
 
     def test_validate_reports_non_curie_in_multivalued_metadata(self) -> None:
         """Test that a non-CURIE in a multivalued metadata slot is reported with other problems."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
         self.correct_msdf1.metadata["creator_id"] = ["orcid:1234", "nocolon"]
         with self.assertRaises(SSSOMValidationError) as ctx:
@@ -130,6 +140,7 @@ class TestValidate(unittest.TestCase):
 
     def test_validate_without_failing_returns_report_per_type(self) -> None:
         """Test that each validation type gets its own report when not failing on error."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
         self.correct_msdf1.metadata["mapping_set_id"] = "not_a_uri"
         self.correct_msdf1.df.loc[0, "subject_id"] = "zzz:123"
         rv = validate(self.correct_msdf1, self.validation_types, fail_on_error=False)

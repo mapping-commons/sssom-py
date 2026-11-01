@@ -6,7 +6,6 @@ import itertools as itt
 import json
 import logging as _logging
 import os
-import re
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
@@ -31,7 +30,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
-from curies.w3c import LOCAL_UNIQUE_IDENTIFIER_PATTERN, NCNAME_PATTERN
+from curies.w3c import LOCAL_UNIQUE_IDENTIFIER_PATTERN, NCNAME_PATTERN, QUALIFIED_CURIE_RE
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
@@ -1417,7 +1416,7 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
 def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     if string and isinstance(string, str):
-        return bool(CURIE_RE.match(string))
+        return bool(QUALIFIED_CURIE_RE.match(string))
     else:
         return False
 
@@ -1472,12 +1471,36 @@ def get_prefixes_used_in_metadata(meta: MetadataType) -> Set[str]:
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if not meta:
         return prefixes
-    for value in meta.values():
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+    for slot_name, value in meta.items():
+        if slot_name not in entity_reference_slots:
+            continue
         if isinstance(value, list):
-            prefixes.update(prefix for curie in value if (prefix := get_prefix_from_curie(curie)))
-        else:
-            if prefix := get_prefix_from_curie(str(value)):
+            for curie in value:
+                if not isinstance(curie, str):
+                    raise TypeError(
+                        f"invalid value for entity reference list slot {slot_name} "
+                        f"of type {type(curie)}: {curie}"
+                    )
+                if prefix := get_prefix_from_curie(curie):
+                    prefixes.add(prefix)
+        elif isinstance(value, str):
+            if prefix := get_prefix_from_curie(value):
                 prefixes.add(prefix)
+        else:
+            raise TypeError(
+                f"invalid value for entity reference slot {slot_name} of type {type(value)}: {value}"
+            )
+
+    # default/implicit rules are defined in the SSSOM spec here:
+    # https://mapping-commons.github.io/sssom/dev/spec-model/#undefined-extensions
+    for extension_definition in meta.get("extension_definitions", []):
+        for key in ("property", "type_hint"):
+            if (curie := extension_definition.get(key)) and (
+                prefix := get_prefix_from_curie(curie)
+            ):
+                prefixes.add(prefix)
+
     return prefixes
 
 

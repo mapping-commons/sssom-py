@@ -96,7 +96,7 @@ class SSSOMCLITestSuite(unittest.TestCase):
         bad_file.write_text(
             text.replace(
                 "#mapping_set_id: https://w3id.org/sssom/mapping/tests/data/basic.tsv",
-                "#mapping_set_id: not_a_uri",
+                "#sssom_version: '1.1'\n#mapping_set_id: not_a_uri",
             )
         )
         result = CliRunner().invoke(validate, [bad_file.as_posix()])

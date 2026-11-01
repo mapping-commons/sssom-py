@@ -225,7 +225,12 @@ def _json_schema_report(msdf: MappingSetDataFrame) -> ValidationReport:
     # mapping_set_dict = _clean_dict(mapping_set_yaml)
     mapping_set_dict = json_dumper.to_dict(mapping_set)
 
-    return validator.validate(mapping_set_dict, "mapping set")
+    report = validator.validate(mapping_set_dict, "mapping set")
+    # Relative URIs are only forbidden since SSSOM 1.1, and the spec says they
+    # should still be accepted when reading a 1.0 set (#681)
+    if str(msdf.metadata.get("sssom_version", "1.0")) == "1.0":
+        report.results = [r for r in report.results if "is not a 'uri'" not in r.message]
+    return report
 
 
 def validate_shacl(msdf: MappingSetDataFrame, fail_on_error: bool = True) -> ValidationReport:
