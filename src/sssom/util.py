@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
-from curies.w3c import LOCAL_UNIQUE_IDENTIFIER_PATTERN, NCNAME_PATTERN, QUALIFIED_CURIE_RE
+from curies.w3c import QUALIFIED_CURIE_RE
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
@@ -104,9 +104,6 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 # Enable copy-on-write for pandas 2.x (default in pandas 3.x).
 pd.options.mode.copy_on_write = True
-
-CURIE_PATTERN = rf"^{NCNAME_PATTERN}:{LOCAL_UNIQUE_IDENTIFIER_PATTERN}$"
-CURIE_RE = re.compile(CURIE_PATTERN)
 
 
 @dataclass
