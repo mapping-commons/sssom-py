@@ -277,14 +277,16 @@ class TestUtils(unittest.TestCase):
     def test_standardize_metadata_upgrade_multivalued_single(self) -> None:
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370"}
-        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        converter = Converter.from_prefix_map({"orcid": "https://orcid.org/"})
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter, metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual({"creator_id": ["orcid:0000-0003-4423-4370"]}, msdf.metadata)
 
     def test_standardize_metadata_upgrade_multivalued_multiple(self) -> None:
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": "orcid:0000-0003-4423-4370 | orcid:0000-0002-6601-2165"}
-        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        converter = Converter.from_prefix_map({"orcid": "https://orcid.org/"})
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter, metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual(
             {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
@@ -294,7 +296,8 @@ class TestUtils(unittest.TestCase):
     def test_standardize_metadata_multivalued(self) -> None:
         """Test standardizing upgrades a string to a list."""
         metadata = {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]}
-        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        converter = Converter.from_prefix_map({"orcid": "https://orcid.org/"})
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter, metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertEqual(
             {"creator_id": ["orcid:0000-0003-4423-4370", "orcid:0000-0002-6601-2165"]},
@@ -319,14 +322,15 @@ class TestUtils(unittest.TestCase):
         """Test that a metadata field that should not be a list gets coerced to a single element."""
         self.assertFalse(is_multivalued_slot("mapping_source"))
         metadata = {"mapping_source": ["https://example.org/r1"]}
-        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        converter = Converter.from_prefix_map({"ex": "https://example.org/"})
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter, metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
         self.assertIn("mapping_source", msdf.metadata)
         mapping_source = msdf.metadata["mapping_source"]
         self.assertIsInstance(
             mapping_source, str, msg="Mapping source should have been coerced into a string"
         )
-        self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
+        self.assertEqual({"mapping_source": "ex:r1"}, msdf.metadata)
 
     def test_standardize_metdata_delete_empty(self) -> None:
         """Test that an element that should not be a list but is empty just gets deleted."""
@@ -338,9 +342,10 @@ class TestUtils(unittest.TestCase):
     def test_standardize_metadata_single(self) -> None:
         """Test standardizing a single valued slot."""
         metadata: MetadataType = {"mapping_source": "https://example.org/r1"}
-        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=Converter([]), metadata=metadata)
+        converter = Converter.from_prefix_map({"ex": "https://example.org/"})
+        msdf = MappingSetDataFrame(df=pd.DataFrame(), converter=converter, metadata=metadata)
         msdf._standardize_metadata_references(raise_on_invalid=True)
-        self.assertEqual({"mapping_source": "https://example.org/r1"}, msdf.metadata)
+        self.assertEqual({"mapping_source": "ex:r1"}, msdf.metadata)
 
     def test_standardize_metadata_raise_on_missing(self) -> None:
         """Test that an exception is raised for a metadata key that's not in the schema."""

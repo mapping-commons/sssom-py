@@ -31,6 +31,7 @@ import numpy as np
 import pandas as pd
 import validators
 from curies import Converter, ReferenceTuple
+from curies.w3c import LOCAL_UNIQUE_IDENTIFIER_PATTERN, NCNAME_PATTERN
 from linkml_runtime.linkml_model.types import Uriorcurie
 from sssom_schema import Mapping as SSSOM_Mapping
 from sssom_schema import MappingSet, slots
@@ -104,6 +105,9 @@ TRIPLES_IDS = [SUBJECT_ID, PREDICATE_ID, OBJECT_ID]
 
 # Enable copy-on-write for pandas 2.x (default in pandas 3.x).
 pd.options.mode.copy_on_write = True
+
+CURIE_PATTERN = rf"^{NCNAME_PATTERN}:{LOCAL_UNIQUE_IDENTIFIER_PATTERN}$"
+CURIE_RE = re.compile(CURIE_PATTERN)
 
 
 @dataclass
@@ -221,13 +225,14 @@ class MappingSetDataFrame:
 
     def _standardize_df_references(self) -> None:
         """Standardize this MSDF's dataframe with respect to its converter."""
-        func = partial(_standardize_curie_or_iri, converter=self.converter)
-        for column, schema_data in _get_sssom_schema_object().dict["slots"].items():
-            if schema_data["range"] != "EntityReference":
+        entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+        for column in self.df.columns:
+            if column not in entity_reference_slots:
                 continue
-            if column not in self.df.columns:
-                continue
-            self.df[column] = self.df[column].map(func)
+            if is_multivalued_slot(column):
+                raise NotImplementedError
+            else:
+                self.df[column] = self.df[column].map(self.converter.compress_or_standardize)
 
     def _standardize_metadata_references(self, *, raise_on_invalid: bool = False) -> None:
         """Standardize this MSDF's metadata with respect to its converter."""
@@ -574,27 +579,11 @@ class MappingSetDataFrame:
         return msdf
 
 
-def _standardize_curie_or_iri(curie_or_iri: str, *, converter: Converter) -> str:
-    """Standardize a CURIE or IRI, returning the original if not possible.
-
-    :param curie_or_iri: Either a string representing a CURIE or an IRI
-
-    :returns: A standardized CURIE or IRI
-
-        - If the string represents an IRI, tries to standardize it. If not possible, returns the
-          original value
-        - If the string represents a CURIE, tries to standardize it. If not possible, returns the
-          original value
-        - Otherwise, return the original value
-    """
-    return converter.compress_or_standardize(curie_or_iri, passthrough=True)
-
-
 def _standardize_metadata(
-    converter: Converter, metadata: Dict[str, Any], *, raise_on_invalid: bool = False
+    converter: Converter, metadata: MetadataType, *, raise_on_invalid: bool = False
 ) -> None:
-    schema_object = _get_sssom_schema_object()
-    slots_dict = schema_object.dict["slots"]
+    valid_slots = _get_sssom_schema_object().slots
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
 
     # remove all falsy values. This has to be
     # done this way and not by making a new object
@@ -604,37 +593,46 @@ def _standardize_metadata(
             del metadata[k]
 
     for key, value in metadata.items():
-        slot_metadata = slots_dict.get(key)
-        if slot_metadata is None:
+        if key not in valid_slots:
             text = f"invalid metadata key {key}"
             if raise_on_invalid:
                 raise ValueError(text)
             logging.warning(text)
             continue
-        if slot_metadata["range"] != "EntityReference":
+        if key not in entity_reference_slots:
             continue
         if is_multivalued_slot(key):
             if isinstance(value, str):
-                metadata[key] = [
-                    _standardize_curie_or_iri(v.strip(), converter=converter)
-                    for v in value.split("|")
-                ]
-            elif isinstance(value, list):
-                metadata[key] = [_standardize_curie_or_iri(v, converter=converter) for v in value]
-            else:
+                value = value.split("|")
+            if not isinstance(value, list):
                 raise TypeError(f"{key} requires either a string or a list, got: {value}")
+            metadata[key] = [
+                standard_curie
+                for curie in value
+                if (
+                    standard_curie := converter.compress_or_standardize(
+                        curie.strip(), strict=raise_on_invalid
+                    )
+                )
+            ]
         elif isinstance(value, list):
-            print("here")
             if len(value) > 1:
                 raise TypeError(
                     f"value for {key} should have been a single value, but got a list: {value}"
                 )
-            print("also here")
             # note that the scenario len(value) == 0 is already
             # taken care of by the "if not value:" line above
-            metadata[key] = _standardize_curie_or_iri(value[0], converter=converter)
+            if standard_curie := converter.compress_or_standardize(
+                value[0].strip(), strict=raise_on_invalid
+            ):
+                metadata[key] = standard_curie
+        elif isinstance(value, str):
+            if standard_curie := converter.compress_or_standardize(
+                value.strip(), strict=raise_on_invalid
+            ):
+                metadata[key] = standard_curie
         else:
-            metadata[key] = _standardize_curie_or_iri(value, converter=converter)
+            raise TypeError(f"{key=} got invalid type {type(value)} with value {value}")
 
 
 @dataclass
@@ -1416,10 +1414,6 @@ def get_dict_from_mapping(map_obj: Union[Any, Dict[str, Any], SSSOM_Mapping]) ->
     return map_dict
 
 
-CURIE_PATTERN = r"[A-Za-z0-9_.-]+[:][A-Za-z0-9_]"
-CURIE_RE = re.compile(CURIE_PATTERN)
-
-
 def _is_curie(string: str) -> bool:
     """Check if the string is a CURIE."""
     if string and isinstance(string, str):
@@ -1438,6 +1432,8 @@ def _is_iri(string: str) -> bool:
 
 def get_prefix_from_curie(curie: str) -> str:
     """Get the prefix from a CURIE."""
+    if curie.startswith("https://") or curie.startswith("http://"):
+        return ""
     if _is_curie(curie):
         return ReferenceTuple.from_curie(curie).prefix
     else:
@@ -1449,19 +1445,24 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
     prefixes = set(SSSOM_BUILT_IN_PREFIXES)
     if df.empty:
         return prefixes
-    sssom_schema_object = _get_sssom_schema_object()
-    entity_reference_slots = sssom_schema_object.entity_reference_slots & set(df.columns)
-    new_prefixes = {
-        ReferenceTuple.from_curie(row).prefix
-        for col in entity_reference_slots
-        for row in df[col]
-        if not _is_iri(row) and _is_curie(row)
-        # we don't use the converter here since get_prefixes_used_in_table
-        # is often used to identify prefixes that are not properly registered
-        # in the converter
-    }
 
-    prefixes.update(new_prefixes)
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
+
+    # we don't use the converter here since get_prefixes_used_in_table
+    # is often used to identify prefixes that are not properly registered
+    # in the converter
+    for column in df.columns:
+        if column not in entity_reference_slots:
+            continue
+        if is_multivalued_slot(column):
+            for value in df[column]:
+                for curie in value.split("|"):
+                    if prefix := get_prefix_from_curie(curie):
+                        prefixes.add(prefix)
+        else:
+            for curie in df[column]:
+                if prefix := get_prefix_from_curie(curie):
+                    prefixes.add(prefix)
 
     return prefixes
 
@@ -1632,12 +1633,15 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
 
     prefixes: Set[str] = set()
     metadata_keys = set(msdf.metadata.keys())
+    entity_reference_slots = _get_sssom_schema_object().entity_reference_slots
     keys = {
         slot
         for slot in itt.chain(metadata_keys, msdf.df.columns.to_list())
-        if slot in _get_sssom_schema_object().entity_reference_slots
+        if slot in entity_reference_slots
     }
     for slot in keys:
+        if slot not in entity_reference_slots:
+            continue
         if slot not in metadata_keys:
             prefixes.update(
                 prefix
@@ -1653,7 +1657,14 @@ def get_all_prefixes(msdf: MappingSetDataFrame) -> Set[str]:
             if not prefix:
                 logging.warning(f"Slot '{slot}' has an incorrect value: {msdf.metadata[slot]}")
                 continue
+            elif prefix in {"http", "https"}:
+                raise ValueError(
+                    f"should not parse {prefix} in {slot=} from value: {msdf.metadata[slot]}"
+                )
             prefixes.add(prefix)
+
+    if "http" in prefixes:
+        raise ValueError
 
     return prefixes
 
