@@ -8,10 +8,11 @@ import logging as _logging
 import os
 from collections import ChainMap, defaultdict
 from dataclasses import dataclass, field
-from functools import partial, reduce
+from functools import reduce
 from pathlib import Path
 from typing import (
     Any,
+    Collection,
     DefaultDict,
     Dict,
     List,
@@ -227,17 +228,17 @@ class MappingSetDataFrame:
                 continue
             self.df[column] = self.df[column].map(
                 (
-                    self.compress_or_standardize_multivalued
+                    self._compress_or_standardize_multivalued
                     if is_multivalued_slot(column)
                     else self.converter.compress_or_standardize
                 ),
                 na_action="ignore",
             )
 
-    def compress_or_standardize_multivalued(self, curies: str | Collection[str]):
+    def _compress_or_standardize_multivalued(self, curies: str | Collection[str]) -> list[str]:
         if isinstance(curies, str):
             curies = [curie for curie_raw in curies.split("|") if (curie := curie_raw.strip())]
-        return [self.converter.compress_or_standardize(curie) for curie in curies]
+        return [self.converter.compress_or_standardize(curie, strict=True) for curie in curies]
 
     def _standardize_metadata_references(self, *, raise_on_invalid: bool = False) -> None:
         """Standardize this MSDF's metadata with respect to its converter."""
@@ -1460,8 +1461,8 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
         if column not in entity_reference_slots:
             continue
         if is_multivalued_slot(column):
-            for curies in df[column]:
-                for curie in curies.split("|"):
+            for values in df[column]:
+                for curie in values.split("|"):
                     if prefix := get_prefix_from_curie(curie):
                         prefixes.add(prefix)
         else:
