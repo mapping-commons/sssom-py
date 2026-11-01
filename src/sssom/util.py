@@ -225,10 +225,19 @@ class MappingSetDataFrame:
         for column in self.df.columns:
             if column not in entity_reference_slots:
                 continue
-            if is_multivalued_slot(column):
-                raise NotImplementedError
-            else:
-                self.df[column] = self.df[column].map(self.converter.compress_or_standardize)
+            self.df[column] = self.df[column].map(
+                (
+                    self.compress_or_standardize_multivalued
+                    if is_multivalued_slot(column)
+                    else self.converter.compress_or_standardize
+                ),
+                na_action="ignore",
+            )
+
+    def compress_or_standardize_multivalued(self, curies: str | Collection[str]):
+        if isinstance(curies, str):
+            curies = [curie for curie_raw in curies.split("|") if (curie := curie_raw.strip())]
+        return [self.converter.compress_or_standardize(curie) for curie in curies]
 
     def _standardize_metadata_references(self, *, raise_on_invalid: bool = False) -> None:
         """Standardize this MSDF's metadata with respect to its converter."""
@@ -1451,8 +1460,8 @@ def get_prefixes_used_in_table(df: pd.DataFrame) -> Set[str]:
         if column not in entity_reference_slots:
             continue
         if is_multivalued_slot(column):
-            for value in df[column]:
-                for curie in value.split("|"):
+            for curies in df[column]:
+                for curie in curies.split("|"):
                     if prefix := get_prefix_from_curie(curie):
                         prefixes.add(prefix)
         else:
