@@ -116,6 +116,36 @@ class TestValidate(unittest.TestCase):
         messages = [r.message for r in rv[SchemaValidationType.JsonSchema].results]
         self.assertEqual(["'not_a_uri' is not a 'uri' in /mapping_set_id"], messages)
 
+    def test_validate_json_accepts_sssom_1_1_mapping_justifications(self) -> None:
+        """Test that the mapping justifications added in SSSOM 1.1 are accepted."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
+        for justification in [
+            "semapv:MachineLearningBasedMatching",
+            "semapv:EmbeddingBasedMatching",
+            "semapv:TransformerBasedMatching",
+            "semapv:GraphRepresentationLearningBasedMatching",
+            "semapv:LLMBasedMatching",
+            "semapv:AgentBasedMatching",
+            "semapv:BoundedPathMatching",
+        ]:
+            with self.subTest(justification=justification):
+                self.correct_msdf1.df["mapping_justification"] = justification
+                rv = validate(self.correct_msdf1, [SchemaValidationType.JsonSchema])
+                self.assertEqual([], rv[SchemaValidationType.JsonSchema].results)
+
+        # Justifications outside the allowed list are still rejected
+        self.correct_msdf1.df["mapping_justification"] = "semapv:NotAJustification"
+        with self.assertRaises(ValidationError):
+            validate(self.correct_msdf1, [SchemaValidationType.JsonSchema])
+
+    def test_validate_json_accepts_derived_from(self) -> None:
+        """Test that the multivalued derived_from slot added in SSSOM 1.1 is accepted."""
+        self.correct_msdf1.metadata["sssom_version"] = "1.1"
+        self.correct_msdf1.df["mapping_justification"] = "semapv:MappingChaining"
+        self.correct_msdf1.df["derived_from"] = "mapping:aaa|mapping:bbb"
+        rv = validate(self.correct_msdf1, [SchemaValidationType.JsonSchema])
+        self.assertEqual([], rv[SchemaValidationType.JsonSchema].results)
+
     def test_validate_reports_problems_of_all_validation_types(self) -> None:
         """Test that a failing validation type does not hide the problems found by the others."""
         self.correct_msdf1.metadata["sssom_version"] = "1.1"

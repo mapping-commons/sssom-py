@@ -776,6 +776,11 @@ class TestUtils(unittest.TestCase):
         msdf11.df.loc[9, MAPPING_CARDINALITY] = "0:0"
         self.assertEqual("1.1", msdf11.get_compatible_version())
 
+        # Inject the 1.1-specific derived_from slot
+        msdf11 = _clone(msdf10)
+        msdf11.df["derived_from"] = "mapping:aaa|mapping:bbb"
+        self.assertEqual("1.1", msdf11.get_compatible_version())
+
     def test_enforce_version(self) -> None:
         """Test that we can force a set to be compliant with a specific SSSOM version."""
         msdf11 = parse_sssom_table(f"{data_dir}/sssom11-extensions.sssom.tsv")
