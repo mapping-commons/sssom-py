@@ -5,7 +5,11 @@ import unittest
 from jsonschema import ValidationError
 from linkml.validator.report import Severity, ValidationReport, ValidationResult
 
-from sssom.constants import DEFAULT_VALIDATION_TYPES, SchemaValidationType
+from sssom.constants import (
+    DEFAULT_VALIDATION_TYPES,
+    MAPPING_JUSTIFICATIONS_ADDED_IN_1_1,
+    SchemaValidationType,
+)
 from sssom.parsers import parse_sssom_table
 from sssom.validators import (
     SSSOMValidationError,
@@ -119,15 +123,7 @@ class TestValidate(unittest.TestCase):
     def test_validate_json_accepts_sssom_1_1_mapping_justifications(self) -> None:
         """Test that the mapping justifications added in SSSOM 1.1 are accepted."""
         self.correct_msdf1.metadata["sssom_version"] = "1.1"
-        for justification in [
-            "semapv:MachineLearningBasedMatching",
-            "semapv:EmbeddingBasedMatching",
-            "semapv:TransformerBasedMatching",
-            "semapv:GraphRepresentationLearningBasedMatching",
-            "semapv:LLMBasedMatching",
-            "semapv:AgentBasedMatching",
-            "semapv:BoundedPathMatching",
-        ]:
+        for justification in MAPPING_JUSTIFICATIONS_ADDED_IN_1_1:
             with self.subTest(justification=justification):
                 self.correct_msdf1.df["mapping_justification"] = justification
                 rv = validate(self.correct_msdf1, [SchemaValidationType.JsonSchema])

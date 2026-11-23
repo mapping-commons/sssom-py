@@ -246,6 +246,9 @@ class NewEnumValue(object):
     not seem possible to annotate enum values in LinkML the way it can
     be done for slots. So the information comes from the spec instead,
     at <https://mapping-commons.github.io/sssom/spec-model/#model-changes-across-versions>.
+
+    This is also used for slots that are not enum-typed in the schema
+    but only accept a fixed list of values, such as `mapping_justification`.
     """
 
     slots: list[str]  # Impacted slots
@@ -256,6 +259,17 @@ class NewEnumValue(object):
     replacement: Optional[str] = None
 
 
+#: Mapping justifications added in SSSOM 1.1
+MAPPING_JUSTIFICATIONS_ADDED_IN_1_1 = [
+    "semapv:MachineLearningBasedMatching",
+    "semapv:EmbeddingBasedMatching",
+    "semapv:TransformerBasedMatching",
+    "semapv:GraphRepresentationLearningBasedMatching",
+    "semapv:LLMBasedMatching",
+    "semapv:AgentBasedMatching",
+    "semapv:BoundedPathMatching",
+]
+
 NEW_ENUM_VALUES = [
     NewEnumValue([SUBJECT_TYPE, OBJECT_TYPE], "composed entity expression", (1, 1)),
     NewEnumValue([MAPPING_CARDINALITY], "0:0", (1, 1)),
@@ -263,15 +277,7 @@ NEW_ENUM_VALUES = [
     # mapping_justification is a required slot, so those values cannot
     # simply be removed from a set that must comply with 1.0.
     NewEnumValue([MAPPING_JUSTIFICATION], value, (1, 1), MAPPING_JUSTIFICATION_UNSPECIFIED)
-    for value in (
-        "semapv:MachineLearningBasedMatching",
-        "semapv:EmbeddingBasedMatching",
-        "semapv:TransformerBasedMatching",
-        "semapv:GraphRepresentationLearningBasedMatching",
-        "semapv:LLMBasedMatching",
-        "semapv:AgentBasedMatching",
-        "semapv:BoundedPathMatching",
-    )
+    for value in MAPPING_JUSTIFICATIONS_ADDED_IN_1_1
 ]
 
 

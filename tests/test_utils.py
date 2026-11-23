@@ -18,6 +18,7 @@ from sssom.constants import (
     MAPPING_CARDINALITY,
     MAPPING_JUSTIFICATION,
     MAPPING_JUSTIFICATION_UNSPECIFIED,
+    MAPPING_JUSTIFICATIONS_ADDED_IN_1_1,
     MAPPING_SET_CONFIDENCE,
     MAPPING_TOOL_ID,
     OBJECT_ID,
@@ -48,17 +49,6 @@ from sssom.util import (
 from tests.constants import data_dir
 
 HERE = Path(__file__).parent.resolve()
-
-#: Mapping justifications added in SSSOM 1.1
-NEW_MAPPING_JUSTIFICATIONS = [
-    "semapv:MachineLearningBasedMatching",
-    "semapv:EmbeddingBasedMatching",
-    "semapv:TransformerBasedMatching",
-    "semapv:GraphRepresentationLearningBasedMatching",
-    "semapv:LLMBasedMatching",
-    "semapv:AgentBasedMatching",
-    "semapv:BoundedPathMatching",
-]
 
 
 class TestIO(unittest.TestCase):
@@ -795,7 +785,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual("1.1", msdf11.get_compatible_version())
 
         # Inject a 1.1-specific mapping justification on a single record
-        for justification in NEW_MAPPING_JUSTIFICATIONS:
+        for justification in MAPPING_JUSTIFICATIONS_ADDED_IN_1_1:
             with self.subTest(justification=justification):
                 msdf11 = _clone(msdf10)
                 msdf11.df.loc[2, MAPPING_JUSTIFICATION] = justification
@@ -805,9 +795,9 @@ class TestUtils(unittest.TestCase):
         """Test that justifications added in 1.1 become UnspecifiedMatching in a 1.0 set."""
         msdf11 = parse_sssom_table(f"{data_dir}/basic.tsv")
         original = list(msdf11.df[MAPPING_JUSTIFICATION].values)
-        for i, justification in enumerate(NEW_MAPPING_JUSTIFICATIONS):
+        for i, justification in enumerate(MAPPING_JUSTIFICATIONS_ADDED_IN_1_1):
             msdf11.df.loc[i, MAPPING_JUSTIFICATION] = justification
-        n = len(NEW_MAPPING_JUSTIFICATIONS)
+        n = len(MAPPING_JUSTIFICATIONS_ADDED_IN_1_1)
 
         msdf10 = msdf11.enforce_version("1.0")
         self.assertEqual("1.0", msdf10.get_compatible_version())
@@ -820,13 +810,13 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(original[n:], list(msdf10.df[MAPPING_JUSTIFICATION].values[n:]))
         # The original set is untouched
         self.assertEqual(
-            NEW_MAPPING_JUSTIFICATIONS, list(msdf11.df[MAPPING_JUSTIFICATION].values[:n])
+            MAPPING_JUSTIFICATIONS_ADDED_IN_1_1, list(msdf11.df[MAPPING_JUSTIFICATION].values[:n])
         )
 
         # Enforcing 1.1 keeps them
         msdf11b = msdf11.enforce_version("1.1")
         self.assertEqual(
-            NEW_MAPPING_JUSTIFICATIONS, list(msdf11b.df[MAPPING_JUSTIFICATION].values[:n])
+            MAPPING_JUSTIFICATIONS_ADDED_IN_1_1, list(msdf11b.df[MAPPING_JUSTIFICATION].values[:n])
         )
 
     def test_enforce_version(self) -> None:
