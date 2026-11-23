@@ -1,0 +1,7 @@
+#curie_map:
+#  FBbt: "http://purl.obolibrary.org/obo/FBbt_"
+#  UBERON: "http://purl.obolibrary.org/obo/UBERON_"
+#  sssom.record: "https://example.org/sssom.record/"
+#  orcid: "https://orcid.org/"
+record_id	subject_id	predicate_id	object_id	mapping_justification	creator_id	reviewer_id	author_label	mapping_tool_version	similarity_score	comment	license	author_id	mapping_tool	object_type	predicate_modifier	reviewer_label	issue_tracker_item	subject_source	object_match_field	mapping_provider	subject_label	object_category	subject_source_version	subject_preprocessing	subject_category	object_label	mapping_source	predicate_label	curation_rule_text	similarity_measure	see_also	publication_date	mapping_date	other	object_source	mapping_cardinality	subject_type	confidence	subject_match_field	curation_rule	object_source_version	object_preprocessing	match_string	creator_label
+sssom.record:hq6bs14aptzepwgk6pw7j8ysnft6riqrw7har84rtk8r9xmbcwty	FBbt:00001234	skos:exactMatch	UBERON:0005678	semapv:ManualMappingCuration	orcid:0000-0000-1234-5678|orcid:0000-0000-5678-1234																ventral abdominal es5							exact match																someone
