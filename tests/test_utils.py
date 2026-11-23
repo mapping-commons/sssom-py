@@ -16,6 +16,8 @@ from sssom.constants import (
     CARDINALITY_SCOPE,
     CREATOR_ID,
     MAPPING_CARDINALITY,
+    MAPPING_JUSTIFICATION,
+    MAPPING_JUSTIFICATION_UNSPECIFIED,
     MAPPING_SET_CONFIDENCE,
     MAPPING_TOOL_ID,
     OBJECT_ID,
@@ -46,6 +48,17 @@ from sssom.util import (
 from tests.constants import data_dir
 
 HERE = Path(__file__).parent.resolve()
+
+#: Mapping justifications added in SSSOM 1.1
+NEW_MAPPING_JUSTIFICATIONS = [
+    "semapv:MachineLearningBasedMatching",
+    "semapv:EmbeddingBasedMatching",
+    "semapv:TransformerBasedMatching",
+    "semapv:GraphRepresentationLearningBasedMatching",
+    "semapv:LLMBasedMatching",
+    "semapv:AgentBasedMatching",
+    "semapv:BoundedPathMatching",
+]
 
 
 class TestIO(unittest.TestCase):
@@ -780,6 +793,41 @@ class TestUtils(unittest.TestCase):
         msdf11 = _clone(msdf10)
         msdf11.df["derived_from"] = "mapping:aaa|mapping:bbb"
         self.assertEqual("1.1", msdf11.get_compatible_version())
+
+        # Inject a 1.1-specific mapping justification on a single record
+        for justification in NEW_MAPPING_JUSTIFICATIONS:
+            with self.subTest(justification=justification):
+                msdf11 = _clone(msdf10)
+                msdf11.df.loc[2, MAPPING_JUSTIFICATION] = justification
+                self.assertEqual("1.1", msdf11.get_compatible_version())
+
+    def test_enforce_version_rewrites_new_mapping_justifications(self) -> None:
+        """Test that justifications added in 1.1 become UnspecifiedMatching in a 1.0 set."""
+        msdf11 = parse_sssom_table(f"{data_dir}/basic.tsv")
+        original = list(msdf11.df[MAPPING_JUSTIFICATION].values)
+        for i, justification in enumerate(NEW_MAPPING_JUSTIFICATIONS):
+            msdf11.df.loc[i, MAPPING_JUSTIFICATION] = justification
+        n = len(NEW_MAPPING_JUSTIFICATIONS)
+
+        msdf10 = msdf11.enforce_version("1.0")
+        self.assertEqual("1.0", msdf10.get_compatible_version())
+        # The 1.1 justifications are replaced, since the slot is required
+        self.assertEqual(
+            [MAPPING_JUSTIFICATION_UNSPECIFIED] * n,
+            list(msdf10.df[MAPPING_JUSTIFICATION].values[:n]),
+        )
+        # Other justifications are left alone
+        self.assertEqual(original[n:], list(msdf10.df[MAPPING_JUSTIFICATION].values[n:]))
+        # The original set is untouched
+        self.assertEqual(
+            NEW_MAPPING_JUSTIFICATIONS, list(msdf11.df[MAPPING_JUSTIFICATION].values[:n])
+        )
+
+        # Enforcing 1.1 keeps them
+        msdf11b = msdf11.enforce_version("1.1")
+        self.assertEqual(
+            NEW_MAPPING_JUSTIFICATIONS, list(msdf11b.df[MAPPING_JUSTIFICATION].values[:n])
+        )
 
     def test_enforce_version(self) -> None:
         """Test that we can force a set to be compliant with a specific SSSOM version."""

@@ -251,11 +251,27 @@ class NewEnumValue(object):
     slots: list[str]  # Impacted slots
     value: str  # The new value
     added_in: tuple[int, int]  # Version that introduced the new value
+    # Value to use instead when enforcing an older version. If None,
+    # the slot is left unset, which is only possible for optional slots.
+    replacement: Optional[str] = None
 
 
 NEW_ENUM_VALUES = [
     NewEnumValue([SUBJECT_TYPE, OBJECT_TYPE], "composed entity expression", (1, 1)),
     NewEnumValue([MAPPING_CARDINALITY], "0:0", (1, 1)),
+] + [
+    # mapping_justification is a required slot, so those values cannot
+    # simply be removed from a set that must comply with 1.0.
+    NewEnumValue([MAPPING_JUSTIFICATION], value, (1, 1), MAPPING_JUSTIFICATION_UNSPECIFIED)
+    for value in (
+        "semapv:MachineLearningBasedMatching",
+        "semapv:EmbeddingBasedMatching",
+        "semapv:TransformerBasedMatching",
+        "semapv:GraphRepresentationLearningBasedMatching",
+        "semapv:LLMBasedMatching",
+        "semapv:AgentBasedMatching",
+        "semapv:BoundedPathMatching",
+    )
 ]
 
 

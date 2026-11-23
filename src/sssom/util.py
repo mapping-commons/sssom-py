@@ -511,6 +511,9 @@ class MappingSetDataFrame:
 
         This method will forcefully remove any slot or enum value that
         is not defined in the specified version of the specification.
+        The exception is `mapping_justification`, which is a required
+        slot: a justification that is not defined in the specified
+        version is replaced by `semapv:UnspecifiedMatching`.
 
         :param version: The targeted version of the specification, as a
                         string of the form `X.Y`.
@@ -555,7 +558,10 @@ class MappingSetDataFrame:
         for new_enum_value in schema.get_new_enum_values(after=target_version):
             for slot in new_enum_value.slots:
                 if msdf.metadata.get(slot) == new_enum_value.value:
-                    to_remove.append(slot)
+                    if new_enum_value.replacement is None:
+                        to_remove.append(slot)
+                    else:
+                        msdf.metadata[slot] = new_enum_value.replacement
         for slot in to_remove:
             msdf.metadata.pop(slot)
 
@@ -569,7 +575,9 @@ class MappingSetDataFrame:
         for new_enum_value in schema.get_new_enum_values(after=target_version):
             for slot in new_enum_value.slots:
                 if slot in msdf.df.columns:
-                    msdf.df.loc[msdf.df[slot] == new_enum_value.value, slot] = ""
+                    msdf.df.loc[msdf.df[slot] == new_enum_value.value, slot] = (
+                        new_enum_value.replacement or ""
+                    )
 
         return msdf
 
